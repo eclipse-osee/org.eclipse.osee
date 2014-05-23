@@ -58,4 +58,8 @@ public interface BranchData extends HasLocalId<Long> {
 
    void setBranchType(BranchType type);
 
+   boolean isInheritAccessControl();
+
+   void setInheritAccessControl(boolean inheritAccessControl);
+
 }

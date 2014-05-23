@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -123,7 +124,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       return systemUserId;
    }
 
-   public void checkPreconditions(Branch parentBranch, Branch destinationBranch) throws OseeCoreException {
+   public void checkPreconditions(IOseeBranch parentBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getUuid(),
             destinationBranch.getUuid()) > 0) {
@@ -305,7 +306,7 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       }
    }
 
-   private void copyAccessRules(OseeConnection connection, int userArtId, Branch parentBranch, Branch destinationBranch) {
+   private void copyAccessRules(OseeConnection connection, int userArtId, IOseeBranch parentBranch, Branch destinationBranch) {
       Long branchUuid = destinationBranch.getUuid();
       int owner = PermissionEnum.OWNER.getPermId();
       int deny = PermissionEnum.DENY.getPermId();

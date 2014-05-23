@@ -32,6 +32,7 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
    private BranchState branchState = BranchState.CREATED;
    private BranchType branchType = BranchType.WORKING;
+   private boolean inheritAccessControl = false;
 
    public BranchDataImpl() {
       super();
@@ -165,6 +166,16 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    @Override
    public void setUuid(Long uuid) {
       this.uuid = uuid;
+   }
+
+   @Override
+   public boolean isInheritAccessControl() {
+      return inheritAccessControl;
+   }
+
+   @Override
+   public void setInheritAccessControl(boolean inheritAccessControl) {
+      this.inheritAccessControl = inheritAccessControl;
    }
 
 }

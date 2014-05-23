@@ -37,4 +37,6 @@ public interface BranchReadable extends HasLocalId<Long>, IOseeBranch {
 
    long getParentBranch();
 
+   boolean isInheritAccessControl();
+
 }

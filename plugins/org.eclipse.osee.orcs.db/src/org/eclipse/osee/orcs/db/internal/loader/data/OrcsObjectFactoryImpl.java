@@ -179,7 +179,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId) {
+   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
       BranchData data = new BranchDataImpl();
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);
@@ -190,6 +190,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setName(name);
       data.setParentBranch(parentBranch);
       data.setSourceTransaction(sourceTransaction);
+      data.setInheritAccessControl(inheritAccessControl);
       return data;
    }
 
@@ -197,7 +198,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public BranchData createCopy(BranchData source) {
       return createBranchData(source.getLocalId(), source.getBranchType(), source.getName(), source.getParentBranch(),
          source.getBaseTransaction(), source.getSourceTransaction(), source.getArchiveState(), source.getBranchState(),
-         source.getAssociatedArtifactId());
+         source.getAssociatedArtifactId(), source.isInheritAccessControl());
    }
 
    @Override

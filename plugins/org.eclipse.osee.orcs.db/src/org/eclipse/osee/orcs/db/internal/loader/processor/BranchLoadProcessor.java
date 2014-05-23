@@ -41,8 +41,9 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
       int sourceTx = chStmt.getInt("parent_transaction_id");
       int baseTx = chStmt.getInt("baseline_transaction_id");
       int assocArtId = chStmt.getInt("associated_art_id");
+      boolean inheritAccessControl = chStmt.getInt("inherit_access_control") != 0;
 
-      return factory.createBranchData(branchUuid, branchType, branchName, parentBranchId, baseTx, sourceTx, archiveState,
-         branchState, assocArtId);
+      return factory.createBranchData(branchUuid, branchType, branchName, parentBranchId, baseTx, sourceTx,
+         archiveState, branchState, assocArtId, inheritAccessControl);
    }
 }
