@@ -148,14 +148,7 @@ public class StdTestToCsciTable implements ISimpleTable {
       HashCollection<Artifact, String> requirementsToCodeUnits = source.getRequirementsToCodeUnits();
 
       // Combine Test Scripts and Test Procedures
-      HashCollection<String, Artifact> requirementsToTestProcedures = source.getRequirementNameToTestProcedures();
       for (Artifact requirement : source.getAllSwRequirements()) {
-         Collection<Artifact> testProcedures = requirementsToTestProcedures.getValues(requirement.getName());
-         if (testProcedures != null) {
-            for (Artifact testProcedure : testProcedures) {
-               toReturn.put(requirement, testProcedure.getName());
-            }
-         }
          Collection<String> testScripts = requirementsToCodeUnits.getValues(requirement);
          if (testScripts != null) {
             toReturn.put(requirement, testScripts);

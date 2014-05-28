@@ -161,21 +161,6 @@ public class RequirementTraceabilityData {
    }
 
    /**
-    * @return the requirementNameToTestProcedures
-    */
-   public HashCollection<String, Artifact> getRequirementNameToTestProcedures() {
-      return requirementNameToTestProcedures;
-   }
-
-   /**
-    * @param artifact requirement to find
-    * @return the test procedures associated with this requirement
-    */
-   public Collection<Artifact> getTestProceduresForRequirement(Artifact requirement) {
-      return getRequirementNameToTestProcedures().getValues(requirement.getName());
-   }
-
-   /**
     * TODO need to use persisted test script NOTE: These artifact should not be persisted since they are temporary items
     * artifacts
     * 

@@ -124,13 +124,6 @@ public class StdCsciToTestTable implements ISimpleTable {
          builder.append(scripts);
       }
 
-      String testProcedures = getTestProcedure(source, artifact);
-      if (Strings.isValid(testProcedures) != false) {
-         if (builder.length() > 0) {
-            builder.append(",\n");
-         }
-         builder.append(testProcedures);
-      }
       if (builder.length() == 0) {
          builder.append("None");
       }
@@ -154,16 +147,4 @@ public class StdCsciToTestTable implements ISimpleTable {
       return toReturn;
    }
 
-   private String getTestProcedure(RequirementTraceabilityData source, Artifact artifact) {
-      String toReturn = "";
-      Collection<Artifact> testProcedures = source.getRequirementNameToTestProcedures().getValues(artifact.getName());
-      if (testProcedures != null) {
-         List<String> units = new ArrayList<String>();
-         for (Artifact testProcedure : testProcedures) {
-            units.add(testProcedure.getName());
-         }
-         toReturn = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",\n", units);
-      }
-      return toReturn;
-   }
 }

@@ -103,7 +103,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private final HashSet<String> requirementPocs = new HashSet<String>();
    private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
    private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
-   private HashCollection<String, Artifact> requirementNameToTestProcedures;
    private Collection<IAtsVersion> versions;
 
    private XBranchSelectWidget requirementsBranchWidget;
@@ -251,7 +250,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
       switch (status.getSeverity()) {
          case IStatus.OK:
             requirementToCodeUnitsMap = traceabilityData.getRequirementsToCodeUnits();
-            requirementNameToTestProcedures = traceabilityData.getRequirementNameToTestProcedures();
 
             loadReqTaskMap();
 
@@ -459,7 +457,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
          statusLines.get(0)[Index.HOURS_REMAINING.ordinal()] = sumFormula.toString();
       }
 
-      addTestProcedureNames(requirement.getName());
    }
 
    private void writeRequirementStatusLines(Artifact requirement) throws OseeCoreException, IOException {
@@ -492,29 +489,6 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       for (String[] line : statusLines) {
          excelWriter.writeRow((Object[]) line);
-      }
-   }
-
-   private void addTestProcedureNames(String requirementName) {
-      Collection<Artifact> testProcedures = requirementNameToTestProcedures.getValues(requirementName);
-      if (testProcedures != null) {
-         int index = 0;
-         String[] firstStatusLine = statusLines.get(index);
-         String lastTestProcedure = null;
-         for (Artifact testProcedure : testProcedures) {
-            if (index < statusLines.size()) {
-               statusLines.get(index++)[Index.TEST_PROCEDURE.ordinal()] = testProcedure.getName();
-               lastTestProcedure = testProcedure.getName();
-            } else {
-               String[] statusLine = new String[Index.RUN_DATE.ordinal()];
-               initStatusLine(firstStatusLine, statusLine);
-               statusLine[Index.TEST_PROCEDURE.ordinal()] = testProcedure.getName();
-               statusLines.add(statusLine);
-            }
-         }
-         while (index < statusLines.size()) {
-            statusLines.get(index++)[Index.TEST_PROCEDURE.ordinal()] = lastTestProcedure;
-         }
       }
    }
 
