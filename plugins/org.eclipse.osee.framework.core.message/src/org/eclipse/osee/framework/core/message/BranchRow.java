@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -138,7 +137,7 @@ public final class BranchRow {
 
    private static final String SELECT_BRANCH_GUID_BY_ID = "select branch_guid from osee_branch where branch_id = ?";
    // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final Map<Long, String> longToGuidCache = new HashMap<Long, String>(50);
+   private static final ConcurrentHashMap<Long, String> longToGuidCache = new ConcurrentHashMap<Long, String>(50);
 
    /**
     * Temporary method till all code uses branch uuid. Remove after 0.17.0
@@ -150,7 +149,7 @@ public final class BranchRow {
             DatabaseService.getDatabaseService().runPreparedQueryFetchObject("", SELECT_BRANCH_GUID_BY_ID, branchUuid);
          Conditions.checkExpressionFailOnTrue(!Strings.isValid(guid), "Error getting branch_guid for branch: [%d]",
             branchUuid);
-         longToGuidCache.put(branchUuid, guid);
+         longToGuidCache.putIfAbsent(branchUuid, guid);
       }
       return guid;
    }
@@ -158,7 +157,7 @@ public final class BranchRow {
    // Temporary cache till all code uses branch uuid. Remove after 0.17.0
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
    // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final Map<String, Long> guidToLongCache = new HashMap<String, Long>(50);
+   private static final ConcurrentHashMap<String, Long> guidToLongCache = new ConcurrentHashMap<String, Long>(50);
 
    /**
     * Temporary method till all code uses branch uuid. Remove after 0.17.0
@@ -174,7 +173,7 @@ public final class BranchRow {
                   branchGuid);
             Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
          }
-         guidToLongCache.put(branchGuid, longId);
+         guidToLongCache.putIfAbsent(branchGuid, longId);
       }
       return longId;
    }
