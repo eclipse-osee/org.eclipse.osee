@@ -46,13 +46,13 @@ public interface DispoApi {
    // Writes
    Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
 
-   String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation);
+   String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation, String userName);
 
    boolean editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
 
    boolean editDispoItem(DispoProgram program, String itemId, DispoItemData newDispoItem);
 
-   boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation);
+   boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
    // Deletes
 
@@ -60,7 +60,7 @@ public interface DispoApi {
 
    boolean deleteDispoItem(DispoProgram program, String itemId);
 
-   boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId);
+   boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId, String userName);
 
    // Utilities
    boolean isUniqueSetName(DispoProgram program, String setName);

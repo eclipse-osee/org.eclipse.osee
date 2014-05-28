@@ -119,10 +119,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotationToCreate) {
+   public String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotationToCreate, String userName) {
       String idOfNewAnnotation = "";
       DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
-      if (dispoItem != null) {
+      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
          try {
             JSONArray annotationsList = dispoItem.getAnnotationsList();
             dataFactory.initAnnotation(annotationToCreate);
@@ -221,10 +221,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation) {
+   public boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
-      if (dispoItem != null) {
+      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
          JSONArray annotationsList = dispoItem.getAnnotationsList();
          JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
          try {
@@ -276,10 +276,10 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId) {
+   public boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId, String userName) {
       boolean wasUpdated = false;
       DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
-      if (dispoItem != null) {
+      if (dispoItem != null && dispoItem.getAssignee().equalsIgnoreCase(userName)) {
          JSONArray annotationsList = dispoItem.getAnnotationsList();
          JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
          try {

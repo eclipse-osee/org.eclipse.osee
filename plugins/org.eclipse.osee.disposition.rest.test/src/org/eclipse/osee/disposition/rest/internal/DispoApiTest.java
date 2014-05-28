@@ -268,6 +268,7 @@ public class DispoApiTest {
       DispoAnnotationData annotationToCreate = new DispoAnnotationData();
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(dispoItem);
       when(dataFactory.getNewId()).thenReturn(expectedId);
+      when(dispoItem.getAssignee()).thenReturn("name");
       when(dispoItem.getAnnotationsList()).thenReturn(mockAnnotations);
       when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(dataFactory.createUpdatedItem(eq(jsonArray), eq(jsonObject))).thenReturn(dispoItem);
@@ -279,23 +280,23 @@ public class DispoApiTest {
       when(dispoItem.getStatus()).thenReturn("COMPLETE");
       Pair<Boolean, String> validationResults = new Pair<Boolean, String>(true, "CODE");
       when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(validationResults);
-      String acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
+      String acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals(expectedId, acutal);
 
       when(dispoItem.getStatus()).thenReturn("PASS");
-      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
+      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals(expectedId, acutal);
 
       when(dispoItem.getStatus()).thenReturn("INCOMPLETE");
-      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
+      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals(expectedId, acutal);
 
       annotationToCreate.setResolution("INVALID");
-      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
+      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals(expectedId, acutal);
 
       when(storage.findDispoItemById(program, itemId.getGuid())).thenReturn(null); // shouldn't call dataFactory method
-      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate);
+      acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals("", acutal);
 
       verify(dispoConnector, times(4)).connectAnnotation(annotationToCreate, jsonObject);// Only tried to connect 3 times, excluded when annotations was invalid
@@ -352,6 +353,7 @@ public class DispoApiTest {
       String expectedId = "faf";
 
       when(storage.findDispoItemById(programUuid, itemUuid)).thenReturn(dispoItem);
+      when(dispoItem.getAssignee()).thenReturn("name");
       when(dispoItem.getAnnotationsList()).thenReturn(jsonArray);
       when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(jsonObject.getJSONObject(expectedId)).thenReturn(jsonObject);
@@ -369,7 +371,7 @@ public class DispoApiTest {
       // end
 
       newAnnotation.setLocationRefs("1-10");
-      boolean actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
+      boolean actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
       // reset loc ref to null and set new (invalid) resolution 
@@ -377,18 +379,18 @@ public class DispoApiTest {
       Pair<Boolean, String> valdiationResult = new Pair<Boolean, String>(true, "C");
       when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(valdiationResult);
       newAnnotation.setResolution("CPCR 13");
-      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
+      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
       newAnnotation.setResolution("VALID"); // Since PCR validation isn't hooked up yet, only valid resolution is "VALID" 
-      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
+      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
       //  notes are the only thing being modified, no need to disconnect or connect
       newAnnotation.setLocationRefs(null);
       newAnnotation.setResolution(null);
       newAnnotation.setDeveloperNotes("");
-      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation);
+      actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
       verify(dispoConnector, times(3)).connectAnnotation(any(DispoAnnotationData.class), eq(jsonObject));
@@ -401,6 +403,7 @@ public class DispoApiTest {
       String expectedId = "1";
 
       when(storage.findDispoItemById(programUuid, itemUuid)).thenReturn(dispoItem);
+      when(dispoItem.getAssignee()).thenReturn("name");
       when(dispoItem.getAnnotationsList()).thenReturn(jsonArray);
       when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(jsonArray.length()).thenReturn(1);
@@ -419,13 +422,13 @@ public class DispoApiTest {
       annotationInvalid.put("isValid", false);
       when(jsonObject.getJSONObject(expectedId)).thenReturn(annotationInvalid);
 
-      boolean actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId);
+      boolean actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId, "name");
       assertTrue(actual);
 
       JSONObject annotationValid = new JSONObject();
       annotationValid.put("isValid", true);
       when(jsonObject.getJSONObject(expectedId)).thenReturn(annotationValid);
-      actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId);
+      actual = dispoApi.deleteDispoAnnotation(program, itemId.getGuid(), expectedId, "name");
       verify(dataFactory, times(2)).createUpdatedItem(any(JSONArray.class), eq(jsonObject));
       assertTrue(actual);
    }

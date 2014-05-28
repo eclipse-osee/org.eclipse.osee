@@ -45,14 +45,9 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
          for (DispoItem item : dispoItems) {
             writer.append("<tr id=\"");
             writer.append(item.getGuid());
-            if (item.getStatus().equals(DispoStrings.Item_Pass)) {
-               writer.append("\" class=\"itemRow\">");
-            } else {
-               writer.append("\" class=\"itemRow\" ondblclick=\"showAnnotations(this)\">");
-            }
+            writer.append("\" class=\"itemRow\">");
             addItemData(writer, item);
             writer.append("</tr>");
-
             writer.append("\n");
          }
 
@@ -64,11 +59,13 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
    }
 
    private void addItemData(Appendable appendable, DispoItem item) throws IOException, JSONException {
-      addData(appendable, item.getName());
-      addData(appendable, item.getStatus(), true);
+      String itemStatus = item.getStatus();
+      addDataWithOnDblClick(appendable, item.getName(), "showAnnotations");
+      addDataStatus(appendable, itemStatus);
       addData(appendable, String.valueOf(item.getTotalPoints()));
       addData(appendable, String.valueOf(item.getDiscrepanciesList().length()));
-      addData(appendable, String.valueOf(getFailureLocations(item.getDiscrepanciesList())));
+      addDataWithOnDblClick(appendable, String.valueOf(getFailureLocations(item.getDiscrepanciesList())),
+         "showFailures");
       addData(appendable, item.getAssignee());
       addData(appendable, item.getVersion());
       addDataAsButton(appendable, item.getNeedsRerun());
@@ -76,6 +73,14 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
 
    private void addData(Appendable appendable, String data) throws IOException {
       appendable.append("<td class=\"itemData\">");
+      appendable.append(data);
+      appendable.append("</td>");
+   }
+
+   private void addDataWithOnDblClick(Appendable appendable, String data, String onDblClickName) throws IOException {
+      appendable.append("<td class=\"itemData\" ondblclick=\"");
+      appendable.append(onDblClickName);
+      appendable.append("(this.parentNode)\">");
       appendable.append(data);
       appendable.append("</td>");
    }
@@ -90,7 +95,7 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
       appendable.append("</td>");
    }
 
-   private void addData(Appendable appendable, String data, boolean isStatus) throws IOException {
+   private void addDataStatus(Appendable appendable, String data) throws IOException {
       if (data.equals(DispoStrings.Item_Complete)) {
          appendable.append("<td class=\"itemData\">");
       } else if (data.equals(DispoStrings.Item_Pass)) {

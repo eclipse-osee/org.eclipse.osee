@@ -20,6 +20,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -56,13 +57,19 @@ public class AnnotationResource {
     */
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response postDispoAnnotation(DispoAnnotationData annotation) {
+   public Response postDispoAnnotation(DispoAnnotationData annotation, @QueryParam("userName") String userName) {
       Response.Status status;
       Response response;
+      DispoAnnotationData createdAnnotation;
       if (!annotation.getLocationRefs().isEmpty()) {
-         String createdAnnotationId = dispoApi.createDispoAnnotation(program, itemId, annotation);
-         status = Status.CREATED;
-         DispoAnnotationData createdAnnotation = dispoApi.getDispoAnnotationById(program, itemId, createdAnnotationId);
+         String createdAnnotationId = dispoApi.createDispoAnnotation(program, itemId, annotation, userName);
+         if (createdAnnotationId != "") {
+            status = Status.CREATED;
+            createdAnnotation = dispoApi.getDispoAnnotationById(program, itemId, createdAnnotationId);
+         } else {
+            status = Status.NOT_ACCEPTABLE;
+            createdAnnotation = null;
+         }
          response = Response.status(status).entity(createdAnnotation).build();
       } else {
          status = Status.BAD_REQUEST;
@@ -125,15 +132,15 @@ public class AnnotationResource {
    @Path("{annotationId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation) {
+   public Response putDispoAnnotation(@PathParam("annotationId") String annotationId, DispoAnnotationData newAnnotation, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoAnnotation(program, itemId, annotationId, newAnnotation);
+      boolean wasEdited = dispoApi.editDispoAnnotation(program, itemId, annotationId, newAnnotation, userName);
       if (wasEdited) {
          DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
          response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
 
       } else {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
+         response = Response.status(Response.Status.NOT_MODIFIED).build();
       }
       return response;
    }
@@ -148,14 +155,14 @@ public class AnnotationResource {
     */
    @Path("{annotationId}")
    @DELETE
-   public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId) {
+   public Response deleteDispoAnnotation(@PathParam("annotationId") String annotationId, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoAnnotation(program, itemId, annotationId);
+      boolean wasEdited = dispoApi.deleteDispoAnnotation(program, itemId, annotationId, userName);
       if (wasEdited) {
          DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
          response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
       } else {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
+         response = Response.status(Response.Status.NOT_MODIFIED).build();
       }
       return response;
    }

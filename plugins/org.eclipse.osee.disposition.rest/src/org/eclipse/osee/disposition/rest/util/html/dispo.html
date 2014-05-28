@@ -180,6 +180,21 @@
     }
 </script>
 <script>
+	function showFailures(currentCell) {
+		var currentCellStyle = window.getComputedStyle(currentCell);
+		var wordWrapStyle = currentCellStyle.getPropertyValue('white-space');
+		
+		if(wordWrapStyle == 'nowrap') {
+			 currentCell.style["white-space"] = "normal";
+		} else {
+			 currentCell.style["white-space"] = "nowrap";
+		}
+		
+		var currentCellStyle2 = window.getComputedStyle(currentCell);
+		var wordWrapStyle2 = currentCellStyle2.getPropertyValue('white-space');
+	}
+</script>
+<script>
     function getSetTable(setSelect) {
         var selectedSetIndex = setSelect.selectedIndex;
         var setId = setSelect.options[selectedSetIndex].value;
@@ -212,21 +227,36 @@
         var filterSelectedIndex = statusSelect.selectedIndex;
         var filterValue = statusSelect.options[filterSelectedIndex].value;
 
-        //get(fullPath, setTableStatusHandler, programSelect);
         doFilter();
     }
 </script>
 <script>
     function getPocFiltered() {
-        //first get all available choices
         var filterValue = pocSelect.value;
-
-        //get(fullPath, setTableStatusHandler, programSelect);
         doFilter();
     }
 </script>
 <script>
     function showAnnotations(currentRow) {
+    	   getLatestPoc(currentRow);
+    }
+</script>    
+<script>
+    function getLatestPoc(currentRow) {
+    	  var selectedProgramIndex = programSelect.selectedIndex;
+        var programId = programSelect.options[selectedProgramIndex].value;
+        var selectedSetIndex = setSelect.selectedIndex;
+        var setId = setSelect.options[selectedSetIndex].value;
+        var itemId = currentRow.id;
+        var currentRowIndex = currentRow.rowIndex;
+
+        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
+
+        get(fullPath, getLatestPocStatusHandler, currentRow);
+    }
+</script> 
+<script>
+    function expandAnnotations(currentRow) {
         if (userName == "" || userName === undefined) {
 	          userName = getCookie("disponame");
 	          if(userName === undefined) {
@@ -268,7 +298,12 @@
 <script>
     function changePOC(currentRow, currentAssigned) {
 
-        var confirmSteal = confirm("Are you sure you want to steal this Item from user " + currentAssigned);
+			var confirmSteal;
+		  if(currentAssigned != "UnAssigned") {
+        		confirmSteal = confirm("Are you sure you want to steal this Item from user " + currentAssigned);
+        	} else {
+        		confirmSteal = true;
+        	}
 
         if (confirmSteal) {
             var selectedProgramIndex = programSelect.selectedIndex;
@@ -346,7 +381,7 @@
         var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
         var itemId = itemRow.id;
 
-        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/");
+        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation", "?userName=", userName);
 
         post(fullPath, params, postAnnotationStatusHandler, selectedElement);
     }
@@ -372,7 +407,7 @@
         var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
         var itemId = itemRow.id;
 
-        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId);
+        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId, "?userName=", userName);
 
         put(fullPath, params, putAnnotationStatusHandler, selectedElement);
     }
@@ -391,7 +426,7 @@
 
         var annotationId = button.parentNode.parentNode.id;
 
-        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId);
+        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId, "/annotation/", annotationId, "?userName=", userName);
         doDelete(fullPath, delAnnotationStatusHandler, button);
     }
 </script>
@@ -530,10 +565,8 @@
                 }
                 if (!annotationObject.isResolutionValid) {
                     annotationRow.cells[1].firstChild.className = "annotationInputInvalid";
-                    annotationRow.cells[2].firstChild.className = "annotationInputInvalid";
                 } else {
                     annotationRow.cells[1].firstChild.className = "annotationInput";
-                    annotationRow.cells[2].firstChild.className = "annotationInput";
                 }
             }
         }
@@ -542,62 +575,92 @@
 <script>
     function postAnnotationStatusHandler(annotationCell) {
         return function() {
-            if (this.readyState == 4 && this.status == 201) {
-                var annotationRow = annotationCell.parentNode.parentNode;
-                enableRow(annotationRow);
-                var annotationObject = eval('(' + this.responseText + ')');
-
-                annotationRow.id = annotationObject.id;
-
-                if (!annotationObject.isConnected) {
-                    annotationCell.className = "annotationInputInvalid";
-                }
-                addNewRow(annotationRow);
-
-                var containerRow = annotationRow.parentNode.parentNode.parentNode.parentNode;
-                var containerRowIndex = containerRow.rowIndex;
-                var itemRow = dispoTableBody.rows[containerRowIndex - 2];
-                getItemStatus(itemRow);
-            }
+        		if(this.readyState == 4) {
+        			if(this.status == 201) {
+	                var annotationRow = annotationCell.parentNode.parentNode;
+	                enableRow(annotationRow);
+	                var annotationObject = eval('(' + this.responseText + ')');
+	
+	                annotationRow.id = annotationObject.id;
+	
+	                if (!annotationObject.isConnected) {
+	                    annotationCell.className = "annotationInputInvalid";
+	                }
+	                addNewRow(annotationRow);
+	
+	                var containerRow = annotationRow.parentNode.parentNode.parentNode.parentNode;
+	                var containerRowIndex = containerRow.rowIndex;
+	                var itemRow = dispoTableBody.rows[containerRowIndex - 2];
+	                getItemStatus(itemRow);
+        			} else if(this.status == 304) {
+        				 window.alert("Your entry did not go through, please try refreshing the page. Someone else might be editing this Item.");
+        			} else {
+        			    window.alert("Oops something went wrong. Please refresh your page.");
+        			}
+        		}
         };
     }
 </script>
 <script>
     function putAnnotationStatusHandler(annotationCell) {
         return function() {
-            if (this.readyState == 4 && this.status == 200) {
+        		if(this.readyState == 4) {
+        			if(this.status == 200) {
                 var containerRow = annotationCell.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
                 var containerRowIndex = containerRow.rowIndex;
                 var itemRow = dispoTableBody.rows[containerRowIndex - 2];
 
                 getItemStatus(itemRow);
                 getAnnotation(annotationCell.parentNode.parentNode);
-            }
+                
+        			} else if(this.status == 304) {
+        				 window.alert("Your entry did not go through, please try refreshing the page. Someone else might be editing this Item.");
+        			} else {
+        			    window.alert("Oops something went wrong. Please refresh your page.");
+        			}
+        		}
         };
     }
 </script>
 <script>
     function delAnnotationStatusHandler(buttonEl) {
         return function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var rowToDelete = buttonEl.parentNode.parentNode;
-                var rowToDeleteIndex = rowToDelete.rowIndex;
-                var subTable = rowToDelete.parentNode.parentNode;
-                subTable.deleteRow(rowToDeleteIndex);
-
-                var containerRow = subTable.parentNode.parentNode;
-                var containerRowIndex = containerRow.rowIndex;
-                var itemRow = dispoTableBody.rows[containerRowIndex - 2];
-
-                if (this.responseText == "COMPLETE") {
-                    itemRow.cells[1].className = "itemData";
-                } else {
-                    itemRow.cells[1].className = "itemDataFail";
-                }
-                itemRow.cells[1].innerHTML = this.responseText;
-            }
+        		if(this.readyState == 4) {
+        			if(this.status == 200) {
+	        			 var rowToDelete = buttonEl.parentNode.parentNode;
+	                var rowToDeleteIndex = rowToDelete.rowIndex;
+	                var subTable = rowToDelete.parentNode.parentNode;
+	                subTable.deleteRow(rowToDeleteIndex);
+	
+	                var containerRow = subTable.parentNode.parentNode;
+	                var containerRowIndex = containerRow.rowIndex;
+	                var itemRow = dispoTableBody.rows[containerRowIndex - 2];
+	
+	                if (this.responseText == "COMPLETE") {
+	                    itemRow.cells[1].className = "itemData";
+	                } else {
+	                    itemRow.cells[1].className = "itemDataFail";
+	                }
+	                itemRow.cells[1].innerHTML = this.responseText;
+        			} else if(this.status == 304) {
+        				 window.alert("Your entry did not go through, please try refreshing the page. Someone else might be editing this Item.");
+        			} else {
+        			    window.alert("Oops something went wrong. Please refresh your page.");
+        			}
+        		}
         };
     }
+</script>
+<script>
+    function getLatestPocStatusHandler(itemRow) {
+        return function() {
+            if (this.readyState == 4 && this.status == 200) {
+            	  var itemObject = eval('(' + this.responseText + ')');
+            	  itemRow.cells[5].innerHTML = itemObject.assignee;
+            	  expandAnnotations(itemRow);
+            }        
+        }
+    }	
 </script>
 <script>
     function keyPress(e) {

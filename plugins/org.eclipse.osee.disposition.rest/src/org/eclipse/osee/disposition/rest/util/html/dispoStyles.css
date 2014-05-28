@@ -114,11 +114,6 @@ td {
    background-color: yellow;
 }
 
-.itemData:active {
-	overflow: visible;
-	white-space: pre-line;
-}
-
 input:disabled {
     background-color: #D3DFE0;	
 }
@@ -190,7 +185,7 @@ textarea {
 .annotationInputDetails {
     width:98%;
     height: 200px;
-    background-color: red;
+	background-color: #9AEAF5;
 	overflow: visible;
 	white-space: pre-line;
 }

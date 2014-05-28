@@ -250,7 +250,7 @@
  			   var programId = programSelect.options[selectedProgramIndex].value;
      	  	   
      	  	   var fullPath = path.concat(programId, "/report?primarySet=", setSelectPrimaryId, "&secondarySet=", setSelectSecondaryId);
- 			   window.location.href = fullPath;
+		   window.location.href = fullPath;
      	  }
      </script>
     <script>
@@ -542,8 +542,10 @@
 </script>
 <script>
 	 function getGenerateReportStatusHandler(unusedParam) {
-	 	 return {
-	 	 
+	 	 return function() {
+	 	     if (this.readyState == 4) {
+	 	 			window.location.href = this.responseXML.URL;
+	 	 		}
 	 	 }
 	 }
 </script>
