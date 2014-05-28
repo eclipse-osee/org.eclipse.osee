@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -90,13 +91,18 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsWorkItem workItem, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
-      return AtsClientService.get().getArtifact(workItem).getSoleAttributeValueAsString(attributeType, defaultValue);
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+      String result = defaultValue;
+      Artifact artifact = AtsClientService.get().getArtifact(atsObject);
+      if (artifact != null) {
+         result = artifact.getSoleAttributeValueAsString(attributeType, defaultValue);
+      }
+      return result;
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      AtsClientService.get().getArtifact(workItem).setSoleAttributeValue(attributeType, value);
+   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+      AtsClientService.get().getArtifact(atsObject).setSoleAttributeValue(attributeType, value);
    }
 
    @Override
@@ -150,20 +156,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value, IAtsChangeSet changes) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
       if (changes != null) {
-         changes.setSoleAttributeValue(workItem, attributeType, value);
+         changes.setSoleAttributeValue(atsObject, attributeType, value);
       } else {
-         setSoleAttributeValue(workItem, attributeType, value);
-      }
-   }
-
-   @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
-      if (changes != null) {
-         changes.setSoleAttributeValue(workItem, attributeType, value);
-      } else {
-         setSoleAttributeValue(workItem, attributeType, value);
+         setSoleAttributeValue(atsObject, attributeType, value);
       }
    }
 

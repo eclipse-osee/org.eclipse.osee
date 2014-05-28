@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.impl.internal.util;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.util.ArtifactIdWrapper;
 import org.eclipse.osee.ats.core.util.AttributeIdWrapper;
@@ -49,8 +48,8 @@ public class AtsUtilServer {
       return result;
    }
 
-   public static ArtifactId toArtifactId(IAtsWorkItem workItem) {
-      return new ArtifactIdWrapper(workItem);
+   public static ArtifactId toArtifactId(IAtsObject atsObject) {
+      return new ArtifactIdWrapper(atsObject);
    }
 
    public static AttributeId toAttributeId(IAttribute<?> attr) {

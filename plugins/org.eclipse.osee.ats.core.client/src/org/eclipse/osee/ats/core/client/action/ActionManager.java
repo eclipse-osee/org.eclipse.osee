@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -59,6 +60,8 @@ public class ActionManager {
       ActionArtifact actionArt =
          (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
+      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), actionArt,
+         TeamDefinitions.getTopTeamDefinition());
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {
@@ -121,12 +124,10 @@ public class ActionManager {
 
       TeamWorkFlowArtifact teamArt = null;
       if (guid == null) {
-         teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch());
       } else {
          teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), null,
-               guid);
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), null, guid);
       }
 
       setArtifactIdentifyData(actionArt, teamArt);
@@ -142,6 +143,9 @@ public class ActionManager {
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
       teamArt.setTeamDefinition(teamDef);
+
+      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), teamArt,
+         teamArt.getTeamDefinition());
 
       // If work def id is specified by listener, set as attribute
       if (newActionListener != null) {

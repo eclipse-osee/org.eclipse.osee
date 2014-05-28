@@ -81,6 +81,8 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Workflow Definition Old"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Rule Definition"
+	attribute "ats.Id Prefix"
+	attribute "ats.Id Sequence Name"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
@@ -1312,6 +1314,24 @@ attributeType "ats.Id" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	defaultValue "0"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Id Prefix" extends StringAttribute {
+	uuid 0x1023000000000385
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Id Sequence Name" extends StringAttribute {
+	uuid 0x1024000000000385
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 

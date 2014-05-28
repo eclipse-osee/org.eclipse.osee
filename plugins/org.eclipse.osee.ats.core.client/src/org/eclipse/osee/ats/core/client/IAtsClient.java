@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
@@ -94,4 +95,6 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
    IAtsReviewService getReviewService() throws OseeCoreException;
 
    IAtsUserServiceClient getUserServiceClient();
+
+   ISequenceProvider getSequenceProvider();
 }

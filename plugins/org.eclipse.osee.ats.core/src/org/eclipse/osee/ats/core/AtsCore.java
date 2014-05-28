@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
+import org.eclipse.osee.ats.core.internal.util.AtsUtilService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -55,6 +57,7 @@ public class AtsCore {
    private static IAtsReviewServiceProvider reviewServiceProvider;
    private static AtsWorkStateFactory workStateFactory;
    private static IAtsConfigProvider atsConfigProvider;
+   private static IAtsUtilService utilService;
 
    public void setAtsConfigProvider(IAtsConfigProvider atsConfigProvider) {
       AtsCore.atsConfigProvider = atsConfigProvider;
@@ -96,6 +99,9 @@ public class AtsCore {
       Conditions.checkNotNull(notifyServiceProvider, "IAtsNotificationService");
       Conditions.checkNotNull(branchServiceProvider, "IAtsBranchServiceProvider");
       Conditions.checkNotNull(reviewServiceProvider, "IAtsReviewServiceProvider");
+
+      utilService = new AtsUtilService(attrResolver);
+
       System.out.println("ATS - AtsCore started");
       started = true;
    }
@@ -175,6 +181,10 @@ public class AtsCore {
 
    public static IAtsConfigProvider getAtsConfigProvider() {
       return atsConfigProvider;
+   }
+
+   public static IAtsUtilService getUtilService() {
+      return utilService;
    }
 
 }

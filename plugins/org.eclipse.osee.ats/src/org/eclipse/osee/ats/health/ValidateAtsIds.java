@@ -14,10 +14,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.util.AtsIdProvider;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -110,7 +113,9 @@ public class ValidateAtsIds extends AbstractBlam {
                String atsId = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, "");
                if (!Strings.isValid(atsId) && persist) {
                   log("Not set: " + art.getName() + " artType: " + art.getArtifactTypeName());
-                  atsId = AtsIdProvider.get().getNextId();
+                  atsId =
+                     AtsCore.getUtilService().getNextAtsId(AtsClientService.get().getSequenceProvider(),
+                        getWorkItem(art), getTeamDef(getWorkItem(art)));
                   art.setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
                   art.persist(tx);
                }
@@ -133,4 +138,11 @@ public class ValidateAtsIds extends AbstractBlam {
       }
    }
 
+   private IAtsTeamDefinition getTeamDef(IAtsObject workItem) {
+      return null;
+   }
+
+   private IAtsObject getWorkItem(Artifact art) {
+      return null;
+   }
 }

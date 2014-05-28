@@ -112,12 +112,12 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsWorkItem workItem, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
-      return getArtifact(workItem).getSoleAttributeValue(attributeType, defaultValue).toString();
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
+      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue).toString();
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes)");
@@ -157,13 +157,8 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value, IAtsChangeSet changes) throws OseeCoreException {
-      changes.setSoleAttributeValue(workItem, attributeType, value);
-   }
-
-   @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
-      changes.setSoleAttributeValue(workItem, attributeType, value);
+   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+      changes.setSoleAttributeValue(atsObject, attributeType, value);
    }
 
    @Override

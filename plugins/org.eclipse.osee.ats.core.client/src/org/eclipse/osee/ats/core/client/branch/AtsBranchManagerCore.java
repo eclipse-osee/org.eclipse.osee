@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManag
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -92,7 +93,7 @@ public class AtsBranchManagerCore {
    public static IOseeBranch getWorkingBranch(TeamWorkFlowArtifact teamArt, boolean force) throws OseeCoreException {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) == null;
-      if (notSet || force || (now - idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) > 1000)) {
+      if (AtsUtilCore.isInTest() || notSet || force || (now - idToWorkingBranchCacheUpdated.get(teamArt.getAtsId()) > 1000)) {
          idToWorkingBranchCache.put(
             teamArt.getAtsId(),
             getWorkingBranchExcludeStates(teamArt, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,

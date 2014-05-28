@@ -31,7 +31,8 @@ public class OpenChangeReportByIdActionTest extends AbstractAtsActionRunTest {
       Assert.assertTrue(result.getText(), result.isTrue());
 
       OpenChangeReportByIdAction action = new OpenChangeReportByIdAction();
-      action.setOverrideId(AtsTestUtil.getTeamWf().getAtsId());
+      String atsId = AtsTestUtil.getTeamWf().getAtsId();
+      action.setOverrideId(atsId);
       action.setPend(true);
       return action;
    }

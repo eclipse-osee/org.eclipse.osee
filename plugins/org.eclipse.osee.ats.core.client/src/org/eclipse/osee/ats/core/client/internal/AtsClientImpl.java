@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -53,6 +54,7 @@ import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactRea
 import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
+import org.eclipse.osee.ats.core.client.internal.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
@@ -100,6 +102,7 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsReviewService reviewService;
    private IAttributeResolver attributeResolverService;
    private ITeamWorkflowProviders teamWorkflowProvider;
+   private ISequenceProvider sequenceProvider;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -407,4 +410,13 @@ public class AtsClientImpl implements IAtsClient {
    public IAttributeResolver getAttributeResolver() {
       return attributeResolverService;
    }
+
+   @Override
+   public ISequenceProvider getSequenceProvider() {
+      if (sequenceProvider == null) {
+         sequenceProvider = new AtsSequenceProvider(OseeDatabaseService.getDbService());
+      }
+      return sequenceProvider;
+   }
+
 }

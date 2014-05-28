@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -108,8 +109,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      getTransaction().setSoleAttributeValue(AtsUtilServer.toArtifactId(workItem), attributeType, value);
+   public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+      getTransaction().setSoleAttributeValue(AtsUtilServer.toArtifactId(atsObject), attributeType, value);
    }
 
    @Override

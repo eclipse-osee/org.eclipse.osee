@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -169,6 +170,8 @@ public class PeerToPeerReviewManager {
             AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
                actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
+      IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
+      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef);
       changes.add(peerArt);
       return peerArt;
    }
@@ -188,6 +191,8 @@ public class PeerToPeerReviewManager {
 
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
+         AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
+            teamArt.getParentTeamWorkflow().getTeamDefinition());
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       changes.add(peerToPeerRev);

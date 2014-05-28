@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
@@ -36,9 +37,7 @@ public interface IAttributeResolver {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
 
-   String getSoleAttributeValueAsString(IAtsWorkItem workItem, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
-
-   void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
+   String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
 
    int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
 
@@ -54,9 +53,7 @@ public interface IAttributeResolver {
 
    void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType, IAtsChangeSet changes) throws OseeCoreException;
 
-   void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String reason, IAtsChangeSet changes) throws OseeCoreException;
-
-   void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
 
    void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
 
@@ -67,5 +64,7 @@ public interface IAttributeResolver {
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) throws OseeCoreException;
 
    IAttributeType getAttributeType(String atrributeName);
+
+   void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
 }
