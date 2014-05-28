@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeType;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -127,7 +126,7 @@ public class ExtendedStatusReportJob extends Job {
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
                addTableRow(sb, team);
-               for (TaskArtifact taskArt : team.getTaskArtifacts(TeamState.Implement)) {
+               for (TaskArtifact taskArt : team.getTaskArtifacts()) {
                   addTableRow(sb, taskArt);
                }
             }
