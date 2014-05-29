@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -49,7 +48,7 @@ public final class StateResource {
    private IAtsWorkItem workItem;
    private final String guid;
 
-   public StateResource(IAtsServer atsServer, OrcsApi orcsApi, String guid) {
+   public StateResource(IAtsServer atsServer, String guid) {
       this.atsServer = atsServer;
       this.guid = guid;
    }

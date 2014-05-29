@@ -86,7 +86,7 @@ public final class ActionResource {
     */
    @Path("{id}/state")
    public StateResource transitionAction(@PathParam("id") String guid) throws Exception {
-      return new StateResource(atsServer, orcsApi, guid);
+      return new StateResource(atsServer, guid);
    }
 
    /**

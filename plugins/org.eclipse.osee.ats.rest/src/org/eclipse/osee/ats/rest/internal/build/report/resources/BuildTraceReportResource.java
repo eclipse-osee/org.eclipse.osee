@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.rest.internal.build.report.BuildTraceReport;
 import org.eclipse.osee.ats.rest.internal.build.report.ProgramsAndBuildsTables;
 import org.eclipse.osee.ats.rest.internal.build.report.SourceFileRetriever;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import com.sun.jersey.core.header.ContentDisposition;
@@ -39,6 +40,7 @@ import com.sun.jersey.core.header.ContentDisposition;
 public class BuildTraceReportResource {
 
    private final Log logger;
+   private final IResourceRegistry registry;
    private final OrcsApi orcsApi;
    private final ProgramsAndBuildsTables programsAndBuilds = new ProgramsAndBuildsTables();
    private final BuildTraceReport report = new BuildTraceReport();
@@ -46,8 +48,9 @@ public class BuildTraceReportResource {
 
    public static final String RESOURCE_BASE = "/report/buildTrace";
 
-   public BuildTraceReportResource(Log logger, OrcsApi orcsApi) {
+   public BuildTraceReportResource(Log logger, IResourceRegistry registry, OrcsApi orcsApi) {
       this.logger = logger;
+      this.registry = registry;
       this.orcsApi = orcsApi;
    }
 
@@ -115,7 +118,7 @@ public class BuildTraceReportResource {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            soureFiles.getSourceFile(output, orcsApi.getResourceRegistry(), urlToSource, offline);
+            soureFiles.getSourceFile(output, registry, urlToSource, offline);
          }
       }).build();
    }

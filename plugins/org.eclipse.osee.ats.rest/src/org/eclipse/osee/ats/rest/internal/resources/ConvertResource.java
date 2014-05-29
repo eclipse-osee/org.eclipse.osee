@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.rest.internal.AtsRestTemplateTokens;
 import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.template.engine.PageFactory;
 
 /**
@@ -38,10 +38,10 @@ import org.eclipse.osee.template.engine.PageFactory;
 @Path("convert")
 public final class ConvertResource {
 
-   private final OrcsApi orcsApi;
+   private final IResourceRegistry registry;
 
-   public ConvertResource(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public ConvertResource(IResourceRegistry registry) {
+      this.registry = registry;
    }
 
    /**
@@ -58,7 +58,7 @@ public final class ConvertResource {
             getForm(convert.getName(), "run", "RUN"), AHTML.textToHtml(convert.getDescription())));
       }
       sb.append(AHTML.endMultiColumnTable());
-      return PageFactory.realizePage(orcsApi.getResourceRegistry(), AtsRestTemplateTokens.AtsConvertHtml,
+      return PageFactory.realizePage(registry, AtsRestTemplateTokens.AtsConvertHtml,
          AtsRestTemplateTokens.AtsValuesHtml, "title", "OSEE ATS Convert", "conversionTable", sb.toString());
    }
 
@@ -95,8 +95,8 @@ public final class ConvertResource {
       }
 
       String htmlStr =
-         PageFactory.realizePage(orcsApi.getResourceRegistry(), AtsRestTemplateTokens.SimplePageHtml,
-            AtsRestTemplateTokens.AtsValuesHtml, "title", convertName, "message", results.toString());
+         PageFactory.realizePage(registry, AtsRestTemplateTokens.SimplePageHtml, AtsRestTemplateTokens.AtsValuesHtml,
+            "title", convertName, "message", results.toString());
 
       return Response.status(200).entity(htmlStr).build();
    }

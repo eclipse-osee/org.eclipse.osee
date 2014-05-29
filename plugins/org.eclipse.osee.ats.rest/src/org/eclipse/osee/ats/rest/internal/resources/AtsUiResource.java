@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -34,11 +35,14 @@ import org.eclipse.osee.template.engine.PageFactory;
 /**
  * @author Donald G. Dunne
  */
-@Path("action")
+@Path("/ui/action")
 public final class AtsUiResource {
+
+   private final IResourceRegistry registry;
    private final OrcsApi orcsApi;
 
-   public AtsUiResource(OrcsApi orcsApi) {
+   public AtsUiResource(IResourceRegistry registry, OrcsApi orcsApi) {
+      this.registry = registry;
       this.orcsApi = orcsApi;
    }
 
@@ -58,7 +62,7 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getNewSource() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(orcsApi.getResourceRegistry(), AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
       page.readKeyValuePairs(AtsResourceTokens.AtsNewActionValuesHtml);
       List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
       for (ArtifactReadable ai : getAis()) {
@@ -91,7 +95,7 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getSearch() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(orcsApi.getResourceRegistry(), AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
       return page.realizePage(AtsResourceTokens.AtsSearchHtml);
    }
 
