@@ -100,7 +100,6 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsReviewService reviewService;
    private IAttributeResolver attributeResolverService;
    private ITeamWorkflowProviders teamWorkflowProvider;
-   private static Boolean started = null;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -154,7 +153,6 @@ public class AtsClientImpl implements IAtsClient {
             attributeResolverService);
       branchService = new AtsBranchServiceImpl();
       reviewService = new AtsReviewServiceImpl(this);
-      started = true;
    }
 
    public void stop() {
@@ -178,13 +176,6 @@ public class AtsClientImpl implements IAtsClient {
       teamDefFactory = null;
       versionFactory = null;
 
-      started = false;
-   }
-
-   private static void checkStarted() throws OseeStateException {
-      if (started == null) {
-         throw new OseeStateException("AtsCore did not start");
-      }
    }
 
    @Override
@@ -289,31 +280,26 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException {
-      checkStarted();
       return workDefAdmin;
    }
 
    @Override
    public IAtsConfig getAtsConfig() throws OseeStateException {
-      checkStarted();
       return configProxy;
    }
 
    @Override
    public IAtsVersionAdmin getAtsVersionService() throws OseeStateException {
-      checkStarted();
       return versionService;
    }
 
    @Override
    public IAtsUserServiceClient getUserServiceClient() throws OseeStateException {
-      checkStarted();
       return userServiceClient;
    }
 
    @Override
    public IAtsUserService getUserService() throws OseeStateException {
-      checkStarted();
       return userService;
    }
 
@@ -323,7 +309,6 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    private AtsArtifactConfigCache getConfigCache() throws OseeCoreException {
-      checkStarted();
       return configCacheProvider.get();
    }
 
@@ -390,25 +375,21 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public IAtsWorkItemService getWorkItemService() throws OseeStateException {
-      checkStarted();
       return workItemService;
    }
 
    @Override
    public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
-      checkStarted();
       return earnedValueService;
    }
 
    @Override
    public IAtsWorkItemArtifactService getWorkItemArtifactService() throws OseeStateException {
-      checkStarted();
       return workItemArtifactProvider;
    }
 
    @Override
    public IAtsBranchService getBranchService() throws OseeCoreException {
-      checkStarted();
       return branchService;
    }
 
@@ -419,7 +400,6 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public IAtsReviewService getReviewService() throws OseeCoreException {
-      checkStarted();
       return reviewService;
    }
 

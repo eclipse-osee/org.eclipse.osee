@@ -11,9 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.user;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -39,11 +37,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class AtsUserServiceImpl extends AbstractAtsUserService {
 
    private static OrcsApi orcsApi;
-   private static Map<String, IAtsUser> userIdToAtsUser = new HashMap<String, IAtsUser>(300);
-   private static Map<String, Boolean> userIdToAdmin = new HashMap<String, Boolean>(300);
-   private static Map<String, IAtsUser> nameToAtsUser = new HashMap<String, IAtsUser>(300);
-   private static IAtsUser currentUser = null;
-   private boolean loaded = false;
 
    public static void setOrcsApi(OrcsApi orcsApi) {
       AtsUserServiceImpl.orcsApi = orcsApi;
