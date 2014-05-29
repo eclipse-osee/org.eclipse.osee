@@ -4,6 +4,5 @@
    <service>
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
-   <property name="context.name" type="String" value="oseex"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
 </scr:component>

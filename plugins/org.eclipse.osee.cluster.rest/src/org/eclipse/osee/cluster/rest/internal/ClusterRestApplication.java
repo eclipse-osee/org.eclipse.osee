@@ -12,6 +12,7 @@ package org.eclipse.osee.cluster.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.cluster.ClusterService;
 import org.eclipse.osee.cluster.Member;
@@ -21,6 +22,7 @@ import org.eclipse.osee.cluster.Member;
  * 
  * @author Roberto E. Escobar
  */
+@ApplicationPath("cluster")
 public class ClusterRestApplication extends Application {
 
    private static ClusterService clusterService;

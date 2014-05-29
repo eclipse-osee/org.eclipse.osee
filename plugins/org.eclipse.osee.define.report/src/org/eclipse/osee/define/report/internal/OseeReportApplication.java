@@ -13,6 +13,7 @@ package org.eclipse.osee.define.report.internal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.define.report.OseeDefineResourceTokens;
 import org.eclipse.osee.logger.Log;
@@ -21,6 +22,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Ryan D. Brooks
  */
+@ApplicationPath("osee/define")
 public final class OseeReportApplication extends Application {
    private OrcsApi orcsApi;
    private final Set<Object> singletons = new HashSet<Object>();

@@ -4,6 +4,5 @@
    <service>
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
-   <property name="context.name" type="String" value="cluster"/>
    <reference bind="setClusterService" cardinality="1..1" interface="org.eclipse.osee.cluster.ClusterService" name="ClusterService" policy="static"/>
 </scr:component>

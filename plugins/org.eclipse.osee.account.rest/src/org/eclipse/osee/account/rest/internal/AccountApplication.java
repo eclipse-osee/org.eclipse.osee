@@ -12,12 +12,14 @@ package org.eclipse.osee.account.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.account.admin.AccountAdmin;
 
 /**
  * @author Roberto E. Escobar
  */
+@ApplicationPath("oseex/accounts")
 public class AccountApplication extends Application {
 
    private final Set<Object> singletons = new HashSet<Object>();

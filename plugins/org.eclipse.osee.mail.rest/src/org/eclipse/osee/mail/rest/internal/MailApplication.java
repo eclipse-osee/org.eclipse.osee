@@ -12,12 +12,14 @@ package org.eclipse.osee.mail.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.mail.MailService;
 
 /**
  * @author Roberto E. Escobar
  */
+@ApplicationPath("mail")
 public class MailApplication extends Application {
 
    private static MailService mailService;

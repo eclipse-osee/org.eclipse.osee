@@ -13,7 +13,9 @@ package org.eclipse.osee.jaxrs.server.internal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.ServiceReference;
 
 /**
@@ -23,14 +25,6 @@ public final class RestServiceUtils {
 
    private RestServiceUtils() {
       // Utility class
-   }
-
-   public static String getContextName(ServiceReference<?> reference) {
-      String contextName = (String) reference.getProperty("context.name");
-      if (!isValid(contextName)) {
-         contextName = getComponentName(reference);
-      }
-      return normalize(contextName);
    }
 
    public static String getComponentName(ServiceReference<?> reference) {
@@ -46,16 +40,38 @@ public final class RestServiceUtils {
       }
    }
 
+   public static String getApplicationPath(String componentName, Application application) {
+      String applicationPath = getApplicationPath(application);
+      return Strings.isValid(applicationPath) ? applicationPath : normalize(componentName);
+   }
+
+   public static String getApplicationPath(Application application) {
+      String toReturn = null;
+      Class<? extends Application> clazz = application.getClass();
+      ApplicationPath applicationPath = clazz.getAnnotation(ApplicationPath.class);
+      if (applicationPath != null) {
+         toReturn = normalize(applicationPath.value());
+      }
+      return toReturn;
+   }
+
+   public static boolean hasPath(String value) {
+      String toCheck = value;
+      if (toCheck != null) {
+         toCheck = toCheck.trim();
+      }
+      if (toCheck.startsWith("/")) {
+         toCheck = toCheck.substring(1);
+      }
+      return Strings.isValid(toCheck);
+   }
+
    private static boolean hasResources(Application app) {
       return !isNullOrEmpty(app.getClasses()) || !isNullOrEmpty(app.getSingletons());
    }
 
    private static String normalize(String contextName) {
       return contextName != null && !contextName.startsWith("/") ? "/" + contextName : contextName;
-   }
-
-   private static boolean isValid(String value) {
-      return value != null && value.length() > 0;
    }
 
    private static boolean isNullOrEmpty(Collection<?> collection) {

@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.FutureTask;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -30,6 +31,8 @@ public class RestServletRegistry {
 
    private final ConcurrentHashMap<String, LazyObject<RestServletContainer>> servlets =
       new ConcurrentHashMap<String, LazyObject<RestServletContainer>>();
+   private final ConcurrentHashMap<String, String> componentNameToApplicationPath =
+      new ConcurrentHashMap<String, String>();
 
    private final Log logger;
    private final HttpService httpService;
@@ -44,30 +47,35 @@ public class RestServletRegistry {
 
    public void register(ServiceReference<Application> reference) throws Exception {
       String componentName = RestServiceUtils.getComponentName(reference);
-      String contextName = RestServiceUtils.getContextName(reference);
-
-      LazyObject<RestServletContainer> provider = getProvider(contextName);
-      RestServletContainer container = provider.get();
 
       Bundle bundle = reference.getBundle();
       Application application = bundle.getBundleContext().getService(reference);
+
+      String applicationPath = RestServiceUtils.getApplicationPath(componentName, application);
+
+      LazyObject<RestServletContainer> provider = getProvider(applicationPath);
+      RestServletContainer container = provider.get();
       container.addApplication(componentName, bundle, application);
+
+      componentNameToApplicationPath.put(componentName, applicationPath);
 
       container.reload();
    }
 
    public void deregister(ServiceReference<Application> reference) {
       String componentName = RestServiceUtils.getComponentName(reference);
-      String contextName = RestServiceUtils.getContextName(reference);
 
-      LazyObject<RestServletContainer> provider = getProvider(contextName);
-      RestServletContainer container = provider.get();
+      String applicationPath = componentNameToApplicationPath.remove(componentName);
+      if (Strings.isValid(applicationPath)) {
+         LazyObject<RestServletContainer> provider = getProvider(applicationPath);
+         RestServletContainer container = provider.get();
 
-      container.removeApplication(componentName);
-      if (container.isEmpty()) {
-         removeContainer(provider);
-      } else {
-         container.reload();
+         container.removeApplication(componentName);
+         if (container.isEmpty()) {
+            removeContainer(provider);
+         } else {
+            container.reload();
+         }
       }
    }
 

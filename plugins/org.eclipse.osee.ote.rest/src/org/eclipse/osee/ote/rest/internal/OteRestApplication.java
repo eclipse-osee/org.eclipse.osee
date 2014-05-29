@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 /**
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Application;
  * 
  * @author Roberto E. Escobar
  */
+@ApplicationPath("ote")
 public class OteRestApplication extends Application {
 
    private static OteConfigurationStore store;
@@ -42,7 +44,5 @@ public class OteRestApplication extends Application {
       classes.add(OteBatchesResource.class);
       return classes;
    }
-   
-   
 
 }

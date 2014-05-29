@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.manager.servlet.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 
 /**
- * Get application.wadl at this context to get rest documentation
- * 
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
+@ApplicationPath("oseex")
 public class ServerApplication extends Application {
 
    private final Set<Object> resources = new HashSet<Object>();

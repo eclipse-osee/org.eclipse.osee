@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
@@ -29,6 +30,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author John Misinco
  */
+@ApplicationPath("ats")
 public class AtsApplication extends Application {
 
    private final Set<Object> singletons = new HashSet<Object>();

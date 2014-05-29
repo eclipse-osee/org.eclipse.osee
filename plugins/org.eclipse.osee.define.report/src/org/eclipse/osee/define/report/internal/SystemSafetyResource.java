@@ -27,12 +27,13 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Ryan D. Brooks
  * @author David W. Miller
  */
-@Path("define")
+@Path("/")
 public final class SystemSafetyResource {
    private final OrcsApi orcsApi;
-   private Log logger;
+   private final Log logger;
 
    public SystemSafetyResource(Log logger, OrcsApi orcsApi) {
+      this.logger = logger;
       this.orcsApi = orcsApi;
    }
 

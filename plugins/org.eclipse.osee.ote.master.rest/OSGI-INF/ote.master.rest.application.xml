@@ -4,6 +4,5 @@
    <service>
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
-   <property name="context.name" type="String" value="otemaster"/>
    <reference bind="bindOTELookup" cardinality="1..1" interface="org.eclipse.osee.ote.master.OTELookup" name="OTELookup" policy="static" unbind="unbindOTELookup"/>
 </scr:component>

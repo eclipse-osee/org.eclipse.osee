@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.branch.BranchQueryResource;
@@ -22,6 +23,7 @@ import org.eclipse.osee.orcs.rest.internal.search.types.TypesQueryResource;
  * 
  * @author Roberto E. Escobar
  */
+@ApplicationPath("oseex")
 public class OrcsApplication extends Application {
 
    private final Set<Object> resources = new HashSet<Object>();

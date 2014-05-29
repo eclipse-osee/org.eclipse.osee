@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Ryan D. Brooks
  * @author David W. Miller
  */
-@Path("define/traceability/srstrace")
+@Path("/traceability/srstrace")
 public final class SRSTraceReportResource {
    private final OrcsApi orcsApi;
    private final Map<String, Object> properties;

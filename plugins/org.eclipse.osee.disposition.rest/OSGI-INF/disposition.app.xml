@@ -4,6 +4,5 @@
    <service>
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
-   <property name="context.name" type="String" value="dispo"/>
    <reference bind="setDispoApi" cardinality="1..1" interface="org.eclipse.osee.disposition.rest.DispoApi" name="DispoApi" policy="static"/>
 </scr:component>

@@ -23,6 +23,7 @@ import org.eclipse.osee.jaxrs.ApplicationInfo;
 import org.eclipse.osee.jaxrs.server.internal.ObjectProvider;
 import org.eclipse.osee.jaxrs.server.internal.RestServiceUtils;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
@@ -50,19 +51,23 @@ public class ApplicationsResource {
          String bundleName = headers.get(Constants.BUNDLE_SYMBOLICNAME);
          String bundleVersion = headers.get(Constants.BUNDLE_VERSION);
 
+         BundleContext bundleContext = bundle.getBundleContext();
+
          ServiceReference<?>[] references = bundle.getRegisteredServices();
          for (ServiceReference<?> reference : references) {
             String[] object = (String[]) reference.getProperty("objectClass");
             String clazzType = Arrays.deepToString(object);
             if (clazzType.contains(Application.class.getSimpleName())) {
                String componentName = RestServiceUtils.getComponentName(reference);
-               String contextName = RestServiceUtils.getContextName(reference);
+
+               Application application = (Application) bundleContext.getService(reference);
+               String applicationContext = RestServiceUtils.getApplicationPath(componentName, application);
 
                ApplicationInfo info = new ApplicationInfo();
                info.setBundleName(bundleName);
                info.setVersion(bundleVersion);
                info.setApplicationName(componentName);
-               info.setUri(contextName);
+               info.setUri(applicationContext);
                toReturn.add(info);
             }
 
