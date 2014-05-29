@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.build.report;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,16 +26,12 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author John Misinco
@@ -41,7 +41,6 @@ public class ArchiveCollector {
    private static final String CHANGE_REPORTS_PATH = "/atsData/changeReports/";
 
    private final String serverData = OseeServerProperties.getOseeApplicationServerData(null);
-   private final Client client = Client.create();
    private final Map<String, String> urlToEntryName = new LinkedHashMap<String, String>();
    private final Set<String> pcrIds = new LinkedHashSet<String>();
    private final String supportFilesUrl;
@@ -68,12 +67,14 @@ public class ArchiveCollector {
    }
 
    public void writeArchive(ZipOutputStream zout) {
-      WebResource service = client.resource(supportFilesUrl);
-      ClientResponse response = service.get(ClientResponse.class);
-      if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+      InputStream inputStream = null;
+      try {
+         URL url = new URL(supportFilesUrl);
+         inputStream = new BufferedInputStream(url.openStream());
+
          ZipInputStream zin = null;
          try {
-            zin = new ZipInputStream(response.getEntityInputStream());
+            zin = new ZipInputStream(inputStream);
             ZipEntry entry = null;
             while ((entry = zin.getNextEntry()) != null) {
                zout.putNextEntry(new ZipEntry(AtsElementData.ARCHIVE_SCRIPT_DIR + entry.getName()));
@@ -85,19 +86,29 @@ public class ArchiveCollector {
          } finally {
             Lib.close(zin);
          }
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         Lib.close(inputStream);
       }
 
       for (Entry<String, String> entry : urlToEntryName.entrySet()) {
-         service = client.resource(entry.getKey());
-         response = service.get(ClientResponse.class);
-         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+         try {
+            URL url2 = new URL(entry.getKey());
+
+            InputStream inputStream2 = null;
             try {
+               inputStream2 = new BufferedInputStream(url2.openStream());
                zout.putNextEntry(new ZipEntry(entry.getValue()));
-               Lib.inputStreamToOutputStream(response.getEntityInputStream(), zout);
+               Lib.inputStreamToOutputStream(inputStream2, zout);
                zout.closeEntry();
             } catch (IOException ex) {
                OseeExceptions.wrapAndThrow(ex);
+            } finally {
+               Lib.close(inputStream2);
             }
+         } catch (MalformedURLException ex1) {
+            OseeExceptions.wrapAndThrow(ex1);
          }
       }
 

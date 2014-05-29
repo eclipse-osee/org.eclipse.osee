@@ -9,7 +9,6 @@ Service-Component: OSGI-INF/*.xml
 Import-Package: com.lowagie.text,
  com.lowagie.text.html,
  com.lowagie.text.rtf.table,
- com.sun.jersey.api.client;version="1.18.0",
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,

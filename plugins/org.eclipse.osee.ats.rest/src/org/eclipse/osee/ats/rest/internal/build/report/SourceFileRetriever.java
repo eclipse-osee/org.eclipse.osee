@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.build.report;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
@@ -22,8 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
 import org.eclipse.osee.template.engine.PageFactory;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author John Misinco
@@ -39,10 +40,19 @@ public class SourceFileRetriever {
       Writer writer = null;
       try {
          writer = new OutputStreamWriter(output);
-         Client client = Client.create();
-         WebResource service = client.resource(urlToSource);
 
-         PageFactory.realizePage(registry, template, writer, "fileContents", service.get(String.class));
+         String data;
+         InputStream inputStream = null;
+         try {
+            URL url = new URL(urlToSource);
+            inputStream = new BufferedInputStream(url.openStream());
+            data = Lib.inputStreamToString(inputStream);
+         } catch (IOException ex) {
+            data = Lib.exceptionToString(ex);
+         } finally {
+            Lib.close(inputStream);
+         }
+         PageFactory.realizePage(registry, template, writer, "fileContents", data);
       } finally {
          Lib.close(writer);
       }
