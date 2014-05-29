@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -27,6 +26,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.rest.client.OseeClientProperties;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -50,7 +50,8 @@ public class OseeClientImpl implements OseeClient {
    }
 
    public void start() {
-      serverUri = URI.create(OseeClientProperties.getOseeApplicationServer());
+      String appServer = OseeClientProperties.getApplicationServerAddress();
+      serverUri = URI.create(appServer);
       predicateFactory = new PredicateFactoryImpl();
       executor = new QueryExecutorV1(serverUri, clientProvider);
    }

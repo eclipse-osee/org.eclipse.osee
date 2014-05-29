@@ -26,9 +26,9 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
-import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.rest.client.OseeClientProperties;
 import org.eclipse.osee.rest.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.ClientResponse;
@@ -49,8 +49,8 @@ public class AccountClientImpl implements AccountClient {
    }
 
    public void start() {
-      //
-      serverUri = URI.create(OseeClientProperties.getOseeApplicationServer());
+      String appServer = OseeClientProperties.getApplicationServerAddress();
+      serverUri = URI.create(appServer);
    }
 
    public void stop() {
