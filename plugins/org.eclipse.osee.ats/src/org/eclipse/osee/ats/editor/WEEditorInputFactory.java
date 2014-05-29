@@ -24,7 +24,8 @@ import org.eclipse.ui.IMemento;
 public class WEEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.ats.WEEditorInputFactory"; //$NON-NLS-1$
-   public final static String KEY = "org.eclipse.osee.ats.WEEditorInputFactory.guid"; //$NON-NLS-1$
+   public final static String ART_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.artUuid"; //$NON-NLS-1$
+   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.branchUuid"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WEEditorInputFactory.title"; //$NON-NLS-1$
 
    public WEEditorInputFactory() {
@@ -35,28 +36,29 @@ public class WEEditorInputFactory implements IElementFactory {
     */
    @Override
    public IAdaptable createElement(IMemento memento) {
-      String guid = memento.getString(KEY);
-      String title = memento.getString(TITLE);
-      if (Strings.isValid(guid) && Strings.isValid(title)) {
-         return new SMAEditorInput(guid, title);
+      long branchUuid = 0;
+      if (Strings.isValid(memento.getString(BRANCH_KEY))) {
+         branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
       }
-      return null;
+      Integer artUuid = memento.getInteger(ART_KEY);
+      String title = memento.getString(TITLE);
+      return new SMAEditorInput(branchUuid, artUuid == null ? 0 : artUuid, title);
    }
 
    public static void saveState(IMemento memento, SMAEditorInput input) {
-      String guid = null;
-      String title = null;
+      int artUuid = input.getArtUuid();
+      long branchUuid = input.getBranchUuid();
+      String title = input.getTitle();
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
-         if (input.isReload()) {
-            guid = input.getGuid();
-            title = input.getTitle();
-         } else {
-            guid = input.getArtifact().getGuid();
-            title = ((AbstractWorkflowArtifact) input.getArtifact()).getEditorTitle();
-         }
+         artUuid = input.getArtifact().getArtId();
+         branchUuid = input.getArtifact().getBranchUuid();
+         title = ((AbstractWorkflowArtifact) input.getArtifact()).getEditorTitle();
       }
-      memento.putString(KEY, guid);
-      memento.putString(TITLE, title);
+      if (artUuid > 0 && branchUuid > 0 && Strings.isValid(title)) {
+         memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
+         memento.putInteger(ART_KEY, artUuid);
+         memento.putString(TITLE, title);
+      }
    }
 
 }

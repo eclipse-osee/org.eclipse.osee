@@ -25,8 +25,9 @@ import org.eclipse.ui.IPersistableElement;
 public class SMAEditorInput extends BaseArtifactEditorInput implements IPersistableElement {
 
    private final boolean pend;
-   private String guid;
+   private int artUuid;
    private String title;
+   private long branchUuid;
 
    public SMAEditorInput(Artifact artifact) {
       this(artifact, false);
@@ -37,41 +38,41 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
       this.pend = pend;
    }
 
-   public SMAEditorInput(String guid, String title) {
+   public SMAEditorInput(long branchUuid, int artUuid, String title) {
       this(null);
-      this.guid = guid;
+      this.branchUuid = branchUuid;
+      this.artUuid = artUuid;
       this.title = title;
    }
 
    @Override
-   public boolean equals(Object obj) {
-      boolean result = false;
-      if (obj instanceof SMAEditorInput) {
-         String thisGuid = null;
-         if (this.isReload()) {
-            thisGuid = guid;
-         } else {
-            thisGuid = getArtifact().getGuid();
-         }
-         SMAEditorInput input = (SMAEditorInput) obj;
-         String objGuid = null;
-         if (input.isReload()) {
-            objGuid = input.getGuid();
-         } else {
-            objGuid = input.getArtifact().getGuid();
-         }
-         result = thisGuid.equals(objGuid);
-      }
+   public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + artUuid;
+      result = prime * result + (int) (branchUuid ^ (branchUuid >>> 32));
       return result;
    }
 
    @Override
-   public int hashCode() {
-      if (isReload()) {
-         return guid.hashCode();
-      } else {
-         return getArtifact().hashCode();
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
       }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      SMAEditorInput other = (SMAEditorInput) obj;
+      if (artUuid != other.artUuid) {
+         return false;
+      }
+      if (branchUuid != other.branchUuid) {
+         return false;
+      }
+      return true;
    }
 
    public boolean isReload() {
@@ -97,8 +98,12 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
       return WEEditorInputFactory.ID;
    }
 
-   public String getGuid() {
-      return guid;
+   public int getArtUuid() {
+      return artUuid;
+   }
+
+   public long getBranchUuid() {
+      return branchUuid;
    }
 
    public String getTitle() {

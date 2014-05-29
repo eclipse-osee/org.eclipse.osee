@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
@@ -104,12 +104,12 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
       }
    }
 
-   public List<String> getGuids() {
+   public Collection<Integer> getGuids() {
       if (editor.isReloadTabShown() && (iWorldEditorProvider instanceof WorldEditorReloadProvider)) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
-         return provider.getValidGuids();
+         return provider.getValidArtUuids();
       } else {
-         return Artifacts.toGuids(editor.getLoadedArtifacts());
+         return Artifacts.toIds(editor.getLoadedArtifacts());
       }
    }
 
@@ -128,5 +128,18 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
          reload = worldEditorReloadProvider.isReload();
       }
       return reload;
+   }
+
+   public long getBranchUuid() {
+      long branchUuid = 0;
+      if (editor.isReloadTabShown() && (iWorldEditorProvider instanceof WorldEditorReloadProvider)) {
+         WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
+         branchUuid = provider.getBranchUuid();
+      } else {
+         if (!editor.getLoadedArtifacts().isEmpty()) {
+            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranchUuid();
+         }
+      }
+      return branchUuid;
    }
 }

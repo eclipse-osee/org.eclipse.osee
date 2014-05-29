@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -40,10 +39,14 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
@@ -57,13 +60,15 @@ public class WEReloadTab extends FormPage {
    public final static String ID = "ats.reload.tab";
    private final SMAEditor editor;
    private final String title;
-   private final String guid;
+   private final int artUuid;
+   private final long branchUuid;
 
    public WEReloadTab(SMAEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
-      this.guid = editor.getSMAEditorInput().getGuid();
+      this.artUuid = editor.getSMAEditorInput().getArtUuid();
       this.title = editor.getSMAEditorInput().getTitle();
+      this.branchUuid = editor.getSMAEditorInput().getBranchUuid();
    }
 
    @Override
@@ -78,18 +83,27 @@ public class WEReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         Button reloadButton = new Button(bodyComp, SWT.PUSH);
-         reloadButton.setText("Reload");
-         reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-         final FormPage page = this;
-         reloadButton.addSelectionListener(new SelectionAdapter() {
+         if (AtsUtilCore.getAtsBranch().getUuid() != branchUuid) {
+            Label imageLabel = new Label(bodyComp, SWT.NONE);
+            imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
+            Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+            imageLabel.setImage(image);
+            imageLabel.setBackground(Displays.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+            imageLabel.setText("Saved item not on currently configured ATS Branch.  Unable to reload.");
+         } else {
+            Button reloadButton = new Button(bodyComp, SWT.PUSH);
+            reloadButton.setText("Reload");
+            reloadButton.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
+            final FormPage page = this;
+            reloadButton.addSelectionListener(new SelectionAdapter() {
 
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               loadEditor(page);
-            }
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  loadEditor(page);
+               }
 
-         });
+            });
+         }
 
          FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
       } catch (Exception ex) {
@@ -143,7 +157,7 @@ public class WEReloadTab extends FormPage {
                @Override
                public void run() {
                   if (artifact == null) {
-                     AWorkbench.popup("No valid id to reload.");
+                     AWorkbench.popup("Saved item not valid.  Unable to reload.");
                   } else {
                      ((SMAEditorInput) editor.getEditorInput()).setArtifact(artifact);
                      bodyComp.dispose();
@@ -168,9 +182,9 @@ public class WEReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (GUID.isValid(guid)) {
+         if (artUuid > 0 && branchUuid == AtsUtilCore.getAtsBranch().getUuid()) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
+               artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsUtilCore.getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

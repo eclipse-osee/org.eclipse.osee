@@ -26,7 +26,8 @@ import org.eclipse.ui.IMemento;
 public class WorldEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.ats.WorldEditorInputFactory"; //$NON-NLS-1$
-   public final static String KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.guids"; //$NON-NLS-1$
+   public final static String ART_UUIDS = "org.eclipse.osee.ats.WorldEditorInputFactory.artUuids"; //$NON-NLS-1$
+   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.branchUuid"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WorldEditorInputFactory.title"; //$NON-NLS-1$
 
    public WorldEditorInputFactory() {
@@ -37,24 +38,32 @@ public class WorldEditorInputFactory implements IElementFactory {
     */
    @Override
    public IAdaptable createElement(IMemento memento) {
-      List<String> guids = new ArrayList<String>();
-      for (String guid : memento.getString(KEY).split(",")) {
-         guids.add(guid);
-      }
+      long branchUuid = 0;
+      List<Integer> artUuids = new ArrayList<Integer>();
       String title = memento.getString(TITLE);
-      if (!guids.isEmpty() && Strings.isValid(title)) {
-         return new WorldEditorInput(new WorldEditorReloadProvider(title, guids));
+      try {
+         if (Strings.isValid(memento.getString(BRANCH_KEY))) {
+            branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
+         }
+         for (String artUuid : memento.getString(ART_UUIDS).split(",")) {
+            artUuids.add(Integer.valueOf(artUuid));
+         }
+      } catch (Exception ex) {
+         // do nothing
       }
-      return null;
+      return new WorldEditorInput(new WorldEditorReloadProvider(title, branchUuid, artUuids));
    }
 
    public static void saveState(IMemento memento, WorldEditorInput input) {
-      String guid = null;
-      String title = null;
-      guid = Collections.toString(",", input.getGuids());
-      title = input.getName();
-      memento.putString(KEY, guid);
-      memento.putString(TITLE, title);
+      String title = input.getName();
+      String artUuids = Collections.toString(",", input.getGuids());
+      long branchUuid = input.getBranchUuid();
+
+      if (Strings.isValid(artUuids) && branchUuid > 0 && Strings.isValid(title)) {
+         memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
+         memento.putString(ART_UUIDS, artUuids);
+         memento.putString(TITLE, title);
+      }
    }
 
 }
