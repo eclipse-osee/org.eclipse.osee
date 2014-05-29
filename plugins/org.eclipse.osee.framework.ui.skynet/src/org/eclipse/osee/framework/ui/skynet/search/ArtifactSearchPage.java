@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -42,7 +43,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
@@ -116,6 +119,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          branchSelect.setDisplayLabel(false);
          branchSelect.setSelection(BranchManager.getLastBranch());
          branchSelect.createWidgets(mainComposite, 2);
+         branchSelect.addListener(new BranchSelectListener(branchSelect));
 
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
@@ -131,6 +135,23 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          loadState();
       } else {
          setControl(parent);
+      }
+   }
+
+   private static class BranchSelectListener implements Listener {
+
+      private final XBranchSelectWidget branchSelect;
+
+      public BranchSelectListener(XBranchSelectWidget branchSelect) {
+         this.branchSelect = branchSelect;
+      }
+
+      @Override
+      public void handleEvent(Event event) {
+         IOseeBranch branch = branchSelect.getSelection();
+         if (!isBranchReadable(branch)) {
+            AWorkbench.popup(String.format("Read Access Denied for branch [%s]", branch));
+         }
       }
    }
 
@@ -399,7 +420,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       });
 
       Table table = new Table(composite, SWT.BORDER | SWT.V_SCROLL | SWT.HIDE_SELECTION);
-      filterviewer = new FilterTableViewer(table);
+      filterviewer = new FilterTableViewer(table, this);
       GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
       gridData.heightHint = 100;
       gridData.widthHint = 500;
@@ -472,12 +493,20 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       super.setVisible(visible);
    }
 
-   public static void updateOKStatus() {
-      if (filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
+   public void updateOKStatus() {
+      if (isBranchReadable(getSelectedBranch()) && filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
          getContainer().setPerformActionEnabled(false);
       } else {
          getContainer().setPerformActionEnabled(true);
       }
+   }
+
+   private static boolean isBranchReadable(IOseeBranch branch) {
+      boolean read = false;
+      if (branch != null) {
+         read = AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ);
+      }
+      return read;
    }
 
    private String asString(FilterModel model) {

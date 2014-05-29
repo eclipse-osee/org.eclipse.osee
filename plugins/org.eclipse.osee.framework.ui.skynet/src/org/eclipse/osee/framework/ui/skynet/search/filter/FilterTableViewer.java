@@ -38,12 +38,14 @@ public class FilterTableViewer {
    public static final int SEARCH_NUM = 1;
    public static final int TYPE_NUM = 2;
    public static final int VALUE_NUM = 3;
+   private final ArtifactSearchPage page;
 
    /**
     * @param table -
     */
-   public FilterTableViewer(Table table) {
+   public FilterTableViewer(Table table, ArtifactSearchPage page) {
       this.table = table;
+      this.page = page;
 
       this.createControl();
 
@@ -115,7 +117,7 @@ public class FilterTableViewer {
 
    public void refresh() {
       tableViewer.refresh();
-      ArtifactSearchPage.updateOKStatus();
+      page.updateOKStatus();
    }
 
    /**
