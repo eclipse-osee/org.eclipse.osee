@@ -21,9 +21,9 @@ import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.authorization.admin.AuthorizationRequest;
 import org.eclipse.osee.authorization.admin.AuthorizationRequestBuilder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.rest.admin.internal.SecurityContextProvider;
-import org.eclipse.osee.rest.model.OseeWebApplicationException;
 import com.sun.jersey.api.core.HttpRequestContext;
 
 /**

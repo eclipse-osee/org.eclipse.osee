@@ -67,7 +67,7 @@
 		<module>../../plugins/org.eclipse.osee.display.mvp</module>
 		<module>../../plugins/org.eclipse.osee.display.mvp.test</module>
 
-		<module>../../plugins/org.eclipse.osee.rest.model</module>
+		<module>../../plugins/org.eclipse.osee.jaxrs</module>
 		<module>../../plugins/org.eclipse.osee.rest.admin</module>
 		<module>../../plugins/org.eclipse.osee.rest.admin.test</module>
 		<module>../../plugins/org.eclipse.osee.rest.client</module>

@@ -27,7 +27,7 @@ Import-Package: com.google.common.io,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
- org.eclipse.osee.rest.model,
+ org.eclipse.osee.jaxrs,
  org.osgi.framework,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment

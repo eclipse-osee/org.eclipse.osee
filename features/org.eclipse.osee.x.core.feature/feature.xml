@@ -159,7 +159,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.rest.model"
+         id="org.eclipse.osee.jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"

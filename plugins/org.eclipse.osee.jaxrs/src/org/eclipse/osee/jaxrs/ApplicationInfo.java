@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.model;
+package org.eclipse.osee.jaxrs;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,14 +21,14 @@ public class ApplicationInfo {
    private String bundleName;
    private String version;
    private String applicationName;
-   private String context;
+   private String uri;
 
-   public String getContext() {
-      return context;
+   public String getUri() {
+      return uri;
    }
 
-   public void setContext(String context) {
-      this.context = context;
+   public void setUri(String uri) {
+      this.uri = uri;
    }
 
    public String getApplicationName() {

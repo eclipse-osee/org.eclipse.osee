@@ -12,8 +12,8 @@ package org.eclipse.osee.rest.admin.internal.filters;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.jaxrs.NoSecurityFilter;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.rest.model.NoSecurityFilter;
 import com.sun.jersey.api.container.filter.servlet.RolesAllowedResourceFilterFactory;
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.spi.container.ResourceFilter;

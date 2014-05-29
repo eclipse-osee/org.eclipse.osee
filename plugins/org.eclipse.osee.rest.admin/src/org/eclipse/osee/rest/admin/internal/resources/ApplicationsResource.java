@@ -19,9 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.jaxrs.ApplicationInfo;
 import org.eclipse.osee.rest.admin.internal.ObjectProvider;
 import org.eclipse.osee.rest.admin.internal.RestServiceUtils;
-import org.eclipse.osee.rest.model.ApplicationInfo;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -62,7 +62,7 @@ public class ApplicationsResource {
                info.setBundleName(bundleName);
                info.setVersion(bundleVersion);
                info.setApplicationName(componentName);
-               info.setContext(contextName);
+               info.setUri(contextName);
                toReturn.add(info);
             }
 

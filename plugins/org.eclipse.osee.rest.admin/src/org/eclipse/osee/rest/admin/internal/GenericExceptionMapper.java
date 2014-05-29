@@ -16,9 +16,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import org.eclipse.osee.jaxrs.ErrorResponse;
+import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.rest.model.ErrorResponse;
-import org.eclipse.osee.rest.model.OseeWebApplicationException;
 
 /**
  * @author Roberto E. Escobar
