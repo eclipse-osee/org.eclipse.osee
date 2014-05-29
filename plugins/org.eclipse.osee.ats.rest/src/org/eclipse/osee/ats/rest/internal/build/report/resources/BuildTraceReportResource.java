@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.rest.internal.build.report.SourceFileRetriever;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import com.sun.jersey.core.header.ContentDisposition;
 
 /**
  * @author John Misinco
@@ -97,9 +96,8 @@ public class BuildTraceReportResource {
    @Produces("application/zip")
    public Response getBuildArchive(@PathParam("programId") final String programId, @PathParam("buildId") final String buildId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName, @DefaultValue("UNKNOWN") @QueryParam("build") final String buildName, @Context final UriInfo uriInfo) {
       final String fileName = programName + "_" + buildName;
-      ContentDisposition contentDisposition =
-         ContentDisposition.type("attachment").fileName(fileName + ".zip").creationDate(new Date()).build();
-
+      final String contentDisposition =
+         String.format("attachment; filename=\"%s.zip\"; creation-date=%s", fileName, new Date());
       return Response.ok(new StreamingOutput() {
 
          @Override
