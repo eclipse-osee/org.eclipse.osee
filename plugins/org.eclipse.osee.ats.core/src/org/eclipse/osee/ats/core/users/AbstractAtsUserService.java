@@ -33,9 +33,19 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected final Map<String, Boolean> userIdToAdmin = new HashMap<String, Boolean>(300);
    protected final Map<String, IAtsUser> nameToAtsUser = new HashMap<String, IAtsUser>(300);
    protected IAtsUser currentUser = null;
+   protected String currentUserId = null;
    protected boolean loaded = false;
 
    protected abstract void ensureLoaded();
+
+   @Override
+   public IAtsUser getCurrentUser() throws OseeCoreException {
+      ensureLoaded();
+      if (currentUser == null) {
+         currentUser = getUserById(getCurrentUserId());
+      }
+      return currentUser;
+   }
 
    @Override
    public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {

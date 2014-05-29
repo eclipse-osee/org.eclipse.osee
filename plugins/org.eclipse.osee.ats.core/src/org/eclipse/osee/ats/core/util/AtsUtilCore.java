@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.AttributeId;
 
@@ -27,12 +30,23 @@ public class AtsUtilCore {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    private static IOseeBranch commonBranch = null;
 
-   public static IOseeBranch getAtsBranch() {
+   public synchronized static IOseeBranch getAtsBranch() {
       if (commonBranch == null) {
-         if (Strings.isValid(System.getProperty("ats.branch"))) {
-            commonBranch = TokenFactory.createBranch(Long.valueOf(System.getProperty("ats.branch")), "ATS Branch");
-         } else {
-            commonBranch = CoreBranches.COMMON;
+         commonBranch = CoreBranches.COMMON;
+         String atsBranchUuid = System.getProperty("ats.branch");
+         if (Strings.isValid(atsBranchUuid)) {
+            try {
+               Long branchUuid = Long.valueOf(atsBranchUuid);
+               boolean hasPermission = AtsCoreService.getUserService().currentUserHasAccessToAtsBranch(branchUuid);
+               if (!hasPermission) {
+                  OseeLog.logf(AtsUtilCore.class, Level.SEVERE,
+                     "User configured for ATS Branch %s, but has no read access; falling back to Common", atsBranchUuid);
+               } else {
+                  commonBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processisng ATS Branch config permissions", ex);
+            }
          }
       }
       return commonBranch;

@@ -24,6 +24,8 @@ public interface IAtsUserService {
 
    IAtsUser getCurrentUser() throws OseeCoreException;
 
+   String getCurrentUserId() throws OseeCoreException;
+
    IAtsUser getUserById(String userId) throws OseeCoreException;
 
    boolean isUserIdValid(String userId) throws OseeCoreException;
@@ -41,5 +43,7 @@ public interface IAtsUserService {
    List<IAtsUser> getUsersSortedByName(Active active);
 
    void clearCache();
+
+   boolean currentUserHasAccessToAtsBranch(Long branchUuid);
 
 }
