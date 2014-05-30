@@ -21,12 +21,14 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
@@ -34,6 +36,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
@@ -43,6 +48,7 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
+import org.eclipse.osee.ats.core.client.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQuery;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
@@ -63,10 +69,12 @@ import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AtsBranchServiceImpl;
+import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
+import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
@@ -83,6 +91,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AtsClientImpl implements IAtsClient {
 
+   private IAtsStateFactory stateFactory;
    private IAtsWorkDefinitionService workDefService;
    private IAtsWorkItemArtifactService workItemArtifactProvider;
    private final AtsConfigProxy configProxy = new AtsConfigProxy();
@@ -103,6 +112,11 @@ public class AtsClientImpl implements IAtsClient {
    private IAttributeResolver attributeResolverService;
    private ITeamWorkflowProviders teamWorkflowProvider;
    private ISequenceProvider sequenceProvider;
+   private IAtsWorkStateFactory workStateFactory;
+   private IAtsLogFactory logFactory;
+   private IAtsNotificationService notificationService;
+   private IAtsColumnUtilities columnUtilities;
+   private IAtsUtilService utilService;
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -417,6 +431,54 @@ public class AtsClientImpl implements IAtsClient {
          sequenceProvider = new AtsSequenceProvider(OseeDatabaseService.getDbService());
       }
       return sequenceProvider;
+   }
+
+   @Override
+   public IAtsStateFactory getStateFactory() {
+      if (stateFactory == null) {
+         stateFactory = AtsCoreFactory.newStateFactory(getAttributeResolver(), getUserService(), getNotifyService());
+      }
+      return stateFactory;
+   }
+
+   @Override
+   public IAtsWorkStateFactory getWorkStateFactory() {
+      if (workStateFactory == null) {
+         workStateFactory = AtsCoreFactory.getWorkStateFactory(getUserService());
+      }
+      return workStateFactory;
+   }
+
+   @Override
+   public IAtsLogFactory getLogFactory() {
+      if (logFactory == null) {
+         logFactory = AtsCoreFactory.getLogFactory();
+      }
+      return logFactory;
+   }
+
+   @Override
+   public IAtsNotificationService getNotifyService() {
+      if (notificationService == null) {
+         notificationService = new AtsNotificationServiceImpl();
+      }
+      return notificationService;
+   }
+
+   @Override
+   public IAtsColumnUtilities getColumnUtilities() {
+      if (columnUtilities == null) {
+         columnUtilities = AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService());
+      }
+      return columnUtilities;
+   }
+
+   @Override
+   public IAtsUtilService getUtilService() {
+      if (utilService == null) {
+         utilService = AtsCoreFactory.getUtilService(getAttributeResolver());
+      }
+      return utilService;
    }
 
 }

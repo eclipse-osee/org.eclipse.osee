@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -114,7 +113,7 @@ public class ValidateAtsIds extends AbstractBlam {
                if (!Strings.isValid(atsId) && persist) {
                   log("Not set: " + art.getName() + " artType: " + art.getArtifactTypeName());
                   atsId =
-                     AtsCore.getUtilService().getNextAtsId(AtsClientService.get().getSequenceProvider(),
+                     AtsClientService.get().getUtilService().getNextAtsId(AtsClientService.get().getSequenceProvider(),
                         getWorkItem(art), getTeamDef(getWorkItem(art)));
                   art.setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
                   art.persist(tx);

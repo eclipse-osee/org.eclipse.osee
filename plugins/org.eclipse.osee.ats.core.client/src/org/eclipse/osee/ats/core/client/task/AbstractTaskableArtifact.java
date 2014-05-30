@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -113,7 +112,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       taskArt.initializeNewStateMachine(assignees, new Date(),
          (createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy), changes);
 
-      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), taskArt,
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), taskArt,
          getParentTeamWorkflow().getTeamDefinition());
 
       // Set parent state task is related to if set

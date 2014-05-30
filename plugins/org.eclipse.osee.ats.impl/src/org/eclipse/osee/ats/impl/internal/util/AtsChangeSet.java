@@ -16,9 +16,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -71,7 +71,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                atsServer.getStateFactory().writeToStore(workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               atsServer.getLogFactory().writeToStore(workItem, AtsCore.getAttrResolver(), this);
+               atsServer.getLogFactory().writeToStore(workItem, AtsServerService.get().getAttributeResolver(), this);
             }
          }
       }

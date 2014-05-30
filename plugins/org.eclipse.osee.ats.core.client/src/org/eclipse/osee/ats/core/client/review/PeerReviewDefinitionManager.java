@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -69,7 +68,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          peerArt.getStateMgr().setAssignees(assignees);
       }
       peerArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", peerRevDef.getName()),
-         AtsCore.getUserService().getCurrentUser().getUserId());
+         AtsClientService.get().getUserService().getCurrentUser().getUserId());
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(peerArt);
       }

@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
@@ -124,7 +123,7 @@ public class PeerToPeerReviewManager {
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsCore.getUserService().getCurrentUser());
+         true, AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -144,7 +143,7 @@ public class PeerToPeerReviewManager {
          defectManager.saveToArtifact(reviewArt);
       }
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsCore.getUserService().getCurrentUser());
+         true, AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -171,7 +170,7 @@ public class PeerToPeerReviewManager {
                actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef);
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef);
       changes.add(peerArt);
       return peerArt;
    }
@@ -191,7 +190,7 @@ public class PeerToPeerReviewManager {
 
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
-         AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
+         AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
             teamArt.getParentTeamWorkflow().getTeamDefinition());
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());

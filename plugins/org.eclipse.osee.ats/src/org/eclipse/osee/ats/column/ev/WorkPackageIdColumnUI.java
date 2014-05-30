@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.column.ev;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
 
@@ -28,7 +28,8 @@ public class WorkPackageIdColumnUI extends AbstractWorkPackageRelatedColumnUI {
 
    private WorkPackageIdColumnUI() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageId", "Work Package Id", 80, SWT.LEFT, false,
-         SortDataType.String, true, AtsCore.getColumnUtilities().getWorkPackageIdUtility().getDescription());
+         SortDataType.String, true,
+         AtsClientService.get().getColumnUtilities().getWorkPackageIdUtility().getDescription());
    }
 
    /**
@@ -44,6 +45,6 @@ public class WorkPackageIdColumnUI extends AbstractWorkPackageRelatedColumnUI {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return AtsCore.getColumnUtilities().getWorkPackageIdUtility().getColumnText(element);
+      return AtsClientService.get().getColumnUtilities().getWorkPackageIdUtility().getColumnText(element);
    }
 }

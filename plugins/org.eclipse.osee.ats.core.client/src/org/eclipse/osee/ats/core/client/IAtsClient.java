@@ -16,11 +16,13 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
+import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
@@ -29,9 +31,13 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -97,4 +103,17 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
    IAtsUserServiceClient getUserServiceClient();
 
    ISequenceProvider getSequenceProvider();
+
+   IAtsStateFactory getStateFactory();
+
+   IAtsWorkStateFactory getWorkStateFactory();
+
+   IAtsLogFactory getLogFactory();
+
+   IAtsNotificationService getNotifyService();
+
+   IAtsColumnUtilities getColumnUtilities();
+
+   IAtsUtilService getUtilService();
+
 }

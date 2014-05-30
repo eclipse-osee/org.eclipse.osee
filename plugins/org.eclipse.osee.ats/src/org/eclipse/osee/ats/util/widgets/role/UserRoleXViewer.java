@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -244,7 +243,7 @@ public class UserRoleXViewer extends XViewer {
             UserListDialog ld =
                new UserListDialog(Displays.getActiveShell(), "Select New User",
                   AtsClientService.get().getUserServiceClient().getOseeUsers(
-                     AtsCore.getUserService().getUsers(Active.Active)));
+                     AtsClientService.get().getUserService().getUsers(Active.Active)));
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());

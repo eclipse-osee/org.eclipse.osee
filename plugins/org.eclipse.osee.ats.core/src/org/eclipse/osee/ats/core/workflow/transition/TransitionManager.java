@@ -42,8 +42,8 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -138,7 +138,7 @@ public class TransitionManager implements IAtsTransitionManager {
                   String errStr =
                      String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
                         toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
-                  OseeLog.log(AtsCore.class, Level.SEVERE, errStr);
+                  OseeLog.log(AtsCoreService.class, Level.SEVERE, errStr);
                   results.addResult(workItem, new TransitionResult(errStr));
                   continue;
                }

@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -180,7 +180,7 @@ public class SMAPromptChangeStatusTest {
             0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
-            WorkState state = AtsCore.getWorkStateFactory().fromStoreStr(xml);
+            WorkState state = AtsClientService.get().getWorkStateFactory().fromStoreStr(xml);
             boolean isCompletedCancelledState = isCompletedCancelledState(awa, state.getName());
             if (isCompletedCancelledState) {
                assertTrue("completed/cancelled ats.State [" + xml + "] wrong " + awa.getAtsId(), xml.endsWith(";;;"));

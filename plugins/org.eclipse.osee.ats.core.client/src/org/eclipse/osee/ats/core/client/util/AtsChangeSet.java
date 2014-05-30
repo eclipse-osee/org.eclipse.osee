@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
@@ -57,11 +56,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             if (workItem.getStateMgr().isDirty()) {
-               AtsCore.getStateFactory().writeToStore(workItem, this);
+               AtsClientService.get().getStateFactory().writeToStore(workItem, this);
                ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
             if (workItem.getLog().isDirty()) {
-               AtsCore.getLogFactory().writeToStore(workItem, AtsClientService.get().getAttributeResolver(), this);
+               AtsClientService.get().getLogFactory().writeToStore(workItem,
+                  AtsClientService.get().getAttributeResolver(), this);
                ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
          } else if (obj instanceof IAtsConfigObject) {

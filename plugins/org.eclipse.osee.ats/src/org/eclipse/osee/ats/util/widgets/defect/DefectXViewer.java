@@ -24,7 +24,6 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange.Option;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Disposition;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
@@ -484,10 +483,9 @@ public class DefectXViewer extends XViewer {
 
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) throws OseeCoreException {
       UserListDialog ld =
-         new UserListDialog(
-            Displays.getActiveShell(),
-            "Select New User",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
+         new UserListDialog(Displays.getActiveShell(), "Select New User",
+            AtsClientService.get().getUserServiceClient().getOseeUsers(
+               AtsClientService.get().getUserService().getUsers(Active.Active)));
       int result = ld.open();
       if (result == 0) {
          modified = setUser(defectItems, ld.getSelection());

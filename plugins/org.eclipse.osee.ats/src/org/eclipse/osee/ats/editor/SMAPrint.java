@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.DeadlineColumn;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -83,7 +82,7 @@ public class SMAPrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsCore.getColumnUtilities().getTeamUtility().getColumnText(sma)),
+            AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.instance.getAssigneeStr(sma)),
          //
@@ -118,7 +117,7 @@ public class SMAPrint extends Action {
       }
       resultData.addRaw(AHTML.newline());
       resultData.addRaw(AtsLogUtility.getHtml(sma.getLog(),
-         AtsCore.getLogFactory().getLogProvider(sma, AtsClientService.get().getAttributeResolver())));
+         AtsClientService.get().getLogFactory().getLogProvider(sma, AtsClientService.get().getAttributeResolver())));
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));

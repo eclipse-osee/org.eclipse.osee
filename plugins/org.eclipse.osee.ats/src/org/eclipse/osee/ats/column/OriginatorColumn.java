@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -112,10 +111,9 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
 
    public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       UserListDialog ld =
-         new UserListDialog(
-            Displays.getActiveShell(),
-            "Select New Originator",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
+         new UserListDialog(Displays.getActiveShell(), "Select New Originator",
+            AtsClientService.get().getUserServiceClient().getOseeUsers(
+               AtsClientService.get().getUserService().getUsers(Active.Active)));
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());

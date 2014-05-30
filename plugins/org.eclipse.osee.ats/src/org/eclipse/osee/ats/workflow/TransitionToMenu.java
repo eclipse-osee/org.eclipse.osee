@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
@@ -171,7 +170,7 @@ public class TransitionToMenu {
                         if (dialogResult == 0) {
                            try {
                               SMAPromptChangeStatus.performChangeStatus(workItems, null, data.getAdditionalHours(),
-                              data.getPercent(), data.isSplitHoursBetweenItems(), changes);
+                                 data.getPercent(), data.isSplitHoursBetweenItems(), changes);
                            } catch (OseeCoreException ex) {
                               OseeLog.log(Activator.class, Level.SEVERE, ex);
                               result.set(false);
@@ -253,7 +252,7 @@ public class TransitionToMenu {
          @Override
          public Collection<ITransitionListener> getTransitionListeners() {
             try {
-               return AtsCore.getWorkItemService().getTransitionListeners();
+               return AtsClientService.get().getWorkItemService().getTransitionListeners();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -351,7 +350,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             artifact.reloadAttributesAndRelations();
             if (artifact instanceof IAtsWorkItem) {
-               AtsCore.getStateFactory().load((IAtsWorkItem) artifact, getStateMgr());
+               AtsClientService.get().getStateFactory().load((IAtsWorkItem) artifact, getStateMgr());
             }
          }
       } catch (Exception ex) {
@@ -402,7 +401,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsLog getLog() {
       if (atsLog == null || atsLogTransactionNumber != getTransactionNumber()) {
-         atsLog = AtsCore.getLogFactory().getLogLoaded(this, AtsClientService.get().getAttributeResolver());
+         atsLog =
+            AtsClientService.get().getLogFactory().getLogLoaded(this, AtsClientService.get().getAttributeResolver());
          atsLogTransactionNumber = getTransactionNumber();
       }
       return atsLog;
@@ -672,7 +672,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public IAtsStateManager getStateMgr() {
       if (stateMgr == null || stateMgrTransactionNumber != getTransactionNumber()) {
          try {
-            stateMgr = AtsCore.getStateFactory().getStateManager(this, isInDb());
+            stateMgr = AtsClientService.get().getStateFactory().getStateManager(this, isInDb());
             stateMgrTransactionNumber = getTransactionNumber();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

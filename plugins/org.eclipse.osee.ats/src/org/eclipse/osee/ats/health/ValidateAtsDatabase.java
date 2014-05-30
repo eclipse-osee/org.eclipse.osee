@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
@@ -318,8 +317,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (stateDef.getStateType() == StateType.Working) {
                         awa.setSoleAttributeFromString(AtsAttributeTypes.CurrentStateType, StateType.Working.name());
                         AtsChangeSet changes = new AtsChangeSet(ValidateAtsDatabase.class.getSimpleName());
-                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes, AtsCore.getAttrResolver());
-                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes, AtsCore.getAttrResolver());
+                        TransitionManager.logWorkflowUnCompletedEvent(awa, stateDef, changes,
+                           AtsClientService.get().getAttributeResolver());
+                        TransitionManager.logWorkflowUnCancelledEvent(awa, stateDef, changes,
+                           AtsClientService.get().getAttributeResolver());
                         awa.persist(transaction);
                         results.log(artifact, "testCompletedCancelledStateAttributesSet", "FIXED");
                      } else {
@@ -1206,8 +1207,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      }
                   }
                   // Generate html log which will exercise all the conversions
-                  AtsLogUtility.getHtml(awa.getLog(),
-                     AtsCore.getLogFactory().getLogProvider(awa, AtsCore.getAttrResolver()), true);
+                  AtsLogUtility.getHtml(
+                     awa.getLog(),
+                     AtsClientService.get().getLogFactory().getLogProvider(awa,
+                        AtsClientService.get().getAttributeResolver()), true);
                   // Verify that all users are resolved
                   for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
                      if (logItem.getUserId() == null) {

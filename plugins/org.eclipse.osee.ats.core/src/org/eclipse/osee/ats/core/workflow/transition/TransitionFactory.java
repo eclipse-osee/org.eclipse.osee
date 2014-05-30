@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 
 /**
  * @author Donald G. Dunne
@@ -25,13 +25,13 @@ import org.eclipse.osee.ats.core.AtsCore;
 public class TransitionFactory {
 
    public static IAtsTransitionManager getTransitionManager(ITransitionHelper helper) {
-      return getTransitionManager(helper, AtsCore.getUserService(), AtsCore.getReviewService(),
-         AtsCore.getWorkItemService(), AtsCore.getWorkDefService(), AtsCore.getAttrResolver());
+      return getTransitionManager(helper, AtsCoreService.getUserService(), AtsCoreService.getReviewService(),
+         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttrResolver());
    }
 
    public static IAtsTransitionManager getTransitionManager(ITransitionHelper helper, IAtsUserService userService, IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefService, IAttributeResolver attrResolver) {
-      return new TransitionManager(helper, AtsCore.getUserService(), AtsCore.getReviewService(),
-         AtsCore.getWorkItemService(), AtsCore.getWorkDefService(), AtsCore.getAttrResolver());
+      return new TransitionManager(helper, AtsCoreService.getUserService(), AtsCoreService.getReviewService(),
+         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttrResolver());
    }
 
 }

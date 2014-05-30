@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -75,7 +74,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return AtsCore.getColumnUtilities().getActivityIdUtility().getColumnText(element);
+      return AtsClientService.get().getColumnUtilities().getActivityIdUtility().getColumnText(element);
    }
 
    @Override

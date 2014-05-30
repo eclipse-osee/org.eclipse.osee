@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -111,7 +110,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
       UserListDialog ld =
          new UserListDialog(Displays.getActiveShell(), "Select User",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(AtsCore.getUserService().getUsers(active)));
+            AtsClientService.get().getUserServiceClient().getOseeUsers(
+               AtsClientService.get().getUserService().getUsers(active)));
       int result = ld.open();
       if (result == 0) {
          selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());

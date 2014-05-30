@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -110,7 +110,7 @@ public class ValidateReviewManager {
    public static String getValidateReviewFollowupUsersStr(TeamWorkFlowArtifact teamArt) {
       try {
          Collection<IAtsUser> users = getValidateReviewFollowupUsers(teamArt);
-         return AtsCore.getWorkStateFactory().getStorageString(users);
+         return AtsClientService.get().getWorkStateFactory().getStorageString(users);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();

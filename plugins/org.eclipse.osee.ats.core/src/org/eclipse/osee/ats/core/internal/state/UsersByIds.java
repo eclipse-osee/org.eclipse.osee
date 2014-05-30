@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -48,10 +48,10 @@ public class UsersByIds {
             throw new IllegalArgumentException("Blank userId specified.");
          }
          try {
-            IAtsUser u = AtsCore.getUserService().getUserById(m.group(1));
+            IAtsUser u = AtsCoreService.getUserService().getUserById(m.group(1));
             users.add(u);
          } catch (Exception ex) {
-            OseeLog.log(AtsCore.class, Level.SEVERE, ex);
+            OseeLog.log(AtsCoreService.class, Level.SEVERE, ex);
          }
       }
       return users;

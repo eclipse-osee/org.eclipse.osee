@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -286,7 +285,7 @@ public class WETransitionComposite extends Composite {
          @Override
          public Collection<ITransitionListener> getTransitionListeners() {
             try {
-               return AtsCore.getWorkItemService().getTransitionListeners();
+               return AtsClientService.get().getWorkItemService().getTransitionListeners();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -341,7 +340,7 @@ public class WETransitionComposite extends Composite {
          }
       }
       awa.getStateMgr().updateMetrics(awa.getStateDefinition(), additionalHours, percent, true,
-         AtsCore.getUserService().getCurrentUser());
+         AtsClientService.get().getUserService().getCurrentUser());
       changes.add(awa);
       return true;
    }
@@ -427,7 +426,8 @@ public class WETransitionComposite extends Composite {
       }
       IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
       UserCheckTreeDialog uld =
-         new UserCheckTreeDialog(userServiceClient.getOseeUsers(AtsCore.getUserService().getUsers(Active.Active)));
+         new UserCheckTreeDialog(userServiceClient.getOseeUsers(AtsClientService.get().getUserService().getUsers(
+            Active.Active)));
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(userServiceClient.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {

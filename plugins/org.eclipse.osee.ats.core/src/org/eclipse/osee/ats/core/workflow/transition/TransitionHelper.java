@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -57,8 +57,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
-      this(name, workItems, toStateName, toAssignees, cancellationReason, changes, AtsCore.getWorkItemService(),
-         AtsCore.getUserService(), AtsCore.getBranchService(), transitionOption);
+      this(name, workItems, toStateName, toAssignees, cancellationReason, changes, AtsCoreService.getWorkItemService(),
+         AtsCoreService.getUserService(), AtsCoreService.getBranchService(), transitionOption);
    }
 
    @Override

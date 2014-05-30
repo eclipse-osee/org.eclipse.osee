@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -82,7 +82,7 @@ public class TeamDefinitions {
    }
 
    public static List<IAtsTeamDefinition> getTeamDefinitions(Active active) throws OseeCoreException {
-      return Collections.castAll(getActive(AtsCore.getAtsConfig().get(IAtsTeamDefinition.class), active));
+      return Collections.castAll(getActive(AtsCoreService.getAtsConfig().get(IAtsTeamDefinition.class), active));
    }
 
    public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -94,7 +94,7 @@ public class TeamDefinitions {
    }
 
    public static IAtsTeamDefinition getTopTeamDefinition() throws OseeCoreException {
-      return AtsCore.getAtsConfig().getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
+      return AtsCoreService.getAtsConfig().getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
@@ -132,7 +132,7 @@ public class TeamDefinitions {
 
    public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsCore.getAtsConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : AtsCoreService.getAtsConfig().get(IAtsTeamDefinition.class)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
          }
@@ -142,7 +142,7 @@ public class TeamDefinitions {
 
    public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsCore.getAtsConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : AtsCoreService.getAtsConfig().get(IAtsTeamDefinition.class)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
          }

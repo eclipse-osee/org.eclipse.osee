@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
@@ -46,6 +46,6 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return AtsCore.getColumnUtilities().getTeamUtility().getColumnText(element);
+      return AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText(element);
    }
 }

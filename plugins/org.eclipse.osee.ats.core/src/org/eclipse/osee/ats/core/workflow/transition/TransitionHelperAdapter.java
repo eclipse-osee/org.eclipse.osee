@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -35,7 +35,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    public TransitionHelperAdapter() {
-      this(AtsCore.getUserService(), AtsCore.getBranchService());
+      this(AtsCoreService.getUserService(), AtsCoreService.getBranchService());
    }
    IAtsUser transitionUser;
 

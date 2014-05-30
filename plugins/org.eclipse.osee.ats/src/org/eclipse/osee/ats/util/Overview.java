@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -254,8 +254,10 @@ public class Overview {
    public void addLog(AbstractWorkflowArtifact artifact) throws OseeCoreException {
       IAtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
-         AtsLogUtility.getTable(artifactLog,
-            AtsCore.getLogFactory().getLogProvider(artifact, AtsCore.getAttrResolver()));
+         AtsLogUtility.getTable(
+            artifactLog,
+            AtsClientService.get().getLogFactory().getLogProvider(artifact,
+               AtsClientService.get().getAttributeResolver()));
       }
    }
 

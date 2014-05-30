@@ -30,8 +30,8 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.internal.Activator;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -110,7 +110,7 @@ public class StateManager implements IAtsStateManager {
          setHoursSpent(state.getName(), remaining);
       }
 
-      if (AtsCore.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+      if (AtsCoreService.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
          setPercentComplete(state.getName(), percentComplete);
       } else {
          this.percentCompleteValue = percentComplete;
@@ -129,7 +129,7 @@ public class StateManager implements IAtsStateManager {
 
    public static void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
-         AtsCore.getLogFactory().newLogItem(
+         AtsCoreService.getLogFactory().newLogItem(
             LogType.Metrics,
             date,
             user,

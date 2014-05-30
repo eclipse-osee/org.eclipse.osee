@@ -24,7 +24,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -182,7 +181,7 @@ public final class GoalManager {
       // Initialize state machine
       goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
-      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
          TeamDefinitions.getTopTeamDefinition());
 
       changes.add(goalArt);

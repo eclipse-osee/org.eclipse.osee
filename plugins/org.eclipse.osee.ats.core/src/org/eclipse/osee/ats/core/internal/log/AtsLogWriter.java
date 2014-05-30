@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -56,7 +56,7 @@ public class AtsLogWriter {
          }
          storageProvider.saveLogXml(Jaxp.getDocumentXml(doc), changes);
       } catch (Exception ex) {
-         OseeLog.log(AtsCore.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
+         OseeLog.log(AtsCoreService.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
       }
       atsLog.setDirty(false);
    }

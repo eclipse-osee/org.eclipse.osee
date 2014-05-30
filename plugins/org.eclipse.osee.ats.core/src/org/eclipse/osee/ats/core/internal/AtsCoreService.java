@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core;
+package org.eclipse.osee.ats.core.internal;
 
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
-import org.eclipse.osee.ats.core.internal.AtsEarnedValueService;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
@@ -41,7 +40,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Donald G. Dunne
  */
-public class AtsCore {
+public class AtsCoreService {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.ats.core";
    private static IAtsColumnUtilities columnUtilities;
@@ -60,35 +59,35 @@ public class AtsCore {
    private static IAtsUtilService utilService;
 
    public void setAtsConfigProvider(IAtsConfigProvider atsConfigProvider) {
-      AtsCore.atsConfigProvider = atsConfigProvider;
+      AtsCoreService.atsConfigProvider = atsConfigProvider;
    }
 
    public void setAtsUserService(IAtsUserService userService) {
-      AtsCore.userService = userService;
+      AtsCoreService.userService = userService;
    }
 
    public static void setAtsWorkDefService(IAtsWorkDefinitionService workDefService) {
-      AtsCore.workDefService = workDefService;
+      AtsCoreService.workDefService = workDefService;
    }
 
    public static void setAtsNotificationServiceProvider(IAtsNotificationServiceProvider notifyServiceProvider) {
-      AtsCore.notifyServiceProvider = notifyServiceProvider;
+      AtsCoreService.notifyServiceProvider = notifyServiceProvider;
    }
 
    public static void setAtsWorkItemServiceProvider(IAtsWorkItemServiceProvider workItemServiceProvider) {
-      AtsCore.workItemServiceProvider = workItemServiceProvider;
+      AtsCoreService.workItemServiceProvider = workItemServiceProvider;
    }
 
    public static void setAtsAttributeResolver(IAttributeResolver attrResolver) {
-      AtsCore.attrResolver = attrResolver;
+      AtsCoreService.attrResolver = attrResolver;
    }
 
    public static void setAtsBranchServiceProvider(IAtsBranchServiceProvider branchServiceProvider) {
-      AtsCore.branchServiceProvider = branchServiceProvider;
+      AtsCoreService.branchServiceProvider = branchServiceProvider;
    }
 
    public static void setAtsReviewServiceProvider(IAtsReviewServiceProvider reviewServiceProvider) {
-      AtsCore.reviewServiceProvider = reviewServiceProvider;
+      AtsCoreService.reviewServiceProvider = reviewServiceProvider;
    }
 
    public void start() throws OseeCoreException {

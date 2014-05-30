@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -43,12 +43,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return AtsCore.getBranchService().isWorkingBranchInWork(teamWf);
+      return AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return AtsCore.getBranchService().isBranchInCommit(teamWf);
+      return AtsClientService.get().getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
@@ -66,7 +66,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public IAtsUser getTransitionUser() throws OseeStateException, OseeCoreException {
       IAtsUser user = transitionUser;
       if (user == null) {
-         user = AtsCore.getUserService().getCurrentUser();
+         user = AtsClientService.get().getUserService().getCurrentUser();
       }
       return user;
    }

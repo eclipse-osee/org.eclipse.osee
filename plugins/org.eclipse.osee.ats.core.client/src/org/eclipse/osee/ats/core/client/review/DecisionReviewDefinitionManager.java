@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionAdapter;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -70,7 +69,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
                changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
-         AtsCore.getUserService().getCurrentUser().getUserId());
+         AtsClientService.get().getUserService().getCurrentUser().getUserId());
       for (IReviewProvider provider : ReviewProviders.getAtsReviewProviders()) {
          provider.reviewCreated(decArt);
       }

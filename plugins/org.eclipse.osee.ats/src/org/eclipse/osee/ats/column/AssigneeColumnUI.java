@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -124,7 +123,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
       }
       UserCheckTreeDialog uld =
          new UserCheckTreeDialog(AtsClientService.get().getUserServiceClient().getOseeUsers(
-            AtsCore.getUserService().getUsers(Active.Active)));
+            AtsClientService.get().getUserService().getUsers(Active.Active)));
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
          uld.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(

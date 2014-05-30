@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.AtsCore;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -100,7 +99,7 @@ public class DecisionReviewManager {
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsCore.getUserService().getCurrentUser());
+         true, AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -127,7 +126,7 @@ public class DecisionReviewManager {
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
 
       reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsCore.getUserService().getCurrentUser());
+         true, AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -195,7 +194,7 @@ public class DecisionReviewManager {
 
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
 
-      AtsCore.getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,
          decRev.getParentTeamWorkflow().getTeamDefinition());
 
       if (Strings.isValid(relatedToState)) {

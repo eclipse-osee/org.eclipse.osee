@@ -8,7 +8,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.AtsCore;
+import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -23,14 +23,14 @@ public class HoursSpentUtil {
    public static double getHoursSpentTotal(IAtsObject atsObject) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : AtsCore.getWorkItemService().getTeams((IAtsAction) atsObject)) {
-            if (!AtsCore.getWorkItemService().getWorkData(team).isCancelled()) {
+         for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+            if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
                hours += getHoursSpentTotal(team);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentTotal(workItem, AtsCore.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentTotal(workItem, AtsCoreService.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -55,14 +55,14 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateTotal(IAtsObject atsObject) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : AtsCore.getWorkItemService().getTeams((IAtsAction) atsObject)) {
-            if (!AtsCore.getWorkItemService().getWorkData(team).isCancelled()) {
+         for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+            if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
                hours += getHoursSpentStateTotal(team);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentStateTotal(workItem, AtsCore.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentStateTotal(workItem, AtsCoreService.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -87,14 +87,14 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateReview(IAtsObject atsObject) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : AtsCore.getWorkItemService().getTeams((IAtsAction) atsObject)) {
-            if (!AtsCore.getWorkItemService().getWorkData(team).isCancelled()) {
+         for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+            if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
                hours += getHoursSpentStateReview(team);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentStateReview(workItem, AtsCore.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentStateReview(workItem, AtsCoreService.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -105,7 +105,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateReview(IAtsObject atsObject, IStateToken state) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsAbstractReview review : AtsCore.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject, state)) {
+         for (IAtsAbstractReview review : AtsCoreService.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject, state)) {
             hours += review.getStateMgr().getHoursSpent(state.getName());
          }
       }
@@ -118,14 +118,14 @@ public class HoursSpentUtil {
    public static double getHoursSpentSMAState(IAtsObject atsObject) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : AtsCore.getWorkItemService().getTeams((IAtsAction) atsObject)) {
-            if (!AtsCore.getWorkItemService().getWorkData(team).isCancelled()) {
+         for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+            if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
                hours += getHoursSpentSMAState(team);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentSMAState(workItem, AtsCore.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentSMAState(workItem, AtsCoreService.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -148,14 +148,14 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : AtsCore.getWorkItemService().getTeams((IAtsAction) atsObject)) {
-            if (!AtsCore.getWorkItemService().getWorkData(team).isCancelled()) {
+         for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+            if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
                hours += getHoursSpentFromStateTasks(team);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentFromStateTasks(workItem, AtsCore.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentFromStateTasks(workItem, AtsCoreService.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -169,7 +169,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IStateToken relatedToState) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsTask taskArt : AtsCore.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject,
+         for (IAtsTask taskArt : AtsCoreService.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject,
             relatedToState)) {
             hours += HoursSpentUtil.getHoursSpentTotal(taskArt);
          }
