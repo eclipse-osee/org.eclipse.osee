@@ -62,7 +62,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    private UriBuilder newBuilder() {
-      return UriBuilder.fromUri(serverUri).path(AccountContexts.ACCOUNTS_BASE);
+      return UriBuilder.fromUri(serverUri).path(AccountContexts.ACCOUNTS);
    }
 
    private <T> T get(URI uri, Class<T> clazz) {
@@ -77,7 +77,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public AccountSessionData login(String scheme, String username, String password) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_LOGIN)//
       .build();
 
@@ -97,7 +96,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public boolean logout(AccountSessionData session) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_LOGOUT)//
       .build();
 
@@ -119,7 +117,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public AccountInfoData createAccount(String userName, AccountInput input) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_USERNAME_TEMPLATE)//
       .build(userName);
 
@@ -137,7 +134,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public boolean deleteAccount(String accountId) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .build(accountId);
       WebResource resource = clientProvider.createResource(uri);
@@ -155,7 +151,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE) //
       .path(AccountContexts.ACCOUNT_SESSSIONS)//
       .build(accountId);
@@ -166,7 +161,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public ResultSet<AccountInfoData> getAllAccounts() {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .build();
       AccountInfoData[] accounts = get(uri, AccountInfoData[].class);
       return ResultSets.newResultSet(accounts);
@@ -175,7 +169,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public AccountDetailsData getAccountDetailsByUniqueField(String accountId) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .build(accountId);
       return get(uri, AccountDetailsData.class);
@@ -184,7 +177,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public AccountPreferencesData getAccountPreferencesByUniqueField(String accountId) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .path(AccountContexts.ACCOUNT_PREFERENCES)//
       .build(accountId);
@@ -195,7 +187,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public boolean setAccountActive(String accountId, boolean active) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .path(AccountContexts.ACCOUNT_ACTIVE)//
       .build(accountId);
@@ -212,7 +203,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public boolean isAccountActive(String accountId) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .path(AccountContexts.ACCOUNT_ACTIVE)//
       .build(accountId);
@@ -253,7 +243,6 @@ public class AccountClientImpl implements AccountClient {
    @Override
    public boolean setAccountPreferences(String accountId, Map<String, String> preferences) {
       URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNTS)//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .path(AccountContexts.ACCOUNT_PREFERENCES)//
       .build(accountId);
@@ -278,14 +267,14 @@ public class AccountClientImpl implements AccountClient {
 
    private ResultSet<SubscriptionData> getSubscriptionsForAccount(String userId) {
       URI uri =
-         newBuilder().path(AccountContexts.ACCOUNTS).path("subscriptions").path("for-account").path("{account-id}").build(
+         newBuilder().path("subscriptions").path("for-account").path("{account-id}").build(
             userId);
       SubscriptionData[] data = get(uri, SubscriptionData[].class);
       return ResultSets.newResultSet(data);
    }
 
    private UriBuilder newUnsubscribeBuilder() {
-      return newBuilder().path(AccountContexts.ACCOUNTS).path("unsubscribe").path("ui").path("{subscription-uuid}");
+      return newBuilder().path("unsubscribe").path("ui").path("{subscription-uuid}");
    }
 
    @Override

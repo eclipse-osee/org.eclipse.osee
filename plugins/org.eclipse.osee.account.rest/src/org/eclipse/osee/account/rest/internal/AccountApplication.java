@@ -16,11 +16,12 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
+import org.eclipse.osee.account.rest.model.AccountContexts;
 
 /**
  * @author Roberto E. Escobar
  */
-@ApplicationPath("oseex/accounts")
+@ApplicationPath(AccountContexts.ACCOUNTS)
 public class AccountApplication extends Application {
    private final Set<Object> singletons = new HashSet<Object>();
 

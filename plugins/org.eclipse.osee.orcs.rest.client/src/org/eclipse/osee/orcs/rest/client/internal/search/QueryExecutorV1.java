@@ -31,13 +31,17 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class QueryExecutorV1 implements QueryExecutor {
 
-   private final WebClientProvider clientProvider;
-   private final URI serverUri;
+   public static interface BaseUriBuilder {
+      UriBuilder newBuilder();
+   }
 
-   public QueryExecutorV1(URI serverUri, WebClientProvider clientProvider) {
+   private final WebClientProvider clientProvider;
+   private final BaseUriBuilder baseUriBuilder;
+
+   public QueryExecutorV1(WebClientProvider clientProvider, BaseUriBuilder baseUriBuilder) {
       super();
-      this.serverUri = serverUri;
       this.clientProvider = clientProvider;
+      this.baseUriBuilder = baseUriBuilder;
    }
 
    @Override
@@ -50,6 +54,11 @@ public class QueryExecutorV1 implements QueryExecutor {
    public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       SearchResponse result = performSearch(request, OutputFormat.XML, branch, predicates, options);
       return result;
+   }
+
+   private URI getQueryUri(long branchUuid) {
+      UriBuilder builder = baseUriBuilder.newBuilder().path("branch/{branch-uuid}/artifact/search/v1");
+      return builder.build(branchUuid);
    }
 
    private SearchResponse performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
@@ -67,9 +76,7 @@ public class QueryExecutorV1 implements QueryExecutor {
          new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
             requestType.name().toLowerCase(), fromTx, includeDeleted);
 
-      UriBuilder path = UriBuilder.fromUri(serverUri).path("oseex/branch/{branch-uuid}/artifact/search/v1");
-      URI uri = path.build(branch.getUuid());
-
+      URI uri = getQueryUri(branch.getUuid());
       WebResource resource = clientProvider.createResource(uri);
       SearchResponse searchResult = null;
       try {

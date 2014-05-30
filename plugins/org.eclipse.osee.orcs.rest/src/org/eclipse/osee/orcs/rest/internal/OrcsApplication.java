@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.rest.internal.search.types.TypesQueryResource;
  * 
  * @author Roberto E. Escobar
  */
-@ApplicationPath("oseex")
+@ApplicationPath("orcs")
 public class OrcsApplication extends Application {
 
    private final Set<Object> resources = new HashSet<Object>();

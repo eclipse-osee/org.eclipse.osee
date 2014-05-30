@@ -19,7 +19,6 @@ public final class AccountContexts {
       // Constants Class
    }
 
-   public static final String ACCOUNTS_BASE = "oseex";
    public static final String ACCOUNTS = "accounts";
    public static final String ACCOUNT_PREFERENCES = "preferences";
    public static final String ACCOUNT_ACTIVE = "active";

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 /**
  * @author Donald G. Dunne
  */
-@ApplicationPath("oseex")
+@ApplicationPath("orcs")
 public class ServerApplication extends Application {
 
    private final Set<Object> resources = new HashSet<Object>();

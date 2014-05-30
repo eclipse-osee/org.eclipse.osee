@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
+import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1.BaseUriBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -36,11 +37,10 @@ import com.sun.jersey.api.client.WebResource;
  * @author John Misinco
  * @author Roberto E. Escobar
  */
-public class OseeClientImpl implements OseeClient {
+public class OseeClientImpl implements OseeClient, BaseUriBuilder {
 
    private PredicateFactory predicateFactory;
    private QueryExecutorV1 executor;
-   private URI serverUri;
 
    private WebClientProvider clientProvider;
 
@@ -50,10 +50,8 @@ public class OseeClientImpl implements OseeClient {
    }
 
    public void start() {
-      String appServer = OseeClientProperties.getApplicationServerAddress();
-      serverUri = URI.create(appServer);
       predicateFactory = new PredicateFactoryImpl();
-      executor = new QueryExecutorV1(serverUri, clientProvider);
+      executor = new QueryExecutorV1(clientProvider, this);
    }
 
    public void stop() {
@@ -68,8 +66,10 @@ public class OseeClientImpl implements OseeClient {
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
    }
 
-   private UriBuilder newBuilder() {
-      return UriBuilder.fromUri(serverUri).path("oseex");
+   @Override
+   public UriBuilder newBuilder() {
+      String serverUri = OseeClientProperties.getApplicationServerAddress();
+      return UriBuilder.fromUri(serverUri).path("orcs");
    }
 
    @Override
