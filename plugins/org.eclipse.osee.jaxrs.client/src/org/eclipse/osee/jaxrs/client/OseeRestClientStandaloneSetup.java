@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client;
+package org.eclipse.osee.jaxrs.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.rest.client.internal.StandaloneModule;
+import org.eclipse.osee.jaxrs.client.internal.StandaloneModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;

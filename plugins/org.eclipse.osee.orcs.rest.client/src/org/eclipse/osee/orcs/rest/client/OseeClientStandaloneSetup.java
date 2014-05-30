@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client;
 
+import org.eclipse.osee.jaxrs.client.OseeClientConfig;
+import org.eclipse.osee.jaxrs.client.OseeRestClientStandaloneSetup;
 import org.eclipse.osee.orcs.rest.client.internal.OrcsClientModule;
 import org.eclipse.osee.orcs.rest.client.internal.OseeClientImpl;
-import org.eclipse.osee.rest.client.OseeClientConfig;
-import org.eclipse.osee.rest.client.OseeRestClientStandaloneSetup;
 import com.google.inject.Module;
 
 /**

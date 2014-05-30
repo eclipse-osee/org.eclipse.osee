@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
-import org.eclipse.osee.rest.client.WebClientProvider;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 

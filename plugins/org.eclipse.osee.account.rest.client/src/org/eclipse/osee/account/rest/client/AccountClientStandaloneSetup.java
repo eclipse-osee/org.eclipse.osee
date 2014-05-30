@@ -12,8 +12,8 @@ package org.eclipse.osee.account.rest.client;
 
 import org.eclipse.osee.account.rest.client.internal.AccountClientImpl;
 import org.eclipse.osee.account.rest.client.internal.AccountClientModule;
-import org.eclipse.osee.rest.client.OseeClientConfig;
-import org.eclipse.osee.rest.client.OseeRestClientStandaloneSetup;
+import org.eclipse.osee.jaxrs.client.OseeClientConfig;
+import org.eclipse.osee.jaxrs.client.OseeRestClientStandaloneSetup;
 import com.google.inject.Module;
 
 /**

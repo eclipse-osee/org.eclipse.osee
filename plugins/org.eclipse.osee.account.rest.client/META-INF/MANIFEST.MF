@@ -17,7 +17,7 @@ Import-Package: com.google.inject,
  javax.ws.rs.core,
  org.eclipse.osee.account.rest.model,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.rest.client,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jaxrs
 Export-Package: org.eclipse.osee.account.rest.client
 Bundle-Vendor: Eclipse Open System Engineering Environment

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client;
+package org.eclipse.osee.jaxrs.client;
 
 import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

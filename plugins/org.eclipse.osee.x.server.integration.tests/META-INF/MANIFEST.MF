@@ -16,5 +16,5 @@ Import-Package: org.apache.commons.lang.math,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.rest.client,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jaxrs

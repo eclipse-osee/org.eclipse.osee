@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: OSEE REST Client (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.rest.client
+Bundle-Name: OSEE JAX-RS Client (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.client
 Bundle-Version: 0.17.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
@@ -20,7 +20,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs
-Export-Package: org.eclipse.osee.rest.client
+Export-Package: org.eclipse.osee.jaxrs.client
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  javax.servlet;visibility:=reexport,
  com.google.inject,

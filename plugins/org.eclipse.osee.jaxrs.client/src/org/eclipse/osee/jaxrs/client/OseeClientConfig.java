@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client;
+package org.eclipse.osee.jaxrs.client;
 
 /**
  * @author Roberto E. Escobar

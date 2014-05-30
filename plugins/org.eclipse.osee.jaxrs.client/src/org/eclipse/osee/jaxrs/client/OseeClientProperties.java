@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import com.google.inject.BindingAnnotation;
+package org.eclipse.osee.jaxrs.client;
 
 /**
  * @author Roberto E. Escobar
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
-@BindingAnnotation
-public @interface OseeServerAddress {
-   //
+public final class OseeClientProperties {
+
+   private OseeClientProperties() {
+      // Utility class
+   }
+
+   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
+
+   public static String getApplicationServerAddress() {
+      String appServer = System.getProperty(OSEE_APPLICATION_SERVER, "");
+      return appServer;
+   }
+
 }

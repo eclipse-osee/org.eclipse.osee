@@ -8,13 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client.internal;
+package org.eclipse.osee.jaxrs.client.internal;
 
 import java.net.URI;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.ErrorResponse;
-import org.eclipse.osee.rest.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;

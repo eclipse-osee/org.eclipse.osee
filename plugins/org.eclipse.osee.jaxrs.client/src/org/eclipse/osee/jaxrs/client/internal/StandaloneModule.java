@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.rest.client.internal;
+package org.eclipse.osee.jaxrs.client.internal;
 
-import org.eclipse.osee.rest.client.OseeClientConfig;
-import org.eclipse.osee.rest.client.OseeHttpProxyAddress;
-import org.eclipse.osee.rest.client.OseeServerAddress;
-import org.eclipse.osee.rest.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.OseeClientConfig;
+import org.eclipse.osee.jaxrs.client.OseeHttpProxyAddress;
+import org.eclipse.osee.jaxrs.client.OseeServerAddress;
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import com.google.inject.AbstractModule;
 
 /**

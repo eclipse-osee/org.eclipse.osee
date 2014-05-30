@@ -10,9 +10,9 @@
 		<relativePath>../../plugins/org.eclipse.osee.x.core.parent</relativePath>
 	</parent>
 
-	<artifactId>org.eclipse.osee.rest.client</artifactId>
+	<artifactId>org.eclipse.osee.jaxrs.client</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE Rest Client - (Incubation)</name>
+	<name>OSEE JAX-RS Client - (Incubation)</name>
 
 	<build>
 		<!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->

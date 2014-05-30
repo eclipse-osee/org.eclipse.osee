@@ -77,7 +77,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.rest.client"
+         id="org.eclipse.osee.jaxrs.client"
          download-size="0"
          install-size="0"
          version="0.0.0"
