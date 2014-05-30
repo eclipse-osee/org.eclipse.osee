@@ -16,7 +16,6 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
@@ -39,7 +38,6 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
             if (ChangeItemUtil.isIgnoreCase(change)) {
                iterator.remove();
             } else {
-               checkForInvalidStates(change);
 
                if (!ChangeItemUtil.isModType(change.getNetChange(), ModificationType.MERGED)) {
                   ModificationType netModType = getNetModType(change);
@@ -84,10 +82,4 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
       return netModType;
    }
 
-   private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
-
-      if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
-         throw new OseeStateException("Destination was deleted - source should not modify [%s] ", change);
-      }
-   }
 }

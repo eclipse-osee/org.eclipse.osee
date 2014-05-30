@@ -119,7 +119,7 @@ public final class ChangeItemUtil {
       wasCreatedAndDeleted(changeItem) || //
       isAlreadyOnDestination(changeItem) || //
       isDeletedAndDoesNotExistInDestination(changeItem) || //
-      hasBeenDeletedInDestination(changeItem) || //
+      (hasBeenDeletedInDestination(changeItem) && !isResurrected(changeItem)) || //
       hasBeenReplacedWithVersion(changeItem);
    }
 
@@ -134,4 +134,10 @@ public final class ChangeItemUtil {
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {
       return changeItem.getDestinationVersion().isValid() && isDeleted(changeItem.getDestinationVersion());
    }
+
+   public static boolean isResurrected(ChangeItem changeItem) {
+      // There's a change corresponding to a Deleted Item, item MUST have been resurrected
+      return changeItem.getBaselineVersion().getModType().isDeleted();
+   }
+
 }

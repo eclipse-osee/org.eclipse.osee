@@ -38,9 +38,10 @@ public class ComputeNetChangeTest {
       List<TestData> data = new ArrayList<TestData>();
 
       // New Or Introduced
-      data.add(createTest(1, null, entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
-      data.add(createTest(2, null, entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED), false));
-      data.add(createTest(3, null, null, entry(7693330L, INTRODUCED), entry(7693330L, NEW),
+      data.add(createTest(1, entry(3L, NEW), entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
+      data.add(createTest(2, entry(3L, NEW), entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED),
+         false));
+      data.add(createTest(3, entry(3L, NEW), null, entry(7693330L, INTRODUCED), entry(7693330L, NEW),
          entry(7693330L, INTRODUCED), false));
 
       // Modified Once
@@ -52,19 +53,19 @@ public class ComputeNetChangeTest {
          entry(12L, MODIFIED), false));
 
       // Removal - new/intro and deleted
-      data.add(createTest(6, null, entry(1L, NEW), entry(2L, DELETED), null, null, true));
-      data.add(createTest(7, null, entry(2L, INTRODUCED), entry(3L, DELETED), null, null, true));
-      data.add(createTest(8, null, entry(4L, NEW), entry(5L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(9, null, entry(6L, INTRODUCED), entry(7L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(10, null, null, entry(21345L, NEW), entry(21345L, NEW), null, true));
-      data.add(createTest(11, null, null, entry(1L, NEW), entry(2L, MODIFIED), null, entry(1L, NEW), false));
-      data.add(createTest(12, null, null, entry(1L, INTRODUCED), entry(2L, DELETED), null, null, true));
+      data.add(createTest(6, entry(3L, NEW), entry(1L, NEW), entry(2L, DELETED), null, null, true));
+      data.add(createTest(7, entry(3L, NEW), entry(2L, INTRODUCED), entry(3L, DELETED), null, null, true));
+      data.add(createTest(8, entry(3L, NEW), entry(4L, NEW), entry(5L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(9, entry(3L, NEW), entry(6L, INTRODUCED), entry(7L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(10, entry(3L, NEW), null, entry(21345L, NEW), entry(21345L, NEW), null, true));
+      data.add(createTest(11, entry(3L, NEW), null, entry(1L, NEW), entry(2L, MODIFIED), null, entry(1L, NEW), false));
+      data.add(createTest(12, entry(3L, NEW), null, entry(1L, INTRODUCED), entry(2L, DELETED), null, null, true));
 
-      // Undelete then delete again
-      data.add(createTest(13, entry(4L, DELETED), entry(3L, MODIFIED), entry(4L, DELETED), entry(4L, DELETED), null,
-         true));
-      data.add(createTest(14, entry(4L, ARTIFACT_DELETED), null, entry(5L, MODIFIED), entry(4L, ARTIFACT_DELETED),
-         null, true));
+      // Undelete then delete again (Resurrected) not ignored
+      data.add(createTest(13, entry(2L, DELETED), entry(3L, MODIFIED), entry(4L, DELETED), entry(5L, DELETED),
+         entry(4L, DELETED), false));
+      data.add(createTest(14, entry(2L, ARTIFACT_DELETED), null, entry(4L, ARTIFACT_DELETED),
+         entry(5L, ARTIFACT_DELETED), entry(4L, ARTIFACT_DELETED), false));
 
       // Delete Cases -
       data.add(createTest(15, entry(10L, MODIFIED), null, entry(10L, DELETED), entry(10L, MODIFIED),

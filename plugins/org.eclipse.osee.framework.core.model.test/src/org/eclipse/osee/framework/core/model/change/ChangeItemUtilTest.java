@@ -123,10 +123,25 @@ public class ChangeItemUtilTest {
       item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
       assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
+      // Test resurrected Cases, Deleted on Destination but resurrected (Introduced or New) on Current
+      ChangeVersion baseline = ChangeTestUtility.createChange(6234L, ModificationType.DELETED);
+
       current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       destination = ChangeTestUtility.createChange(4444L, ModificationType.DELETED);
 
-      item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
+      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+
+      current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
+
+      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
+      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+
+      // Not a resurrection case, should be IgnoreCase
+      current = ChangeTestUtility.createChange(3333L, ModificationType.MODIFIED);
+      baseline = ChangeTestUtility.createChange(6234L, ModificationType.MODIFIED);
+
+      item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
       assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
