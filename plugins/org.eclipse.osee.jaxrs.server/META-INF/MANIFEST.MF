@@ -1,0 +1,36 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE JAX-RS Server (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.server
+Bundle-Version: 0.17.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: com.google.common.io,
+ com.sun.jersey.api.container.filter.servlet;version="1.18.0",
+ com.sun.jersey.api.core,
+ com.sun.jersey.api.model;version="1.18.0",
+ com.sun.jersey.api.wadl.config,
+ com.sun.jersey.server.wadl,
+ com.sun.jersey.server.wadl.generators,
+ com.sun.jersey.server.wadl.generators.resourcedoc,
+ com.sun.jersey.server.wadl.generators.resourcedoc.model,
+ com.sun.jersey.server.wadl.generators.resourcedoc.xhtml,
+ com.sun.jersey.spi.container;version="1.18.0",
+ com.sun.jersey.spi.container.servlet,
+ javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.eclipse.osee.executor.admin,
+ org.eclipse.osee.authorization.admin,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.jaxrs,
+ org.osgi.framework,
+ org.osgi.service.http
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Require-Bundle: org.codehaus.jackson.core,
+ org.codehaus.jackson.jaxrs,
+ org.codehaus.jackson.mapper
