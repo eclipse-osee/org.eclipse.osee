@@ -26,7 +26,6 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.apache.xerces" />
-								<plugin id="com.vaadin" />
 								<plugin id="javax.xml" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />

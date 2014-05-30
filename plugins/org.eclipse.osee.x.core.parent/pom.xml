@@ -60,10 +60,6 @@
 		<module>../../plugins/org.eclipse.osee.template.engine</module>
 		<module>../../plugins/org.eclipse.osee.template.engine.test</module>
 
-		<module>../../plugins/org.eclipse.osee.vaadin</module>
-		<module>../../plugins/org.eclipse.osee.vaadin.widgets</module>
-		<module>../../plugins/org.eclipse.osee.vaadin.themes</module>
-
 		<module>../../plugins/org.eclipse.osee.jaxrs</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.server</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.server.test</module>

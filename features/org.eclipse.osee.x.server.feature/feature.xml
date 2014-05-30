@@ -38,11 +38,8 @@
          version="0.0.0"/>
 
    <requires>
-      <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
       <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osee.vaadin"/>
-      <import plugin="org.eclipse.osee.vaadin.widgets"/>
       <import plugin="org.apache.commons.lang" version="2.6.0" match="greaterOrEqual"/>
    </requires>
 

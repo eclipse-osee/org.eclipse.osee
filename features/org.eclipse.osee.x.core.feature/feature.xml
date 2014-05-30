@@ -29,7 +29,6 @@
       <import plugin="org.apache.commons.codec"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="javax.mail.glassfish"/>
-      <import plugin="com.vaadin" version="6.6.6" match="greaterOrEqual"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="com.sun.jersey" version="1.18.0" match="greaterOrEqual"/>
       <import plugin="javax.ws.rs"/>
@@ -74,20 +73,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.vaadin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.vaadin.widgets"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.event"
          download-size="0"
          install-size="0"
@@ -106,14 +91,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.vaadin.themes"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin
