@@ -124,13 +124,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.display.mvp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.console.admin"
          download-size="0"
          install-size="0"
@@ -164,14 +157,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.jaxrs.client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                  
+
    <plugin
          id="org.eclipse.osee.account.admin"
          download-size="0"

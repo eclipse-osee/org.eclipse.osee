@@ -64,9 +64,6 @@
 		<module>../../plugins/org.eclipse.osee.vaadin.widgets</module>
 		<module>../../plugins/org.eclipse.osee.vaadin.themes</module>
 
-		<module>../../plugins/org.eclipse.osee.display.mvp</module>
-		<module>../../plugins/org.eclipse.osee.display.mvp.test</module>
-
 		<module>../../plugins/org.eclipse.osee.jaxrs</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.server</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.server.test</module>

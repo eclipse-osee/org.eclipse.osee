@@ -17,19 +17,7 @@
 	<version>0.17.0-SNAPSHOT</version>
 
 	<modules>
-		<module>../../plugins/org.eclipse.osee.display.api</module>
-		<module>../../plugins/org.eclipse.osee.display.view.web</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.mocks</module>
-		<module>../../plugins/org.eclipse.osee.display.presenter.test</module>
-
 		<module>../../plugins/org.eclipse.osee.ats.api</module>
-		<module>../../plugins/org.eclipse.osee.ats.ui.api</module>
-		<module>../../plugins/org.eclipse.osee.ats.view.web</module>
-
-		<module>../../plugins/org.eclipse.osee.ats.presenter</module>
-		<module>../../plugins/org.eclipse.osee.ats.presenter.test</module>
-
 		<module>../../plugins/org.eclipse.osee.ats.dsl</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.core</module>
