@@ -227,7 +227,7 @@ public class DemoTestUtil {
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
             results =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(team.getTeamDefToken().getGuid(),
+               AtsClientService.get().getConfig().getSoleByGuid(team.getTeamDefToken().getGuid(),
                   IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);

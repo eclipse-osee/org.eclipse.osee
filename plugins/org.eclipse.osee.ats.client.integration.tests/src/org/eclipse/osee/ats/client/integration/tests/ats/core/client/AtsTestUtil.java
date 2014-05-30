@@ -222,19 +222,19 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
-      for (IAtsActionableItem aia : AtsClientService.get().getAtsConfig().get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getAtsConfig().invalidate(aia);
+            AtsClientService.get().getConfig().invalidate(aia);
          }
       }
-      for (IAtsTeamDefinition aia : AtsClientService.get().getAtsConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition aia : AtsClientService.get().getConfig().get(IAtsTeamDefinition.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getAtsConfig().invalidate(aia);
+            AtsClientService.get().getConfig().invalidate(aia);
          }
       }
-      for (IAtsVersion ver : AtsClientService.get().getAtsConfig().get(IAtsVersion.class)) {
+      for (IAtsVersion ver : AtsClientService.get().getConfig().get(IAtsVersion.class)) {
          if (ver.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getAtsConfig().invalidate(ver);
+            AtsClientService.get().getConfig().invalidate(ver);
          }
       }
    }

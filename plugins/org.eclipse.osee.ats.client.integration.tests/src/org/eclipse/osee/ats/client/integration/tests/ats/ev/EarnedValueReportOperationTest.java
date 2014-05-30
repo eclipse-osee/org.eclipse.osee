@@ -44,7 +44,7 @@ public class EarnedValueReportOperationTest {
    public void test() throws OseeCoreException {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
       IAtsTeamDefinition teamDef =
-         (IAtsTeamDefinition) AtsClientService.get().getAtsConfig().getSoleByGuid(DemoArtifactToken.SAW_SW.getGuid());
+         (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByGuid(DemoArtifactToken.SAW_SW.getGuid());
       teamDefs.add(teamDef);
       SearchWorkPackageOperation srch =
          new SearchWorkPackageOperation("srch", teamDefs, true, new ArrayList<IAtsActionableItem>(), false, Active.Both);

@@ -76,7 +76,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (TeamWorkFlowArtifact team : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+            for (TeamWorkFlowArtifact team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
                verArt)) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =

@@ -62,7 +62,7 @@ public class VersionTeamMetrics {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
          for (IAtsVersion verArt : verTeamDef.getVersions()) {
-            for (TeamWorkFlowArtifact team : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+            for (TeamWorkFlowArtifact team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
                verArt)) {
                Date origDate = team.getCreatedDate();
                teamWorkflowToOrigDate.put(team, origDate);

@@ -92,7 +92,7 @@ public class ActionableItems {
    public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem ai : AtsCoreService.getAtsConfig().get(IAtsActionableItem.class)) {
+         for (IAtsActionableItem ai : AtsCoreService.getConfig().get(IAtsActionableItem.class)) {
             if (ai.getName().equals(actionableItemName)) {
                ais.add(ai);
             }
@@ -106,7 +106,7 @@ public class ActionableItems {
    }
 
    public static List<IAtsActionableItem> getActionableItems(Active active) throws OseeCoreException {
-      return Collections.castAll(getActive(AtsCoreService.getAtsConfig().get(IAtsActionableItem.class), active));
+      return Collections.castAll(getActive(AtsCoreService.getConfig().get(IAtsActionableItem.class), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
@@ -114,7 +114,7 @@ public class ActionableItems {
    }
 
    public static IAtsActionableItem getTopActionableItem() throws OseeCoreException {
-      return AtsCoreService.getAtsConfig().getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
+      return AtsCoreService.getConfig().getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll() throws OseeCoreException {

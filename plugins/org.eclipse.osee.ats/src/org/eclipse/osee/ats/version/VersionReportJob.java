@@ -71,7 +71,7 @@ public class VersionReportJob extends Job {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title + getReleasedString(verArt), verArt.getName()));
       sb.append(getTeamWorkflowReport(
-         AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(verArt), null, monitor));
+         AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(verArt), null, monitor));
       return sb.toString();
    }
 

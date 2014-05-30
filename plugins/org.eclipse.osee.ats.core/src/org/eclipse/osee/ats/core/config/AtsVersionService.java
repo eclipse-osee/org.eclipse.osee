@@ -25,7 +25,7 @@ public class AtsVersionService {
       if (AtsVersionService.service == null) {
          throw new IllegalStateException("ATS Version Service has not been activated");
       }
-      return AtsVersionService.service.getAtsVersionService();
+      return AtsVersionService.service.getVersionService();
    }
 
    public void setAtsVersionServiceProvider(IAtsVersionServiceProvider service) {

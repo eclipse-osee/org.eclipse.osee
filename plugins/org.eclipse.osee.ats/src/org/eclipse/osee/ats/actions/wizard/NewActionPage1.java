@@ -178,7 +178,7 @@ public class NewActionPage1 extends WizardPage {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
             atsAi =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(
+               AtsClientService.get().getConfig().getSoleByGuid(
                   ATS_Actionable_Item_Guid_For_Training_And_Demos, IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));

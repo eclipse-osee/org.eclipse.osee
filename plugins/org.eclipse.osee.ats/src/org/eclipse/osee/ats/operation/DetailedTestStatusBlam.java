@@ -566,7 +566,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
       for (IAtsVersion version : versions) {
          Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts =
-            AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(version);
+            AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(version);
          double increment = 100.0 / targetedForTeamArtifacts.size();
          double progress = 0;
          for (TeamWorkFlowArtifact workflow : targetedForTeamArtifacts) {

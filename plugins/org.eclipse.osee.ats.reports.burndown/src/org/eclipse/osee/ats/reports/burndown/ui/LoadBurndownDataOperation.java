@@ -44,7 +44,7 @@ public class LoadBurndownDataOperation extends AbstractOperation {
       IAtsVersion version = AtsClientService.get().getConfigObject(versionArt);
 
       Collection<TeamWorkFlowArtifact> workflows =
-         AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(version);
+         AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(version);
 
       // HourBurndown
       HourBurndownLog log = new HourBurndownLog();

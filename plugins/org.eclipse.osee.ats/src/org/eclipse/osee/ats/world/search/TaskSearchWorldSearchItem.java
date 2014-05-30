@@ -140,7 +140,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
-         for (Artifact art : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(verArt)) {
+         for (Artifact art : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(verArt)) {
             if (teamDefs.isEmpty()) {
                workflows.add(art);
             }

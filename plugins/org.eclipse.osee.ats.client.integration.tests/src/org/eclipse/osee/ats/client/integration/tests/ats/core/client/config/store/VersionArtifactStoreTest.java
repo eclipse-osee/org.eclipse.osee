@@ -44,7 +44,7 @@ public class VersionArtifactStoreTest {
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
             VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
 
-      IAtsConfig config = AtsClientService.get().getAtsConfig();
+      IAtsConfig config = AtsClientService.get().getConfig();
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
          "VersionArtifactStoreTest - version 3")) {
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Version, name,

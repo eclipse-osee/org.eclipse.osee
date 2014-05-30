@@ -87,7 +87,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          return EMPTY_SET;
       }
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+      arts.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
          getTeamDefinition().getNextReleaseVersion()));
       if (isCancelled()) {
          return EMPTY_SET;

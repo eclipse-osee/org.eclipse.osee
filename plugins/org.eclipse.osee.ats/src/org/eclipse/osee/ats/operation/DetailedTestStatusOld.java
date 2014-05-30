@@ -498,7 +498,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    private void loadReqTaskMap() throws Exception {
       for (IAtsVersion version : versions) {
-         for (TeamWorkFlowArtifact workflow : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+         for (TeamWorkFlowArtifact workflow : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
             version)) {
             loadTasksFromWorkflow(workflow);
          }

@@ -631,7 +631,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             IAtsVersion version =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+               AtsClientService.get().getConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                try {
                   long parentBranchUuid = version.getBaselineBranchUuid();
@@ -663,7 +663,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             IAtsVersion version =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
+               AtsClientService.get().getConfig().getSoleByGuid(artifact.getGuid(), IAtsVersion.class);
             if (version != null) {
                for (IAtsVersion parallelVersion : version.getParallelVersions()) {
                   if (parallelVersion != null) {
@@ -696,7 +696,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition teamDef =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
+               AtsClientService.get().getConfig().getSoleByGuid(art.getGuid(), IAtsTeamDefinition.class);
             try {
                long parentBranchUuid = teamDef.getBaselineBranchUuid();
                if (parentBranchUuid > 0) {
@@ -747,7 +747,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private List<String> getInvalidGuids(List<String> guids) throws OseeCoreException {
       List<String> badGuids = new ArrayList<String>();
       for (String guid : guids) {
-         if (AtsClientService.get().getAtsConfig().getSoleByGuid(guid) == null) {
+         if (AtsClientService.get().getConfig().getSoleByGuid(guid) == null) {
             badGuids.add(guid);
          }
       }
@@ -1076,7 +1076,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem aia =
-                  AtsClientService.get().getAtsConfig().getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
+                  AtsClientService.get().getConfig().getSoleByGuid(artifact.getGuid(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   results.log(
                      artifact,

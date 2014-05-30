@@ -38,7 +38,7 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
 
       rd.log("Pre-reload");
       try {
-         AtsClientService.get().getAtsConfig().getReport(rd);
+         AtsClientService.get().getConfig().getReport(rd);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -47,7 +47,7 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
 
       rd.log("\n\nPost-reload");
       try {
-         AtsClientService.get().getAtsConfig().getReport(rd);
+         AtsClientService.get().getConfig().getReport(rd);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

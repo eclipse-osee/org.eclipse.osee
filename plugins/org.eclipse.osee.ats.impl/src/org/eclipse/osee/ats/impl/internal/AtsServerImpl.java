@@ -216,7 +216,7 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public IAtsConfig getAtsConfig() throws OseeStateException {
+   public IAtsConfig getConfig() throws OseeStateException {
       checkStarted();
       return config;
    }

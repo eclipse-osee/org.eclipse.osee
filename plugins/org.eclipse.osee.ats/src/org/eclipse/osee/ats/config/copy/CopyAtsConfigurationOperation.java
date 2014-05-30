@@ -139,7 +139,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsClientService.get().getAtsConfig().getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getConfig().getSoleByGuid(fromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
@@ -184,7 +184,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef = AtsClientService.get().getConfigObject(childFromTeamDefArt);
-            AtsClientService.get().getAtsConfig().getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getConfig().getSoleByGuid(childFromTeamDefArt.getGuid(), IAtsTeamDefinition.class);
             createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
          }
       }

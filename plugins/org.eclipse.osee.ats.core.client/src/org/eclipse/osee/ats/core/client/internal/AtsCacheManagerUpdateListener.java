@@ -96,7 +96,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             if (guidRel.is(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
                for (TeamWorkFlowArtifact teamWf : ArtifactCache.getActive(guidRel, TeamWorkFlowArtifact.class)) {
                   // Just remove teamWf from cache; reload will occur upon next call to get version
-                  atsClient.getAtsVersionService().invalidateVersionCache(teamWf);
+                  atsClient.getVersionService().invalidateVersionCache(teamWf);
                }
             }
             if (guidRel.is(AtsRelationTypes.TeamWfToTask_Task)) {

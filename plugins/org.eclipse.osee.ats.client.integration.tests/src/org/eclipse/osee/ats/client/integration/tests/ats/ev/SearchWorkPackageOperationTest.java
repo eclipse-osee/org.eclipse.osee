@@ -101,13 +101,13 @@ public class SearchWorkPackageOperationTest {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
       for (String teamDefGuid : teamDefGuids) {
          IAtsTeamDefinition teamDef =
-            (IAtsTeamDefinition) AtsClientService.get().getAtsConfig().getSoleByGuid(teamDefGuid);
+            (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByGuid(teamDefGuid);
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
       for (String aiGuid : aiGuids) {
-         IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getAtsConfig().getSoleByGuid(aiGuid);
+         IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getConfig().getSoleByGuid(aiGuid);
          ais.add(ai);
       }
 

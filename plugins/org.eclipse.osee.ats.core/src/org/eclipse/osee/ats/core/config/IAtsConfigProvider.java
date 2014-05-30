@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsConfigProvider {
 
-   IAtsConfig getAtsConfig() throws OseeStateException;
+   IAtsConfig getConfig() throws OseeStateException;
 
 }

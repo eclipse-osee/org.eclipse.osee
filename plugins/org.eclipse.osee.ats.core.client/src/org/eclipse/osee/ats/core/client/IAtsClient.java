@@ -84,7 +84,7 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
    IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException;
 
    @Override
-   IAtsVersionAdmin getAtsVersionService() throws OseeStateException;
+   IAtsVersionAdmin getVersionService() throws OseeStateException;
 
    IAtsUserService getUserService() throws OseeStateException;
 

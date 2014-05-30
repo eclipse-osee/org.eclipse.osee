@@ -83,7 +83,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : AtsClientService.get().getAtsVersionService().getTargetedForTeamWorkflowArtifacts(
+      for (Artifact art : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
          getSearchVersionArtifact())) {
          if (returnAction) {
             ActionArtifact parentAction = ((TeamWorkFlowArtifact) art).getParentActionArtifact();

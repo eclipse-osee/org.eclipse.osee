@@ -29,13 +29,13 @@ public class AtsActionableItemToTeamDefinitionTest {
       boolean error = false;
       StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
       AtsBulkLoad.reloadConfig(true);
-      for (IAtsActionableItem aia : AtsClientService.get().getAtsConfig().get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
             Collection<IAtsTeamDefinition> impactedTeamDefs = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia));
             if (impactedTeamDefs.isEmpty()) {
                System.out.println(" ");
                sb.append("[" + aia + "]");
-               AtsClientService.get().getAtsConfig().get(IAtsTeamDefinition.class);
+               AtsClientService.get().getConfig().get(IAtsTeamDefinition.class);
                error = true;
             }
          }

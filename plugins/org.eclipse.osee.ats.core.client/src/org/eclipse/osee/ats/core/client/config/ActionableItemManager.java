@@ -41,7 +41,7 @@ public class ActionableItemManager {
       if (!artifact.isDeleted()) {
          for (String guid : getActionableItemGuids()) {
             IAtsActionableItem aia =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(guid, IAtsActionableItem.class);
+               AtsClientService.get().getConfig().getSoleByGuid(guid, IAtsActionableItem.class);
             if (aia == null && !artifact.isDeleted()) {
                OseeLog.logf(Activator.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,

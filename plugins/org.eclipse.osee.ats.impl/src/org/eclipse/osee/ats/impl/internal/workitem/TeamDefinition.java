@@ -253,7 +253,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       Set<IAtsVersion> results = new HashSet<IAtsVersion>();
       try {
          for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = (IAtsVersion) getAtsServer().getAtsConfig().getSoleByGuid(verArt.getGuid());
+            IAtsVersion version = (IAtsVersion) getAtsServer().getConfig().getSoleByGuid(verArt.getGuid());
             results.add(version);
          }
       } catch (OseeCoreException ex) {

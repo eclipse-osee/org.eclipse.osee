@@ -136,7 +136,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ActionableItem)) {
             IAtsActionableItem aia =
-               AtsClientService.get().getAtsConfig().getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
+               AtsClientService.get().getConfig().getSoleByGuid(art.getGuid(), IAtsActionableItem.class);
             if (aia != null) {
                aiaGuids.add(aia.getGuid());
                Collection<Artifact> childArts = art.getChildren();

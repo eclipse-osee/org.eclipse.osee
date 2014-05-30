@@ -202,7 +202,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return AtsClientService.get().getAtsVersionService().getTargetedVersion(teamWf).getName();
+      return AtsClientService.get().getVersionService().getTargetedVersion(teamWf).getName();
    }
 
    @Override

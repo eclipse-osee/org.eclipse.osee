@@ -26,12 +26,12 @@ public class TransitionFactory {
 
    public static IAtsTransitionManager getTransitionManager(ITransitionHelper helper) {
       return getTransitionManager(helper, AtsCoreService.getUserService(), AtsCoreService.getReviewService(),
-         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttrResolver());
+         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttributeResolver());
    }
 
    public static IAtsTransitionManager getTransitionManager(ITransitionHelper helper, IAtsUserService userService, IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefService, IAttributeResolver attrResolver) {
       return new TransitionManager(helper, AtsCoreService.getUserService(), AtsCoreService.getReviewService(),
-         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttrResolver());
+         AtsCoreService.getWorkItemService(), AtsCoreService.getWorkDefService(), AtsCoreService.getAttributeResolver());
    }
 
 }

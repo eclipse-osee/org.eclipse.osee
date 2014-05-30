@@ -105,7 +105,7 @@ public class AtsCoreService {
       started = true;
    }
 
-   public static IAttributeResolver getAttrResolver() throws OseeStateException {
+   public static IAttributeResolver getAttributeResolver() throws OseeStateException {
       checkStarted();
       return attrResolver;
    }
@@ -166,8 +166,8 @@ public class AtsCoreService {
       return logFactory;
    }
 
-   public static IAtsConfig getAtsConfig() throws OseeStateException {
-      return atsConfigProvider.getAtsConfig();
+   public static IAtsConfig getConfig() throws OseeStateException {
+      return atsConfigProvider.getConfig();
    }
 
    public static IAtsBranchService getBranchService() throws OseeCoreException {
@@ -178,7 +178,7 @@ public class AtsCoreService {
       return reviewServiceProvider.getReviewService();
    }
 
-   public static IAtsConfigProvider getAtsConfigProvider() {
+   public static IAtsConfigProvider getConfigProvider() {
       return atsConfigProvider;
    }
 

@@ -219,7 +219,7 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public <T extends IAtsConfigObject> Collection<T> getConfigObjects(Collection<? extends Artifact> artifacts, Class<T> clazz) throws OseeCoreException {
-      IAtsConfig config = getAtsConfig();
+      IAtsConfig config = getConfig();
       List<T> objects = new ArrayList<T>();
       for (Artifact art : artifacts) {
          objects.addAll(config.getByTag(art.getGuid(), clazz));
@@ -301,12 +301,12 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsConfig getAtsConfig() throws OseeStateException {
+   public IAtsConfig getConfig() throws OseeStateException {
       return configProxy;
    }
 
    @Override
-   public IAtsVersionAdmin getAtsVersionService() throws OseeStateException {
+   public IAtsVersionAdmin getVersionService() throws OseeStateException {
       return versionService;
    }
 

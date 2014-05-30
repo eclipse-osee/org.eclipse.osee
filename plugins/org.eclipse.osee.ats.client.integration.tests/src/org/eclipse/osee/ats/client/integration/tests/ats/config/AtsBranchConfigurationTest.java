@@ -341,14 +341,14 @@ public class AtsBranchConfigurationTest {
       // Delete VersionArtifacts
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsClientService.get().getAtsConfig().get(IAtsVersion.class)) {
+      for (IAtsVersion version : AtsClientService.get().getConfig().get(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
             Artifact artifact = AtsClientService.get().getConfigArtifact(version);
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }
          }
-         AtsClientService.get().getAtsConfig().invalidate(version);
+         AtsClientService.get().getConfig().invalidate(version);
       }
       transaction.execute();
 
@@ -357,8 +357,8 @@ public class AtsBranchConfigurationTest {
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
-         AtsClientService.get().getAtsConfig().invalidate(
-            AtsClientService.get().getAtsConfig().getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class));
+         AtsClientService.get().getConfig().invalidate(
+            AtsClientService.get().getConfig().getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class));
       }
       transaction.execute();
 
@@ -368,11 +368,11 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
-            AtsClientService.get().getAtsConfig().invalidate(
-               AtsClientService.get().getAtsConfig().getSoleByGuid(childArt.getGuid(), IAtsActionableItem.class));
+            AtsClientService.get().getConfig().invalidate(
+               AtsClientService.get().getConfig().getSoleByGuid(childArt.getGuid(), IAtsActionableItem.class));
          }
-         AtsClientService.get().getAtsConfig().invalidate(
-            AtsClientService.get().getAtsConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class));
+         AtsClientService.get().getConfig().invalidate(
+            AtsClientService.get().getConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class));
          transaction.execute();
       }
 
