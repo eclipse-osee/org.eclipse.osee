@@ -163,6 +163,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		}
 
 		this.serviceSideConnector = serviceSideConnector;
+		System.out.printf("BETA SERVER URL[http://%s:%s/ote]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
 		brokerService = new BrokerService();
 
 		String strUri;
@@ -194,8 +195,6 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		URI uri = new URI(strUri);
 		
 		System.out.printf("SERVER CONNECTION(ACTIVEMQ) URI[\n\t%s\n]\n", strUri);
-		System.out.printf("SERVER URL[\n\thttp://%s:%s/ote\n]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
-		System.out.printf("SERVER REST WADL[http://%s:%s/ote/application.wadl]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
 
 		nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
 
