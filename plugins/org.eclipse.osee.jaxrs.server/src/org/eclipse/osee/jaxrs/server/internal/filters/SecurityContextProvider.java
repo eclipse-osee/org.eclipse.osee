@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal;
+package org.eclipse.osee.jaxrs.server.internal.filters;
 
-import org.eclipse.osee.jaxrs.server.internal.filters.FiltersTestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import javax.ws.rs.core.SecurityContext;
+import com.sun.jersey.api.core.HttpRequestContext;
 
 /**
- * @author David W. Miller
+ * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({FiltersTestSuite.class, JaxRsConfigurationTest.class, RestResourceConcatenatorTest.class})
-public class JaxRsServerInternalTestSuite {
-   // Test Suite
+public interface SecurityContextProvider {
+
+   SecurityContext getSecurityContext(HttpRequestContext requestContext);
+
 }

@@ -8,14 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal;
+package org.eclipse.osee.jaxrs.server.internal.ext;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.ws.rs.core.Application;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitor;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import com.google.common.io.InputSupplier;
@@ -28,19 +32,31 @@ import com.sun.jersey.server.wadl.generators.resourcedoc.WadlGeneratorResourceDo
 /**
  * @author Roberto E. Escobar
  */
-public class BundleWadlGeneratorConfig extends WadlGeneratorConfig {
+public class JerseyWadlGeneratorConfig extends WadlGeneratorConfig {
 
    private final Log logger;
-   private final ObjectProvider<Iterable<Bundle>> provider;
+   private final JaxRsVisitable visitable;
 
-   public BundleWadlGeneratorConfig(Log logger, ObjectProvider<Iterable<Bundle>> provider) {
+   public JerseyWadlGeneratorConfig(Log logger, JaxRsVisitable visitable) {
       this.logger = logger;
-      this.provider = provider;
+      this.visitable = visitable;
+   }
+
+   private Iterable<Bundle> getBundles() {
+      final List<Bundle> bundles = new ArrayList<Bundle>();
+      visitable.accept(new JaxRsVisitor() {
+
+         @Override
+         public void onApplication(String applicationContext, String componentName, Bundle bundle, Application application) {
+            bundles.add(bundle);
+         }
+      });
+      return bundles;
    }
 
    public boolean hasExtendedWadl() {
       boolean result = false;
-      Iterable<Bundle> bundles = provider.get();
+      Iterable<Bundle> bundles = getBundles();
       for (Bundle bundle : bundles) {
          result = hasExtendedWadl(bundle);
          if (result) {
@@ -92,7 +108,7 @@ public class BundleWadlGeneratorConfig extends WadlGeneratorConfig {
    private InputStream getAsInputStream(String path, String xmlRoot) throws Exception {
       RestResourceConcatenator concat = new RestResourceConcatenator();
       concat.initialize(xmlRoot);
-      Iterable<Bundle> bundles = provider.get();
+      Iterable<Bundle> bundles = getBundles();
       for (Bundle bundle : bundles) {
          if (hasExtendedWadl(bundle)) {
             URL url = bundle.getResource(path);

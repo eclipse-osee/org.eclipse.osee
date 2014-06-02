@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.server.internal.RestResourceConcatenator;
+import org.eclipse.osee.jaxrs.server.internal.ext.RestResourceConcatenator;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

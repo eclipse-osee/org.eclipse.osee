@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal;
+package org.eclipse.osee.jaxrs.server.internal.ext;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.osee.jaxrs.server.internal;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -21,9 +20,9 @@ import org.osgi.framework.ServiceReference;
 /**
  * @author Roberto E. Escobar
  */
-public final class RestServiceUtils {
+public final class JaxRsUtils {
 
-   private RestServiceUtils() {
+   private JaxRsUtils() {
       // Utility class
    }
 
@@ -50,7 +49,7 @@ public final class RestServiceUtils {
       Class<? extends Application> clazz = application.getClass();
       ApplicationPath applicationPath = clazz.getAnnotation(ApplicationPath.class);
       if (applicationPath != null) {
-         toReturn = normalize(applicationPath.value());
+         toReturn = JaxRsUtils.normalize(applicationPath.value());
       }
       return toReturn;
    }
@@ -70,7 +69,7 @@ public final class RestServiceUtils {
       return !isNullOrEmpty(app.getClasses()) || !isNullOrEmpty(app.getSingletons());
    }
 
-   private static String normalize(String contextName) {
+   public static String normalize(String contextName) {
       return contextName != null && !contextName.startsWith("/") ? "/" + contextName : contextName;
    }
 
@@ -78,11 +77,13 @@ public final class RestServiceUtils {
       return collection == null || collection.isEmpty();
    }
 
-   public static Map<String, String> toMap(String componentName, String contextName) {
-      Map<String, String> data = new HashMap<String, String>();
-      data.put("component.name", componentName);
-      data.put("context.name", contextName);
-      return data;
+   public static String get(Map<String, Object> props, String key, String defaultValue) {
+      String toReturn = defaultValue;
+      Object object = props != null ? props.get(key) : null;
+      if (object != null) {
+         toReturn = String.valueOf(object);
+      }
+      return toReturn;
    }
 
 }

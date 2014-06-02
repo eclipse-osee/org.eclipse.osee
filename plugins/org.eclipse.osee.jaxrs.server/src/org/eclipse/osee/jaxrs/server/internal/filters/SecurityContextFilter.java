@@ -12,7 +12,6 @@ package org.eclipse.osee.jaxrs.server.internal.filters;
 
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
-import org.eclipse.osee.jaxrs.server.internal.SecurityContextProvider;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponseFilter;

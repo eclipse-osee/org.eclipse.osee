@@ -13,8 +13,8 @@ package org.eclipse.osee.jaxrs.server.internal;
 /**
  * @author Roberto E. Escobar
  */
-public interface ObjectProvider<T> {
+public interface JaxRsVisitable {
 
-   T get();
+   void accept(JaxRsVisitor visitor);
 
 }

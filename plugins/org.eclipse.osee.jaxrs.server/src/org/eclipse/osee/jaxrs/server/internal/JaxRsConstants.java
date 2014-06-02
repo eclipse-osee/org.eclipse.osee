@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal;
 
-import javax.ws.rs.core.SecurityContext;
-import com.sun.jersey.api.core.HttpRequestContext;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface SecurityContextProvider {
+public final class JaxRsConstants {
 
-   SecurityContext getSecurityContext(HttpRequestContext requestContext);
+   private JaxRsConstants() {
+      // Constants class
+   }
+
+   public static final String NAMESPACE = "jaxrs.server";
+
+   private static String qualify(String value) {
+      return String.format("%s.%s", NAMESPACE, value);
+   }
+
+   public static final String DEFAULT_JAXRS_BASE_CONTEXT = "/";
+
+   public static final String JAXRS_BASE_CONTEXT = qualify("base.context");
 
 }
