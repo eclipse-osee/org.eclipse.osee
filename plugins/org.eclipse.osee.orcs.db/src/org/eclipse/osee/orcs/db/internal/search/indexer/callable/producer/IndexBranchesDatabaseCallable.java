@@ -84,7 +84,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
 
       Set<Long> branchUuids = new HashSet<Long>();
       for (BranchReadable branch : branches) {
-         branchUuids.add((long) branch.getLocalId());
+         branchUuids.add(branch.getUuid());
       }
 
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
