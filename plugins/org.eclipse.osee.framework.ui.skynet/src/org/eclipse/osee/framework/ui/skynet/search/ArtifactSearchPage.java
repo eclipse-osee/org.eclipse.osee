@@ -653,7 +653,10 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       @SuppressWarnings("unchecked")
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
-         return getComparator().compare(e1.toString(), e2.toString());
+         String s1 = e1 instanceof Named ? ((Named) e1).getName() : e1.toString();
+         String s2 = e2 instanceof Named ? ((Named) e2).getName() : e2.toString();
+         return getComparator().compare(s1, s2);
       }
    }
+
 }
