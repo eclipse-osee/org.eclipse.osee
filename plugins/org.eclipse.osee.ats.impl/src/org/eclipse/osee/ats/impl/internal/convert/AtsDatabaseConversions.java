@@ -23,10 +23,17 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class AtsDatabaseConversions {
 
+   private static List<IAtsDatabaseConversion> externalConversions = new ArrayList<IAtsDatabaseConversion>();
+
    public static List<IAtsDatabaseConversion> getConversions(OrcsApi orcsApi) {
       List<IAtsDatabaseConversion> conversions = new ArrayList<IAtsDatabaseConversion>();
       conversions.add(new ConvertBaselineGuidToBaselineUuid(OseeDatabaseService.getDbService(), orcsApi));
       conversions.add(new ConvertFavoriteBranchGuidToUuid(OseeDatabaseService.getDbService(), orcsApi));
+      conversions.addAll(externalConversions);
       return conversions;
+   }
+
+   public void addDatabaseConversion(IAtsDatabaseConversion conversion) {
+      externalConversions.add(conversion);
    }
 }
