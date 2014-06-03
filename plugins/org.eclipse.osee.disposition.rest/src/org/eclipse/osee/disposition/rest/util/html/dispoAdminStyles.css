@@ -28,9 +28,18 @@ body{
 	margin: 10% 0% 0% 50%;
 	position: relative;
 }
+#programSelectDiv {
+		height: 100px;
+		float: left;
+		margin-left: 30px;
+}
 #programSelect {
-    margin:-20px 0px 0px 0px;
+    width: 250px;
     background-color: rgb(145, 198, 200);
+    color: black;
+}
+#programSelectPrompt {
+    margin:5px;
 }
 th {
     border: 2px solid;
@@ -40,7 +49,13 @@ th {
 	margin: 150px 0 0px 800px;
 	background-color: #F8F8FF;
 	width: 400px;
-	height: 110px;
+	height: 240px;
+}
+#setSelectPrimary {
+	margin-top: -10px;
+}
+#setSelectSecondary {
+	margin-top: -10px;
 }
 #namePromptSubmit {
     height: 30px;
@@ -62,28 +77,15 @@ p {
     height: 200px;
 }
 #generateReport {
-    width: 200px;  height: 51px;
+    height: 51px;
     margin-left: 40px;
     margin-top: 25px
-}
-#setNameInput {
-	margin-top: 20px;
-	width: 300px;
-}
-#setPathInput {
-    width: 300px;
-    margin-left: 10px;
 }
 #generateReportDiv {
 	 float: left;
 }
 #reportSupportDiv {
 	 float: right;
-}
-#programSelectDiv {
-	 margin-left: 120px;
-    width: 400px;
-    float: left;
 }
 #all {
     width: 1800px;
@@ -114,7 +116,6 @@ select {
 }
 #delete {
 	margin-top: 20px;
-	margin-left: 147px;
 }
 #setOperationContainer {
     margin-left: 40px;

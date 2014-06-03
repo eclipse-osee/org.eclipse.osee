@@ -5,42 +5,39 @@
         <style>
             <?include path="4000000000000019 dispoStyles.css"?>
         </style>
+        <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+        <title>Disposition Tool</title>
     </head>
     
-    <body onload="setUpUndoCatch(); getPrograms();">
+    <body onload="getPrograms();">
     			<div id="waitBlanket" style="display:none"><div id="waitText">Please Wait...</div></div>
         <div id="all">
-            <div id="choices">
-                <ul style="list-style-type: none;">
-                    <li> 
-                    		 <a href="admin">Admin</a>
- 								 <a href="">User</a>
-                    </li>
-                </ul> 
+            <div id="title">
+					<h1 align="center">Disposition Tool</h1>
             </div>
             <div id="userSection">
                 <div id="topSection">
                     <div id="selectDiv">
                         <div id="programSelectDiv">
                             <p id="programSelectPrompt">Please Select ATS Version</p>
-                            <select id="programSelect" onfocus="getPrograms(this)" onchange="getProgramDetails(this)">
+                            <select class="form-control" id="programSelect" onfocus="getPrograms(this)" onchange="getProgramDetails(this)">
                                 <option selected disabled>Choose one</option>
                             </select>
                         </div>
                         <div id="setSelectDiv">
                             <p id="setSelectPrompt">Please Select a Set</p>
-                            <select id="setSelect" onchange="getSetTable(this)">
+                            <select class="form-control" id="setSelect" onchange="getSetTable(this)">
                                 <option selected disabled>Choose one</option>
                             </select>
                         </div>
                     </div>
                 </div> 
                 <div id="dispoSection">
-                    <table id="dispoTable">
+                    <table class="table" id="dispoTable">
                         <tr>
-                            <th width="400" style="background-color: #969AA0">Script Name</th>
-									 <th width="130" style="background-color: #969AA0">
-									 		<select id="statusSelect" onchange="getItemsFiltered(this)">
+                            <th width="500" style="background-color: #969AA0">Script Name</th>
+									 <th width="150" style="background-color: #969AA0">
+									 		<select class="form-control" id="statusSelect" onchange="getItemsFiltered(this)">
 									 				<option selected="" disabled="">Status</option>
 									 				<option>COMPLETE</option>
 									 				<option>INCOMPLETE</option>
@@ -49,93 +46,14 @@
 									 		</select></th>
                             <th width="75" style="background-color: #969AA0">Total</th>
                             <th width="75" style="background-color: #969AA0">Failures</th>
-                            <th width="600" style="background-color: #969AA0">Points</th>
-									 <th width="200" style="background-color: #969AA0">POC:
-									 		<input id="pocSelect" onchange="getPocFiltered(this)"></select></th>
+                            <th width="400" style="background-color: #969AA0">Points</th>
+									 <th width="200" style="background-color: #969AA0">
+									 		<input class="form-control" placeholder="Assignee" id="pocSelect" onchange="getPocFiltered(this)"></select></th>
                             <th width="150" style="background-color: #969AA0">Version</th>
-                            <th width="50" style="background-color: #969AA0">Rerun?</th>
+                            <th width="50" style="background-color: #969AA0">Rerun?
+                            		<input id="rerunCheckBox" class="form-control" type="checkbox" onclick="doFilter()"></th>
                         </tr>
                         <tbody id="dispoTableBody">
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td> 
-                            </tr>
-                            <tr class="itemRow">
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
-                            <tr>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                                <td class="emptyCell"></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -153,12 +71,8 @@
         	       var waitBlanket = document.getElementById("waitBlanket");
         	       var pocSelect = document.getElementById("pocSelect");
         	       var statusSelect = document.getElementById("statusSelect");
+        	       var rerunCheckBox = document.getElementById("rerunCheckBox");
         </script>
-<script>
-    function setUpUndoCatch() {
-        document.onkeydown = keyPress;
-    }
-</script>
 <script>
     function toggleRerun(checkBoxEl) {
         var selectedSetIndex = setSelect.selectedIndex;
@@ -238,92 +152,27 @@
 </script>
 <script>
     function showAnnotations(currentRow) {
-    	   getLatestPoc(currentRow);
-    }
-</script>    
-<script>
-    function getLatestPoc(currentRow) {
-    	  var selectedProgramIndex = programSelect.selectedIndex;
-        var programId = programSelect.options[selectedProgramIndex].value;
-        var selectedSetIndex = setSelect.selectedIndex;
-        var setId = setSelect.options[selectedSetIndex].value;
-        var itemId = currentRow.id;
-        var currentRowIndex = currentRow.rowIndex;
-
-        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
-
-        get(fullPath, getLatestPocStatusHandler, currentRow);
-    }
-</script> 
-<script>
-    function expandAnnotations(currentRow) {
-        if (userName == "" || userName === undefined) {
-	          userName = getCookie("disponame");
-	          if(userName === undefined) {
-	          	 var nameEnter=prompt("Please enter your name","");
-	          	 if(nameEnter != null && nameEnter != "") {
-				 	    userName = nameEnter;
-				 	    addFieldToCookie("disponame", userName);
-				 	 }
-	          } 
-        }
-        
-        
-        if(userName !== undefined) {
-	        var pocCell = currentRow.cells[5];
-	        var currentAssigned = pocCell.innerHTML;
-	        if (userName == currentAssigned) {
-	            var currentRowIndex = currentRow.rowIndex;
-	            var nextRow = dispoTable.rows[currentRowIndex + 1];
+    	 var currentRowStatus = currentRow.cells[1].innerHTML;
+    	 if(currentRowStatus != "PASS") {
+	         var currentRowIndex = currentRow.rowIndex;
+	         var nextRow = dispoTable.rows[currentRowIndex + 1];
 	
-	            if (nextRow === undefined) {
-	                nextRow = dispoTable.insertRow(currentRowIndex + 1);
-	            }
-	            if (nextRow.className == "containerRow") {
-	                if (nextRow.style.display == "none") {
-	                    nextRow.style.display = "";
-	                } else {
-	                    nextRow.style.display = "none";
-	                }
-	            } else {
-	                var itemId = currentRow.id;
-	                getSubTableHTML(currentRow, itemId);
-	            }
-	        } else {
-	            changePOC(currentRow, currentAssigned);
-	        }
+	         if (nextRow === undefined) {
+	             nextRow = dispoTable.insertRow(currentRowIndex + 1);
+	         }
+	         if (nextRow.className == "containerRow") {
+	             if (nextRow.style.display == "none") {
+	                 nextRow.style.display = "";
+	             } else {
+	                 nextRow.style.display = "none";
+	             }
+	         } else {
+	             var itemId = currentRow.id;
+	             getSubTableHTML(currentRow, itemId);
+	         }
         }
     }
-</script>
-<script>
-    function changePOC(currentRow, currentAssigned) {
-
-			var confirmSteal;
-		  if(currentAssigned != "UnAssigned") {
-        		confirmSteal = confirm("Are you sure you want to steal this Item from user " + currentAssigned);
-        	} else {
-        		confirmSteal = true;
-        	}
-
-        if (confirmSteal) {
-            var selectedProgramIndex = programSelect.selectedIndex;
-            var programId = programSelect.options[selectedProgramIndex].value;
-
-            var selectedSetIndex = setSelect.selectedIndex;
-            var setId = setSelect.options[selectedSetIndex].value;
-
-            var itemId = currentRow.id;
-
-            var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
-
-            var jsonObject = {};
-            jsonObject["assignee"] = userName;
-            var params = JSON.stringify(jsonObject);
-
-            put(fullPath, params, putItemStatusHandler, currentRow);
-        }
-    }
-</script>
+</script>  
 <script>
     function getSubTableHTML(currentRow, itemId) {
         var selectedProgramIndex = programSelect.selectedIndex;
@@ -339,28 +188,113 @@
 
         get(fullPath, subTableStatusHandler, currentRowIndex);
     }
+</script>  
+<script>
+    function changePOC(assigneeEl) {
+    	  var cachedUserName = getCachedUserName();
+    	  var currentRow = assigneeEl.parentNode;
+    	  var currentAssigned = assigneeEl.innerHTML;
+
+	     if(currentAssigned != cachedUserName) {
+				  var confirmSteal;
+				  if(currentAssigned != "UnAssigned") {
+		        		confirmSteal = confirm("Are you sure you want to steal this Item from user " + currentAssigned);
+		        	} else {
+		        		confirmSteal = true;
+		        	}
+		
+		        if (confirmSteal) {
+		            var selectedProgramIndex = programSelect.selectedIndex;
+		            var programId = programSelect.options[selectedProgramIndex].value;
+		
+		            var selectedSetIndex = setSelect.selectedIndex;
+		            var setId = setSelect.options[selectedSetIndex].value;
+		
+		            var itemId = currentRow.id;
+		
+		            var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
+		
+		            var jsonObject = {};
+		            jsonObject["assignee"] = cachedUserName;
+		            var params = JSON.stringify(jsonObject);
+		
+		            put(fullPath, params, putItemStatusHandler, currentRow);
+		        }
+		   }
+    }
 </script>
 <script>
     function submitAnnotationData(selectedElement) {
-        var selectedElementCell = selectedElement.parentNode;
-        var annotationRow = selectedElementCell.parentNode;
-
-        var isValidInput = true;
-
-        if (selectedElementCell.cellIndex == 0) {
-            var input = selectedElement.value;
-            var regEx = new RegExp("^\\s*(\\d+|\\d+\\s*-\\s*\\d+)(\\s*,\\s*(\\d+|\\s*\\d+\\s*-\\s*\\d+))*\\s*$");
-            isValidInput = regEx.test(input)
-        }
-
-        if (isValidInput) {
-            if (annotationRow.id == "") {
-                postAnnotation(selectedElement);
-            } else {
-                putAnnotation(selectedElement, annotationRow.id);
-            }
-        }
+			getLatestPoc(selectedElement);
     }
+</script>
+<script>
+    function getLatestPoc(selectedElement) {
+        var containerRow = selectedElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+    	  var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+    
+    	  var selectedProgramIndex = programSelect.selectedIndex;
+        var programId = programSelect.options[selectedProgramIndex].value;
+        var selectedSetIndex = setSelect.selectedIndex;
+        var setId = setSelect.options[selectedSetIndex].value;
+        var itemId = itemRow.id;
+
+        var fullPath = path.concat(programId, "/set/", setId, "/item/", itemId);
+
+        get(fullPath, getLatestPocStatusHandler, selectedElement);
+    }
+</script> 
+<script>
+    function submitAnnotationDataPostPoc(selectedElement) {
+        var containerRow = selectedElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+    	  var cachedUserName = getCachedUserName();
+    	 
+    	  var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
+    	  var pocCell = itemRow.cells[5];
+	     var currentAssigned = pocCell.innerHTML;
+	     
+    	  if (cachedUserName == currentAssigned) {
+	        var selectedElementCell = selectedElement.parentNode;
+	        var annotationRow = selectedElementCell.parentNode;
+	
+	        var isValidInput = true;
+	
+	        if (selectedElementCell.cellIndex == 0) {
+	            var input = selectedElement.value;
+	            var regEx = new RegExp("^\\s*(\\d+|\\d+\\s*-\\s*\\d+)(\\s*,\\s*(\\d+|\\s*\\d+\\s*-\\s*\\d+))*\\s*$");
+	            isValidInput = regEx.test(input)
+	        }
+	
+	        if (isValidInput) {
+	            if (annotationRow.id == "") {
+	                postAnnotation(selectedElement);
+	            } else {
+	                putAnnotation(selectedElement, annotationRow.id);
+	            }
+	        }
+	     } else {
+	     		window.alert("You cannot edit this item because you're not the assignee. To assign yourself double click on the item's assignee field.");
+	     }
+    }
+</script>
+<script>
+	function getCachedUserName() {
+        if (userName == "" || userName === undefined) {
+            userName = getCookie("disponame");
+            if(userName === undefined) {
+            	var nameEnter=prompt("Please enter your name","");
+            	if(nameEnter != null && nameEnter != "") {
+					   userName = nameEnter;
+					   addFieldToCookie("disponame", userName);
+					} else {
+						window.alert("Enter a Valid Name");
+						getCachedUserName();
+					}
+            } 
+        } 
+        
+        return userName;
+	}
 </script>
 <script>
     function postAnnotation(selectedElement) {
@@ -485,7 +419,6 @@
         return function() {
             if (this.readyState == 4 && this.status == 200) {
                 currentRow.cells[5].innerHTML = userName;
-                showAnnotations(currentRow);
             }
         };
     }
@@ -652,23 +585,17 @@
     }
 </script>
 <script>
-    function getLatestPocStatusHandler(itemRow) {
+    function getLatestPocStatusHandler(selectedElement) {
         return function() {
             if (this.readyState == 4 && this.status == 200) {
             	  var itemObject = eval('(' + this.responseText + ')');
+            	  var containerRow = selectedElement.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+        			  var itemRow = dispoTable.rows[containerRow.rowIndex - 1];
             	  itemRow.cells[5].innerHTML = itemObject.assignee;
-            	  expandAnnotations(itemRow);
+            	  submitAnnotationDataPostPoc(selectedElement);
             }        
         }
     }	
-</script>
-<script>
-    function keyPress(e) {
-        var evtobj = window.event ? event : e
-        if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
-            alert("Ctrl+z");
-        }
-    }
 </script>
 <script>
     function addContainerRow(currentRowIndex, htmlToAdd) {
@@ -679,37 +606,38 @@
 </script>
 <script>
     function annotationDblClick(annotationInput) {
-        var newClass;
-        switch (annotationInput.className) {
-            case "annotationInput":
-                newClass = "annotationInputDetails";
-                break;
-            case "annotationInputInvalid":
-                newClass = "annotationInputInvalidDetails";
-                break;
-            case "annotationInputDetails":
-                newClass = "annotationInput";
-                break;
-            case "annotationInputInvalidDetails":
-                newClass = "annotationInputInvalid";
-                break;
-            default:
-                newClass = "";
-        }
+		  var currentClass = annotationInput.className;
+		  var appendDetails = false;
+		  
+		  var searchResult = currentClass.search("Details");
+		  
+		  if(searchResult < 0) {
+		  	  appendDetails = true;
+		  }
 
-        if (newClass != "") {
-            changeClassForRow(annotationInput.parentNode.parentNode, newClass);
+        changeClassForRow(annotationInput.parentNode.parentNode, appendDetails);
+    }
+</script>
+<script>
+    function changeClassForRow(rowEl, appendDetails) {
+        var cells = rowEl.cells;
+        var cellsLength = cells.length;
+        for (index = 0; index < cellsLength - 1; index++) {
+        		var currentEl = cells[index].firstChild;
+            cells[index].firstChild.className = getNewClass(currentEl, appendDetails);
         }
     }
 </script>
 <script>
-    function changeClassForRow(rowEl, newClass) {
-        var cells = rowEl.cells;
-        var cellsLength = cells.length;
-        for (index = 0; index < cellsLength - 1; index++) {
-            cells[index].firstChild.className = newClass;
-        }
-    }
+	function getNewClass(element, appendDetails) {
+		  var currentClass = element.className;
+		  if(appendDetails) {
+		  		toReturn = currentClass + "Details";
+		  } else  {
+		  	   toReturn = currentClass.replace("Details", "");
+		  }
+		  return toReturn;
+	}
 </script>
 <script>
     function addDeleteButton(newRow, cellsLength) {
@@ -869,80 +797,16 @@
 			}
 </script>
 <script>
-    function doFilterByStatus(filterValue) {
-        var rows = dispoTableBody.rows;
-
-        var rowsLength = rows.length;
-        var i = 0;
-        while (i < rowsLength) {
-            var row = rows[i];
-            // hide row and possibly container row
-            if (filterValue != "ALL" && row.cells[1].innerHTML != filterValue) {
-                row.style.display = "none";
-
-                i++;
-                if (i < rowsLength) {
-                    var nextRow = rows[i];
-                    if (nextRow.className == "containerRow") {
-                        nextRow.style.display = "none";
-                        i++;
-                    }
-                }
-            } else {
-                row.style.display = "";
-
-                i++;
-                if (i < rowsLength) {
-                    var nextRow = rows[i];
-                    if (nextRow.className == "containerRow") {
-                        //nextRow.style.display = "";
-                        i++;
-                    }
-                }
-            }
-        }
-    }
-</script>
-<script>
-    function doFilterByPOC(filterValue) {
-        var rows = dispoTableBody.rows;
-
-        var rowsLength = rows.length;
-        var i = 0;
-        while (i < rowsLength) {
-            var row = rows[i];
-            // hide row and possibly container row
-            if (filterValue != "ALL" && row.cells[5].innerHTML != filterValue) {
-                row.style.display = "none";
-
-                i++;
-                if (i < rowsLength) {
-                    var nextRow = rows[i];
-                    if (nextRow.className == "containerRow") {
-                        nextRow.style.display = "none";
-                        i++;
-                    }
-                }
-            } else {
-                row.style.display = "";
-
-                i++;
-                if (i < rowsLength) {
-                    var nextRow = rows[i];
-                    if (nextRow.className == "containerRow") {
-                        //nextRow.style.display = "";
-                        i++;
-                    }
-                }
-            }
-        }
-    }
+	 function getRerunFiltered(checkBox) {
+	 
+	 }
 </script>
 <script>
     function doFilter() {
         var filterSelectedIndex = statusSelect.selectedIndex;
         var statusFilter = statusSelect.options[filterSelectedIndex].value;
         var pocFilter = pocSelect.value;
+        var rerunFilter = rerunCheckBox.checked;
 
         var rows = dispoTableBody.rows;
 
@@ -951,7 +815,10 @@
         while (i < rowsLength) {
             var row = rows[i];
             // hide row and possibly container row
-            if ((statusFilter == "ALL" || statusFilter == "Status" || statusFilter == row.cells[1].innerHTML) && (pocFilter == "" || pocFilter == row.cells[5].innerHTML)) {
+            var statusFilterShow = (statusFilter == "ALL" || statusFilter == "Status" || statusFilter == row.cells[1].innerHTML);
+            var pocFilterShow = (pocFilter == "" || pocFilter == row.cells[5].innerHTML);
+            var rerunFilterShow = !rerunFilter || row.cells[7].firstChild.checked;
+            if (statusFilterShow && pocFilterShow && rerunFilterShow) {
                 row.style.display = "";
 
                 i++;

@@ -20,8 +20,9 @@ body{
 	position: relative;
 }
 #all {
-	width: 1500px;
 	position: relative;
+	margin-left: 20px;
+	margin-right: 20px;
 }
 #topSection {
 }
@@ -29,41 +30,39 @@ body{
     height: 100px;
 }
 #programSelectDiv {
-    height: 100px;
-    width: 35%;
-    float: left;
+		height: 100px;
+		width: 15%;
+		float: left;
 }
 #programSelect {
     width: 250px;
-    margin:-20px 0px 0px 0px;
     background-color: rgb(145, 198, 200);
+    color: black;
 }
 #programSelectPrompt {
-    margin:0px;
+    margin:5px;
 }
 #setSelectDiv {
-	width: 65%;
-	height: 100px;
-	float: right;
+		width: 80%;
+		float: right;
 }
 #statusSelect {
 	height: 100%;
 	width: 100%;
 	border: none;
 	background-color: grey;
-	font-weight: bolder;
+	color: #333;
 }
 #pocSelect {
-	height: 100%;
-	width: 75%;
+	color: #333;
 	border: none;
 	background-color: grey;
 	font-weight: bolder;
 }
 #setSelect {
 	width: 250px;
-	margin: -30px 10px;
     background-color: rgb(145, 198, 200);
+    color: black;
 }
 #setSelect2 {
     width: 250px;
@@ -71,7 +70,7 @@ body{
     background-color: rgb(145, 198, 200);
 }
 #setSelectPrompt {
-	margin: 0px 10px;
+	margin: 5px;
 }
 #compareText {
 	width: 110px;
@@ -135,43 +134,47 @@ textarea {
 	resize: none;
 }
 .annotationInput {
-    border: none;
-    height: 28px;
-    width: 100%;
-    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-       -moz-box-sizing: border-box; /* FF1+ */
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+	border: none;
+	width: 100%;
+	height: 32px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 	background-color: #9AEAF5;
 }
 .annotationInputInvalid {
-    height: 28px;
-    width: 100%;
-    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-       -moz-box-sizing: border-box; /* FF1+ */
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
-	background-color: #9AEAF5;
 	border: 4px solid red;
-}
-.annotationInputError {
-    border: none;
-    height: 28px;
-    width: 100%;
-    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-       -moz-box-sizing: border-box; /* FF1+ */
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
-	background-color: red;
+	width: 100%;
+	height: 32px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	background-color: #9AEAF5;
 }
 .annotationInput:disabled {
     background-color: #D3DFE0;	
 }
 .annotationInputDisabled {
-    border: none;
-    height: 28px;
-    width: 100%;
-    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-       -moz-box-sizing: border-box; /* FF1+ */
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
-    background-color: #D3DFE0;	
+	border: none;
+	width: 100%;
+	height: 32px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+   background-color: #D3DFE0;	
+}
+.annotationInputDisabledDetails {
+	border: none;
+	width: 100%;
+	height: 200px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+   background-color: #D3DFE0;	
 }
 .annotationInputDisabled:focus {
 	outline: 0px none rgba(0, 0, 0, 0);
@@ -183,23 +186,55 @@ textarea {
 	border: 2px dashed red;
 }
 .annotationInputDetails {
-    width:98%;
-    height: 200px;
+	border: none;
+	width: 100%;
+   height: 200px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 	background-color: #9AEAF5;
 	overflow: visible;
 	white-space: pre-line;
 }
+.annotationInputDetails:focus {
+	border: 2px dashed green;
+}
 .annotationInputInvalidDetails {
-    width:98%;
-    background-color: #DD9AF5;
+	border: 4px solid red;
+	width: 100%;
+   height: 200px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	background-color: #9AEAF5;
 	overflow: visible;
 	white-space: pre-line;
 }
+.annotationInputInvalidDetails:focus {
+	border: 2px dashed red;
+}
 .annotationDelete {
-	 height:20px;
-	 font-weight:bold;
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
 .annotationDelete:disabled {
-	 background-color: #CC7A7A;
+	background-color: white;
+	color: white;
+	border: none;
 }

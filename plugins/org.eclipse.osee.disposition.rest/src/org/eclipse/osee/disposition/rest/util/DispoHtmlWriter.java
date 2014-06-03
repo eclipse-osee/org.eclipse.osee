@@ -38,11 +38,12 @@ public class DispoHtmlWriter {
    private final String subTableHeadersStart = "   <tr>"+
                                             "<th class=\"spacer\" rowspan=\"";
       
-   private final String subTableHeadersEnd ="\" width=\"20\"></th>"+
-                                            "<th width=\"200\">Points</th>"+
-                                            "<th width=\"100\">PCR</th>"+
+   private final String subTableHeadersEnd ="\" width=\"30\"></th>"+
+                                            "<th width=\"325\">Points</th>"+
+                                            "<th width=\"150\">PCR</th>"+
                                             "<th width=\"500\">Developer Notes</th>"+
                                             "<th width=\"500\">Customer Notes</th>"+
+                                            "<th width=\"40\">Delete</th>" + 
                                         "</tr>";
 // @formatter:on
 
@@ -216,8 +217,8 @@ public class DispoHtmlWriter {
 // @formatter:off
    public String createSubTable(List<DispoAnnotationData> annotations) throws IOException {
       StringBuilder sb = new StringBuilder();
-      sb.append("<td colspan=\"7\">");
-      sb.append("<table class=\"subTable\">");
+      sb.append("<td colspan=\"8\">");
+      sb.append("<table class=\"table subTable\">");
       sb.append(createHeadersForSubTable(annotations.size()));
       for(DispoAnnotationData annotation :annotations) {
          sb.append("<tr id=\"");

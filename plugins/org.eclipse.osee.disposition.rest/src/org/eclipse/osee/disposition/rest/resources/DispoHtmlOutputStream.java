@@ -60,13 +60,17 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
 
    private void addItemData(Appendable appendable, DispoItem item) throws IOException, JSONException {
       String itemStatus = item.getStatus();
-      addDataWithOnDblClick(appendable, item.getName(), "showAnnotations");
+      if (itemStatus != "PASS") {
+         addDataWithOnDblClick(appendable, item.getName(), "showAnnotations", "(this.parentNode)");
+      } else {
+         addDataWithOnDblClick(appendable, item.getName(), "", "");
+      }
       addDataStatus(appendable, itemStatus);
       addData(appendable, String.valueOf(item.getTotalPoints()));
       addData(appendable, String.valueOf(item.getDiscrepanciesList().length()));
       addDataWithOnDblClick(appendable, String.valueOf(getFailureLocations(item.getDiscrepanciesList())),
-         "showFailures");
-      addData(appendable, item.getAssignee());
+         "showFailures", "(this.parentNode)");
+      addDataWithOnDblClick(appendable, item.getAssignee(), "changePOC", "(this)");
       addData(appendable, item.getVersion());
       addDataAsButton(appendable, item.getNeedsRerun());
    }
@@ -77,17 +81,18 @@ public final class DispoHtmlOutputStream implements StreamingOutput {
       appendable.append("</td>");
    }
 
-   private void addDataWithOnDblClick(Appendable appendable, String data, String onDblClickName) throws IOException {
+   private void addDataWithOnDblClick(Appendable appendable, String data, String onDblClickName, String params) throws IOException {
       appendable.append("<td class=\"itemData\" ondblclick=\"");
       appendable.append(onDblClickName);
-      appendable.append("(this.parentNode)\">");
+      appendable.append(params);
+      appendable.append("\">");
       appendable.append(data);
       appendable.append("</td>");
    }
 
    private void addDataAsButton(Appendable appendable, boolean data) throws IOException {
       appendable.append("<td class=\"itemData\">");
-      appendable.append("<input type=\"checkbox\" onclick=\"toggleRerun(this)\"");
+      appendable.append("<input class=\"form-control\" type=\"checkbox\" onclick=\"toggleRerun(this)\"");
       if (data) {
          appendable.append(" checked");
       }
