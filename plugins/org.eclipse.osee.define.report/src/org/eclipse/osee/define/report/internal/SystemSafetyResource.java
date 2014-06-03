@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.define.report.OseeDefineResourceTokens;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -30,10 +31,12 @@ import org.eclipse.osee.orcs.OrcsApi;
 @Path("/")
 public final class SystemSafetyResource {
    private final OrcsApi orcsApi;
+   private final IResourceRegistry resourceRegistry;
    private final Log logger;
 
-   public SystemSafetyResource(Log logger, OrcsApi orcsApi) {
+   public SystemSafetyResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
       this.logger = logger;
+      this.resourceRegistry = resourceRegistry;
       this.orcsApi = orcsApi;
    }
 
@@ -64,6 +67,6 @@ public final class SystemSafetyResource {
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
       OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
-      return pageUtil.realizeApplet(orcsApi.getResourceRegistry(), OseeDefineResourceTokens.SystemSafetyReportHtml);
+      return pageUtil.realizeApplet(resourceRegistry, OseeDefineResourceTokens.SystemSafetyReportHtml);
    }
 }

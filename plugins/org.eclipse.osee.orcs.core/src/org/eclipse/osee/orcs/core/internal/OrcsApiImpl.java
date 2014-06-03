@@ -20,10 +20,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.TempCachingService;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -91,7 +89,6 @@ public class OrcsApiImpl implements OrcsApi {
 
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
-   private IResourceRegistry resourceRegistry;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -186,8 +183,6 @@ public class OrcsApiImpl implements OrcsApi {
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
-
-      resourceRegistry = new ResourceRegistry();
    }
 
    public void stop() {
@@ -285,11 +280,6 @@ public class OrcsApiImpl implements OrcsApi {
    private OrcsSession createSession() {
       String sessionId = GUID.create();
       return new OrcsSessionImpl(sessionId);
-   }
-
-   @Override
-   public IResourceRegistry getResourceRegistry() {
-      return resourceRegistry;
    }
 
 }

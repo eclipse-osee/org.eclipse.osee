@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.rest.internal.resources.TeamResource;
 import org.eclipse.osee.ats.rest.internal.resources.VersionResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -52,7 +53,7 @@ public class AtsApplication extends Application {
    }
 
    public void start() {
-      IResourceRegistry registry = orcsApi.getResourceRegistry();
+      IResourceRegistry registry = new ResourceRegistry();
       AtsResourceTokens.register(registry);
       AtsRestTemplateTokens.register(registry);
 

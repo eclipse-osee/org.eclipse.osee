@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs;
 
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -35,8 +34,6 @@ public interface OrcsApi {
    OrcsPerformance getOrcsPerformance(ApplicationContext context);
 
    OrcsTypes getOrcsTypes(ApplicationContext context);
-
-   IResourceRegistry getResourceRegistry();
 
    // TODO remove this call
    TransactionCache getTxsCache();

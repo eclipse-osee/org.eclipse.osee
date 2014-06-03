@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
 import org.eclipse.osee.define.report.OseeDefineResourceTokens;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -32,14 +33,17 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 @Path("/traceability/srstrace")
 public final class SRSTraceReportResource {
+
+   private final Log logger;
+   private final IResourceRegistry resourceRegistry;
    private final OrcsApi orcsApi;
    private final Map<String, Object> properties;
-   private final Log logger;
 
-   public SRSTraceReportResource(Log logger, OrcsApi orcsApi, Map<String, Object> properties) {
+   public SRSTraceReportResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi, Map<String, Object> properties) {
+      this.logger = logger;
+      this.resourceRegistry = resourceRegistry;
       this.orcsApi = orcsApi;
       this.properties = properties;
-      this.logger = logger;
    }
 
    private List<TraceMatch> getTraceMatchers(String traceType) {
@@ -92,6 +96,6 @@ public final class SRSTraceReportResource {
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
       OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
-      return pageUtil.realizeApplet(orcsApi.getResourceRegistry(), OseeDefineResourceTokens.SRSTraceReportHtml);
+      return pageUtil.realizeApplet(resourceRegistry, OseeDefineResourceTokens.SRSTraceReportHtml);
    }
 }
