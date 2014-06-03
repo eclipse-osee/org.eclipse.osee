@@ -6,7 +6,6 @@ Bundle-Version: 0.17.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.inject,
- org.eclipse.core.runtime,
  org.eclipse.emf.common,
  org.eclipse.emf.common.util,
  org.eclipse.emf.ecore,
@@ -39,8 +38,6 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.xml,
