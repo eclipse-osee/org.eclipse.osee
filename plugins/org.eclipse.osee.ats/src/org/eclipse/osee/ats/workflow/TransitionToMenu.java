@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -267,7 +268,7 @@ public class TransitionToMenu {
          public void done(IJobChangeEvent event) {
             TransitionResults results = operation.getResults();
             if (!results.isEmpty()) {
-               results.logExceptions();
+               AtsUtilClient.logExceptions(results);
                if (helper.getWorkItems().size() == 1) {
                   String resultStr = results.getResultString();
                   AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);

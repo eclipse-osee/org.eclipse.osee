@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.ITransitionResult;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -108,28 +106,6 @@ public class TransitionResults {
       return sb.toString();
    }
 
-   /**
-    * Log exceptions to OseeLog. Don't always want to do this due to testing.
-    */
-   public void logExceptions() {
-      for (ITransitionResult result : results) {
-         Exception ex = result.getException();
-         if (ex != null) {
-            OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails(), ex);
-         }
-      }
-      for (IAtsWorkItem workItem : workItemToResults.keySet()) {
-         List<ITransitionResult> results = workItemToResults.get(workItem);
-         for (ITransitionResult result : results) {
-            Exception ex = result.getException();
-            if (ex != null) {
-               String message = workItem.toStringWithId() + " - " + result.getDetails();
-               OseeLog.log(TransitionResults.class, Level.SEVERE, message, ex);
-            }
-         }
-      }
-   }
-
    public void appendResultsString(StringBuffer sb, List<ITransitionResult> results) {
       for (ITransitionResult result : results) {
          sb.append("    - ");
@@ -160,4 +136,13 @@ public class TransitionResults {
    public String toString() {
       return getResultString();
    }
+
+   public List<ITransitionResult> getResults() {
+      return results;
+   }
+
+   public Map<IAtsWorkItem, List<ITransitionResult>> getWorkItemToResults() {
+      return workItemToResults;
+   }
+
 }

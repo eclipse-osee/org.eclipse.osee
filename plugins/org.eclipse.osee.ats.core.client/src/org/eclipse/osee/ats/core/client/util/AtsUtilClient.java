@@ -13,9 +13,13 @@ package org.eclipse.osee.ats.core.client.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.ITransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -143,6 +147,27 @@ public class AtsUtilClient {
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
       return reviewArtifactTypesFilter;
+   }
+
+   /**
+    * Log exceptions to OseeLog. Don't always want to do this due to testing.
+    */
+   public static void logExceptions(TransitionResults transResult) {
+      for (ITransitionResult result : transResult.getResults()) {
+         Exception ex = result.getException();
+         if (ex != null) {
+            OseeLog.log(TransitionResults.class, Level.SEVERE, result.getDetails(), ex);
+         }
+      }
+      for (Entry<IAtsWorkItem, List<ITransitionResult>> entry : transResult.getWorkItemToResults().entrySet()) {
+         for (ITransitionResult result : entry.getValue()) {
+            Exception ex = result.getException();
+            if (ex != null) {
+               String message = entry.getKey().toStringWithId() + " - " + result.getDetails();
+               OseeLog.log(TransitionResults.class, Level.SEVERE, message, ex);
+            }
+         }
+      }
    }
 
 }

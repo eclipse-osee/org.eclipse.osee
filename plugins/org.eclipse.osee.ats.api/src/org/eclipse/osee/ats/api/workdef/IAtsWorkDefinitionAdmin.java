@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -54,7 +53,7 @@ public interface IAtsWorkDefinitionAdmin {
 
    IWorkDefinitionMatch getWorkDefinitionForTaskNotYetCreated(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   boolean isTaskOverridingItsWorkDefinition(IAtsTask task) throws MultipleAttributesExist, OseeCoreException;
+   boolean isTaskOverridingItsWorkDefinition(IAtsTask task) throws OseeCoreException;
 
    IAtsWorkDefinition getWorkDef(String id, XResultData resultData) throws Exception;
 

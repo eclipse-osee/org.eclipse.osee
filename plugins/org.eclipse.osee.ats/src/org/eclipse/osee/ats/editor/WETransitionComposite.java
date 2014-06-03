@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperation;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -301,7 +302,7 @@ public class WETransitionComposite extends Composite {
             TransitionResults results = operation.getResults();
             if (!results.isEmpty()) {
                String resultStr = results.getResultString();
-               results.logExceptions();
+               AtsUtilClient.logExceptions(results);
                AWorkbench.popup(MessageType.Error, "Transition Failed", resultStr);
             }
          }

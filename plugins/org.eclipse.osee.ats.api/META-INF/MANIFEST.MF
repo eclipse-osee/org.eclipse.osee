@@ -23,12 +23,8 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.workflow.log,
  org.eclipse.osee.ats.api.workflow.state,
  org.eclipse.osee.ats.api.workflow.transition
-Require-Bundle: org.eclipse.core.runtime
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
- org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.logging
+ org.eclipse.osee.framework.jdk.core.util

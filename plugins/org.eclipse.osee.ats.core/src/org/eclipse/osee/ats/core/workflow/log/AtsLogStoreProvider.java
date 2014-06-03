@@ -11,14 +11,13 @@
 package org.eclipse.osee.ats.core.workflow.log;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.core.internal.AtsCoreService;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -46,13 +45,13 @@ public class AtsLogStoreProvider implements ILogStorageProvider {
    }
 
    @Override
-   public IStatus saveLogXml(String xml, IAtsChangeSet changes) {
+   public Result saveLogXml(String xml, IAtsChangeSet changes) {
       try {
          attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.Log, xml, changes);
-         return Status.OK_STATUS;
+         return Result.TrueResult;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsCoreService.class, Level.SEVERE, ex);
-         return new Status(IStatus.ERROR, AtsCoreService.PLUGIN_ID, "saveLogXml exception " + ex.getLocalizedMessage());
+         return new Result("saveLogXml exception " + ex.getLocalizedMessage());
       }
    }
 
