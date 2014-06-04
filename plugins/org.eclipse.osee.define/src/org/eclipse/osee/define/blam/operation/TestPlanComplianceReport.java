@@ -20,14 +20,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelColumn;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -51,13 +53,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    private int previousArtifactId = initCase;
    private String[] testPlanStorageArray = null;
    private Map<Integer, StringBuilder> testResultStorage = null;
-   private final Object[] columnHeaders = {
-      "Test Plan & Paragraph",
-      "Perf Spec Requirement(s)",
-      "Test Procedure",
-      "Test Status",
-      "Test Result File",
-      "Errors"};
+
    private Collection<Artifact> inputArtifacts;
    private Collection<Artifact> testPlans;
 
@@ -166,31 +162,23 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       }
    }
 
-   private String getRequirementsCellOutput(Artifact art) throws OseeCoreException {
+   private String getRequirementsCellOutput(Artifact art, IRelationTypeSide rts) throws OseeCoreException {
+      String result = null;
       if (art.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
-         return getRequirementsCellOutputForTestPlan(art);
+         result = getRequirementsAsString(art, rts);
       }
-      return BLANK_SPACE;
+      return Strings.isValid(result) ? result : BLANK_SPACE;
    }
 
-   private String getRequirementsCellOutputForTestPlan(Artifact testPlan) throws OseeCoreException {
-      String ret = getRequirementsAsString(testPlan);
-      if (ret.isEmpty()) {
-         ret = BLANK_SPACE;
-      }
-      return ret;
-   }
-
-   private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
-      Collection<Artifact> requirementArtifacts =
-         testPlan.getRelatedArtifacts(CoreRelationTypes.Verification_Plan__Requirement);
+   private String getRequirementsAsString(Artifact testPlan, IRelationTypeSide rts) throws OseeCoreException {
+      Collection<Artifact> requirementArtifacts = testPlan.getRelatedArtifacts(rts);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          requirementNames.add(paragraphNumber + BLANK_SPACE + req.getName());
       }
 
-      return StringUtils.join(requirementNames, "\n");
+      return Collections.toString("\n", requirementNames);
    }
 
    private void reportLine(Artifact testPlanArt, String testProcedureName, String testStatus, String testResult) throws OseeCoreException, IOException {
@@ -219,7 +207,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       }
       simpleDataStorageList.add(new String[] {
          testPlanArt.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + testPlanArt.getName(),
-         getRequirementsCellOutput(testPlanArt),
+         getRequirementsCellOutput(testPlanArt, CoreRelationTypes.Verification_Plan__Requirement),
+         getRequirementsCellOutput(testPlanArt, CoreRelationTypes.Validation__Requirement),
          testProcedureName,
          testStatus,
          testResult});
@@ -256,7 +245,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
          testPlanStorageArray =
             new String[] {
                artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + artifact.getName(),
-               getRequirementsCellOutput(artifact),
+               getRequirementsCellOutput(artifact, CoreRelationTypes.Verification_Plan__Requirement),
+               getRequirementsCellOutput(artifact, CoreRelationTypes.Validation__Requirement),
                null,
                null,
                null,
@@ -265,7 +255,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
          testPlanStorageArray =
             new String[] {
                artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + artifact.getName(),
-               getRequirementsCellOutput(artifact),
+               getRequirementsCellOutput(artifact, CoreRelationTypes.Verification_Plan__Requirement),
+               getRequirementsCellOutput(artifact, CoreRelationTypes.Validation__Requirement),
                null,
                null,
                null};
@@ -336,9 +327,24 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private void initReport() throws IOException {
       excelWriter = new ExcelXmlWriter(defaultWriter);
-      excelWriter.startSheet(getName(), ExcelColumn.newEqualWidthColumns(200, 150));
-      excelWriter.setRowHeight(80.0);
-      excelWriter.writeRow(columnHeaders);
+      String[] columnHeaders =
+         {
+            "Test Plan & Paragraph",
+            "Perf Spec Requirement(s)",
+            "PIDS",
+            "Test Procedure",
+            "Test Status",
+            "Test Result File",
+            "Errors"};
+
+      ExcelColumn[] columns = new ExcelColumn[columnHeaders.length];
+      for (int i = 0; i < columnHeaders.length; i++) {
+         String header = columnHeaders[i];
+         ExcelColumn newCol = ExcelColumn.newCol(header, 250, ExcelXmlWriter.WrappedStyle);
+         columns[i] = newCol;
+      }
+
+      excelWriter.startSheet(getName(), columns);
    }
 
    private void load() throws OseeCoreException {
