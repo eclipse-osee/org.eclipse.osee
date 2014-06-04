@@ -155,7 +155,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleCommitDateColumn(Branch branch) throws OseeCoreException {
+   private String handleCommitDateColumn(IOseeBranch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
          AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
@@ -165,7 +165,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "Not Committed";
    }
 
-   private String handleCommitCommentColumn(Branch branch) throws OseeCoreException {
+   private String handleCommitCommentColumn(IOseeBranch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
          AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
@@ -196,7 +196,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String handleActionColumn(Branch branch) throws OseeCoreException {
+   private String handleActionColumn(IOseeBranch branch) throws OseeCoreException {
       CommitStatus commitStatus =
          AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {

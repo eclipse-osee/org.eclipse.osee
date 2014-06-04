@@ -540,7 +540,7 @@ public class AtsBranchManagerCore {
       commitMgrInputObjs.addAll(configArtSet);
       //for each tx commit...
       for (TransactionRecord txRecord : commitTxs) {
-         Branch txBranch = txRecord.getBranch();
+         IOseeBranch txBranch = txRecord.getBranch();
          boolean isCommitAlreadyPresent = false;
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
