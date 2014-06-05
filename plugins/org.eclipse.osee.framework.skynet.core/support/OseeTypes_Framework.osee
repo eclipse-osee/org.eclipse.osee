@@ -301,6 +301,10 @@ artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact
 	attribute "Default Group"
 }
 
+artifactType "Subscription Group" extends "User Group" {
+	uuid 0x5DB7BB0492404DE8
+}
+
 artifactType "Universal Group" extends "Group Artifact" {
 	uuid 0x0000000000000008
 	attribute "Description"
