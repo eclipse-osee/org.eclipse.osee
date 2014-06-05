@@ -64,7 +64,7 @@
         	       var programSelect = document.getElementById("programSelect");
         	       var setSelect = document.getElementById("setSelect");
         	       var path = "http://<?serverPort?>/dispo/program/";
-        	       var cellsToValueSubTable = ["locationRefs", "resolution", "developerNotes", "customerNotes"];
+        	       var cellsToValueSubTable = ["locationRefs", "resolutionType", "resolution", "developerNotes", "customerNotes"];
         	       var cellsToValueMainTable = ["itemName", "status", "totalPoints", "failures", "discrepancyLocations", "POC", "version"];
         	       var dispoTableBody = document.getElementById("dispoTableBody");
         	       var dispoTable = document.getElementById("dispoTable");
@@ -326,6 +326,9 @@
         var value = selectedElement.value;
         var key = cellsToValueSubTable[cellIndex];
 
+		  if(key == 'resolutionType') {
+		  		value = value.toUpperCase();
+		  }
         var jsonObject = {};
         jsonObject[key] = value;
 
@@ -470,9 +473,6 @@
                 var itemObject = eval('(' + this.responseText + ')');
 
                 var statusCell = itemRow.cells[1];
-                if (statusCell.innerHTML != itemObject.status) {
-
-                }
 
                 statusCell.innerHTML = itemObject.status;
 
@@ -497,6 +497,13 @@
                     annotationRow.cells[0].firstChild.className = "annotationInput";
                 }
                 if (!annotationObject.isResolutionValid) {
+                	  annotationRow.cells[1].firstChild.className = "annotationInputInvalid";
+                    annotationRow.cells[2].firstChild.className = "annotationInputInvalid";
+                } else {
+                	  annotationRow.cells[1].firstChild.className = "annotationInput";
+                    annotationRow.cells[2].firstChild.className = "annotationInput";
+                }
+                if (annotationObject.resolutionType == "None") {
                     annotationRow.cells[1].firstChild.className = "annotationInputInvalid";
                 } else {
                     annotationRow.cells[1].firstChild.className = "annotationInput";
@@ -669,6 +676,50 @@
     }
 </script>
 <script>
+    function addAnnotationCellSelect(rowElement, index) {
+        var newCell = rowElement.insertCell(index);
+        newCell.className = "annotationData";
+        var newSelect = document.createElement("select");
+        newCell.appendChild(newSelect);
+        
+        newSelect.disabled = true;
+        newSelect.className = "annotationInputDisabled";
+        
+        optionText = "None";
+        addOptionToSelect(newSelect, optionText, "None", true);
+        
+        var optionText = "Code";
+        addOptionToSelect(newSelect, optionText, optionText, false);
+                                                           
+        optionText = "Test";                               
+        addOptionToSelect(newSelect, optionText, optionText, false);
+                                                          
+        optionText = "Requirement";                       
+        addOptionToSelect(newSelect, optionText, optionText, false);
+                                                           
+        optionText = "Other";                              
+        addOptionToSelect(newSelect, optionText, optionText, false);
+                                                           
+        optionText = "Undetermined";                       
+        addOptionToSelect(newSelect, optionText, optionText, false);
+        
+        newSelect.setAttribute('onchange', 'submitAnnotationData(this);');
+        
+        newSelect.focus();
+    }
+</script>
+<script>
+	 function addOptionToSelect(selectEl, optionText, optionValue, isDefault) {
+	 	  var newOption = document.createElement("option");
+		  newOption.text = optionText;
+		  newOption.value = optionValue;
+		  if(isDefault) {
+		  	  newOption.selected = true;
+		  }
+		  selectEl.add(newOption);
+	 }
+</script>
+<script>
     function addNewRow(currentRow) {
         var subTable = currentRow.parentNode.parentNode;
         var newRow = subTable.insertRow(currentRow.rowIndex + 1);
@@ -679,7 +730,11 @@
 
         var cellsLength = currentRow.cells.length;
         for (index = 0; index < cellsLength - 1; index++) {
-            addAnnotationCell(newRow, index);
+        	   if(index != 1) {	// 
+            	addAnnotationCell(newRow, index);
+            } else {
+            	addAnnotationCellSelect(newRow, index);
+            }
         }
 
         addDeleteButton(newRow, cellsLength);
@@ -692,6 +747,10 @@
         for (index = 0; index < cellsLength - 1; index++) {
             var inputEl = annotationCells[index].firstChild;
             inputEl.readOnly = false;
+            if(index == 1) {				// if it's the Type element enable and set to focus
+            	inputEl.disabled = false;
+            	inputEl.focus();
+            }
             inputEl.className = "annotationInput";
         }
         annotationCells[cellsLength - 1].firstChild.disabled = false; // enable Delete Button

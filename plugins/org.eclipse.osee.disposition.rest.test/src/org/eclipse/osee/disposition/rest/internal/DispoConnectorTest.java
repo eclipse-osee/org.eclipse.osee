@@ -84,6 +84,7 @@ public class DispoConnectorTest {
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-5, 12-18, 20");
       annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
       JSONArray idsOfCoveredDisc = new JSONArray();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
@@ -116,6 +117,8 @@ public class DispoConnectorTest {
       // This will test a single annotation that covers most but not all discrepancies
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-5, 12-18");
+      annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
       JSONArray idsOfCoveredDisc = new JSONArray();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
@@ -211,6 +214,7 @@ public class DispoConnectorTest {
       JSONArray idsOfCoveredDisc = new JSONArray();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
       annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("OTHER");
       annotationOne.setId(annotIdOne);
 
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
@@ -228,6 +232,7 @@ public class DispoConnectorTest {
       annotationOne.setLocationRefs("1-5");
       annotationOne.setId(annotIdOne);
       annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("test");
       JSONArray idsOfCoveredDiscOne = new JSONArray();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
       annotationsAsList.add(annotationToJsonObj(annotationOne));
@@ -236,6 +241,7 @@ public class DispoConnectorTest {
       annotationTwo.setLocationRefs("12-18");
       annotationTwo.setId(annotIdTwo);
       annotationTwo.setIsResolutionValid(true);
+      annotationTwo.setResolutionType("Req");
       JSONArray idsOfCoveredDiscTwo = new JSONArray();
       annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
       annotationsAsList.add(annotationToJsonObj(annotationTwo));
@@ -244,6 +250,7 @@ public class DispoConnectorTest {
       annotationThree.setLocationRefs("20");
       annotationThree.setId(annotIdThree);
       annotationThree.setIsResolutionValid(true);
+      annotationThree.setResolutionType("Undetermined");
       JSONArray idsOfCoveredDiscThree = new JSONArray();
       annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
       annotationsAsList.add(annotationToJsonObj(annotationThree));
@@ -285,6 +292,7 @@ public class DispoConnectorTest {
       annotationOne.setLocationRefs("5, 1-3");
       annotationOne.setId(annotIdOne);
       annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("CODE");
       JSONArray idsOfCoveredDiscOne = new JSONArray();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscOne);
 
@@ -292,6 +300,7 @@ public class DispoConnectorTest {
       annotationTwo.setLocationRefs("12-15");
       annotationTwo.setId(annotIdTwo);
       annotationTwo.setIsResolutionValid(true);
+      annotationTwo.setResolutionType("CODE");
       JSONArray idsOfCoveredDiscTwo = new JSONArray();
       annotationTwo.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscTwo);
 
@@ -300,6 +309,7 @@ public class DispoConnectorTest {
       annotationThree.setId(annotIdThree);
       JSONArray idsOfCoveredDiscThree = new JSONArray();
       annotationThree.setIsResolutionValid(true);
+      annotationThree.setResolutionType("CODE");
       annotationThree.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscThree);
 
       DispoAnnotationData annotationFour = new DispoAnnotationData();
@@ -307,6 +317,7 @@ public class DispoConnectorTest {
       annotationFour.setId(annotIdFour);
       JSONArray idsOfCoveredDiscFour = new JSONArray();
       annotationFour.setIsResolutionValid(true);
+      annotationFour.setResolutionType("CODE");
       annotationFour.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscFour);
 
       DispoAnnotationData annotationFive = new DispoAnnotationData();
@@ -314,6 +325,7 @@ public class DispoConnectorTest {
       annotationFive.setId(annotIdFive);
       JSONArray idsOfCoveredDiscFive = new JSONArray();
       annotationFive.setIsResolutionValid(true);
+      annotationFive.setResolutionType("CODE");
       annotationFive.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscFive);
 
       JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();

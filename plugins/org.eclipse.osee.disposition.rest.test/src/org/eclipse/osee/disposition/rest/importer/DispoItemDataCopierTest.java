@@ -132,6 +132,7 @@ public class DispoItemDataCopierTest {
       newAnnotation.setId(GUID.create());
       newAnnotation.setLocationRefs(locationRef);
       newAnnotation.setResolution("C1234");
+      newAnnotation.setResolutionType("C1234");
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setDeveloperNotes("Notes");
       dispoConnector.connectAnnotation(newAnnotation, discrepanciesList);

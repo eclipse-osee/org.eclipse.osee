@@ -40,6 +40,7 @@ public class DispoHtmlWriter {
       
    private final String subTableHeadersEnd ="\" width=\"30\"></th>"+
                                             "<th width=\"325\">Points</th>"+
+                                            "<th width=\"75\">Type</th>"+
                                             "<th width=\"150\">PCR</th>"+
                                             "<th width=\"500\">Developer Notes</th>"+
                                             "<th width=\"500\">Customer Notes</th>"+
@@ -139,9 +140,6 @@ public class DispoHtmlWriter {
    public String createSetTable(Iterable<DispoItem> dispoItems) throws IOException, JSONException {
       StringBuilder writer = new StringBuilder();
       for (DispoItem item : dispoItems) {
-         if (item.getName().equalsIgnoreCase("WPS_X_wps_weapon_weight_moment_drag_download_processing_rkt3")) {
-            System.out.println("");
-         }
          writer.append("<tr id=\"");
          writer.append(item.getGuid());
          if (item.getStatus().equals(DispoStrings.Item_Pass)) {
@@ -214,10 +212,45 @@ public class DispoHtmlWriter {
       appendable.append("</textarea></td>");
    }
 
+   private void addSubTableDataDropDown(Appendable appendable, String data, boolean isValid) throws IOException {
+      appendable.append("<td class=\"annotationData\" >");
+      if (isValid) {
+         appendable.append("<select class=\"annotationInput");
+      } else {
+         appendable.append("<select class=\"annotationInputInvalid");
+      }
+      appendable.append("\" onchange=\"submitAnnotationData(this);\">");
+
+      addOptionToSelect(appendable, data, "None", true);
+      addOptionToSelect(appendable, data, "Code", false);
+      addOptionToSelect(appendable, data, "Test", false);
+      addOptionToSelect(appendable, data, "Requirement", false);
+      addOptionToSelect(appendable, data, "Other", false);
+      addOptionToSelect(appendable, data, "Undetermined", false);
+
+      appendable.append(data);
+      appendable.append("</select></td>");
+   }
+
+   private void addOptionToSelect(Appendable appendable, String data, String optionValue, boolean isDefault) throws IOException {
+      appendable.append("<option value=\"");
+      appendable.append(optionValue);
+      appendable.append("\"");
+      if (data.equalsIgnoreCase(optionValue)) {
+         appendable.append(" selected");
+      }
+      if (isDefault) {
+         appendable.append(" disabled");
+      }
+      appendable.append(">");
+      appendable.append(optionValue);
+      appendable.append("</option>");
+   }
+
 // @formatter:off
    public String createSubTable(List<DispoAnnotationData> annotations) throws IOException {
       StringBuilder sb = new StringBuilder();
-      sb.append("<td colspan=\"8\">");
+      sb.append("<td colspan=\"9\">");
       sb.append("<table class=\"table subTable\">");
       sb.append(createHeadersForSubTable(annotations.size()));
       for(DispoAnnotationData annotation :annotations) {
@@ -228,7 +261,12 @@ public class DispoHtmlWriter {
          if(!annotation.getResolution().isEmpty() && !annotation.getIsResolutionValid()){
             isResolutionValid = false;
          }
+         boolean isResolutionTypeValid = true;
+         if(!annotation.isResolutionTypeValid()){
+            isResolutionTypeValid = false;
+         }
          addSubTableData(sb, annotation.getLocationRefs(), annotation.getIsConnected());
+         addSubTableDataDropDown(sb, annotation.getResolutionType(), isResolutionTypeValid);
          addSubTableData(sb, annotation.getResolution(), isResolutionValid);
          addSubTableData(sb, annotation.getDeveloperNotes(), true);
          addSubTableData(sb, annotation.getCustomerNotes(), true);
@@ -238,6 +276,12 @@ public class DispoHtmlWriter {
       // add on empty row
       sb.append("<tr>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInput\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\"></textarea></d>");
+      sb.append("<td class=\"annotationData\"><select class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" disabled>");
+      sb.append("<option value=\"None\" selected>None</option>");
+      sb.append("<option value=\"Code\">Code</option><option value=\"Test\">Test</option>");
+      sb.append("<option value=\"Requirement\">Requirement</option><option value=\"Other\">Other</option>");
+      sb.append("<option value=\"Undetermined\">Undetermined</option>");
+      sb.append("</select></td>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");
       sb.append("<td class=\"annotationData\"><textarea class=\"annotationInputDisabled\" onchange=\"submitAnnotationData(this);\" ondblclick=\"annotationDblClick(this);\" readonly=\"true\"></textarea></td>");

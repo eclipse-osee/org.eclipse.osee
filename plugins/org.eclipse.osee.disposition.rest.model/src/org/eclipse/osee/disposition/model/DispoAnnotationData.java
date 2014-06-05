@@ -133,7 +133,11 @@ public class DispoAnnotationData implements Identifiable<String> {
    }
 
    public boolean isValid() {
-      return isConnected && isResolutionValid;
+      return isConnected && isResolutionValid && isResolutionTypeValid();
+   }
+
+   public boolean isResolutionTypeValid() {
+      return resolutionType != null && !resolutionType.equalsIgnoreCase("None") && !resolutionType.equalsIgnoreCase("null");
    }
 
    public void disconnect() {

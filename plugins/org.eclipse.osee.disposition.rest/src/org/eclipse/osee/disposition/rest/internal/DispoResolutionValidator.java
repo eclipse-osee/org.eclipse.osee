@@ -11,7 +11,6 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -33,34 +32,13 @@ public class DispoResolutionValidator {
       logger.trace("Stopping ResolutionValidator...");
    }
 
-   public Pair<Boolean, String> validate(DispoAnnotationData annotation) {
+   public boolean validate(DispoAnnotationData annotation) {
       String pcr = annotation.getResolution().toUpperCase().trim();
       boolean isValid = false;
-      String type = "NONE";
-      if (pcr.matches("^\\s*[CTROU]\\d{4,6}\\s*$")) {
+      if (pcr.matches("^\\s*[a-zA-Z]{1,}\\s*\\d{1,}$")) {
          isValid = true;
-         if (pcr.startsWith("C")) {
-            type = "CODE";
-         } else if (pcr.startsWith("T")) {
-            type = "TEST";
-         } else if (pcr.startsWith("R")) {
-            type = "REQ";
-         } else if (pcr.startsWith("O")) {
-            type = "OTHER";
-         } else if (pcr.startsWith("U")) {
-            type = "UNDETERMINED";
-         }
       }
 
-      boolean isOpen = checkStatus(pcr);
-
-      Pair<Boolean, String> toReturn = new Pair<Boolean, String>(isOpen && isValid, type);
-      return toReturn;
-   }
-
-   private boolean checkStatus(String pcrNumber) {
-      // Default is true for now
-      // Will implement ATS validation later to check status of RPCR against DB
-      return true;
+      return isValid;
    }
 }

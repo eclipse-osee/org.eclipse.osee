@@ -74,9 +74,10 @@ public class DispoDataFactory {
 
    public void initAnnotation(DispoAnnotationData annotationToInit) {
       annotationToInit.setIdsOfCoveredDiscrepancies(new JSONArray());
-      annotationToInit.setCustomerNotes("--Enter Notes--");
-      annotationToInit.setDeveloperNotes("--Enter Notes--");
+      annotationToInit.setCustomerNotes("");
+      annotationToInit.setDeveloperNotes("");
       annotationToInit.setResolution("");
+      annotationToInit.setResolutionType("None");
    }
 
    public DispoItem createUpdatedItem(JSONArray annotationsList, JSONObject discrepanciesList) throws JSONException {

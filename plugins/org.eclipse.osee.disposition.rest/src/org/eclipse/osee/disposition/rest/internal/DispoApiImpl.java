@@ -35,7 +35,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -130,14 +129,6 @@ public class DispoApiImpl implements DispoApi {
             annotationToCreate.setId(idOfNewAnnotation);
             int indexOfAnnotation = annotationsList.length();
             annotationToCreate.setIndex(indexOfAnnotation);
-
-            String resolution = annotationToCreate.getResolution();
-            Pair<Boolean, String> resolutionValidAndType = new Pair<Boolean, String>(false, "NONE");
-            if (resolution != null) {
-               resolutionValidAndType = validateResolution(annotationToCreate);
-            }
-            annotationToCreate.setIsResolutionValid(resolutionValidAndType.getFirst());
-            annotationToCreate.setResolutionType(resolutionValidAndType.getSecond());
 
             JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
 
@@ -243,23 +234,30 @@ public class DispoApiImpl implements DispoApi {
                consolidatedAnnotation.setCustomerNotes(newCustomerNotes);
             }
 
+            boolean needToReconnect = false;
             // now if the new Annotation modified the location Reference or resolution then disconnect the annotation and try to match it to discrepancies again
             String newLocationRefs = newAnnotation.getLocationRefs();
             String newResolution = newAnnotation.getResolution();
-            if (newLocationRefs != null || newResolution != null) {
-               if (newResolution != null) {
-                  consolidatedAnnotation.setResolution(newResolution);
-                  Pair<Boolean, String> resolutionValidAndType = validateResolution(consolidatedAnnotation);
-                  consolidatedAnnotation.setIsResolutionValid(resolutionValidAndType.getFirst());
-                  consolidatedAnnotation.setResolutionType(resolutionValidAndType.getSecond());
-               }
-               if (newLocationRefs != null) {
-                  consolidatedAnnotation.setLocationRefs(newLocationRefs);
-               }
+            String newResolutionType = newAnnotation.getResolutionType();
+            if (newResolution != null) {
+               consolidatedAnnotation.setResolution(newResolution);
+               consolidatedAnnotation.setIsResolutionValid(validateResolution(consolidatedAnnotation));
+               needToReconnect = true;
+            }
+            if (newResolutionType != null) {
+               consolidatedAnnotation.setResolutionType(newAnnotation.getResolutionType());
+               needToReconnect = true;
+            }
+            if (newLocationRefs != null) {
+               consolidatedAnnotation.setLocationRefs(newLocationRefs);
+               needToReconnect = true;
+            }
 
+            if (needToReconnect == true) {
                consolidatedAnnotation.disconnect();
                dispoConnector.connectAnnotation(consolidatedAnnotation, discrepanciesList);
             }
+            //
 
             JSONObject annotationAsJsonObject = DispoUtil.annotationToJsonObj(consolidatedAnnotation);
             annotationsList.put(indexOfAnnotation, annotationAsJsonObject);
@@ -441,7 +439,7 @@ public class DispoApiImpl implements DispoApi {
       return newList;
    }
 
-   private Pair<Boolean, String> validateResolution(DispoAnnotationData annotation) {
+   private boolean validateResolution(DispoAnnotationData annotation) {
       return resolutionValidator.validate(annotation);
    }
 

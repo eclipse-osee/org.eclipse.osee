@@ -31,7 +31,6 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -278,8 +277,7 @@ public class DispoApiTest {
       // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE 
       annotationToCreate.setResolution("VALID");
       when(dispoItem.getStatus()).thenReturn("COMPLETE");
-      Pair<Boolean, String> validationResults = new Pair<Boolean, String>(true, "CODE");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(validationResults);
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       String acutal = dispoApi.createDispoAnnotation(program, itemId.getGuid(), annotationToCreate, "name");
       assertEquals(expectedId, acutal);
 
@@ -376,19 +374,23 @@ public class DispoApiTest {
 
       // reset loc ref to null and set new (invalid) resolution 
       newAnnotation.setLocationRefs(null);
-      Pair<Boolean, String> valdiationResult = new Pair<Boolean, String>(true, "C");
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(valdiationResult);
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       newAnnotation.setResolution("CPCR 13");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
-      newAnnotation.setResolution("VALID"); // Since PCR validation isn't hooked up yet, only valid resolution is "VALID" 
+      // reset the resolution and change just the resolution type
+      newAnnotation.setLocationRefs(null);
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
+      newAnnotation.setResolution(null);
+      newAnnotation.setResolutionType("None");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
       //  notes are the only thing being modified, no need to disconnect or connect
       newAnnotation.setLocationRefs(null);
       newAnnotation.setResolution(null);
+      newAnnotation.setResolutionType(null);
       newAnnotation.setDeveloperNotes("");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
