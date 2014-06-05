@@ -45,10 +45,8 @@ import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -133,8 +131,7 @@ public class AtsServerImpl implements IAtsServer {
       atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService, notifyService);
       atsStoreFactory = new AtsStoreFactoryImpl(this);
 
-      IResourceRegistry resourceRegistry = new ResourceRegistry();
-      workItemPage = new WorkItemPage(orcsApi, logger, this, resourceRegistry);
+      workItemPage = new WorkItemPage(orcsApi, logger, this);
 
       config = new AtsArtifactConfigCache(this, orcsApi);
       System.out.println("ATS - AtsServerImpl started");

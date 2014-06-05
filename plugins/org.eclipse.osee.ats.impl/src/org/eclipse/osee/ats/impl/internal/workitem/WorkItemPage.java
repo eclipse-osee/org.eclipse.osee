@@ -24,26 +24,24 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class WorkItemPage implements IWorkItemPage {
 
-   private final IResourceRegistry registry;
    private final IAtsServer atsServer;
    private final Log logger;
    private final OrcsApi orcsApi;
 
-   public WorkItemPage(OrcsApi orcsApi, Log logger, IAtsServer atsServer, IResourceRegistry registry) {
+   public WorkItemPage(OrcsApi orcsApi, Log logger, IAtsServer atsServer) {
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.atsServer = atsServer;
-      this.registry = registry;
    }
 
    @Override
-   public String getHtml(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception {
+   public String getHtml(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel, IResourceRegistry registry) throws Exception {
       ActionPage page = new ActionPage(logger, atsServer, registry, action, title, actionLoadLevel);
       return page.generate();
    }
 
    @Override
-   public String getHtmlWithStates(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) throws Exception {
+   public String getHtmlWithStates(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel, IResourceRegistry registry) throws Exception {
       ActionPage page = new ActionPage(logger, atsServer, registry, action, title, actionLoadLevel);
       page.addTransitionStates();
       return page.generate();

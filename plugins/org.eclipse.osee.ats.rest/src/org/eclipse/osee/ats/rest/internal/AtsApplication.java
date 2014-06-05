@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.template.engine.OseeTemplateTokens;
 
 /**
  * @author John Misinco
@@ -56,12 +57,13 @@ public class AtsApplication extends Application {
       IResourceRegistry registry = new ResourceRegistry();
       AtsResourceTokens.register(registry);
       AtsRestTemplateTokens.register(registry);
+      OseeTemplateTokens.register(registry);
 
       singletons.add(new JaxRsExceptionMapper(registry));
 
       singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
 
-      singletons.add(new ActionResource(atsServer, orcsApi));
+      singletons.add(new ActionResource(atsServer, orcsApi, registry));
       singletons.add(new ConvertResource(registry));
       singletons.add(new TeamResource(orcsApi));
       singletons.add(new VersionResource(orcsApi));
