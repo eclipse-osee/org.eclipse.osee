@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.manager.servlet.SearchEngineTaggerServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
-import org.eclipse.osee.framework.manager.servlet.UnsubscribeServlet;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -136,7 +135,6 @@ public class ServletRegistrationHandler {
          OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);
-      register(new UnsubscribeServlet(logger, context, orcsApi), "osee/unsubscribe");
 
       register(new AtsServlet(logger, resourceManager, caching), "osee/ats");
       register(new ConfigurationServlet(logger, translationService, orcsApi), OseeServerContext.OSEE_CONFIGURE_CONTEXT);

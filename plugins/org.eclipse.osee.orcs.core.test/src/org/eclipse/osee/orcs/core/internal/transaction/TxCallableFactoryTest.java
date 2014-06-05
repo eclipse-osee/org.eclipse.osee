@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -89,17 +88,6 @@ public class TxCallableFactoryTest {
       data = new TxData(session, graph);
 
       when(graph.getBranch()).thenReturn(branch);
-   }
-
-   @SuppressWarnings("unchecked")
-   @Test
-   public void testCreateUnsubscribeTx() throws Exception {
-      CancellableCallable<String> callable = mock(CancellableCallable.class);
-      when(txDataStore.createUnsubscribeTx(userArtifact, groupArtifact)).thenReturn(callable);
-
-      txFactory.createUnsubscribeTx(session, userArtifact, groupArtifact).call();
-
-      verify(txDataStore).createUnsubscribeTx(userArtifact, groupArtifact);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})

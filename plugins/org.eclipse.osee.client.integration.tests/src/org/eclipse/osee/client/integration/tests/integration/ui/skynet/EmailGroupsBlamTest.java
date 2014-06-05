@@ -11,21 +11,14 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -59,7 +52,7 @@ public class EmailGroupsBlamTest {
    @Before
    public void setUp() throws Exception {
       newGroup =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch(),
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubscriptionGroup, BranchManager.getCommonBranch(),
             method.getQualifiedTestName());
       newGroup.addRelation(CoreRelationTypes.Users_User, UserManager.getUser());
       newGroup.persist(method.getQualifiedTestName());
@@ -72,7 +65,7 @@ public class EmailGroupsBlamTest {
       }
    }
 
-   @org.junit.Test
+   @Test
    public void testXWidgetsResolved() throws Exception {
       EmailGroupsBlam blam = new EmailGroupsBlam();
       for (XWidgetRendererItem xWidgetLayoutData : blam.getLayoutDatas()) {
@@ -106,61 +99,31 @@ public class EmailGroupsBlamTest {
       result = data.isValid();
       Assert.assertTrue(result.isTrue());
 
-      Assert.assertEquals(getNonHtmlResult(), data.getHtmlResult(UserManager.getUser()));
+      User user = UserManager.getUser();
 
-      data.setBody("<b>Hello World</b>");
+      String expectedBody = "Hello World\nNow is the time";
+      String htmlOut = data.getHtmlResult(user);
+      checkHtmlData(user, htmlOut, expectedBody);
+
+      expectedBody = "<b>Hello World</b>";
+      data.setBody(expectedBody);
       data.setBodyIsHtml(true);
-      Assert.assertEquals(getHtmlResult(), data.getHtmlResult(UserManager.getUser()));
+      htmlOut = data.getHtmlResult(user);
+
+      String firstPart = "<b>Hello World</b></br>Click <a href=\"";
+      checkHtmlData(user, htmlOut, firstPart);
+
+      String urlPart = "/unsubscribe/ui/";
+      checkHtmlData(user, htmlOut, urlPart);
+
+      String endPart =
+         String.format("unsubscribe</a> to stop receiving all emails for the topic <b>\"%s\"</b>", newGroup.getName());
+      checkHtmlData(user, htmlOut, endPart);
    }
 
-   @Test
-   public void testEmailGroupsUnsubscribe() throws OseeCoreException, MalformedURLException {
-      Assert.assertEquals("Should be subscribed to the user group", Arrays.asList(UserManager.getUser()),
-         newGroup.getRelatedArtifacts(CoreRelationTypes.Users_User));
-
-      HttpUrlBuilderClient urlBuilder = HttpUrlBuilderClient.getInstance();
-      String url = urlBuilder.getOsgiServletServiceUrl(OseeServerContext.OSEE_EMAIL_UNSUBSCRIBE, null);
-
-      StringBuilder builder = new StringBuilder();
-      builder.append("<request><groupId>");
-      builder.append(newGroup.getArtId());
-      builder.append("</groupId><userId>");
-      builder.append(UserManager.getUser().getArtId());
-      builder.append("</userId></request>");
-      String xml = builder.toString();
-      HttpProcessor.delete(new URL(url), xml, "text/xml", "UTF-8", new ByteArrayOutputStream(5));
-
-      // TODO how test UnsubscribeServlet.doDelete without user interaction
-      newGroup.reloadAttributesAndRelations();
-      Assert.assertEquals("Should have been removed from this user group", new ArrayList<Artifact>(),
-         newGroup.getRelatedArtifacts(CoreRelationTypes.Users_User));
-   }
-
-   private String getNonHtmlResult() throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<pre>Hello World\nNow is the time</pre>");
-      addUnsubscribeMessage(builder);
-      return builder.toString();
-   }
-
-   private String getHtmlResult() throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      builder.append("<b>Hello World</b>");
-      addUnsubscribeMessage(builder);
-      return builder.toString();
-   }
-
-   private void addUnsubscribeMessage(StringBuilder builder) throws OseeCoreException {
-      builder.append("</br>Click <a href=\"");
-      HttpUrlBuilderClient urlBuilder = HttpUrlBuilderClient.getInstance();
-      String url = urlBuilder.getOsgiServletServiceUrl(OseeServerContext.OSEE_EMAIL_UNSUBSCRIBE, null);
-      builder.append(url);
-      builder.append("/group/");
-      builder.append(newGroup.getArtId());
-      builder.append("/user/");
-      builder.append(UserManager.getUser().getArtId());
-      builder.append("\">unsubscribe</a> to stop receiving all emails for the topic \"");
-      builder.append(method.getQualifiedTestName());
-      builder.append("\"");
+   private void checkHtmlData(User user, String htmlBody, String innerData) {
+      String message = String.format("HtmlBody - [%s] did not contain [%s]", htmlBody, innerData);
+      boolean result = htmlBody.contains(innerData);
+      Assert.assertTrue(message, result);
    }
 }

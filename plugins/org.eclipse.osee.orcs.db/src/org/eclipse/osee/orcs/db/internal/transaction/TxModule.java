@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
@@ -60,13 +59,7 @@ public class TxModule {
             TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idManager);
             TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
             return new CommitTransactionDatabaseTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), processors, writer,
-               data);
-         }
-
-         @Override
-         public Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-            return new UnsubscribeTransaction(logger, dbService, userArtifact, groupArtifact);
+               cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), processors, writer, data);
          }
 
          @Override

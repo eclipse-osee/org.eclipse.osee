@@ -11,6 +11,9 @@
 package org.eclipse.osee.account.rest.client.internal;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
@@ -26,6 +29,7 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.OseeClientProperties;
@@ -272,4 +276,49 @@ public class AccountClientImpl implements AccountClient {
       return Status.OK.getStatusCode() == status;
    }
 
+   private ResultSet<SubscriptionData> getSubscriptionsForAccount(String userId) {
+      URI uri =
+         newBuilder().path(AccountContexts.ACCOUNTS).path("subscriptions").path("for-account").path("{account-id}").build(
+            userId);
+      SubscriptionData[] data = get(uri, SubscriptionData[].class);
+      return ResultSets.newResultSet(data);
+   }
+
+   private UriBuilder newUnsubscribeBuilder() {
+      return newBuilder().path(AccountContexts.ACCOUNTS).path("unsubscribe").path("ui").path("{subscription-uuid}");
+   }
+
+   @Override
+   public ResultSet<UnsubscribeInfo> getUnsubscribeUris(String userUuid, Collection<String> groupNames) {
+      ResultSet<UnsubscribeInfo> toReturn = ResultSets.emptyResultSet();
+      ResultSet<SubscriptionData> results = getSubscriptionsForAccount(userUuid);
+      if (!results.isEmpty()) {
+         List<UnsubscribeInfo> infos = new ArrayList<UnsubscribeInfo>();
+         UriBuilder builder = newUnsubscribeBuilder();
+         for (SubscriptionData subscription : results) {
+            if (subscription.isActive() && groupNames.contains(subscription.getName())) {
+               String name = subscription.getName();
+               URI unsubscribeUri = builder.build(subscription.getGuid());
+               infos.add(newUnsubscribeInfo(name, unsubscribeUri));
+            }
+         }
+         toReturn = ResultSets.newResultSet(infos);
+      }
+      return ResultSets.newResultSet(toReturn);
+   }
+
+   private UnsubscribeInfo newUnsubscribeInfo(final String subscriptionName, final URI unsubscribeUri) {
+      return new UnsubscribeInfo() {
+
+         @Override
+         public String getName() {
+            return subscriptionName;
+         }
+
+         @Override
+         public URI getUnsubscribeUri() {
+            return unsubscribeUri;
+         }
+      };
+   }
 }

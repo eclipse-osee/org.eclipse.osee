@@ -24,3 +24,4 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.codehaus.jackson.core;bundle-version="1.9.2",
  org.codehaus.jackson.jaxrs;bundle-version="1.9.2",
  org.codehaus.jackson.mapper;bundle-version="1.9.2"
+Bundle-ActivationPolicy: lazy

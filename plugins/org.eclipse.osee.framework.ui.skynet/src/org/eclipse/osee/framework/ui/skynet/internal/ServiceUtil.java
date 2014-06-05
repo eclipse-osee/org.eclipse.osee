@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,6 +43,10 @@ public final class ServiceUtil {
       T service = context.getService(reference);
       Conditions.checkNotNull(service, "service");
       return service;
+   }
+
+   public static AccountClient getAccountClient() throws OseeCoreException {
+      return getService(AccountClient.class);
    }
 
    public static IOseeCachingService getOseeCacheService() throws OseeCoreException {

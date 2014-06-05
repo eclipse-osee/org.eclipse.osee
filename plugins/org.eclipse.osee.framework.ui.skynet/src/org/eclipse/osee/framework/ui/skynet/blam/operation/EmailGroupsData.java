@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.account.rest.client.AccountClient.UnsubscribeInfo;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 public class EmailGroupsData {
 
@@ -99,13 +103,27 @@ public class EmailGroupsData {
          html.append("</pre>");
       }
 
+      Set<String> groupsAllowed = new HashSet<String>();
       for (Artifact group : groups) {
-         html.append(String.format(
-            "</br>Click <a href=\"%sosee/unsubscribe/group/%d/user/%d\">unsubscribe</a> to stop receiving all emails for the topic \"%s\"",
-            HttpUrlBuilderClient.getInstance().getApplicationServerPrefix(), group.getArtId(), user.getArtId(),
-            group.getName()));
+         groupsAllowed.add(group.getName());
+      }
+
+      AccountClient client = ServiceUtil.getAccountClient();
+      ResultSet<UnsubscribeInfo> results = client.getUnsubscribeUris(user.getGuid(), groupsAllowed);
+      for (UnsubscribeInfo entry : results) {
+         String subscriptionName = entry.getName();
+         URI unsubscribeUri = entry.getUnsubscribeUri();
+         writeUnsubscribeSection(html, subscriptionName, unsubscribeUri.toASCIIString());
       }
       return html.toString();
+   }
+
+   private void writeUnsubscribeSection(StringBuilder html, String subscriptionName, String unsubscribeUri) {
+      html.append("</br>Click <a href=\"");
+      html.append(unsubscribeUri);
+      html.append("\">unsubscribe</a> to stop receiving all emails for the topic <b>\"");
+      html.append(subscriptionName);
+      html.append("\"</b>");
    }
 
    private String getCustomizedBody(String bodyTemplate, User user) {

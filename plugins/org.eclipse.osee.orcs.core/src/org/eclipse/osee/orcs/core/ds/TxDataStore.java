@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +23,4 @@ public interface TxDataStore {
    Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData transaction);
 
    Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactions);
-
-   Callable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact);
-
 }

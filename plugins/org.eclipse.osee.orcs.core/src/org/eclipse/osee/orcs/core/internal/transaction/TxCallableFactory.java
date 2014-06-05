@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -39,15 +38,6 @@ public class TxCallableFactory {
       this.logger = logger;
       this.txDataStore = txDataStore;
       this.txManager = txManager;
-   }
-
-   public CancellableCallable<String> createUnsubscribeTx(OrcsSession session, final ArtifactReadable userArtifact, final ArtifactReadable groupArtifact) {
-      return new AbstractTxCallable<String>("UnsubscribeTx", session) {
-         @Override
-         protected String innerCall() throws Exception {
-            return txDataStore.createUnsubscribeTx(userArtifact, groupArtifact).call();
-         }
-      };
    }
 
    public CancellableCallable<Integer> purgeTransactions(OrcsSession session, final Collection<? extends ITransaction> transactions) {

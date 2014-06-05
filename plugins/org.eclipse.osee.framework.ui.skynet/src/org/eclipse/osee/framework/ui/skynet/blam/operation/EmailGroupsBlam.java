@@ -133,8 +133,9 @@ public class EmailGroupsBlam extends AbstractBlam {
       if (xWidget.getLabel().equals("Groups")) {
          groupsList = (XArtifactList) xWidget;
          XArtifactList listViewer = (XArtifactList) xWidget;
+
          List<Artifact> groups =
-            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubscriptionGroup, BranchManager.getCommonBranch());
          Collections.sort(groups);
          listViewer.setInputArtifacts(groups);
          listViewer.addXModifiedListener(listener);

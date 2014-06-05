@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.client;
 
+import java.net.URI;
+import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -32,6 +34,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  */
 public interface AccountClient {
+
+   public static interface UnsubscribeInfo {
+      String getName();
+
+      URI getUnsubscribeUri();
+   }
 
    AccountSessionData login(String scheme, String username, String password);
 
@@ -54,5 +62,7 @@ public interface AccountClient {
    boolean isAccountActive(String accountId);
 
    boolean setAccountPreferences(String accountId, Map<String, String> preferences);
+
+   ResultSet<UnsubscribeInfo> getUnsubscribeUris(String userUuid, Collection<String> groupNames);
 
 }

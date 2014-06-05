@@ -39,11 +39,6 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public CancellableCallable<String> createUnsubscribeTx(ArtifactReadable userArtifact, ArtifactReadable groupArtifact) {
-      return txCallableFactory.createUnsubscribeTx(session, userArtifact, groupArtifact);
-   }
-
-   @Override
    public CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions) {
       return txCallableFactory.purgeTransactions(session, transactions);
    }
