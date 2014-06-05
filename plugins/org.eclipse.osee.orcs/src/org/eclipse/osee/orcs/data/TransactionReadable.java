@@ -26,7 +26,7 @@ public interface TransactionReadable extends HasLocalId<Integer> {
 
    int getAuthorId();
 
-   long getBranchId();
+   Long getBranchId();
 
    int getCommit();
 

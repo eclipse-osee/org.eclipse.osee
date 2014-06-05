@@ -307,7 +307,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return getGuid();
    }
 

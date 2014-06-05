@@ -61,8 +61,8 @@ public class OseeClientQueryTest {
       }
 
       @Override
-      public long getUuid() {
-         return 3;
+      public Long getUuid() {
+         return 3L;
       }
    };
 

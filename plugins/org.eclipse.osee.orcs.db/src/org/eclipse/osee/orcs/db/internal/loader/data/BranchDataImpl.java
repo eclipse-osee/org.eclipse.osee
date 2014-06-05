@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, BranchReadable {
 
-   private long uuid = RelationalConstants.DEFAULT_UUID;
+   private Long uuid = RelationalConstants.DEFAULT_UUID;
    private String name = "";
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
    private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
@@ -159,7 +159,7 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 

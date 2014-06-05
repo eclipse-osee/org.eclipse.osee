@@ -1694,7 +1694,7 @@ public final class Lib {
    /**
     * @return unique > 0 long
     */
-   public static long generateUuid() {
+   public static Long generateUuid() {
       long next = 0;
       while (next <= 0) {
          next = RANDOM.nextLong();

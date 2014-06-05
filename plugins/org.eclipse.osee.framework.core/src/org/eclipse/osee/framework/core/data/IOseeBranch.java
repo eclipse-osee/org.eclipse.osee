@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  */
 public interface IOseeBranch extends Identifiable<Long> {
 
-   long getUuid();
+   Long getUuid();
 }

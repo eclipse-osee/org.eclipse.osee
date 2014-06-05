@@ -101,12 +101,12 @@ public final class TokenFactory {
 
    private static final class BranchToken extends NamedIdentity<Long> implements IOseeBranch {
 
-      public BranchToken(long uuid, String name) {
+      public BranchToken(Long uuid, String name) {
          super(uuid, name);
       }
 
       @Override
-      public long getUuid() {
+      public Long getUuid() {
          return getGuid();
       }
 

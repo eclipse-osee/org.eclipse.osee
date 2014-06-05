@@ -22,7 +22,7 @@ public interface BranchData extends HasLocalId<Long> {
 
    void setUuid(Long uuid);
 
-   long getUuid();
+   Long getUuid();
 
    String getName();
 

@@ -636,14 +636,14 @@ public class OrcsTxQueryTest {
       //@formatter:on
    }
 
-   private static void assertTx(TransactionReadable actual, Integer localId, TransactionDetailsType type, String date, String comment, int branchUuid, int authorId, int commitId) {
+   private static void assertTx(TransactionReadable actual, Integer localId, TransactionDetailsType type, String date, String comment, long branchUuid, int authorId, int commitId) {
       assertEquals(localId, actual.getLocalId());
       assertEquals(type, actual.getTxType());
       assertEquals(date, DATE_FORMATTER.format(actual.getDate()));
       assertEquals(comment, actual.getComment());
 
       assertEquals(authorId, actual.getAuthorId());
-      assertEquals(branchUuid, actual.getBranchId());
+      assertEquals((Long) branchUuid, actual.getBranchId());
       assertEquals(commitId, actual.getCommit());
    }
 }
