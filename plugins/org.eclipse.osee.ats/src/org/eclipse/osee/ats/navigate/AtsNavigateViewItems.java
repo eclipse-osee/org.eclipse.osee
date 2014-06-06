@@ -227,10 +227,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new ValidateAtsConfiguration(healthItems);
          new ValidateWorkspaceToDatabaseWorkDefinitions(healthItems);
 
-         // new ActionNavigateItem(adminItems, new XViewerViewAction());
-         // new ActionNavigateItem(adminItems, new OpenEditorAction());
-         // new CreateBugFixesItem(adminItems);
-
          XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
          Set<XNavigateExtensionPointData> extraItems =
             XNavigateContributionManager.getNavigateItems(NavigateView.VIEW_ID);
