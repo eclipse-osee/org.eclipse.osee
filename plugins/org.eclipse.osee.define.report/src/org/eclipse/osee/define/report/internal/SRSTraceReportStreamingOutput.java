@@ -54,12 +54,15 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
    private final TraceAccumulator traceAccumulator;
    private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap =
       new LinkedHashMap<CaseInsensitiveString, ArtifactReadable>();
+   private final Map<CaseInsensitiveString, ArtifactReadable> nameToSrsMap =
+      new LinkedHashMap<CaseInsensitiveString, ArtifactReadable>();
    private final String csci;
    private final String traceType;
    private final List<ArtifactReadable> noTraceReqs = new ArrayList<ArtifactReadable>();
    private ExcelXmlWriter writer;
    private static final IArtifactType WCAFE = TokenFactory.createArtifactType(0x0000BA000000001FL, "WCAFE");
    private final Log logger;
+   List<String> srsHeadingNames = new ArrayList<String>();
 
    public SRSTraceReportStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String codeRoot, TraceAccumulator traceAccumulator, String csci, String traceType) {
       this.queryFactory = orcsApi.getQueryFactory(null);
@@ -83,10 +86,10 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
          writeReqSheet();
          writeCodeSheet();
          List<Object[]> missingSrsRows = writeSrsToCodeSheet();
+         writeCodeToSrsSheet();
          writeSrsMissing(missingSrsRows);
          writeNoTraceFilesSheet();
          writeNoTraceReqsSheet();
-         writeMalformedTraceMarks();
          writeSwReqToSubsystemReq();
          writeSummary(start);
 
@@ -159,6 +162,58 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
       }
 
       writer.endSheet();
+   }
+
+   private void writeCodeToSrsSheet() throws IOException {
+      writer.startSheet("Code to SRS", newCol("Code Unit", 500), newCol("SRS Name", 400, WrappedStyle),
+         newCol("No Match", 400, WrappedStyle));
+
+      StringBuilder names = new StringBuilder(2000);
+      StringBuilder noMatches = new StringBuilder(1500);
+
+      for (String codeUnit : traceAccumulator.getFiles()) {
+         buildSrsInfo(traceAccumulator.getTraceMarks(codeUnit), names, noMatches);
+
+         writer.writeRow(codeUnit, names, noMatches);
+
+         names.setLength(0);
+         noMatches.setLength(0);
+      }
+
+      writer.endSheet();
+   }
+
+   private void buildSrsInfo(Set<CaseInsensitiveString> reqNames, StringBuilder names, StringBuilder noMatches) {
+      ArrayList<CaseInsensitiveString> sortedReqNames = new ArrayList<CaseInsensitiveString>(reqNames);
+      java.util.Collections.sort(sortedReqNames);
+      boolean firstReq = true;
+      boolean firstNoMatch = true;
+
+      for (CaseInsensitiveString sortedReqName : sortedReqNames) {
+         String reqName = sortedReqName.toString();
+         if (reqName.startsWith("SRS")) {
+            reqName = reqName.replaceFirst("SRS", "");
+
+            if (!srsHeadingNames.contains(reqName)) {
+               if (firstNoMatch) {
+                  firstNoMatch = false;
+               } else {
+                  noMatches.append("\n");
+               }
+
+               noMatches.append(reqName);
+            } else {
+               if (firstReq) {
+                  firstReq = false;
+               } else {
+                  names.append("\n");
+               }
+
+               names.append(reqName);
+            }
+         }
+      }
+
    }
 
    private void buildReqInfo(Set<CaseInsensitiveString> reqNames, StringBuilder paragraphNums, StringBuilder names, StringBuilder types, StringBuilder noMatches) {
@@ -238,6 +293,8 @@ public final class SRSTraceReportStreamingOutput implements StreamingOutput {
 
       for (ArtifactReadable srs : srsHeadings) {
          String srsName = srs.getName();
+         srsHeadingNames.add(srsName);
+
          Set<String> srsCodeUnits = traceAccumulator.getFiles("SRS" + srsName);
 
          for (ArtifactReadable req : srs.getRelated(CoreRelationTypes.SupportingInfo_SupportedBy)) {
