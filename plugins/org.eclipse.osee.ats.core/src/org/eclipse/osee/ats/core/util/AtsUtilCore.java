@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.util;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -27,29 +26,61 @@ import org.eclipse.osee.orcs.data.AttributeId;
  */
 public class AtsUtilCore {
 
+   private static final String ATS_BRANCH_NAME = "ats.branch.name";
+   private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
-   private static IOseeBranch commonBranch = null;
 
-   public synchronized static IOseeBranch getAtsBranch() {
-      if (commonBranch == null) {
-         commonBranch = CoreBranches.COMMON;
-         String atsBranchUuid = System.getProperty("ats.branch");
-         if (Strings.isValid(atsBranchUuid)) {
-            try {
-               Long branchUuid = Long.valueOf(atsBranchUuid);
-               boolean hasPermission = AtsCoreService.getUserService().currentUserHasAccessToAtsBranch(branchUuid);
-               if (!hasPermission) {
-                  OseeLog.logf(AtsUtilCore.class, Level.SEVERE,
-                     "User configured for ATS Branch %s, but has no read access; falling back to Common", atsBranchUuid);
-               } else {
-                  commonBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
+   private static final Object lock = new Object();
+   private volatile static IOseeBranch atsBranch;
+   private volatile static String atsConfigName;
+
+   public static String getAtsConfigName() {
+      getAtsBranch();
+      return atsConfigName;
+   }
+
+   public static IOseeBranch getAtsBranch() {
+      synchronized (lock) {
+         if (atsBranch == null) {
+            // Preference store overrides all
+            if (AtsPreferencesService.isAvailable()) {
+               try {
+                  String atsBranchUuid = AtsPreferencesService.get(ATS_BRANCH_UUID);
+                  setConfig(atsBranchUuid, AtsPreferencesService.get(ATS_BRANCH_NAME));
+               } catch (Exception ex) {
+                  OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
                }
-            } catch (Exception ex) {
-               OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processisng ATS Branch config permissions", ex);
+            }
+            // osee.ini -D option overrides default
+            if (atsBranch == null) {
+               String atsBranchUuid = System.getProperty(ATS_BRANCH_UUID);
+               if (Strings.isValid(atsBranchUuid)) {
+                  setConfig(atsBranchUuid, System.getProperty(ATS_BRANCH_NAME));
+               }
+            }
+            // default is always common
+            if (atsBranch == null) {
+               atsBranch = CoreBranches.COMMON;
+               atsConfigName = CoreBranches.COMMON.getName();
             }
          }
       }
-      return commonBranch;
+      return atsBranch;
+   }
+
+   private static void setConfig(String branchUuid, String name) {
+      if (!Strings.isValid(name)) {
+         name = "unknown";
+      }
+      if (Strings.isValid(branchUuid) && branchUuid.matches("\\d+")) {
+         atsBranch = TokenFactory.createBranch(Long.valueOf(branchUuid), name);
+         atsConfigName = name;
+      }
+   }
+
+   public static void storeAtsBranch(IOseeBranch branch, String name) {
+      AtsPreferencesService.get().put(ATS_BRANCH_UUID, String.valueOf(branch.getUuid()));
+      AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
    }
 
    public static boolean isInTest() {

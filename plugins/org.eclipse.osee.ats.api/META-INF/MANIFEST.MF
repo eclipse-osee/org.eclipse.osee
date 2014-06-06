@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.commit,
+ org.eclipse.osee.ats.api.config,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.ats.api.ev,
  org.eclipse.osee.ats.api.notify,

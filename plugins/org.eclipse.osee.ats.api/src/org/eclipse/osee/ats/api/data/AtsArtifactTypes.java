@@ -21,6 +21,7 @@ public final class AtsArtifactTypes {
    // @formatter:off
    public static final IArtifactType Action = TokenFactory.createArtifactType(0x0000000000000043L, "Action");
    public static final IArtifactType ActionableItem = TokenFactory.createArtifactType(0x0000000000000045L, "Actionable Item");
+   public static final IArtifactType Configuration = TokenFactory.createArtifactType(0x000055500000003FL, "ATS Configuration");
    public static final IArtifactType DecisionReview = TokenFactory.createArtifactType(0x0000000000000042L, "Decision Review");
    public static final IArtifactType PeerToPeerReview = TokenFactory.createArtifactType(0x0000000000000041L, "PeerToPeer Review");
    public static final IArtifactType Task = TokenFactory.createArtifactType(0x000000000000004AL, "Task");

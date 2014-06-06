@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.search.AtsQuickSearchComposite;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
@@ -182,7 +181,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
             public void refreshUserLabel() {
                String str = getWhoAmI();
                if (AtsUtilClient.isAtsAdmin()) {
-                  str += " - Admin";
+                  str += " - [Admin]";
                }
                if (!str.equals("")) {
                   if (AtsUtilClient.isAtsAdmin()) {
@@ -234,7 +233,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
    private String getWhoAmI() {
       try {
          String userName = AtsClientService.get().getUserService().getCurrentUser().getName();
-         return String.format("%s - [%s]", userName, BranchManager.getBranch(AtsUtilCore.getAtsBranch()).getName());
+         return String.format("[%s] - [%s]", AtsUtilCore.getAtsConfigName(), userName);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception: " + ex.getLocalizedMessage();

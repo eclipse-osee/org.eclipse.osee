@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
 import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
+import org.eclipse.osee.ats.rest.internal.resources.ConfigResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.resources.TeamResource;
 import org.eclipse.osee.ats.rest.internal.resources.VersionResource;
@@ -67,6 +68,7 @@ public class AtsApplication extends Application {
       singletons.add(new ConvertResource(registry));
       singletons.add(new TeamResource(orcsApi));
       singletons.add(new VersionResource(orcsApi));
+      singletons.add(new ConfigResource(orcsApi));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
    }

@@ -34,6 +34,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType AtsId = createType(0x1000000000000385L, "ATS Id", "ATS Generated Id");
    public static final IAttributeType AtsIdPrefix = createType(0x1023000000000385L, "ATS Id Prefix", "ATS Id Prefix");
    public static final IAttributeType AtsIdSequenceName = createType(0x1024000000000385L, "ATS Id Sequence Name", "ATS Id Sequence Name");
+   public static final IAttributeType AtsConfiguredBranch = createType(0x1000555100000FBL, "ATS Configured Branch", "ATS Configured Branch");
    public static final IAttributeType TaskToChangedArtifactReference = createType(0x1000BA00000000FAL, "Task To Changed Artifact Reference");
    public static final IAttributeType BaselineBranchUuid = createType(0x10000990000000A9L, "Baseline Branch Uuid", "Baseline branch associated with ATS object.");
 
@@ -60,6 +61,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType Decision = createType(0x10000000000000F5L, "Decision", "Option selected during decision review.");
 
    public static final IAttributeType DecisionReviewOptions = createType(0x10000000000000F4L, "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
+   public static final IAttributeType Default = createType(0x10000056457000AAL, "Default", "Default");
    public static final IAttributeType Description = createType(0x10000000000000DCL, "Description", "Detailed explanation.");
    public static final IAttributeType DslSheet = createType(0x10000000000000DDL, "DSL Sheet", "XText DSL Sheet for ATS");
    public static final IAttributeType EstimatedCompletionDate = createType(0x10000000000000BDL, "Estimated Completion Date", "Date the changes will be completed.");

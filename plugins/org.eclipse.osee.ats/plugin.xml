@@ -614,4 +614,14 @@
             id="org.eclipse.osee.ats.WorldEditorInputFactory">
       </factory>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.osee.framework.ui.skynet.OseePreferencePage"
+            class="org.eclipse.osee.ats.config.AtsConfigPreferencePage"
+            id="atsConfigPreferencePage"
+            name="ATS">
+      </page>
+   </extension>
 </plugin>
