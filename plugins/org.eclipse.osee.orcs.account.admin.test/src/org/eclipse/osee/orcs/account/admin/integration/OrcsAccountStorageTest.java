@@ -19,15 +19,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountSession;
-import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
-import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountStorageImpl;
+import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountStorage;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,11 +38,11 @@ import org.junit.rules.TestRule;
 import org.mockito.Mock;
 
 /**
- * Test Case for {@link AccountAdmin} using {@link OrcsAccountStorageImpl}
+ * Test Case for {@link OrcsAccountStorage}
  * 
  * @author Roberto E. Escobar
  */
-public class OrcsAccountStorageImplTest {
+public class OrcsAccountStorageTest {
 
    @Rule
    public TestRule osgi = OrcsIntegrationRule.integrationRule(this, "osee.demo.hsql");
@@ -216,7 +215,6 @@ public class OrcsAccountStorageImplTest {
       assertNotNull(actual.getCreatedOn());
       assertNotNull(actual.getLastAccessedOn());
 
-      //      
       ResultSet<AccountSession> result = storage.getAccountSessionBySessionToken(token);
       AccountSession actualAccess = result.getExactlyOne();
       assertEquals(actual, actualAccess);

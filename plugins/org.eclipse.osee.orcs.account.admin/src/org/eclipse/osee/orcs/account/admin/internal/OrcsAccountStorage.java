@@ -15,98 +15,46 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.OrcsUtil;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsAccountStorageImpl implements AccountStorage {
+public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountStorage {
 
-   private Log logger;
-   private OrcsApi orcsApi;
    private IOseeDatabaseService dbService;
-
-   private AccountFactory factory;
-   private IOseeBranch storageBranch;
-   private ApplicationContext context;
    private AccountSessionStorage sessionStore;
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
    }
 
-   public void setLogger(Log logger) {
-      this.logger = logger;
-   }
-
-   public void setOrcsApi(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
-   }
-
+   @Override
    public void start() {
-      logger.trace("Starting OrcsAccountStorageImpl...");
-      factory = new AccountFactory();
-      storageBranch = CoreBranches.COMMON;
-
-      String sessionId = SystemUser.OseeSystem.getGuid();
-      context = newApplicationContext(sessionId);
-
-      sessionStore = new AccountSessionDatabaseStore(logger, dbService, factory);
+      super.start();
+      sessionStore = new AccountSessionDatabaseStore(getLogger(), dbService, getFactory());
    }
 
+   @Override
    public void stop() {
-      logger.trace("Stopping OrcsAccountStorageImpl...");
-      storageBranch = null;
-      factory = null;
-   }
-
-   private ApplicationContext newApplicationContext(final String sessionId) {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return sessionId;
-         }
-      };
-   }
-
-   private IOseeBranch getBranch() {
-      return storageBranch;
-   }
-
-   private QueryBuilder newQuery() {
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      return queryFactory.fromBranch(getBranch());
-   }
-
-   @SuppressWarnings("unchecked")
-   private ArtifactReadable getSystemUser() {
-      return newQuery().andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      super.stop();
+      sessionStore = null;
    }
 
    @Override
@@ -130,60 +78,55 @@ public class OrcsAccountStorageImpl implements AccountStorage {
    @Override
    public ResultSet<Account> getAllAccounts() {
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByUserName(String username) {
       ResultSet<ArtifactReadable> results =
          newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByUuid(String accountUuid) {
       ResultSet<ArtifactReadable> results =
          newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(accountUuid).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByLocalId(long accountId) {
       int id = Long.valueOf(accountId).intValue();
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andLocalId(id).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       ResultSet<ArtifactReadable> results =
          newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, Operator.EQUAL, email).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<Account> getAccountByName(String name) {
       ResultSet<ArtifactReadable> results =
          newQuery().andIsOfType(CoreArtifactTypes.User).andNameEquals(name).getResults();
-      return factory.newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results);
    }
 
    @Override
    public ResultSet<AccountPreferences> getAccountPreferencesById(long accountId) {
       int id = Long.valueOf(accountId).intValue();
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andLocalId(id).getResults();
-      return factory.newAccountPreferencesResultSet(results);
+      return getFactory().newAccountPreferencesResultSet(results);
    }
 
    @Override
    public ResultSet<AccountPreferences> getAccountPreferencesByUuid(String uuid) {
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(uuid).getResults();
-      return factory.newAccountPreferencesResultSet(results);
-   }
-
-   private TransactionBuilder newTransaction(String comment) {
-      TransactionFactory transactionFactory = orcsApi.getTransactionFactory(context);
-      return transactionFactory.createTransaction(getBranch(), getSystemUser(), comment);
+      return getFactory().newAccountPreferencesResultSet(results);
    }
 
    @Override
@@ -266,7 +209,8 @@ public class OrcsAccountStorageImpl implements AccountStorage {
 
    @Override
    public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress, String accessDetails) {
-      AccountSession session = factory.newAccountSession(account.getId(), sessionToken, remoteAddress, accessDetails);
+      AccountSession session =
+         getFactory().newAccountSession(account.getId(), sessionToken, remoteAddress, accessDetails);
       try {
          sessionStore.createAccountSession(Collections.singleton(session)).call();
          return session;

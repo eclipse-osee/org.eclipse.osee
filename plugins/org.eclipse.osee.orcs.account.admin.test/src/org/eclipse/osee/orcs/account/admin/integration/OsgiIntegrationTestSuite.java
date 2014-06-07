@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsAccountStorageImplTest.class})
+@Suite.SuiteClasses({OrcsAccountStorageTest.class})
 public class OsgiIntegrationTestSuite {
    // Test Suite
 }
