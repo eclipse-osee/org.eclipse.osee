@@ -21,7 +21,6 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.CreateAccountRequestBuilder;
-import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
@@ -30,6 +29,7 @@ import org.eclipse.osee.account.rest.model.AccountLoginData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -67,19 +67,9 @@ public class AccountOps {
       ResultSet<AccountSession> result = accountAdmin.getAccountSessionByUniqueField(accountId);
       List<AccountSessionDetailsData> toReturn = new ArrayList<AccountSessionDetailsData>();
       for (AccountSession session : result) {
-         toReturn.add(asAccountAccessData(session));
+         toReturn.add(AccountDataUtil.asAccountAccessData(session));
       }
       return toReturn;
-   }
-
-   public AccountSessionDetailsData asAccountAccessData(AccountSession session) {
-      AccountSessionDetailsData data = new AccountSessionDetailsData();
-      data.setAccountId(session.getAccountId());
-      data.setAccessDetails(session.getAccessDetails());
-      data.setAccessedFrom(session.getAccessedFrom());
-      data.setCreatedOn(session.getCreatedOn());
-      data.setLastAccessedOn(session.getLastAccessedOn());
-      return data;
    }
 
    public AccountSessionData doLogin(RequestInfo info, AccountLoginData input) {
@@ -92,18 +82,11 @@ public class AccountOps {
       .remoteAddress(info.getRemoteIpAddress()) //
       .build();
       AccountSession session = accountAdmin.login(request);
-      return asSessionData(session);
+      return AccountDataUtil.asSessionData(session);
    }
 
    public boolean doLogout(String token) {
       return accountAdmin.logout(token);
-   }
-
-   public AccountSessionData asSessionData(AccountSession session) {
-      AccountSessionData data = new AccountSessionData();
-      data.setAccountId(session.getAccountId());
-      data.setToken(session.getSessionToken());
-      return data;
    }
 
    public AccountInfoData createAccount(String username, AccountInput input) {
@@ -119,7 +102,7 @@ public class AccountOps {
       Identifiable<String> id = accountAdmin.createAccount(request);
       ResultSet<Account> result = accountAdmin.getAccountByUuid(id.getGuid());
       Account account = result.getExactlyOne();
-      return asAccountData(account);
+      return AccountDataUtil.asAccountData(account);
    }
 
    public boolean deleteAccount(String accountId) {
@@ -133,14 +116,14 @@ public class AccountOps {
    public AccountActiveData isActive(String accountId) {
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
       Account account = result.getExactlyOne();
-      return asAccountActiveData(account);
+      return AccountDataUtil.asAccountActiveData(account);
    }
 
    public List<AccountInfoData> getAllAccounts() {
       List<AccountInfoData> toReturn = new ArrayList<AccountInfoData>();
       ResultSet<Account> result = accountAdmin.getAllAccounts();
       for (Account account : result) {
-         toReturn.add(asAccountData(account));
+         toReturn.add(AccountDataUtil.asAccountData(account));
       }
       return toReturn;
    }
@@ -148,58 +131,20 @@ public class AccountOps {
    public AccountDetailsData getAccountDetailsData(String accountId) {
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
       Account account = result.getExactlyOne();
-      return asAccountDetailsData(account);
+      return AccountDataUtil.asAccountDetailsData(account);
    }
 
    public AccountInfoData getAccountData(String value) {
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(value);
       Account account = result.getExactlyOne();
-      return asAccountData(account);
+      return AccountDataUtil.asAccountData(account);
    }
 
    public AccountPreferencesData getAccountPreferencesData(String value) {
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(value);
       Account account = result.getExactlyOne();
       AccountPreferences preferences = account.getPreferences();
-      return asAccountPreferencesData(preferences);
-   }
-
-   private AccountDetailsData asAccountDetailsData(Account account) {
-      AccountDetailsData data = new AccountDetailsData();
-      fillData(account, data);
-      AccountPreferencesData preferences = asAccountPreferencesData(account.getPreferences());
-      data.setPreferences(preferences);
-      return data;
-   }
-
-   private AccountInfoData asAccountData(Account account) {
-      AccountInfoData data = new AccountInfoData();
-      fillData(account, data);
-      return data;
-   }
-
-   private void fillData(Account account, AccountInfoData data) {
-      data.setAccountId(account.getId());
-      data.setGuid(account.getGuid());
-      data.setName(account.getName());
-      data.setEmail(account.getEmail());
-      data.setUserName(account.getUserName());
-      data.setActive(account.isActive());
-   }
-
-   private AccountPreferencesData asAccountPreferencesData(AccountPreferences preferences) {
-      AccountPreferencesData data = new AccountPreferencesData();
-      data.setId(preferences.getId());
-      data.setMap(preferences.asMap());
-      return data;
-   }
-
-   private AccountActiveData asAccountActiveData(Account account) {
-      AccountActiveData data = new AccountActiveData();
-      data.setAccountId(account.getId());
-      data.setGuid(account.getGuid());
-      data.setActive(account.isActive());
-      return data;
+      return AccountDataUtil.asAccountPreferencesData(preferences);
    }
 
    public boolean setAccountPreferences(String accountId, AccountPreferencesInput input) {

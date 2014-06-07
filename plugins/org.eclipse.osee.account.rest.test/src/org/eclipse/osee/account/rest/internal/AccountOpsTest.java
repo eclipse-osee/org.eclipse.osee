@@ -26,12 +26,11 @@ import javax.ws.rs.core.HttpHeaders;
 import org.apache.commons.lang.math.RandomUtils;
 import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
-import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
@@ -40,6 +39,7 @@ import org.eclipse.osee.account.rest.model.AccountLoginData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
+import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -196,30 +196,6 @@ public class AccountOpsTest {
 
       assertEquals(userAgent, actual.getDetails());
       assertEquals(ipAddress, actual.getRemoteIpAddress());
-   }
-
-   @Test
-   public void testAsAccountAccessData() {
-      Date d1 = newRandomDate();
-      Date d2 = newRandomDate();
-
-      AccountSession access = mockAccess(789L, "t3", d1, d2, "f3", "d3");
-
-      AccountSessionDetailsData actual = ops.asAccountAccessData(access);
-
-      assertAccess(actual, 789L, d1, d2, "f3", "d3");
-   }
-
-   @Test
-   public void testAsSessionData() {
-      Date d1 = newRandomDate();
-      Date d2 = newRandomDate();
-      AccountSession access = mockAccess(123L, "t1", d1, d2, "f1", "d1");
-
-      AccountSessionData actual = ops.asSessionData(access);
-
-      assertEquals(123L, actual.getAccountId());
-      assertEquals("t1", actual.getToken());
    }
 
    @Test

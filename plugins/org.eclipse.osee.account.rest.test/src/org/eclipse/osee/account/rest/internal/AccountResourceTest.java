@@ -15,8 +15,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import java.net.URI;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
@@ -35,10 +39,11 @@ public class AccountResourceTest {
 
    //@formatter:off
    @Mock private AccountOps accountOps;
-   
    @Mock private AccountInput accountInput;
    @Mock private AccountInfoData accountInfoData;
    @Mock private AccountDetailsData details;
+   
+   @Mock private UriInfo uriInfo;
    //@formatter:on
 
    private AccountResource resource;
@@ -118,6 +123,24 @@ public class AccountResourceTest {
       // Ensure resource constructed correctly;
       actual.getAccountSessions();
       verify(accountOps).getAccountSessionById(ACCOUNT_ID);
+   }
+
+   @Test
+   public void testGetSubscriptions() {
+      URI uri =
+         UriBuilder.fromPath("http://localhost:8089/oseex/accounts/{account-id}/subscriptions").build(ACCOUNT_ID);
+      when(uriInfo.getRequestUri()).thenReturn(uri);
+
+      Response response = resource.getSubscriptions(uriInfo);
+
+      int status = response.getStatus();
+      assertEquals(Status.SEE_OTHER.getStatusCode(), status);
+
+      URI location = (URI) response.getMetadata().getFirst(HttpHeaders.LOCATION);
+      URI expectedLocation =
+         UriBuilder.fromUri(uri).path("..").path("..").path("subscriptions").path("for-account").path("{account-id}").build(
+            ACCOUNT_ID);
+      assertEquals(expectedLocation, location);
    }
 
 }

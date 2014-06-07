@@ -5,4 +5,5 @@
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
    <reference bind="setAccountAdmin" cardinality="1..1" interface="org.eclipse.osee.account.admin.AccountAdmin" name="AccountAdmin" policy="static"/>
+   <reference bind="setSubscriptionAdmin" cardinality="1..1" interface="org.eclipse.osee.account.admin.SubscriptionAdmin" name="SubscriptionAdmin" policy="static"/>
 </scr:component>

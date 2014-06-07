@@ -19,13 +19,16 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AccountActiveResourceTest.class,
+   AccountDataUtilTest.class,
    AccountLoginResourceTest.class,
    AccountLogoutResourceTest.class,
    AccountOpsTest.class,
    AccountPreferencesResourceTest.class,
    AccountResourceTest.class,
    AccountSessionsResourceTest.class,
-   AccountsResourceTest.class})
+   AccountsResourceTest.class,
+   SubscriptionsResourceTest.class,
+   UnsubscribeResourceTest.class})
 public class AccountInternalTestSuite {
    // Test Suite
 }

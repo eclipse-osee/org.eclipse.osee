@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
+import java.net.URI;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -18,9 +19,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.account.admin.SystemRoles;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
@@ -84,6 +88,22 @@ public class AccountResource {
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public AccountDetailsData getAccountDetailsData() {
       return accountOps.getAccountDetailsData(accountId);
+   }
+
+   /**
+    * Get All account subscriptions
+    * 
+    * @return accountSubscriptions
+    */
+   @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
+   @Path("subscriptions")
+   @GET
+   public Response getSubscriptions(@Context UriInfo uriInfo) {
+      URI requestUri = uriInfo.getRequestUri();
+      URI uri =
+         UriBuilder.fromUri(requestUri).path("..").path("..").path("subscriptions").path("for-account").path(
+            "{account-id}").build(accountId);
+      return Response.seeOther(uri).build();
    }
 
    @Path(AccountContexts.ACCOUNT_PREFERENCES)

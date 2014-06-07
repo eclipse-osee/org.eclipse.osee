@@ -34,7 +34,6 @@ public class AccountsResourceTest {
 
    //@formatter:off
    @Mock private AccountOps accountOps;
-   
    @Mock private AccountInfoData account;
    @Mock private AccountInput input;
    //@formatter:on

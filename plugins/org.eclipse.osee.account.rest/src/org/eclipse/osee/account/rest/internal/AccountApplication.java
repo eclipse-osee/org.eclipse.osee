@@ -15,23 +15,33 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.account.admin.AccountAdmin;
+import org.eclipse.osee.account.admin.SubscriptionAdmin;
 
 /**
  * @author Roberto E. Escobar
  */
 @ApplicationPath("oseex/accounts")
 public class AccountApplication extends Application {
-
    private final Set<Object> singletons = new HashSet<Object>();
+
    private AccountAdmin accountAdmin;
+   private SubscriptionAdmin subscriptionAdmin;
 
    public void setAccountAdmin(AccountAdmin accountAdmin) {
       this.accountAdmin = accountAdmin;
    }
 
+   public void setSubscriptionAdmin(SubscriptionAdmin subscriptionAdmin) {
+      this.subscriptionAdmin = subscriptionAdmin;
+   }
+
    public void start() {
+      PageWriter writer = new PageWriter();
       AccountOps ops = new AccountOps(accountAdmin);
+
       singletons.add(new AccountsResource(ops));
+      singletons.add(new SubscriptionsResource(subscriptionAdmin));
+      singletons.add(new UnsubscribeResource(subscriptionAdmin, writer));
    }
 
    public void stop() {

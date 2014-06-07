@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
+	<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+	<meta charset="UTF-8">
+	<title>OSEE Unsubscribe</title>
+</head>
+<body>
+<div class="container">
+	<div>
+		<h1>OSEE - Opt Out </h1>
+		<p>Unsubscribe from this mailing list...</p>
+	<div>
+	<br/>
+
+	<form role="form" method="POST" action="<?unsubscribeUrl?>">
+		<input class="form-control" type="hidden" name="accountDisplayName" value="<?accountDisplayName?>">
+		<input class="form-control" type="hidden" name="subscriptionName" value="<?subscriptionName?>">
+		<div class="form-group">
+			<div class="container">
+				Are you sure you want to remove <b><?accountDisplayName?></b> from future <b><?subscriptionName?></b> announcements?
+			</div>
+			<br/>
+			<button type="submit" class="btn btn-default">Confirm</button>
+		</div>
+	</form>
+</div>
+</body>
+</html>
