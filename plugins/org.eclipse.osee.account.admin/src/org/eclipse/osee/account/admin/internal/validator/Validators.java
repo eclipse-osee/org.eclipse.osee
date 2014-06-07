@@ -8,19 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.admin.internal;
+package org.eclipse.osee.account.admin.internal.validator;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
-import org.eclipse.osee.account.admin.internal.validator.DisplayNameValidator;
-import org.eclipse.osee.account.admin.internal.validator.EmailValidator;
-import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
-import org.eclipse.osee.account.admin.internal.validator.LocalIdValidator;
-import org.eclipse.osee.account.admin.internal.validator.UserNameValidator;
-import org.eclipse.osee.account.admin.internal.validator.UuidValidator;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
@@ -31,14 +26,14 @@ public final class Validators {
       // 
    }
 
-   public static Map<AccountField, FieldValidator> newValidators(AccountStorage storage) {
+   public static Validator newAccountValidator(Log logger, AccountStorage storage) {
       Map<AccountField, FieldValidator> data = new HashMap<AccountField, FieldValidator>();
       addValidator(data, new UuidValidator());
       addValidator(data, new LocalIdValidator());
       addValidator(data, new DisplayNameValidator(storage));
       addValidator(data, new EmailValidator(storage));
       addValidator(data, new UserNameValidator(storage));
-      return data;
+      return new Validator(logger, data);
    }
 
    private static void addValidator(Map<AccountField, FieldValidator> validators, FieldValidator toAdd) {

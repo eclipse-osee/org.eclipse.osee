@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin.internal.validator;
 
-import static org.junit.Assert.assertEquals;
+import static org.eclipse.osee.account.admin.AccountConstants.ACCOUNT_USERNAME_VALIDATION_PATTERN;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.regex.Pattern;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -36,11 +35,11 @@ public class UserNameValidatorTest extends AbstractConfigurableValidatorTest<Use
 
    // @formatter:off
    @Mock private AccountStorage storage;
-   @Mock private AccountAdminConfiguration config;
    // @formatter:on
 
    public UserNameValidatorTest() {
-      super(AccountField.USERNAME, VALID_USERNAME, INVALID_USERNAME, INVALID_USERNAME_FOR_PATTERN);
+      super(AccountField.USERNAME, VALID_USERNAME, INVALID_USERNAME, INVALID_USERNAME_FOR_PATTERN,
+         ACCOUNT_USERNAME_VALIDATION_PATTERN);
    }
 
    @Override
@@ -92,14 +91,4 @@ public class UserNameValidatorTest extends AbstractConfigurableValidatorTest<Use
       getValidator().validate(getValidValue());
    }
 
-   @Override
-   public void testGetPatternFromConfig() {
-      String patternFromConfig = "adashdsahfafha";
-      when(config.getUserNamePattern()).thenReturn(patternFromConfig);
-
-      String actual = getValidator().getPatternFromConfig(config);
-      assertEquals(patternFromConfig, actual);
-
-      verify(config).getUserNamePattern();
-   }
 }

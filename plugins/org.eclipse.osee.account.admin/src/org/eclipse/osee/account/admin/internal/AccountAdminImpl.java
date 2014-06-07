@@ -16,8 +16,6 @@ import java.util.UUID;
 import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
-import org.eclipse.osee.account.admin.AccountAdminConfigurationBuilder;
 import org.eclipse.osee.account.admin.AccountConstants;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountLoginException;
@@ -26,7 +24,8 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
-import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
+import org.eclipse.osee.account.admin.internal.validator.Validator;
+import org.eclipse.osee.account.admin.internal.validator.Validators;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
@@ -47,8 +46,8 @@ public class AccountAdminImpl implements AccountAdmin {
    private AccountStorage storage;
    private AuthenticationAdmin authenticationAdmin;
 
-   private AccountFieldResolver resolver;
-   private AccountValidator validator;
+   private AccountResolver resolver;
+   private Validator validator;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -65,10 +64,8 @@ public class AccountAdminImpl implements AccountAdmin {
    public void start(Map<String, Object> props) {
       logger.trace("Starting OrcsAccountAdminImpl...");
 
-      Map<AccountField, FieldValidator> validators = Validators.newValidators(storage);
-      validator = new AccountValidator(getLogger(), validators);
-      resolver = new AccountFieldResolver(validator, this);
-
+      validator = Validators.newAccountValidator(logger, storage);
+      resolver = new AccountResolver(validator, this);
       update(props);
    }
 
@@ -77,22 +74,14 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    public void update(Map<String, Object> props) {
-      AccountAdminConfiguration config = AccountAdminConfigurationBuilder.newBuilder()//
-      .properties(props)//
-      .build();
-
-      validator.configure(config);
-   }
-
-   private Log getLogger() {
-      return logger;
+      validator.configure(props);
    }
 
    private AccountStorage getStorage() {
       return storage;
    }
 
-   protected AccountValidator getValidator() {
+   protected Validator getValidator() {
       return validator;
    }
 
@@ -167,7 +156,7 @@ public class AccountAdminImpl implements AccountAdmin {
    public Identifiable<String> createAccount(CreateAccountRequest request) {
       Conditions.checkNotNull(request, "create account request");
 
-      AccountValidator validator = getValidator();
+      Validator validator = getValidator();
       validator.validate(AccountField.EMAIL, request.getEmail());
       validator.validate(AccountField.USERNAME, request.getUserName());
       validator.validate(AccountField.DISPLAY_NAME, request.getDisplayName());
@@ -361,8 +350,4 @@ public class AccountAdminImpl implements AccountAdmin {
       return modified;
    }
 
-   @Override
-   public AccountField getAccountFieldType(String value) {
-      return validator.guessFormatType(value);
-   }
 }

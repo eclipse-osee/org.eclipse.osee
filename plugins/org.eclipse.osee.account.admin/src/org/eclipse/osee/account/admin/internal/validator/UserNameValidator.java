@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin.internal.validator;
 
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
+import static org.eclipse.osee.account.admin.AccountConstants.ACCOUNT_USERNAME_VALIDATION_PATTERN;
+import static org.eclipse.osee.account.admin.AccountConstants.DEFAULT_USERNAME_VALIDATION_PATTERN;
+import java.util.Map;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 
@@ -37,8 +39,8 @@ public class UserNameValidator extends AbstractConfigurableValidator {
    }
 
    @Override
-   public String getPatternFromConfig(AccountAdminConfiguration config) {
-      return config.getUserNamePattern();
+   public String getPatternFromConfig(Map<String, Object> props) {
+      return get(props, ACCOUNT_USERNAME_VALIDATION_PATTERN, DEFAULT_USERNAME_VALIDATION_PATTERN);
    }
 
 }

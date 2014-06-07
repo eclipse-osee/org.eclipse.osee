@@ -8,25 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.admin.internal;
+package org.eclipse.osee.account.admin.internal.validator;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountField;
-import org.eclipse.osee.account.admin.internal.validator.AbstractConfigurableValidator;
-import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
-import org.eclipse.osee.account.admin.internal.validator.NoopValidator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountValidator {
+public class Validator {
 
    protected static final NoopValidator DEFAULT_VALIDATOR = new NoopValidator();
 
@@ -35,24 +31,24 @@ public class AccountValidator {
 
    private Iterable<FieldValidator> ordered;
 
-   public AccountValidator(Log logger, Map<AccountField, FieldValidator> validators) {
+   public Validator(Log logger, Map<AccountField, FieldValidator> validators) {
       this.logger = logger;
       this.validators = validators;
    }
 
-   public void configure(AccountAdminConfiguration config) {
-      logger.info("Start Account Validator Config Update...");
+   public void configure(Map<String, Object> props) {
+      logger.info("Start Validator Config Update...");
       for (FieldValidator validator : validators.values()) {
          if (validator instanceof AbstractConfigurableValidator) {
             AbstractConfigurableValidator configurable = (AbstractConfigurableValidator) validator;
-            configure(config, configurable);
+            configure(configurable, props);
          }
       }
-      logger.info("Completed Account Validator Config Update");
+      logger.info("Completed Validator Config Update");
    }
 
-   private void configure(AccountAdminConfiguration config, AbstractConfigurableValidator configurable) {
-      String patternString = configurable.getPatternFromConfig(config);
+   private void configure(AbstractConfigurableValidator configurable, Map<String, Object> props) {
+      String patternString = configurable.getPatternFromConfig(props);
       if (Strings.isValid(patternString)) {
          try {
             Pattern customPattern = Pattern.compile(patternString);

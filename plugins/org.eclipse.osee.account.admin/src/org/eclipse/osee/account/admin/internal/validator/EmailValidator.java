@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin.internal.validator;
 
+import static org.eclipse.osee.account.admin.AccountConstants.ACCOUNT_EMAIL_VALIDATION_PATTERN;
+import static org.eclipse.osee.account.admin.AccountConstants.DEFAULT_EMAIL_VALIDATION_PATTERN;
+import java.util.Map;
 import java.util.regex.Pattern;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,8 +60,8 @@ public class EmailValidator extends AbstractConfigurableValidator {
    }
 
    @Override
-   public String getPatternFromConfig(AccountAdminConfiguration config) {
-      return config.getEmailPattern();
+   public String getPatternFromConfig(Map<String, Object> props) {
+      return get(props, ACCOUNT_EMAIL_VALIDATION_PATTERN, DEFAULT_EMAIL_VALIDATION_PATTERN);
    }
 
 }

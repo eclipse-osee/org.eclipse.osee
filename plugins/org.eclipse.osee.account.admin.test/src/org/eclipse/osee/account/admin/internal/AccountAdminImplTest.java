@@ -37,6 +37,7 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
+import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
@@ -751,7 +752,7 @@ public class AccountAdminImplTest {
       String emailPattern = "(.*?)@gmail\\.com";
       String displayNamePattern = "[a-z ]+";
 
-      AccountValidator validator = accountAdmin.getValidator();
+      Validator validator = accountAdmin.getValidator();
       assertEquals(true, validator.isValid(AccountField.EMAIL, "hello@hello.com"));
       assertEquals(true, validator.isValid(AccountField.USERNAME, "abcde"));
       assertEquals(true, validator.isValid(AccountField.DISPLAY_NAME, "1234"));

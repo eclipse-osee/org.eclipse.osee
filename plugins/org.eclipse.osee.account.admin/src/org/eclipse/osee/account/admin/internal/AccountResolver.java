@@ -14,6 +14,7 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -22,12 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountFieldResolver {
+public class AccountResolver {
 
-   private final AccountValidator validator;
+   private final Validator validator;
    private final AccountAdmin accountAdmin;
 
-   public AccountFieldResolver(AccountValidator validator, AccountAdmin accountAdmin) {
+   public AccountResolver(Validator validator, AccountAdmin accountAdmin) {
       super();
       this.validator = validator;
       this.accountAdmin = accountAdmin;

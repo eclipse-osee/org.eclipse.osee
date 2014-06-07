@@ -19,10 +19,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AccountAdminConfigurationBuilderTest.class,
    AccountAdminImplTest.class,
-   AccountFieldResolverTest.class,
-   AccountValidatorTest.class,
+   AccountResolverTest.class,
    ValidatorTestSuite.class})
 public class InternalTestSuite {
    // Test Suite

@@ -13,9 +13,13 @@ package org.eclipse.osee.account.admin.internal.validator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.account.admin.AccountField;
 import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Test Case for {@link AbstractConfigurableValidator}
@@ -26,10 +30,16 @@ public abstract class AbstractConfigurableValidatorTest<T extends AbstractConfig
 
    private Pattern pattern;
    private final String invalidCustomPatternValue;
+   private final String configKey;
 
-   public AbstractConfigurableValidatorTest(AccountField fieldType, String validValue, String invalidValue, String invalidCustomPatternValue) {
+   // @formatter:off
+   @Mock private Map<String, Object> config;
+   // @formatter:on
+
+   public AbstractConfigurableValidatorTest(AccountField fieldType, String validValue, String invalidValue, String invalidCustomPatternValue, String configKey) {
       super(fieldType, validValue, invalidValue);
       this.invalidCustomPatternValue = invalidCustomPatternValue;
+      this.configKey = configKey;
    }
 
    @Override
@@ -110,6 +120,14 @@ public abstract class AbstractConfigurableValidatorTest<T extends AbstractConfig
    public abstract void testValidateFailNotUnique();
 
    @Test
-   public abstract void testGetPatternFromConfig();
+   public void testGetPatternFromConfig() {
+      String patternFromConfig = "adashdsahfafha";
+      when(config.get(configKey)).thenReturn(patternFromConfig);
+
+      String actual = getValidator().getPatternFromConfig(config);
+      assertEquals(patternFromConfig, actual);
+
+      verify(config).get(configKey);
+   }
 
 }

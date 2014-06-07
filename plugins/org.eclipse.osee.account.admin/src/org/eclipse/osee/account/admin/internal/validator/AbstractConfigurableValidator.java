@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin.internal.validator;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -55,8 +55,17 @@ public abstract class AbstractConfigurableValidator extends AbstractValidator {
       Conditions.checkExpressionFailOnTrue(exists(value), "Invalid [%s] - [%s] is already in use", getName(), value);
    }
 
-   public abstract String getPatternFromConfig(AccountAdminConfiguration config);
+   public abstract String getPatternFromConfig(Map<String, Object> props);
 
    public abstract boolean exists(String value);
+
+   protected String get(Map<String, Object> props, String key, String defaultValue) {
+      String toReturn = defaultValue;
+      Object object = props != null ? props.get(key) : null;
+      if (object != null) {
+         toReturn = String.valueOf(object);
+      }
+      return toReturn;
+   }
 
 }

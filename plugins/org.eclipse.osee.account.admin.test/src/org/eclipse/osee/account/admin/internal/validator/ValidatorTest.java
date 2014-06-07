@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.account.admin.internal;
+package org.eclipse.osee.account.admin.internal.validator;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -22,10 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.eclipse.osee.account.admin.AccountAdminConfiguration;
 import org.eclipse.osee.account.admin.AccountField;
-import org.eclipse.osee.account.admin.internal.validator.AbstractConfigurableValidator;
-import org.eclipse.osee.account.admin.internal.validator.FieldValidator;
 import org.eclipse.osee.logger.Log;
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,11 +33,11 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 
 /**
- * Test Case for {@link AccountValidator}
+ * Test Case for {@link Validator}
  * 
  * @author Roberto E. Escobar
  */
-public class AccountValidatorTest {
+public class ValidatorTest {
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -50,7 +47,7 @@ public class AccountValidatorTest {
    @Mock private FieldValidator delegate1;
    @Mock private FieldValidator delegate2;
    @Mock private AbstractConfigurableValidator configurable;
-   @Mock private AccountAdminConfiguration config;
+   @Mock private Map<String, Object> config;
    // @formatter:on
 
    private static final AccountField FIELD_1 = AccountField.EMAIL;
@@ -60,7 +57,7 @@ public class AccountValidatorTest {
 
    private static final String TEST_VALUE = "asdadsas";
 
-   private AccountValidator validator;
+   private Validator validator;;
 
    @Before
    public void testSetup() {
@@ -72,7 +69,7 @@ public class AccountValidatorTest {
       delegates.put(FIELD_2, delegate2);
       delegates.put(FIELD_3, configurable);
 
-      validator = new AccountValidator(logger, delegates);
+      validator = new Validator(logger, delegates);
 
       when(delegate1.getFieldType()).thenReturn(FIELD_1);
       when(delegate1.isValid(TEST_VALUE)).thenReturn(true);
@@ -95,7 +92,7 @@ public class AccountValidatorTest {
       assertEquals(delegate2, actual);
 
       actual = validator.getValidator(OTHER);
-      assertEquals(AccountValidator.DEFAULT_VALIDATOR, actual);
+      assertEquals(Validator.DEFAULT_VALIDATOR, actual);
    }
 
    @Test
@@ -135,10 +132,10 @@ public class AccountValidatorTest {
 
       validator.configure(config);
 
-      inOrder.verify(logger).info("Start Account Validator Config Update...");
+      inOrder.verify(logger).info("Start Validator Config Update...");
       inOrder.verify(configurable).setCustomPattern(any(Pattern.class));
       inOrder.verify(logger).info("Configured validator [%s] with [%s]", configurableName, customPattern);
-      inOrder.verify(logger).info("Completed Account Validator Config Update");
+      inOrder.verify(logger).info("Completed Validator Config Update");
    }
 
    @Test
@@ -152,11 +149,11 @@ public class AccountValidatorTest {
 
       validator.configure(config);
 
-      inOrder.verify(logger).info("Start Account Validator Config Update...");
+      inOrder.verify(logger).info("Start Validator Config Update...");
       inOrder.verify(logger).error(any(Throwable.class),
          eq("Error configuring validator [%s] - custom pattern[%s] was invalid."), eq(configurableName),
          eq(customPattern));
-      inOrder.verify(logger).info("Completed Account Validator Config Update");
+      inOrder.verify(logger).info("Completed Validator Config Update");
 
       verify(configurable, times(0)).setCustomPattern(Matchers.<Pattern> any());
    }
@@ -169,7 +166,7 @@ public class AccountValidatorTest {
       assertEquals(delegate2, it.next());
       assertEquals(configurable, it.next());
       assertEquals(delegate1, it.next());
-      assertEquals(AccountValidator.DEFAULT_VALIDATOR, it.next());
+      assertEquals(Validator.DEFAULT_VALIDATOR, it.next());
    }
 
    @Test
@@ -177,7 +174,7 @@ public class AccountValidatorTest {
       when(delegate1.isValid(TEST_VALUE)).thenReturn(false);
 
       AccountField actual = validator.guessFormatType(TEST_VALUE);
-      assertEquals(AccountValidator.DEFAULT_VALIDATOR.getFieldType(), actual);
+      assertEquals(Validator.DEFAULT_VALIDATOR.getFieldType(), actual);
    }
 
    @Test

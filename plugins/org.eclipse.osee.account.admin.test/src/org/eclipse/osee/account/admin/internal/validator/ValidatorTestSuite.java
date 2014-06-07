@@ -22,7 +22,8 @@ import org.junit.runners.Suite;
    EmailValidatorTest.class,
    LocalIdValidatorTest.class,
    UserNameValidatorTest.class,
-   UuidValidatorTest.class})
+   UuidValidatorTest.class,
+   ValidatorTest.class})
 public class ValidatorTestSuite {
    // Test Suite
 }

@@ -73,6 +73,4 @@ public interface AccountAdmin {
 
    ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField);
 
-   AccountField getAccountFieldType(String value);
-
 }

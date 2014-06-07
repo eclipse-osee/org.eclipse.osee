@@ -21,6 +21,7 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -32,11 +33,11 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 
 /**
- * Test Case for {@link AccountFieldResolver}
+ * Test Case for {@link AccountResolver}
  * 
  * @author Roberto E. Escobar
  */
-public class AccountFieldResolverTest {
+public class AccountResolverTest {
 
    private static final String TEST_VALUE = "atest";
    private static final String TEST_LOCAID_VALUE = "12334";
@@ -46,20 +47,20 @@ public class AccountFieldResolverTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private AccountValidator validator;
+   @Mock private Validator validator;
    @Mock private AccountAdmin accountAdmin;
    @Mock private ResultSet<Account> accountResult;
    @Mock private Account account;
    @Mock private AccountPreferences prefs;
    // @formatter:on
 
-   private AccountFieldResolver resolver;
+   private AccountResolver resolver;
 
    @Before
    public void testSetup() {
       initMocks(this);
 
-      resolver = new AccountFieldResolver(validator, accountAdmin);
+      resolver = new AccountResolver(validator, accountAdmin);
 
       String uuid = GUID.create();
       when(account.getGuid()).thenReturn(uuid);
