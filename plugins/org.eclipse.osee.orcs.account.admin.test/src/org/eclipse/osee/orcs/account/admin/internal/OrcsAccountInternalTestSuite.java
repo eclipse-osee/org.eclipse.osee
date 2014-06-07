@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.account.admin.integration;
+package org.eclipse.osee.orcs.account.admin.internal;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OrcsAccountStorageTest.class, OrcsSubscriptionStorageTest.class})
-public class OsgiIntegrationTestSuite {
+@Suite.SuiteClasses({SubscriptionUtilTest.class})
+public class OrcsAccountInternalTestSuite {
    // Test Suite
 }

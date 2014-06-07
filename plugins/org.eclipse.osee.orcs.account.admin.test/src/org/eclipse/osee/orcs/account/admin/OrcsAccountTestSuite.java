@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.account.admin;
 
 import org.eclipse.osee.orcs.account.admin.integration.OsgiIntegrationTestSuite;
+import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountInternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +19,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OsgiIntegrationTestSuite.class})
+@Suite.SuiteClasses({OsgiIntegrationTestSuite.class, OrcsAccountInternalTestSuite.class})
 public class OrcsAccountTestSuite {
    // Test Suite
 }

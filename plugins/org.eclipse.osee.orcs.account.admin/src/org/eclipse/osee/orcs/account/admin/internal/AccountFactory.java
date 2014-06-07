@@ -14,6 +14,7 @@ import java.util.Date;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
+import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -26,6 +27,8 @@ public class AccountFactory {
 
    private final Function<String, ArtifactReadable, Account> function1 = new ArtifactToAccount();
    private final Function<String, ArtifactReadable, AccountPreferences> function2 = new ArtifactToAccountPreferences();
+   private final Function<String, ArtifactReadable, SubscriptionGroup> function3 =
+      new ArtifactToAccountSubscriptionGroup();
 
    public ResultSet<Account> newAccountResultSet(ResultSet<ArtifactReadable> results) {
       return ResultSets.transform(results, function1);
@@ -76,4 +79,21 @@ public class AccountFactory {
       session.setAccessedFrom(accessedFrom);
       return session;
    }
+
+   public SubscriptionGroup newAccountSubscriptionGroup(ArtifactReadable source) {
+      return new AccountSubscriptionGroupImpl(source.getGuid(), source);
+   }
+
+   public ResultSet<SubscriptionGroup> newAccountSubscriptionGroupResultSet(ResultSet<ArtifactReadable> results) {
+      return ResultSets.transform(results, function3);
+   }
+
+   private class ArtifactToAccountSubscriptionGroup implements Function<String, ArtifactReadable, SubscriptionGroup> {
+
+      @Override
+      public SubscriptionGroup apply(ArtifactReadable source) {
+         return newAccountSubscriptionGroup(source);
+      }
+   }
+
 }
