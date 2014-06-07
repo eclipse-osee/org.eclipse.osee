@@ -21,7 +21,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AccountAdminImplTest.class,
    AccountResolverTest.class,
-   ValidatorTestSuite.class})
+   ValidatorTestSuite.class,
+   SubscriptionAdminImplTest.class,
+   SubscriptionResolverTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

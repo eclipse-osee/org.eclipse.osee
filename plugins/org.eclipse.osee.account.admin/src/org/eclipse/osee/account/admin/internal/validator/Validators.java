@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
+import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -33,6 +34,14 @@ public final class Validators {
       addValidator(data, new DisplayNameValidator(storage));
       addValidator(data, new EmailValidator(storage));
       addValidator(data, new UserNameValidator(storage));
+      return new Validator(logger, data);
+   }
+
+   public static Validator newSubscriptionValidator(Log logger, SubscriptionStorage storage) {
+      Map<AccountField, FieldValidator> data = new HashMap<AccountField, FieldValidator>();
+      addValidator(data, new UuidValidator());
+      addValidator(data, new LocalIdValidator());
+      addValidator(data, new SubscriptionGroupNameValidator(storage));
       return new Validator(logger, data);
    }
 

@@ -30,9 +30,12 @@ public final class AccountConstants {
    public static final String DEFAULT_USERNAME_VALIDATION_PATTERN = null;
    public static final String DEFAULT_EMAIL_VALIDATION_PATTERN = null;
    public static final String DEFAULT_DISPLAY_NAME_VALIDATION_PATTERN = null;
+   public static final String DEFAULT_SUBSCRIPTION_GROUP_NAME_VALIDATION_PATTERN = null;
 
    public static final String ACCOUNT_USERNAME_VALIDATION_PATTERN = qualify("username.validation.pattern");
    public static final String ACCOUNT_EMAIL_VALIDATION_PATTERN = qualify("email.validation.pattern");
    public static final String ACCOUNT_DISPLAY_NAME_VALIDATION_PATTERN = qualify("display.name.validation.pattern");
 
+   public static final String SUBSCRIPTION_GROUP_NAME_VALIDATION_PATTERN =
+      qualify("subscription.group.name.validation.pattern");
 }

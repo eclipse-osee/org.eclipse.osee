@@ -21,5 +21,6 @@ public enum AccountField {
    EMAIL,
    DISPLAY_NAME,
    USERNAME,
+   SUBSCRIPTION_GROUP_NAME,
    UNKNOWN;
 }
