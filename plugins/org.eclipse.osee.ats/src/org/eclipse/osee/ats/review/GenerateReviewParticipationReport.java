@@ -70,7 +70,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
          UserListDialog ld =
             new UserListDialog(Displays.getActiveShell(), "Select User",
-               userServiceClient.getOseeUsers(AtsClientService.get().getUserService().getUsers(Active.Active)));
+               userServiceClient.getOseeUsersSorted(Active.Active));
          int result = ld.open();
          if (result == 0) {
             if (ld.getResult().length == 0) {

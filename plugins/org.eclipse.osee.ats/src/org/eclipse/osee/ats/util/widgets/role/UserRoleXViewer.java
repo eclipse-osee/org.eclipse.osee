@@ -242,8 +242,7 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
             UserListDialog ld =
                new UserListDialog(Displays.getActiveShell(), "Select New User",
-                  AtsClientService.get().getUserServiceClient().getOseeUsers(
-                     AtsClientService.get().getUserService().getUsers(Active.Active)));
+                  AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());

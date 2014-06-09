@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client.internal.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -95,7 +95,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
       ensureLoaded();
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (Artifact user : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
-         Boolean activeFlag = user.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+         Boolean activeFlag = user.getSoleAttributeValue(CoreAttributeTypes.Active, true);
          if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
             users.add(new AtsUser((User) user));
          }
@@ -188,6 +188,15 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
          }
          loaded = true;
       }
+   }
+
+   @Override
+   public List<User> getOseeUsersSorted(Active active) {
+      List<IAtsUser> activeUsers = getUsers(active);
+      List<User> oseeUsers = new ArrayList<User>();
+      oseeUsers.addAll(getOseeUsers(activeUsers));
+      Collections.sort(oseeUsers);
+      return oseeUsers;
    }
 
 }

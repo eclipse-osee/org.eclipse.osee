@@ -110,8 +110,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
       UserListDialog ld =
          new UserListDialog(Displays.getActiveShell(), "Select User",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(active)));
+            AtsClientService.get().getUserServiceClient().getOseeUsersSorted(active));
       int result = ld.open();
       if (result == 0) {
          selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());

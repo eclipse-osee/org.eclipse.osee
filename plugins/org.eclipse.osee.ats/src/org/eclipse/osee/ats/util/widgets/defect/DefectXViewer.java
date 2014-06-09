@@ -484,8 +484,7 @@ public class DefectXViewer extends XViewer {
    private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) throws OseeCoreException {
       UserListDialog ld =
          new UserListDialog(Displays.getActiveShell(), "Select New User",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(Active.Active)));
+            AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
       if (result == 0) {
          modified = setUser(defectItems, ld.getSelection());

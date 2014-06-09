@@ -112,8 +112,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       UserListDialog ld =
          new UserListDialog(Displays.getActiveShell(), "Select New Originator",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(Active.Active)));
+            AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
