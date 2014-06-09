@@ -70,6 +70,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
+import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
@@ -416,6 +418,9 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       toolBarMgr.removeAll();
       toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new ExpandAllAction(worldComposite.getXViewer()));
+      toolBarMgr.add(new CollapseAllAction(worldComposite.getXViewer()));
       toolBarMgr.add(new RefreshAction(worldComposite));
       scrolledForm.updateToolBar();
    }
