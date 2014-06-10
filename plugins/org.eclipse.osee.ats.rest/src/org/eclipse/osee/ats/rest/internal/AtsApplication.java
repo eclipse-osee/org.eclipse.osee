@@ -68,7 +68,7 @@ public class AtsApplication extends Application {
       singletons.add(new ConvertResource(registry));
       singletons.add(new TeamResource(orcsApi));
       singletons.add(new VersionResource(orcsApi));
-      singletons.add(new ConfigResource(orcsApi));
+      singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
    }

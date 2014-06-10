@@ -75,12 +75,22 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          headingArt.persist(transaction);
       }
       for (IArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
-         AtsArtifactToken.ConfigFolder, //
          AtsArtifactToken.WorkDefinitionsFolder)) {
          Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
          headingArt.addChild(art);
          art.persist(transaction);
       }
+
+      Artifact configArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.ConfigFolder, atsBranch);
+      headingArt.addChild(configArt);
+      configArt.persist(transaction);
+
+      for (IArtifactToken token : Arrays.asList(AtsArtifactToken.Users, AtsArtifactToken.ConfigsFolder)) {
+         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
+         configArt.addChild(art);
+         art.persist(transaction);
+      }
+
       transaction.execute();
    }
 }

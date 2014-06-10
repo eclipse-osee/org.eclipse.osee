@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -84,6 +85,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
       return txManager.createArtifact(txData, artifactType, name, guid);
+   }
+
+   @Override
+   public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
+      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid());
    }
 
    @Override

@@ -1,0 +1,53 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
+  <meta name="author" content="Donald G. Dunne" />
+  <title>OSEE ATS - New ATS Configuration</title>
+  <script><?include path="4000000000000002 oseeCore.js"?></script>
+</head>
+
+<body>
+<div class="container">
+	<div>
+		<h2>Configure new ATS Branch</h2>
+	<div>
+	
+	<form id="oseeAppForm" class="well">		
+		<label>From Branch Uuid</label> <input type="text" id="fromBranchUuid"/><br/>
+		<label>New Branch Name</label> <input type="text" id="newBranchName" /><br/>
+		<label>User Id</label> <input type="text" id="userId" /><br/>
+		<br/><br/>
+		<input type="button" id="createButton" value="Create" class="btn btn-primary"/>
+	</form>
+
+
+<script>
+	function createConfig() {
+		post_with_parms("/ats/config", getParams());
+	}
+
+	function getParams() {
+		var params = new Object();
+		var form = document.getElementById("oseeAppForm");
+		
+		var inputElements = form.getElementsByTagName("input");
+		for(var i = 0; i < inputElements.length; i++) {
+		var inputElement = inputElements[i];
+			var id = inputElement.getAttribute("id");
+			if (id == null) {
+				console.log(inputElement);
+				console.log("has no id");
+			} else {
+				params[id] = inputElement.value;
+			}
+		}
+		return params;
+	}
+	
+	var button = document.getElementById("createButton");
+	button.addEventListener("click", createConfig);
+</script>
+
+</div>
+
+</body>
+</html>

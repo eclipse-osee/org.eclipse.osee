@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.transaction;
 
 import java.io.InputStream;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -47,6 +48,8 @@ public interface TransactionBuilder {
    ArtifactId createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
 
    ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
+
+   ArtifactId createArtifact(IArtifactToken configsFolder);
 
    void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException;
 
