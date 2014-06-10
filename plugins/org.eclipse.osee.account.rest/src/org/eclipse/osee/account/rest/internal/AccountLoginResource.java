@@ -48,7 +48,7 @@ public class AccountLoginResource {
 
       AccountSessionData token = accountOps.doLogin(remoteInfo, data);
       String accountId = String.valueOf(token.getAccountId());
-      URI location = UriBuilder.fromUri(uriInfo.getBaseUri()).path(accountId).build();
+      URI location = UriBuilder.fromPath(uriInfo.getBaseUri().toASCIIString()).path(accountId).build();
       return Response.ok().entity(token).contentLocation(location).build();
    }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -39,8 +38,8 @@ public class AccountSessionsResource {
    @GET
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public List<AccountSessionDetailsData> getAccountSessions() {
-      return accountOps.getAccountSessionById(accountId);
+   public AccountSessionDetailsData[] getAccountSessions() {
+      return accountOps.getAccountSessionById(accountId).toArray(new AccountSessionDetailsData[] {});
    }
 
 }

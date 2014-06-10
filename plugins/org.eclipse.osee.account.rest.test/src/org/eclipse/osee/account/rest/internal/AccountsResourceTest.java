@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,11 +51,13 @@ public class AccountsResourceTest {
    @Test
    public void testGetAccounts() {
       List<AccountInfoData> accesses = new ArrayList<AccountInfoData>();
+      accesses.add(account);
+      AccountInfoData[] expected = accesses.toArray(new AccountInfoData[] {});
       when(accountOps.getAllAccounts()).thenReturn(accesses);
 
-      List<AccountInfoData> actual = resource.getAccounts();
+      AccountInfoData[] actual = resource.getAccounts();
 
-      assertEquals(accesses, actual);
+      assertArrayEquals(expected, actual);
       verify(accountOps).getAllAccounts();
    }
 

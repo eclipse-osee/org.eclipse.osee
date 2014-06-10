@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
-import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,8 +40,8 @@ public class AccountsResource {
    @GET
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public List<AccountInfoData> getAccounts() {
-      return accountOps.getAllAccounts();
+   public AccountInfoData[] getAccounts() {
+      return accountOps.getAllAccounts().toArray(new AccountInfoData[] {});
    }
 
    @Path(AccountContexts.ACCOUNT_LOGIN)

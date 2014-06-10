@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -32,6 +32,7 @@ public class AccountSessionsResourceTest {
 
    //@formatter:off
    @Mock private AccountOps accountOps;
+   @Mock private AccountSessionDetailsData details;
    //@formatter:on
 
    private AccountSessionsResource resource;
@@ -46,11 +47,13 @@ public class AccountSessionsResourceTest {
    @Test
    public void testGetAccountSessions() {
       List<AccountSessionDetailsData> accesses = new ArrayList<AccountSessionDetailsData>();
+      accesses.add(details);
+      AccountSessionDetailsData[] expected = accesses.toArray(new AccountSessionDetailsData[] {});
       when(accountOps.getAccountSessionById(ACCOUNT_ID)).thenReturn(accesses);
 
-      List<AccountSessionDetailsData> actual = resource.getAccountSessions();
+      AccountSessionDetailsData[] actual = resource.getAccountSessions();
 
-      assertEquals(accesses, actual);
+      assertArrayEquals(expected, actual);
       verify(accountOps).getAccountSessionById(ACCOUNT_ID);
    }
 }
