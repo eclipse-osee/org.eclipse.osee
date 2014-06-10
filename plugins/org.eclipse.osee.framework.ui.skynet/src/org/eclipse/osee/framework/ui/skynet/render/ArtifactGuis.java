@@ -35,7 +35,7 @@ public final class ArtifactGuis {
    }
 
    private static final String OTHER_EDIT_SQL =
-      "select br.branch_id, att.gamma_id, att.attr_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?";
+      "select br.branch_id, att.gamma_id, att.attr_id, txs.tx_current, txs.transaction_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current = 1 and  br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id)";
 
    private static final String EDIT_MESSAGE =
       "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
