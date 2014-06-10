@@ -2,19 +2,17 @@ package org.eclipse.osee.ote.master.rest.client.internal;
 
 import java.net.URI;
 import java.util.concurrent.Callable;
-
 import javax.ws.rs.core.MediaType;
-
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
 import org.eclipse.osee.ote.master.rest.model.OTEServer;
-
 import com.sun.jersey.api.client.WebResource;
 
 public class AddServer implements Callable<OTEMasterServerResult> {
 
-   private WebClientProvider webClientProvider;
-   private OTEServer server;
-   private URI uri;
+   private final WebClientProvider webClientProvider;
+   private final OTEServer server;
+   private final URI uri;
 
    public AddServer(WebClientProvider webClientProvider, URI uri, OTEServer server) {
       this.webClientProvider = webClientProvider;
@@ -25,10 +23,12 @@ public class AddServer implements Callable<OTEMasterServerResult> {
    @Override
    public OTEMasterServerResult call() throws Exception {
       OTEMasterServerResult result = new OTEMasterServerResult();
-      try{
+      try {
          WebResource resource = webClientProvider.createResource(uri);
-         resource.path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).accept(MediaType.APPLICATION_XML).post(server);
-      } catch (Throwable th){
+         resource.path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).accept(
+            MediaType.APPLICATION_XML).post(server);
+
+      } catch (Throwable th) {
          result.setSuccess(false);
          result.setThrowable(th);
       }

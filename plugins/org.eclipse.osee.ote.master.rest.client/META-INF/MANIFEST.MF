@@ -11,6 +11,8 @@ Import-Package: com.sun.jersey.api.client,
  com.sun.jersey.client.apache,
  com.sun.jersey.client.apache.config,
  javax.ws.rs.core,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.ote.master.rest.model
 Export-Package: org.eclipse.osee.ote.master.rest.client
 Service-Component: OSGI-INF/*.xml

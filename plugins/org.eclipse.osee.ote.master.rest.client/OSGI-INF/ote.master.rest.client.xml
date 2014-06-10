@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ote.master.rest.client">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
    <implementation class="org.eclipse.osee.ote.master.rest.client.internal.OTEMasterServerImpl"/>
-   <reference bind="bindWebClientProvider" cardinality="1..1" interface="org.eclipse.osee.ote.master.rest.client.internal.WebClientProvider" name="WebClientProvider" policy="static" unbind="unbindWebClientProvider"/>
    <service>
       <provide interface="org.eclipse.osee.ote.master.rest.client.OTEMasterServer"/>
    </service>
+   <reference bind="setWebClientProvider" cardinality="1..1" interface="org.eclipse.osee.jaxrs.client.WebClientProvider" name="WebClientProvider" policy="static"/>
 </scr:component>

@@ -4,24 +4,23 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URI;
-
 import javax.ws.rs.core.MediaType;
-
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import org.eclipse.osee.ote.rest.client.Progress;
-
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class GetOteServerFile extends BaseClientCallable<Progress> {
 
-   private URI uri;
-   private String filePath;
+   private final URI uri;
+   private final String filePath;
    @SuppressWarnings("unused")
-   private Progress progress;
-   private WebResourceFactory factory;
-   private File destination;
-   
-   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, WebResourceFactory factory) {
+   private final Progress progress;
+   private final WebClientProvider factory;
+   private final File destination;
+
+   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, WebClientProvider factory) {
       super(progress);
       this.uri = uri;
       this.filePath = filePath;
@@ -33,17 +32,22 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
    @Override
    public void doWork() throws Exception {
       WebResource client = factory.createResource(uri);
-      ClientResponse response = client.queryParam("path", filePath).path("ote").path("file").accept(MediaType.APPLICATION_XML).get(ClientResponse.class);
-      if(response.getStatus() == ClientResponse.Status.OK.getStatusCode()){
+      ClientResponse response =
+         client.queryParam("path", filePath).path("ote").path("file").accept(MediaType.APPLICATION_XML).get(
+            ClientResponse.class);
+      if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
          InputStream is = response.getEntityInputStream();
          FileOutputStream fos = new FileOutputStream(destination);
-         byte[] data = new byte[2048];
-         int numRead = 0;
-         while((numRead = is.read(data)) != -1){
-            fos.write(data, 0, numRead);
+         try {
+            byte[] data = new byte[2048];
+            int numRead = 0;
+            while ((numRead = is.read(data)) != -1) {
+               fos.write(data, 0, numRead);
+            }
+            fos.flush();
+         } finally {
+            Lib.close(fos);
          }
-         fos.flush();
-         fos.close();
       } else {
          throw new Exception(response.toString());
       }

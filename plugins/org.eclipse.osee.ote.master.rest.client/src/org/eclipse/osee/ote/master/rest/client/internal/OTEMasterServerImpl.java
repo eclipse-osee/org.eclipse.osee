@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-
+import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
@@ -15,12 +15,16 @@ public class OTEMasterServerImpl implements OTEMasterServer {
 
    static final String CONTEXT_NAME = "otemaster";
    static final String CONTEXT_SERVERS = "servers";
-   
+
    private WebClientProvider webClientProvider;
    private ExecutorService executor;
-   
-   public OTEMasterServerImpl(){
-      executor = Executors.newCachedThreadPool(new ThreadFactory(){
+
+   public void setWebClientProvider(WebClientProvider webClientProvider) {
+      this.webClientProvider = webClientProvider;
+   }
+
+   public void start() {
+      executor = Executors.newCachedThreadPool(new ThreadFactory() {
          @Override
          public Thread newThread(Runnable arg0) {
             Thread th = new Thread(arg0);
@@ -30,23 +34,13 @@ public class OTEMasterServerImpl implements OTEMasterServer {
          }
       });
    }
-   
-   public void start(){
-      
+
+   public void stop() {
+      if (executor != null) {
+         executor.shutdown();
+      }
    }
-   
-   public void stop(){
-      
-   }
-   
-   public void bindWebClientProvider(WebClientProvider webClientProvider){
-      this.webClientProvider = webClientProvider;
-   }
-   
-   public void unbindWebClientProvider(WebClientProvider webClientProvider){
-      this.webClientProvider = null;
-   }
-   
+
    @Override
    public Future<OTEMasterServerAvailableNodes> getAvailableServers(URI uri) {
       return executor.submit(new GetAvailableServers(webClientProvider, uri));

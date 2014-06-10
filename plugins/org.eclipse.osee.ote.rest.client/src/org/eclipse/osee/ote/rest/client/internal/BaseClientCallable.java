@@ -1,7 +1,6 @@
 package org.eclipse.osee.ote.rest.client.internal;
 
 import java.util.concurrent.Callable;
-
 import org.eclipse.osee.ote.rest.client.Progress;
 
 public abstract class BaseClientCallable<T extends Progress> implements Callable<T>{
