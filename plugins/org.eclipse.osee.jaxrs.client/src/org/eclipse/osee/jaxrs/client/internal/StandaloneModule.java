@@ -10,28 +10,45 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client.internal;
 
-import org.eclipse.osee.jaxrs.client.OseeClientConfig;
-import org.eclipse.osee.jaxrs.client.OseeHttpProxyAddress;
-import org.eclipse.osee.jaxrs.client.OseeServerAddress;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientUtils.subtypeOf;
+import java.util.Map;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
 
 /**
  * @author Roberto E. Escobar
  */
 public class StandaloneModule extends AbstractModule {
 
-   private final OseeClientConfig config;
+   private final Map<String, Object> props;
 
-   public StandaloneModule(OseeClientConfig config) {
-      this.config = config;
+   public StandaloneModule(Map<String, Object> props) {
+      this.props = props;
    }
 
    @Override
    protected void configure() {
-      bindConstant().annotatedWith(OseeServerAddress.class).to(config.getServerAddress());
-      bindConstant().annotatedWith(OseeHttpProxyAddress.class).to(config.getProxyAddress());
+      bind(JaxRsClient.class).to(JaxRsClientImpl.class);
 
-      bind(JaxRsClient.class).to(StandadloneWebClientProvider.class);
+      TypeListener listener = new TypeListener() {
+
+         @Override
+         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+            encounter.register(new InjectionListener<I>() {
+
+               @Override
+               public void afterInjection(I injectee) {
+                  JaxRsClientImpl client = (JaxRsClientImpl) injectee;
+                  client.configure(props);
+               }
+            });
+         }
+      };
+      bindListener(subtypeOf(JaxRsClient.class), listener);
    }
+
 }

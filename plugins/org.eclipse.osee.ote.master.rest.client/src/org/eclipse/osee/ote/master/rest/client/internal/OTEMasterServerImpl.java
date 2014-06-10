@@ -1,11 +1,13 @@
 package org.eclipse.osee.ote.master.rest.client.internal;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
@@ -16,14 +18,10 @@ public class OTEMasterServerImpl implements OTEMasterServer {
    static final String CONTEXT_NAME = "otemaster";
    static final String CONTEXT_SERVERS = "servers";
 
-   private JaxRsClient client;
+   private volatile JaxRsClient client;
    private ExecutorService executor;
 
-   public void setJaxRsClient(JaxRsClient client) {
-      this.client = client;
-   }
-
-   public void start() {
+   public void start(Map<String, Object> props) {
       executor = Executors.newCachedThreadPool(new ThreadFactory() {
          @Override
          public Thread newThread(Runnable arg0) {
@@ -33,12 +31,18 @@ public class OTEMasterServerImpl implements OTEMasterServer {
             return th;
          }
       });
+      update(props);
    }
 
    public void stop() {
       if (executor != null) {
          executor.shutdown();
       }
+      client = null;
+   }
+
+   public void update(Map<String, Object> props) {
+      client = JaxRsClientFactory.createClient(props);
    }
 
    @Override

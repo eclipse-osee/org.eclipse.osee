@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.OseeClientProperties;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
+import org.eclipse.osee.jaxrs.client.JaxRsClientUtils;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
@@ -29,7 +33,6 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1.BaseUri
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
-import com.google.inject.Inject;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
@@ -39,24 +42,38 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class OseeClientImpl implements OseeClient, BaseUriBuilder {
 
-   private PredicateFactory predicateFactory;
-   private QueryExecutorV1 executor;
+   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
 
-   private JaxRsClient client;
+   private volatile PredicateFactory predicateFactory;
+   private volatile QueryExecutorV1 executor;
+   private volatile JaxRsClient client;
 
-   @Inject
-   public void setJaxRsClient(JaxRsClient client) {
-      this.client = client;
-   }
-
-   public void start() {
+   public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
-      executor = new QueryExecutorV1(client, this);
+
+      update(properties);
    }
 
    public void stop() {
-      predicateFactory = null;
       executor = null;
+      client = null;
+      predicateFactory = null;
+   }
+
+   public void update(Map<String, Object> properties) {
+      Map<String, Object> propsToUse = properties;
+      String newServerAddress = JaxRsClientUtils.get(propsToUse, JAXRS_CLIENT_SERVER_ADDRESS, null);
+      if (newServerAddress == null) {
+         propsToUse = new HashMap<String, Object>(properties);
+         propsToUse.put(JAXRS_CLIENT_SERVER_ADDRESS, System.getProperty(OSEE_APPLICATION_SERVER, ""));
+      }
+      client = JaxRsClientFactory.createClient(propsToUse);
+      executor = new QueryExecutorV1(client, this);
+   }
+
+   @Override
+   public UriBuilder newBuilder() {
+      return UriBuilder.fromPath("orcs");
    }
 
    @Override
@@ -64,12 +81,6 @@ public class OseeClientImpl implements OseeClient, BaseUriBuilder {
       QueryOptions options = new QueryOptions();
       List<Predicate> predicates = new ArrayList<Predicate>();
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
-   }
-
-   @Override
-   public UriBuilder newBuilder() {
-      String serverUri = OseeClientProperties.getApplicationServerAddress();
-      return UriBuilder.fromUri(serverUri).path("orcs");
    }
 
    @Override

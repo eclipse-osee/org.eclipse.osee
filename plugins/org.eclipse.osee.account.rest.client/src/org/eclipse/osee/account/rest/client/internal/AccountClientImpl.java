@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.client.internal;
 
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.MediaType;
@@ -33,8 +35,8 @@ import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.OseeClientProperties;
-import com.google.inject.Inject;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
+import org.eclipse.osee.jaxrs.client.JaxRsClientUtils;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -44,25 +46,29 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class AccountClientImpl implements AccountClient {
 
+   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
    private JaxRsClient client;
-   private URI serverUri;
 
-   @Inject
-   public void setJaxRsClient(JaxRsClient client) {
-      this.client = client;
-   }
-
-   public void start() {
-      String appServer = OseeClientProperties.getApplicationServerAddress();
-      serverUri = URI.create(appServer);
+   public void start(Map<String, Object> properties) {
+      update(properties);
    }
 
    public void stop() {
-      //
+      client = null;
+   }
+
+   public void update(Map<String, Object> properties) {
+      Map<String, Object> propsToUse = properties;
+      String newServerAddress = JaxRsClientUtils.get(propsToUse, JAXRS_CLIENT_SERVER_ADDRESS, null);
+      if (newServerAddress == null) {
+         propsToUse = new HashMap<String, Object>(properties);
+         propsToUse.put(JAXRS_CLIENT_SERVER_ADDRESS, System.getProperty(OSEE_APPLICATION_SERVER, ""));
+      }
+      client = JaxRsClientFactory.createClient(propsToUse);
    }
 
    private UriBuilder newBuilder() {
-      return UriBuilder.fromUri(serverUri).path(AccountContexts.ACCOUNTS);
+      return UriBuilder.fromPath(AccountContexts.ACCOUNTS);
    }
 
    private <T> T get(URI uri, Class<T> clazz) {

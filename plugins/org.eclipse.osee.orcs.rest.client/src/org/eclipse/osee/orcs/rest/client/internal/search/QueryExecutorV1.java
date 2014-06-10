@@ -35,12 +35,12 @@ public class QueryExecutorV1 implements QueryExecutor {
       UriBuilder newBuilder();
    }
 
-   private final JaxRsClient clientProvider;
+   private final JaxRsClient client;
    private final BaseUriBuilder baseUriBuilder;
 
-   public QueryExecutorV1(JaxRsClient clientProvider, BaseUriBuilder baseUriBuilder) {
+   public QueryExecutorV1(JaxRsClient client, BaseUriBuilder baseUriBuilder) {
       super();
-      this.clientProvider = clientProvider;
+      this.client = client;
       this.baseUriBuilder = baseUriBuilder;
    }
 
@@ -77,14 +77,14 @@ public class QueryExecutorV1 implements QueryExecutor {
             requestType.name().toLowerCase(), fromTx, includeDeleted);
 
       URI uri = getQueryUri(branch.getUuid());
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       SearchResponse searchResult = null;
       try {
          searchResult =
             resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
                SearchResponse.class, params);
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
       return searchResult;
    }

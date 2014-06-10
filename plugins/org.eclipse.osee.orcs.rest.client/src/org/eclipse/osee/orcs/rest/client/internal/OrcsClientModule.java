@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
+import java.util.Map;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -24,6 +25,13 @@ import com.google.inject.spi.TypeListener;
  */
 public class OrcsClientModule extends AbstractModule {
 
+   private final Map<String, Object> config;
+
+   public OrcsClientModule(Map<String, Object> config) {
+      super();
+      this.config = config;
+   }
+
    @Override
    protected void configure() {
       bind(OseeClient.class).to(OseeClientImpl.class);
@@ -36,7 +44,7 @@ public class OrcsClientModule extends AbstractModule {
                @Override
                public void afterInjection(I injectee) {
                   OseeClientImpl client = (OseeClientImpl) injectee;
-                  client.start();
+                  client.start(config);
                }
             });
          }

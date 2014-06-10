@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.integration.tests.performance;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.databene.contiperf.junit.ContiPerfRule;
 import org.databene.contiperf.report.CSVLatencyReportModule;
 import org.databene.contiperf.report.CSVSummaryReportModule;
 import org.databene.contiperf.report.HtmlReportModule;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
-import org.eclipse.osee.jaxrs.client.OseeClientConfig;
+import org.eclipse.osee.jaxrs.client.JaxRsClientConstants;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 import org.junit.rules.MethodRule;
@@ -35,18 +37,19 @@ public final class IntegrationUtil {
    }
 
    public static OseeClient createClient() {
-      OseeClientConfig config = createClientConfig();
+      Map<String, Object> config = createClientConfig();
       return OseeClientStandaloneSetup.createClient(config);
    }
 
-   private static OseeClientConfig createClientConfig() {
+   private static Map<String, Object> createClientConfig() {
+      Map<String, Object> config = new HashMap<String, Object>();
       String serverAddress = System.getProperty(OSEE_APPLICATION_SERVER, DEFAULT_OSEE_APPLICATION_SERVER);
-      OseeClientConfig config = new OseeClientConfig(serverAddress);
+      config.put(JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS, serverAddress);
       return config;
    }
 
    public static AccountClient createAccountClient() {
-      OseeClientConfig config = createClientConfig();
+      Map<String, Object> config = createClientConfig();
       return AccountClientStandaloneSetup.createClient(config);
    }
 

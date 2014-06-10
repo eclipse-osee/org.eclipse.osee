@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client;
 
-import org.eclipse.osee.jaxrs.client.OseeClientConfig;
+import java.util.Map;
 import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.orcs.rest.client.internal.OrcsClientModule;
 import org.eclipse.osee.orcs.rest.client.internal.OseeClientImpl;
@@ -27,8 +27,8 @@ public final class OseeClientStandaloneSetup {
       // Utility class
    }
 
-   public static OseeClient createClient(OseeClientConfig config) {
-      Module module = new OrcsClientModule();
+   public static OseeClient createClient(Map<String, Object> config) {
+      Module module = new OrcsClientModule(config);
       return JaxRsClientFactory.createClient(OseeClientImpl.class, config, module);
    }
 }

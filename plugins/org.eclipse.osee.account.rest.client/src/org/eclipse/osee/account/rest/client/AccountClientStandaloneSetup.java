@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.client;
 
+import java.util.Map;
 import org.eclipse.osee.account.rest.client.internal.AccountClientImpl;
 import org.eclipse.osee.account.rest.client.internal.AccountClientModule;
-import org.eclipse.osee.jaxrs.client.OseeClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import com.google.inject.Module;
 
@@ -27,8 +27,8 @@ public final class AccountClientStandaloneSetup {
       // Utility class
    }
 
-   public static AccountClient createClient(OseeClientConfig config) {
-      Module module = new AccountClientModule();
+   public static AccountClient createClient(Map<String, Object> config) {
+      Module module = new AccountClientModule(config);
       return JaxRsClientFactory.createClient(AccountClientImpl.class, config, module);
    }
 }

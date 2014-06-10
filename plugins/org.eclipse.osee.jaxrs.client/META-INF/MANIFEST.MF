@@ -6,7 +6,6 @@ Bundle-Version: 0.18.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.inject,
  com.google.inject.binder,
  com.google.inject.matcher,
@@ -16,7 +15,6 @@ Import-Package: com.google.inject,
  javax.inject,
  javax.ws.rs,
  javax.ws.rs.core,
- org.eclipse.core.net.proxy,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jaxrs

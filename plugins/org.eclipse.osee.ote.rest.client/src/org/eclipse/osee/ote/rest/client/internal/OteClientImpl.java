@@ -13,11 +13,13 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.OteClient;
 import org.eclipse.osee.ote.rest.client.Progress;
@@ -31,13 +33,9 @@ import org.eclipse.osee.ote.rest.model.OTETestRun;
 public class OteClientImpl implements OteClient {
 
    private ExecutorService executor;
-   private JaxRsClient client;
+   private volatile JaxRsClient client;
 
-   public void setJaxRsClient(JaxRsClient client) {
-      this.client = client;
-   }
-
-   public void start() {
+   public void start(Map<String, Object> props) {
       executor = Executors.newCachedThreadPool(new ThreadFactory() {
          @Override
          public Thread newThread(Runnable arg0) {
@@ -47,12 +45,18 @@ public class OteClientImpl implements OteClient {
             return th;
          }
       });
+      update(props);
    }
 
    public void stop() {
       if (executor != null) {
          executor.shutdown();
       }
+      client = null;
+   }
+
+   public void update(Map<String, Object> props) {
+      client = JaxRsClientFactory.createClient(props);
    }
 
    @Override

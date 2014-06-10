@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.client.internal;
 
+import java.util.Map;
 import org.eclipse.osee.account.rest.client.AccountClient;
+import org.eclipse.osee.jaxrs.client.JaxRsClientUtils;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -23,6 +23,13 @@ import com.google.inject.spi.TypeListener;
  * @author Roberto E. Escobar
  */
 public class AccountClientModule extends AbstractModule {
+
+   private final Map<String, Object> config;
+
+   public AccountClientModule(Map<String, Object> config) {
+      super();
+      this.config = config;
+   }
 
    @Override
    protected void configure() {
@@ -36,30 +43,12 @@ public class AccountClientModule extends AbstractModule {
                @Override
                public void afterInjection(I injectee) {
                   AccountClientImpl client = (AccountClientImpl) injectee;
-                  client.start();
+                  client.start(config);
                }
             });
          }
       };
-      bindListener(subtypeOf(AccountClientImpl.class), listener);
-   }
-
-   private static Matcher<? super TypeLiteral<?>> subtypeOf(Class<?> superclass) {
-      return new SubTypeOfMatcher(TypeLiteral.get(AccountClientImpl.class));
-   }
-
-   private static final class SubTypeOfMatcher extends AbstractMatcher<TypeLiteral<?>> {
-      private final TypeLiteral<AccountClientImpl> superType;
-
-      public SubTypeOfMatcher(TypeLiteral<AccountClientImpl> superType) {
-         super();
-         this.superType = superType;
-      }
-
-      @Override
-      public boolean matches(TypeLiteral<?> subType) {
-         return subType.equals(superType) || superType.getRawType().isAssignableFrom(subType.getRawType());
-      }
+      bindListener(JaxRsClientUtils.subtypeOf(AccountClient.class), listener);
    }
 
 }
