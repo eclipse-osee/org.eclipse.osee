@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -405,7 +407,15 @@ public final class FrameworkXWidgetProvider {
             XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
             String defaultType = xWidgetLayoutData.getDefaultValue();
             if (Strings.isValid(defaultType)) {
-               widget.setSelected(Collections.singleton(ArtifactTypeManager.getType(defaultType)));
+               List<ArtifactType> types = new LinkedList<ArtifactType>();
+               for (String type : defaultType.split(",")) {
+                  try {
+                     types.add(ArtifactTypeManager.getType(type));
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
+               }
+               widget.setSelected(types);
             }
             xWidget = widget;
          } else if (xWidgetName.equals(XArtifactMultiChoiceSelect.WIDGET_ID)) {

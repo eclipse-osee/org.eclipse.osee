@@ -50,19 +50,11 @@ public class PublishStdStpTraceability extends AbstractBlam {
    private static final String scriptDirectory =
       "<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\"/>";
    private static final String requirementsBranch =
-      "<XWidget xwidgetType=\"XBranchSelectWidget\" " + "displayName=\"Requirements Branch\" defaultValue=\"\" toolTip=\"Select a requirements branch.\" />";
-   private static final String testProceduresBranch =
-      "<XWidget xwidgetType=\"XBranchSelectWidget\" " + "displayName=\"Test Procedures Branch\" defaultValue=\"\" toolTip=\"Select a test procedures branch.\" />";
+      "<XWidget xwidgetType=\"XBranchSelectWidget\" " + "displayName=\"Program Branch\" defaultValue=\"\" />";
    private static final String artifactTypeChooser =
-      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.AbstractSoftwareRequirement + "\"/>";
+      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirement.getName() + "\"/>";
    private static final String searchInheritedTypes =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"true\" />";
-
-   private static final String PULL_ALL_DATA_LABEL =
-      "Pull all data from test branch (script directory and requirements branch are not needed)";
-   private static final String pullAllDataFromBranch =
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PULL_ALL_DATA_LABEL + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
-
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
    private Collection<String> availableTraceHandlers;
@@ -70,6 +62,16 @@ public class PublishStdStpTraceability extends AbstractBlam {
    @Override
    public String getName() {
       return "Publish STD/STP Traceability";
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<form>This BLAM can be ran where test traceability is either stored in OSEE");
+      sb.append(" via relations OR by parsing test scripts for embedded tracemarks.<br/>");
+      sb.append("<li>If a script parser is not selected, BLAM will assume test traceability is stored in OSEE</li>");
+      sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
+      return sb.toString();
    }
 
    @Override
@@ -82,8 +84,12 @@ public class PublishStdStpTraceability extends AbstractBlam {
          builder.append(style.asLabel());
          builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       }
-      builder.append(scriptDirectory);
 
+      builder.append(requirementsBranch);
+      builder.append(artifactTypeChooser);
+      builder.append(searchInheritedTypes);
+
+      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"===  For traceability stored in test scripts, select the following  ===\" />");
       availableTraceHandlers = new LinkedList<String>();
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
@@ -91,12 +97,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
          builder.append(String.format(TRACE_HANDLER_CHECKBOX, handler));
          availableTraceHandlers.add(handler);
       }
+      builder.append(scriptDirectory);
 
-      builder.append(requirementsBranch);
-      builder.append(pullAllDataFromBranch);
-      builder.append(testProceduresBranch);
-      builder.append(artifactTypeChooser);
-      builder.append(searchInheritedTypes);
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -114,8 +116,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Branch requirementsBranch = variableMap.getBranch("Requirements Branch");
-      Branch testProcedureBranch = variableMap.getBranch("Test Procedures Branch");
+      Branch requirementsBranch = variableMap.getBranch("Program Branch");
       Collection<? extends IArtifactType> types =
          variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to Trace");
       boolean searchInherited = variableMap.getBoolean("Search Inherited Types");
@@ -137,14 +138,14 @@ public class PublishStdStpTraceability extends AbstractBlam {
       if (selectedReports.size() > 0) {
          // Load Requirements Data
          TraceabilityProviderOperation provider;
-         if (variableMap.getBoolean(PULL_ALL_DATA_LABEL)) {
-            provider = new BranchTraceabilityOperation(testProcedureBranch, types, searchInherited);
+         if (traceHandlers.isEmpty()) {
+            provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited);
          } else {
             provider =
                new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
                   traceHandlers);
          }
-         RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(testProcedureBranch, provider);
+         RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(requirementsBranch, provider);
          IStatus status = traceabilityData.initialize(monitor);
          if (status.getSeverity() == IStatus.CANCEL) {
             monitor.setCanceled(true);
