@@ -29,7 +29,10 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageItemProvider;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
+import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
+import org.eclipse.osee.coverage.store.TestUnitCache;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -100,6 +103,14 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
 
          // Merge Dispositions
          processDispositionsRecurse(monitor, counter, data, fromPackage, toPackage);
+         ITestUnitProvider fromProvider = OseeCoverageUnitStore.getTestUnitProvider(fromPackageArt, null);
+         ITestUnitProvider toProvider = OseeCoverageUnitStore.getTestUnitProvider(toPackageArt, null);
+
+         if (fromProvider instanceof TestUnitCache && toProvider instanceof TestUnitCache) {
+            TestUnitCache toTUC = (TestUnitCache) toProvider;
+            TestUnitCache fromTUC = (TestUnitCache) fromProvider;
+            toTUC.merge(fromTUC);
+         }
 
          data.log("\n\nTotals: " + counter.toString());
          data.log(title);

@@ -110,7 +110,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (artifact != null) {
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem item =
-               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager, getTestUnitProvider());
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
+                  getTestUnitProvider(coveragePackage, readOnlyTestUnitNames));
             coverageUnit.addCoverageItem(item);
          }
          // Don't load file contents until needed
@@ -132,13 +133,13 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
    }
 
-   private ITestUnitProvider getTestUnitProvider() {
-      ITestUnitProvider testUnitProvider = testUnitProviderMap.get(coveragePackage);
+   public static ITestUnitProvider getTestUnitProvider(Artifact coveragePkg, Artifact readOnly) {
+      ITestUnitProvider testUnitProvider = testUnitProviderMap.get(coveragePkg);
 
       if (testUnitProvider == null) {
-         ArtifactTestUnitStore store = new ArtifactTestUnitStore(coveragePackage, readOnlyTestUnitNames);
+         ArtifactTestUnitStore store = new ArtifactTestUnitStore(coveragePkg, readOnly);
          testUnitProvider = new TestUnitCache(store);
-         testUnitProviderMap.put(coveragePackage, testUnitProvider);
+         testUnitProviderMap.put(coveragePkg, testUnitProvider);
       }
       return testUnitProvider;
    }
@@ -152,7 +153,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (eventType == CoverageEventType.Modified) {
          for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
             CoverageItem dbChangedItem =
-               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager, getTestUnitProvider());
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
+                  getTestUnitProvider(coveragePackage, readOnlyTestUnitNames));
             if (currentCoverageItem.getGuid().equals(dbChangedItem.getGuid())) {
                currentCoverageItem.copy(currentCoverageItem, dbChangedItem);
             }
@@ -174,7 +176,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          // Get test names from coverageItem
          Collection<String> testUnitNames = coverageItem.getTestUnits();
          // Set provider to db provider
-         coverageItem.setTestUnitProvider(getTestUnitProvider());
+         coverageItem.setTestUnitProvider(getTestUnitProvider(coveragePackage, readOnlyTestUnitNames));
          // store off testUnitNames; this will add to db and replace names with db nameId
          coverageItem.setTestUnits(testUnitNames);
          items.add(coverageItem.toXml());
@@ -291,7 +293,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
 
    @Override
    public void saveTestUnitNames(SkynetTransaction transaction) throws OseeCoreException {
-      getTestUnitProvider().save(transaction);
+      getTestUnitProvider(coveragePackage, readOnlyTestUnitNames).save(transaction);
    }
 
    public CoverageUnit getCoverageUnit() {

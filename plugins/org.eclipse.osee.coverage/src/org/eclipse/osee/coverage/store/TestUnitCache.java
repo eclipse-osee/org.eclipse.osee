@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
-import java.rmi.activation.Activator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -20,6 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.ITestUnitProvider;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -187,6 +187,17 @@ public class TestUnitCache implements ITestUnitProvider {
             cacheIsDirty = false;
          } catch (OseeCoreException ex) {
             throw ex;
+         }
+      }
+   }
+
+   public void merge(TestUnitCache from) {
+      Set<Entry<Integer, String>> entries = from.getAllCachedTestUnitEntries();
+      for (Entry<Integer, String> entry : entries) {
+         try {
+            put(entry.getKey(), entry.getValue());
+         } catch (OseeArgumentException ex) {
+            OseeLog.log(Activator.class, Level.WARNING, "Duplicate keys found for id: " + entry.getKey(), ex);
          }
       }
    }
