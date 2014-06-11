@@ -29,6 +29,7 @@
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
 
 		<module>../../features/org.eclipse.osee.x.ats.feature</module>
+		<module>../../plugins/org.eclipse.osee.x.ats.p2</module>
 	</modules>
 
 </project>

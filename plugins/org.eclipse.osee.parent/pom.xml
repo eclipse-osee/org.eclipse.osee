@@ -59,7 +59,7 @@
 
 		<osee-create-help-docs>true</osee-create-help-docs>
 		<rest-output-directory>${project.build.directory}/../REST-INF</rest-output-directory>
-		
+
 		<osee-application-server-launch-ant>../../plugins/org.eclipse.osee.parent/tools/osee-application-server.xml</osee-application-server-launch-ant>
 	</properties>
 
@@ -592,7 +592,7 @@
 			<activation>
 				<property>
 					<name>osee-build-stage</name>
-					<value>!osee-server</value>
+					<value>!osee-all-server</value>
 				</property>
 			</activation>
 			<properties>
@@ -673,7 +673,7 @@
 			<activation>
 				<property>
 					<name>osee-build-stage</name>
-					<value>osee-server</value>
+					<value>osee-all-server</value>
 				</property>
 			</activation>
 			<properties>
@@ -689,11 +689,57 @@
 		</profile>
 
 		<profile>
-			<id>osee-dispo</id>
+			<id>osee-x-core</id>
 			<activation>
 				<property>
 					<name>osee-build-stage</name>
-					<value>osee-dispo</value>
+					<value>osee-x-core</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>eclipse-ip</id>
+					<layout>p2</layout>
+					<url>${eclipse-ip-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>osee-orcs</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-orcs</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>eclipse-ip</id>
+					<layout>p2</layout>
+					<url>${eclipse-ip-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>osee-disposition</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-disposition</value>
 				</property>
 			</activation>
 			<properties>
@@ -716,6 +762,82 @@
 					<id>osee-orcs</id>
 					<layout>p2</layout>
 					<url>${osee-orcs-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>osee-x-ats</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-x-ats</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>eclipse-ip</id>
+					<layout>p2</layout>
+					<url>${eclipse-ip-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+				<repository>
+					<id>osee-orcs</id>
+					<layout>p2</layout>
+					<url>${osee-orcs-site}</url>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>osee-x-server</id>
+			<activation>
+				<property>
+					<name>osee-build-stage</name>
+					<value>osee-x-server</value>
+				</property>
+			</activation>
+			<properties>
+				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
+				<osee-xcore-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.core.p2/target/repository</osee-xcore-site>
+				<osee-orcs-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.orcs.p2/target/repository</osee-orcs-site>
+				<osee-disposition-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.disposition.p2/target/repository</osee-disposition-site>
+				<osee-xats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.ats.p2/target/repository</osee-xats-site>
+			</properties>
+			<repositories>
+				<repository>
+					<id>eclipse-ip</id>
+					<layout>p2</layout>
+					<url>${eclipse-ip-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xcore</id>
+					<layout>p2</layout>
+					<url>${osee-xcore-site}</url>
+				</repository>
+				<repository>
+					<id>osee-orcs</id>
+					<layout>p2</layout>
+					<url>${osee-orcs-site}</url>
+				</repository>
+				<repository>
+					<id>osee-disposition</id>
+					<layout>p2</layout>
+					<url>${osee-disposition-site}</url>
+				</repository>
+				<repository>
+					<id>osee-xats</id>
+					<layout>p2</layout>
+					<url>${osee-xats-site}</url>
 				</repository>
 			</repositories>
 		</profile>

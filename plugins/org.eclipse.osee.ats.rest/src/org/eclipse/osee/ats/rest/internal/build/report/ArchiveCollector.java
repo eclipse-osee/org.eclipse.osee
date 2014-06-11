@@ -27,8 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
+import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,9 +39,6 @@ import org.eclipse.osee.logger.Log;
  */
 public class ArchiveCollector {
 
-   private static final String CHANGE_REPORTS_PATH = "/atsData/changeReports/";
-
-   private final String serverData = OseeServerProperties.getOseeApplicationServerData(null);
    private final Map<String, String> urlToEntryName = new LinkedHashMap<String, String>();
    private final Set<String> pcrIds = new LinkedHashSet<String>();
    private final String baseUrl;
@@ -118,13 +115,12 @@ public class ArchiveCollector {
       }
 
       for (String pcrId : pcrIds) {
-         String pcrFileName = pcrId + ".xml";
-         File file = new File(serverData + CHANGE_REPORTS_PATH + pcrFileName);
+         File file = InputFilesUtil.getChangeReportFile(pcrId);
          if (file.exists()) {
             FileInputStream fis = null;
             try {
                fis = new FileInputStream(file);
-               zout.putNextEntry(new ZipEntry("changeReports/" + pcrFileName));
+               zout.putNextEntry(new ZipEntry("changeReports/" + file.getName()));
                Lib.inputStreamToOutputStream(fis, zout);
                zout.closeEntry();
             } catch (IOException ex) {

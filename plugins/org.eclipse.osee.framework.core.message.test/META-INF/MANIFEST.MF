@@ -8,5 +8,4 @@ Fragment-Host: org.eclipse.osee.framework.core.message
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.model.change,
- org.eclipse.osee.framework.core.model.mocks,
  org.eclipse.osee.framework.jdk.core.util

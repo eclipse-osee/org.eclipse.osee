@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.authentication.admin
 Bundle-Version: 0.18.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.jdk.core.type,
+Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.osgi.framework

@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal.build.report.util;
 
 import java.io.File;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsElementData;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
 
 /**
  * @author John Misinco
@@ -22,6 +21,8 @@ public class InputFilesUtil {
    private InputFilesUtil() {
       // utility
    }
+
+   private static final String CHANGE_REPORTS_PATH = "/atsData/changeReports/";
 
    public static File getBuildFile() {
       return new File(getBaseFileLocation() + AtsElementData.ATS_BUILD_DATA_XML);
@@ -39,8 +40,12 @@ public class InputFilesUtil {
       return new File(String.format("%s/changeReports/%s_ids.txt", getBaseFileLocation(), rpcr));
    }
 
+   public static File getChangeReportFile(String pcrId) {
+      return new File(getBaseFileLocation() + CHANGE_REPORTS_PATH + pcrId + ".xml");
+   }
+
    private static String getBaseFileLocation() {
-      return OseeServerProperties.getOseeApplicationServerData(null) + AtsElementData.ATS_DATA;
+      return System.getProperty("osee.application.server.data", null) + AtsElementData.ATS_DATA;
    }
 
 }

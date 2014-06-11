@@ -37,6 +37,10 @@
          id="org.eclipse.osee.x.ats.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.disposition.feature"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.osgi"/>
@@ -45,25 +49,11 @@
 
    <plugin
          id="org.eclipse.osee.database"
-   	 download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.disposition.rest"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.osee.disposition.rest.model"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-   
    <plugin
          id="org.eclipse.osee.app"
          download-size="0"

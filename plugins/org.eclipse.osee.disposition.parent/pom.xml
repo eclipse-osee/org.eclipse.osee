@@ -23,16 +23,17 @@
 		<module>../../plugins/org.eclipse.osee.disposition.rest.test</module>
 		
 		<module>../../features/org.eclipse.osee.disposition.feature</module>
+		<module>../../plugins/org.eclipse.osee.disposition.p2</module>
 	</modules>
 
 
 	<profiles>
 		<profile>
-			<id>osee-dispo-stage-only</id>
+			<id>osee-disposition-stage</id>
 			<activation>
 				<property>
 					<name>osee-build-stage</name>
-					<value>osee-dispo</value>
+					<value>osee-disposition</value>
 				</property>
 			</activation>
 			<modules>

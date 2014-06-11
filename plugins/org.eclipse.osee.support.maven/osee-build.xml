@@ -9,7 +9,7 @@
 		<echo>--------------------------------------------------------------</echo>
 		<echo>OSEE BUILD - Build Stage</echo>
 		<echo>--------------------------------------------------------------</echo>
-		<property name="input-arguments" value="all,all-ide,server,runtime,ote,osee-client,coverage,ats-client,products" />
+		<property name="input-arguments" value="all,all-ide,all-server,x-core,orcs,dispo,x-ats,x-server,runtime,ote,osee-client,coverage,ats-client,products" />
 		<input message="${tab}[input] Select build to perform?" validargs="${input-arguments}" defaultvalue="${default-osee-build-stage}" addproperty="input-osee-build-stage">
 			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
@@ -24,10 +24,30 @@
 				<property name="osee-build-stage" value="osee-all-ide" />
 				<property name="osee-build-directory" value="org.eclipse.osee.ide.parent" />
 			</case>
-			<case value="server">
-				<property name="osee-build-stage" value="osee-server" />
+			<case value="all-server">
+				<property name="osee-build-stage" value="osee-all-server" />
 				<property name="osee-build-directory" value="org.eclipse.osee.x.parent" />
 			</case>
+			<case value="x-core">
+				<property name="osee-build-stage" value="osee-x-core" />
+				<property name="osee-build-directory" value="org.eclipse.osee.x.core.parent" />
+			</case>
+			<case value="orcs">
+				<property name="osee-build-stage" value="osee-orcs" />
+				<property name="osee-build-directory" value="org.eclipse.osee.orcs.parent" />
+			</case>
+			<case value="dispo">
+				<property name="osee-build-stage" value="osee-disposition" />
+				<property name="osee-build-directory" value="org.eclipse.osee.disposition.parent" />
+			</case>
+			<case value="x-ats">
+				<property name="osee-build-stage" value="osee-x-ats" />
+				<property name="osee-build-directory" value="org.eclipse.osee.x.ats.parent" />
+			</case>
+			<case value="x-server">
+				<property name="osee-build-stage" value="osee-x-server" />
+				<property name="osee-build-directory" value="org.eclipse.osee.x.server.parent" />
+			</case>			
 			<case value="runtime">
 				<property name="osee-build-stage" value="osee-client-runtime" />
 				<property name="osee-build-directory" value="org.eclipse.osee.runtime.parent" />
@@ -48,7 +68,7 @@
 				<property name="osee-build-stage" value="osee-ats-client" />
 				<property name="osee-build-directory" value="org.eclipse.osee.ats.parent" />
 			</case>
-			<case value="products">
+			<case value="client-all">
 				<property name="osee-build-stage" value="osee-client-products" />
 				<property name="osee-build-directory" value="org.eclipse.osee.client.all.parent" />
 			</case>
@@ -82,7 +102,7 @@
 				<var name="build-options" value="${build-options} -Declipse-ip-site=&quot;${input-org-eclipse-ip-site-path}&quot;" />
 			</then>
 		</if>
-		
+
 		<!--	SKIP HELP BUILD -->
 		<input message="${tab}[input] Build OSEE Help?" validargs="y,n" defaultvalue="${default-build-osee-help}" addproperty="input-build-osee-help">
 			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
@@ -192,6 +212,28 @@
 		</propertyfile>
 	</target>
 
+	<target name="stages">
+		<loadresource property="modules-server">
+			<file file="modules-server.txt" />
+		</loadresource>
+		<loadresource property="modules-client">
+			<file file="modules-client.txt" />
+		</loadresource>
+		<echo>--------------------------------------------------------------</echo>
+		<echo> OSEE ALL - [all] </echo>			
+		<echo>--------------------------------------------------------------</echo>
+		<echo> SERVER   - [all-server] </echo>
+		<echo/>
+		<echo>${modules-server}</echo>
+		<echo/>
+		<echo>--------------------------------------------------------------</echo>
+		<echo> CLIENT   - [all-ide] </echo>
+		<echo/>
+		<echo>${modules-client}</echo>
+		<echo/>
+		<echo>--------------------------------------------------------------</echo>
+	</target>
+
 	<target name="execute-build">
 		<echo>--------------------------------------------------------------</echo>
 		<echo>OSEE BUILD - Execute</echo>
@@ -208,7 +250,7 @@
 	<!-- *************************************************************** -->
 	<!--   MAIN                                                          -->
 	<!-- *************************************************************** -->
-	<target name="run" depends="init,load-settings,get-inputs,save-settings,execute-build" />
+	<target name="run" depends="init,load-settings,stages,get-inputs,save-settings,execute-build" />
 
 	<!-- *************************************************************** -->
 	<!--   MAVEN MACRO                                                   -->
