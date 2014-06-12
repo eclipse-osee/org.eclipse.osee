@@ -12,9 +12,6 @@ package org.eclipse.osee.account.rest.client;
 
 import java.util.Map;
 import org.eclipse.osee.account.rest.client.internal.AccountClientImpl;
-import org.eclipse.osee.account.rest.client.internal.AccountClientModule;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
-import com.google.inject.Module;
 
 /**
  * Class to use when using the API in a non-OSGI environment
@@ -28,7 +25,8 @@ public final class AccountClientStandaloneSetup {
    }
 
    public static AccountClient createClient(Map<String, Object> config) {
-      Module module = new AccountClientModule(config);
-      return JaxRsClientFactory.createClient(AccountClientImpl.class, config, module);
+      AccountClientImpl client = new AccountClientImpl();
+      client.start(config);
+      return client;
    }
 }

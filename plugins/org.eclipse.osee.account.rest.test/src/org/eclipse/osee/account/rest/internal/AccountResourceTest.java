@@ -138,8 +138,8 @@ public class AccountResourceTest {
 
       URI location = (URI) response.getMetadata().getFirst(HttpHeaders.LOCATION);
       URI expectedLocation =
-         UriBuilder.fromUri(uri).path("..").path("..").path("subscriptions").path("for-account").path("{account-id}").build(
-            ACCOUNT_ID);
+         UriBuilder.fromUri(uri).path("..").path("..").path("..").path("subscriptions").path("for-account").path(
+            "{account-id}").build(ACCOUNT_ID);
       assertEquals(expectedLocation, location);
    }
 

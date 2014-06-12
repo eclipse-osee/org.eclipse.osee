@@ -5,16 +5,22 @@ Bundle-SymbolicName: org.eclipse.osee.x.server.integration.tests
 Bundle-Version: 0.18.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Require-Bundle: org.junit,
- org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.client,
- org.databene.contiperf
 Import-Package: org.apache.commons.lang.math,
+ org.databene.contiperf,
+ org.databene.contiperf.junit,
+ org.databene.contiperf.report,
  org.eclipse.osee.account.rest.client,
  org.eclipse.osee.account.rest.model,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.client,
- org.eclipse.osee.jaxrs
+ org.eclipse.osee.orcs.rest.client,
+ org.eclipse.osee.orcs.rest.model.search.artifact,
+ org.hamcrest.core,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners

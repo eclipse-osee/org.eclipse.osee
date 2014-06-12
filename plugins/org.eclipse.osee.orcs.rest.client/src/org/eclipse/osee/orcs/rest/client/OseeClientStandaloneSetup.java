@@ -11,10 +11,7 @@
 package org.eclipse.osee.orcs.rest.client;
 
 import java.util.Map;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
-import org.eclipse.osee.orcs.rest.client.internal.OrcsClientModule;
 import org.eclipse.osee.orcs.rest.client.internal.OseeClientImpl;
-import com.google.inject.Module;
 
 /**
  * Class to use when using the API in a non-OSGI environment
@@ -28,7 +25,8 @@ public final class OseeClientStandaloneSetup {
    }
 
    public static OseeClient createClient(Map<String, Object> config) {
-      Module module = new OrcsClientModule(config);
-      return JaxRsClientFactory.createClient(OseeClientImpl.class, config, module);
+      OseeClientImpl client = new OseeClientImpl();
+      client.start(config);
+      return client;
    }
 }

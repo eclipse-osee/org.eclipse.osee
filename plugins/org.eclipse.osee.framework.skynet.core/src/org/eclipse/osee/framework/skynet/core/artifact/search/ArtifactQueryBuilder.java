@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.INCLUDE_CACHE;
 import static org.eclipse.osee.framework.skynet.core.artifact.LoadType.RELOAD_CACHE;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -371,7 +372,11 @@ public class ArtifactQueryBuilder {
 
          Method localMethod = getMethodFor(getClass(), method);
          if (localMethod != null) {
-            toReturn = localMethod.invoke(this, args);
+            try {
+               toReturn = localMethod.invoke(this, args);
+            } catch (InvocationTargetException e) {
+               throw e.getCause();
+            }
             if (toReturn == null) {
                toReturn = proxy;
             }

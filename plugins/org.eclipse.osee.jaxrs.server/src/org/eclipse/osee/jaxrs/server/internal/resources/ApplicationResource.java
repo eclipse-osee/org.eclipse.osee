@@ -65,7 +65,7 @@ public class ApplicationResource {
 
             String absolutePath = getServletPath();
 
-            URI build = UriBuilder.fromPath(absolutePath).path(applicationContext).path("application.wadl").build();
+            URI build = UriBuilder.fromPath(absolutePath).path(applicationContext).queryParam("_wadl").build();
             String path = build.toASCIIString();
             info.setUri(path);
             toReturn.add(info);

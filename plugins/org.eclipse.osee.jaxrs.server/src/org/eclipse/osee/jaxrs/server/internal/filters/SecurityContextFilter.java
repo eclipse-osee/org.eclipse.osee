@@ -10,18 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.filters;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
-import com.sun.jersey.spi.container.ContainerResponseFilter;
-import com.sun.jersey.spi.container.ResourceFilter;
 
 /**
  * @author Roberto E. Escobar
  */
 @Provider
-public class SecurityContextFilter implements ResourceFilter, ContainerRequestFilter {
+public class SecurityContextFilter implements ContainerRequestFilter {
 
    private final SecurityContextProvider contextProvider;
 
@@ -31,22 +29,11 @@ public class SecurityContextFilter implements ResourceFilter, ContainerRequestFi
    }
 
    @Override
-   public ContainerRequest filter(ContainerRequest request) {
+   public void filter(ContainerRequestContext request) {
       SecurityContext securityContext = contextProvider.getSecurityContext(request);
       if (securityContext != null) {
          request.setSecurityContext(securityContext);
       }
-      return request;
-   }
-
-   @Override
-   public ContainerRequestFilter getRequestFilter() {
-      return this;
-   }
-
-   @Override
-   public ContainerResponseFilter getResponseFilter() {
-      return null;
    }
 
 }

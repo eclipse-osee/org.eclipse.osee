@@ -19,7 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.OteClient;
 import org.eclipse.osee.ote.rest.client.Progress;
@@ -56,7 +55,7 @@ public class OteClientImpl implements OteClient {
    }
 
    public void update(Map<String, Object> props) {
-      client = JaxRsClientFactory.createClient(props);
+      client = JaxRsClient.newBuilder().properties(props).build();
    }
 
    @Override

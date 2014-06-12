@@ -18,7 +18,6 @@ import org.databene.contiperf.report.CSVSummaryReportModule;
 import org.databene.contiperf.report.HtmlReportModule;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
-import org.eclipse.osee.jaxrs.client.JaxRsClientConstants;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 import org.junit.rules.MethodRule;
@@ -44,7 +43,7 @@ public final class IntegrationUtil {
    private static Map<String, Object> createClientConfig() {
       Map<String, Object> config = new HashMap<String, Object>();
       String serverAddress = System.getProperty(OSEE_APPLICATION_SERVER, DEFAULT_OSEE_APPLICATION_SERVER);
-      config.put(JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS, serverAddress);
+      config.put(OSEE_APPLICATION_SERVER, serverAddress);
       return config;
    }
 

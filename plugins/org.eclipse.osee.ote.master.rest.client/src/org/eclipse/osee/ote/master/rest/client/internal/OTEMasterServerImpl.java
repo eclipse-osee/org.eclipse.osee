@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
@@ -42,7 +41,7 @@ public class OTEMasterServerImpl implements OTEMasterServer {
    }
 
    public void update(Map<String, Object> props) {
-      client = JaxRsClientFactory.createClient(props);
+      client = JaxRsClient.newBuilder().properties(props).build();
    }
 
    @Override

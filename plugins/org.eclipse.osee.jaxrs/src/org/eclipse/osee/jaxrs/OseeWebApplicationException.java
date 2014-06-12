@@ -11,7 +11,6 @@
 package org.eclipse.osee.jaxrs;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
@@ -58,7 +57,8 @@ public class OseeWebApplicationException extends WebApplicationException {
 
    @Override
    public Response getResponse() {
-      return Response.status(getErrorStatus()).type(MediaType.APPLICATION_JSON_TYPE).entity(getErrorResponse()).build();
+      return Response.status(getErrorStatus()).entity(getErrorResponse()).header(
+         JaxRsConstants.OSEE_ERROR_REPONSE_HEADER, Boolean.TRUE).build();
    }
 
    public StatusType getErrorStatus() {

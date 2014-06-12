@@ -11,16 +11,13 @@
 package org.eclipse.osee.ats.config;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClientConstants;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
-import com.sun.jersey.api.client.WebResource;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 
 /**
  * @author Donald G. Dunne
@@ -29,11 +26,12 @@ public class AtsConfigurationUtil {
 
    public static AtsConfigurations getConfigurations() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri = UriBuilder.fromPath("ats").path("config").build();
-      Map<String, Object> config = new HashMap<String, Object>();
-      config.put(JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS, appServer);
-      JaxRsClient client = JaxRsClientFactory.createClient(config);
-      WebResource resource = client.createResource(uri);
-      return resource.accept(MediaType.APPLICATION_JSON).get(AtsConfigurations.class);
+      URI uri = UriBuilder.fromUri(appServer).path("ats").path("config").build();
+      WebTarget resource = JaxRsClient.newClient().target(uri);
+      try {
+         return resource.request(MediaType.APPLICATION_JSON).get(AtsConfigurations.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 }

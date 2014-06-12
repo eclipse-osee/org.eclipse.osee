@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URI;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.Progress;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class GetOteServerFile extends BaseClientCallable<Progress> {
 
@@ -31,12 +32,11 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
 
    @Override
    public void doWork() throws Exception {
-      WebResource client = factory.createResource(uri);
-      ClientResponse response =
-         client.queryParam("path", filePath).path("ote").path("file").accept(MediaType.APPLICATION_XML).get(
-            ClientResponse.class);
-      if (response.getStatus() == ClientResponse.Status.OK.getStatusCode()) {
-         InputStream is = response.getEntityInputStream();
+      WebTarget client = factory.target(uri);
+      Response response =
+         client.queryParam("path", filePath).path("ote").path("file").request(MediaType.APPLICATION_JSON).get();
+      if (response.getStatus() == Status.OK.getStatusCode()) {
+         InputStream is = (InputStream) response.getEntity();
          FileOutputStream fos = new FileOutputStream(destination);
          try {
             byte[] data = new byte[2048];

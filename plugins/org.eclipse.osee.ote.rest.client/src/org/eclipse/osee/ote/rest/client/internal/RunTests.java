@@ -3,6 +3,8 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -10,8 +12,6 @@ import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.client.ProgressWithCancel;
 import org.eclipse.osee.ote.rest.model.OTEJobStatus;
 import org.eclipse.osee.ote.rest.model.OTETestRun;
-import com.sun.jersey.api.client.WebResource;
-
 public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel> {
 
    private final URI uri;
@@ -38,11 +38,12 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
 
    @Override
    public boolean cancelSingle() {
-      WebResource baseService;
+      WebTarget baseService;
       try {
-         baseService = factory.createResource(uri);
+         baseService = factory.target(uri);
          OTEJobStatus cancelStatus =
-            baseService.path("ote").path("run").path(id).accept(MediaType.APPLICATION_JSON).put(OTEJobStatus.class);
+            baseService.path("ote").path("run").path(id).request(MediaType.APPLICATION_JSON).put(Entity.json(""),
+               OTEJobStatus.class);
          return cancelStatus.isSuccess();
       } catch (Exception e) {
          OseeLog.log(getClass(), Level.SEVERE, e);
@@ -51,17 +52,18 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
    }
 
    private OTEJobStatus sendCommand() throws Exception {
-      WebResource baseService = factory.createResource(uri);
-      return baseService.path("ote").path("run").accept(MediaType.APPLICATION_JSON).post(OTEJobStatus.class, tests);
+      WebTarget baseService = factory.target(uri);
+      return baseService.path("ote").path("run").request(MediaType.APPLICATION_JSON).post(Entity.json(tests),
+         OTEJobStatus.class);
    }
 
    @Override
    public boolean cancelAll() {
-      WebResource baseService;
+      WebTarget baseService;
       try {
-         baseService = factory.createResource(uri);
+         baseService = factory.target(uri);
          OTEJobStatus cancelStatus =
-            baseService.path("ote").path("run").path(id).accept(MediaType.APPLICATION_JSON).delete(OTEJobStatus.class);
+            baseService.path("ote").path("run").path(id).request(MediaType.APPLICATION_JSON).delete(OTEJobStatus.class);
          return cancelStatus.isSuccess();
       } catch (Exception e) {
          OseeLog.log(getClass(), Level.SEVERE, e);

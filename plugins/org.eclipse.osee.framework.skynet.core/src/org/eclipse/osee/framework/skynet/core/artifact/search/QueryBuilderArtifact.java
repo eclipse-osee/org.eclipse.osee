@@ -22,6 +22,6 @@ public interface QueryBuilderArtifact extends QueryBuilder {
 
    ResultSet<Artifact> getResults() throws OseeCoreException;
 
-   ResultSet<ArtifactMatch> getMatches();
+   ResultSet<ArtifactMatch> getMatches() throws OseeCoreException;
 
 }

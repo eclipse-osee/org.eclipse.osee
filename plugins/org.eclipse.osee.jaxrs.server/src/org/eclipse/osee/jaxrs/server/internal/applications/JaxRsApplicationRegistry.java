@@ -13,17 +13,12 @@ package org.eclipse.osee.jaxrs.server.internal.applications;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConfiguration;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitor;
-import org.eclipse.osee.jaxrs.server.internal.ext.JerseyJaxRsFactory;
-import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextFilter;
-import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextProviderImpl;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpService;
 
 /**
  * @author Roberto E. Escobar
@@ -62,35 +57,24 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
       new ConcurrentHashMap<String, JaxRsContainerProvider>();
 
    private Log logger;
-   private HttpService httpService;
-   private AuthorizationAdmin authorizationAdmin;
-
    private JaxRsFactory factory;
-   private String baseContext = JaxRsConstants.DEFAULT_JAXRS_BASE_CONTEXT;
 
-   public void setHttpService(HttpService httpService) {
-      this.httpService = httpService;
-   }
+   private String baseContext = JaxRsConstants.DEFAULT_JAXRS_BASE_CONTEXT;
 
    public void setLogger(Log logger) {
       this.logger = logger;
    }
 
-   public void setAuthorizationAdmin(AuthorizationAdmin authorizationAdmin) {
-      this.authorizationAdmin = authorizationAdmin;
+   public void setJaxRsFactory(JaxRsFactory factory) {
+      this.factory = factory;
    }
 
    public void start() {
       logger.trace("Starting [%s]...", getClass().getSimpleName());
-      SecurityContextProviderImpl provider = new SecurityContextProviderImpl(logger, authorizationAdmin);
-      SecurityContextFilter filter = new SecurityContextFilter(provider);
-
-      factory = new JerseyJaxRsFactory(logger, httpService, filter);
    }
 
    public void stop() {
       logger.trace("Stopping [%s]...", getClass().getSimpleName());
-      this.factory = null;
    }
 
    public String getBaseContext() {

@@ -10,19 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.client.internal;
 
-import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_SERVER_ADDRESS;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNTS;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_ACTIVE;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_ID_PARAM;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_ID_TEMPLATE;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_LOGIN;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_LOGOUT;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_PREFERENCES;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_SESSSIONS;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_USERNAME;
+import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_USERNAME_TEMPLATE;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
-import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
@@ -35,11 +46,7 @@ import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
-import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
-import org.eclipse.osee.jaxrs.client.JaxRsClientUtils;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 
 /**
  * @author Roberto E. Escobar
@@ -47,156 +54,127 @@ import com.sun.jersey.api.client.WebResource;
 public class AccountClientImpl implements AccountClient {
 
    private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
-   private JaxRsClient client;
+   private WebTarget baseTarget;
+   private WebTarget accountTarget;
 
    public void start(Map<String, Object> properties) {
       update(properties);
    }
 
    public void stop() {
-      client = null;
+      baseTarget = null;
+      accountTarget = null;
    }
 
    public void update(Map<String, Object> properties) {
-      Map<String, Object> propsToUse = properties;
-      String newServerAddress = JaxRsClientUtils.get(propsToUse, JAXRS_CLIENT_SERVER_ADDRESS, null);
-      if (newServerAddress == null) {
-         propsToUse = new HashMap<String, Object>(properties);
-         propsToUse.put(JAXRS_CLIENT_SERVER_ADDRESS, System.getProperty(OSEE_APPLICATION_SERVER, ""));
-      }
-      client = JaxRsClientFactory.createClient(propsToUse);
-   }
+      JaxRsClient client = JaxRsClient.newBuilder().properties(properties).build();
 
-   private UriBuilder newBuilder() {
-      return UriBuilder.fromPath(AccountContexts.ACCOUNTS);
-   }
-
-   private <T> T get(URI uri, Class<T> clazz) {
-      WebResource resource = client.createResource(uri);
-      try {
-         return resource.accept(MediaType.APPLICATION_JSON_TYPE).get(clazz);
-      } catch (UniformInterfaceException ex) {
-         throw client.handleException(ex);
+      String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
+      if (address == null) {
+         address = System.getProperty(OSEE_APPLICATION_SERVER, "");
       }
+
+      URI uri = UriBuilder.fromUri(address).build();
+      baseTarget = client.target(uri);
+      accountTarget = baseTarget.path(ACCOUNTS);
    }
 
    @Override
    public AccountSessionData login(String scheme, String username, String password) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_LOGIN)//
-      .build();
-
       AccountLoginData data = new AccountLoginData();
       data.setUsername(username);
       data.setPassword(password);
       data.setScheme(scheme);
 
-      WebResource resource = client.createResource(uri);
+      WebTarget resource = accountTarget.path(ACCOUNT_LOGIN);
       try {
-         return resource.post(AccountSessionData.class, data);
-      } catch (UniformInterfaceException ex) {
-         throw client.handleException(ex);
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(data), AccountSessionData.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 
    @Override
    public boolean logout(AccountSessionData session) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_LOGOUT)//
-      .build();
-
-      WebResource resource = client.createResource(uri);
-      int status;
+      WebTarget resource = accountTarget.path(ACCOUNT_LOGOUT);
       try {
-         ClientResponse response = resource.post(ClientResponse.class, session);
-         status = response.getStatus();
-      } catch (UniformInterfaceException ex) {
-         ClientResponse clientResponse = ex.getResponse();
-         status = clientResponse.getStatus();
-         if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw client.handleException(ex);
-         }
+         Response response = resource.request().post(Entity.json(session));
+         return Status.OK.getStatusCode() == response.getStatus();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      return Status.OK.getStatusCode() == status;
    }
 
    @Override
    public AccountInfoData createAccount(String userName, AccountInput input) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_USERNAME_TEMPLATE)//
-      .build(userName);
-
-      WebResource resource = client.createResource(uri);
+      WebTarget resource = accountTarget.path(ACCOUNT_USERNAME_TEMPLATE).resolveTemplate(ACCOUNT_USERNAME, userName);
       try {
-         AccountInfoData data =
-            resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
-               AccountInfoData.class, input);
-         return data;
-      } catch (UniformInterfaceException ex) {
-         throw client.handleException(ex);
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(input), AccountInfoData.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 
    @Override
    public boolean deleteAccount(String accountId) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .build(accountId);
-      WebResource resource = client.createResource(uri);
-
-      ClientResponse response;
+      WebTarget resource = accountTarget.path(ACCOUNT_ID_TEMPLATE).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
       try {
-         response = resource.delete(ClientResponse.class);
-      } catch (UniformInterfaceException ex) {
-         throw client.handleException(ex);
+         Response response = resource.request().delete();
+         return Status.OK.getStatusCode() == response.getStatus();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      int status = response.getStatus();
-      return Status.OK.getStatusCode() == status;
    }
 
    @Override
    public ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE) //
-      .path(AccountContexts.ACCOUNT_SESSSIONS)//
-      .build(accountId);
-      AccountSessionDetailsData[] data = get(uri, AccountSessionDetailsData[].class);
-      return ResultSets.newResultSet(data);
+      WebTarget resource =
+         accountTarget.path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_SESSSIONS).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
+      try {
+         AccountSessionDetailsData[] data =
+            resource.request(MediaType.APPLICATION_JSON_TYPE).get(AccountSessionDetailsData[].class);
+         return ResultSets.newResultSet(data);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
    @Override
    public ResultSet<AccountInfoData> getAllAccounts() {
-      URI uri = newBuilder()//
-      .build();
-      AccountInfoData[] accounts = get(uri, AccountInfoData[].class);
-      return ResultSets.newResultSet(accounts);
+      try {
+         AccountInfoData[] accounts =
+            accountTarget.request(MediaType.APPLICATION_JSON_TYPE).get(AccountInfoData[].class);
+         return ResultSets.newResultSet(accounts);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
    @Override
    public AccountDetailsData getAccountDetailsByUniqueField(String accountId) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .build(accountId);
-      return get(uri, AccountDetailsData.class);
+      WebTarget resource = accountTarget.path(ACCOUNT_ID_TEMPLATE).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
+      try {
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).get(AccountDetailsData.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
    @Override
    public AccountPreferencesData getAccountPreferencesByUniqueField(String accountId) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .path(AccountContexts.ACCOUNT_PREFERENCES)//
-      .build(accountId);
-      AccountPreferencesData data = get(uri, AccountPreferencesData.class);
-      return data;
+      WebTarget resource =
+         accountTarget.path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
+      try {
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).get(AccountPreferencesData.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
    @Override
    public boolean setAccountActive(String accountId, boolean active) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .path(AccountContexts.ACCOUNT_ACTIVE)//
-      .build(accountId);
-      WebResource resource = client.createResource(uri);
+      WebTarget resource =
+         accountTarget.path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_ACTIVE).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
       boolean result;
       if (active) {
          result = setAccountActive(resource);
@@ -208,79 +186,63 @@ public class AccountClientImpl implements AccountClient {
 
    @Override
    public boolean isAccountActive(String accountId) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .path(AccountContexts.ACCOUNT_ACTIVE)//
-      .build(accountId);
-      AccountActiveData data = get(uri, AccountActiveData.class);
-      return data.isActive();
+      WebTarget resource =
+         accountTarget.path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_ACTIVE).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
+      try {
+         AccountActiveData data = resource.request(MediaType.APPLICATION_JSON_TYPE).get(AccountActiveData.class);
+         return data.isActive();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
-   private boolean setAccountActive(WebResource resource) {
-      int status;
+   private boolean setAccountActive(WebTarget resource) {
       try {
-         ClientResponse response = resource.put(ClientResponse.class);
-         status = response.getStatus();
-      } catch (UniformInterfaceException ex) {
-         ClientResponse clientResponse = ex.getResponse();
-         status = clientResponse.getStatus();
-         if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw client.handleException(ex);
-         }
+         Response response = resource.request().put(null);
+         return Status.OK.getStatusCode() == response.getStatus();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      return Status.OK.getStatusCode() == status;
    }
 
-   private boolean setAccountInActive(WebResource resource) {
-      int status;
+   private boolean setAccountInActive(WebTarget resource) {
       try {
-         ClientResponse response = resource.delete(ClientResponse.class);
-         status = response.getStatus();
-      } catch (UniformInterfaceException ex) {
-         ClientResponse clientResponse = ex.getResponse();
-         status = clientResponse.getStatus();
-         if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw client.handleException(ex);
-         }
+         Response response = resource.request().delete();
+         return Status.OK.getStatusCode() == response.getStatus();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      return Status.OK.getStatusCode() == status;
    }
 
    @Override
    public boolean setAccountPreferences(String accountId, Map<String, String> preferences) {
-      URI uri = newBuilder()//
-      .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
-      .path(AccountContexts.ACCOUNT_PREFERENCES)//
-      .build(accountId);
+      WebTarget resource =
+         accountTarget.path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).resolveTemplate(ACCOUNT_ID_PARAM, accountId);
 
       AccountPreferencesInput input = new AccountPreferencesInput();
       input.setMap(preferences);
-
-      WebResource resource = client.createResource(uri);
-      int status;
       try {
-         ClientResponse response = resource.put(ClientResponse.class, input);
-         status = response.getStatus();
-      } catch (UniformInterfaceException ex) {
-         ClientResponse clientResponse = ex.getResponse();
-         status = clientResponse.getStatus();
-         if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw client.handleException(ex);
-         }
+         Response response = resource.request().put(Entity.json(input));
+         return Status.OK.getStatusCode() == response.getStatus();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      return Status.OK.getStatusCode() == status;
    }
 
    private ResultSet<SubscriptionData> getSubscriptionsForAccount(String userId) {
-      URI uri =
-         newBuilder().path("subscriptions").path("for-account").path("{account-id}").build(
-            userId);
-      SubscriptionData[] data = get(uri, SubscriptionData[].class);
-      return ResultSets.newResultSet(data);
+      WebTarget resource =
+         baseTarget.path("subscriptions/for-account/{account-id}").resolveTemplate(ACCOUNT_ID_PARAM, userId);
+      Builder builder = resource.request(MediaType.APPLICATION_JSON_TYPE);
+      try {
+         SubscriptionData[] data = builder.get(SubscriptionData[].class);
+         return ResultSets.newResultSet(data);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 
    private UriBuilder newUnsubscribeBuilder() {
-      return newBuilder().path("unsubscribe").path("ui").path("{subscription-uuid}");
+      return baseTarget.getUriBuilder().path("unsubscribe").path("ui").path("{subscription-uuid}");
    }
 
    @Override
@@ -289,6 +251,7 @@ public class AccountClientImpl implements AccountClient {
       ResultSet<SubscriptionData> results = getSubscriptionsForAccount(userUuid);
       if (!results.isEmpty()) {
          List<UnsubscribeInfo> infos = new ArrayList<UnsubscribeInfo>();
+
          UriBuilder builder = newUnsubscribeBuilder();
          for (SubscriptionData subscription : results) {
             if (subscription.isActive() && groupNames.contains(subscription.getName())) {

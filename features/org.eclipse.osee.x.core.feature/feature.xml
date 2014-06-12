@@ -30,10 +30,9 @@
       <import plugin="org.apache.xerces"/>
       <import plugin="javax.mail.glassfish"/>
       <import plugin="javax.servlet" version="2.5.0" match="greaterOrEqual"/>
-      <import plugin="com.sun.jersey" version="1.18.0" match="greaterOrEqual"/>
-      <import plugin="javax.ws.rs"/>
-      <import plugin="org.junit"/>
+      <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin

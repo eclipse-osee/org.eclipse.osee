@@ -12,20 +12,22 @@ package org.eclipse.osee.jaxrs.server.internal.filters;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.authorization.admin.Authorization;
 import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.authorization.admin.AuthorizationRequest;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextProviderImpl;
 import org.eclipse.osee.logger.Log;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,8 +35,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import com.sun.jersey.api.core.HttpRequestContext;
 
 /**
  * Unit Test for {@link SecurityContextProviderImpl}
@@ -55,7 +57,8 @@ public class SecurityContextProviderImplTest {
    @Mock private Log logger;
    @Mock private AuthorizationAdmin authorizationAdmin;
    
-   @Mock private HttpRequestContext request;
+   @Mock private UriInfo uriInfo;
+   @Mock private ContainerRequestContext request;
    @Mock private Authorization authorization;
    @Mock private Principal principal;
    @Captor private ArgumentCaptor<AuthorizationRequest> captor;
@@ -63,26 +66,31 @@ public class SecurityContextProviderImplTest {
 
    private SecurityContextProviderImpl provider;
    private SimpleDateFormat dateFormat;
+   private URI uriPath;
 
    @Before
-   public void setup() {
+   public void setup() throws URISyntaxException {
       initMocks(this);
 
       provider = new SecurityContextProviderImpl(logger, authorizationAdmin);
 
       dateFormat = new SimpleDateFormat(SecurityContextProviderImpl.HTTP_DATE_FORMAT);
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+      uriPath = new URI("https://someaddress.com");
    }
 
    @Test
    public void testGetSecurityContext() {
-      when(request.isSecure()).thenReturn(true);
-      when(request.getHeaderValue(SecurityContextProviderImpl.AUTHORIZATION_HEADER)).thenReturn(AUTHORIZATION);
-      when(request.getHeaderValue(SecurityContextProviderImpl.DATE_HEADER)).thenReturn(DATE_1);
-      when(request.getPath()).thenReturn(PATH_1);
+      when(request.getUriInfo()).thenReturn(uriInfo);
+      when(uriInfo.getAbsolutePath()).thenReturn(uriPath);
+      when(uriInfo.getPath()).thenReturn(PATH_1);
+
+      when(request.getHeaderString(SecurityContextProviderImpl.AUTHORIZATION_HEADER)).thenReturn(AUTHORIZATION);
+      when(request.getHeaderString(SecurityContextProviderImpl.DATE_HEADER)).thenReturn(DATE_1);
       when(request.getMethod()).thenReturn(METHOD_1);
 
-      when(authorizationAdmin.authorize(any(AuthorizationRequest.class))).thenReturn(authorization);
+      when(authorizationAdmin.authorize(Matchers.any(AuthorizationRequest.class))).thenReturn(authorization);
       when(authorization.getPrincipal()).thenReturn(principal);
       when(authorization.isInRole(OK_ROLE)).thenReturn(true);
       when(authorization.isSecure()).thenReturn(true);
@@ -110,12 +118,15 @@ public class SecurityContextProviderImplTest {
 
    @Test
    public void testGetSecurityContextException() {
-      when(request.getHeaderValue(SecurityContextProviderImpl.AUTHORIZATION_HEADER)).thenReturn(AUTHORIZATION);
-      when(request.getHeaderValue(SecurityContextProviderImpl.DATE_HEADER)).thenReturn(DATE_1);
-      when(request.getPath()).thenReturn(PATH_1);
+      when(request.getUriInfo()).thenReturn(uriInfo);
+      when(uriInfo.getAbsolutePath()).thenReturn(uriPath);
+      when(uriInfo.getPath()).thenReturn(PATH_1);
+
+      when(request.getHeaderString(SecurityContextProviderImpl.AUTHORIZATION_HEADER)).thenReturn(AUTHORIZATION);
+      when(request.getHeaderString(SecurityContextProviderImpl.DATE_HEADER)).thenReturn(DATE_1);
       when(request.getMethod()).thenReturn(METHOD_1);
 
-      when(authorizationAdmin.authorize(any(AuthorizationRequest.class))).thenReturn(null);
+      when(authorizationAdmin.authorize(Matchers.any(AuthorizationRequest.class))).thenReturn(null);
 
       SecurityContext context = provider.getSecurityContext(request);
 

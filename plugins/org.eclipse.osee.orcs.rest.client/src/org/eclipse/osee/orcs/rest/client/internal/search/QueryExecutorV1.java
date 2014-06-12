@@ -10,21 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal.search;
 
-import java.net.URI;
 import java.util.List;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author John Misinco
@@ -35,13 +34,11 @@ public class QueryExecutorV1 implements QueryExecutor {
       UriBuilder newBuilder();
    }
 
-   private final JaxRsClient client;
-   private final BaseUriBuilder baseUriBuilder;
+   private final WebTarget target;
 
-   public QueryExecutorV1(JaxRsClient client, BaseUriBuilder baseUriBuilder) {
+   public QueryExecutorV1(WebTarget target) {
       super();
-      this.client = client;
-      this.baseUriBuilder = baseUriBuilder;
+      this.target = target;
    }
 
    @Override
@@ -54,11 +51,6 @@ public class QueryExecutorV1 implements QueryExecutor {
    public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       SearchResponse result = performSearch(request, OutputFormat.XML, branch, predicates, options);
       return result;
-   }
-
-   private URI getQueryUri(long branchUuid) {
-      UriBuilder builder = baseUriBuilder.newBuilder().path("branch/{branch-uuid}/artifact/search/v1");
-      return builder.build(branchUuid);
    }
 
    private SearchResponse performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
@@ -76,16 +68,12 @@ public class QueryExecutorV1 implements QueryExecutor {
          new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
             requestType.name().toLowerCase(), fromTx, includeDeleted);
 
-      URI uri = getQueryUri(branch.getUuid());
-      WebResource resource = client.createResource(uri);
-      SearchResponse searchResult = null;
+      WebTarget resource =
+         target.path("branch/{branch-uuid}/artifact/search/v1").resolveTemplate("branch-uuid", branch.getUuid());
       try {
-         searchResult =
-            resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
-               SearchResponse.class, params);
-      } catch (UniformInterfaceException ex) {
-         throw client.handleException(ex);
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
-      return searchResult;
    }
 }

@@ -6,10 +6,8 @@ Bundle-Version: 0.18.0.qualifier
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.sun.jersey.api.client,
- com.sun.jersey.api.client.config,
- com.sun.jersey.client.apache,
- com.sun.jersey.client.apache.config,
+Import-Package: javax.ws.rs;version="2.0.0",
+ javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.jaxrs.client,

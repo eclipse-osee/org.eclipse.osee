@@ -57,6 +57,10 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
       return props;
    }
 
+   protected H getBaseServlet() {
+      return baseJaxsRsServlet;
+   }
+
    @Override
    public String getServletContext() {
       return servletContextName.get();

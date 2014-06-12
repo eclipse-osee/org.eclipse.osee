@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -45,9 +46,9 @@ public class ArtifactsResource {
       this.branchUuid = branchUuid;
    }
 
-   @Path("search")
-   public ArtifactSearchResource getSearch() {
-      return new ArtifactSearchResource(uriInfo, request, branchUuid);
+   @Path("search/v1")
+   public ArtifactSearch_V1 getSearch() {
+      return new ArtifactSearch_V1(uriInfo, request, branchUuid);
    }
 
    @Path("{uuid}")

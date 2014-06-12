@@ -14,8 +14,10 @@ import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.authorization.admin.Authorization;
 import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.authorization.admin.AuthorizationRequest;
@@ -23,7 +25,6 @@ import org.eclipse.osee.authorization.admin.AuthorizationRequestBuilder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
-import com.sun.jersey.api.core.HttpRequestContext;
 
 /**
  * @author Roberto E. Escobar
@@ -44,11 +45,12 @@ public class SecurityContextProviderImpl implements SecurityContextProvider {
    }
 
    @Override
-   public SecurityContext getSecurityContext(HttpRequestContext request) {
-      boolean isSecure = request.isSecure();
-      Date requestDate = asDate(request.getHeaderValue(DATE_HEADER));
-      String authType = request.getHeaderValue(AUTHORIZATION_HEADER);
-      String path = request.getPath();
+   public SecurityContext getSecurityContext(ContainerRequestContext request) {
+      UriInfo uriInfo = request.getUriInfo();
+      boolean isSecure = isSecure(uriInfo);
+      Date requestDate = asDate(request.getHeaderString(DATE_HEADER));
+      String authType = request.getHeaderString(AUTHORIZATION_HEADER);
+      String path = uriInfo.getPath();
       String method = request.getMethod();
 
       AuthorizationRequest authRequest = AuthorizationRequestBuilder.newBuilder()//
@@ -61,6 +63,10 @@ public class SecurityContextProviderImpl implements SecurityContextProvider {
 
       Authorization authorized = authorizationAdmin.authorize(authRequest);
       return new SecurityContextImpl(authorized);
+   }
+
+   private boolean isSecure(UriInfo uriInfo) {
+      return uriInfo.getAbsolutePath().toASCIIString().startsWith("https");
    }
 
    private Date asDate(String value) {

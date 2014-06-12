@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.filters;
 
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.SecurityContext;
-import com.sun.jersey.api.core.HttpRequestContext;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface SecurityContextProvider {
 
-   SecurityContext getSecurityContext(HttpRequestContext requestContext);
+   SecurityContext getSecurityContext(ContainerRequestContext requestContext);
 
 }

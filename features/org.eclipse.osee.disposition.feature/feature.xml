@@ -18,7 +18,6 @@
    </license>
 
    <requires>
-      <import plugin="com.sun.jersey"/>
       <import plugin="javax.ws.rs"/>
       <import plugin="org.eclipse.osee.framework.core"/>
       <import plugin="org.eclipse.osee.framework.core.model"/>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE JAX-RS ClientTest (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.jaxrs.client.test
+Bundle-Version: 0.18.0.qualifier
+Fragment-Host: org.eclipse.osee.jaxrs.client
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Import-Package: org.hamcrest.core,
+ org.junit,
+ org.junit.rules,
+ org.junit.runner,
+ org.junit.runners,
+ org.mockito;bundle-version="1.9.0",
+ org.mockito.invocation,
+ org.mockito.stubbing

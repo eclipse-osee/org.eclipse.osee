@@ -23,7 +23,7 @@ import org.eclipse.osee.account.rest.model.AccountInfoData;
 /**
  * @author Roberto E. Escobar
  */
-@Path("/")
+@Path(AccountContexts.ACCOUNTS)
 public class AccountsResource {
 
    private final AccountOps accountOps;

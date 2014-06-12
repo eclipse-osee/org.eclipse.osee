@@ -6,8 +6,9 @@ Bundle-Version: 0.18.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: javax.ws.rs,
- javax.ws.rs.core,
+Import-Package: javax.ws.rs;version="2.0.0",
+ javax.ws.rs.client;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
  org.apache.commons.lang.time,
  org.eclipse.core.net.proxy,
  org.eclipse.osee.framework.core.data,
@@ -26,7 +27,4 @@ Export-Package: org.eclipse.osee.ote.rest.client
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.ote.rest.model,
- com.sun.jersey;bundle-version="1.18.0",
- com.sun.jersey.client.apache;bundle-version="1.18.0",
- javax.servlet,
- org.codehaus.jackson.core
+ javax.servlet

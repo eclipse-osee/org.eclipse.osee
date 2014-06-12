@@ -23,10 +23,13 @@
 				<configuration>
 					<testSuite>org.eclipse.osee.account.rest.test</testSuite>
 					<testClass>org.eclipse.osee.account.rest.AccountRestTestSuite</testClass>
+					<systemProperties combine.children="append">
+						<javax.ws.rs.ext.RuntimeDelegate>org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl</javax.ws.rs.ext.RuntimeDelegate>
+					</systemProperties>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
-	
+
 </project>

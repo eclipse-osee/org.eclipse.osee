@@ -11,4 +11,7 @@ Import-Package: javax.ws.rs,
  javax.ws.rs.ext,
  org.eclipse.osee.framework.jdk.core.util
 Export-Package: org.eclipse.osee.jaxrs
-
+Require-Bundle: org.codehaus.jackson.core;bundle-version="1.9.13",
+ org.codehaus.jackson.jaxrs;bundle-version="1.9.13",
+ org.codehaus.jackson.mapper;bundle-version="1.9.13",
+ org.codehaus.jackson.xc;bundle-version="1.9.13"

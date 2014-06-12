@@ -29,7 +29,6 @@
       <import plugin="org.eclipse.osee.framework.messaging"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="javax.xml"/>
       <import plugin="org.eclipse.ui" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.jobs"/>
@@ -48,16 +47,34 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="jms.libraries"/>
-      <import plugin="org.eclipse.help"/>
+      <import plugin="org.apache.felix.gogo.runtime"/>
       <import plugin="org.eclipse.jgit"/>
       <import plugin="org.eclipse.team.svn.core"/>
-      <import plugin="org.apache.felix.gogo.runtime"/>
-      <import plugin="com.sun.jersey" version="1.18.0" match="greaterOrEqual"/>
-      <import plugin="com.sun.jersey.client.apache" version="1.18.0" match="greaterOrEqual"/>
       <import plugin="javax.servlet"/>
-      <import plugin="javax.ws.rs"/>
+      <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.core.net"/>
+      <import plugin="org.apache.cxf.core"/>
+      <import plugin="org.apache.cxf.jaxrs.client"/>
+      <import plugin="org.apache.cxf.jaxrs.frontend"/>
+      <import plugin="org.apache.cxf.jaxrs.model.wadl"/>
+      <import plugin="org.apache.cxf.jaxrs.provider"/>
+      <import plugin="org.apache.cxf.rs.security.oauth2"/>
+      <import plugin="org.apache.cxf.transport.http"/>
+      <import plugin="org.apache.aries.blueprint"/>
+      <import plugin="org.apache.aries.blueprint.annotation"/>
+      <import plugin="org.apache.aries.proxy"/>
+      <import plugin="org.apache.aries.quiesce"/>
+      <import plugin="org.apache.aries.util"/>
+      <import plugin="org.osgi.service.blueprint"/>
+      <import plugin="javax.wsdl"/>
+      <import plugin="javax.validation" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="javax.annotation" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.codehaus.jackson.core"/>
+      <import plugin="org.codehaus.jackson.jaxrs"/>
+      <import plugin="org.codehaus.jackson.mapper"/>
+      <import plugin="org.codehaus.jackson.xc"/>
+      <import plugin="com.sun.xml.fastinfoset"/>
    </requires>
 
    <plugin
