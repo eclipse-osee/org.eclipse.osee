@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.OseeClientProperties;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
@@ -42,16 +42,16 @@ public class OseeClientImpl implements OseeClient, BaseUriBuilder {
    private PredicateFactory predicateFactory;
    private QueryExecutorV1 executor;
 
-   private WebClientProvider clientProvider;
+   private JaxRsClient client;
 
    @Inject
-   public void setWebClientProvider(WebClientProvider clientProvider) {
-      this.clientProvider = clientProvider;
+   public void setJaxRsClient(JaxRsClient client) {
+      this.client = client;
    }
 
    public void start() {
       predicateFactory = new PredicateFactoryImpl();
-      executor = new QueryExecutorV1(clientProvider, this);
+      executor = new QueryExecutorV1(client, this);
    }
 
    public void stop() {
@@ -76,7 +76,7 @@ public class OseeClientImpl implements OseeClient, BaseUriBuilder {
    public boolean isClientVersionSupportedByApplicationServer() {
       boolean result = false;
       URI uri = newBuilder().path("client").build();
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       Client clientResult = null;
       try {
          clientResult = resource.accept(MediaType.APPLICATION_XML).get(Client.class);
@@ -84,7 +84,7 @@ public class OseeClientImpl implements OseeClient, BaseUriBuilder {
             result = clientResult.getSupportedVersions().contains(OseeCodeVersion.getVersion());
          }
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
       return result;
    }

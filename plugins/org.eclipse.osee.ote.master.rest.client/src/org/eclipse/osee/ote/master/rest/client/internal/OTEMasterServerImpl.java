@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
@@ -16,11 +16,11 @@ public class OTEMasterServerImpl implements OTEMasterServer {
    static final String CONTEXT_NAME = "otemaster";
    static final String CONTEXT_SERVERS = "servers";
 
-   private WebClientProvider webClientProvider;
+   private JaxRsClient client;
    private ExecutorService executor;
 
-   public void setWebClientProvider(WebClientProvider webClientProvider) {
-      this.webClientProvider = webClientProvider;
+   public void setJaxRsClient(JaxRsClient client) {
+      this.client = client;
    }
 
    public void start() {
@@ -43,17 +43,17 @@ public class OTEMasterServerImpl implements OTEMasterServer {
 
    @Override
    public Future<OTEMasterServerAvailableNodes> getAvailableServers(URI uri) {
-      return executor.submit(new GetAvailableServers(webClientProvider, uri));
+      return executor.submit(new GetAvailableServers(client, uri));
    }
 
    @Override
    public Future<OTEMasterServerResult> addServer(URI uri, OTEServer server) {
-      return executor.submit(new AddServer(webClientProvider, uri, server));
+      return executor.submit(new AddServer(client, uri, server));
    }
 
    @Override
    public Future<OTEMasterServerResult> removeServer(URI uri, OTEServer server) {
-      return executor.submit(new RemoveServer(webClientProvider, uri, server));
+      return executor.submit(new RemoveServer(client, uri, server));
    }
 
 }

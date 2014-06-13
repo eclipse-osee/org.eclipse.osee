@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -35,10 +35,10 @@ public class QueryExecutorV1 implements QueryExecutor {
       UriBuilder newBuilder();
    }
 
-   private final WebClientProvider clientProvider;
+   private final JaxRsClient clientProvider;
    private final BaseUriBuilder baseUriBuilder;
 
-   public QueryExecutorV1(WebClientProvider clientProvider, BaseUriBuilder baseUriBuilder) {
+   public QueryExecutorV1(JaxRsClient clientProvider, BaseUriBuilder baseUriBuilder) {
       super();
       this.clientProvider = clientProvider;
       this.baseUriBuilder = baseUriBuilder;

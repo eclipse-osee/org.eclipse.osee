@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.net.URI;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.Progress;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -17,10 +17,10 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
    private final String filePath;
    @SuppressWarnings("unused")
    private final Progress progress;
-   private final WebClientProvider factory;
+   private final JaxRsClient factory;
    private final File destination;
 
-   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, WebClientProvider factory) {
+   public GetOteServerFile(URI uri, File destination, String filePath, Progress progress, JaxRsClient factory) {
       super(progress);
       this.uri = uri;
       this.filePath = filePath;

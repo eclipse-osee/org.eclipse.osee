@@ -13,7 +13,7 @@ package org.eclipse.osee.jaxrs.client.internal;
 import org.eclipse.osee.jaxrs.client.OseeClientConfig;
 import org.eclipse.osee.jaxrs.client.OseeHttpProxyAddress;
 import org.eclipse.osee.jaxrs.client.OseeServerAddress;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import com.google.inject.AbstractModule;
 
 /**
@@ -32,6 +32,6 @@ public class StandaloneModule extends AbstractModule {
       bindConstant().annotatedWith(OseeServerAddress.class).to(config.getServerAddress());
       bindConstant().annotatedWith(OseeHttpProxyAddress.class).to(config.getProxyAddress());
 
-      bind(WebClientProvider.class).to(StandadloneWebClientProvider.class);
+      bind(JaxRsClient.class).to(StandadloneWebClientProvider.class);
    }
 }

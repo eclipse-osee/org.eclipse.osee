@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.account.rest.client.AccountClient"/>
    </service>
-   <reference bind="setWebClientProvider" cardinality="1..1" interface="org.eclipse.osee.jaxrs.client.WebClientProvider" name="WebClientProvider" policy="static"/>
+   <reference bind="setJaxRsClient" cardinality="1..1" interface="org.eclipse.osee.jaxrs.client.JaxRsClient" name="JaxRsClient" policy="static"/>
 </scr:component>

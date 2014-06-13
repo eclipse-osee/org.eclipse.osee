@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.OteClient;
 import org.eclipse.osee.ote.rest.client.Progress;
@@ -31,10 +31,10 @@ import org.eclipse.osee.ote.rest.model.OTETestRun;
 public class OteClientImpl implements OteClient {
 
    private ExecutorService executor;
-   private WebClientProvider provider;
+   private JaxRsClient client;
 
-   public void setWebClientProvider(WebClientProvider provider) {
-      this.provider = provider;
+   public void setJaxRsClient(JaxRsClient client) {
+      this.client = client;
    }
 
    public void start() {
@@ -57,27 +57,27 @@ public class OteClientImpl implements OteClient {
 
    @Override
    public Future<Progress> getFile(URI uri, File destination, String filePath, final Progress progress) {
-      return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, provider));
+      return executor.submit(new GetOteServerFile(uri, destination, filePath, progress, client));
    }
 
    @Override
    public Future<Progress> configureServerEnvironment(URI uri, List<File> jars, final Progress progress) {
-      return executor.submit(new ConfigureOteServer(uri, jars, progress, provider));
+      return executor.submit(new ConfigureOteServer(uri, jars, progress, client));
    }
 
    @Override
    public Future<Progress> updateServerJarCache(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress) {
-      return executor.submit(new PrepareOteServerFile(uri, baseJarURL, jars, progress, provider));
+      return executor.submit(new PrepareOteServerFile(uri, baseJarURL, jars, progress, client));
    }
 
    @Override
    public Future<ProgressWithCancel> runTest(URI uri, OTETestRun tests, Progress progress) {
-      return executor.submit(new RunTests(uri, tests, progress, provider));
+      return executor.submit(new RunTests(uri, tests, progress, client));
    }
 
    @Override
    public Future<Progress> configureServerEnvironment(URI uri, OTEConfiguration configuration, Progress progress) {
-      return executor.submit(new ConfigureOteServer(uri, configuration, progress, provider));
+      return executor.submit(new ConfigureOteServer(uri, configuration, progress, client));
    }
 
 }

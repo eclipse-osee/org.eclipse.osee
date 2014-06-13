@@ -12,7 +12,6 @@ package org.eclipse.osee.jaxrs.client;
 
 import java.net.URI;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 
@@ -20,11 +19,9 @@ import com.sun.jersey.api.client.WebResource;
  * @author John Misinco
  * @author Roberto E. Escobar
  */
-public interface WebClientProvider {
+public interface JaxRsClient {
 
    WebResource createResource(URI uri) throws OseeCoreException;
-
-   AsyncWebResource createAsyncResource(URI uri) throws OseeCoreException;
 
    RuntimeException handleException(UniformInterfaceException ex);
 

@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.HeadlessClassServer;
@@ -22,12 +22,12 @@ public class ConfigureOteServer extends BaseClientCallable<Progress> {
    private final URI uri;
    private List<File> jars;
    private final Progress progress;
-   private final WebClientProvider factory;
+   private final JaxRsClient factory;
    private OTEJobStatus status;
    private HeadlessClassServer classServer;
    private OTEConfiguration configuration;
 
-   public ConfigureOteServer(URI uri, List<File> jars, Progress progress, WebClientProvider factory) {
+   public ConfigureOteServer(URI uri, List<File> jars, Progress progress, JaxRsClient factory) {
       super(progress);
       this.uri = uri;
       this.jars = jars;
@@ -35,7 +35,7 @@ public class ConfigureOteServer extends BaseClientCallable<Progress> {
       this.factory = factory;
    }
 
-   public ConfigureOteServer(URI uri, OTEConfiguration configuration, Progress progress, WebClientProvider factory) {
+   public ConfigureOteServer(URI uri, OTEConfiguration configuration, Progress progress, JaxRsClient factory) {
       super(progress);
       this.uri = uri;
       this.configuration = configuration;

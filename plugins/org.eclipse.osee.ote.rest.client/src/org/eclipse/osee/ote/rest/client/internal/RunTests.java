@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.client.ProgressWithCancel;
 import org.eclipse.osee.ote.rest.model.OTEJobStatus;
@@ -17,11 +17,11 @@ public class RunTests implements ProgressWithCancel, Callable<ProgressWithCancel
    private final URI uri;
    private final OTETestRun tests;
    private final Progress progress;
-   private final WebClientProvider factory;
+   private final JaxRsClient factory;
    private OTEJobStatus status;
    private String id;
 
-   public RunTests(URI uri, OTETestRun tests, Progress progress, WebClientProvider factory) {
+   public RunTests(URI uri, OTETestRun tests, Progress progress, JaxRsClient factory) {
       this.uri = uri;
       this.tests = tests;
       this.progress = progress;

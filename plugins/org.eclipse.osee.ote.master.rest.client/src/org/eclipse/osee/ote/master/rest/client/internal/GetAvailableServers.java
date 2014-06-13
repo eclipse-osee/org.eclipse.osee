@@ -3,17 +3,17 @@ package org.eclipse.osee.ote.master.rest.client.internal;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
 import org.eclipse.osee.ote.master.rest.model.OTEServer;
 import com.sun.jersey.api.client.WebResource;
 
 public class GetAvailableServers implements Callable<OTEMasterServerAvailableNodes> {
 
-   private final WebClientProvider webClientProvider;
+   private final JaxRsClient webClientProvider;
    private final URI uri;
 
-   public GetAvailableServers(WebClientProvider webClientProvider, URI uri) {
+   public GetAvailableServers(JaxRsClient webClientProvider, URI uri) {
       this.webClientProvider = webClientProvider;
       this.uri = uri;
    }

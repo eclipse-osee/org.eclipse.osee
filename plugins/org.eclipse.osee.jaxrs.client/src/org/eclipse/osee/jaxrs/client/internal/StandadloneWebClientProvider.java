@@ -21,7 +21,7 @@ import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 /**
  * @author Roberto E. Escobar
  */
-public class StandadloneWebClientProvider extends WebClientProviderImpl {
+public class StandadloneWebClientProvider extends JaxRsClientImpl {
 
    private final String proxyAddress;
 

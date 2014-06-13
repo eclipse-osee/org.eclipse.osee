@@ -3,7 +3,7 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.model.OTEConfiguration;
@@ -18,11 +18,11 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
    private final URI uri;
    private final List<OTECacheItem> jars;
    private final Progress progress;
-   private final WebClientProvider factory;
+   private final JaxRsClient factory;
    private OTEJobStatus status;
    private final String baseJarURL;
 
-   public PrepareOteServerFile(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress, WebClientProvider factory) {
+   public PrepareOteServerFile(URI uri, String baseJarURL, List<OTECacheItem> jars, Progress progress, JaxRsClient factory) {
       super(progress);
       this.uri = uri;
       this.jars = jars;

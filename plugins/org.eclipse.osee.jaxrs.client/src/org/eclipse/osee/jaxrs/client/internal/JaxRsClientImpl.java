@@ -14,8 +14,7 @@ import java.net.URI;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.ErrorResponse;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
-import com.sun.jersey.api.client.AsyncWebResource;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -27,7 +26,7 @@ import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
 /**
  * @author Roberto E. Escobar
  */
-public  class WebClientProviderImpl implements WebClientProvider {
+public class JaxRsClientImpl implements JaxRsClient {
 
    private Client client;
 
@@ -35,12 +34,6 @@ public  class WebClientProviderImpl implements WebClientProvider {
    public WebResource createResource(URI uri) {
       Client client = createClient(uri);
       return client.resource(uri);
-   }
-
-   @Override
-   public AsyncWebResource createAsyncResource(URI uri) {
-      Client client = createClient(uri);
-      return client.asyncResource(uri);
    }
 
    @Override

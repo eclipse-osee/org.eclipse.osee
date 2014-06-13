@@ -32,8 +32,8 @@ import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.OseeClientProperties;
-import org.eclipse.osee.jaxrs.client.WebClientProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -44,12 +44,12 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class AccountClientImpl implements AccountClient {
 
-   private WebClientProvider clientProvider;
+   private JaxRsClient client;
    private URI serverUri;
 
    @Inject
-   public void setWebClientProvider(WebClientProvider clientProvider) {
-      this.clientProvider = clientProvider;
+   public void setJaxRsClient(JaxRsClient client) {
+      this.client = client;
    }
 
    public void start() {
@@ -66,11 +66,11 @@ public class AccountClientImpl implements AccountClient {
    }
 
    private <T> T get(URI uri, Class<T> clazz) {
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       try {
          return resource.accept(MediaType.APPLICATION_JSON_TYPE).get(clazz);
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
    }
 
@@ -85,11 +85,11 @@ public class AccountClientImpl implements AccountClient {
       data.setPassword(password);
       data.setScheme(scheme);
 
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       try {
          return resource.post(AccountSessionData.class, data);
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
    }
 
@@ -99,7 +99,7 @@ public class AccountClientImpl implements AccountClient {
       .path(AccountContexts.ACCOUNT_LOGOUT)//
       .build();
 
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       int status;
       try {
          ClientResponse response = resource.post(ClientResponse.class, session);
@@ -108,7 +108,7 @@ public class AccountClientImpl implements AccountClient {
          ClientResponse clientResponse = ex.getResponse();
          status = clientResponse.getStatus();
          if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw clientProvider.handleException(ex);
+            throw client.handleException(ex);
          }
       }
       return Status.OK.getStatusCode() == status;
@@ -120,14 +120,14 @@ public class AccountClientImpl implements AccountClient {
       .path(AccountContexts.ACCOUNT_USERNAME_TEMPLATE)//
       .build(userName);
 
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       try {
          AccountInfoData data =
             resource.accept(MediaType.APPLICATION_JSON_TYPE).type(MediaType.APPLICATION_JSON_TYPE).post(
                AccountInfoData.class, input);
          return data;
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
    }
 
@@ -136,13 +136,13 @@ public class AccountClientImpl implements AccountClient {
       URI uri = newBuilder()//
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .build(accountId);
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
 
       ClientResponse response;
       try {
          response = resource.delete(ClientResponse.class);
       } catch (UniformInterfaceException ex) {
-         throw clientProvider.handleException(ex);
+         throw client.handleException(ex);
       }
       int status = response.getStatus();
       return Status.OK.getStatusCode() == status;
@@ -190,7 +190,7 @@ public class AccountClientImpl implements AccountClient {
       .path(AccountContexts.ACCOUNT_ID_TEMPLATE)//
       .path(AccountContexts.ACCOUNT_ACTIVE)//
       .build(accountId);
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       boolean result;
       if (active) {
          result = setAccountActive(resource);
@@ -219,7 +219,7 @@ public class AccountClientImpl implements AccountClient {
          ClientResponse clientResponse = ex.getResponse();
          status = clientResponse.getStatus();
          if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw clientProvider.handleException(ex);
+            throw client.handleException(ex);
          }
       }
       return Status.OK.getStatusCode() == status;
@@ -234,7 +234,7 @@ public class AccountClientImpl implements AccountClient {
          ClientResponse clientResponse = ex.getResponse();
          status = clientResponse.getStatus();
          if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw clientProvider.handleException(ex);
+            throw client.handleException(ex);
          }
       }
       return Status.OK.getStatusCode() == status;
@@ -250,7 +250,7 @@ public class AccountClientImpl implements AccountClient {
       AccountPreferencesInput input = new AccountPreferencesInput();
       input.setMap(preferences);
 
-      WebResource resource = clientProvider.createResource(uri);
+      WebResource resource = client.createResource(uri);
       int status;
       try {
          ClientResponse response = resource.put(ClientResponse.class, input);
@@ -259,7 +259,7 @@ public class AccountClientImpl implements AccountClient {
          ClientResponse clientResponse = ex.getResponse();
          status = clientResponse.getStatus();
          if (Status.NOT_MODIFIED.getStatusCode() != status) {
-            throw clientProvider.handleException(ex);
+            throw client.handleException(ex);
          }
       }
       return Status.OK.getStatusCode() == status;
