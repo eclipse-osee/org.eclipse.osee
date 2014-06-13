@@ -13,7 +13,7 @@ package org.eclipse.osee.account.rest.client;
 import org.eclipse.osee.account.rest.client.internal.AccountClientImpl;
 import org.eclipse.osee.account.rest.client.internal.AccountClientModule;
 import org.eclipse.osee.jaxrs.client.OseeClientConfig;
-import org.eclipse.osee.jaxrs.client.OseeRestClientStandaloneSetup;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import com.google.inject.Module;
 
 /**
@@ -29,6 +29,6 @@ public final class AccountClientStandaloneSetup {
 
    public static AccountClient createClient(OseeClientConfig config) {
       Module module = new AccountClientModule();
-      return OseeRestClientStandaloneSetup.createClient(AccountClientImpl.class, config, module);
+      return JaxRsClientFactory.createClient(AccountClientImpl.class, config, module);
    }
 }

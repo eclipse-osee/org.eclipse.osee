@@ -22,9 +22,9 @@ import com.google.inject.Module;
  * 
  * @author Roberto E. Escobar
  */
-public final class OseeRestClientStandaloneSetup {
+public final class JaxRsClientFactory {
 
-   private OseeRestClientStandaloneSetup() {
+   private JaxRsClientFactory() {
       // Utility class
    }
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.rest.client;
 
 import org.eclipse.osee.jaxrs.client.OseeClientConfig;
-import org.eclipse.osee.jaxrs.client.OseeRestClientStandaloneSetup;
+import org.eclipse.osee.jaxrs.client.JaxRsClientFactory;
 import org.eclipse.osee.orcs.rest.client.internal.OrcsClientModule;
 import org.eclipse.osee.orcs.rest.client.internal.OseeClientImpl;
 import com.google.inject.Module;
@@ -29,6 +29,6 @@ public final class OseeClientStandaloneSetup {
 
    public static OseeClient createClient(OseeClientConfig config) {
       Module module = new OrcsClientModule();
-      return OseeRestClientStandaloneSetup.createClient(OseeClientImpl.class, config, module);
+      return JaxRsClientFactory.createClient(OseeClientImpl.class, config, module);
    }
 }
