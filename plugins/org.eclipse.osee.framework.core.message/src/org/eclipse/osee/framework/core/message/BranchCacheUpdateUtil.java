@@ -182,7 +182,7 @@ public final class BranchCacheUpdateUtil {
       TranslationUtil.loadMap(message.getBranchToSourceTx(), store, Fields.BRANCH_TO_SRC_TX);
       TranslationUtil.loadMap(message.getBranchToAssocArt(), store, Fields.BRANCH_TO_ASSOC_ART);
       TranslationUtil.loadArrayMap(message.getBranchAliases(), store, Fields.BRANCH_TO_ALIASES);
-      TranslationUtil.loadTripletList(message.getMergeBranches(), store, Fields.SRC_DEST_MERGE);
+      TranslationUtil.loadTripletListForMergeBranches(message.getMergeBranches(), store, Fields.SRC_DEST_MERGE);
    }
 
    public static void loadStore(PropertyStore store, AbstractBranchCacheMessage message) {

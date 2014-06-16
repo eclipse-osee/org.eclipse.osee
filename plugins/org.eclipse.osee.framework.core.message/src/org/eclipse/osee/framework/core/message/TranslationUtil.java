@@ -53,6 +53,10 @@ public final class TranslationUtil {
       storeToStringTripletList(data, store.getPropertyStore(key.name()));
    }
 
+   public static void loadTripletListForMergeBranches(List<Triplet<Long, Long, Long>> data, PropertyStore store, Enum<?> key) {
+      storeToStringTripletListForMergeBranches(data, store.getPropertyStore(key.name()));
+   }
+
    public static void loadTripletLongList(List<Triplet<Long, Long, Long>> data, PropertyStore store, Enum<?> key) {
       storeToTripletList(data, store.getPropertyStore(key.name()));
    }
@@ -157,6 +161,19 @@ public final class TranslationUtil {
          if (BranchRow.isOseeUsingGuidsForAppServerMessaging()) {
             data.add(new Triplet<Long, Long, Long>(Long.valueOf(value[0]), BranchRow.getBranchIdLegacy(value[1]),
                Long.valueOf(value[2])));
+         } else {
+            data.add(new Triplet<Long, Long, Long>(Long.valueOf(value[0]), Long.valueOf(value[1]),
+               Long.valueOf(value[2])));
+         }
+      }
+   }
+
+   private static void storeToStringTripletListForMergeBranches(List<Triplet<Long, Long, Long>> data, PropertyStore innerStore) {
+      for (String strKey : innerStore.arrayKeySet()) {
+         String[] value = innerStore.getArray(strKey);
+         if (BranchRow.isOseeUsingGuidsForAppServerMessaging()) {
+            data.add(new Triplet<Long, Long, Long>(BranchRow.getBranchIdLegacy(value[0]),
+               BranchRow.getBranchIdLegacy(value[1]), BranchRow.getBranchIdLegacy(value[2])));
          } else {
             data.add(new Triplet<Long, Long, Long>(Long.valueOf(value[0]), Long.valueOf(value[1]),
                Long.valueOf(value[2])));
