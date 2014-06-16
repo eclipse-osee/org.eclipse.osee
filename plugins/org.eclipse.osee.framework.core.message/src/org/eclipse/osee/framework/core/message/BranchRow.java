@@ -167,6 +167,8 @@ public final class BranchRow {
       if (longId == null) {
          if (branchGuid.equals("-1")) {
             longId = -1L;
+         } else if (branchGuid.matches("\\d+")) {
+            longId = Long.valueOf(branchGuid);
          } else {
             longId =
                DatabaseService.getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID,
