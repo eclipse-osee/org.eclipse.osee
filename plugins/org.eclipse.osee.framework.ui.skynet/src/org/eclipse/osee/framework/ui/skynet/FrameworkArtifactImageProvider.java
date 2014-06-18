@@ -32,6 +32,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.GlobalPreferences, FrameworkImage.GEAR, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UserGroup, FrameworkImage.USERS, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubscriptionGroup, FrameworkImage.EMAIL, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UniversalGroup, FrameworkImage.GROUP, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetails,
          FrameworkImage.IMPLEMENTATION_DETAILS, this);

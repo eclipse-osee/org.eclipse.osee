@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -51,8 +52,8 @@ public class EmailUserGroups extends XNavigateItemAction {
 
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-         BranchManager.getCommonBranch())) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
+         BranchManager.getCommonBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          // Only add group if have read permissions
          if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
             artifacts.add(art);
@@ -75,8 +76,8 @@ public class EmailUserGroups extends XNavigateItemAction {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {
                         if (!EmailUtil.isEmailValid((User) userArt)) {
-                           OseeLog.logf(Activator.class, Level.SEVERE,
-                              "Invalid email [%s] for user [%s]; skipping", ((User) userArt).getEmail(), userArt);
+                           OseeLog.logf(Activator.class, Level.SEVERE, "Invalid email [%s] for user [%s]; skipping",
+                              ((User) userArt).getEmail(), userArt);
                         } else if (((User) userArt).isActive()) {
                            emails.add(((User) userArt).getEmail());
                         }
