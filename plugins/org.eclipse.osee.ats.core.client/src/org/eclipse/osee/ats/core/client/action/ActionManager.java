@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -94,7 +93,6 @@ public class ActionManager {
    }
 
    public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      ITeamWorkflowProvider teamExt = TeamWorkFlowManager.getTeamWorkflowProvider(teamDef, actionableItems);
       IArtifactType teamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
 
@@ -102,10 +100,6 @@ public class ActionManager {
       TeamWorkFlowArtifact teamArt =
          createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null,
             teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
-      // Notify extension that workflow was created
-      if (teamExt != null) {
-         teamExt.teamWorkflowCreated(teamArt);
-      }
       return teamArt;
    }
 

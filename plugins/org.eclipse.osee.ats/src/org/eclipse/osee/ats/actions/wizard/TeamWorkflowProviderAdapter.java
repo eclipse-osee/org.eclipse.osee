@@ -40,11 +40,6 @@ public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvid
    }
 
    @Override
-   public void teamWorkflowCreated(IAtsTeamWorkflow teamWf) {
-      // provided for subclass implementation
-   }
-
-   @Override
    public String getWorkflowDefinitionId(IAtsWorkItem workItem) throws OseeCoreException {
       return null;
    }
