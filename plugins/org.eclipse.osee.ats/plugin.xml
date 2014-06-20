@@ -257,26 +257,54 @@
       <handler
             class="org.eclipse.osee.ats.editor.renderer.AtsWEHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <count
-                     value="+">
-               </count>
-            </with>
-         </enabledWhen>
+         <activeWhen>
+            <or>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.world.WorldEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.TaskEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.SMAEditor">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
       </handler>
       <handler
             class="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefViewerHandler"
             commandId="org.eclipse.osee.ats.atsworkdefviewer.command">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <count
-                     value="+">
-               </count>
-            </with>
-         </enabledWhen>
+         <activeWhen>
+            <or>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.world.WorldEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.TaskEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.SMAEditor">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
       </handler>
       <handler
             class="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionDslHandler"
@@ -305,26 +333,54 @@
       <handler
             class="org.eclipse.osee.ats.world.AtsWorldEditorHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <count
-                     value="+">
-               </count>
-            </with>
-         </enabledWhen>
+         <activeWhen>
+            <or>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.world.WorldEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.TaskEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.SMAEditor">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
       </handler>
       <handler
             class="org.eclipse.osee.ats.export.AtsExportHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atsexport.command">
-         <enabledWhen>
-            <with
-                  variable="selection">
-               <count
-                     value="+">
-               </count>
-            </with>
-         </enabledWhen>
+         <activeWhen>
+            <or>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.world.WorldEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.TaskEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.ats.editor.SMAEditor">
+                  </equals>
+               </with>
+            </or>
+         </activeWhen>
       </handler>
       <handler
             class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler"

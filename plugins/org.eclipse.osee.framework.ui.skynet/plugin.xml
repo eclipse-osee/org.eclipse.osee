@@ -548,24 +548,76 @@
      </activeWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenMassArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
+     <activeWhen>
+        <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.ats.world.WorldEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.ats.editor.TaskEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.ats.editor.SMAEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.search.ui.views.SearchView">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
+              </equals>
+           </with>
+        </or>
+     </activeWhen>
       </handler>
       		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="1">
-           </count>
-        </with>
-     </enabledWhen>
+           <activeWhen>
+              <or>
+                 <with
+                       variable="activePartId">
+                    <equals
+                          value="org.eclipse.osee.ats.world.WorldEditor">
+                    </equals>
+                 </with>
+                 <with
+                       variable="activePartId">
+                    <equals
+                          value="org.eclipse.osee.ats.editor.TaskEditor">
+                    </equals>
+                 </with>
+                 <with
+                       variable="activePartId">
+                    <equals
+                          value="org.eclipse.osee.ats.editor.SMAEditor">
+                    </equals>
+                 </with>
+              </or>
+           </activeWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
      <activeWhen>

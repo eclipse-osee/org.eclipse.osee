@@ -126,6 +126,10 @@ public class OpenContributionItem extends ContributionItem {
       }
       IContributionItem openItem = createDefaultOpenItem();
       openItem.fill(parent, index);
+      MenuItem open = parent.getItem(0);
+      if (open != null) {
+         open.setEnabled(parent.isEnabled());
+      }
 
       final MenuItem item = new MenuItem(parent, SWT.CASCADE, index + 1);
       item.setText("Open With");
