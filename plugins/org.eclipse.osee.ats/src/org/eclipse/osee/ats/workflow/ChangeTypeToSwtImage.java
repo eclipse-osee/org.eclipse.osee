@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow;
 
-import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;

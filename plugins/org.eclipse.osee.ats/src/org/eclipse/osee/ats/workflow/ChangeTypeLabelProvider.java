@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.core.client.workflow.ChangeType;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.swt.graphics.Image;
 
 /**
