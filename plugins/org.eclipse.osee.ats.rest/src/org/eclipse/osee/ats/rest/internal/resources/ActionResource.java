@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.resources;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,18 +26,25 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.ChangeType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -119,19 +129,39 @@ public final class ActionResource {
          String title = form.getFirst("ats_title");
          String description = form.getFirst("desc");
          String actionableItemName = form.getFirst("actionableItems");
-         String changeType = form.getFirst("changeType");
+         String changeTypeStr = form.getFirst("changeType");
          String priority = form.getFirst("priority");
          String userId = form.getFirst("userId");
 
-         // create action
-         ArtifactId actionId =
-            atsServer.getWorkItemPage().createAction(title, description, actionableItemName, changeType, priority,
-               userId);
-         ArtifactReadable action = atsServer.getArtifactByGuid(actionId.getGuid());
+         Conditions.checkNotNullOrEmpty(userId, "userId");
+         IAtsUser atsUser = atsServer.getUserService().getUserById(userId);
+         if (atsUser == null) {
+            throw new OseeStateException("User by id [%s] does not exist", userId);
+         }
+
+         IAtsChangeSet changes = atsServer.getStoreFactory().createAtsChangeSet("Create Action - Server", atsUser);
+         orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(),
+            ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
+
+         List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+
+         ArtifactReadable aiArt =
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+               AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults().getExactlyOne();
+         IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByGuid(aiArt.getGuid());
+         aias.add(aia);
+
+         ChangeType changeType = ChangeType.valueOf(changeTypeStr);
+
+         IAtsAction action =
+            atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority, false, null,
+               aias, new Date(), atsUser, null, changes);
+         changes.execute();
 
          htmlStr =
-            atsServer.getWorkItemPage().getHtml(action, "Action Created - " + action.getGuid(), ActionLoadLevel.HEADER,
-               resourceRegistry);
+            atsServer.getWorkItemPage().getHtml(
+               ((ArtifactReadable) action.getTeamWorkflows().iterator().next().getStoreObject()),
+               "Action Created - " + action.getGuid(), ActionLoadLevel.HEADER, resourceRegistry);
       }
 
       return Response.status(200).entity(htmlStr).build();

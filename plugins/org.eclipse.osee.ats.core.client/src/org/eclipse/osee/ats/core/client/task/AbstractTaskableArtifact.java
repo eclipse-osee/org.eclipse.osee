@@ -113,7 +113,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
          (createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy), changes);
 
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), taskArt,
-         getParentTeamWorkflow().getTeamDefinition());
+         getParentTeamWorkflow().getTeamDefinition(), changes);
 
       // Set parent state task is related to if set
       if (Strings.isValid(relatedToState)) {

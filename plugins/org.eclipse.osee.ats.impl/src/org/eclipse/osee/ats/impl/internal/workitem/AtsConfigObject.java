@@ -35,10 +35,11 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    private final IAtsServer atsServer;
 
    public AtsConfigObject(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(artifact.getGuid(), artifact.getName());
+      super(artifact.getName(), artifact.getGuid());
       this.logger = logger;
       this.atsServer = atsServer;
       this.artifact = artifact;
+      setStoreObject(artifact);
    }
 
    public Log getLogger() {

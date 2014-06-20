@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -39,6 +40,7 @@ public class AtsIdProviderTest {
    @Mock private IAtsObject newObject;
    @Mock private IAtsTeamDefinition teamDef;
    @Mock private IAtsTeamDefinition parentTeamDef;
+   @Mock private IAtsChangeSet changes;
    // @formatter:on
 
    AtsIdProvider atsIdProvider = null;
@@ -99,11 +101,12 @@ public class AtsIdProviderTest {
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
 
-      atsIdProvider.setAtsId();
+      atsIdProvider.setAtsId(changes);
 
-      verify(attrResolver).setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, "ASDF333");
+      verify(attrResolver).setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, "ASDF333", changes);
 
    }
+
    @Test
    public void testNotSetAtsId() {
       when(attrResolver.getSoleAttributeValueAsString(newObject, AtsAttributeTypes.AtsId, (String) null)).thenReturn(
@@ -115,9 +118,9 @@ public class AtsIdProviderTest {
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
 
-      atsIdProvider.setAtsId();
+      atsIdProvider.setAtsId(changes);
 
       verify(attrResolver, never()).setSoleAttributeValue(any(IAtsObject.class), any(IAttributeType.class),
-         any(String.class));
+         any(String.class), any(IAtsChangeSet.class));
    }
 }

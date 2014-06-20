@@ -14,7 +14,9 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -44,14 +46,22 @@ public interface IAtsChangeSet {
 
    void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
-   void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
    <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException;
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException;
 
-   void deleteAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
+   void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType);
+
+   Object createArtifact(IArtifactType artifactType, String name);
+
+   void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType);
+
+   Object createArtifact(IArtifactType artifactType, String name, String guid);
+
+   void relate(Object object1, IRelationTypeSide relationSide, Object object2);
 
 }

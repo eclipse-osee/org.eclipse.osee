@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Donald G. Dunne
  */
 public class AtsUtilClient {
-   private static final String DEFAULT_ATS_ID_VALUE = "0";
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
@@ -108,8 +108,9 @@ public class AtsUtilClient {
    }
 
    public static String getAtsId(Artifact art) throws OseeCoreException {
-      String toReturn = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, DEFAULT_ATS_ID_VALUE);
-      if (DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
+      String toReturn = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, AtsUtilCore.DEFAULT_ATS_ID_VALUE);
+      Conditions.checkNotNull("AtsId", "AtsId");
+      if (AtsUtilCore.DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
          toReturn = art.getGuid();
       }
       return toReturn;

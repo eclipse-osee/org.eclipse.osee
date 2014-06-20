@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.internal.util;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -54,11 +55,11 @@ public final class AtsIdProvider {
       return getNextId(prefixName, seqName);
    }
 
-   public void setAtsId() {
+   public void setAtsId(IAtsChangeSet changes) {
       String atsId = attrResolver.getSoleAttributeValueAsString(newObject, AtsAttributeTypes.AtsId, null);
       if (!Strings.isValid(atsId) || atsId.equals("0")) {
          String id = getNextAtsId();
-         attrResolver.setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, id);
+         attrResolver.setSoleAttributeValue(newObject, AtsAttributeTypes.AtsId, id, changes);
       }
    }
 

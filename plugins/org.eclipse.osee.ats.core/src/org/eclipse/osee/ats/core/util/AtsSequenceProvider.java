@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.util;
+package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;

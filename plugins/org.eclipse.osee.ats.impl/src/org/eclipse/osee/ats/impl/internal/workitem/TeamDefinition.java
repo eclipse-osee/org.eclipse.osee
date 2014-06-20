@@ -96,7 +96,23 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) {
-      return null;
+      Set<IAtsUser> leads = new HashSet<IAtsUser>();
+      for (IAtsActionableItem aia : actionableItems) {
+         if (this.equals(aia.getTeamDefinitionInherited())) {
+            // If leads are specified for this aia, add them
+            if (aia.getLeads().size() > 0) {
+               leads.addAll(aia.getLeads());
+            } else {
+               if (aia.getTeamDefinitionInherited() != null) {
+                  leads.addAll(aia.getTeamDefinitionInherited().getLeads());
+               }
+            }
+         }
+      }
+      if (leads.isEmpty()) {
+         leads.addAll(getLeads());
+      }
+      return leads;
    }
 
    @Override

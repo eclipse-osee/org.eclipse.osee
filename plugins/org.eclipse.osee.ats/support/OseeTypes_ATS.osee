@@ -136,7 +136,6 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Cancelled Date"
 	attribute "ats.Cancelled From State"
 	attribute "ats.Cancelled Reason"
-	attribute "ats.Workflow Definition Old"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Work Package Guid"
 	attribute "ats.Id"
@@ -172,6 +171,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Workaround Description"
 	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Team Workflow Artifact Type"
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -336,7 +336,7 @@ attributeType "ats.Current State Type" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Workflow Definition Old" extends StringAttribute {
+attributeType "ats.Team Workflow Artifact Type" extends StringAttribute {
 	uuid 0x10000000000000AC
 	dataProvider DefaultAttributeDataProvider
 	min 0

@@ -195,7 +195,7 @@ public class DecisionReviewManager {
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
 
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,
-         decRev.getParentTeamWorkflow().getTeamDefinition());
+         decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
 
       if (Strings.isValid(relatedToState)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);

@@ -24,11 +24,14 @@ import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -180,15 +183,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+   public void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.addAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void deleteAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException {
-      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+   public void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.deleteAttribute(attributeType, value);
       add(artifact);
    }
@@ -215,4 +218,31 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       return artifact.getAttributeTypes().contains(attributeType);
    }
+
+   @Override
+   public Object createArtifact(IArtifactType artifactType, String name) {
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name);
+      add(artifact);
+      return artifact;
+   }
+
+   @Override
+   public void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType) {
+      Artifact artifact = AtsClientService.get().getArtifact(atsObject);
+      artifact.delete();
+      add(artifact);
+   }
+
+   @Override
+   public Object createArtifact(IArtifactType artifactType, String name, String guid) {
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name);
+      add(artifact);
+      return artifact;
+   }
+
+   @Override
+   public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
+      getArtifact(object1).addRelation(relationSide, getArtifact(object2));
+   }
+
 }

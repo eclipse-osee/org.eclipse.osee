@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -28,9 +29,12 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
+import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
 import org.eclipse.osee.ats.impl.action.IWorkItemPage;
+import org.eclipse.osee.ats.impl.internal.action.ActionFactory;
 import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
@@ -41,6 +45,8 @@ import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
+import org.eclipse.osee.ats.impl.internal.workitem.ActionUtility;
+import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
@@ -79,6 +85,11 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsStateFactory atsStateFactory;
    private IAtsStoreFactory atsStoreFactory;
    private IWorkItemPage workItemPage;
+   private IAtsUtilService utilService;
+   private AtsSequenceProvider sequenceProvider;
+   private IAtsActionFactory actionFactory;
+   private ActionableItemManager actionableItemManager;
+   private ActionUtility actionUtil;
 
    public static AtsServerImpl get() {
       checkStarted();
@@ -131,9 +142,16 @@ public class AtsServerImpl implements IAtsServer {
       atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService, notifyService);
       atsStoreFactory = new AtsStoreFactoryImpl(this);
 
-      workItemPage = new WorkItemPage(orcsApi, logger, this);
-
+      utilService = AtsCoreFactory.getUtilService(attributeResolverService);
+      sequenceProvider = new AtsSequenceProvider(OseeDatabaseService.getDbService());
       config = new AtsArtifactConfigCache(this, orcsApi);
+      actionableItemManager = new ActionableItemManager(config);
+      actionUtil = new ActionUtility(orcsApi);
+      workItemPage = new WorkItemPage(logger, this);
+      actionFactory =
+         new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
+            actionableItemManager, actionUtil);
+
       System.out.println("ATS - AtsServerImpl started");
       started = true;
    }
@@ -241,6 +259,21 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public List<IAtsDatabaseConversion> getDatabaseConversions() {
       return AtsDatabaseConversions.getConversions(getOrcsApi());
+   }
+
+   @Override
+   public IAtsUtilService getUtilService() {
+      return utilService;
+   }
+
+   @Override
+   public AtsSequenceProvider getSequenceProvider() {
+      return sequenceProvider;
+   }
+
+   @Override
+   public IAtsActionFactory getActionFactory() {
+      return actionFactory;
    }
 
 }

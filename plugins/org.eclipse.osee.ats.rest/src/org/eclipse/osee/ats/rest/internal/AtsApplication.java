@@ -71,6 +71,7 @@ public class AtsApplication extends Application {
       singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
+      System.out.println("ATS - Application started");
    }
 
    public void stop() {

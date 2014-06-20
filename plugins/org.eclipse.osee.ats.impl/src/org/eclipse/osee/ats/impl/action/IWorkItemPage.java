@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.impl.action;
 
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -22,7 +21,5 @@ public interface IWorkItemPage {
    String getHtml(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel, IResourceRegistry registry) throws Exception;
 
    String getHtmlWithStates(ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel, IResourceRegistry registry) throws Exception;
-
-   ArtifactId createAction(String title, String description, String actionableItemName, String changeType, String priority, String asUserId) throws Exception;
 
 }

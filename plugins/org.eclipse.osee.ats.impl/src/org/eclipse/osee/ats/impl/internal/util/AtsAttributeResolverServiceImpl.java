@@ -113,7 +113,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultValue) throws OseeCoreException {
-      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue).toString();
+      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override

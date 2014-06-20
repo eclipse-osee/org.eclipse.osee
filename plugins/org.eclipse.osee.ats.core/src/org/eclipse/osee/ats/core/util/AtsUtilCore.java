@@ -16,6 +16,8 @@ import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -29,6 +31,7 @@ public class AtsUtilCore {
    private static final String ATS_BRANCH_NAME = "ats.branch.name";
    private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
+   public static final String DEFAULT_ATS_ID_VALUE = "0";
 
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
@@ -109,5 +112,10 @@ public class AtsUtilCore {
 
    public static AttributeId toAttributeId(IAttribute<?> attr) {
       return new AttributeIdWrapper(attr);
+   }
+
+   public static String toStringWithId(Identifiable<String> obj) {
+      Conditions.checkNotNull(obj, "object");
+      return String.format("[%s][%s]", obj.getGuid(), obj.getName());
    }
 }

@@ -59,7 +59,7 @@ public class ActionManager {
          (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), actionArt,
-         TeamDefinitions.getTopTeamDefinition());
+         TeamDefinitions.getTopTeamDefinition(), null);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {
@@ -138,7 +138,7 @@ public class ActionManager {
       teamArt.setTeamDefinition(teamDef);
 
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), teamArt,
-         teamArt.getTeamDefinition());
+         teamArt.getTeamDefinition(), null);
 
       // If work def id is specified by listener, set as attribute
       if (newActionListener != null) {

@@ -170,7 +170,7 @@ public class PeerToPeerReviewManager {
                actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef);
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef, changes);
       changes.add(peerArt);
       return peerArt;
    }
@@ -191,7 +191,7 @@ public class PeerToPeerReviewManager {
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
          AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
-            teamArt.getParentTeamWorkflow().getTeamDefinition());
+            teamArt.getParentTeamWorkflow().getTeamDefinition(), changes);
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       changes.add(peerToPeerRev);

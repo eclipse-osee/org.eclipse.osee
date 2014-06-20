@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
  */
 public interface IAtsUtilService {
 
-   void setAtsId(ISequenceProvider sequenceProvider, IAtsObject newObject, IAtsTeamDefinition teamDef);
+   void setAtsId(ISequenceProvider sequenceProvider, IAtsObject newObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes);
 
    String getNextAtsId(ISequenceProvider sequenceProvider, IAtsObject newObject, IAtsTeamDefinition teamDef);
 
