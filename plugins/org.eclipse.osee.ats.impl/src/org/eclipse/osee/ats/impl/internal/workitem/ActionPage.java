@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -246,14 +247,20 @@ public class ActionPage {
    private void addWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition layout) {
       sb.append("<tr><td>");
       sb.append(layout.getName());
-      sb.append(": ");
+      sb.append(": <b>");
       try {
-         sb.append(atsServer.getAttributeResolver().getAttributesToStringList(workItem,
-            atsServer.getAttributeResolver().getAttributeType(layout.getAtrributeName())));
+         IAttributeType attributeType = atsServer.getAttributeResolver().getAttributeType(layout.getAtrributeName());
+         Collection<String> attributesToStringList =
+            atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
+         if (attributesToStringList.size() > 1) {
+            sb.append(attributesToStringList.toString());
+         } else if (attributesToStringList.size() == 1) {
+            sb.append(attributesToStringList.iterator().next().toString());
+         }
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
       }
-      sb.append("</td></tr>");
+      sb.append("</b></td></tr>");
    }
 
    private String getStateHtmlTemplate() throws IOException {

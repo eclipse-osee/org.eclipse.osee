@@ -29,11 +29,11 @@ public final class AtsResourceTokens {
    public static final ResourceToken AtsActionHtml = createToken(0x400000000000000FL, "atsAction.html");
    public static final ResourceToken AtsHtml = createToken(0x4000000000000010L, "ats.html");
    public static final ResourceToken AtsNewActionHtml = createToken(0x4000000000000011L, "atsNewAction.html");
-   public static final ResourceToken AtsNewActionValuesHtml = createToken(0x4000000000000012L, "atsNewActionValues.html");
    public static final ResourceToken AtsCoreCss = createToken(0x4000000000000013L, "atsCore.css");
    public static final ResourceToken TransitionHtml = createToken(0x4000000000000014L, "atsTransition.html");
    public static final ResourceToken AtsSearchHtml = createToken(0x4000000000000015L, "atsSearch.html");
    public static final ResourceToken AtsNewAtsConfigBranchHtml = createToken(0x4000000000000016L, "atsNewAtsConfigBranch.html");
+   public static final ResourceToken AtsCoreJs = createToken(0x4005500000000002L, "atsCore.js");
    // @formatter:on
 
    private static ResourceToken createToken(Long uuid, String name) {

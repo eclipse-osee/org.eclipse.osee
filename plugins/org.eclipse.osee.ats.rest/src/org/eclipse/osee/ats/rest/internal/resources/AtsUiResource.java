@@ -63,7 +63,6 @@ public final class AtsUiResource {
    @Produces(MediaType.TEXT_HTML)
    public String getNewSource() throws Exception {
       PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
-      page.readKeyValuePairs(AtsResourceTokens.AtsNewActionValuesHtml);
       List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
       for (ArtifactReadable ai : getAis()) {
          sortedAis.add(ai);

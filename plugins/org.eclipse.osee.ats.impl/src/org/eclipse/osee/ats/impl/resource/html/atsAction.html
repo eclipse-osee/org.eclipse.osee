@@ -1,59 +1,55 @@
 <?include path="4000000000000000 pageDeclaration.html"?>
 <head>
+  <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
   <meta name="author" content="Donald G. Dunne" />
-  <title>OSEE ATS</title>
-  <style>
-    <?include path="4000000000000013 atsCore.css"?>
-  </style>
-  <script>
-    <?include path="4000000000000002 oseeCore.js"?>
-  </script>
+  <title>OSEE ATS - Action</title>
+  <script><?include path="4000000000000002 oseeCore.js"?></script>
+  <script><?include path="4005500000000002 atsCore.js"?></script>
 </head>
 
 <body>
 
-<div id="atsBody">
-   <b><?pageTitle?></b></br>
+<div class="container">
+   <div><h2>ATS - <?atsId?></h2><div>
 	
-<table border="1" cellpadding="3" cellspacing="0" width="100%">
-   <tr><td>
+<table border="1" cellpadding="3" cellspacing="0" width="100%" class="table table-striped">
+   <tr>
+      <td colspan="3">Title: <b><?title?></b></td>
+   </tr>
 
-   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
-      <td><font color="black" face="Arial" size="-1"> <b>Title: </b></font><?title?></td>
-   </tr></table>
-
-   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
-   	<td><font color="black" face="Arial" size="-1"><b>Current State: </b></font><?state?></td>
-		<td><font color="black" face="Arial" size="-1"><b>Created: </b></font><?createdDate?></td>
-		<td><font color="black" face="Arial" size="-1"><b>Originator: </b></font><?originator?></td>
-   </tr></table>
+   <tr>
+   	<td>Current State: <b><?state?></b></td>
+		<td>Created: <b><?createdDate?></b></td>
+		<td>Originator: <b><?originator?></b></td>
+   </tr>
    
-   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
-   	<td><font color="black" face="Arial" size="-1"><b>Team: </b></font><?team?></td>
-   	<td><font color="black" face="Arial" size="-1"><b>Id: </b></font><?id?></td>
-   	<td><font color="black" face="Arial" size="-1"><b>ATS Id: </b></font><?atsId?></td>
-	</tr></table>
+   <tr>
+   	<td>Team: <b><?team?></b></td>
+   	<td>Id: <b><?id?></b></td>
+   	<td>ATS Id: <b><?atsId?></b></td>
+	</tr>
 	
-   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
-		<td><font color="black" face="Arial" size="-1"><b>Targeted Version: </b></font><?version?></td>
-		<td><font color="black" face="Arial" size="-1"><b>Assignees: </b></font><?assignees?></td>
-	</tr></table>
+   <tr>
+		<td>Targeted Version: <b><?version?></b></td>
+		<td colspan="2">Assignees: <b><?assignees?></b></td>
+	</tr>
 	
-   <table border="0" cellpadding="3" cellspacing="0" width="100%"><tr>
-   	<td><font color="black" face="Arial" size="-1"><b>Change Type: </b></font><?changeType?></td>
-   	<td><font color="black" face="Arial" size="-1"><b>Priority: </b></font><?priority?></td>
-   	<td><font color="black" face="Arial" size="-1"><b>Need By: </b></font><?needBy?></td>
-   </tr><tr>
-   	<td><font color="black" face="Arial" size="-1"><b>Workflow: </b></font><?workflow?></td>
-   	<td><font color="black" face="Arial" size="-1"><b>Workflow Definition: </b></font><?workDef?></td>
+   <tr>
+   	<td>Change Type: <b><?changeType?></b></td>
+   	<td>Priority: <b><?priority?></b></td>
+   	<td>Need By: <b><?needBy?></b></td>
+   </tr>
    
-   </tr><tr>
-   	<td><font color="black" face="Arial" size="-1"><b>Actionable Item(s): </b></font><?ais?></td>
-   </tr></table>
+   <tr>
+   	<td>Workflow: <b><?workflow?></b></td>
+   	<td colspan="2">Workflow Definition: <b><?workDef?></b></td>
+   </tr>
    
-   
-</td></tr>
+   <tr>
+   	<td colspan="3">Actionable Item(s): <b><?ais?></b></td>
+   </tr>
 </table>
+</div>
 <?transition?>
 </div>
 

@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
+import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -70,37 +71,38 @@ public final class ActionResource {
    }
 
    /**
-    * @param guid of action to display
+    * @param id (guid, atsId) of action to display
     * @return html representation of the action
     */
    @Path("{id}")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAction(@PathParam("id") String guid) throws Exception {
-      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.HEADER, resourceRegistry);
+   public String getAction(@PathParam("id") String id) throws Exception {
+      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, ActionLoadLevel.HEADER, resourceRegistry);
    }
 
    /**
-    * @param guid of action to display
+    * @param id of action to display
     * @return html representation of the action w/ all ids resolved
     */
    @Path("{id}/full")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getActionFull(@PathParam("id") String guid) throws Exception {
-      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.HEADER_FULL,
+   public String getActionFull(@PathParam("id") String id) throws Exception {
+      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, ActionLoadLevel.HEADER_FULL,
          resourceRegistry);
    }
 
    /**
-    * @param guid of action to operate on
+    * @param id of action to operate on
     * @return StateResource for the give action
     */
    @Path("{id}/state")
-   public StateResource transitionAction(@PathParam("id") String guid) throws Exception {
-      return new StateResource(atsServer, guid, resourceRegistry);
+   public StateResource transitionAction(@PathParam("id") String id) throws Exception {
+      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      return new StateResource(atsServer, action.getGuid(), resourceRegistry);
    }
 
    /**

@@ -54,6 +54,7 @@ import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -221,6 +222,11 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
+   public ArtifactReadable getArtifactByAtsId(String id) {
+      return AtsUtilServer.getArtifactByAtsId(orcsApi, id);
+   }
+
+   @Override
    public IAtsWorkDefinitionAdmin getWorkDefAdmin() {
       return workDefAdmin;
    }
@@ -274,6 +280,18 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IAtsActionFactory getActionFactory() {
       return actionFactory;
+   }
+
+   @Override
+   public ArtifactReadable getActionById(String id) {
+      ArtifactReadable action = null;
+      if (GUID.isValid(id)) {
+         action = getArtifactByGuid(id);
+      }
+      if (action == null) {
+         action = getArtifactByAtsId(id);
+      }
+      return action;
    }
 
 }

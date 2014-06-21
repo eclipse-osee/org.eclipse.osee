@@ -1,50 +1,30 @@
 <?include path="4000000000000000 pageDeclaration.html"?>
 <head>
+  <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
   <meta name="author" content="Donald G. Dunne" />
-  <title>OSEE ATS</title>
-  <style>
-    <?include path="4000000000000013 atsCore.css"?>
-  </style>
-  <script>
-		<?include path="4000000000000002 oseeCore.js"?>
-  </script>
+  <title>OSEE ATS - Search</title>
+  <script><?include path="4000000000000002 oseeCore.js"?></script>
+  <script><?include path="4005500000000002 atsCore.js"?></script>
 </head>
 
 <body>
 
-<div id="atsBody">
-<b>Search Action</b>
-<form id="oseeAppForm">		
-	<input type="text" id="searchId" placeholder="enter id" />
-	<input type="button" id="searchButton" value="Search" />
-</form>
+<div class="container">
+	<div><h2>ATS - Search by Id</h2><div>
+	
+   <form id="oseeAppForm" class="well">      
+      <input type="button" id="searchButton" value="Search" class="btn btn-primary"/>
+      <input type="text" id="searchId" style="width:800px;" placeholder="enter id" />
+   </form>
 </div>
 
 <script>
-	function searchButton() {
-		post_with_parms("/ats/action", getParams());
-	}
+   function searchButton() {
+      post_with_parms("/ats/action", getParams());
+   }
 
-	function getParams() {
-		var params = new Object();
-		var form = document.getElementById("oseeAppForm");
-		var inputElements = form.getElementsByTagName("input");
-		
-		for(var i = 0; i < inputElements.length; i++) {
-		var inputElement = inputElements[i];
-			var id = inputElement.getAttribute("id");
-			if (id == null) {
-				console.log(inputElement);
-				console.log("has no id");
-			} else {
-				params[id] = inputElement.value;
-			}
-		}
-		return params;
-	}
-   
-	var button = document.getElementById("searchButton");
-	button.addEventListener("click", searchButton);
+   var button = document.getElementById("searchButton");
+   button.addEventListener("click", searchButton);
 </script>
 
 </body>

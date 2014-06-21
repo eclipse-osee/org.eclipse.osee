@@ -15,7 +15,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +31,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
+import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -67,14 +67,14 @@ public final class StateResource {
    }
 
    /**
-    * @param guid
+    * @param id
     * @return html representation w/ transition ui
     */
    @Path("trans")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getTransition(@PathParam("id") String guid) throws Exception {
-      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
+   public String getTransition() throws Exception {
+      ArtifactReadable action = AtsServerService.get().getActionById(guid);
       return atsServer.getWorkItemPage().getHtmlWithStates(action, "Action - " + guid, ActionLoadLevel.STATE,
          resourceRegistry);
    }
@@ -133,8 +133,8 @@ public final class StateResource {
          // reload before display
          action = atsServer.getArtifactByGuid(guid);
          htmlStr =
-            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(), ActionLoadLevel.HEADER,
-               resourceRegistry);
+            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(),
+               ActionLoadLevel.HEADER, resourceRegistry);
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);
       }

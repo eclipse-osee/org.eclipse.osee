@@ -78,4 +78,9 @@ public class AtsUtilServer {
       return toReturn;
    }
 
+   public static ArtifactReadable getArtifactByAtsId(OrcsApi orcsApi, String id) {
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).and(AtsAttributeTypes.AtsId,
+         org.eclipse.osee.framework.core.enums.Operator.EQUAL, id).getResults().getOneOrNull();
+   }
+
 }

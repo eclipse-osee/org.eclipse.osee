@@ -80,4 +80,8 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
 
    IAtsActionFactory getActionFactory();
 
+   ArtifactReadable getArtifactByAtsId(String id);
+
+   ArtifactReadable getActionById(String id);
+
 }

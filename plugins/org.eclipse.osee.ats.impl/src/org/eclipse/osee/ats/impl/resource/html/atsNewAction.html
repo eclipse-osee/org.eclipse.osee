@@ -1,74 +1,76 @@
 <?include path="4000000000000000 pageDeclaration.html"?>
 <head>
+  <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
   <meta name="author" content="Donald G. Dunne" />
-  <title>OSEE ATS</title>
-  <style>
-    <?include path="4000000000000013 atsCore.css"?>
-  </style>
-  <script>
-		<?include path="4000000000000002 oseeCore.js"?>
-  </script>
+  <title>OSEE ATS - New Action</title>
+  <script><?include path="4000000000000002 oseeCore.js"?></script>
+  <script><?include path="4005500000000002 atsCore.js"?></script>
 </head>
 
 <body>
 
-<div id="atsBody">
-<b>Create a New Action</b>
-<form id="oseeAppForm">		
-	<?widgets?>
-	<?ActionableItemDataList?>
-	<br/><br/>
-	<input type="button" id="populateButton" value="Populate" />
-	<input type="button" id="clearButton" value="Clear" />
-	<input type="button" id="createButton" value="Create" />
-</form>
+<div class="container">
+   <div><h2>ATS - Create new ATS Action</h2><div>
+
+   <form id="oseeAppForm" class="well">      
+      <label>Title</label>&nbsp;<input type="text" style="width:800px;" id="ats_title" name="title"/><br/>
+      <label>Actionable Item</label>&nbsp;<input placeholder="type to filter" type="text" id="actionableItems" list="actionableItemList" /><br/>
+      <label>Description</label><br/>
+      <textarea name="textarea" id="desc" style="width:800px;height:200px;"></textarea><br/>
+      <label>Change Type</label>&nbsp;
+      <select id="changeType" >
+         <option selected="selected" value="Improvement">Improvement</option>
+         <option value="Problem">Problem</option>
+         <option value="Refinement">Refinement</option>
+         <option value="Support">Support</option>
+      </select>
+      <label>Priority</label>&nbsp;
+      <select id="priority" >
+         <option value="1">1 (High)</option>
+         <option value="2">2</option>
+         <option selected="selected" value="3">3 (Med)</option>
+         <option value="4">4</option>
+         <option value="5 (Low)">5</option>
+      </select>
+      <label>Deadline</label>&nbsp;<input type="date" name="deadline"><br/>
+      <label>User Id</label>&nbsp;<input type="text" id="userId" /><br/>
+      <?ActionableItemDataList?>
+      <br/><br/>
+      <input type="button" id="createButton" value="Create" class="btn btn-primary"/>
+      <input type="button" id="clearButton" value="Clear" class="btn btn"/>
+      <input type="button" id="populateButton" value="Populate" class="btn btn"/>
+      
+   </form>
 </div>
 
 <script>
-	function createAction() {
-		post_with_parms("/ats/action", getParams());
-	}
+   function createAction() {
+      post_with_parms("/ats/action", getParams());
+   }
 
-	function getParams() {
-		var params = new Object();
-		var form = document.getElementById("oseeAppForm");
-		
-		var inputElements = form.getElementsByTagName("input");
-		for(var i = 0; i < inputElements.length; i++) {
-		var inputElement = inputElements[i];
-			var id = inputElement.getAttribute("id");
-			if (id == null) {
-				console.log(inputElement);
-				console.log("has no id");
-			} else {
-				params[id] = inputElement.value;
-			}
-		}
-		params["changeType"] = document.getElementById("changeType").value
-		return params;
-	}
-	
    function populateTestData() {
-		document.getElementById('ats_title').value = 'Test Action - Delete Me';
-		document.getElementById('desc').value = 'This is my description';
-		document.getElementById("changeType").value = 'Improvement';
-	}
+      document.getElementById('ats_title').value = 'Test Action - Delete Me';
+      document.getElementById('desc').value = 'This is my description';
+      document.getElementById("actionableItems").value = 'SAW Code';
+      document.getElementById("changeType").value = 'Improvement';
+      document.getElementById("userId").value = 'Joe Smith';
+   }
 
    function clearTestData() {
-		document.getElementById('ats_title').value = '';
-		document.getElementById('desc').value = '';
-		document.getElementById("actionableItems").value = '';
-		document.getElementById("changeType").value = '';
-		document.getElementById("userId").value = '';
-	}
+      document.getElementById('ats_title').value = '';
+      document.getElementById('desc').value = '';
+      document.getElementById("actionableItems").value = '';
+      document.getElementById("changeType").value = '';
+      document.getElementById("userId").value = '';
+   }
 
    
-	var button = document.getElementById("createButton");
-	button.addEventListener("click", createAction);
-	var button2 = document.getElementById("populateButton");
-	button2.addEventListener("click", populateTestData);
-	var button3 = document.getElementById("clearButton");
-	button3.addEventListener("click", clearTestData);
+   var button = document.getElementById("createButton");
+   button.addEventListener("click", createAction);
+   var button2 = document.getElementById("populateButton");
+   button2.addEventListener("click", populateTestData);
+   var button3 = document.getElementById("clearButton");
+   button3.addEventListener("click", clearTestData);
 </script>
 
 </body>
