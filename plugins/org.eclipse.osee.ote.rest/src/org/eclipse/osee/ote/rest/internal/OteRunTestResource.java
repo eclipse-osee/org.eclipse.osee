@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-
+import java.util.logging.Level;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -28,9 +28,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
-
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
@@ -91,10 +91,12 @@ public class OteRunTestResource {
    public IPropertyStore propertyStoreConversion(Properties properties){
       IPropertyStore store = new PropertyStore();
       for(KeyValue pair:properties.getPairs()){
-         if(pair.getValue() == null){
+         if(pair.getValue() != null){
+            store.put(pair.getKey(), pair.getValue());
+         } else if(pair.getValues() != null){
             store.put(pair.getKey(), pair.getValues().toArray(new String[0]));
          } else {
-            store.put(pair.getKey(), pair.getValue());
+            OseeLog.log(OteRunTestResource.class, Level.SEVERE, "For PROPERTY:" + pair.getKey() + ", the corresponding VALUE is NULL!!");
          }
       }
       return store;
