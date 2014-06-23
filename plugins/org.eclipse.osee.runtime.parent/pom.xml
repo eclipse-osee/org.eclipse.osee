@@ -21,9 +21,6 @@
 
 		<module>../../features/org.eclipse.osee.core.feature</module>
 
-		<module>../../plugins/org.eclipse.osee.framework.lifecycle</module>
-		<module>../../plugins/org.eclipse.osee.framework.lifecycle.test</module>
-
 		<module>../../features/org.eclipse.osee.core.plugin.feature</module>
 
 		<module>../../plugins/org.eclipse.osee.framework.jini</module>
