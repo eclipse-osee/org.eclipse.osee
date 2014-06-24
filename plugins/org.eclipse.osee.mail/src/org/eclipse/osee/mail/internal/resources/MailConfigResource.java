@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail.rest.internal;
+package org.eclipse.osee.mail.internal.resources;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,35 +27,29 @@ import org.eclipse.osee.mail.MailServiceConfig;
 @Path("config")
 public class MailConfigResource {
 
-   private MailService getMailService() {
-      return MailApplication.getMailService();
-   }
+   private final MailService mailService;
 
-   private MailServiceConfig getConfiguration() {
-      return getMailService().getConfiguration();
+   public MailConfigResource(MailService mailService) {
+      super();
+      this.mailService = mailService;
    }
 
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public MailServiceConfig getConfig() {
-      return getConfiguration();
-   }
-
-   @GET
-   @Produces(MediaType.TEXT_XML)
-   public MailServiceConfig getConfigHtml() {
-      return getConfiguration();
+      return mailService.getConfiguration();
    }
 
    @POST
-   @Consumes(MediaType.APPLICATION_XML)
+   @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public Response updateConfig(JAXBElement<MailServiceConfig> jaxConfig) {
       MailServiceConfig config = jaxConfig.getValue();
       return postAndGetResponse(config);
    }
 
    private Response postAndGetResponse(MailServiceConfig config) {
-      getMailService().setConfiguration(config);
+      mailService.setConfiguration(config);
       return Response.ok("Mail Service Configuration Updated", MediaType.TEXT_PLAIN).build();
    }
 }

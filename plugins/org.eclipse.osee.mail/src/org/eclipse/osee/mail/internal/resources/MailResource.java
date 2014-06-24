@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail.rest.internal;
+package org.eclipse.osee.mail.internal.resources;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,28 +39,31 @@ public class MailResource {
    private static long STATUS_WAIT_TIME = 60;
    private static int testEmailCount = 0;
 
-   protected MailService getMailService() {
-      return MailApplication.getMailService();
+   private final MailService mailService;
+
+   public MailResource(MailService mailService) {
+      super();
+      this.mailService = mailService;
    }
 
    @GET
-   @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public MailMessage getTestMailMessage() {
-      return getMailService().createSystemTestMessage(++testEmailCount);
+      return mailService.createSystemTestMessage(++testEmailCount);
    }
 
    @POST
    @Path("test")
-   @Produces({MediaType.APPLICATION_XML, MediaType.TEXT_XML})
+   @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public SendMailStatus sendTestMail() throws Exception {
-      MailMessage message = getMailService().createSystemTestMessage(++testEmailCount);
+      MailMessage message = mailService.createSystemTestMessage(++testEmailCount);
 
       List<SendMailStatus> results = sendMail(message);
       return results.iterator().next();
    }
 
    @POST
-   @Consumes(MediaType.APPLICATION_XML)
+   @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public List<SendMailStatus> sendXmlMail(MailMessage mailMessage) throws Exception {
       Collection<? extends DataHandler> handlers = mailMessage.getAttachments();
@@ -71,8 +74,7 @@ public class MailResource {
    }
 
    private List<SendMailStatus> sendMail(MailMessage... messages) throws InterruptedException, ExecutionException {
-      List<Callable<SendMailStatus>> calls =
-         getMailService().createSendCalls(STATUS_WAIT_TIME, TimeUnit.SECONDS, messages);
+      List<Callable<SendMailStatus>> calls = mailService.createSendCalls(STATUS_WAIT_TIME, TimeUnit.SECONDS, messages);
       List<Future<SendMailStatus>> futures = new ArrayList<Future<SendMailStatus>>();
 
       if (messages.length > 0) {

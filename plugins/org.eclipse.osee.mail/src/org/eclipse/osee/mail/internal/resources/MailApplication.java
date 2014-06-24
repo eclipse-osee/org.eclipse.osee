@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail.rest.internal;
+package org.eclipse.osee.mail.internal.resources;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,22 +22,24 @@ import org.eclipse.osee.mail.MailService;
 @ApplicationPath("mail")
 public class MailApplication extends Application {
 
-   private static MailService mailService;
+   private final Set<Object> singletons = new HashSet<Object>();
+   private MailService mailService;
 
    public void setMailService(MailService mailService) {
-      MailApplication.mailService = mailService;
+      this.mailService = mailService;
    }
 
-   public static MailService getMailService() {
-      return mailService;
+   public void start() {
+      singletons.add(new MailResource(mailService));
+      singletons.add(new MailConfigResource(mailService));
+   }
+
+   public void stop() {
+      singletons.clear();
    }
 
    @Override
-   public Set<Class<?>> getClasses() {
-      Set<Class<?>> resources = new HashSet<Class<?>>();
-      resources.add(MailConfigResource.class);
-      resources.add(MailResource.class);
-      return resources;
+   public Set<Object> getSingletons() {
+      return singletons;
    }
-
 }
