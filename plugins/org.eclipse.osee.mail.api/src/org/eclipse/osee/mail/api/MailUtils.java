@@ -8,22 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
+package org.eclipse.osee.mail.api;
 
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
-import javax.activation.CommandMap;
 import javax.activation.DataSource;
-import javax.activation.MailcapCommandMap;
+import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.windows.OutlookCalendarEvent;
+import org.eclipse.osee.mail.api.internal.MultiPartDataSource;
+import org.eclipse.osee.mail.api.internal.StringDataSource;
+import org.eclipse.osee.mail.api.internal.UrlDataSource;
 
 /**
  * @author Roberto E. Escobar
@@ -49,21 +53,7 @@ public final class MailUtils {
       return result;
    }
 
-   public static MailcapCommandMap getMailcapCommandMap() {
-      MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-      mc.addMailcap("text/*;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-      mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-      mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-      mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-      mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-      mc.addMailcap("multipart/mixed;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-      mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-      mc.addMailcap("image/jpeg;; x-java-content-handler=com.sun.mail.handlers.image_jpeg");
-      mc.addMailcap("image/gif;; x-java-content-handler=com.sun.mail.handlers.image_gif");
-      return mc;
-   }
-
-   public static StringDataSource createFromString(String name, String message, Object... args) {
+   public static DataSource createFromString(String name, String message, Object... args) {
       String data;
       if (args.length > 0) {
          data = String.format(message, args);
@@ -72,35 +62,49 @@ public final class MailUtils {
       }
       StringDataSource dataSource = new StringDataSource(name, data);
       dataSource.setCharset("UTF-8");
-      dataSource.setContentType("text/plain");
+      dataSource.setContentType(MediaType.TEXT_PLAIN);
       return dataSource;
    }
 
-   public static DataSource createFromHtml(final String name, String htmlData) throws Exception {
+   public static DataSource createFromHtml(final String name, String htmlData) {
       String plainText = stripHtmlTags(htmlData);
       return createAlternativeDataSource(name, htmlData, plainText);
    }
 
-   public static DataSource createAlternativeDataSource(String name, String htmlText, String plainText) throws Exception {
+   public static DataSource createAlternativeDataSource(String name, String htmlText, String plainText) {
       final MimeMultipart content = new MimeMultipart("alternative");
 
       MimeBodyPart html = new MimeBodyPart();
-      html.setContent(htmlText, "text/html");
-
       MimeBodyPart text = new MimeBodyPart();
-      text.setText(plainText);
 
-      content.addBodyPart(html);
-      content.addBodyPart(text);
-
+      try {
+         html.setContent(htmlText, MediaType.TEXT_HTML);
+      } catch (MessagingException ex) {
+         throw new OseeCoreException(ex, "Error adding HTML content");
+      }
+      try {
+         text.setText(plainText, "UTF-8", MediaType.TEXT_PLAIN);
+      } catch (MessagingException ex) {
+         throw new OseeCoreException(ex, "Error adding Text content");
+      }
+      try {
+         content.addBodyPart(html);
+      } catch (MessagingException ex) {
+         throw new OseeCoreException(ex, "Error adding HTML body part");
+      }
+      try {
+         content.addBodyPart(text);
+      } catch (MessagingException ex) {
+         throw new OseeCoreException(ex, "Error adding test body part");
+      }
       return new MultiPartDataSource(name, content);
    }
 
-   public static UrlDataSource createFromUrl(String name, URL url, String contentType) {
-      return new UrlDataSource(name, url, contentType);
+   public static DataSource createFromUrl(String name, URL url, MediaType mediaType) {
+      return new UrlDataSource(name, url, mediaType.toString());
    }
 
-   public static StringDataSource createOutlookEvent(String eventName, String location, Date date, String startTime, String endTime) throws UnsupportedEncodingException {
+   public static DataSource createOutlookEvent(String eventName, String location, Date date, String startTime, String endTime) {
       OutlookCalendarEvent calendarEvent = new OutlookCalendarEvent(location, eventName, date, startTime, endTime);
       String fileName = toFileName(eventName, OUTLOOK_CALENDAR_EXTENSION);
 
@@ -111,16 +115,21 @@ public final class MailUtils {
          }
       };
       dataSource.setCharset("UTF-8");
-      dataSource.setContentType("text/plain");
+      dataSource.setContentType(MediaType.TEXT_PLAIN);
       return dataSource;
    }
 
-   private static String toFileName(String value, String extension) throws UnsupportedEncodingException {
+   private static String toFileName(String value, String extension) {
       String fileName = value;
       if (fileName.endsWith(OUTLOOK_CALENDAR_EXTENSION)) {
          fileName = Lib.removeExtension(fileName);
       }
-      String validName = URLEncoder.encode(fileName, "UTF-8");
+      String validName;
+      try {
+         validName = URLEncoder.encode(fileName, "UTF-8");
+      } catch (UnsupportedEncodingException ex) {
+         throw new OseeCoreException(ex, "Error encoding filename");
+      }
       StringBuilder builder = new StringBuilder();
       builder.append(validName);
       builder.append(OUTLOOK_CALENDAR_EXTENSION);

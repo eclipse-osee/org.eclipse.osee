@@ -8,25 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
+package org.eclipse.osee.mail.internal;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.activation.DataContentHandler;
 import javax.activation.DataSource;
-import javax.activation.MailcapCommandMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.mail.api.MailUtils;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,33 +43,6 @@ public class MailUtilsTest {
 
    private static final Pattern MULTI_PART_PATTERN = Pattern.compile("_Part_\\d+_\\d+\\.\\d+\\s+(.*?)------=",
       Pattern.DOTALL);
-
-   @Test
-   @Ignore
-   public void testMailCapCommand() {
-      MailcapCommandMap map = MailUtils.getMailcapCommandMap();
-      List<String> mimeTypes = Arrays.asList(map.getMimeTypes());
-
-      Assert.assertTrue(mimeTypes.contains("text/*"));
-      Assert.assertTrue(mimeTypes.contains("text/html"));
-      Assert.assertTrue(mimeTypes.contains("text/xml"));
-      Assert.assertTrue(mimeTypes.contains("text/plain"));
-      Assert.assertTrue(mimeTypes.contains("multipart/*"));
-      Assert.assertTrue(mimeTypes.contains("multipart/mixed"));
-      Assert.assertTrue(mimeTypes.contains("message/rfc822"));
-      Assert.assertTrue(mimeTypes.contains("image/jpeg"));
-      Assert.assertTrue(mimeTypes.contains("image/gif"));
-
-      assertHandler(map, "text/*", "com.sun.mail.handlers.text_plain");
-      assertHandler(map, "text/html", "com.sun.mail.handlers.text_html");
-      assertHandler(map, "text/xml", "com.sun.mail.handlers.text_xml");
-      assertHandler(map, "text/plain", "com.sun.mail.handlers.text_plain");
-      assertHandler(map, "multipart/*", "com.sun.mail.handlers.multipart_mixed");
-      assertHandler(map, "multipart/mixed", "com.sun.mail.handlers.multipart_mixed");
-      assertHandler(map, "message/rfc822", "com.sun.mail.handlers.message_rfc822");
-      assertHandler(map, "image/jpeg", "com.sun.mail.handlers.image_jpeg");
-      assertHandler(map, "image/gif", "com.sun.mail.handlers.image_gif");
-   }
 
    @Test
    public void testCreateFromString() throws IOException {
@@ -224,12 +194,6 @@ public class MailUtilsTest {
          toReturn.add(matcher.group(1).trim());
       }
       return toReturn;
-   }
-
-   private static void assertHandler(MailcapCommandMap map, String mimeType, String handler) {
-      DataContentHandler actualHandler = map.createDataContentHandler(mimeType);
-      Assert.assertNotNull(String.format("handler for [%s] is null", mimeType), actualHandler);
-      Assert.assertEquals(handler, actualHandler.getClass().getName());
    }
 
 }

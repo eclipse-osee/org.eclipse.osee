@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import org.eclipse.osee.mail.MailService;
+import org.eclipse.osee.mail.api.MailService;
 
 /**
  * @author Roberto E. Escobar

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
+package org.eclipse.osee.mail.api.internal;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

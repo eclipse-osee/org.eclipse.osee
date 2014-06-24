@@ -4,5 +4,5 @@
    <service>
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
-   <reference bind="setMailService" cardinality="1..1" interface="org.eclipse.osee.mail.MailService" name="MailService" policy="static"/>
+   <reference bind="setMailService" cardinality="1..1" interface="org.eclipse.osee.mail.api.MailService" name="MailService" policy="static"/>
 </scr:component>

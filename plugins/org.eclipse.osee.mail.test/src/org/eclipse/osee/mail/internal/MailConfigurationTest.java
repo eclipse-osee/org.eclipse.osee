@@ -8,32 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
+package org.eclipse.osee.mail.internal;
 
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_ADMIN_EMAIL;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_HOST;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_PASSWORD;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_PORT;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_TRANSPORT;
-import static org.eclipse.osee.mail.MailConstants.DEFAULT_MAIL_SERVER_USERNAME;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_ADMIN_EMAIL;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_HOST;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_PASSWORD;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_PORT;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_TEST_EMAIL_BODY;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_TEST_EMAIL_SUBJECT;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_TRANSPORT;
-import static org.eclipse.osee.mail.MailConstants.MAIL_SERVER_USERNAME;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_ADMIN_EMAIL;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_HOST;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_PASSWORD;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_PORT;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_TRANSPORT;
+import static org.eclipse.osee.mail.internal.MailConstants.DEFAULT_MAIL_SERVER_USERNAME;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_ADMIN_EMAIL;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_HOST;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_PASSWORD;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_PORT;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_STATUS_WAIT_TIME_MILLIS;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_TEST_EMAIL_BODY;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_TEST_EMAIL_SUBJECT;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_TRANSPORT;
+import static org.eclipse.osee.mail.internal.MailConstants.MAIL_SERVER_USERNAME;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.mail.MailConfiguration.MailConfigurationBuilder;
+import org.eclipse.osee.mail.internal.MailConfiguration;
+import org.eclipse.osee.mail.internal.MailConfiguration.MailConfigurationBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

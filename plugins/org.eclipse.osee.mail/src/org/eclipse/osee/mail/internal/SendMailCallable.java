@@ -10,62 +10,49 @@
  *******************************************************************************/
 package org.eclipse.osee.mail.internal;
 
+import java.util.Date;
 import java.util.concurrent.Callable;
-import javax.activation.CommandMap;
-import javax.activation.MailcapCommandMap;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.event.TransportEvent;
 import javax.mail.event.TransportListener;
 import javax.mail.internet.MimeMessage;
-import org.eclipse.osee.mail.MailConfiguration;
-import org.eclipse.osee.mail.MailMessage;
-import org.eclipse.osee.mail.MailUtils;
-import org.eclipse.osee.mail.SendMailStatus;
-import org.eclipse.osee.mail.SendMailStatus.MailStatus;
+import org.eclipse.osee.mail.api.MailMessage;
+import org.eclipse.osee.mail.api.MailStatus;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SendMailCallable implements Callable<SendMailStatus> {
+public class SendMailCallable implements Callable<MailStatus> {
 
    private final MailConfiguration config;
    private final MailMessage email;
    private final MailMessageFactory factory;
-   private final TransportListener[] listeners;
-   private final long waitForStatus;
 
-   public SendMailCallable(MailConfiguration config, MailMessageFactory factory, MailMessage email, long waitForStatus, TransportListener... listeners) {
+   public SendMailCallable(MailConfiguration config, MailMessageFactory factory, MailMessage email) {
       this.config = config;
       this.factory = factory;
       this.email = email;
-      this.listeners = listeners;
-      this.waitForStatus = waitForStatus;
    }
 
    @Override
-   public SendMailStatus call() throws Exception {
-      MailcapCommandMap mc = MailUtils.getMailcapCommandMap();
-      CommandMap.setDefaultCommandMap(mc);
-
+   public MailStatus call() throws Exception {
       String transportProtocol = config.getTransport();
       String host = config.getHost();
       int port = config.getPort();
       boolean requiresAuthentication = config.isAuthenticationRequired();
       String username = config.getUserName();
       String password = config.getPassword();
+      long waitForStatus = config.getStatusWaitTime();
 
-      final Session session = factory.createSession(transportProtocol, host, port, requiresAuthentication);
-      final MimeMessage message = factory.createMimeMessage(session, email);
-      final Transport transport = factory.createTransport(session, username, password);
-      final SendMailStatus status = new SendMailStatus();
+      Date sendDate = new Date();
+      Session session = factory.createSession(transportProtocol, host, port, requiresAuthentication);
+      MimeMessage message = factory.createMimeMessage(session, email, sendDate);
+      Transport transport = factory.createTransport(session, username, password);
 
-      StatusTransportListener statusListener = new StatusTransportListener(status);
+      StatusListener statusListener = new StatusListener();
       transport.addTransportListener(statusListener);
-      if (listeners != null) {
-         for (TransportListener listener : listeners) {
-            transport.addTransportListener(listener);
-         }
-      }
       try {
          message.saveChanges();
          transport.sendMessage(message, message.getAllRecipients());
@@ -73,22 +60,59 @@ public class SendMailCallable implements Callable<SendMailStatus> {
             statusListener.wait(waitForStatus);
          }
       } finally {
-         if (listeners != null) {
-            for (TransportListener listener : listeners) {
-               transport.removeTransportListener(listener);
+         try {
+            transport.removeTransportListener(statusListener);
+         } finally {
+            try {
+               transport.close();
+            } catch (MessagingException ex) {
+               // Do nothing;
             }
          }
-         transport.removeTransportListener(statusListener);
-         transport.close();
       }
-      if (waitForStatus <= 0 || !statusListener.wasUpdateReceived()) {
-         MailStatus mStatus = new MailStatus();
-         mStatus.setDateSent(message.getSentDate());
-         mStatus.setSubject(message.getSubject());
-         mStatus.setUuid(message.getMessageID());
-         mStatus.setVerified(false);
-         status.add(mStatus);
+      MailStatus status = statusListener.getMailStatus();
+      if (waitForStatus <= 0 || status == null) {
+         status = new MailStatus();
+         status.setDateSent(message.getSentDate());
+         status.setSubject(message.getSubject());
+         status.setUuid(message.getMessageID());
+         status.setVerified(false);
       }
       return status;
    }
+
+   private class StatusListener implements TransportListener {
+
+      private MailStatus status;
+
+      public MailStatus getMailStatus() {
+         return status;
+      }
+
+      @Override
+      public void messageDelivered(TransportEvent event) {
+         handleEvent(event);
+      }
+
+      @Override
+      public void messageNotDelivered(TransportEvent event) {
+         handleEvent(event);
+      }
+
+      @Override
+      public void messagePartiallyDelivered(TransportEvent event) {
+         handleEvent(event);
+      }
+
+      private void handleEvent(TransportEvent event) {
+         synchronized (this) {
+            try {
+               status = factory.createMailStatus(event);
+            } finally {
+               notify();
+            }
+         }
+      }
+   }
+
 }

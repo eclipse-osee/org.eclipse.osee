@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
-
-import java.util.List;
-import java.util.concurrent.Callable;
+package org.eclipse.osee.mail.api;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface MailService {
+public interface MailCallback {
 
-   List<Callable<SendMailStatus>> createSendCalls(MailMessage... emails);
+   void onCancelled(String uuid);
 
-   MailMessage createSystemTestMessage();
+   void onSuccess(String uuid, MailStatus status);
+
+   void onFailure(String uuid, Throwable throwable);
 
 }

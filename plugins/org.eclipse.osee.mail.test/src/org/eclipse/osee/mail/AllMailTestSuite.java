@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.mail;
 
+import org.eclipse.osee.mail.internal.MailConfigurationTest;
+import org.eclipse.osee.mail.internal.MailMessageTest;
+import org.eclipse.osee.mail.internal.MailUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MailConfigurationTest.class, MailEventUtilTest.class, MailMessageTest.class, MailUtilsTest.class})
+@Suite.SuiteClasses({MailConfigurationTest.class, MailMessageTest.class, MailUtilsTest.class})
 public class AllMailTestSuite {
    // Test Suite
 }

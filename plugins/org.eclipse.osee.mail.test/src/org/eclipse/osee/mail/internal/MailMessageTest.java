@@ -8,13 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.mail;
+package org.eclipse.osee.mail.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import javax.activation.DataSource;
+import org.eclipse.osee.mail.api.MailMessage;
+import org.eclipse.osee.mail.api.MailUtils;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
