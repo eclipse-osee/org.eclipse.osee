@@ -14,6 +14,7 @@ Import-Package: javax.activation,
  javax.xml.bind.annotation,
  org.eclipse.osee.event,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.jdk.core.util.windows
+ org.eclipse.osee.framework.jdk.core.util.windows,
+ org.eclipse.osee.logger
 Service-Component: OSGI-INF/*.xml 
 Export-Package: org.eclipse.osee.mail

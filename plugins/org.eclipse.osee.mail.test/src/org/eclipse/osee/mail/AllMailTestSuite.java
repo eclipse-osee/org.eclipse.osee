@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MailEventUtilTest.class, MailMessageTest.class, MailServiceConfigTest.class, MailUtilsTest.class})
+@Suite.SuiteClasses({MailConfigurationTest.class, MailEventUtilTest.class, MailMessageTest.class, MailUtilsTest.class})
 public class AllMailTestSuite {
    // Test Suite
 }

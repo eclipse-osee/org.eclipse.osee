@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.mail.internal;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -25,42 +29,54 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.MailConstants;
 import org.eclipse.osee.mail.MailMessage;
-import org.eclipse.osee.mail.MailServiceConfig;
+import org.eclipse.osee.mail.MailUtils;
 
 /**
  * @author Roberto E. Escobar
  */
 public class MailMessageFactory {
 
-   private final MailServiceConfig config;
+   private final Log logger;
+   private final AtomicInteger testCounter;
 
-   public MailMessageFactory(MailServiceConfig config) {
-      this.config = config;
+   public MailMessageFactory(Log logger, AtomicInteger testCounter) {
+      this.logger = logger;
+      this.testCounter = testCounter;
    }
 
-   public Session createSession() {
-      final Properties props = System.getProperties();
+   public Session createSession(String transport, String host, int port, boolean requiresAuthentication) {
+      final Properties props = new Properties();
 
-      String transport = config.getTransport();
       props.put("mail.transport.protocol", transport);
-      props.put("mail." + transport + ".host", config.getHost());
-      props.put("mail." + transport + ".port", String.valueOf(config.getPort()));
-      props.put("mail." + transport + ".auth", String.valueOf(config.isAuthenticationRequired()).toLowerCase());
-      props.put("mail.debug", config.isDebug());
+      props.put("mail." + transport + ".host", host);
+      props.put("mail." + transport + ".port", String.valueOf(port));
+      props.put("mail." + transport + ".auth", String.valueOf(requiresAuthentication).toLowerCase());
+
+      boolean isDebugEnabled = logger != null && logger.isDebugEnabled();
+      props.put("mail.debug", isDebugEnabled);
 
       Session session = Session.getDefaultInstance(props);
-      session.setDebug(config.isDebug());
-      session.setDebugOut(System.out);
+      session.setDebug(isDebugEnabled);
+      if (isDebugEnabled) {
+         session.setDebugOut(new PrintStream(new ForwardingStream() {
+            @Override
+            protected void forward(String data) {
+               logger.debug(data);
+            }
+         }));
+      }
       return session;
    }
 
-   public Transport createTransport(Session session) throws MessagingException {
+   public Transport createTransport(Session session, String username, String password) throws MessagingException {
       Transport transport = session.getTransport();
       if (!transport.isConnected()) {
-         if (config.isAuthenticationRequired()) {
-            transport.connect(config.getUserName(), config.getPassword());
+         if (Strings.isValid(username) && Strings.isValid(password)) {
+            transport.connect(username, password);
          } else {
             transport.connect();
          }
@@ -85,6 +101,27 @@ public class MailMessageFactory {
       }
       message.setContent(multiPart);
       message.saveChanges();
+      return message;
+   }
+
+   public MailMessage createTestMessage(String adminEmail, String subject, String plainTextBody) {
+      MailMessage message = new MailMessage();
+      message.setId(UUID.randomUUID().toString());
+      message.setFrom(adminEmail);
+      message.getRecipients().add(adminEmail);
+
+      String subjectWithCounter = String.format("%s #%s", subject, testCounter.incrementAndGet());
+      message.setSubject(subjectWithCounter);
+
+      String htmlData =
+         String.format("<html><body><big>%s</big><p>%s</p></body></html>", subjectWithCounter, plainTextBody);
+      DataSource source;
+      try {
+         source = MailUtils.createAlternativeDataSource("test.email", htmlData, plainTextBody);
+      } catch (Exception ex) {
+         source = MailUtils.createFromString("test.email", plainTextBody);
+      }
+      message.addAttachment(source);
       return message;
    }
 

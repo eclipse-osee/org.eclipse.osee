@@ -31,7 +31,6 @@ public class MailApplication extends Application {
 
    public void start() {
       singletons.add(new MailResource(mailService));
-      singletons.add(new MailConfigResource(mailService));
    }
 
    public void stop() {

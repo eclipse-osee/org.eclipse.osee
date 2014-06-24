@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" enabled="true" name="org.eclipse.osee.mail.internal.MailServiceImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" configuration-policy="require" deactivate="stop" modified="update">
    <implementation class="org.eclipse.osee.mail.internal.MailServiceImpl"/>
-    
+   <service>
+      <provide interface="org.eclipse.osee.mail.MailService"/>
+   </service>    
    <reference interface="org.eclipse.osee.event.EventService" name="EventService" 
    	cardinality="1..1"  
    	policy="static" 
    	bind="setEventService" />
-   	
-   <service>
-      <provide interface="org.eclipse.osee.mail.MailService"/>
-   </service>
-    
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
 </scr:component>

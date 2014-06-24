@@ -36,9 +36,6 @@ import org.eclipse.osee.mail.SendMailStatus;
 @Path("send")
 public class MailResource {
 
-   private static long STATUS_WAIT_TIME = 60;
-   private static int testEmailCount = 0;
-
    private final MailService mailService;
 
    public MailResource(MailService mailService) {
@@ -49,14 +46,14 @@ public class MailResource {
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public MailMessage getTestMailMessage() {
-      return mailService.createSystemTestMessage(++testEmailCount);
+      return mailService.createSystemTestMessage();
    }
 
    @POST
    @Path("test")
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public SendMailStatus sendTestMail() throws Exception {
-      MailMessage message = mailService.createSystemTestMessage(++testEmailCount);
+      MailMessage message = mailService.createSystemTestMessage();
 
       List<SendMailStatus> results = sendMail(message);
       return results.iterator().next();
@@ -74,7 +71,7 @@ public class MailResource {
    }
 
    private List<SendMailStatus> sendMail(MailMessage... messages) throws InterruptedException, ExecutionException {
-      List<Callable<SendMailStatus>> calls = mailService.createSendCalls(STATUS_WAIT_TIME, TimeUnit.SECONDS, messages);
+      List<Callable<SendMailStatus>> calls = mailService.createSendCalls(messages);
       List<Future<SendMailStatus>> futures = new ArrayList<Future<SendMailStatus>>();
 
       if (messages.length > 0) {

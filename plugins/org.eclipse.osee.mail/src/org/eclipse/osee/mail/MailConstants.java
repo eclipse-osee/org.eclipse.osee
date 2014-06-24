@@ -21,10 +21,6 @@ public final class MailConstants {
 
    private static final String PREFIX = "org/eclipse/osee/mail/event/";
 
-   public static final String REGISTRATION_EVENT = PREFIX + "MAIL_SERVICE_REGISTRATION";
-
-   public static final String DEREGISTRATION_EVENT = PREFIX + "MAIL_SERVICE_DEREGISTRATION";
-
    public static final String MAIL_MESSAGE_DELIVERED = PREFIX + "MESSAGE_DELIVERED";
 
    public static final String MAIL_MESSAGE_NOT_DELIVERED = PREFIX + "MESSAGE_NOT_DELIVERED";
@@ -46,4 +42,30 @@ public final class MailConstants {
    public static final String MAIL_UUID = "mail.uuid";
 
    public static final String MAIL_UUID_HEADER = "OSEE-MAIL-UUID";
+
+   public static final String NAMESPACE = "mail.server";
+
+   private static String qualify(String value) {
+      return String.format("%s.%s", NAMESPACE, value);
+   }
+
+   public static final String MAIL_SERVER_USERNAME = qualify("username");
+   public static final String MAIL_SERVER_PASSWORD = qualify("password");
+   public static final String MAIL_SERVER_HOST = qualify("host");
+   public static final String MAIL_SERVER_PORT = qualify("port");
+   public static final String MAIL_SERVER_TRANSPORT = qualify("transport");
+   public static final String MAIL_SERVER_ADMIN_EMAIL = qualify("admin.email");
+   public static final String MAIL_SERVER_TEST_EMAIL_SUBJECT = qualify("test.email.subject");
+   public static final String MAIL_SERVER_TEST_EMAIL_BODY = qualify("test.email.body");
+   public static final String MAIL_SERVER_STATUS_WAIT_TIME_MILLIS = qualify("status.wait.time");
+
+   public static final String DEFAULT_MAIL_SERVER_USERNAME = null;
+   public static final String DEFAULT_MAIL_SERVER_PASSWORD = null;
+   public static final String DEFAULT_MAIL_SERVER_HOST = null;
+   public static final int DEFAULT_MAIL_SERVER_PORT = 25;
+   public static final String DEFAULT_MAIL_SERVER_TRANSPORT = "smtp";
+   public static final String DEFAULT_MAIL_SERVER_ADMIN_EMAIL = null;
+   public static final String DEFAULT_MAIL_SERVER_TEST_EMAIL_SUBJECT = "Test Email";
+   public static final String DEFAULT_MAIL_SERVER_TEST_EMAIL_BODY = "This is a test email sent from OSEE Mail Service";
+   public static final long DEFAULT_MAIL_SERVER_STATUS_WAIT_TIME_MILLIS = 60L * 1000L;
 }

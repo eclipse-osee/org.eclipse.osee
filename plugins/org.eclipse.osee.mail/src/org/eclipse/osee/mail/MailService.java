@@ -12,18 +12,14 @@ package org.eclipse.osee.mail;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface MailService {
 
-   List<Callable<SendMailStatus>> createSendCalls(long waitForStatus, TimeUnit unit, MailMessage... emails);
+   List<Callable<SendMailStatus>> createSendCalls(MailMessage... emails);
 
-   MailServiceConfig getConfiguration();
+   MailMessage createSystemTestMessage();
 
-   void setConfiguration(MailServiceConfig config);
-
-   MailMessage createSystemTestMessage(int testNumber);
 }

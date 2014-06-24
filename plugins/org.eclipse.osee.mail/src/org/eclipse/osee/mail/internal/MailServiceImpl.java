@@ -13,17 +13,14 @@ package org.eclipse.osee.mail.internal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import javax.activation.DataSource;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.mail.event.TransportListener;
 import org.eclipse.osee.event.EventService;
-import org.eclipse.osee.mail.MailConstants;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.mail.MailConfiguration;
 import org.eclipse.osee.mail.MailMessage;
 import org.eclipse.osee.mail.MailService;
-import org.eclipse.osee.mail.MailServiceConfig;
-import org.eclipse.osee.mail.MailUtils;
 import org.eclipse.osee.mail.SendMailStatus;
 
 /**
@@ -31,69 +28,58 @@ import org.eclipse.osee.mail.SendMailStatus;
  */
 public class MailServiceImpl implements MailService {
 
-   private MailServiceConfig config;
-   private MailMessageFactory factory;
    private EventService eventService;
+   private Log logger;
+
+   private MailMessageFactory factory;
    private TransportListener[] listeners;
+   private volatile MailConfiguration config;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setEventService(EventService eventService) {
       this.eventService = eventService;
    }
 
-   public EventService getEventService() {
-      return eventService;
-   }
-
-   @Override
-   public MailServiceConfig getConfiguration() {
-      return config;
-   }
-
-   @Override
-   public void setConfiguration(MailServiceConfig config) {
-      this.config.setTo(config);
-   }
-
-   public synchronized void start(Map<String, ?> props) {
-      config = new MailServiceConfig();
-      factory = new MailMessageFactory(config);
-      getEventService().postEvent(MailConstants.REGISTRATION_EVENT, props);
-
+   public void start(Map<String, Object> props) {
+      logger.trace("Starting [%s]...", getClass().getSimpleName());
+      update(props);
+      AtomicInteger testCounter = new AtomicInteger();
+      factory = new MailMessageFactory(logger, testCounter);
       listeners = new TransportListener[] {new MailTransportListener(eventService)};
    }
 
-   public synchronized void stop(Map<String, ?> props) {
-      getEventService().postEvent(MailConstants.DEREGISTRATION_EVENT, props);
+   public void stop(Map<String, Object> props) {
+      logger.trace("Stopping [%s]...", getClass().getSimpleName());
       listeners = null;
+      factory = null;
+      config = null;
+   }
+
+   public void update(Map<String, Object> props) {
+      logger.trace("Configuring [%s]...", getClass().getSimpleName());
+      config = MailConfiguration.newConfig(props);
    }
 
    @Override
-   public List<Callable<SendMailStatus>> createSendCalls(long waitForStatus, TimeUnit timeUnit, MailMessage... emails) {
+   public List<Callable<SendMailStatus>> createSendCalls(MailMessage... emails) {
+      final MailConfiguration configCopy = config.copy();
+      long waitForStatus = configCopy.getStatusWaitTime();
       List<Callable<SendMailStatus>> callables = new ArrayList<Callable<SendMailStatus>>();
       for (MailMessage mail : emails) {
-         callables.add(new SendMailCallable(factory, mail, waitForStatus, timeUnit, listeners));
+         callables.add(new SendMailCallable(configCopy, factory, mail, waitForStatus, listeners));
       }
       return callables;
    }
 
    @Override
-   public MailMessage createSystemTestMessage(int testNumber) {
-      MailServiceConfig config = getConfiguration();
-      MailMessage message = new MailMessage();
-      message.setId(UUID.randomUUID().toString());
-      message.setFrom(config.getSystemAdminEmailAddress());
-      message.setSubject(String.format("Test email #%s", testNumber));
-      message.getRecipients().add(config.getSystemAdminEmailAddress());
-
-      String plainText = String.format("This is test email %s sent from org.eclipse.osee.mail.admin", testNumber);
-      String htmlData = String.format("<html><body><h4>%s</h4></body></html>", plainText);
-      DataSource source;
-      try {
-         source = MailUtils.createAlternativeDataSource("TestEmail", htmlData, plainText);
-      } catch (Exception ex) {
-         source = MailUtils.createFromString("TestEmail", plainText);
-      }
-      message.addAttachment(source);
-      return message;
+   public MailMessage createSystemTestMessage() {
+      final MailConfiguration configCopy = config.copy();
+      String adminEmail = configCopy.getAdminEmail();
+      String subject = configCopy.getTestEmailSubject();
+      String body = configCopy.getTestEmailBody();
+      return factory.createTestMessage(adminEmail, subject, body);
    }
 }
