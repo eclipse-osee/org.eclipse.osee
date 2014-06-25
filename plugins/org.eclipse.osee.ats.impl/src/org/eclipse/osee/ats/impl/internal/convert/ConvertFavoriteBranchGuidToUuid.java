@@ -113,8 +113,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          art.getArtifactType(), art.getName(), art.getGuid());
       if (!reportOnly) {
          try {
-            tx.deleteByAttributeId(art, attr);
-            tx.setAttributesFromStrings(art, CoreAttributeTypes.FavoriteBranch, String.valueOf(branchUuid));
+            tx.setAttributeById(art, attr, String.valueOf(branchUuid));
          } catch (OseeCoreException ex) {
             data.logErrorWithFormat(
                "Error building transaction for convert to uuid attribute of value %d for artifact type [%s] name [%s] id [%s]\n",
