@@ -210,24 +210,34 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
       extensionRegistry.addListener(new IRegistryEventListener() {
          @Override
          public void added(IExtension[] extensions) {
-            xNavComp.refresh();
+            refreshNavComp();
          }
 
          @Override
          public void added(IExtensionPoint[] extensionPoints) {
-            xNavComp.refresh();
+            refreshNavComp();
          }
 
          @Override
          public void removed(IExtension[] extensions) {
-            xNavComp.refresh();
+            refreshNavComp();
          }
 
          @Override
          public void removed(IExtensionPoint[] extensionPoints) {
-            xNavComp.refresh();
+            refreshNavComp();
          }
       }, "org.eclipse.osee.framework.ui.skynet.BlamOperation");
+   }
+
+   private void refreshNavComp() {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            xNavComp.refresh();
+         }
+      });
    }
 
    private String getWhoAmI() {
