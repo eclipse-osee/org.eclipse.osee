@@ -17,8 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -45,39 +43,32 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
-   private final TransactionDelta txDelta;
-   private final TransactionRecord mergeTransaction;
+   private final Long sourceBranchId, destinationBranchId, mergeBranchId;
+   private final Integer sourceBaselineTxId, destinationHeadTxId, mergeTxId;
+
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionDelta txDelta, TransactionRecord mergeTransaction) {
+   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, Long sourceBranchId, Integer sourceBaselineTxId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
       super(logger, session, dbService);
-      this.mergeTransaction = mergeTransaction;
-      this.txDelta = txDelta;
+      this.sourceBranchId = sourceBranchId;
+      this.sourceBaselineTxId = sourceBaselineTxId;
+      this.destinationBranchId = destinationBranchId;
+      this.destinationHeadTxId = destinationHeadTxId;
+      this.mergeBranchId = mergeBranchId;
+      this.mergeTxId = mergeTxId;
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
    }
 
-   private long getSourceBranchId() {
-      return txDelta.getStartTx().getBranchId();
-   }
-
-   private int getSourceBaselineTransactionId() throws OseeCoreException {
-      return txDelta.getStartTx().getBranch().getBaseTransaction().getId();
-   }
-
-   private TransactionRecord getCompareBranchHeadTx() {
-      return txDelta.getEndTx();
-   }
-
    private boolean hasMergeBranch() {
-      return mergeTransaction != null;
+      return mergeBranchId != null;
    }
 
    @Override
    public List<ChangeItem> call() throws Exception {
       List<ChangeItem> changeData = new LinkedList<ChangeItem>();
 
-      Conditions.checkExpressionFailOnTrue(txDelta.areOnTheSameBranch(),
-         "Unable to compute deltas between transactions on the same branch [%s]", txDelta);
+      Conditions.checkExpressionFailOnTrue(sourceBranchId.equals(destinationBranchId),
+         "Unable to compute deltas between transactions on the same branch [%s]", sourceBranchId);
 
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
 
@@ -101,10 +92,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private void loadSourceBranchChanges(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         long sourceBranchId = getSourceBranchId();
-         int sourceBaselineTxsId = getSourceBaselineTransactionId();
          chStmt.runPreparedQuery(MAX_FETCH, SELECT_SOURCE_BRANCH_CHANGES, sourceBranchId,
-            TxChange.NOT_CURRENT.getValue(), sourceBaselineTxsId, sourceBranchId, sourceBaselineTxsId);
+            TxChange.NOT_CURRENT.getValue(), sourceBaselineTxId, sourceBranchId, sourceBaselineTxId);
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
@@ -130,11 +119,11 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
          if (hasMergeBranch()) {
             loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-               mergeTransaction);
+               mergeBranchId, mergeTxId, true);
          }
 
          loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-            getCompareBranchHeadTx());
+            destinationBranchId, destinationHeadTxId, false);
 
          loadNonCurrentSourceData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
             factory.getItemValueColumnName());
@@ -145,15 +134,15 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, TransactionRecord transactionLimit) throws OseeCoreException {
+   private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, Long txBranchId, Integer txId, boolean isMergeBranch) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
             + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
-         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-            transactionLimit.getBranchId(), transactionLimit.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(), txBranchId,
+            txId);
 
          while (chStmt.next()) {
             checkForCancelled();
@@ -162,7 +151,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             Long gammaId = chStmt.getLong("gamma_id");
             ChangeItem change = changesByItemId.get(itemId);
 
-            if (transactionLimit.getBranch().getBranchType().isMergeBranch()) {
+            if (isMergeBranch) {
                change.getNetChange().setGammaId(gammaId);
                change.getNetChange().setModType(ModificationType.MERGED);
             } else {
@@ -186,10 +175,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
                + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
                " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
-         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-            getSourceBranchId());
+         chStmt.runPreparedQuery(MAX_FETCH, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(), sourceBranchId);
 
-         int baselineTransactionId = getSourceBaselineTransactionId();
          int previousItemId = -1;
          boolean isFirstSet = false;
          while (chStmt.next()) {
@@ -208,7 +195,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             if (previousItemId != itemId) {
                isFirstSet = false;
             }
-            if (baselineTransactionId == transactionId) {
+            if (sourceBaselineTxId == transactionId) {
                setVersionData(change.getBaselineVersion(), gammaId, modType, value);
             } else if (!isFirstSet) {
                setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value);

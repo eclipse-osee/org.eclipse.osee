@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -82,15 +81,26 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       return committer != null ? committer.getLocalId() : -1;
    }
 
-   private List<ChangeItem> callComputeChanges(TransactionDelta txDelta, TransactionRecord mergeTx) throws Exception {
+   private List<ChangeItem> callComputeChanges(Branch mergeBranch) throws Exception {
+      TransactionRecord sourceTx = getHeadTx(source);
+      TransactionRecord destinationTx = getHeadTx(destination);
+
+      TransactionRecord mergeTx = getMergeTx(mergeBranch);
+
+      Long mergeBranchId = null;
+      Integer mergeTxId = null;
+      if (mergeTx != null) {
+         mergeBranchId = mergeTx.getBranchId();
+         mergeTxId = mergeTx.getId();
+      }
+
       Callable<List<ChangeItem>> loadChanges =
-         new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), txDelta, mergeTx);
+         new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), source.getUuid(),
+            source.getBaseTransaction().getId(), destinationTx.getBranchId(), destinationTx.getId(), mergeBranchId,
+            mergeTxId);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
-      TransactionRecord sourceTx = getHeadTx(source);
-      TransactionRecord destTx = getHeadTx(destination);
-
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destTx));
+      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       return callAndCheckForCancel(computeChanges);
@@ -98,15 +108,8 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
 
    @Override
    public TransactionRecord call() throws Exception {
-      TransactionRecord sourceTx = getHeadTx(source);
-      TransactionRecord destinationTx = getHeadTx(destination);
-
-      TransactionDelta txDelta = new TransactionDelta(sourceTx, destinationTx);
-
       Branch mergeBranch = getMergeBranch(source, destination);
-      TransactionRecord mergeTx = getMergeTx(mergeBranch);
-
-      List<ChangeItem> changes = callComputeChanges(txDelta, mergeTx);
+      List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<TransactionRecord> commitCallable =
          new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getBranchCache(),

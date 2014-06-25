@@ -71,7 +71,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
          if (editor != null) {
             ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }
-         Branch path = transaction.getBranch();
+         Branch path = transaction.getFullBranch();
 
          monitor.setTaskName("Initializating cache");
 

@@ -30,7 +30,6 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
    }
 
    public TransactionRecord create(int transactionNumber, long branchUuid, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
-      Conditions.checkNotNull(branchCache, "branchCache");
       return new TransactionRecord(transactionNumber, branchUuid, comment, timestamp, authorArtId, commitArtId, txType,
          branchCache);
    }

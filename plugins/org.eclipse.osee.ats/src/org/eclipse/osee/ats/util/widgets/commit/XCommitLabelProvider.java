@@ -112,7 +112,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
-         branch = txRecord.getBranch();
+         branch = txRecord.getFullBranch();
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }

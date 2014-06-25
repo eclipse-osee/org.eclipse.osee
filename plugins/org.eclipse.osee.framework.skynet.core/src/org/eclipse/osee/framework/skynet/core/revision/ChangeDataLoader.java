@@ -149,7 +149,7 @@ public class ChangeDataLoader extends AbstractOperation {
             // if basGamma is null then this must be a new artifact
             // Otherwise, change must be on IS branch and WAS branch.
             // In either case, set the baseTxArtifact to the base of the start branch
-            baseTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
+            baseTxArtifact = bulkLoaded.get(txDelta.getStartTx().getFullBranch().getBaseTransaction(), artId);
          }
 
          ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact, baseTxArtifact);
@@ -173,7 +173,7 @@ public class ChangeDataLoader extends AbstractOperation {
             startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
          } else {
-            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getBranch().getBaseTransaction(), artId);
+            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getFullBranch().getBaseTransaction(), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          }
 
@@ -263,7 +263,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
 
       if (!txDelta.areOnTheSameBranch()) {
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx().getBranch().getBaseTransaction(), true);
+         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx().getFullBranch().getBaseTransaction(), true);
       }
    }
 

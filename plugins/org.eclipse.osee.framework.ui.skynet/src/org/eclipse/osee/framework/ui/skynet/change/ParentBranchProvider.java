@@ -28,7 +28,7 @@ public final class ParentBranchProvider implements IBranchProvider {
    public Branch getBranch(IProgressMonitor monitor) throws OseeCoreException {
       Branch selectedBranch = null;
       TransactionDelta txDelta = uiData.getTxDelta();
-      Branch childBranch = txDelta.getStartTx().getBranch();
+      Branch childBranch = txDelta.getStartTx().getFullBranch();
       selectedBranch = childBranch.getParentBranch();
       Conditions.checkNotNull(selectedBranch, "parent branch");
       return selectedBranch;

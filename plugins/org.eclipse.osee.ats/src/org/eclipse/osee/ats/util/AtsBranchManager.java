@@ -185,11 +185,11 @@ public final class AtsBranchManager {
       Collection<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
       for (TransactionRecord id : AtsBranchManagerCore.getTransactionIds(teamArt, showMergeManager)) {
          // ignore working branches that have been committed
-         if (id.getBranch().getBranchType().isWorkingBranch() && id.getBranch().getBranchState().isCommitted()) {
+         if (id.getFullBranch().getBranchType().isWorkingBranch() && id.getFullBranch().getBranchState().isCommitted()) {
             continue;
          }
          // ignore working branches that have been re-baselined (e.g. update form parent branch)
-         else if (id.getBranch().getBranchType().isWorkingBranch() && id.getBranch().getBranchState().isRebaselined()) {
+         else if (id.getFullBranch().getBranchType().isWorkingBranch() && id.getFullBranch().getBranchState().isRebaselined()) {
             continue;
          } else {
             transactionIds.add(id);

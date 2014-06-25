@@ -63,7 +63,16 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          callable = new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getDatabaseService(), txDelta);
       } else {
          TransactionRecord mergeTx = getMergeTransaction(sourceTx, destinationTx);
-         callable = new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), txDelta, mergeTx);
+         Long mergeBranchId = null;
+         Integer mergeTxId = null;
+         if (mergeTx != null) {
+            mergeBranchId = mergeTx.getBranchId();
+            mergeTxId = mergeTx.getId();
+         }
+         callable =
+            new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), sourceTx.getBranchId(),
+               sourceTx.getFullBranch().getBaseTransaction().getId(), destinationTx.getBranchId(),
+               destinationTx.getId(), mergeBranchId, mergeTxId);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 

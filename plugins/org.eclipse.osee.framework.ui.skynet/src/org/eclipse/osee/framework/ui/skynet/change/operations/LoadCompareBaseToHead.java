@@ -31,7 +31,7 @@ public class LoadCompareBaseToHead extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Branch branch = uiData.getTxDelta().getStartTx().getBranch();
+      Branch branch = uiData.getTxDelta().getStartTx().getFullBranch();
       TransactionRecord startTx = branch.getBaseTransaction();
       TransactionRecord endTx = TransactionManager.getHeadTransaction(branch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);

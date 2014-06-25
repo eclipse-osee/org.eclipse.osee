@@ -40,7 +40,7 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitId, BranchManager.getCommonBranch());
          }
       } else {
-         Branch sourceBranch = txDelta.getStartTx().getBranch();
+         Branch sourceBranch = txDelta.getStartTx().getFullBranch();
          associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
       }
       monitor.worked(calculateWork(0.80));

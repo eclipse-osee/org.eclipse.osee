@@ -640,7 +640,7 @@ public class BranchManager {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, BranchManager.getCommonBranch());
          }
       } else {
-         Branch sourceBranch = txDelta.getStartTx().getBranch();
+         Branch sourceBranch = txDelta.getStartTx().getFullBranch();
          associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
       }
       return associatedArtifact;

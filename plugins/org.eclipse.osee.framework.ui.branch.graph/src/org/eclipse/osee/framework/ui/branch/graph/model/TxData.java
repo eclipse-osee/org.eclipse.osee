@@ -120,7 +120,7 @@ public class TxData {
    }
 
    protected static TxData createTxData(TransactionRecord txId) throws OseeCoreException {
-      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
+      return new TxData(txId.getFullBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
          txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }
 }

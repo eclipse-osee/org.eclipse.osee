@@ -565,7 +565,7 @@ public class AtsBranchManagerCore {
       Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
       for (TransactionRecord transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
-         Branch branch = transactionId.getBranch();
+         Branch branch = transactionId.getFullBranch();
          if (branch.getBranchType().isBaselineBranch() && branch.getArchiveState().isUnArchived()) {
             transactionIds.add(transactionId);
          }
