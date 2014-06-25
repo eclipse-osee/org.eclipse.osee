@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.utility;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +63,55 @@ public class RestUtil {
       jObj.put("name", art.getName());
       jObj.put("uuid", art.getLocalId());
       return jObj;
+   }
+
+   public static JSONObject getJsonObject(OrcsApi orcsApi, ArtifactReadable artifact) throws Exception, JSONException {
+      JSONObject jsonObj = getDefaultJSon(artifact);
+      addAttributes(orcsApi, jsonObj, artifact);
+      return jsonObj;
+   }
+
+   public static JSONArray getJsonArray(OrcsApi orcsApi, ResultSet<ArtifactReadable> artifacts) throws Exception, JSONException {
+      JSONArray jsonArray = new JSONArray();
+      for (ArtifactReadable artifact : artifacts) {
+         JSONObject jsonObj = getJsonObject(orcsApi, artifact);
+         jsonArray.put(jsonObj);
+      }
+      return jsonArray;
+   }
+
+   public static JSONObject addAttributes(OrcsApi orcsApi, JSONObject jsonObj, ArtifactReadable art) throws Exception {
+      addAttributesWithValues(orcsApi, jsonObj, art);
+      return jsonObj;
+   }
+
+   private static JSONObject addAttributesWithValues(OrcsApi orcsApi, JSONObject jsonObj, ArtifactReadable artifact) throws Exception {
+      addAttribute(orcsApi, jsonObj, artifact);
+      return jsonObj;
+   }
+
+   private static void addAttribute(OrcsApi orcsApi, JSONObject jsonObj, ArtifactReadable art) throws Exception {
+      for (IAttributeType attrType : orcsApi.getOrcsTypes(null).getAttributeTypes().getAll()) {
+         if (art.isAttributeTypeValid(attrType)) {
+            ResultSet<? extends AttributeReadable<Object>> attributeVals = art.getAttributes();
+            if (!attributeVals.isEmpty()) {
+               if (art.isAttributeTypeValid(attrType) && orcsApi.getOrcsTypes(null).getAttributeTypes().getMaxOccurrences(
+                  attrType) > 1) {
+                  List<String> attributeValues = new ArrayList<String>();
+                  for (AttributeReadable<?> attrRead : attributeVals) {
+                     String valueStr = String.valueOf(attrRead.getValue());
+                     attributeValues.add(valueStr);
+                  }
+                  if (!attributeValues.isEmpty()) {
+                     jsonObj.put(attrType.getName(), attributeValues);
+                  }
+               } else if (attributeVals.size() == 1) {
+                  String valueStr = String.valueOf(attributeVals.iterator().next().getValue());
+                  jsonObj.put(attrType.getName(), valueStr);
+               }
+            }
+         }
+      }
    }
 
 }
