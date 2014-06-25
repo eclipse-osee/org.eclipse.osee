@@ -1,0 +1,25 @@
+<?author?>Ryan D. Brooks
+<?title?>Data Rights Report
+<?usageAndDescription?>
+       <strong>Generates the Data Rights Report</strong>
+       <ul>
+               <li>Selected Branch - provide the Branch to obtain the Data Rights Report for</li>
+               <li>Code Root Directory - if specified, provides:
+               <ul>
+                   <li> a file listing the directories to search </li>
+                   <li> a directory to recurse into looking for files</li>
+               </ul>
+               </li>
+               <li>Start Button - generates the report</li>
+       </ul>
+<?widgets?>
+      <label>Selected Branch</label> <input id="selected_branch" type="text" list="workingAndBaselineBranches" required/><br />
+      <label>Code Root Directory</label><input id="code_root_dir" type="text" /><br />
+<?javaScript?>
+       function oseeAppStart(oseeAppParams) {
+
+           var branch = oseeAppParams["selected_branch"];
+           var rootDir = oseeAppParams["code_root_dir"];
+           window.location.assign("../datarights?branch="+branch+"&code_root="+rootDir);
+
+       }

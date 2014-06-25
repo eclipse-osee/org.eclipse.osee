@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +24,9 @@ import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 
 /**
  * @author David W. Miller
@@ -69,17 +69,23 @@ public class TraceAccumulator {
    }
 
    private void traceFile(File root) throws IOException {
-      int prefixLength = root.getCanonicalPath().length();
+      String canonicalPath = root.getCanonicalPath();
+      int prefixLength = canonicalPath.length();
+      int index = canonicalPath.indexOf(".ss\\");
+
+      String virtualPrefix =
+         index == -1 ? "" : canonicalPath.substring(canonicalPath.lastIndexOf('\\', index) + 1, index + 4);
+
       for (File sourceFile : Lib.recursivelyListFilesAndDirectories(new ArrayList<File>(400), root, filePattern,
          false)) {
          /**
           * use prefixLength + 1 to account for trailing file separator which is not included in the root canonical path
           */
-         relativePath = sourceFile.toString().substring(prefixLength + 1);
+         relativePath = virtualPrefix + sourceFile.toString().substring(prefixLength + 1);
          int traceCount = parseInputStream(new FileInputStream(sourceFile));
 
          if (traceCount == 0) {
-            noTraceFiles.add(sourceFile.getPath());
+            noTraceFiles.add(relativePath);
          }
       }
    }

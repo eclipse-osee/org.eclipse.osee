@@ -60,6 +60,7 @@ public final class OseeReportApplication extends Application {
       logger.debug(">>>>> registered Safety resource");
       singletons.add(new PublishLowHighReqTraceabilityResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered Low/High Trace resource");
+      singletons.add(new DataRightsSwReqAndCodeResource(logger, properties, resourceRegistry, orcsApi));
       singletons.add(new DataRightsResource(defineApi));
       logger.debug(">>>>> registered Data Rights resource");
       singletons.add(new WordUpdateEndpointImpl(logger, orcsApi, atsServer));
