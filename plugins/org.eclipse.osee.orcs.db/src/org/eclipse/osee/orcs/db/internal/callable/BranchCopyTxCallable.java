@@ -112,9 +112,8 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
             TransactionDetailsType.NonBaselined.getId());
 
          TransactionRecord record =
-            txFactory.create(nextTransactionId, internalBranch.getUuid(), creationComment, timestamp,
-               branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined,
-               branchCache);
+            txFactory.create(nextTransactionId, internalBranch, creationComment, timestamp,
+               branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined);
 
          txCache.cache(record);
 
@@ -158,7 +157,12 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), internalBranch.getUuid()});
+               data.add(new Object[] {
+                  baseTxId,
+                  gamma,
+                  modType.getValue(),
+                  txCurrent.getValue(),
+                  internalBranch.getUuid()});
                gammas.add(gamma);
             }
          }

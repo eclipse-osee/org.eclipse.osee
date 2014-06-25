@@ -96,8 +96,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
 
       Callable<List<ChangeItem>> loadChanges =
          new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), source.getUuid(),
-            source.getBaseTransaction().getId(), destinationTx.getBranchId(), destinationTx.getId(), mergeBranchId,
-            mergeTxId);
+            destinationTx.getBranchId(), destinationTx.getId(), mergeBranchId, mergeTxId);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
       changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx));

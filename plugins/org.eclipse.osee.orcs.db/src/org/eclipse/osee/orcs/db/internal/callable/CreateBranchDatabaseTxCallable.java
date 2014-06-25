@@ -192,8 +192,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       if (branch.getBranchType().isSystemRootBranch()) {
          TransactionRecord systemTx =
-            txFactory.create(nextTransactionId, uuid, newBranchData.getCreationComment(), timestamp,
-               newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
+            txFactory.create(nextTransactionId, branch, newBranchData.getCreationComment(), timestamp,
+               newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined);
          branch.setSourceTransaction(systemTx);
       } else {
          int srcTx = IdUtil.getSourceTxId(newBranchData, txCache);
@@ -218,8 +218,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          TransactionDetailsType.Baselined.getId());
 
       TransactionRecord record =
-         txFactory.create(nextTransactionId, branch.getUuid(), newBranchData.getCreationComment(), timestamp,
-            newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined, branchCache);
+         txFactory.create(nextTransactionId, branch, newBranchData.getCreationComment(), timestamp,
+            newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined);
 
       if (branch.getBranchType().isSystemRootBranch()) {
          branch.setSourceTransaction(record);

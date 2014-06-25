@@ -117,7 +117,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             chStmt.runPreparedQuery(expectedCount, SELECT_NON_EXISTING_TRANSACTIONS_BY_QUERY_ID, queryId);
             while (chStmt.next()) {
                int transactionNumber = chStmt.getInt("id");
-               factory.getOrCreate(cache, transactionNumber, branchCache);
+               factory.getOrCreate(cache, transactionNumber, null);
             }
          } finally {
             chStmt.close();
@@ -159,7 +159,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, long branchUuid, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       TransactionRecord record =
          factory.createOrUpdate(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId, commitArtId,
-            txType, branchCache);
+            txType, null);
       record.clearDirty();
       return record;
    }

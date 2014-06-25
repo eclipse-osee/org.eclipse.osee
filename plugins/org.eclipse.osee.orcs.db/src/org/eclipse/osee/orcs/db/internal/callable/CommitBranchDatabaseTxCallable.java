@@ -162,8 +162,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          TransactionDetailsType.NonBaselined.getId(), destinationBranch.getUuid(), newTransactionNumber, comment,
          timestamp, userArtId, sourceBranch.getAssociatedArtifactId());
       TransactionRecord record =
-         txFactory.create(newTransactionNumber, destinationBranch.getUuid(), comment, timestamp, userArtId,
-            sourceBranch.getAssociatedArtifactId(), TransactionDetailsType.NonBaselined, branchCache);
+         txFactory.create(newTransactionNumber, destinationBranch, comment, timestamp, userArtId,
+            sourceBranch.getAssociatedArtifactId(), TransactionDetailsType.NonBaselined);
 
       return record;
    }

@@ -15,11 +15,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.message.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
@@ -53,8 +50,7 @@ public class TransactionCacheUpdateResponseTest {
       }
 
       TransactionRecordFactory factory = new TransactionRecordFactory();
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
-      TransactionCacheUpdateResponse response = TransactionCacheUpdateResponse.fromCache(factory, data, branchCache);
+      TransactionCacheUpdateResponse response = TransactionCacheUpdateResponse.fromCache(factory, data);
       List<TransactionRecord> actual = response.getTxRows();
       Assert.assertEquals(data.size(), actual.size());
       for (int index = 0; index < data.size(); index++) {

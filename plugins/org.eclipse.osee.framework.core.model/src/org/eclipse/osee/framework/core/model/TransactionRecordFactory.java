@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, IOseeBranch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
+   public TransactionRecord create(int transactionNumber, IOseeBranch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       return this.create(transactionNumber, branch.getUuid(), comment, timestamp, authorArtId, commitArtId, txType,
-         branchCache);
+         null);
    }
 
    public TransactionRecord create(int transactionNumber, long branchUuid, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) throws OseeCoreException {
@@ -35,7 +35,6 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
    }
 
    private TransactionRecord create(int transactionNumber, BranchCache branchCache) throws OseeCoreException {
-      Conditions.checkNotNull(branchCache, "branchCache");
       return new TransactionRecord(transactionNumber, branchCache);
    }
 

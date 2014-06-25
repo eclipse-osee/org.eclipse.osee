@@ -37,6 +37,9 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
    private final TransactionRecord destinationTx;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
+   private static final String SELECT_BASE_TRANSACTION =
+      "select baseline_transaction_id from osee_branch where branch_id = ?";
+
    public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
       super(logger, session, service);
       this.branchCache = branchCache;
@@ -71,8 +74,7 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          }
          callable =
             new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), sourceTx.getBranchId(),
-               sourceTx.getFullBranch().getBaseTransaction().getId(), destinationTx.getBranchId(),
-               destinationTx.getId(), mergeBranchId, mergeTxId);
+               destinationTx.getBranchId(), destinationTx.getId(), mergeBranchId, mergeTxId);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 

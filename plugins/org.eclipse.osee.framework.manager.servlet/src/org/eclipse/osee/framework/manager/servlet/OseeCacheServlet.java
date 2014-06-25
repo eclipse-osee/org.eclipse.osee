@@ -237,8 +237,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
                   record.add(txCache.getOrLoad(item));
                }
             }
-            response =
-               TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record, branchCache);
+            response = TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record);
             transalatorId = CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE;
             break;
          case ARTIFACT_TYPE_CACHE:

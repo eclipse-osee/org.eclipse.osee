@@ -30,6 +30,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Ryan D. Brooks
@@ -41,17 +42,19 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
       "select gamma_id, mod_type from osee_txs txs where txs.branch_id = ? and txs.tx_current <> ? and txs.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = txs.gamma_id and txs1.mod_type = txs.mod_type)";
 
+   private static final String SELECT_BASE_TRANSACTION =
+      "select baseline_transaction_id from osee_branch where branch_id = ?";
+
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
    private final Long sourceBranchId, destinationBranchId, mergeBranchId;
-   private final Integer sourceBaselineTxId, destinationHeadTxId, mergeTxId;
+   private final Integer destinationHeadTxId, mergeTxId;
 
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, Long sourceBranchId, Integer sourceBaselineTxId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
+   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, Long sourceBranchId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
       super(logger, session, dbService);
       this.sourceBranchId = sourceBranchId;
-      this.sourceBaselineTxId = sourceBaselineTxId;
       this.destinationBranchId = destinationBranchId;
       this.destinationHeadTxId = destinationHeadTxId;
       this.mergeBranchId = mergeBranchId;
@@ -63,6 +66,10 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return mergeBranchId != null;
    }
 
+   private int getSourceBaselineTxId() {
+      return getBaseTxId(sourceBranchId);
+   }
+
    @Override
    public List<ChangeItem> call() throws Exception {
       List<ChangeItem> changeData = new LinkedList<ChangeItem>();
@@ -71,14 +78,15 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          "Unable to compute deltas between transactions on the same branch [%s]", sourceBranchId);
 
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
+      int sourceBaselineTxId = getSourceBaselineTxId();
 
-      loadSourceBranchChanges(txJoin);
+      loadSourceBranchChanges(txJoin, sourceBaselineTxId);
 
       int txJoinId = txJoin.getQueryId();
       try {
-         loadByItemId(changeData, txJoinId, changeItemLoader.createArtifactChangeItemFactory());
-         loadByItemId(changeData, txJoinId, changeItemLoader.createAttributeChangeItemFactory());
-         loadByItemId(changeData, txJoinId, changeItemLoader.createRelationChangeItemFactory());
+         loadByItemId(changeData, txJoinId, changeItemLoader.createArtifactChangeItemFactory(), sourceBaselineTxId);
+         loadByItemId(changeData, txJoinId, changeItemLoader.createAttributeChangeItemFactory(), sourceBaselineTxId);
+         loadByItemId(changeData, txJoinId, changeItemLoader.createRelationChangeItemFactory(), sourceBaselineTxId);
       } finally {
          try {
             txJoin.delete();
@@ -89,7 +97,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return changeData;
    }
 
-   private void loadSourceBranchChanges(TransactionJoinQuery txJoin) throws OseeCoreException {
+   private void loadSourceBranchChanges(TransactionJoinQuery txJoin, int sourceBaselineTxId) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(MAX_FETCH, SELECT_SOURCE_BRANCH_CHANGES, sourceBranchId,
@@ -108,7 +116,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory) throws OseeCoreException {
+   private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory, int sourceBaselineTxId) throws OseeCoreException {
       HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
 
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
@@ -126,7 +134,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             destinationBranchId, destinationHeadTxId, false);
 
          loadNonCurrentSourceData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-            factory.getItemValueColumnName());
+            factory.getItemValueColumnName(), sourceBaselineTxId);
          changeData.addAll(changesByItemId.values());
 
       } finally {
@@ -164,7 +172,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void loadNonCurrentSourceData(String tableName, String idColumnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
+   private void loadNonCurrentSourceData(String tableName, String idColumnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName, int sourceBaselineTxId) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       String query;
 
@@ -217,6 +225,11 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          versionedChange.setModType(modType);
          versionedChange.setGammaId(gammaId);
       }
+   }
+
+   private int getBaseTxId(long branchId) throws OseeCoreException {
+      return getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
+         SELECT_BASE_TRANSACTION, branchId);
    }
 
 }

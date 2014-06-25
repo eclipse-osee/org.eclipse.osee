@@ -117,7 +117,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
       return factory.create(transactionNumber, branch, comment, transactionTime, authorArtId,
-         RelationalConstants.ART_ID_SENTINEL, txType, branchCache);
+         RelationalConstants.ART_ID_SENTINEL, txType);
    }
 
    private static final class TransactionResultImpl implements TransactionResult {
