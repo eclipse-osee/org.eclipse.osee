@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.orcs.data.AttributeId;
+
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeData extends OrcsData {
+public interface AttributeData extends OrcsData, AttributeId {
 
    int getArtifactId();
 

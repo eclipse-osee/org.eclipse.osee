@@ -39,11 +39,6 @@ public class GraphFactoryImpl implements GraphFactory {
    }
 
    @Override
-   public GraphData createGraph(IOseeBranch branch) {
-      return new GraphDataImpl(branch, Integer.MIN_VALUE);
-   }
-
-   @Override
    public GraphData createGraphSetToHeadTx(IOseeBranch branch) throws OseeCoreException {
       Branch fullBranch = branchCache.get(branch);
       TransactionRecord headTransaction = txCache.getHeadTransaction(fullBranch);

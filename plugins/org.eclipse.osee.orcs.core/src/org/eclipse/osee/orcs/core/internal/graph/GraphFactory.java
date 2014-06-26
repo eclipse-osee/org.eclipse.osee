@@ -20,8 +20,6 @@ public interface GraphFactory {
 
    GraphData createGraph(IOseeBranch branch, int transactionId) throws OseeCoreException;
 
-   GraphData createGraph(IOseeBranch branch) throws OseeCoreException;
-
    GraphData createGraphSetToHeadTx(IOseeBranch branch) throws OseeCoreException;
 
 }

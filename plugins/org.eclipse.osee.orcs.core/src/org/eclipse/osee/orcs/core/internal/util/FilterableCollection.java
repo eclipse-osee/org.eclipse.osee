@@ -138,6 +138,6 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
 
    @Override
    public String toString() {
-      return "FilterableCollection [map=" + map + "]";
+      return "FilterableCollection [mapSize=" + map.size() + "]";
    }
 }
