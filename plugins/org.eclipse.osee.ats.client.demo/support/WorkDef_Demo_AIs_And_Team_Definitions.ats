@@ -37,7 +37,6 @@ teamDefinition "Teams" GetOrCreate {
 			version "CIS_Bld_1" {
 				staticId "cis.teamDefHoldingVersions"
 				released True
-				baselineBranchGuid "AyH_f2sSKy3l07fIvDDD"
 				baselineBranchUuid "4"
 			}
 			version "CIS_Bld_2" {
@@ -124,14 +123,12 @@ teamDefinition "Teams" GetOrCreate {
 				guid "A8msa8LTDG36oWAnq3QA"
 				staticId "saw.teamDefHoldingVersions"
 				released True
-				baselineBranchGuid "AyH_f2sSKy3l07fIvAAA"
 				baselineBranchUuid "3"
 			}
 			version "SAW_Bld_2" {
 				guid "A8YqcqyKh3HCkcHfEVwA"
 				staticId "saw.teamDefHoldingVersions"
 				next True allowCreateBranch True allowCommitBranch True
-				baselineBranchGuid "AyH_f2sSKy3l07fIvBBB"
 				baselineBranchUuid "5"
 			}
 			version "SAW_Bld_3" {
