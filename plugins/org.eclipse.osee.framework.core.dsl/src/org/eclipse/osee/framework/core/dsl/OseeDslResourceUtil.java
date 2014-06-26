@@ -53,25 +53,15 @@ public final class OseeDslResourceUtil {
    }
 
    public static OseeDslResource loadModelUnchecked(String uri, String xTextData) throws Exception {
-      xTextData = upConvertTo17(xTextData);
       return loadModelUnchecked(uri, new ByteArrayInputStream(xTextData.getBytes("UTF-8")));
    }
 
    public static InputStream upConvertTo17(InputStream inputStream) throws Exception {
       String typesStr = Lib.inputStreamToString(inputStream);
-      typesStr = upConvertTo17(typesStr);
       return new ByteArrayInputStream(typesStr.getBytes("UTF-8"));
    }
 
-   private static String upConvertTo17(String typesStr) throws Exception {
-      typesStr = typesStr.replaceAll("branchGuid \"AyH_fAj8lhQGmQw2iBAA\"", "branchUuid 423");
-      typesStr = typesStr.replaceAll("branchGuid \"AyH_e5wAblOqTdLkxqQA\"", "branchUuid 714");
-      typesStr = typesStr.replaceAll("branchGuid \"GyoL_rFqqBYbOcuGYzQA\"", "branchUuid 4312");
-      return typesStr;
-   }
-
    public static OseeDslResource loadModel(String uri, String xTextData) throws Exception {
-      xTextData = upConvertTo17(xTextData);
       OseeDslResource displayLogicResource = loadModelUnchecked(uri, xTextData);
       checkErrorsEmpty(displayLogicResource.getErrors());
       return displayLogicResource;
