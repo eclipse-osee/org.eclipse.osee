@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -34,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.junit.Assert;
@@ -71,6 +73,8 @@ public class ArtifactTest {
    @Mock private Attribute deleted;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute differentType;
+   
+   @Mock private GraphData graph;
    // @formatter:on
 
    private final String guid = GUID.create();
@@ -82,6 +86,7 @@ public class ArtifactTest {
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
       artifact = new ArtifactImpl(types, artifactData, attributeFactory, branchProvider);
+      artifact.setGraph(graph);
 
       when(types.isValidAttributeType(any(IArtifactType.class), any(Branch.class), any(IAttributeType.class))).thenReturn(
          true);
@@ -172,7 +177,22 @@ public class ArtifactTest {
 
    @Test
    public void testGetTransactionId() {
-      artifact.getTransaction();
+      when(graph.getTransaction()).thenReturn(4321);
+
+      int actual = artifact.getTransaction();
+
+      assertEquals(4321, actual);
+      verify(graph).getTransaction();
+   }
+
+   @Test
+   public void testLastModifiedTransaction() {
+      when(graph.getTransaction()).thenReturn(4321);
+      when(version.getTransactionId()).thenReturn(10);
+
+      int actual = artifact.getLastModifiedTransaction();
+
+      assertEquals(10, actual);
       verify(version).getTransactionId();
    }
 

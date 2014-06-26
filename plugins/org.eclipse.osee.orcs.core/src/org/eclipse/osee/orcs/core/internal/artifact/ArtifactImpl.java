@@ -79,12 +79,17 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public int getTransaction() {
+   public int getLastModifiedTransaction() {
       int maxTransactionId = getOrcsData().getVersion().getTransactionId();
       for (Attribute<?> attribute : getAllAttributes()) {
          maxTransactionId = Math.max(maxTransactionId, attribute.getOrcsData().getVersion().getTransactionId());
       }
       return maxTransactionId;
+   }
+
+   @Override
+   public int getTransaction() {
+      return graph.getTransaction();
    }
 
    @Override

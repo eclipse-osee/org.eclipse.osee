@@ -89,6 +89,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public int getLastModifiedTransaction() {
+      return getProxiedObject().getLastModifiedTransaction();
+   }
+
+   @Override
    public IArtifactType getArtifactType() throws OseeCoreException {
       return getProxiedObject().getArtifactType();
    }

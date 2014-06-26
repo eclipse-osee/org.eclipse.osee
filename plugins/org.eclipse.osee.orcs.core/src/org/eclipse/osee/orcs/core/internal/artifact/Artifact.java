@@ -24,6 +24,8 @@ import org.eclipse.osee.orcs.data.HasTransaction;
  */
 public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
 
+   int getLastModifiedTransaction();
+
    void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
 
    void setName(String name) throws OseeCoreException;

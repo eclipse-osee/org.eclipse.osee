@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasBranch, HasTransaction, OrcsReadable {
 
+   int getLastModifiedTransaction();
+
    IArtifactType getArtifactType() throws OseeCoreException;
 
    boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;
