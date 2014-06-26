@@ -74,6 +74,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
  * @author Ryan D. Brooks
  */
 public final class Lib {
+   private static final Random RANDOM = new Random();
+
    @Deprecated
    public final static Runtime runtime = Runtime.getRuntime();
 
@@ -1695,7 +1697,7 @@ public final class Lib {
    public static long generateUuid() {
       long next = 0;
       while (next <= 0) {
-         next = new Random().nextInt();
+         next = RANDOM.nextLong();
       }
       return next;
    }
