@@ -133,6 +133,15 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ActivityName = createType(0x1000000000000383L, "Activity Name");
    public static final IAttributeType WorkPackageGuid = createType(0x1000000000000384L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
 
+   
+   // Applicability Feature
+   public static final IAttributeType ApplicabilityWorkflow = createType(0x10000078957000AAL, "Applicability Workflow");
+   public static final IAttributeType ApplicableToProgram = createType(0x10000067857000AAL, "Applicable To Program");
+   public static final IAttributeType DuplicatedPcrId = createType(0x10000089158000AAL, "Duplicated PCR Id");
+   public static final IAttributeType OriginatingPcrId = createType(0x10000089159000AAL, "Originating PCR Id");
+   public static final IAttributeType PcrToolId = createType(0x10000089151000AAL, "PCR Tool Id");
+   public static final IAttributeType ProgramUuid = createType(0x10000089157000AAL, "Program Uuid");
+
    // @formatter:on
 
    private static IAttributeType createType(Long guid, String name) {

@@ -78,11 +78,11 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Related Peer Workflow Definition"
-	attribute "ats.Workflow Definition Old"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Rule Definition"
 	attribute "ats.Id Prefix"
 	attribute "ats.Id Sequence Name"
+	attribute "ats.Team Workflow Artifact Type"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
@@ -171,7 +171,12 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Workaround Description"
 	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
-	attribute "ats.Team Workflow Artifact Type"
+	attribute "ats.Program Uuid"
+	attribute "ats.Applicability Workflow"
+	attribute "ats.Applicable to Program"
+	attribute "ats.Duplicated PCR Id"
+	attribute "ats.Originating PCR Id"
+	attribute "ats.PCR Tool Id"
 }
 
 artifactType "Work Package" extends "Artifact" {
@@ -212,6 +217,60 @@ attributeType "ats.ATS Configured Branch" extends StringAttribute {
 
 attributeType "ats.Default" extends BooleanAttribute {
 	uuid 0x10000056457000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Applicability Workflow" extends BooleanAttribute {
+	uuid 0x10000078957000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Applicable to Program" extends BooleanAttribute {
+	uuid 0x10000067857000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Program Uuid" extends IntegerAttribute {
+	uuid 0x10000089157000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Duplicated PCR Id" extends StringAttribute {
+	uuid 0x10000089158000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Originating PCR Id" extends StringAttribute {
+	uuid 0x10000089159000AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.PCR Tool Id" extends StringAttribute {
+	uuid 0x10000089151000AA
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
