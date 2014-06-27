@@ -48,6 +48,10 @@ public class RestUtil {
    }
 
    public static JSONArray getDefaultJSonArray(ResultSet<ArtifactReadable> artifacts) throws JSONException {
+      return getDefaultJSonArrayIterator(artifacts);
+   }
+
+   public static JSONArray getDefaultJSonArrayIterator(Iterable<ArtifactReadable> artifacts) throws JSONException {
       JSONArray jsonArray = new JSONArray();
       for (ArtifactReadable art : artifacts) {
          JSONObject jObj = new JSONObject();
