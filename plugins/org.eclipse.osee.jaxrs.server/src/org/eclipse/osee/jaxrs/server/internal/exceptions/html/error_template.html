@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta charset="UTF-8">
+<title>OSEE Error</title>
+<script type="text/javascript">
+	function toggleDisplay(id) {
+		var element = document.getElementById(id).style
+		element.display = (element.display == 'none') ? 'block' : 'none';
+	}
+	function toggleAllLocationElements() {
+		for (var i = 0; !(i >= document.all.locationElement.length); i++) {
+			document.all.locationElement[i].style.display == (document.all.locationElement[i].style.display == 'none') ? 'block'
+					: 'none';
+		}
+	}
+</script>
+</head>
+<body>
+   <div class="container">
+      <h1>OSEE - Error</h1>
+      <p>Oops! Something went wrong...</p>
+      <div class="panel panel-default">
+         <div class="container" class="panel-body">
+            <div class="lead">
+               <?errorMessage?>
+            </div>
+            <a onClick="toggleDisplay('errorDetails')">View Details &raquo;</a>
+            <div id="errorDetails" style="display: none">
+               <dl class="dl-horizontal">
+                  <dt>Error Status Code:</dt>
+                  <dd>
+                     <?errorStatusCode?>
+                  </dd>
+                  <dt>Error Reason:</dt>
+                  <dd>
+                     <?errorReason?>
+                  </dd>
+                  <dt>Error Type:</dt>
+                  <dd>
+                     <?errorType?>
+                  </dd>
+                  <dt>Error Exception:</dt>
+                  <dd>
+                     <?errorException?>
+                  </dd>
+               </dl>
+            </div>
+         </div>
+      </div>
+
+   </div>
+</body>
+</html>
