@@ -15,11 +15,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -27,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -37,9 +33,11 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
+import com.google.common.collect.Lists;
 
 /**
  * Test: @link: TestPlanComplianceReportTest
@@ -48,30 +46,22 @@ import org.eclipse.swt.program.Program;
  */
 public final class TestPlanComplianceReport extends AbstractBlam {
    public static final String TEST_PLANS = "Test Plans";
+   public static final String MAX_ENTRIES_PER_CELL = "Max Entries Per Cell";
+   public static final String FONT_SIZE = "Font Size";
+   private static final int DEFAULT_MAX = 25;
+   private static final int DEFAULT_FONT_SIZE = 11;
    private static final String BLANK_SPACE = " ";
-   private static int initCase = -1;
-   private int previousArtifactId = initCase;
-   private String[] testPlanStorageArray = null;
-   private Map<Integer, StringBuilder> testResultStorage = null;
 
    private Collection<Artifact> inputArtifacts;
    private Collection<Artifact> testPlans;
 
    private boolean performFileWrite;
 
+   private int maxRowsPerCell = DEFAULT_MAX;
+   private int fontSize = DEFAULT_FONT_SIZE;
    private CharBackedInputStream charBackedStream = null;
    private Writer defaultWriter = null;
    private ExcelXmlWriter excelWriter = null;
-   private final boolean markErrorOnLastColumn = false;
-
-   private List<Integer> testProcedureOrderList = null;
-   private Map<Integer, String[]> testProcedureStorage = null;
-
-   //Used for delayed writing of simple rows simple row could be a folder.
-   private List<String[]> simpleDataStorageList = null;
-
-   // Stores ids of procedures that contains errors. Used for marking lines that need to be decorated with error styling.
-   private final Set<Integer> setOfTestProcedureErrorIds = new HashSet<Integer>();
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
@@ -104,212 +94,141 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       Collection<Artifact> children = node.getChildren();
 
       if (isTestPlan(node)) {
-         processTestPlan(node);
+         String testPlan = getArtifactNameAndParagraph(node);
+         List<String> perfSpecs = getRequirementsCellOutput(node, CoreRelationTypes.Verification_Plan__Requirement);
+         List<String> pids = getRequirementsCellOutput(node, CoreRelationTypes.Validation__Requirement);
+         List<Artifact> testProcedures = node.getRelatedArtifacts(CoreRelationTypes.Executes__Test_Procedure);
+
+         List<String> testProcedureNames = Lists.newLinkedList(Artifacts.getNames(testProcedures));
+         TestStatusAndResults testStatusAndResults = calculateTestStatusAndResults(testProcedures);
+
+         writeRow(testPlan, perfSpecs, pids, testProcedureNames, testStatusAndResults.testStatus,
+            testStatusAndResults.testResults, testStatusAndResults.errors);
       } else {
-         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", BLANK_SPACE, BLANK_SPACE);
+         excelWriter.writeRow(node, BLANK_SPACE, BLANK_SPACE, "N/A (" + node.getArtifactTypeName() + ")", BLANK_SPACE,
+            BLANK_SPACE, BLANK_SPACE);
       }
       for (Artifact child : children) {
          processArtifacts(child);
       }
    }
 
+   private void writeRow(String testPlan, List<String> perfSpecs, List<String> pids, List<String> testProcNames, List<String> testProcStatuses, List<String> testResultNames, List<String> errors) throws IOException {
+      List<List<List<String>>> allPartitions = new LinkedList<List<List<String>>>();
+      allPartitions.add(Lists.partition(perfSpecs, maxRowsPerCell));
+      allPartitions.add(Lists.partition(pids, maxRowsPerCell));
+      allPartitions.add(Lists.partition(testProcNames, maxRowsPerCell));
+      allPartitions.add(Lists.partition(testProcStatuses, maxRowsPerCell));
+      allPartitions.add(Lists.partition(testResultNames, maxRowsPerCell));
+      allPartitions.add(Lists.partition(errors, maxRowsPerCell));
+
+      int max = 0;
+      for (List<List<String>> list : allPartitions) {
+         max = Math.max(max, list.size());
+      }
+
+      for (int i = 0; i < max; i++) {
+         excelWriter.writeCell(testPlan);
+         testPlan = BLANK_SPACE;
+
+         // size - 1 to handle error cells separately
+         for (int j = 0; j < allPartitions.size() - 1; j++) {
+            List<List<String>> list = allPartitions.get(j);
+            if (list.size() > i) {
+               excelWriter.writeCell(org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list.get(i)));
+            } else {
+               excelWriter.writeCell(BLANK_SPACE);
+            }
+         }
+
+         List<List<String>> errorPartitions = allPartitions.get(allPartitions.size() - 1);
+         if (errorPartitions.size() > i) {
+            excelWriter.setCellStyle(ExcelXmlWriter.STYLE.ERROR, 6);
+            excelWriter.writeCell(org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n",
+               errorPartitions.get(i)));
+         } else {
+            excelWriter.writeCell(BLANK_SPACE);
+         }
+         excelWriter.endRow();
+      }
+
+   }
+
+   private class TestStatusAndResults {
+      List<String> testStatus;
+      List<String> testResults;
+      List<String> errors;
+   }
+
+   private TestStatusAndResults calculateTestStatusAndResults(List<Artifact> testProcedures) {
+      List<String> testProcStatus = new LinkedList<String>();
+      List<String> testResultNames = new LinkedList<String>();
+      List<String> errors = new LinkedList<String>();
+      for (Artifact testProc : testProcedures) {
+         String status = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, BLANK_SPACE);
+         Collection<Artifact> testResults =
+            testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
+         testProcStatus.add(status);
+
+         TestStatusEnum enumStatus = TestStatusEnum.fromString(status);
+         if (testResults.isEmpty()) {
+            switch (enumStatus) {
+               case COMPLETED_PASSED_CODE:
+               case COMPLETED_WITH_ISSUES_CODE:
+               case COMPLETED_WITH_ISSUES_RESOLVED_CODE:
+                  errors.add("No test result files found...");
+                  break;
+               default:
+                  break;
+            }
+         } else {
+            if (enumStatus == TestStatusEnum.NOT_PERFORMED_CODE) {
+               errors.add("Results with NOT_PERFORMED_CODE status");
+            }
+
+            for (Artifact testResult : testResults) {
+               String extension = testResult.getSoleAttributeValueAsString(CoreAttributeTypes.Extension, "");
+               testResultNames.add(testResult.getName() + (extension.equals("") ? extension : "." + extension.toLowerCase()));
+            }
+         }
+
+      }
+
+      TestStatusAndResults toReturn = new TestStatusAndResults();
+      toReturn.testResults = testResultNames;
+      toReturn.testStatus = testProcStatus;
+      toReturn.errors = errors;
+      return toReturn;
+   }
+
    private boolean isTestPlan(Artifact src) {
       return src.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement);
    }
 
-   private void processTestPlan(Artifact testPlan) throws OseeCoreException, IOException {
-      Collection<Artifact> testProcedures = testPlan.getRelatedArtifacts(CoreRelationTypes.Executes__Test_Procedure);
-
-      if (testProcedures.isEmpty()) {
-         reportLine(testPlan, BLANK_SPACE, BLANK_SPACE, BLANK_SPACE);
-      } else {
-         for (Artifact testProc : testProcedures) {
-            processTestProcedure(testPlan, testProc);
-         }
-      }
-   }
-
-   private void processTestProcedure(Artifact testPlan, Artifact testProc) throws IOException, OseeCoreException {
-      String status = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, BLANK_SPACE);
-      Collection<Artifact> testResults = testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
-
-      TestStatusEnum enumStatus = TestStatusEnum.fromString(status);
-      if (testResults.isEmpty()) {
-         switch (enumStatus) {
-            case COMPLETED_PASSED_CODE:
-            case COMPLETED_WITH_ISSUES_CODE:
-            case COMPLETED_WITH_ISSUES_RESOLVED_CODE:
-               //markErrorOnLastColumn = true;
-               setOfTestProcedureErrorIds.add(testProc.getArtId());
-               reportLine(testPlan, testProc, testProc.getName(), status, "No test result files found...");
-               break;
-            default:
-               reportLine(testPlan, testProc.getName(), status, BLANK_SPACE);
-               break;
-         }
-      } else {
-         for (Artifact testResult : testResults) {
-            String extension = testResult.getSoleAttributeValueAsString(CoreAttributeTypes.Extension, "");
-
-            if (TestStatusEnum.NOT_PERFORMED_CODE == enumStatus) {
-               setOfTestProcedureErrorIds.add(testProc.getArtId());
-               // markErrorOnLastColumn = true;
-            }
-
-            reportLine(testPlan, testProc, testProc.getName(), status,
-               testResult.getName() + (extension.equals("") ? extension : "." + extension.toLowerCase()));
-         }
-      }
-   }
-
-   private String getRequirementsCellOutput(Artifact art, IRelationTypeSide rts) throws OseeCoreException {
-      String result = null;
+   private List<String> getRequirementsCellOutput(Artifact art, IRelationTypeSide rts) throws OseeCoreException {
+      List<String> result = null;
       if (art.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
          result = getRequirementsAsString(art, rts);
       }
-      return Strings.isValid(result) ? result : BLANK_SPACE;
+      return result;
    }
 
-   private String getRequirementsAsString(Artifact testPlan, IRelationTypeSide rts) throws OseeCoreException {
+   private List<String> getRequirementsAsString(Artifact testPlan, IRelationTypeSide rts) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts = testPlan.getRelatedArtifacts(rts);
-      Collection<String> requirementNames = new ArrayList<String>();
+      List<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          requirementNames.add(paragraphNumber + BLANK_SPACE + req.getName());
       }
 
-      return Collections.toString("\n", requirementNames);
+      return requirementNames;
    }
 
-   private void reportLine(Artifact testPlanArt, String testProcedureName, String testStatus, String testResult) throws OseeCoreException, IOException {
-      reportLine(testPlanArt, null, testProcedureName, testStatus, testResult);
-   }
-
-   private void reportLine(Artifact testPlanArt, Artifact testProcedure, String testProcedureName, String testStatus, String testResult) throws OseeCoreException, IOException {
-      if (testProcedure != null) {
-         if (previousArtifactId != testPlanArt.getArtId()) {
-            writeLastData();
-            previousArtifactId = testPlanArt.getArtId();
-            newUpDataStructures();
-            storeNewTestPlan(testPlanArt);
-            storeNewTestProcedure(testProcedure, testStatus, testResult);
-         } else {
-            appendTestProcedureToExistingTestPlan(testProcedure, testStatus, testResult);
-         }
-      } else {
-         addSimpleRow(testPlanArt, testProcedureName, testStatus, testResult);
-      }
-   }
-
-   private void addSimpleRow(Artifact testPlanArt, String testProcedureName, String testStatus, String testResult) throws OseeCoreException {
-      if (simpleDataStorageList == null) {
-         simpleDataStorageList = new ArrayList<String[]>();
-      }
-      simpleDataStorageList.add(new String[] {
-         testPlanArt.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + testPlanArt.getName(),
-         getRequirementsCellOutput(testPlanArt, CoreRelationTypes.Verification_Plan__Requirement),
-         getRequirementsCellOutput(testPlanArt, CoreRelationTypes.Validation__Requirement),
-         testProcedureName,
-         testStatus,
-         testResult});
-   }
-
-   private void appendTestProcedureToExistingTestPlan(Artifact testProcedure, String testStatus, String testResult) {
-      if (testProcedureOrderList.get(testProcedureOrderList.size() - 1) == testProcedure.getArtId()) {
-         testResultStorage.get(testProcedure.getArtId()).append("\n" + testResult);
-      } else {
-         storeNewTestProcedure(testProcedure, testStatus, testResult);
-      }
-   }
-
-   private void newUpDataStructures() {
-      testProcedureOrderList = new ArrayList<Integer>(); //test plan id to string[]
-      testProcedureStorage = new HashMap<Integer, String[]>(); //test proc id to string[]
-      testResultStorage = new HashMap<Integer, StringBuilder>(); //test proc id to StringBuilder of testResults...
-   }
-
-   private void storeNewTestProcedure(Artifact testProcedure, String testStatus, String testResult) {
-      int testProcedureId = testProcedure.getArtId();
-      testProcedureOrderList.add(testProcedureId);
-      testProcedureStorage.put(testProcedureId, new String[] {
-         BLANK_SPACE,
-         BLANK_SPACE,
-         testProcedure.getName(),
-         testStatus,
-         null});
-      testResultStorage.put(testProcedureId, new StringBuilder(testResult));
-   }
-
-   private void storeNewTestPlan(Artifact artifact) throws OseeCoreException {
-      if (markErrorOnLastColumn) {
-         testPlanStorageArray =
-            new String[] {
-               artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + artifact.getName(),
-               getRequirementsCellOutput(artifact, CoreRelationTypes.Verification_Plan__Requirement),
-               getRequirementsCellOutput(artifact, CoreRelationTypes.Validation__Requirement),
-               null,
-               null,
-               null,
-               "Error"};
-      } else {
-         testPlanStorageArray =
-            new String[] {
-               artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + artifact.getName(),
-               getRequirementsCellOutput(artifact, CoreRelationTypes.Verification_Plan__Requirement),
-               getRequirementsCellOutput(artifact, CoreRelationTypes.Validation__Requirement),
-               null,
-               null,
-               null};
-      }
-   }
-
-   private void writeLastData() throws IOException {
-      if (testPlanStorageArray != null) {
-         writeAdvancedRows();
-         writeSimpleRows();
-      } else {
-         writeSimpleRows();
-         writeAdvancedRows();
-      }
-   }
-
-   private void writeAdvancedRows() throws IOException {
-      if (testPlanStorageArray != null) {
-         for (int testIndex = 0; testIndex < testProcedureOrderList.size(); testIndex++) {
-            int testProcId = testProcedureOrderList.get(testIndex);
-            Object[] testProcedureArr = testProcedureStorage.remove(testProcedureOrderList.get(testIndex));
-            if (testIndex == 0) {
-               testProcedureArr[0] = testPlanStorageArray[0];
-               testProcedureArr[1] = testPlanStorageArray[1];
-            }
-            //write to results column, skip the error column:
-            testProcedureArr[testProcedureArr.length - 1] = testResultStorage.remove(testProcId).toString();
-
-            if (setOfTestProcedureErrorIds.remove(testProcId)) {
-               excelWriter.setCellStyle(ExcelXmlWriter.STYLE.ERROR, 3);
-               excelWriter.setCellStyle(ExcelXmlWriter.STYLE.BOLD, 4);
-            }
-
-            excelWriter.writeRow(testProcedureArr);
-            testPlanStorageArray = null;
-         }
-         testProcedureOrderList.clear();
-      }
-   }
-
-   private void writeSimpleRows() throws IOException {
-      if (simpleDataStorageList != null) {
-         for (Object[] rowToWrite : simpleDataStorageList) {
-            excelWriter.writeRow(rowToWrite);
-         }
-         simpleDataStorageList.clear();
-      }
+   private String getArtifactNameAndParagraph(Artifact art) {
+      return art.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + art.getName();
    }
 
    private void report() throws OseeCoreException, IOException {
-      writeLastData();
-      previousArtifactId = initCase;
-      setOfTestProcedureErrorIds.clear();
       excelWriter.endSheet();
       excelWriter.endWorkbook();
       if (performFileWrite) {
@@ -321,12 +240,25 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private void init(VariableMap variableMap) throws OseeCoreException, IOException {
       inputArtifacts = variableMap.getArtifacts(TEST_PLANS);
+      String max = variableMap.getString(MAX_ENTRIES_PER_CELL);
+      if (!Strings.isNumeric(max)) {
+         log(String.format("[%s] is not a valid number, using [%d] for max entries per cell", max, maxRowsPerCell));
+      } else {
+         maxRowsPerCell = Integer.parseInt(max);
+      }
+
+      String font = variableMap.getString(FONT_SIZE);
+      if (!Strings.isNumeric(font)) {
+         log(String.format("[%s] is not a valid number, using [%d] for font size", font, fontSize));
+      } else {
+         fontSize = Integer.parseInt(font);
+      }
       initReport();
       load();
    }
 
    private void initReport() throws IOException {
-      excelWriter = new ExcelXmlWriter(defaultWriter);
+      excelWriter = new ExcelXmlWriter(defaultWriter, null, ExcelXmlWriter.defaultEmptyString, fontSize);
       String[] columnHeaders =
          {
             "Test Plan & Paragraph",
@@ -360,8 +292,15 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return String.format("<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" /></xWidgets>",
-         TEST_PLANS);
+      StringBuilder sb = new StringBuilder();
+      sb.append("<xWidgets>");
+      sb.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", TEST_PLANS));
+      sb.append(String.format("<XWidget xwidgetType=\"XText\" displayName=\"%s\" defaultValue=\"%d\"/>",
+         MAX_ENTRIES_PER_CELL, DEFAULT_MAX));
+      sb.append(String.format("<XWidget xwidgetType=\"XText\" displayName=\"%s\" defaultValue=\"%d\"/>", FONT_SIZE,
+         DEFAULT_FONT_SIZE));
+      sb.append("</xWidgets>");
+      return sb.toString();
    }
 
    @Override

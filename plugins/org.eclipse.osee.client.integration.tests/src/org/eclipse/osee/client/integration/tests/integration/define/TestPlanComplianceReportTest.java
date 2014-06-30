@@ -50,7 +50,6 @@ public final class TestPlanComplianceReportTest {
       "    <Cell><Data ss:Type=\"String\">Not Performed</Data></Cell>\n" + //
       "    <Cell><Data ss:Type=\"String\"> </Data></Cell>";
    private static final String EXPECTED_OSEE_ERROR_STYLE = "    <Cell ss:StyleID=\"OseeErrorStyle\">";
-   private static final String EXPECTED_OSEE_BOLD_STYLE = "    <Cell ss:StyleID=\"OseeBoldStyle\">";
    private static final String EXPECTED_MULTIPLE_RESULTS_IN_1_CELL = //
       "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0&#10;Sample_Test_Result_1</Data></Cell>";
 
@@ -84,7 +83,7 @@ public final class TestPlanComplianceReportTest {
    //@formatter:off
    /**
     * 'Completed', 'Completed with Issues' and 'Completed with Issues Resolved' must
-    * have results file if not bold or indicate error somehow.
+    * have results file if not, indicate error somehow.
     */
    //@formatter:on
    @Test
@@ -92,22 +91,16 @@ public final class TestPlanComplianceReportTest {
       buildTest(1, TestStatusEnum.COMPLETED_PASSED_CODE, 0);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
-      Assert.assertTrue("No \"OseeBoldStyle\" string found.",
-         resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_CODE, 0);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
-      Assert.assertTrue("No \"OseeBoldStyle\" string found.",
-         resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_RESOLVED_CODE, 0);
       Assert.assertTrue("No \"OseeErrorStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
-      Assert.assertTrue("No \"OseeBoldStyle\" string found.",
-         resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(dummyArtifactList));
    }
 
@@ -150,6 +143,9 @@ public final class TestPlanComplianceReportTest {
             testProcedure.persist(getClass().getSimpleName());
          }
       }
-      return new VariableMap(TestPlanComplianceReport.TEST_PLANS, dummyArtifactList);
+
+      return new VariableMap(TestPlanComplianceReport.TEST_PLANS, dummyArtifactList,
+         TestPlanComplianceReport.MAX_ENTRIES_PER_CELL, "10", TestPlanComplianceReport.FONT_SIZE, "11");
+
    }
 }

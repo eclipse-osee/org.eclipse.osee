@@ -43,6 +43,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    public static final String defaultEmptyStringXmlRep = "&#248;";
    public static final String defaultEmptyString = "\u00F8";
    public static final String blobMessage = "data stored in EmbeddedClob since longer than 32767 chars";
+   public static final int DEFAULT_FONT_SIZE = 11;
 
    public static final String XML_HEADER = //
       "<?xml version=\"1.0\"?>\n" + //
@@ -57,7 +58,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
       " <Alignment ss:Vertical=\"Bottom\"/>\n" + //
       " <Borders/>\n" + //
-      " <Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"11\" ss:Color=\"#000000\"/>\n" + //
+      " <Font ss:FontName=\"Calibri\" x:Family=\"Swiss\" ss:Size=\"%d\" ss:Color=\"#000000\"/>\n" + //
       " <Interior/>\n" + //
       " <NumberFormat/>\n" + //
       " <Protection/>\n" + //
@@ -99,6 +100,10 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    }
 
    public ExcelXmlWriter(Writer writer, String style, String emptyStringRepresentation) throws IOException {
+      this(writer, style, emptyStringRepresentation, DEFAULT_FONT_SIZE);
+   }
+
+   public ExcelXmlWriter(Writer writer, String style, String emptyStringRepresentation, int defaultFontSize) throws IOException {
       out = new BufferedWriter(writer);
       mStyleMap = new HashMap<Integer, String>();
       this.emptyStringRepresentation = emptyStringRepresentation;
@@ -106,7 +111,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
       out.write("<Styles>\n");
 
-      out.write(DEFAULT_OSEE_STYLES);
+      out.write(String.format(DEFAULT_OSEE_STYLES, defaultFontSize));
       if (Strings.isValid(style)) {
          if (stylePattern.matcher(style).matches()) {
             out.write(style);
