@@ -31,6 +31,8 @@
 
 		<module>../../plugins/org.eclipse.osee.database.schema</module>
 
+		<module>../../plugins/org.eclipse.osee.activity</module>
+		
 		<module>../../plugins/org.eclipse.osee.orcs</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core</module>
 		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>

@@ -21,6 +21,8 @@
 		<module>../../plugins/org.eclipse.osee.logger.slf4j</module>
 		<module>../../plugins/org.eclipse.osee.logback.config</module>
 
+		<module>../../plugins/org.eclipse.osee.activity.api</module>
+
 		<module>../../plugins/org.eclipse.osee.event</module>
 		<module>../../plugins/org.eclipse.osee.event.osgi</module>
 
@@ -41,13 +43,13 @@
 
 		<module>../../plugins/org.eclipse.osee.authentication.admin</module>
 		<module>../../plugins/org.eclipse.osee.authentication.admin.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.authorization.admin</module>
 		<module>../../plugins/org.eclipse.osee.authorization.admin.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.authentication.ldap</module>
 		<module>../../plugins/org.eclipse.osee.authentication.ldap.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.account.admin</module>
 		<module>../../plugins/org.eclipse.osee.account.admin.test</module>
 
@@ -66,14 +68,14 @@
 		<module>../../plugins/org.eclipse.osee.jaxrs.server.test</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.client</module>
 		<module>../../plugins/org.eclipse.osee.jaxrs.client.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.account.rest.model</module>
 		<module>../../plugins/org.eclipse.osee.account.rest</module>
-		<module>../../plugins/org.eclipse.osee.account.rest.test</module>		
+		<module>../../plugins/org.eclipse.osee.account.rest.test</module>
 		<module>../../plugins/org.eclipse.osee.account.rest.client</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.web</module>
-		
+
 		<module>../../features/org.eclipse.osee.x.core.external.feature</module>
 		<module>../../features/org.eclipse.osee.x.core.feature</module>
 

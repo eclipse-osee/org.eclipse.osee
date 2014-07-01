@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+
+	<!-- __________________________________________________________ -->
+	<!-- Logging Tables -->
+	<!-- __________________________________________________________ -->
+	<Table name="OSEE_ACTIVITY" schema="OSEE" tablespace="osee_data">
+		<Column id="ENTRY_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="PARENT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="TYPE_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ACCOUNT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="SERVER_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="CLIENT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="START_TIME" defaultValue="not null" type="BIGINT" />
+		<Column id="DURATION" defaultValue="not null" type="BIGINT" />
+		<Column id="STATUS" defaultValue="not null" type="INTEGER" />
+		<Column id="MSG_ARGS" limits="4000" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ACTIVITY__ENTRY_ID_PK" type="PRIMARY KEY" appliesTo="ENTRY_ID" />
+		<Constraint schema="OSEE" id="OSEE_ACTIVITY__TYPE_ID_FK" type="FOREIGN KEY" appliesTo="TYPE_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_ACTIVITY_TYPE" column="TYPE_ID" />
+		</Constraint>
+		<Index id="OSEE_ACTIVITY__P_E_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="PARENT_ID" />
+			<AppliesTo id="ENTRY_ID" />
+		</Index>
+		<Index id="OSEE_ACTIVITY__ACCOUNT_IDX" tablespace="osee_index">
+			<AppliesTo id="ACCOUNT_ID" />
+		</Index>
+		<Index id="OSEE_ACTIVITY__TYPE_IDX" tablespace="osee_index">
+			<AppliesTo id="TYPE_ID" />
+		</Index>
+	</Table>
+
+	<Table name="OSEE_ACTIVITY_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="TYPE_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="LOG_LEVEL" defaultValue="not null" type="BIGINT" />
+		<Column id="MODULE" limits="4000" type="VARCHAR" />
+		<Column id="MSG_FORMAT" limits="4000" type="VARCHAR" />
+		<Constraint schema="OSEE" id="OSEE_ACTIVITY_TYPE__ID_PK" type="PRIMARY KEY" appliesTo="TYPE_ID" />
+	</Table>
+
+</TableConfig>

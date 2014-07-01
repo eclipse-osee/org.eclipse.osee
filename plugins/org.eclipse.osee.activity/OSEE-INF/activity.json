@@ -1,0 +1,14 @@
+{
+"activityTypes": [
+	"org.eclipse.osee.activity.api.Activity",
+	""
+],
+"artifacts": [
+	"",
+	""
+],
+"restCalls": [
+	"",
+ 	""
+]
+}
