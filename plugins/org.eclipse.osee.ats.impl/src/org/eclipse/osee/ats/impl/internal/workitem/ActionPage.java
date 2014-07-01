@@ -123,11 +123,14 @@ public class ActionPage {
          results = workItem.getStateMgr().getAssigneesStr();
       } else {
          String currState = action.getSoleAttributeAsString(AtsAttributeTypes.CurrentState);
-         String assignees = currState.split(";")[1];
-         assignees = assignees.replaceAll("><", "; ");
-         assignees = assignees.replaceAll(">", "");
-         assignees = assignees.replaceAll("<", "");
-         results = assignees;
+         String[] split = currState.split(";");
+         if (split.length >= 2) {
+            String assignees = split[1];
+            assignees = assignees.replaceAll("><", "; ");
+            assignees = assignees.replaceAll(">", "");
+            assignees = assignees.replaceAll("<", "");
+            results = assignees;
+         }
       }
       return results;
    }
