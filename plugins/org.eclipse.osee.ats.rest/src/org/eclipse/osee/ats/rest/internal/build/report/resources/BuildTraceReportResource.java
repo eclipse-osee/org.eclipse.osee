@@ -55,12 +55,12 @@ public class BuildTraceReportResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public Response getPrograms(@Context final UriInfo uriInfo) {
+   public Response getPrograms() {
       return Response.ok(new StreamingOutput() {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            programsAndBuilds.getProgramsTable(logger, output, uriInfo);
+            programsAndBuilds.getProgramsTable(logger, output);
          }
       }).build();
    }
@@ -68,12 +68,12 @@ public class BuildTraceReportResource {
    @GET
    @Path("/program/{programId}")
    @Produces(MediaType.TEXT_HTML)
-   public Response getBuilds(@PathParam("programId") final String programId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName, @Context final UriInfo uriInfo) {
+   public Response getBuilds(@PathParam("programId") final String programId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName) {
       return Response.ok(new StreamingOutput() {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            programsAndBuilds.getBuildsTable(logger, output, programName, programId, uriInfo);
+            programsAndBuilds.getBuildsTable(logger, output, programName, programId);
          }
       }).build();
    }
@@ -81,12 +81,12 @@ public class BuildTraceReportResource {
    @GET
    @Path("/{programId}/{buildId}")
    @Produces(MediaType.TEXT_HTML)
-   public Response getBuildReport(@PathParam("programId") final String programId, @PathParam("buildId") final String buildId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName, @DefaultValue("UNKNOWN") @QueryParam("build") final String buildName, @Context final UriInfo uriInfo) {
+   public Response getBuildReport(@PathParam("programId") final String programId, @PathParam("buildId") final String buildId, @DefaultValue("UNKNOWN") @QueryParam("program") final String programName, @DefaultValue("UNKNOWN") @QueryParam("build") final String buildName) {
       return Response.ok(new StreamingOutput() {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            report.getBuildReport(output, orcsApi, logger, programId, buildId, programName, buildName, uriInfo);
+            report.getBuildReport(output, orcsApi, logger, programId, buildId, programName, buildName);
          }
       }).build();
    }

@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author John Misinco
@@ -43,17 +44,20 @@ public class ArchiveCollector {
    private final String serverData = OseeServerProperties.getOseeApplicationServerData(null);
    private final Map<String, String> urlToEntryName = new LinkedHashMap<String, String>();
    private final Set<String> pcrIds = new LinkedHashSet<String>();
-   private final String supportFilesUrl;
+   private final String baseUrl;
+   private final Log logger;
 
-   public ArchiveCollector(String supportFilesUrl) {
-      this.supportFilesUrl = supportFilesUrl;
+   public ArchiveCollector(String baseUrl, Log logger) {
+      this.baseUrl = baseUrl;
+      this.logger = logger;
    }
 
    public void onBuildToUrlPairs(String verifierName, List<Pair<String, String>> buildToUrlPairs) {
       for (Pair<String, String> pair : buildToUrlPairs) {
          String build = pair.getFirst();
          String url = pair.getSecond();
-         if (Strings.isValid(url)) {
+         if (Strings.isValid(url) && Strings.isValid(build)) {
+            url = baseUrl + url.replaceFirst("\\.\\.", "");
             String entryName = String.format(AtsElementData.ARCHIVE_SCRIPT_TEMPLATE, build, verifierName);
             urlToEntryName.put(url, entryName);
             //replace url with that of the local one
@@ -69,7 +73,7 @@ public class ArchiveCollector {
    public void writeArchive(ZipOutputStream zout) {
       InputStream inputStream = null;
       try {
-         URL url = new URL(supportFilesUrl);
+         URL url = new URL(baseUrl + "/supportFiles");
          inputStream = new BufferedInputStream(url.openStream());
 
          ZipInputStream zin = null;
@@ -103,12 +107,13 @@ public class ArchiveCollector {
                Lib.inputStreamToOutputStream(inputStream2, zout);
                zout.closeEntry();
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               // log and keep going 
+               logger.error(ex, "Error processing URL [%s]", url2.toString());
             } finally {
                Lib.close(inputStream2);
             }
          } catch (MalformedURLException ex1) {
-            OseeExceptions.wrapAndThrow(ex1);
+            logger.error(ex1, "Error processing URL [%s]", entry.getKey());
          }
       }
 
@@ -123,12 +128,12 @@ public class ArchiveCollector {
                Lib.inputStreamToOutputStream(fis, zout);
                zout.closeEntry();
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               // log and keep going
+               logger.error(ex, "Error processing file [%s]", file.getAbsolutePath());
             } finally {
                Lib.close(fis);
             }
          }
       }
    }
-
 }

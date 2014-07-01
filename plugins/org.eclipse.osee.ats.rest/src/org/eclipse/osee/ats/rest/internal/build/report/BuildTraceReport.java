@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -65,9 +65,10 @@ public class BuildTraceReport {
       final ZipOutputStream zout = new ZipOutputStream(output);
 
       String supportFilesUrl =
-         uriInfo.getBaseUriBuilder().path(BuildTraceReportResource.RESOURCE_BASE).path("supportFiles").build().toString();
-      ArchiveCollector dataCollector = new ArchiveCollector(supportFilesUrl);
-      createTraceReport(buildId, programName, buildName, AtsElementData.ARCHIVE_REPORT_TEMPLATE, tableStream, uriInfo,
+         uriInfo.getBaseUriBuilder().path(BuildTraceReportResource.RESOURCE_BASE).host("localhost").build().toString();
+
+      ArchiveCollector dataCollector = new ArchiveCollector(supportFilesUrl, logger);
+      createTraceReport(buildId, programName, buildName, AtsElementData.ARCHIVE_REPORT_TEMPLATE, tableStream,
          dataCollector, orcsApi, logger);
       try {
          zout.putNextEntry(new ZipEntry(fileName + ".html"));
@@ -81,12 +82,12 @@ public class BuildTraceReport {
       }
    }
 
-   public void getBuildReport(OutputStream output, OrcsApi orcsApi, Log logger, String programId, String buildId, String programName, String buildName, @Context final UriInfo uriInfo) {
-      createTraceReport(buildId, programName, buildName, AtsElementData.CHANGE_REPORT_URL_TEMPLATE, output, uriInfo,
-         null, orcsApi, logger);
+   public void getBuildReport(OutputStream output, OrcsApi orcsApi, Log logger, String programId, String buildId, String programName, String buildName) {
+      createTraceReport(buildId, programName, buildName, AtsElementData.CHANGE_REPORT_URL_TEMPLATE, output, null,
+         orcsApi, logger);
    }
 
-   private void createTraceReport(final String buildId, final String programName, final String buildName, String urlTemplate, OutputStream output, final UriInfo uriInfo, final ArchiveCollector dataCollector, OrcsApi orcsApi, final Log logger) {
+   private void createTraceReport(final String buildId, final String programName, final String buildName, String urlTemplate, OutputStream output, final ArchiveCollector dataCollector, OrcsApi orcsApi, final Log logger) {
       final QueryFactory queryFactory = orcsApi.getQueryFactory(null);
       final IOseeBranch branch = getBaselineBranch(buildId, queryFactory);
       final List<Pair<String, String>> buildNamesToUrls = getBuildNameUrlPairs(buildId, queryFactory);
@@ -101,8 +102,8 @@ public class BuildTraceReport {
                for (Pair<String, String> buildToUrl : buildNamesToUrls) {
                   String url = String.format(buildToUrl.getSecond(), fullPath);
                   URI loadSourceResource =
-                     uriInfo.getBaseUriBuilder().path(BuildTraceReportResource.RESOURCE_BASE).path("sourceFile").queryParam(
-                        "url", url).queryParam("offline", dataCollector != null).build();
+                     UriBuilder.fromPath("..").path("sourceFile").queryParam("url", url).queryParam("offline",
+                        dataCollector != null).build();
                   toReturn.add(new Pair<String, String>(buildToUrl.getFirst(), loadSourceResource.toString()));
                }
             } else {
