@@ -105,7 +105,7 @@ public class StdTestToCsciTable implements ISimpleTable {
 
    @Override
    public void generateBody(ISheetWriter sheetWriter) throws Exception {
-      Collection<Artifact> directRequirements = source.getDirectSwRequirements();
+      Collection<Artifact> directRequirements = source.getAllSwRequirements();
       HashCollection<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 
       HashCollection<Artifact, String> requirementsToQualificationMethod = getQualificationMethods(source);
