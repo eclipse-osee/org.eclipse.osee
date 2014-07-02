@@ -108,6 +108,11 @@ public abstract class AbstractJaxRsApplicationContainer implements JaxRsVisitabl
       };
    }
 
+   @Override
+   public String toString() {
+      return " applicationContext=" + applicationContext;
+   }
+
    private final class JaxRsApplicationEntry {
       private final Bundle bundle;
       private final Application application;

@@ -43,10 +43,13 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegis
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsContainerProviderImpl;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsFactory;
 import org.eclipse.osee.jaxrs.server.internal.exceptions.ErrorResponseMessageBodyWriter;
+import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProvider;
+import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
 import org.eclipse.osee.jaxrs.server.internal.exceptions.GenericExceptionMapper;
 import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextFilter;
 import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextProviderImpl;
 import org.eclipse.osee.logger.Log;
+import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpService;
 
 /**
@@ -166,15 +169,15 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       return container;
    }
 
-   private CxfJaxRsApplicationContainer newApplicationContainer(String applicationContext) {
-      return new CxfJaxRsApplicationContainer(applicationContext);
+   private CxfJaxRsApplicationContainer newApplicationContainer(String applicationContext, JaxRsProviders provider) {
+      return new CxfJaxRsApplicationContainer(applicationContext, provider);
    }
 
    private CXFNonSpringServlet newBaseJaxsRsServlet(JaxRsVisitable visitable) {
       return new CXFNonSpringServlet();
    }
 
-   public Server newCxfServer(CXFNonSpringServlet servlet, String applicationPath, Application application) {
+   public Server newCxfServer(CXFNonSpringServlet servlet, String applicationPath, Application application, JaxRsProviders providers) {
       String contextName = servlet.getServletName();
       Bus bus = servlet.getBus();
       if (bus == null) {
@@ -192,6 +195,12 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
          bean.setAddress(subAddress);
       }
 
+      if (providers.hasProviders()) {
+         for (JaxRsProvider container : providers.getProviders()) {
+            bean.setProvider(container.getProvider());
+         }
+      }
+
       bean.setProviders(getProviders());
       bean.setFeatures(getFeatures());
       bean.setProperties(getProperties());
@@ -207,7 +216,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       return server;
    }
 
-   private final class CxfJaxRsContainer extends AbstractJaxRsContainer<CXFNonSpringServlet, CxfJaxRsApplicationContainer> {
+   private final class CxfJaxRsContainer extends AbstractJaxRsContainer<CXFNonSpringServlet, CxfJaxRsApplicationContainer, JaxRsProvider> {
 
       public CxfJaxRsContainer(Log logger, HttpService httpService, Dictionary<String, Object> props) {
          super(logger, httpService, props);
@@ -215,7 +224,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
       @Override
       protected CxfJaxRsApplicationContainer createApplicationContainer(String applicationContext) {
-         return newApplicationContainer(applicationContext);
+         return newApplicationContainer(applicationContext, this);
       }
 
       @Override
@@ -234,20 +243,27 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
          container.stopContainer();
       }
 
+      @Override
+      protected JaxRsProvider createJaxRsProvider(Bundle bundle, Object provider) {
+         return new JaxRsFeatureImpl(bundle, provider);
+      }
+
    };
 
    private final class CxfJaxRsApplicationContainer extends AbstractJaxRsApplicationContainer {
 
       private final AtomicBoolean isRegistered = new AtomicBoolean(false);
+      private final JaxRsProviders providers;
       private volatile Server server;
 
-      public CxfJaxRsApplicationContainer(String applicationContext) {
+      public CxfJaxRsApplicationContainer(String applicationContext, JaxRsProviders providers) {
          super(applicationContext);
+         this.providers = providers;
       }
 
       public void startContainer(CXFNonSpringServlet servlet) {
          if (!isRegistered.getAndSet(true)) {
-            Server newServer = newCxfServer(servlet, getApplicationContext(), getApplication());
+            Server newServer = newCxfServer(servlet, getApplicationContext(), getApplication(), providers);
             newServer.start();
             server = newServer;
          }
@@ -261,6 +277,29 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
             }
          }
       }
+   }
+
+   private static final class JaxRsFeatureImpl implements JaxRsProvider {
+
+      private final Bundle bundle;
+      private final Object provider;
+
+      public JaxRsFeatureImpl(Bundle bundle, Object provider) {
+         super();
+         this.bundle = bundle;
+         this.provider = provider;
+      }
+
+      @Override
+      public Bundle getBundle() {
+         return bundle;
+      }
+
+      @Override
+      public Object getProvider() {
+         return provider;
+      }
+
    }
 
 }

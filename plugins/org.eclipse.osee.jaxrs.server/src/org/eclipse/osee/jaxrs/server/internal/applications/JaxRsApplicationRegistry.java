@@ -51,6 +51,11 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
       void stop();
 
       void accept(JaxRsVisitor visitor);
+
+      void addProvider(String componentName, Bundle bundle, Object provider);
+
+      void removeProvider(String componentName);
+
    }
 
    private final ConcurrentHashMap<String, JaxRsContainerProvider> servlets =
@@ -75,6 +80,14 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
 
    public void stop() {
       logger.trace("Stopping [%s]...", getClass().getSimpleName());
+      Iterator<JaxRsContainerProvider> iterator = servlets.values().iterator();
+      while (iterator.hasNext()) {
+         JaxRsContainer container = iterator.next().get();
+         if (container != null) {
+            container.stop();
+         }
+         iterator.remove();
+      }
    }
 
    public String getBaseContext() {
@@ -96,9 +109,16 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
                container.accept(new JaxRsVisitor() {
                   @Override
                   public void onApplication(String applicationContext, String componentName, Bundle bundle, Application application) {
-                     final String contextName = getBaseContext();
-                     JaxRsContainer newContainer = getContainerInitIfNull(contextName);
+                     final String baseContext = getBaseContext();
+                     JaxRsContainer newContainer = getContainerInitIfNull(baseContext);
                      newContainer.addApplication(componentName, applicationContext, bundle, application);
+                  }
+
+                  @Override
+                  public void onProvider(String componentName, Bundle bundle, Object provider) {
+                     final String baseContext = getBaseContext();
+                     JaxRsContainer newContainer = getContainerInitIfNull(baseContext);
+                     newContainer.addProvider(componentName, bundle, provider);
                   }
                });
             }
@@ -113,24 +133,30 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
    }
 
    public void deregister(String componentName) {
-      final String contextName = getBaseContext();
-      JaxRsContainer container = getContainerOrNull(contextName);
+      final String baseContext = getBaseContext();
+      JaxRsContainer container = getContainerOrNull(baseContext);
       if (container != null) {
          container.removeApplication(componentName);
          if (container.isEmpty()) {
-            servlets.remove(contextName);
+            servlets.remove(baseContext);
          }
       }
    }
 
-   public void deregisterAll() {
-      Iterator<JaxRsContainerProvider> iterator = servlets.values().iterator();
-      while (iterator.hasNext()) {
-         JaxRsContainer container = iterator.next().get();
-         if (container != null) {
-            container.stop();
+   public void registerProvider(String componentName, Bundle bundle, Object provider) {
+      final String baseContext = getBaseContext();
+      JaxRsContainer container = getContainerInitIfNull(baseContext);
+      container.addProvider(componentName, bundle, provider);
+   }
+
+   public void deregisterProvider(String componentName) {
+      final String baseContext = getBaseContext();
+      JaxRsContainer container = getContainerOrNull(baseContext);
+      if (container != null) {
+         container.removeProvider(componentName);
+         if (container.isEmpty()) {
+            servlets.remove(baseContext);
          }
-         iterator.remove();
       }
    }
 
@@ -164,6 +190,7 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
          JaxRsContainerProvider newContainer = factory.newJaxRsContainerProvider(contextName);
          reference = servlets.putIfAbsent(contextName, newContainer);
          if (reference == null) {
+            servlets.put(contextName, newContainer);
             reference = newContainer;
          }
       }

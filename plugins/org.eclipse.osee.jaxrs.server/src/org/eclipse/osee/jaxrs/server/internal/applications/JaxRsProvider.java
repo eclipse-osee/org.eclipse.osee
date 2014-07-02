@@ -8,24 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs;
+package org.eclipse.osee.jaxrs.server.internal.applications;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Roberto E. Escobar
  */
-@XmlRootElement
-public class ApplicationInfo extends JaxRsContributionInfo {
+public interface JaxRsProvider {
 
-   private String uri;
+   Bundle getBundle();
 
-   public String getUri() {
-      return uri;
-   }
-
-   public void setUri(String uri) {
-      this.uri = uri;
-   }
+   Object getProvider();
 
 }

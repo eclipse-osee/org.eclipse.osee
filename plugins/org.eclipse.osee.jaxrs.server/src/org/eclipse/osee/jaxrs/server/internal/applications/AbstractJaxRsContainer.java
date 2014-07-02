@@ -12,6 +12,7 @@ package org.eclipse.osee.jaxrs.server.internal.applications;
 
 import java.util.Dictionary;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,13 +30,15 @@ import org.osgi.service.http.HttpService;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends AbstractJaxRsApplicationContainer> implements JaxRsContainer, JaxRsVisitable {
+public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends AbstractJaxRsApplicationContainer, F extends JaxRsProvider> implements JaxRsContainer, JaxRsVisitable, JaxRsProviders {
 
    private final Log logger;
    private final HttpService httpService;
    private final Dictionary<String, Object> props;
 
    private final ConcurrentHashMap<String, C> applications = new ConcurrentHashMap<String, C>();
+   private final ConcurrentHashMap<String, F> providers = new ConcurrentHashMap<String, F>();
+
    private final Map<String, String> componentToContext = new ConcurrentHashMap<String, String>();
    private final AtomicReference<String> servletContextName = new AtomicReference<String>();
    private final AtomicBoolean isRegistered = new AtomicBoolean(false);
@@ -73,7 +76,17 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
 
    @Override
    public boolean isEmpty() {
-      return applications.isEmpty();
+      return applications.isEmpty() && providers.isEmpty();
+   }
+
+   @Override
+   public boolean hasProviders() {
+      return !providers.isEmpty();
+   }
+
+   @Override
+   public Iterable<? extends JaxRsProvider> getProviders() {
+      return providers.values();
    }
 
    @Override
@@ -81,6 +94,10 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
       visitor.onServletContext(getServletContext(), applications.size());
       for (C container : applications.values()) {
          container.accept(visitor);
+      }
+      for (Entry<String, F> item : providers.entrySet()) {
+         F value = item.getValue();
+         visitor.onProvider(item.getKey(), value.getBundle(), value.getProvider());
       }
    }
 
@@ -91,6 +108,8 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
    protected abstract void startContainer(C container);
 
    protected abstract void stopContainer(C container);
+
+   protected abstract F createJaxRsProvider(Bundle bundle, Object provider);
 
    private C getContextContainerInitIfNull(String applicationContext) {
       C container = applications.get(applicationContext);
@@ -135,6 +154,45 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
             applications.remove(contextName);
          } else {
             startContainer(container);
+         }
+      }
+   }
+
+   private void registerProviders() {
+      startServlet();
+      for (C container : applications.values()) {
+         stopContainer(container);
+         try {
+            startContainer(container);
+         } catch (Exception ex) {
+            logger.error(ex, "Error starting container [%s] on [%s]", this, container);
+         }
+      }
+   }
+
+   @Override
+   public synchronized void addProvider(String componentName, Bundle bundle, Object provider) {
+      logger.trace("Add Provider - [%s] - provider[%s]", this, componentName);
+      F entry = createJaxRsProvider(bundle, provider);
+      providers.put(componentName, entry);
+      if (!applications.isEmpty()) {
+         registerProviders();
+      }
+   }
+
+   @Override
+   public synchronized void removeProvider(String componentName) {
+      logger.trace("Remove Provider - [%s] - provider[%s]", this, componentName);
+      JaxRsProvider feature = providers.remove(componentName);
+      if (feature != null) {
+         for (Entry<String, C> entry : applications.entrySet()) {
+            C container = entry.getValue();
+            stopContainer(container);
+            if (container.isEmpty()) {
+               applications.remove(entry.getKey());
+            } else {
+               startContainer(container);
+            }
          }
       }
    }

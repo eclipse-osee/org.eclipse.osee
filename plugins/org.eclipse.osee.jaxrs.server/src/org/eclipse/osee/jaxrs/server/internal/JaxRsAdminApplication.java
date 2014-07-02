@@ -15,7 +15,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry;
-import org.eclipse.osee.jaxrs.server.internal.resources.ApplicationResource;
+import org.eclipse.osee.jaxrs.server.internal.resources.JaxRsContributionsResource;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +32,7 @@ public class JaxRsAdminApplication extends Application {
    }
 
    public void start() {
-      singletons.add(new ApplicationResource(registry));
+      singletons.add(new JaxRsContributionsResource(registry));
    }
 
    public void stop() {

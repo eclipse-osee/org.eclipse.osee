@@ -37,5 +37,6 @@ Import-Package: com.google.common.io,
  org.eclipse.osee.logger,
  org.eclipse.osee.template.engine,
  org.osgi.framework,
- org.osgi.service.http
+ org.osgi.service.http,
+ org.osgi.util.tracker;version="1.5.1"
 Bundle-Vendor: Eclipse Open System Engineering Environment

@@ -16,16 +16,33 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Roberto E. Escobar
  */
 @XmlRootElement
-public class ApplicationInfo extends JaxRsContributionInfo {
+public class JaxRsContributionInfo {
 
-   private String uri;
+   private String bundleName;
+   private String version;
+   private String name;
 
-   public String getUri() {
-      return uri;
+   public String getName() {
+      return name;
    }
 
-   public void setUri(String uri) {
-      this.uri = uri;
+   public void setName(String name) {
+      this.name = name;
    }
 
+   public String getBundleName() {
+      return bundleName;
+   }
+
+   public void setBundleName(String bundleName) {
+      this.bundleName = bundleName;
+   }
+
+   public String getVersion() {
+      return version;
+   }
+
+   public void setVersion(String version) {
+      this.version = version;
+   }
 }

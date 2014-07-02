@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.jaxrs.ApplicationInfo;
+import org.eclipse.osee.jaxrs.JaxRsContributionInfo;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitor;
 import org.osgi.framework.Bundle;
@@ -34,12 +35,12 @@ import org.osgi.framework.Constants;
 /**
  * @author Roberto E. Escobar
  */
-@Path("application-details")
-public class ApplicationResource {
+@Path("contributions")
+public class JaxRsContributionsResource {
 
    private final JaxRsVisitable visitable;
 
-   public ApplicationResource(JaxRsVisitable visitable) {
+   public JaxRsContributionsResource(JaxRsVisitable visitable) {
       super();
       this.visitable = visitable;
    }
@@ -47,8 +48,8 @@ public class ApplicationResource {
    @PermitAll
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public List<ApplicationInfo> getApplicationsInfo(final @Context UriInfo uriInfo) {
-      final List<ApplicationInfo> toReturn = new ArrayList<ApplicationInfo>();
+   public List<JaxRsContributionInfo> getContributionDetails(final @Context UriInfo uriInfo) {
+      final List<JaxRsContributionInfo> toReturn = new ArrayList<JaxRsContributionInfo>();
 
       visitable.accept(new JaxRsVisitor() {
          @Override
@@ -61,7 +62,7 @@ public class ApplicationResource {
             ApplicationInfo info = new ApplicationInfo();
             info.setBundleName(bundleName);
             info.setVersion(bundleVersion);
-            info.setApplicationName(componentName);
+            info.setName(componentName);
 
             String absolutePath = getServletPath();
 
@@ -71,18 +72,36 @@ public class ApplicationResource {
             toReturn.add(info);
          }
 
+         @Override
+         public void onProvider(String componentName, Bundle bundle, Object provider) {
+            Dictionary<String, String> headers = bundle.getHeaders();
+
+            String bundleName = headers.get(Constants.BUNDLE_SYMBOLICNAME);
+            String bundleVersion = headers.get(Constants.BUNDLE_VERSION);
+
+            JaxRsContributionInfo info = new JaxRsContributionInfo();
+            info.setBundleName(bundleName);
+            info.setVersion(bundleVersion);
+            info.setName(componentName);
+            toReturn.add(info);
+         }
+
          private String getServletPath() {
             String absolutePath = uriInfo.getAbsolutePath().toASCIIString();
-            absolutePath = absolutePath.replaceAll("/jaxrs-admin/application-details", "");
+            absolutePath = absolutePath.replaceAll("/jaxrs-admin/contributions", "");
             return absolutePath;
          }
 
       });
-      Collections.sort(toReturn, new Comparator<ApplicationInfo>() {
+      Collections.sort(toReturn, new Comparator<JaxRsContributionInfo>() {
 
          @Override
-         public int compare(ApplicationInfo o1, ApplicationInfo o2) {
-            return o1.getApplicationName().compareTo(o2.getApplicationName());
+         public int compare(JaxRsContributionInfo o1, JaxRsContributionInfo o2) {
+            int toReturn = o1.getClass().getSimpleName().compareTo(o2.getClass().getSimpleName());
+            if (toReturn == 0) {
+               toReturn = o1.getName().compareTo(o2.getName());
+            }
+            return toReturn;
          }
 
       });

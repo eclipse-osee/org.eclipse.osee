@@ -26,6 +26,10 @@ public class JaxRsVisitor {
       //
    }
 
+   public void onProvider(String componentName, Bundle bundle, Object provider) {
+      //
+   }
+
    public void onStartApplicationContainer(String applicationContext, int size) {
       //
    }
