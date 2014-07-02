@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
@@ -50,12 +49,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       this.atsServer = atsServer;
       this.workItemFactory = workItemFactory;
       this.artifactProvider = artifactProvider;
-   }
-
-   @Override
-   public IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException {
-      return new WorkData(atsServer.getUserService(), workItemFactory.getWorkItem(workItem),
-         artifactProvider.getArtifact(workItem));
    }
 
    @Override

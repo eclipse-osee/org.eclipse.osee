@@ -94,7 +94,7 @@ public class TransitionResults {
       appendResultsString(sb, results);
       for (IAtsWorkItem workItem : workItemToResults.keySet()) {
          sb.append("\n");
-         sb.append(workItem.getWorkData().getArtifactTypeName());
+         sb.append(workItem.getArtifactTypeName());
          sb.append(" [");
          sb.append(workItem.getAtsId());
          sb.append("] Titled [");

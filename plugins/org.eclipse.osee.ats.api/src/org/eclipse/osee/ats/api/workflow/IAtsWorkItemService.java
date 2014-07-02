@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkItemService {
 
-   IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException;
-
    IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<Object> getAttributeValues(IAtsObject workItem, IAttributeType attributeType) throws OseeCoreException;

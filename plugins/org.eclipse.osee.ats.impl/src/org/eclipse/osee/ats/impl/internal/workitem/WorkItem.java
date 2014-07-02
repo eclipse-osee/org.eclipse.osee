@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
@@ -42,7 +42,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public static final int TRANSACTION_SENTINEL = -1;
    private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
-   private IAtsWorkData workData;
    private IWorkDefinitionMatch match;
    private final IAtsServer atsServer;
    private final Log logger;
@@ -66,14 +65,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          logger.error(ex, "Error getting description for artifact[%s]", artifact);
          return "exception: " + ex.getLocalizedMessage();
       }
-   }
-
-   @Override
-   public IAtsWorkData getWorkData() {
-      if (workData == null) {
-         workData = new WorkData(atsServer.getUserService(), this, artifact);
-      }
-      return workData;
    }
 
    @Override
@@ -198,6 +189,49 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public Object getStoreObject() {
       return artifact;
+   }
+
+   @Override
+   public IAtsUser getCreatedBy() {
+      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
+      return atsServer.getUserService().getUserById(userId);
+   }
+
+   @Override
+   public Date getCreatedDate() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
+   }
+
+   @Override
+   public IAtsUser getCompletedBy() {
+      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
+      return atsServer.getUserService().getUserById(userId);
+   }
+
+   @Override
+   public IAtsUser getCancelledBy() {
+      String userId = artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
+      return atsServer.getUserService().getUserById(userId);
+   }
+
+   @Override
+   public String getCompletedFromState() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null);
+   }
+
+   @Override
+   public String getCancelledFromState() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
+   }
+
+   @Override
+   public String getArtifactTypeName() {
+      return artifact.getArtifactType().getName();
+   }
+
+   @Override
+   public Date getCompletedDate() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
    }
 
 }

@@ -68,10 +68,10 @@ public class ImplementersColumn implements ImplementersStringProvider {
 
    public void getImplementers_fromCompletedCancelledFrom(IAtsWorkItem workItem, List<IAtsUser> implementers) throws OseeCoreException {
       String fromStateName = null;
-      if (workItem.getWorkData().isCompleted()) {
-         fromStateName = workItem.getWorkData().getCompletedFromState();
-      } else if (workItem.getWorkData().isCancelled()) {
-         fromStateName = workItem.getWorkData().getCancelledFromState();
+      if (workItem.getStateMgr().getStateType().isCompleted()) {
+         fromStateName = workItem.getCompletedFromState();
+      } else if (workItem.getStateMgr().getStateType().isCancelled()) {
+         fromStateName = workItem.getCancelledFromState();
       }
       if (Strings.isValid(fromStateName)) {
          for (IAtsUser user : workItem.getStateMgr().getAssigneesForState(fromStateName)) {
@@ -83,15 +83,15 @@ public class ImplementersColumn implements ImplementersStringProvider {
    }
 
    public void getImplementers_fromCompletedCancelledBy(IAtsWorkItem workItem, List<IAtsUser> implementers) throws OseeCoreException {
-      if (workItem.getWorkData().isCompletedOrCancelled()) {
-         if (workItem.getWorkData().isCompleted()) {
-            IAtsUser completedBy = workItem.getWorkData().getCompletedBy();
+      if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+         if (workItem.getStateMgr().getStateType().isCompleted()) {
+            IAtsUser completedBy = workItem.getCompletedBy();
             if (completedBy != null && !implementers.contains(completedBy)) {
                implementers.add(completedBy);
             }
          }
-         if (workItem.getWorkData().isCancelled()) {
-            IAtsUser cancelledBy = workItem.getWorkData().getCancelledBy();
+         if (workItem.getStateMgr().getStateType().isCancelled()) {
+            IAtsUser cancelledBy = workItem.getCancelledBy();
             if (cancelledBy != null && !implementers.contains(cancelledBy)) {
                implementers.add(cancelledBy);
             }
@@ -110,7 +110,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
    public List<IAtsUser> getActionGroupImplementers(IActionGroup actionGroup) throws OseeCoreException {
       List<IAtsUser> implementers = new LinkedList<IAtsUser>();
       for (IAtsWorkItem action : actionGroup.getActions()) {
-         if (action.getWorkData().isCompletedOrCancelled()) {
+         if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
             for (IAtsUser user : getWorkItemImplementers(action)) {
                if (!implementers.contains(user)) {
                   implementers.add(user);

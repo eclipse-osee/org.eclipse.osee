@@ -43,7 +43,8 @@ public class Versions {
          if (teamWf != null) {
             IAtsVersion version = AtsVersionService.get().getTargetedVersion(object);
             if (version != null) {
-               if (!teamWf.getWorkData().isCompletedOrCancelled() && AtsVersionService.get().isReleased(teamWf)) {
+               if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && AtsVersionService.get().isReleased(
+                  teamWf)) {
                   String errStr =
                      "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
                   // only log error once

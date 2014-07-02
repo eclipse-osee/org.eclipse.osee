@@ -153,7 +153,7 @@ public class TransitionManager implements IAtsTransitionManager {
                workItem.getStateMgr().validateNoBootstrapUser();
                boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
                // Allow anyone to transition any task to completed/cancelled/working if parent is working
-               if (workItem.isTask() && workItem.getParentTeamWorkflow().getWorkData().isCompletedOrCancelled()) {
+               if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
                   continue;
                }
@@ -383,8 +383,7 @@ public class TransitionManager implements IAtsTransitionManager {
          // Loop through this state's blocking reviews to confirm complete
          if (workItem.isTeamWorkflow()) {
             for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
-               if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItemService.getWorkData(
-                  review).isCompletedOrCancelled()) {
+               if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !review.getStateMgr().getStateType().isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.COMPLETE_BLOCKING_REVIEWS);
                }
             }
@@ -395,8 +394,7 @@ public class TransitionManager implements IAtsTransitionManager {
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (workItem.isTeamWorkflow() && toStateDef.getStateType().isCancelledState()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
-            if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItemService.getWorkData(
-               workItem).isCompletedOrCancelled()) {
+            if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
                results.addResult(workItem, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
                break;
             }
@@ -411,7 +409,7 @@ public class TransitionManager implements IAtsTransitionManager {
       if (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
-      if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItemService.getWorkData(workItem).isCompletedOrCancelled()) {
+      if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          Set<IAtsTask> tasksToCheck = new HashSet<IAtsTask>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
@@ -422,7 +420,7 @@ public class TransitionManager implements IAtsTransitionManager {
             tasksToCheck.addAll(workItemService.getTasks(workItem, workItem.getStateDefinition()));
          }
          for (IAtsTask taskArt : tasksToCheck) {
-            if (workItemService.getWorkData(taskArt).isInWork()) {
+            if (taskArt.getStateMgr().getStateType().isInWork()) {
                results.addResult(workItem, TransitionResult.TASKS_NOT_COMPLETED);
                break;
             }

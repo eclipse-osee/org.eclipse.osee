@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+import java.util.Date;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
-import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees {
+public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    String getAtsId();
 
@@ -42,5 +43,21 @@ public interface IAtsWorkItem extends IAtsObject, HasWorkData, HasAssignees {
    boolean isTask();
 
    boolean isTeamWorkflow();
+
+   IAtsUser getCreatedBy();
+
+   Date getCreatedDate();
+
+   IAtsUser getCompletedBy();
+
+   IAtsUser getCancelledBy();
+
+   String getCompletedFromState();
+
+   String getCancelledFromState();
+
+   String getArtifactTypeName();
+
+   Date getCompletedDate();
 
 }

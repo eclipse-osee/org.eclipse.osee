@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -86,12 +86,12 @@ public class AtsQuery implements IAtsQuery {
          types.add(type);
       }
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
-         IAtsWorkData workData = workItemService.getWorkData(workItem);
-         if (workData.isCompleted() && !types.contains(StateType.Completed)) {
+         IAtsStateManager mgr = workItem.getStateMgr();
+         if (mgr.getStateType().isCompleted() && !types.contains(StateType.Completed)) {
             items.remove(workItem);
-         } else if (workData.isCancelled() && !types.contains(StateType.Cancelled)) {
+         } else if (mgr.getStateType().isCancelled() && !types.contains(StateType.Cancelled)) {
             items.remove(workItem);
-         } else if (workData.isInWork() && !types.contains(StateType.Working)) {
+         } else if (mgr.getStateType().isInWork() && !types.contains(StateType.Working)) {
             items.remove(workItem);
          }
       }

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -29,7 +28,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AtsWorkData;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -50,11 +48,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    public AtsWorkItemServiceImpl(IAtsWorkItemArtifactService workItemArtifactProvider) {
       this.workItemArtifactProvider = workItemArtifactProvider;
-   }
-
-   @Override
-   public IAtsWorkData getWorkData(IAtsWorkItem workItem) throws OseeCoreException {
-      return new AtsWorkData((AbstractWorkflowArtifact) workItemArtifactProvider.get(workItem));
    }
 
    @Override

@@ -17,14 +17,13 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
-import org.eclipse.osee.ats.api.workflow.HasWorkData;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Return current list of assignees sorted if in Working state or string of implementors surrounded by ()
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AssigneeColumn {
@@ -43,7 +42,7 @@ public class AssigneeColumn {
          List<IAtsUser> pocs = new ArrayList<IAtsUser>();
          List<IAtsUser> implementers = new ArrayList<IAtsUser>();
          for (IAtsWorkItem action : hasActions.getActions()) {
-            if (action.getWorkData().isCompletedOrCancelled()) {
+            if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
                for (IAtsUser user : action.getImplementers()) {
                   if (!implementers.contains(user)) {
                      implementers.add(user);
@@ -61,10 +60,10 @@ public class AssigneeColumn {
          Collections.sort(implementers);
          return AtsObjects.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ",
             implementers) + ")");
-      } else if (object instanceof HasWorkData) {
-         HasWorkData workData = (HasWorkData) object;
-         if (workData.getWorkData().isCompletedOrCancelled()) {
-            String implementers = implementStrProvider.getImplementersStr(workData);
+      } else if (object instanceof IAtsWorkItem) {
+         IAtsWorkItem workItem = (IAtsWorkItem) object;
+         if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+            String implementers = implementStrProvider.getImplementersStr(workItem);
             if (Strings.isValid(implementers)) {
                return "(" + implementers + ")";
             }

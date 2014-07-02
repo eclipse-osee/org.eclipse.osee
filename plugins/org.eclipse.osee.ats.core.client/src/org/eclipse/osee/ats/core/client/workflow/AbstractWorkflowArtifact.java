@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -91,7 +90,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private int stateMgrTransactionNumber;
    private AtsNote atsNote;
    private IAtsStateManager stateMgr;
-   private IAtsWorkData atsWorkData;
 
    public AbstractWorkflowArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
@@ -739,14 +737,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public List<IAtsUser> getAssignees() throws OseeCoreException {
       return getStateMgr().getAssignees();
-   }
-
-   @Override
-   public IAtsWorkData getWorkData() {
-      if (atsWorkData == null) {
-         atsWorkData = new AtsWorkData(this);
-      }
-      return atsWorkData;
    }
 
    @Override

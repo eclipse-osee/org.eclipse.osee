@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.mock;
 
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -18,7 +19,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
@@ -33,22 +33,24 @@ public class MockWorkItem implements IAtsWorkItem {
 
    private final String name;
    private String atsId;
-   private IAtsWorkData atsWorkData;
    private final IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
+   private IAtsUser completedBy;
+   private IAtsUser cancelledBy;
+   private String completeFromState;
+   private String cancelledFromState;
 
    public MockWorkItem(String name, String currentStateName, StateType StateType) {
-      this(name, new MockWorkData(StateType));
+      this(name);
    }
 
    public MockWorkItem(String name, String currentStateName, List<? extends IAtsUser> assignees) {
-      this(name, new MockWorkData(StateType.Working));
+      this(name);
    }
 
-   public MockWorkItem(String name, IAtsWorkData atsWorkData) {
+   public MockWorkItem(String name) {
       this.name = name;
       atsId = name;
-      this.atsWorkData = atsWorkData;
       this.stateMgr = new StateManager(this);
    }
 
@@ -73,21 +75,12 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsWorkData getWorkData() {
-      return atsWorkData;
-   }
-
-   @Override
    public List<IAtsUser> getImplementers() {
       return implementers.getUsers();
    }
 
    public void setImplementers(List<? extends IAtsUser> implementers) {
       this.implementers.setUsers(implementers);
-   }
-
-   public void setWorkData(IAtsWorkData atsWorkData) {
-      this.atsWorkData = atsWorkData;
    }
 
    @Override
@@ -162,6 +155,62 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public void setStoreObject(Object object) {
       // do nothing
+   }
+
+   @Override
+   public IAtsUser getCreatedBy() {
+      return null;
+   }
+
+   @Override
+   public Date getCreatedDate() {
+      return null;
+   }
+
+   @Override
+   public IAtsUser getCompletedBy() {
+      return completedBy;
+   }
+
+   @Override
+   public IAtsUser getCancelledBy() {
+      return cancelledBy;
+   }
+
+   @Override
+   public String getCompletedFromState() {
+      return completeFromState;
+   }
+
+   @Override
+   public String getCancelledFromState() {
+      return cancelledFromState;
+   }
+
+   @Override
+   public String getArtifactTypeName() {
+      return null;
+   }
+
+   @Override
+   public Date getCompletedDate() {
+      return null;
+   }
+
+   public void setCompletedBy(IAtsUser user) {
+      this.completedBy = user;
+   }
+
+   public void setCancelledBy(IAtsUser user) {
+      this.cancelledBy = user;
+   }
+
+   public void setCompletedFromState(String stateName) {
+      this.completeFromState = stateName;
+   }
+
+   public void setCancelledFromState(String stateName) {
+      this.cancelledFromState = stateName;
    }
 
 }

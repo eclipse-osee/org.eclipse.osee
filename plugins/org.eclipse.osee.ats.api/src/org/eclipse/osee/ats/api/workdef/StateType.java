@@ -22,15 +22,31 @@ public enum StateType {
       return this == Completed;
    }
 
+   public boolean isCompleted() {
+      return isCompletedState();
+   }
+
    public boolean isCompletedOrCancelledState() {
       return isCompletedState() || isCancelledState();
+   }
+
+   public boolean isCompletedOrCancelled() {
+      return isCompletedOrCancelledState();
    }
 
    public boolean isCancelledState() {
       return this == Cancelled;
    }
 
+   public boolean isCancelled() {
+      return isCancelledState();
+   }
+
    public boolean isWorkingState() {
       return this == Working;
+   }
+
+   public boolean isInWork() {
+      return isWorkingState();
    }
 }

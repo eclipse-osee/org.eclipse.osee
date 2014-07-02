@@ -95,7 +95,7 @@ public class ActionPage {
       page.addKeyValuePair("changeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
       page.addKeyValuePair("needBy", action.getSoleAttributeAsString(AtsAttributeTypes.NeedBy, ""));
       page.addKeyValuePair("workflow", action.getArtifactType().toString());
-      page.addKeyValuePair("createdDate", workItem.getWorkData().getCreatedDate().toString());
+      page.addKeyValuePair("createdDate", workItem.getCreatedDate().toString());
       page.addKeyValuePair("version", getVersion(workItem));
       page.addKeyValuePair("workDef", getWorkDefStr(workItem));
       page.addKeyValuePair("guid", workItem.getGuid());
@@ -154,7 +154,7 @@ public class ActionPage {
    private String getCreatedByStr(IAtsWorkItem workItem, ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.CreatedBy);
       if (isShowHeaderFull()) {
-         results = workItem.getWorkData().getCreatedBy().getName();
+         results = workItem.getCreatedBy().getName();
       }
       return results;
    }

@@ -58,7 +58,7 @@ public class AtsLogStoreProvider implements ILogStorageProvider {
    @Override
    public String getLogTitle() {
       try {
-         return "History for \"" + workItem.getWorkData().getArtifactTypeName() + "\" - " + getLogId() + " - titled \"" + workItem.getName() + "\"";
+         return "History for \"" + workItem.getArtifactTypeName() + "\" - " + getLogId() + " - titled \"" + workItem.getName() + "\"";
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsCoreService.class, Level.SEVERE, ex);
          return "getLogTitle exception " + ex.getLocalizedMessage();

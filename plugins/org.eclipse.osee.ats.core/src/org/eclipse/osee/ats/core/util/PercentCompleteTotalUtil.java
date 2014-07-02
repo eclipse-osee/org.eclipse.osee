@@ -50,7 +50,7 @@ public class PercentCompleteTotalUtil {
          } else {
             percent = getPercentCompleteSMASinglePercent(workItem);
             if (percent == 0) {
-               if (AtsCoreService.getWorkItemService().getWorkData(workItem).isCompletedOrCancelled()) {
+               if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
                   percent = 100;
                } else if (isAnyStateHavePercentEntered(workItem)) {
                   int numStates = 0;
@@ -87,7 +87,8 @@ public class PercentCompleteTotalUtil {
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          int numObjects = 1;
-         percent = AtsCoreService.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
+         percent =
+            AtsCoreService.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
          if (workItem instanceof IAtsTeamWorkflow) {
             for (IAtsAbstractReview revArt : AtsCoreService.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem)) {
                percent += getPercentCompleteTotal(revArt);
@@ -179,7 +180,7 @@ public class PercentCompleteTotalUtil {
          } else {
             int items = 0;
             for (IAtsTeamWorkflow team : AtsCoreService.getWorkItemService().getTeams(action)) {
-               if (!AtsCoreService.getWorkItemService().getWorkData(team).isCancelled()) {
+               if (!team.getStateMgr().getStateType().isCancelled()) {
                   percent += getPercentCompleteSMAState(team);
                   items++;
                }

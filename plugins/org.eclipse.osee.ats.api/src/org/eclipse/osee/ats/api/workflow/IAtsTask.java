@@ -16,5 +16,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  * @author Donald G. Dunne
  */
 public interface IAtsTask extends IAtsWorkItem {
+
    // do nothing
 }
