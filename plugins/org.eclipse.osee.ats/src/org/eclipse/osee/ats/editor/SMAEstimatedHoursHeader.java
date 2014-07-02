@@ -91,8 +91,15 @@ public class SMAEstimatedHoursHeader extends Composite {
    }
 
    private String getEstHoursStr() throws OseeCoreException {
+      double totalEst = 0;
       double awaEst = awa.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
-      double totalEst = awa.getEstimatedHoursTotal();
+      if (awaEst < 0) {
+         OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP,
+            "Negative estimated hours not allowed.  Please set to the expected estimated hours.");
+         PromptChangeUtil.promptChangeAttribute(awa, AtsAttributeTypes.EstimatedHours, true, false);
+      } else {
+         totalEst = awa.getEstimatedHoursTotal();
+      }
       if (awaEst != totalEst) {
          return String.format("%s | %s", AtsUtilCore.doubleToI18nString(awaEst),
             AtsUtilCore.doubleToI18nString(totalEst));
@@ -113,4 +120,5 @@ public class SMAEstimatedHoursHeader extends Composite {
    private String getToolTip() {
       return "[Workflow Estimate] | [Calculation: Sum estimated hours for workflow and all tasks and reviews]";
    }
+
 }

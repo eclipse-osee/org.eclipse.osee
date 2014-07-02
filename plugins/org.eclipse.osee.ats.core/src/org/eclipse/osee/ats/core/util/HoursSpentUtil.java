@@ -42,9 +42,19 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         for (String stateName : workItem.getStateMgr().getVisitedStateNames()) {
-            hours += getHoursSpentStateTotal(workItem, new SimpleTeamState(stateName, StateType.Working));
-         }
+         hours =
+            getHoursSpentTotalSMAState(hours, workItem) + getHoursSpentFromTasks(atsObject) + getHoursSpentReview(atsObject);
+      }
+      return hours;
+   }
+
+   /**
+    * Returns hours for all states (not children SMAs)
+    */
+   public static double getHoursSpentTotalSMAState(double hours, IAtsWorkItem workItem) {
+      for (String stateName : workItem.getStateMgr().getVisitedStateNames()) {
+         SimpleTeamState teamState = new SimpleTeamState(stateName, StateType.Working);
+         hours += getHoursSpentSMAState(workItem, teamState);
       }
       return hours;
    }
@@ -114,6 +124,19 @@ public class HoursSpentUtil {
    }
 
    /**
+    * Return hours spent for all reviews
+    */
+   public static double getHoursSpentReview(IAtsObject atsObject) throws OseeCoreException {
+      double hours = 0.0;
+      if (atsObject instanceof IAtsTeamWorkflow) {
+         for (IAtsAbstractReview review : AtsCoreService.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject)) {
+            hours += HoursSpentUtil.getHoursSpentTotal(review);
+         }
+      }
+      return hours;
+   }
+
+   /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
    public static double getHoursSpentSMAState(IAtsObject atsObject) throws OseeCoreException {
@@ -172,6 +195,21 @@ public class HoursSpentUtil {
       if (atsObject instanceof IAtsTeamWorkflow) {
          for (IAtsTask taskArt : AtsCoreService.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject,
             relatedToState)) {
+            hours += HoursSpentUtil.getHoursSpentTotal(taskArt);
+         }
+      }
+      return hours;
+   }
+
+   /**
+    * Returns Hours Spent for all Tasks
+    * 
+    * @return Returns the Hours Spent
+    */
+   public static double getHoursSpentFromTasks(IAtsObject atsObject) throws OseeCoreException {
+      double hours = 0.0;
+      if (atsObject instanceof IAtsTeamWorkflow) {
+         for (IAtsTask taskArt : AtsCoreService.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject)) {
             hours += HoursSpentUtil.getHoursSpentTotal(taskArt);
          }
       }
