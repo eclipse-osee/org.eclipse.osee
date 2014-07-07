@@ -137,7 +137,7 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    public boolean equals(Object obj) {
       if (obj instanceof Identity) {
          Identity<?> id = (Identity<?>) obj;
-         return id.equals(this);
+         return id.getGuid().equals(this.getGuid());
       }
       return false;
 
