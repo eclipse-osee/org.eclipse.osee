@@ -44,8 +44,6 @@ public final class OseeReportApplication extends Application {
       logger.debug(">>>>> registered Requirement resource");
       singletons.add(new SystemSafetyResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered Safety resource");
-      singletons.add(new SRSTraceReportResource(logger, resourceRegistry, orcsApi, properties));
-      logger.debug(">>>>> registered SRS Trace resource");
    }
 
    @Override
