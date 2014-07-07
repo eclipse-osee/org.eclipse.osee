@@ -13,16 +13,12 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Ryan D. Brooks
  */
 public class StoreBranchDatabaseCallable {
    protected static final int NULL_PARENT_BRANCH_ID = -1;
-
-   private static final String INSERT_BRANCH_WITH_GUID =
-      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
    private static final String INSERT_BRANCH =
       "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -47,14 +43,11 @@ public class StoreBranchDatabaseCallable {
          List<Object[]> updateData = new ArrayList<Object[]>();
          List<Object[]> deleteData = new ArrayList<Object[]>();
 
-         boolean insertBranchGuid = false;
-
          for (Branch branch : branches) {
             if (isDataDirty(branch)) {
                switch (branch.getStorageState()) {
                   case CREATED:
-                     insertBranchGuid = isBranchGuidNeeded(connection);
-                     insertData.add(toInsertValues(branch, insertBranchGuid));
+                     insertData.add(toInsertValues(branch));
                      break;
                   case MODIFIED:
                      updateData.add(toUpdateValues(branch));
@@ -76,8 +69,7 @@ public class StoreBranchDatabaseCallable {
                }
             }
          }
-         String insertBranch = insertBranchGuid ? INSERT_BRANCH_WITH_GUID : INSERT_BRANCH;
-         dbService.runBatchUpdate(connection, insertBranch, insertData);
+         dbService.runBatchUpdate(connection, INSERT_BRANCH, insertData);
          dbService.runBatchUpdate(connection, UPDATE_BRANCH, updateData);
          dbService.runBatchUpdate(connection, DELETE_BRANCH, deleteData);
       } finally {
@@ -87,44 +79,24 @@ public class StoreBranchDatabaseCallable {
       return Status.OK_STATUS;
    }
 
-   private boolean isBranchGuidNeeded(OseeConnection connection) {
-      return dbService.runPreparedQueryFetchObject(connection, false,
-         "select osee_value from osee_info where osee_key = ?", "osee.insert.branch.guid.on.create");
-   }
-
-   private Object[] toInsertValues(Branch branch, boolean insertBranchGuid) throws OseeCoreException {
+   private Object[] toInsertValues(Branch branch) throws OseeCoreException {
       Branch parentBranch = branch.getParentBranch();
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       long parentBranchId = parentBranch != null ? parentBranch.getUuid() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
       int inheritAccessControl = branch.isInheritAccessControl() ? 1 : 0;
 
-      if (insertBranchGuid) {
-         return new Object[] {
-            branch.getUuid(),
-            GUID.create(),
-            branch.getName(),
-            parentBranchId,
-            branch.getSourceTransaction().getId(),
-            branch.getArchiveState().getValue(),
-            branch.getAssociatedArtifactId(),
-            branch.getBranchType().getValue(),
-            branch.getBranchState().getValue(),
-            baselineTransaction,
-            inheritAccessControl};
-      } else {
-         return new Object[] {
-            branch.getUuid(),
-            branch.getName(),
-            parentBranchId,
-            branch.getSourceTransaction().getId(),
-            branch.getArchiveState().getValue(),
-            branch.getAssociatedArtifactId(),
-            branch.getBranchType().getValue(),
-            branch.getBranchState().getValue(),
-            baselineTransaction,
-            inheritAccessControl};
-      }
+      return new Object[] {
+         branch.getUuid(),
+         branch.getName(),
+         parentBranchId,
+         branch.getSourceTransaction().getId(),
+         branch.getArchiveState().getValue(),
+         branch.getAssociatedArtifactId(),
+         branch.getBranchType().getValue(),
+         branch.getBranchState().getValue(),
+         baselineTransaction,
+         inheritAccessControl};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
