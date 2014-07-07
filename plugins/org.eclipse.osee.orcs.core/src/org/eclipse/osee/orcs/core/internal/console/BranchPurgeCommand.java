@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.console;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.core.internal.branch.BranchUtil;
@@ -87,7 +87,13 @@ public final class BranchPurgeCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       List<Long> branchUuids = new ArrayList<Long>();
-      Arrays.asList(params.getArray("branchUuids"));
+      for (String uuid : params.getArray("branchUuids")) {
+         if (Strings.isNumeric(uuid)) {
+            branchUuids.add(Long.parseLong(uuid));
+         } else {
+            console.writeln("UUID listed %s is not a valid UUID", uuid);
+         }
+      }
 
       if (branchUuids.isEmpty()) {
          console.writeln("No branch uuids where specified");
@@ -146,8 +152,8 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       private Collection<BranchReadable> getBranchesToPurge() throws OseeCoreException {
          Set<BranchReadable> specifiedBranches = new HashSet<BranchReadable>();
          for (Long uuid : branchUuids) {
-            if (uuid > 0) {
-               console.write("UUID listed %s is not a valid UUID", uuid);
+            if (uuid <= 0) {
+               console.writeln("UUID listed %s is not a valid UUID", uuid);
             } else {
                BranchReadable cached = queryFactory.branchQuery().andUuids(uuid).getResults().getExactlyOne();
                if (cached != null) {
