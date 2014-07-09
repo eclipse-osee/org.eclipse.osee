@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -91,6 +92,7 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsActionFactory actionFactory;
    private ActionableItemManager actionableItemManager;
    private ActionUtility actionUtil;
+   private IOseeDatabaseService dbService;
 
    public static AtsServerImpl get() {
       checkStarted();
@@ -104,6 +106,10 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IAtsConfigItemFactory getConfigItemFactory() {
       return configItemFactory;
+   }
+
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
@@ -144,7 +150,7 @@ public class AtsServerImpl implements IAtsServer {
       atsStoreFactory = new AtsStoreFactoryImpl(this);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
-      sequenceProvider = new AtsSequenceProvider(OseeDatabaseService.getDbService());
+      sequenceProvider = new AtsSequenceProvider(dbService);
       config = new AtsArtifactConfigCache(this, orcsApi);
       actionableItemManager = new ActionableItemManager(config);
       actionUtil = new ActionUtility(orcsApi);
@@ -264,7 +270,11 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public List<IAtsDatabaseConversion> getDatabaseConversions() {
-      return AtsDatabaseConversions.getConversions(getOrcsApi());
+      return AtsDatabaseConversions.getConversions(getOrcsApi(), getDatabaseService());
+   }
+
+   private IOseeDatabaseService getDatabaseService() {
+      return dbService;
    }
 
    @Override

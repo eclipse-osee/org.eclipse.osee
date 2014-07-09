@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.impl.internal.convert;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.impl.internal.OseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -25,10 +25,10 @@ public class AtsDatabaseConversions {
 
    private static List<IAtsDatabaseConversion> externalConversions = new ArrayList<IAtsDatabaseConversion>();
 
-   public static List<IAtsDatabaseConversion> getConversions(OrcsApi orcsApi) {
+   public static List<IAtsDatabaseConversion> getConversions(OrcsApi orcsApi, IOseeDatabaseService dbService) {
       List<IAtsDatabaseConversion> conversions = new ArrayList<IAtsDatabaseConversion>();
-      conversions.add(new ConvertBaselineGuidToBaselineUuid(OseeDatabaseService.getDbService(), orcsApi));
-      conversions.add(new ConvertFavoriteBranchGuidToUuid(OseeDatabaseService.getDbService(), orcsApi));
+      conversions.add(new ConvertBaselineGuidToBaselineUuid(dbService, orcsApi));
+      conversions.add(new ConvertFavoriteBranchGuidToUuid(dbService, orcsApi));
       conversions.addAll(externalConversions);
       return conversions;
    }
