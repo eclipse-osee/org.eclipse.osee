@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.action;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,7 +74,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsAction createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) throws OseeCoreException {
+   public Pair<IAtsAction, Collection<IAtsTeamWorkflow>> createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) throws OseeCoreException {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
@@ -97,11 +99,13 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Create team workflow artifacts
+      List<IAtsTeamWorkflow> teamWfs = new ArrayList<IAtsTeamWorkflow>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          List<IAtsUser> leads = new LinkedList<IAtsUser>(teamDef.getLeads(actionableItems));
          IAtsTeamWorkflow teamWf =
             createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate, createdBy,
                newActionListener);
+         teamWfs.add(teamWf);
          changes.add(teamWf);
       }
 
@@ -111,7 +115,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       changes.add(action);
-      return action;
+      return new Pair<IAtsAction, Collection<IAtsTeamWorkflow>>(action, teamWfs);
    }
 
    @Override

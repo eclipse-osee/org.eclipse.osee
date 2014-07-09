@@ -157,7 +157,7 @@ public final class ActionResource {
 
          IAtsAction action =
             atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority, false, null,
-               aias, new Date(), atsUser, null, changes);
+               aias, new Date(), atsUser, null, changes).getFirst();
          changes.execute();
 
          htmlStr =
