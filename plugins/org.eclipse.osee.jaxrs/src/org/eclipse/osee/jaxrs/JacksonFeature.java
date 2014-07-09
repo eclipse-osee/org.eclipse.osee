@@ -97,7 +97,7 @@ public class JacksonFeature implements Feature {
       objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, true);
       objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS, true);
       objectMapper.configure(SerializationConfig.Feature.USE_ANNOTATIONS, true);
-      objectMapper.configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, true);
+      objectMapper.configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false);
       objectMapper.configure(SerializationConfig.Feature.WRITE_CHAR_ARRAYS_AS_JSON_ARRAYS, true);
 
       objectMapper.configure(DeserializationConfig.Feature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
@@ -106,7 +106,7 @@ public class JacksonFeature implements Feature {
       objectMapper.configure(DeserializationConfig.Feature.AUTO_DETECT_CREATORS, true);
       objectMapper.configure(DeserializationConfig.Feature.USE_ANNOTATIONS, true);
       objectMapper.configure(DeserializationConfig.Feature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
-      objectMapper.configure(DeserializationConfig.Feature.UNWRAP_ROOT_VALUE, true);
+      objectMapper.configure(DeserializationConfig.Feature.UNWRAP_ROOT_VALUE, false);
       objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
       return new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);
    }
