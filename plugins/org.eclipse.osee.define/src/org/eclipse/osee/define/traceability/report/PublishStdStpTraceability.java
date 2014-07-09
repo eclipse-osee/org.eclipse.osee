@@ -54,7 +54,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
    private static final String artifactTypeChooser =
       "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirement.getName() + "\"/>";
    private static final String searchInheritedTypes =
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"true\" />";
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
    private Collection<String> availableTraceHandlers;

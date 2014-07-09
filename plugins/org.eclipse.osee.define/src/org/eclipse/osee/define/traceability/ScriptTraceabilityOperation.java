@@ -254,6 +254,11 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       String name = null;
       if (reqArtifact != null) {
          name = reqArtifact.getName();
+         String inspection = getInspectionQual(reqArtifact);
+         if (Strings.isValid(inspection)) {
+            requirementToCodeUnitsMap.put(reqArtifact, inspection);
+         }
+
          requirementToCodeUnitsMap.put(reqArtifact, path);
       }
 
