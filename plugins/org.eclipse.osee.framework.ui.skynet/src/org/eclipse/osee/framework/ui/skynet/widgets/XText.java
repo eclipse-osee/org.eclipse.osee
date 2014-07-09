@@ -589,4 +589,8 @@ public class XText extends XWidget {
       }
    }
 
+   public void selectAll() {
+      sText.selectAll();
+   }
+
 }

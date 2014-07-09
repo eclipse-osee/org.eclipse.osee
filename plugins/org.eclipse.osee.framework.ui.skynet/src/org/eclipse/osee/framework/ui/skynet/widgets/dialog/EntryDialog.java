@@ -210,8 +210,8 @@ public class EntryDialog extends MessageDialog {
       text.setFocus();
       if (Strings.isValid(entryText)) {
          text.set(entryText);
+         text.selectAll();
       }
-
       text.addModifyListener(textModifyListener);
    }
 
