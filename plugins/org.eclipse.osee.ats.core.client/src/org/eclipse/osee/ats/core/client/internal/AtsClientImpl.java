@@ -81,6 +81,7 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -117,6 +118,11 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsNotificationService notificationService;
    private IAtsColumnUtilities columnUtilities;
    private IAtsUtilService utilService;
+   private IOseeDatabaseService dbService;
+
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
@@ -428,7 +434,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public ISequenceProvider getSequenceProvider() {
       if (sequenceProvider == null) {
-         sequenceProvider = new AtsSequenceProvider(OseeDatabaseService.getDbService());
+         sequenceProvider = new AtsSequenceProvider(dbService);
       }
       return sequenceProvider;
    }

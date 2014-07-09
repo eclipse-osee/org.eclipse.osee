@@ -14,4 +14,5 @@
    </service>
    <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
+   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
 </scr:component>
