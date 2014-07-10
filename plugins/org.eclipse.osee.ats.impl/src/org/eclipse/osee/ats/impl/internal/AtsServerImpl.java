@@ -157,7 +157,7 @@ public class AtsServerImpl implements IAtsServer {
       workItemPage = new WorkItemPage(logger, this);
       actionFactory =
          new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
-            actionableItemManager, actionUtil);
+            actionableItemManager, userService, attributeResolverService, atsStateFactory);
 
       System.out.println("ATS - AtsServerImpl started");
       started = true;

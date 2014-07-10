@@ -57,7 +57,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return workItemService.getReviews(teamWf, workItemService.getCurrentState(teamWf));
+      return workItemService.getReviews(teamWf, teamWf.getStateMgr().getCurrentState());
    }
 
    @Override

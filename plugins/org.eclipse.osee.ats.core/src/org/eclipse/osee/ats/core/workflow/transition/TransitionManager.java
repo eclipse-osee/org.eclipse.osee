@@ -99,6 +99,7 @@ public class TransitionManager implements IAtsTransitionManager {
     */
    @Override
    public void handleTransitionValidation(TransitionResults results) {
+      boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
       try {
          if (helper.getWorkItems().isEmpty()) {
             results.addResult(TransitionResult.NO_WORKFLOWS_PROVIDED_FOR_TRANSITION);
@@ -108,7 +109,7 @@ public class TransitionManager implements IAtsTransitionManager {
             results.addResult(TransitionResult.TO_STATE_CANT_BE_NULL);
             return;
          }
-         if (helper.isSystemUser()) {
+         if (!overrideAssigneeCheck && helper.isSystemUser()) {
             results.addResult(TransitionResult.CAN_NOT_TRANSITION_AS_SYSTEM_USER);
             return;
          }
@@ -151,7 +152,6 @@ public class TransitionManager implements IAtsTransitionManager {
                boolean currentlyUnAssigned =
                   workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();
-               boolean overrideAssigneeCheck = helper.isOverrideAssigneeCheck();
                // Allow anyone to transition any task to completed/cancelled/working if parent is working
                if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);

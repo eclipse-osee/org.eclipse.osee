@@ -67,15 +67,22 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IOseeBranch results = null;
-      ArtifactReadable artifact =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(teamWf.getGuid()).getResults().getExactlyOne();
       BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
       ResultSet<BranchReadable> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
 
-      for (BranchReadable branch : branches) {
-         if (branch.getAssociatedArtifactId() == artifact.getLocalId()) {
-            results = branch;
-            break;
+      if (!branches.isEmpty()) {
+         ArtifactReadable artifact = null;
+         if (teamWf.getStoreObject() != null) {
+            artifact = (ArtifactReadable) teamWf.getStoreObject();
+         } else {
+            artifact =
+               orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(teamWf.getGuid()).getResults().getExactlyOne();
+         }
+         for (BranchReadable branch : branches) {
+            if (branch.getAssociatedArtifactId() == artifact.getLocalId()) {
+               results = branch;
+               break;
+            }
          }
       }
       return results;

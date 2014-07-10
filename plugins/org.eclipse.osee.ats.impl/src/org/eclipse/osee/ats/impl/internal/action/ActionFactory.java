@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -24,22 +25,31 @@ import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
-import org.eclipse.osee.ats.impl.internal.workitem.ActionUtility;
 import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
+import org.eclipse.osee.ats.impl.internal.workitem.WorkItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -61,16 +71,20 @@ public class ActionFactory implements IAtsActionFactory {
    private final ISequenceProvider sequenceProvider;
    private final IAtsWorkItemService workItemService;
    private final ActionableItemManager actionableItemManager;
-   private final ActionUtility actionUtil;
+   private final IAtsUserService userService;
+   private final IAttributeResolver attrResolver;
+   private final IAtsStateFactory stateFactory;
 
-   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, ActionUtility actionUtil) {
+   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory) {
       this.orcsApi = orcsApi;
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
       this.workItemService = workItemService;
       this.actionableItemManager = actionableItemManager;
-      this.actionUtil = actionUtil;
+      this.userService = userService;
+      this.attrResolver = attrResolver;
+      this.stateFactory = stateFactory;
    }
 
    @Override
@@ -200,11 +214,11 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Initialize state machine
-      String workDefinitionName = actionUtil.getWorkDefinitionName(teamDef);
+      String workDefinitionName = getWorkDefinitionName(teamDef);
       if (!Strings.isValid(workDefinitionName)) {
          throw new OseeStateException("Work Definition for Team Def [%s] does not exist", teamDef);
       }
-      actionUtil.initializeNewStateMachine(createdBy, teamDef, createdDate, workDefinitionName, teamWf, changes);
+      initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, changes);
 
       // Notify listener of team creation
       if (newActionListener != null) {
@@ -223,6 +237,62 @@ public class ActionFactory implements IAtsActionFactory {
       //      AtsNotificationManager.notifySubscribedByTeamOrActionableItem(teamWf);
 
       return teamWf;
+   }
+
+   public String getWorkDefinitionName(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      return getWorkDefinitionName((ArtifactReadable) teamDef.getStoreObject());
+   }
+
+   private String getWorkDefinitionName(ArtifactReadable teamDefArt) throws OseeCoreException {
+      String workDefName = teamDefArt.getSoleAttributeAsString(AtsAttributeTypes.WorkflowDefinition, null);
+      if (Strings.isValid(workDefName)) {
+         return workDefName;
+      }
+
+      ArtifactReadable parentTeamDef =
+         teamDefArt.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).getExactlyOne();
+      if (parentTeamDef == null) {
+         return "WorkDef_Team_Default";
+      }
+      return getWorkDefinitionName(parentTeamDef);
+   }
+
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      Conditions.checkNotNull(createdDate, "createdDate");
+      Conditions.checkNotNull(createdBy, "createdBy");
+      Conditions.checkNotNull(changes, "changes");
+      IAtsStateDefinition startState = workItem.getWorkDefinition().getStartState();
+      IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
+      ((WorkItem) workItem).setStateManager(stateManager);
+      StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,
+         (createdBy == null ? userService.getCurrentUser() : createdBy), changes);
+      IAtsUser user = createdBy == null ? userService.getCurrentUser() : createdBy;
+      setCreatedBy(workItem, user, true, createdDate, changes);
+      TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);
+   }
+
+   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date) throws OseeCoreException {
+      if (attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
+         workItem.getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
+      } else {
+         workItem.getLog().addLog(LogType.Originated, "", "Changed by " + userService.getCurrentUser().getName(), date,
+            user.getUserId());
+         workItem.getLog().internalResetOriginator(user);
+      }
+   }
+
+   public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
+      if (logChange) {
+         logCreatedByChange(workItem, user, date);
+      }
+
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, user.getUserId());
+      }
+      if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
+      }
+      //      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
    }
 
    /**
