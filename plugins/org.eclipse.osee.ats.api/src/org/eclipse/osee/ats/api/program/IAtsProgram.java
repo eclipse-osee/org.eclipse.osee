@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,29 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.config;
+package org.eclipse.osee.ats.api.program;
 
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsProgram extends org.eclipse.osee.ats.api.program.IAtsProgram {
+public interface IAtsProgram {
 
-   @Override
    public String getName();
 
-   @Override
    public boolean isActive() throws OseeCoreException;
 
-   public Artifact getArtifact() throws OseeCoreException;
-
-   public String getStaticIdPrefix() throws OseeCoreException;
-
-   public String getProgramName() throws OseeCoreException;
-
-   public IAtsTeamDefinition getTeamDefHoldingVersions() throws OseeCoreException;
+   public Long getUuid();
 
 }
