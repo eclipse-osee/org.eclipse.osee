@@ -93,14 +93,17 @@ public class OseeWebApplicationException extends WebApplicationException {
    }
 
    private static String formatMessage(String message, Object... args) {
-      String toReturn;
-      try {
-         toReturn = String.format(message, args);
-      } catch (RuntimeException ex) {
-         toReturn =
-            String.format(
-               "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]",
-               message, Collections.toString(",", args), ex.toString());
+      String toReturn = message;
+      if (args != null && args.length > 0) {
+         try {
+
+            toReturn = String.format(message, args);
+         } catch (RuntimeException ex) {
+            toReturn =
+               String.format(
+                  "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]",
+                  message, Collections.toString(",", args), ex.toString());
+         }
       }
       return toReturn;
    }

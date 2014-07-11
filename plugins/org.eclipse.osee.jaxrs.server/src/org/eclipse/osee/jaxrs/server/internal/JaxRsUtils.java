@@ -10,10 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.ws.rs.core.Response.StatusType;
+import org.apache.cxf.jaxrs.utils.JAXRSUtils;
+import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.ServiceReference;
 
@@ -24,6 +35,33 @@ public final class JaxRsUtils {
 
    private JaxRsUtils() {
       // Utility class
+   }
+
+   public static final String UTF_8_ENCODING = "UTF-8";
+   public static final List<MediaType> HTML_MEDIA_TYPES = Collections.unmodifiableList(Arrays.asList(
+      MediaType.APPLICATION_XHTML_XML_TYPE, MediaType.TEXT_HTML_TYPE));
+
+   public static boolean isHtmlSupported(List<MediaType> acceptableMediaTypes) {
+      return !JAXRSUtils.intersectMimeTypes(acceptableMediaTypes, HTML_MEDIA_TYPES, false).isEmpty();
+   }
+
+   public static String asTemplateValue(String value) {
+      String toReturn = "N/A";
+      if (Strings.isValid(value)) {
+         toReturn = value.trim();
+         toReturn = toReturn.replaceAll("\r?\n", "<br/>");
+      }
+      return toReturn;
+   }
+
+   public static ResourceToken newTemplate(String resource, Class<?> clazz) {
+      return new ClassBasedResourceToken(resource, clazz);
+   }
+
+   public static IResourceRegistry newSingleTemplateRegistry(ResourceToken token) {
+      IResourceRegistry registry = new ResourceRegistry();
+      registry.registerResource(-1L, token);
+      return registry;
    }
 
    public static String getComponentName(ServiceReference<?> reference) {
@@ -86,4 +124,24 @@ public final class JaxRsUtils {
       return toReturn;
    }
 
+   public static StatusType newStatusType(final int code, final Family family, final String reason) {
+      return new StatusType() {
+
+         @Override
+         public int getStatusCode() {
+            return code;
+         }
+
+         @Override
+         public Family getFamily() {
+            return family;
+         }
+
+         @Override
+         public String getReasonPhrase() {
+            return reason;
+         }
+
+      };
+   }
 }

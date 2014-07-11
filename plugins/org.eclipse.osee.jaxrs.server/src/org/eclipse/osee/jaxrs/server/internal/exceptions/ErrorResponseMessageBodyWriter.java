@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.exceptions;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import static org.eclipse.osee.jaxrs.server.internal.JaxRsUtils.asTemplateValue;
+import static org.eclipse.osee.jaxrs.server.internal.JaxRsUtils.newSingleTemplateRegistry;
+import static org.eclipse.osee.jaxrs.server.internal.JaxRsUtils.newTemplate;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
-import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.ErrorResponse;
+import org.eclipse.osee.jaxrs.server.internal.resources.AbstractHtmlWriter;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
 
@@ -34,66 +31,36 @@ import org.eclipse.osee.template.engine.PageFactory;
  * @author Roberto E. Escobar
  */
 @Provider
-public class ErrorResponseMessageBodyWriter implements MessageBodyWriter<ErrorResponse> {
+public class ErrorResponseMessageBodyWriter extends AbstractHtmlWriter<ErrorResponse> {
 
-   private static final ResourceToken ERROR_PAGE__TEMPLATE = createToken("error_template.html");
+   private static final ResourceToken ERROR_PAGE__TEMPLATE = newTemplate("error_template.html",
+      ErrorResponseMessageBodyWriter.class);
    private static final String ERROR_PAGE__MESSAGE_TAG = "errorMessage";
    private static final String ERROR_PAGE__CODE_TAG = "errorStatusCode";
    private static final String ERROR_PAGE__REASON_TAG = "errorReason";
    private static final String ERROR_PAGE__TYPE_TAG = "errorType";
    private static final String ERROR_PAGE__EXCEPTION_TAG = "errorException";
+   private static final IResourceRegistry REGISTRY = newSingleTemplateRegistry(ERROR_PAGE__TEMPLATE);
 
-   private IResourceRegistry registry;
-
-   private IResourceRegistry getRegistry() {
-      if (registry == null) {
-         registry = new ResourceRegistry();
-         registry.registerResource(-1L, ERROR_PAGE__TEMPLATE);
-      }
-      return registry;
+   @Override
+   public Class<ErrorResponse> getSupportedClass() {
+      return ErrorResponse.class;
    }
 
    @Override
-   public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-      return type == ErrorResponse.class && MediaType.TEXT_HTML_TYPE.equals(mediaType);
+   public void writeTo(ErrorResponse data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, Writer writer) throws WebApplicationException {
+      writeErrorHtml(data, writer);
    }
 
-   @Override
-   public long getSize(ErrorResponse data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-      return -1;
-   }
-
-   @Override
-   public void writeTo(ErrorResponse data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      String errorMessage = data.getErrorMessage();
-      int errorCode = data.getErrorCode();
-      String reason = data.getErrorReason();
-      String errorType = data.getErrorType();
-      String exception = data.getException();
-
-      Writer writer = new OutputStreamWriter(entityStream, "UTF-8");
-      PageCreator creator = PageFactory.newPageCreator(getRegistry(), // 
-         ERROR_PAGE__MESSAGE_TAG, normalize(errorMessage), //
-         ERROR_PAGE__CODE_TAG, normalize(String.valueOf(errorCode)), //
-         ERROR_PAGE__REASON_TAG, normalize(reason), //
-         ERROR_PAGE__TYPE_TAG, normalize(errorType), //
-         ERROR_PAGE__EXCEPTION_TAG, normalize(exception) //
+   public static void writeErrorHtml(ErrorResponse data, Writer writer) {
+      PageCreator creator = PageFactory.newPageCreator(REGISTRY, // 
+         ERROR_PAGE__MESSAGE_TAG, asTemplateValue(data.getErrorMessage()), //
+         ERROR_PAGE__CODE_TAG, asTemplateValue(String.valueOf(data.getErrorCode())), //
+         ERROR_PAGE__REASON_TAG, asTemplateValue(data.getErrorReason()), //
+         ERROR_PAGE__TYPE_TAG, asTemplateValue(data.getErrorType()), //
+         ERROR_PAGE__EXCEPTION_TAG, asTemplateValue(data.getException()) //
       );
       creator.realizePage(ERROR_PAGE__TEMPLATE, writer);
-      writer.flush();
-   }
-
-   private static String normalize(String value) {
-      String toReturn = "N/A";
-      if (Strings.isValid(value)) {
-         toReturn = value.trim();
-         toReturn = toReturn.replaceAll("\r?\n", "<br/>");
-      }
-      return toReturn;
-   }
-
-   private static ResourceToken createToken(String fileName) {
-      return new ClassBasedResourceToken(fileName, ErrorResponseMessageBodyWriter.class);
    }
 
 }

@@ -42,10 +42,9 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegis
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry.JaxRsContainerProvider;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsContainerProviderImpl;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsFactory;
-import org.eclipse.osee.jaxrs.server.internal.exceptions.ErrorResponseMessageBodyWriter;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProvider;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
-import org.eclipse.osee.jaxrs.server.internal.exceptions.GenericExceptionMapper;
+import org.eclipse.osee.jaxrs.server.internal.exceptions.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextFilter;
 import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextProviderImpl;
 import org.eclipse.osee.logger.Log;
@@ -99,8 +98,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       waem.setAddMessageToResponse(true);
 
       providers.add(waem);
-      providers.add(new GenericExceptionMapper(logger));
-      providers.add(new ErrorResponseMessageBodyWriter());
+      providers.addAll(JaxRsExceptions.newExceptionProviders(logger));
       providers.addAll(JacksonFeature.getProviders());
       providers.add(filter);
       this.providers = providers;
