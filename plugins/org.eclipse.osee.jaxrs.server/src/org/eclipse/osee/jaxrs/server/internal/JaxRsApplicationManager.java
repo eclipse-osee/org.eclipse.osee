@@ -38,8 +38,7 @@ public final class JaxRsApplicationManager extends JaxRsDynamicServiceManager<Ap
       String componentName = JaxRsUtils.getComponentName(reference);
       Bundle bundle = reference.getBundle();
       Application application = bundle.getBundleContext().getService(reference);
-      String contextName = JaxRsUtils.getApplicationPath(componentName, application);
-      registry.register(componentName, contextName, bundle, application);
+      registry.register(componentName, bundle, application);
    }
 
    @Override

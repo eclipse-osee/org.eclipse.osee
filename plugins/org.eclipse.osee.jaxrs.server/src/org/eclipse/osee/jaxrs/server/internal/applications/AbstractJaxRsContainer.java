@@ -175,9 +175,7 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
       logger.trace("Add Provider - [%s] - provider[%s]", this, componentName);
       F entry = createJaxRsProvider(bundle, provider);
       providers.put(componentName, entry);
-      if (!applications.isEmpty()) {
-         registerProviders();
-      }
+      registerProviders();
    }
 
    @Override

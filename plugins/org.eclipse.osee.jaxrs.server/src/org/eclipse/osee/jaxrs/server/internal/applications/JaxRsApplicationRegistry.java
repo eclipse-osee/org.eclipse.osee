@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConfiguration;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitable;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsVisitor;
 import org.eclipse.osee.logger.Log;
@@ -126,7 +127,9 @@ public class JaxRsApplicationRegistry implements JaxRsVisitable {
       }
    }
 
-   public void register(String componentName, String contextName, Bundle bundle, Application application) {
+   public void register(String componentName, Bundle bundle, Application application) {
+      String contextName = JaxRsUtils.getApplicationPath(componentName, application);
+
       final String baseContext = getBaseContext();
       JaxRsContainer container = getContainerInitIfNull(baseContext);
       container.addApplication(componentName, contextName, bundle, application);
