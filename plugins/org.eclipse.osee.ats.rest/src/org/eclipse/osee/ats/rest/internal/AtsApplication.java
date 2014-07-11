@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConfigResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.resources.TeamResource;
+import org.eclipse.osee.ats.rest.internal.resources.UserResource;
 import org.eclipse.osee.ats.rest.internal.resources.VersionResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
@@ -77,6 +78,7 @@ public class AtsApplication extends Application {
       singletons.add(new VersionResource(orcsApi));
       singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
       singletons.add(new CpaResource(orcsApi, atsServer, appServerMgr));
+      singletons.add(new UserResource(atsServer.getUserService()));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
       System.out.println("ATS - Application started - " + appServerMgr.getServerUri());

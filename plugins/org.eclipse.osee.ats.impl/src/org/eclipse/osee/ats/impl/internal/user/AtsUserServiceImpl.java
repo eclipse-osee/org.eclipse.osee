@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.impl.internal.user;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -128,7 +127,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (ArtifactReadable userArt : orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(
          AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).getResults()) {
-         Boolean activeFlag = userArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+         Boolean activeFlag = userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true);
          if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
             users.add(new AtsUser(userArt));
          }
