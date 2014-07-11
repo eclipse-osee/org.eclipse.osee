@@ -103,6 +103,10 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XVersionList();
       } else if (widgetName.equals(XGoalCombo.WIDGET_ID)) {
          return new XGoalCombo();
+      } else if (widgetName.equals(XCpaOpenOriginatingPcrWidget.WIDGET_ID)) {
+         return new XCpaOpenOriginatingPcrWidget();
+      } else if (widgetName.equals(XCpaOpenDuplicatedPcrWidget.WIDGET_ID)) {
+         return new XCpaOpenDuplicatedPcrWidget();
       }
       return toReturn;
    }

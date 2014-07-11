@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XIntegerDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
@@ -427,6 +428,13 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals(XDslEditorWidget.WIDGET_ID)) {
             XDslEditorWidget widget = new XDslEditorWidget(name);
             xWidget = widget;
+         } else if (xWidgetName.equals("XHyperlinkLabel")) {
+            xWidget = new XHyperlinkLabel(name);
+            String defaultValue = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(defaultValue)) {
+               XHyperlinkLabel widget = (XHyperlinkLabel) xWidget;
+               widget.setUrl(xWidgetLayoutData.getDefaultValue());
+            }
          } else {
             xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
          }
