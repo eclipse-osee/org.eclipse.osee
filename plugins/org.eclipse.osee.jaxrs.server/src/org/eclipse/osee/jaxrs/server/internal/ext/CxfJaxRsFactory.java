@@ -31,7 +31,6 @@ import org.apache.cxf.jaxrs.impl.WebApplicationExceptionMapper;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.servlet.CXFNonSpringServlet;
-import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.jaxrs.JacksonFeature;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
@@ -45,8 +44,6 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsFactory;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProvider;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsProviders;
 import org.eclipse.osee.jaxrs.server.internal.exceptions.JaxRsExceptions;
-import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextFilter;
-import org.eclipse.osee.jaxrs.server.internal.filters.SecurityContextProviderImpl;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.service.http.HttpService;
@@ -61,7 +58,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    private Log logger;
    private HttpService httpService;
-   private AuthorizationAdmin authorizationAdmin;
 
    private List<Feature> features;
    private List<? extends Object> providers;
@@ -76,10 +72,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       this.httpService = httpService;
    }
 
-   public void setAuthorizationAdmin(AuthorizationAdmin authorizationAdmin) {
-      this.authorizationAdmin = authorizationAdmin;
-   }
-
    public void start(Map<String, Object> props) {
       logger.debug("Starting [%s]...", getClass().getSimpleName());
 
@@ -89,9 +81,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
 
-      SecurityContextProviderImpl provider = new SecurityContextProviderImpl(logger, authorizationAdmin);
-      SecurityContextFilter filter = new SecurityContextFilter(provider);
-
       List<Object> providers = new ArrayList<Object>();
       WebApplicationExceptionMapper waem = new WebApplicationExceptionMapper();
       waem.setPrintStackTrace(true);
@@ -100,7 +89,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       providers.add(waem);
       providers.addAll(JaxRsExceptions.newExceptionProviders(logger));
       providers.addAll(JacksonFeature.getProviders());
-      providers.add(filter);
       this.providers = providers;
 
       List<Feature> features = new ArrayList<Feature>();

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal;
 
-import org.eclipse.osee.jaxrs.server.internal.filters.FiltersTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +17,7 @@ import org.junit.runners.Suite;
  * @author David W. Miller
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({FiltersTestSuite.class, JaxRsConfigurationTest.class, RestResourceConcatenatorTest.class})
+@Suite.SuiteClasses({JaxRsConfigurationTest.class, RestResourceConcatenatorTest.class})
 public class JaxRsServerInternalTestSuite {
    // Test Suite
 }
