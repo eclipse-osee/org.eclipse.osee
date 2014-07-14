@@ -57,13 +57,14 @@ public class PurgeTransactionAction extends Action {
 
    @Override
    public void run() {
-      if (transactions.isEmpty()) {
-         if (!getTransactions(transactions)) {
+      final List<TransactionRecord> useTransactions = new ArrayList<TransactionRecord>(transactions);
+      if (useTransactions.isEmpty()) {
+         if (!getTransactions(useTransactions)) {
             return;
          }
       }
       if (MessageDialog.openConfirm(Displays.getActiveShell(), NAME,
-         "Are you sure you want to purge " + getTransactionListStr(transactions))) {
+         "Are you sure you want to purge " + getTransactionListStr(useTransactions))) {
 
          IJobChangeListener jobChangeListener = new JobChangeAdapter() {
 
@@ -85,7 +86,7 @@ public class PurgeTransactionAction extends Action {
 
          };
 
-         IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactions);
+         IOperation op = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(useTransactions);
          Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
       }
 
