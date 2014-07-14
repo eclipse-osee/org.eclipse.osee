@@ -251,6 +251,15 @@ attributeType "ats.Program Uuid" extends IntegerAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Rationale" extends StringAttribute {
+	uuid 0x10000089159900AA
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 attributeType "ats.Duplicated PCR Id" extends StringAttribute {
 	uuid 0x10000089158000AA
 	dataProvider DefaultAttributeDataProvider

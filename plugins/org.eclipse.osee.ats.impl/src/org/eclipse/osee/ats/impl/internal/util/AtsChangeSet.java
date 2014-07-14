@@ -103,32 +103,38 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       getTransaction().deleteSoleAttribute(getArtifact(workItem), attributeType);
+      add(workItem);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
       getTransaction().setSoleAttributeValue(getArtifact(workItem), attributeType, value);
+      add(workItem);
    }
 
    @Override
    public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       getTransaction().setSoleAttributeValue(getArtifact(atsObject), attributeType, value);
+      add(atsObject);
    }
 
    @Override
    public void deleteAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       getTransaction().deleteAttributesWithValue(getArtifact(atsObject), attributeType, value);
+      add(atsObject);
    }
 
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, AtsUtilServer.toAttributeId(attr), value);
+      add(workItem);
    }
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
       getTransaction().deleteByAttributeId(getArtifact(workItem), AtsUtilServer.toAttributeId(attr));
+      add(workItem);
    }
 
    @Override
@@ -152,6 +158,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);
+      add(atsObject);
    }
 
    @Override

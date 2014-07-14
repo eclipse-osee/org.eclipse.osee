@@ -141,6 +141,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType OriginatingPcrId = createType(0x10000089159000AAL, "Originating PCR Id");
    public static final IAttributeType PcrToolId = createType(0x10000089151000AAL, "PCR Tool Id");
    public static final IAttributeType ProgramUuid = createType(0x10000089157000AAL, "Program Uuid");
+   public static final IAttributeType Rationale = createType(0x10000089159900AAL, "Rationale");
 
    // @formatter:on
 

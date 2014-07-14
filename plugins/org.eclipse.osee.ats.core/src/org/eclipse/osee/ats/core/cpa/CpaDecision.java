@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 @XmlRootElement
 public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDecision {
 
-   String applicability, rationale, assignees, pcrSystem, origPcrLocation, decisionLocation, duplicatedPcrLocation,
-      originatingProgram, completedBy, completedDate;
-   boolean complete = false;
+   private String applicability, rationale, assignees, pcrSystem, origPcrLocation, decisionLocation,
+      duplicatedPcrLocation, originatingProgram, completedBy, completedDate, duplicatedPcrId;
+   private boolean complete = false;
 
    public CpaDecision(String id, String name) {
       super(id, name);
@@ -121,12 +121,21 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.completedDate = completedDate;
    }
 
+   @Override
    public String getApplicability() {
       return applicability;
    }
 
    public void setApplicability(String applicability) {
       this.applicability = applicability;
+   }
+
+   public String getDuplicatedPcrId() {
+      return duplicatedPcrId;
+   }
+
+   public void setDuplicatedPcrId(String duplicatedPcrId) {
+      this.duplicatedPcrId = duplicatedPcrId;
    }
 
 }
