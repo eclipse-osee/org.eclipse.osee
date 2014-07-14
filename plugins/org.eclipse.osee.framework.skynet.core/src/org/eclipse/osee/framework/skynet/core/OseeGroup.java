@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 public class OseeGroup {
-   private static final String USERS_GROUP_FOLDER_NAME = "User Groups";
 
    private Artifact groupArtifact;
    private final Map<IArtifactToken, Boolean> temporaryOverride = new HashMap<IArtifactToken, Boolean>();
@@ -121,18 +121,18 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateUserGroupsFolder(Branch branch) throws OseeCoreException {
-      String cacheKey = CoreArtifactTypes.Folder.getName() + "." + USERS_GROUP_FOLDER_NAME;
+      String cacheKey = CoreArtifactTypes.Folder.getName() + "." + CoreArtifactTokens.UserGroups.getName();
       Artifact usersGroupFolder = ArtifactCache.getByTextId(cacheKey, branch);
       if (usersGroupFolder == null) {
          usersGroupFolder =
-            ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.Folder, USERS_GROUP_FOLDER_NAME, branch);
+            ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups.getGuid(), branch);
          if (usersGroupFolder == null) {
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-            if (root.hasChild(USERS_GROUP_FOLDER_NAME)) {
-               usersGroupFolder = root.getChild(USERS_GROUP_FOLDER_NAME);
+            if (root.hasChild(CoreArtifactTokens.UserGroups.getName())) {
+               usersGroupFolder = root.getChild(CoreArtifactTokens.UserGroups.getName());
             } else {
                usersGroupFolder =
-                  ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, USERS_GROUP_FOLDER_NAME);
+                  ArtifactTypeManager.addArtifact(CoreArtifactTokens.UserGroups, branch);
                root.addChild(usersGroupFolder);
             }
          }
