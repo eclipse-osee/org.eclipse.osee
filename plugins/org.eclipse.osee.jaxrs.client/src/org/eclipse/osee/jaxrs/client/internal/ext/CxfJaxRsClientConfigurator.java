@@ -11,6 +11,7 @@
 package org.eclipse.osee.jaxrs.client.internal.ext;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,22 +30,39 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.JacksonFeature;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
+import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator {
 
+   public static interface OAuthFactory {
+
+      OAuth2ClientRequestFilter newOAuthClientFilter(String username, String password, String oauthClientId, String oauthClientSecret, String oauthAuthorizeUri, String oauthTokenUri, String oauthTokenValidationUri);
+
+      ClientAccessTokenCache newClientAccessTokenCache(int cacheMaxSize, long cacheEvictTimeoutMillis);
+
+   }
+
    private static final String APACHE_CXF_LOGGER = "org.apache.cxf.Logger";
    private static final String JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY = "javax.ws.rs.client.ClientBuilder";
 
    private static final String DEFAULT_JAXRS_CLIENT_BUILDER_IMPL = "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl";
    private static final String DEFAULT_CXF_LOGGING_IMPL = "org.apache.cxf.common.logging.Slf4jLogger";
+
+   private final OAuthFactory oauthFactory;
+
+   public CxfJaxRsClientConfigurator(OAuthFactory oauthFactory) {
+      super();
+      this.oauthFactory = oauthFactory;
+   }
 
    private List<? extends Object> providers;
    private List<Feature> features;
@@ -88,6 +106,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       List<Object> providers = new ArrayList<Object>();
       providers.add(new GenericResponseExceptionMapper());
       providers.addAll(JacksonFeature.getProviders());
+      providers.addAll(OAuth2Util.getOAuthProviders());
       this.providers = providers;
 
       List<Feature> features = new ArrayList<Feature>(2);
@@ -107,6 +126,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       bean.setProviders(getProviders());
       bean.setFeatures(getFeatures());
       bean.setProperties(getProperties());
+      bean.setProviders(getOAuthProviders(config));
 
       /**
        * If threadSafe is true then multiple threads can invoke on the same proxy or WebClient instance.
@@ -129,6 +149,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       register(builder, getProviders());
       register(builder, getFeatures());
       register(builder, getProperties());
+      register(builder, getOAuthProviders(config));
    }
 
    @Override
@@ -148,7 +169,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       policy1.setReceiveTimeout(config.getReceiveTimeout());
       //@formatter:on
 
-      if (config.isServerAuthorizationRequired()) {
+      if (config.isServerAuthorizationRequired() && !isOAuthEnabled(config)) {
          AuthorizationPolicy policy2 = getAuthorizationPolicy(conduit);
          policy2.setUserName(config.getServerUsername());
          policy2.setPassword(config.getServerPassword());
@@ -176,6 +197,43 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
             policy3.setAuthorizationType(config.getProxyAuthorizationType());
          }
       }
+   }
+
+   protected List<Object> getOAuthProviders(JaxRsClientConfig config) {
+      List<Object> providers = Collections.emptyList();
+      if (isOAuthEnabled(config)) {
+
+         OAuth2ClientRequestFilter filter = oauthFactory.newOAuthClientFilter(//
+            config.getServerUsername(), config.getServerPassword(), //
+            config.getOAuthClientId(), config.getOAuthClientSecret(), //
+            config.getOAuthAuthorizeUri(), config.getOAuthTokenUri(), config.getOAuthTokenValidationUri());
+
+         if (config.isOAuthTokenCacheEnabled()) {
+            int cacheMaxSize = config.getOAuthCacheMaxSize();
+            long cacheEvictTimeoutMillis = config.getOAuthCacheEvictTimeoutMillis();
+            ClientAccessTokenCache cache =
+               oauthFactory.newClientAccessTokenCache(cacheMaxSize, cacheEvictTimeoutMillis);
+            filter.setClientAccessTokenCache(cache);
+         }
+
+         filter.setSecretKeyAlgorithm(config.getOAuthSecretKeyAlgorithm());
+         filter.setSecretKeyEncoded(config.getOAuthEncodedSecretKey());
+
+         filter.setFailOnRefreshTokenError(config.isOAuthFailsOnRefreshTokenError());
+         filter.setRedirectUri(config.getOAuthRedirectUri());
+         filter.setScopes(config.getOAuthScopes());
+
+         filter.setTokenStore(config.getOAuthTokenStore());
+         filter.setTokenHandler(config.getOAuthTokenHandler());
+
+         providers = Collections.<Object> singletonList(filter);
+      }
+      return providers;
+   }
+
+   private static boolean isOAuthEnabled(JaxRsClientConfig config) {
+      String clientId = config.getOAuthClientId();
+      return Strings.isValid(clientId);
    }
 
    private static void register(ClientBuilder builder, Map<String, Object> properties) {

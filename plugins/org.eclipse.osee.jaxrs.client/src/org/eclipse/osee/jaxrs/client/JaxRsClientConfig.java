@@ -23,6 +23,21 @@ import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_C
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_FOLLOW_REDIRECTS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_MAX_RETRANSMITS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_NON_PROXY_HOSTS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_STORE;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_ADDRESS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_AUTHORIZATION_TYPE;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS;
@@ -44,6 +59,19 @@ import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_CR
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_FOLLOW_REDIRECTS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_MAX_RETRANSMITS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_NON_PROXY_HOSTS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_AUTHORIZE_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_ENABLED;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CLIENT_ID;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CLIENT_SECRET;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_REDIRECT_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_SCOPES;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_TOKEN_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_ADDRESS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_AUTHORIZATION_TYPE;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS;
@@ -93,6 +121,22 @@ public class JaxRsClientConfig {
    private boolean proxyClientSubResourcesInheritHeaders;
    private boolean proxyClientThreadSafe;
 
+   private String oauthAuthorizeUri;
+   private String oauthTokenUri;
+   private String oauthTokenValidationUri;
+   private String oauthClientId;
+   private String oauthClientSecret;
+   private String oauthRedirectUri;
+   private String oauthScopes;
+   private JaxRsTokenStore oauthTokenStore;
+   private JaxRsConfirmAccessHandler oauthConfirmAccessHandler;
+   private String oauthSecretKeyAlgorithm;
+   private String oauthEncodedSecretKey;
+   private boolean oauthFailsOnRefreshTokenError;
+   private boolean oauthCacheEnabled;
+   private int oauthCacheMaxSize;
+   private long oauthCacheEvictTimeoutMillis;
+
    JaxRsClientConfig() {
       super();
       reset();
@@ -120,6 +164,19 @@ public class JaxRsClientConfig {
       setChunkLength(DEFAULT_JAXRS_CLIENT_CHUNK_SIZE);
       setCreateThreadSafeProxyClients(DEFAULT_JAXRS_CLIENT_CREATE_THREADSAFE_PROXY_CLIENTS);
       setProxyClientSubResourcesInheritHeaders(DEFAULT_JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS);
+      setOAuthAuthorizeUri(DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI);
+      setOAuthClientId(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID);
+      setOAuthClientSecret(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET);
+      setOAuthRedirectUri(DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI);
+      setOAuthTokenUri(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI);
+      setOAuthTokenValidationUri(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI);
+      setOAuthScopes(DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES);
+      setOAuthSecretKeyAlgorithm(DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM);
+      setOAuthEncodedSecretKey(DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY);
+      setOAuthFailsOnRefreshTokenError(DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR);
+      setOAuthCacheEnabled(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED);
+      setOAuthCacheMaxSize(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE);
+      setOAuthCacheEvictTimeoutMillis(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS);
    }
 
    public boolean isChunkingAllowed() {
@@ -226,6 +283,66 @@ public class JaxRsClientConfig {
       return proxyClientThreadSafe;
    }
 
+   public String getOAuthAuthorizeUri() {
+      return oauthAuthorizeUri;
+   }
+
+   public String getOAuthTokenUri() {
+      return oauthTokenUri;
+   }
+
+   public String getOAuthTokenValidationUri() {
+      return oauthTokenValidationUri;
+   }
+
+   public String getOAuthClientId() {
+      return oauthClientId;
+   }
+
+   public String getOAuthClientSecret() {
+      return oauthClientSecret;
+   }
+
+   public String getOAuthRedirectUri() {
+      return oauthRedirectUri;
+   }
+
+   public String getOAuthScopes() {
+      return oauthScopes;
+   }
+
+   public String getOAuthSecretKeyAlgorithm() {
+      return oauthSecretKeyAlgorithm;
+   }
+
+   public String getOAuthEncodedSecretKey() {
+      return oauthEncodedSecretKey;
+   }
+
+   public boolean isOAuthFailsOnRefreshTokenError() {
+      return oauthFailsOnRefreshTokenError;
+   }
+
+   public boolean isOAuthTokenCacheEnabled() {
+      return oauthCacheEnabled;
+   }
+
+   public int getOAuthCacheMaxSize() {
+      return oauthCacheMaxSize;
+   }
+
+   public long getOAuthCacheEvictTimeoutMillis() {
+      return oauthCacheEvictTimeoutMillis;
+   }
+
+   public JaxRsTokenStore getOAuthTokenStore() {
+      return oauthTokenStore != null ? oauthTokenStore : DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_STORE;
+   }
+
+   public JaxRsConfirmAccessHandler getOAuthTokenHandler() {
+      return oauthConfirmAccessHandler != null ? oauthConfirmAccessHandler : DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER;
+   }
+
    void setAsyncExecuteTimeout(long asyncExecuteTimeout) {
       this.asyncExecuteTimeout = asyncExecuteTimeout;
    }
@@ -310,6 +427,66 @@ public class JaxRsClientConfig {
       this.proxyClientThreadSafe = proxyClientThreadSafe;
    }
 
+   void setOAuthAuthorizeUri(String oauthAuthorizeUri) {
+      this.oauthAuthorizeUri = oauthAuthorizeUri;
+   }
+
+   void setOAuthTokenUri(String oauthTokenUri) {
+      this.oauthTokenUri = oauthTokenUri;
+   }
+
+   void setOAuthTokenValidationUri(String oauthTokenValidationUri) {
+      this.oauthTokenValidationUri = oauthTokenValidationUri;
+   }
+
+   void setOAuthClientId(String oauthClientId) {
+      this.oauthClientId = oauthClientId;
+   }
+
+   void setOAuthClientSecret(String oauthClientSecret) {
+      this.oauthClientSecret = oauthClientSecret;
+   }
+
+   void setOAuthRedirectUri(String oauthRedirectUri) {
+      this.oauthRedirectUri = oauthRedirectUri;
+   }
+
+   void setOAuthScopes(String oauthScopes) {
+      this.oauthScopes = oauthScopes;
+   }
+
+   void setOAuthSecretKeyAlgorithm(String oauthSecretKeyAlgorithm) {
+      this.oauthSecretKeyAlgorithm = oauthSecretKeyAlgorithm;
+   }
+
+   void setOAuthEncodedSecretKey(String oauthEncodedSecretKey) {
+      this.oauthEncodedSecretKey = oauthEncodedSecretKey;
+   }
+
+   void setOAuthFailsOnRefreshTokenError(boolean oauthFailsOnRefreshTokenError) {
+      this.oauthFailsOnRefreshTokenError = oauthFailsOnRefreshTokenError;
+   }
+
+   void setOAuthTokenStore(JaxRsTokenStore oauthTokenStore) {
+      this.oauthTokenStore = oauthTokenStore;
+   }
+
+   void setOAuthConfirmAccessHandler(JaxRsConfirmAccessHandler oauthConfirmAccessHandler) {
+      this.oauthConfirmAccessHandler = oauthConfirmAccessHandler;
+   }
+
+   void setOAuthCacheEnabled(boolean oauthCacheEnabled) {
+      this.oauthCacheEnabled = oauthCacheEnabled;
+   }
+
+   void setOAuthCacheMaxSize(int oauthCacheMaxSize) {
+      this.oauthCacheMaxSize = oauthCacheMaxSize;
+   }
+
+   void setOAuthCacheEvictTimeoutMillis(long oauthCacheEvictTimeoutMillis) {
+      this.oauthCacheEvictTimeoutMillis = oauthCacheEvictTimeoutMillis;
+   }
+
    void readProperties(Map<String, Object> src) {
       //@formatter:off
       setAsyncExecuteTimeout(getLong(src, JAXRS_CLIENT_ASYNC_EXECUTE_TIMEOUT, DEFAULT_JAXRS_CLIENT_ASYNC_EXECUTE_TIMEOUT));
@@ -333,6 +510,19 @@ public class JaxRsClientConfig {
       setServerUsername(get(src, JAXRS_CLIENT_SERVER_USERNAME, DEFAULT_JAXRS_CLIENT_SERVER_USERNAME));
       setCreateThreadSafeProxyClients(getBoolean(src, JAXRS_CLIENT_CREATE_THREADSAFE_PROXY_CLIENTS, DEFAULT_JAXRS_CLIENT_CREATE_THREADSAFE_PROXY_CLIENTS));;
       setProxyClientSubResourcesInheritHeaders(getBoolean(src, JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS, DEFAULT_JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS));
+      setOAuthAuthorizeUri(get(src, JAXRS_CLIENT_OAUTH_AUTHORIZE_URI, DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI));
+      setOAuthClientId(get(src, JAXRS_CLIENT_OAUTH_CLIENT_ID, DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID));
+      setOAuthClientSecret(get(src, JAXRS_CLIENT_OAUTH_CLIENT_SECRET, DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET));
+      setOAuthRedirectUri(get(src, JAXRS_CLIENT_OAUTH_REDIRECT_URI, DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI));
+      setOAuthTokenUri(get(src, JAXRS_CLIENT_OAUTH_TOKEN_URI, DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI));
+      setOAuthTokenValidationUri(get(src, JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI, DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI));
+      setOAuthScopes(get(src, JAXRS_CLIENT_OAUTH_SCOPES, DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES));
+      setOAuthSecretKeyAlgorithm(get(src, JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM, DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM));
+      setOAuthEncodedSecretKey(get(src, JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY, DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY));
+      setOAuthFailsOnRefreshTokenError(getBoolean(src, JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR, DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR));
+      setOAuthCacheEnabled(getBoolean(src, JAXRS_CLIENT_OAUTH_CACHE_ENABLED, DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED));
+      setOAuthCacheMaxSize(getInt(src, JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE, DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE));
+      setOAuthCacheEvictTimeoutMillis(getLong(src, JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS, DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS));
       //@formatter:on
    }
 
@@ -359,12 +549,27 @@ public class JaxRsClientConfig {
       data.chunkLength = this.chunkLength;
       data.proxyClientSubResourcesInheritHeaders = this.proxyClientSubResourcesInheritHeaders;
       data.proxyClientThreadSafe = this.proxyClientThreadSafe;
+      data.oauthAuthorizeUri = this.oauthAuthorizeUri;
+      data.oauthTokenUri = this.oauthTokenUri;
+      data.oauthTokenValidationUri = this.oauthTokenValidationUri;
+      data.oauthClientId = this.oauthClientId;
+      data.oauthClientSecret = this.oauthClientSecret;
+      data.oauthRedirectUri = this.oauthRedirectUri;
+      data.oauthScopes = this.oauthScopes;
+      data.oauthSecretKeyAlgorithm = this.oauthSecretKeyAlgorithm;
+      data.oauthEncodedSecretKey = this.oauthEncodedSecretKey;
+      data.oauthTokenStore = this.oauthTokenStore;
+      data.oauthConfirmAccessHandler = this.oauthConfirmAccessHandler;
+      data.oauthFailsOnRefreshTokenError = this.oauthFailsOnRefreshTokenError;
+      data.oauthCacheEnabled = this.oauthCacheEnabled;
+      data.oauthCacheMaxSize = this.oauthCacheMaxSize;
+      data.oauthCacheEvictTimeoutMillis = this.oauthCacheEvictTimeoutMillis;
       return data;
    }
 
    @Override
    public String toString() {
-      return "JaxRsClientConfig [asyncExecuteTimeout=" + asyncExecuteTimeout + ", asyncExecuteTimeoutRejection=" + asyncExecuteTimeoutRejection + ", connectionTimeout=" + connectionTimeout + ", receiveTimeout=" + receiveTimeout + ", connectionType=" + connectionType + ", maxRetransmits=" + maxRetransmits + ", nonProxyHosts=" + nonProxyHosts + ", fullProxyAddress=" + fullProxyAddress + ", proxyAuthorizationType=" + proxyAuthorizationType + ", proxyPassword=" + proxyPassword + ", proxyType=" + proxyType + ", proxyUsername=" + proxyUsername + ", serverAuthorizationType=" + serverAuthorizationType + ", serverPassword=" + serverPassword + ", serverUsername=" + serverUsername + ", followRedirects=" + followRedirects + ", chunkingAllowed=" + chunkingAllowed + ", chunkingThreshold=" + chunkingThreshold + ", chunkLength=" + chunkLength + ", proxyClientSubResourcesInheritHeaders=" + proxyClientSubResourcesInheritHeaders + ", proxyClientThreadSafe=" + proxyClientThreadSafe + "]";
+      return "JaxRsClientConfig [asyncExecuteTimeout=" + asyncExecuteTimeout + ", asyncExecuteTimeoutRejection=" + asyncExecuteTimeoutRejection + ", connectionTimeout=" + connectionTimeout + ", receiveTimeout=" + receiveTimeout + ", connectionType=" + connectionType + ", maxRetransmits=" + maxRetransmits + ", nonProxyHosts=" + nonProxyHosts + ", fullProxyAddress=" + fullProxyAddress + ", proxyAuthorizationType=" + proxyAuthorizationType + ", proxyPassword=" + proxyPassword + ", proxyType=" + proxyType + ", proxyUsername=" + proxyUsername + ", serverAuthorizationType=" + serverAuthorizationType + ", serverPassword=" + serverPassword + ", serverUsername=" + serverUsername + ", followRedirects=" + followRedirects + ", chunkingAllowed=" + chunkingAllowed + ", chunkingThreshold=" + chunkingThreshold + ", chunkLength=" + chunkLength + ", proxyClientSubResourcesInheritHeaders=" + proxyClientSubResourcesInheritHeaders + ", proxyClientThreadSafe=" + proxyClientThreadSafe + ", oauthAuthorizeUri=" + oauthAuthorizeUri + ", oauthTokenUri=" + oauthTokenUri + ", oauthTokenValidationUri=" + oauthTokenValidationUri + ", oauthClientId=" + oauthClientId + ", oauthClientSecret=" + oauthClientSecret + ", oauthRedirectUri=" + oauthRedirectUri + ", oauthScopes=" + oauthScopes + ", oauthTokenStore=" + oauthTokenStore + ", oauthConfirmAccessHandler=" + oauthConfirmAccessHandler + ", oauthSecretKeyAlgorithm=" + oauthSecretKeyAlgorithm + ", oauthEncodedSecretKey=" + oauthEncodedSecretKey + ", oauthFailsOnRefreshTokenError=" + oauthFailsOnRefreshTokenError + "]";
    }
 
    private static int limit(int minLimit, int value) {

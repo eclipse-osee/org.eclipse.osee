@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.client.internal.ext;
+package org.eclipse.osee.jaxrs.client;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.net.URI;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({CxfJaxRsClientConfiguratorTest.class, OAuth2ClientRequestFilterTest.class, OAuth2FlowsTest.class})
-public class JaxRsClientExtTestSuite {
-   // Test Suite
+public interface JaxRsTokenStore {
+
+   String getToken(URI uri);
+
+   void storeToken(URI uri, String token);
+
 }

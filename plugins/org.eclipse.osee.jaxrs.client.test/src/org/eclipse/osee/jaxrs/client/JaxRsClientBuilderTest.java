@@ -23,6 +23,20 @@ import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_C
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_FOLLOW_REDIRECTS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_MAX_RETRANSMITS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_NON_PROXY_HOSTS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_ADDRESS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_AUTHORIZATION_TYPE;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.DEFAULT_JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS;
@@ -45,6 +59,19 @@ import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_CR
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_FOLLOW_REDIRECTS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_MAX_RETRANSMITS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_NON_PROXY_HOSTS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_AUTHORIZE_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_ENABLED;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CLIENT_ID;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_CLIENT_SECRET;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_REDIRECT_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_SCOPES;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_TOKEN_URI;
+import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_ADDRESS;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_AUTHORIZATION_TYPE;
 import static org.eclipse.osee.jaxrs.client.JaxRsClientConstants.JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS;
@@ -110,11 +137,28 @@ public class JaxRsClientBuilderTest {
    private static final String SERVER_PASSWORD = "server-password";
    private static final String SERVER_USERNAME = "server-username";
 
+   private static final String AUTHORIZE_URI = "authorize_uri";
+   private static final String TOKEN_URI = "token_uri";
+   private static final String VALIDATION_URI = "validation_uri";
+   private static final String CLIENT_ID = "client_id";
+   private static final String CLIENT_SECRET = "client_secret";
+   private static final String SCOPES = "scopes";
+   private static final String REDIRECT_URI = "redirect_uri";
+   private static final String SECRET_ALGORITHM = "secret_algorithm";
+   private static final String SECRET_KEY = "encoded_secret_key";
+   private static final boolean FAIL_ON_REFRESH_ERROR = true;
+   private static final boolean CACHE_ENABLED = true;
+   private static final int CACHE_MAX_SIZE = 7652;
+   private static final long CACHE_EVICT_TIMEOUT = 1309L;
+
    //@formatter:off
    @Mock private JaxRsClientFactory factory;
    @Mock private Map<String, Object> properties;
    @Mock private WebTarget target;
    @Captor private ArgumentCaptor<Map<String, Object>> propCaptor;
+   
+   @Mock private JaxRsConfirmAccessHandler handler;
+   @Mock private JaxRsTokenStore tokenStore;
    //@formatter:on
 
    private JaxRsClientBuilder builder;
@@ -331,6 +375,21 @@ public class JaxRsClientBuilderTest {
       assertEquals(false, config.isProxyAuthorizationRequired());
       assertEquals(false, config.isProxyRequired());
       assertEquals(false, config.isServerAuthorizationRequired());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI, config.getOAuthAuthorizeUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI, config.getOAuthTokenUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI, config.getOAuthTokenValidationUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID, config.getOAuthClientId());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET, config.getOAuthClientSecret());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES, config.getOAuthScopes());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI, config.getOAuthRedirectUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM, config.getOAuthSecretKeyAlgorithm());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY, config.getOAuthEncodedSecretKey());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR, config.isOAuthFailsOnRefreshTokenError());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED, config.isOAuthTokenCacheEnabled());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE, config.getOAuthCacheMaxSize());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS, config.getOAuthCacheEvictTimeoutMillis());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER, config.getOAuthTokenHandler());
+      assertEquals(null, config.getOAuthTokenStore());
       //@formatter:on
    }
 
@@ -403,6 +462,20 @@ public class JaxRsClientBuilderTest {
       props.put(JAXRS_CLIENT_SERVER_PASSWORD, SERVER_PASSWORD);
       props.put(JAXRS_CLIENT_SERVER_USERNAME, SERVER_USERNAME);
 
+      props.put(JAXRS_CLIENT_OAUTH_AUTHORIZE_URI, AUTHORIZE_URI);
+      props.put(JAXRS_CLIENT_OAUTH_TOKEN_URI, TOKEN_URI);
+      props.put(JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI, VALIDATION_URI);
+      props.put(JAXRS_CLIENT_OAUTH_CLIENT_ID, CLIENT_ID);
+      props.put(JAXRS_CLIENT_OAUTH_CLIENT_SECRET, CLIENT_SECRET);
+      props.put(JAXRS_CLIENT_OAUTH_SCOPES, SCOPES);
+      props.put(JAXRS_CLIENT_OAUTH_REDIRECT_URI, REDIRECT_URI);
+      props.put(JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM, SECRET_ALGORITHM);
+      props.put(JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY, SECRET_KEY);
+      props.put(JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR, FAIL_ON_REFRESH_ERROR);
+      props.put(JAXRS_CLIENT_OAUTH_CACHE_ENABLED, CACHE_ENABLED);
+      props.put(JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE, CACHE_MAX_SIZE);
+      props.put(JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS, CACHE_EVICT_TIMEOUT);
+
       builder.properties(props);
 
       JaxRsClient actual = builder.build();
@@ -433,6 +506,21 @@ public class JaxRsClientBuilderTest {
       assertEquals(true, config.isProxyAuthorizationRequired());
       assertEquals(true, config.isProxyRequired());
       assertEquals(true, config.isServerAuthorizationRequired());
+      assertEquals(AUTHORIZE_URI, config.getOAuthAuthorizeUri());
+      assertEquals(TOKEN_URI, config.getOAuthTokenUri());
+      assertEquals(VALIDATION_URI, config.getOAuthTokenValidationUri());
+      assertEquals(CLIENT_ID, config.getOAuthClientId());
+      assertEquals(CLIENT_SECRET, config.getOAuthClientSecret());
+      assertEquals(SCOPES, config.getOAuthScopes());
+      assertEquals(REDIRECT_URI, config.getOAuthRedirectUri());
+      assertEquals(SECRET_ALGORITHM, config.getOAuthSecretKeyAlgorithm());
+      assertEquals(SECRET_KEY, config.getOAuthEncodedSecretKey());
+      assertEquals(FAIL_ON_REFRESH_ERROR, config.isOAuthFailsOnRefreshTokenError());
+      assertEquals(CACHE_ENABLED, config.isOAuthTokenCacheEnabled());
+      assertEquals(CACHE_MAX_SIZE, config.getOAuthCacheMaxSize());
+      assertEquals(CACHE_EVICT_TIMEOUT, config.getOAuthCacheEvictTimeoutMillis());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER, config.getOAuthTokenHandler());
+      assertEquals(null, config.getOAuthTokenStore());
    }
 
    @Test
@@ -458,6 +546,22 @@ public class JaxRsClientBuilderTest {
       builder.authorizationType(SERVER_AUTHORIZATION_TYPE);
       builder.password(SERVER_PASSWORD);
       builder.username(SERVER_USERNAME);
+
+      builder.oAuthAuthorizeUri(AUTHORIZE_URI);
+      builder.oAuthTokenUri(TOKEN_URI);
+      builder.oAuthTokenValidationUri(VALIDATION_URI);
+      builder.oAuthScopes(SCOPES);
+      builder.oAuthRedirectUri(REDIRECT_URI);
+      builder.oAuthClientId(CLIENT_ID);
+      builder.oAuthClientSecret(CLIENT_SECRET);
+      builder.oAuthSecretKeyAlgorithm(SECRET_ALGORITHM);
+      builder.oAuthEncodedSecretKey(SECRET_KEY);
+      builder.oAuthFailOnRefreshTokenError(FAIL_ON_REFRESH_ERROR);
+      builder.oAuthCacheEnabled(CACHE_ENABLED);
+      builder.oAuthCacheMaxSize(CACHE_MAX_SIZE);
+      builder.oAuthCacheEvictTimeoutMillis(CACHE_EVICT_TIMEOUT);
+      builder.oAuthConfirmHandler(handler);
+      builder.oAuthTokenStore(tokenStore);
 
       JaxRsClient actual = builder.build();
       JaxRsClientConfig config = actual.getConfig();
@@ -487,6 +591,22 @@ public class JaxRsClientBuilderTest {
       assertEquals(true, config.isProxyAuthorizationRequired());
       assertEquals(true, config.isProxyRequired());
       assertEquals(true, config.isServerAuthorizationRequired());
+
+      assertEquals(AUTHORIZE_URI, config.getOAuthAuthorizeUri());
+      assertEquals(TOKEN_URI, config.getOAuthTokenUri());
+      assertEquals(VALIDATION_URI, config.getOAuthTokenValidationUri());
+      assertEquals(CLIENT_ID, config.getOAuthClientId());
+      assertEquals(CLIENT_SECRET, config.getOAuthClientSecret());
+      assertEquals(SCOPES, config.getOAuthScopes());
+      assertEquals(REDIRECT_URI, config.getOAuthRedirectUri());
+      assertEquals(SECRET_ALGORITHM, config.getOAuthSecretKeyAlgorithm());
+      assertEquals(SECRET_KEY, config.getOAuthEncodedSecretKey());
+      assertEquals(FAIL_ON_REFRESH_ERROR, config.isOAuthFailsOnRefreshTokenError());
+      assertEquals(CACHE_ENABLED, config.isOAuthTokenCacheEnabled());
+      assertEquals(CACHE_MAX_SIZE, config.getOAuthCacheMaxSize());
+      assertEquals(CACHE_EVICT_TIMEOUT, config.getOAuthCacheEvictTimeoutMillis());
+      assertEquals(handler, config.getOAuthTokenHandler());
+      assertEquals(tokenStore, config.getOAuthTokenStore());
 
       builder.properties(Collections.<String, Object> emptyMap());
 
@@ -518,6 +638,21 @@ public class JaxRsClientBuilderTest {
       assertEquals(true, config.isProxyAuthorizationRequired());
       assertEquals(true, config.isProxyRequired());
       assertEquals(true, config.isServerAuthorizationRequired());
+      assertEquals(AUTHORIZE_URI, config.getOAuthAuthorizeUri());
+      assertEquals(TOKEN_URI, config.getOAuthTokenUri());
+      assertEquals(VALIDATION_URI, config.getOAuthTokenValidationUri());
+      assertEquals(CLIENT_ID, config.getOAuthClientId());
+      assertEquals(CLIENT_SECRET, config.getOAuthClientSecret());
+      assertEquals(SCOPES, config.getOAuthScopes());
+      assertEquals(REDIRECT_URI, config.getOAuthRedirectUri());
+      assertEquals(SECRET_ALGORITHM, config.getOAuthSecretKeyAlgorithm());
+      assertEquals(SECRET_KEY, config.getOAuthEncodedSecretKey());
+      assertEquals(FAIL_ON_REFRESH_ERROR, config.isOAuthFailsOnRefreshTokenError());
+      assertEquals(CACHE_ENABLED, config.isOAuthTokenCacheEnabled());
+      assertEquals(CACHE_MAX_SIZE, config.getOAuthCacheMaxSize());
+      assertEquals(CACHE_EVICT_TIMEOUT, config.getOAuthCacheEvictTimeoutMillis());
+      assertEquals(handler, config.getOAuthTokenHandler());
+      assertEquals(tokenStore, config.getOAuthTokenStore());
 
       //@formatter:off
       assertEquals(DEFAULT_JAXRS_CLIENT_ASYNC_EXECUTE_TIMEOUT, config2.getAsyncExecuteTimeout());
@@ -546,6 +681,23 @@ public class JaxRsClientBuilderTest {
       assertEquals(false, config2.isProxyAuthorizationRequired());
       assertEquals(false, config2.isProxyRequired());
       assertEquals(false, config2.isServerAuthorizationRequired());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI, config2.getOAuthAuthorizeUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI, config2.getOAuthTokenUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI, config2.getOAuthTokenValidationUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID, config2.getOAuthClientId());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET, config2.getOAuthClientSecret());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES, config2.getOAuthScopes());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI, config2.getOAuthRedirectUri());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM, config2.getOAuthSecretKeyAlgorithm());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY, config2.getOAuthEncodedSecretKey());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR, config2.isOAuthFailsOnRefreshTokenError());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED, config2.isOAuthTokenCacheEnabled());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE, config2.getOAuthCacheMaxSize());
+      assertEquals(DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS, config2.getOAuthCacheEvictTimeoutMillis());
       //@formatter:on
+
+      // not reset by empty map
+      assertEquals(handler, config2.getOAuthTokenHandler());
+      assertEquals(tokenStore, config.getOAuthTokenStore());
    }
 }

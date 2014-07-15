@@ -28,6 +28,8 @@ import org.apache.cxf.configuration.security.ProxyAuthorizationPolicy;
 import org.apache.cxf.feature.LoggingFeature;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.ThreadLocalClientState;
+import org.apache.cxf.rs.security.oauth2.provider.OAuthContextProvider;
+import org.apache.cxf.rs.security.oauth2.provider.OAuthJSONProvider;
 import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
@@ -39,6 +41,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
+import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler;
+import org.eclipse.osee.jaxrs.client.JaxRsTokenStore;
+import org.eclipse.osee.jaxrs.client.internal.ext.CxfJaxRsClientConfigurator.OAuthFactory;
+import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,6 +85,20 @@ public class CxfJaxRsClientConfiguratorTest {
    private static final String SERVER_PASSWORD = "server-password";
    private static final String SERVER_USERNAME = "server-username";
 
+   private static final String AUTHORIZE_URI = "authorize_uri";
+   private static final boolean FAIL_ON_REFRESH_ERROR = true;
+   private static final boolean CACHE_ENABLED = true;
+   private static final long CACHE_EVICT_TIMEOUT = 1309L;
+   private static final int CACHE_MAX_SIZE = 7652;
+   private static final String CLIENT_ID = "client_id";
+   private static final String CLIENT_SECRET = "client_secret";
+   private static final String SECRET_KEY = "encoded_secret_key";
+   private static final String REDIRECT_URI = "redirect_uri";
+   private static final String SCOPES = "scopes";
+   private static final String SECRET_ALGORITHM = "secret_algorithm";
+   private static final String TOKEN_URI = "token_uri";
+   private static final String VALIDATION_URI = "validation_uri";
+
    private static final ProxyServerType CXF_PROXY_SERVER_TYPE = ProxyServerType.SOCKS;
    private static final org.apache.cxf.transports.http.configuration.ConnectionType CXF_CONNECTION_TYPE =
       org.apache.cxf.transports.http.configuration.ConnectionType.CLOSE;
@@ -95,11 +115,16 @@ public class CxfJaxRsClientConfiguratorTest {
    @Mock private HTTPClientPolicy policy1;
    @Mock private AuthorizationPolicy policy2; 
    @Mock private ProxyAuthorizationPolicy policy3; 
+   @Mock private OAuthFactory oauthFactory;
+   @Mock private OAuth2ClientRequestFilter filter;
+   @Mock private JaxRsConfirmAccessHandler handler;
+   @Mock private JaxRsTokenStore store;
    
    @Captor private ArgumentCaptor<Object> captor;
    @Captor private ArgumentCaptor<HTTPClientPolicy> captor1;
    @Captor private ArgumentCaptor<AuthorizationPolicy> captor2;
    @Captor private ArgumentCaptor<ProxyAuthorizationPolicy> captor3;
+   @Captor private ArgumentCaptor<List<Object>> captor4;
    //@formatter:on
 
    private Map<String, Object> props;
@@ -110,7 +135,7 @@ public class CxfJaxRsClientConfiguratorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      configurator = new CxfJaxRsClientConfigurator();
+      configurator = new CxfJaxRsClientConfigurator(oauthFactory);
 
       props = new LinkedHashMap<String, Object>();
       props.put("a", "1");
@@ -198,16 +223,19 @@ public class CxfJaxRsClientConfiguratorTest {
       configurator.configureDefaults(props);
       configurator.configureClientBuilder(config, builder);
 
-      verify(builder, times(6)).register(captor.capture());
+      verify(builder, times(8)).register(captor.capture());
 
       List<Object> actual = captor.getAllValues();
-      assertEquals(6, actual.size());
+      assertEquals(8, actual.size());
 
       Iterator<Object> iterator = actual.iterator();
       assertEquals(GenericResponseExceptionMapper.class, iterator.next().getClass());
       assertEquals(JacksonJaxbJsonProvider.class, iterator.next().getClass());
       assertEquals(JsonParseExceptionMapper.class, iterator.next());
       assertEquals(JsonMappingExceptionMapper.class, iterator.next());
+      assertEquals(OAuthJSONProvider.class, iterator.next().getClass());
+      assertEquals(OAuthContextProvider.class, iterator.next().getClass());
+
       assertEquals(LoggingFeature.class, iterator.next().getClass());
       assertEquals(GZIPFeature.class, iterator.next().getClass());
 
@@ -406,4 +434,80 @@ public class CxfJaxRsClientConfiguratorTest {
       assertNotNull(captor3.getValue());
    }
 
+   @Test
+   public void testConfigureOAuthNotEnabled() {
+      when(config.getOAuthClientId()).thenReturn(null);
+
+      List<Object> actual = configurator.getOAuthProviders(config);
+      assertEquals(true, actual.isEmpty());
+   }
+
+   @Test
+   public void testConfigureOAuth() {
+      when(config.getOAuthAuthorizeUri()).thenReturn(AUTHORIZE_URI);
+      when(config.isOAuthFailsOnRefreshTokenError()).thenReturn(FAIL_ON_REFRESH_ERROR);
+      when(config.isOAuthTokenCacheEnabled()).thenReturn(CACHE_ENABLED);
+      when(config.getOAuthCacheEvictTimeoutMillis()).thenReturn(CACHE_EVICT_TIMEOUT);
+      when(config.getOAuthCacheMaxSize()).thenReturn(CACHE_MAX_SIZE);
+      when(config.getOAuthClientId()).thenReturn(CLIENT_ID);
+      when(config.getOAuthClientSecret()).thenReturn(CLIENT_SECRET);
+      when(config.getOAuthEncodedSecretKey()).thenReturn(SECRET_KEY);
+      when(config.getOAuthRedirectUri()).thenReturn(REDIRECT_URI);
+      when(config.getOAuthScopes()).thenReturn(SCOPES);
+      when(config.getOAuthSecretKeyAlgorithm()).thenReturn(SECRET_ALGORITHM);
+      when(config.getOAuthTokenUri()).thenReturn(TOKEN_URI);
+      when(config.getOAuthTokenValidationUri()).thenReturn(VALIDATION_URI);
+      when(config.getOAuthTokenHandler()).thenReturn(handler);
+      when(config.getOAuthTokenStore()).thenReturn(store);
+
+      when(config.isServerAuthorizationRequired()).thenReturn(true);
+      when(config.getServerUsername()).thenReturn(SERVER_USERNAME);
+      when(config.getServerPassword()).thenReturn(SERVER_PASSWORD);
+      when(config.getServerAuthorizationType()).thenReturn(SERVER_AUTHORIZATION_TYPE);
+
+      when(
+         oauthFactory.newOAuthClientFilter(SERVER_USERNAME, SERVER_PASSWORD, CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URI,
+            TOKEN_URI, VALIDATION_URI)).thenReturn(filter);
+
+      List<Object> actual = configurator.getOAuthProviders(config);
+      assertEquals(1, actual.size());
+      assertEquals(filter, actual.get(0));
+
+      verify(oauthFactory).newOAuthClientFilter(SERVER_USERNAME, SERVER_PASSWORD, CLIENT_ID, CLIENT_SECRET,
+         AUTHORIZE_URI, TOKEN_URI, VALIDATION_URI);
+      verify(filter).setClientAccessTokenCache(Matchers.any(ClientAccessTokenCache.class));
+      verify(filter).setFailOnRefreshTokenError(FAIL_ON_REFRESH_ERROR);
+      verify(filter).setRedirectUri(REDIRECT_URI);
+      verify(filter).setScopes(SCOPES);
+      verify(filter).setSecretKeyAlgorithm(SECRET_ALGORITHM);
+      verify(filter).setTokenHandler(handler);
+      verify(filter).setTokenStore(store);
+
+      when(conduit.getAuthorization()).thenReturn(policy2);
+
+      configurator.configureDefaults(props);
+      configurator.configureClientBuilder(config, builder);
+      verify(builder).register(filter);
+
+      verify(policy2, times(0)).setUserName(Matchers.anyString());
+      verify(policy2, times(0)).setPassword(Matchers.anyString());
+
+      configurator.configureBean(config, "http://www.address.com", bean);
+
+      verify(bean, times(2)).setProviders(captor4.capture());
+
+      verify(policy2, times(0)).setUserName(Matchers.anyString());
+      verify(policy2, times(0)).setPassword(Matchers.anyString());
+
+      boolean filterFound = false;
+      for (List<Object> providers : captor4.getAllValues()) {
+         for (Object provider : providers) {
+            if (provider.equals(filter)) {
+               filterFound = true;
+               break;
+            }
+         }
+      }
+      assertEquals(true, filterFound);
+   }
 }

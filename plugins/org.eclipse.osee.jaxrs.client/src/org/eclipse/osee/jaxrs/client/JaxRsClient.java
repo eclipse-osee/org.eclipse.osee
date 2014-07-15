@@ -248,6 +248,81 @@ public final class JaxRsClient {
          return this;
       }
 
+      public JaxRsClientBuilder oAuthAuthorizeUri(String oauthAuthorizeUri) {
+         setOAuthAuthorizeUri(oauthAuthorizeUri);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthTokenUri(String oauthTokenUri) {
+         setOAuthTokenUri(oauthTokenUri);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthTokenValidationUri(String oauthTokenValidationUri) {
+         setOAuthTokenValidationUri(oauthTokenValidationUri);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthClientId(String oauthClientId) {
+         setOAuthClientId(oauthClientId);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthClientSecret(String oauthClientSecret) {
+         setOAuthClientSecret(oauthClientSecret);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthRedirectUri(String oauthRedirectUri) {
+         setOAuthRedirectUri(oauthRedirectUri);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthScopes(String oauthScopes) {
+         setOAuthScopes(oauthScopes);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthSecretKeyAlgorithm(String oauthSecretKeyAlgorithm) {
+         setOAuthSecretKeyAlgorithm(oauthSecretKeyAlgorithm);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthEncodedSecretKey(String oauthEncodedSecretKey) {
+         setOAuthEncodedSecretKey(oauthEncodedSecretKey);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthFailOnRefreshTokenError(boolean oauthFailsOnRefreshTokenError) {
+         setOAuthFailsOnRefreshTokenError(oauthFailsOnRefreshTokenError);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthTokenStore(JaxRsTokenStore oauthTokenStore) {
+         setOAuthTokenStore(oauthTokenStore);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthConfirmHandler(JaxRsConfirmAccessHandler oauthTokenHandler) {
+         setOAuthConfirmAccessHandler(oauthTokenHandler);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthCacheEnabled(boolean oauthCacheEnabled) {
+         setOAuthCacheEnabled(oauthCacheEnabled);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthCacheMaxSize(int oauthCacheMaxSize) {
+         setOAuthCacheMaxSize(oauthCacheMaxSize);
+         return this;
+      }
+
+      public JaxRsClientBuilder oAuthCacheEvictTimeoutMillis(long oauthCacheEvictTimeoutMillis) {
+         setOAuthCacheEvictTimeoutMillis(oauthCacheEvictTimeoutMillis);
+         return this;
+      }
+
       public JaxRsClient build() {
          return new JaxRsClient(factory, copy());
       }

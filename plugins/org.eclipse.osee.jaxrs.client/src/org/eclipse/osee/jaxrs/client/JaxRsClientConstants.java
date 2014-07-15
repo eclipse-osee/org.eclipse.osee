@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client;
 
+import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newAcceptAllTokenHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util;
 
 /**
  * @author Roberto E. Escobar
@@ -89,6 +91,20 @@ public final class JaxRsClientConstants {
    public static final String JAXRS_CLIENT_CREATE_THREADSAFE_PROXY_CLIENTS = qualify("create.threadsafe.proxy.clients");
    public static final String JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS =
       qualify("proxy.client.subresources.inherit.headers");
+   public static final String JAXRS_CLIENT_OAUTH_AUTHORIZE_URI = qualify("oauth.authorization.uri");
+   public static final String JAXRS_CLIENT_OAUTH_TOKEN_URI = qualify("oauth.token.uri");
+   public static final String JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI = qualify("oauth.token.validation.uri");
+   public static final String JAXRS_CLIENT_OAUTH_CLIENT_ID = qualify("oauth.client.id");
+   public static final String JAXRS_CLIENT_OAUTH_CLIENT_SECRET = qualify("oauth.client.secret");
+   public static final String JAXRS_CLIENT_OAUTH_REDIRECT_URI = qualify("oauth.redirect.uri");
+   public static final String JAXRS_CLIENT_OAUTH_SCOPES = qualify("oauth.scopes");
+   public static final String JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM = qualify("oauth.secret.key.algorithm");
+   public static final String JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY = qualify("oauth.secret.key");
+   public static final String JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR =
+      qualify("oauth.fails.on.refresh.token.error");
+   public static final String JAXRS_CLIENT_OAUTH_CACHE_ENABLED = qualify("oauth.cache.enabled");
+   public static final String JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE = qualify("oauth.cache.max.size");
+   public static final String JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS = qualify("oauth.cache.evict.timeout");
 
    public static final String DEFAULT_JAXRS_CLIENT_SERVER_USERNAME = null;
    public static final String DEFAULT_JAXRS_CLIENT_SERVER_PASSWORD = null;
@@ -112,6 +128,26 @@ public final class JaxRsClientConstants {
    public static final String DEFAULT_JAXRS_CLIENT_PROXY_AUTHORIZATION_TYPE = BASIC_AUTHENTICATION;
    public static final boolean DEFAULT_JAXRS_CLIENT_CREATE_THREADSAFE_PROXY_CLIENTS = false;
    public static final boolean DEFAULT_JAXRS_CLIENT_PROXY_CLIENT_SUB_RESOURCES_INHERIT_HEADERS = false;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_AUTHORIZE_URI = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_URI = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_VALIDATION_URI = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_ID = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_CLIENT_SECRET = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_SCOPES = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_REDIRECT_URI = OAuth2Util.OAUTH2_OOB_CALLBACK;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_SECRET_KEY_ALGORITHM = null;
+   public static final String DEFAULT_JAXRS_CLIENT_OAUTH_ENCODED_SECRET_KEY = null;
+   public static final boolean DEFAULT_JAXRS_CLIENT_OAUTH_FAILS_ON_REFRESH_TOKEN_ERROR = false;
+   public static final boolean DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_ENABLED = true;
+   public static final int DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_MAX_SIZE = 100; // keep 100 tokens max
+   public static final long DEFAULT_JAXRS_CLIENT_OAUTH_CACHE_EVICT_TIMEOUT_MILLIS = 1L * 60L * 60L * 1000L; // 1 hour
+
+   public static final JaxRsConfirmAccessHandler OAUTH_ACCEPT_ALL_CONFIRM_HANDLER = newAcceptAllTokenHandler();
+
+   //@formatter:off
+   public static final JaxRsConfirmAccessHandler DEFAULT_JAXRS_CLIENT_OAUTH_CONFIRM_ACCESS_HANDLER = OAUTH_ACCEPT_ALL_CONFIRM_HANDLER;
+   public static final JaxRsTokenStore DEFAULT_JAXRS_CLIENT_OAUTH_TOKEN_STORE = null;
+   //@formatter:on
 
    public static int RETRANSMIT_MIN_LIMIT = -1;
    public static int PORT_MIN_LIMIT = -1;
