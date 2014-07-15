@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class AtsArtifactToken {
 
+   public static final IArtifactToken AtsConfig = TokenFactory.createArtifactToken("Af7L9SYYgCcBCKZ8CCwA", "AtsConfig",
+      CoreArtifactTypes.GeneralData);
    public static final IArtifactToken Users = TokenFactory.createArtifactToken("AAABGTAGb+8BauB5Cw1QNA", "Users",
       CoreArtifactTypes.Folder);
    public static IArtifactToken HeadingFolder = TokenFactory.createArtifactToken("AAABER+3yR4A8O7WYQ+Xbw",

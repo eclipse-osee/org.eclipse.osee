@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
@@ -103,17 +107,19 @@ import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.column.WorkPackageColumn;
 import org.eclipse.osee.ats.column.WorkingBranchArchivedColumn;
-import org.eclipse.osee.ats.column.WorkingBranchUuidColumn;
 import org.eclipse.osee.ats.column.WorkingBranchStateColumn;
 import org.eclipse.osee.ats.column.WorkingBranchTypeColumn;
+import org.eclipse.osee.ats.column.WorkingBranchUuidColumn;
 import org.eclipse.osee.ats.column.ev.ActivityIdColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageGuidColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageNameColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageTypeColumnUI;
+import org.eclipse.osee.ats.config.AtsConfigurationUtil;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -123,6 +129,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.Artifa
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
+import org.eclipse.swt.SWT;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
 
@@ -133,6 +140,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
    public static final String COLUMN_NAMESPACE = "ats.column";
+   public final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public static final XViewerColumn[] WorldViewColumns = new XViewerColumn[] {
       TypeColumn.getInstance(),
@@ -238,7 +246,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ParentTopTeamColumnUI.getInstance(),
       ActionableItemOwner.getInstance(),
       AtsIdColumn.getInstance()};
-   private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
@@ -265,6 +272,27 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       registerStateColumns(this);
+      registerConfigurationsColumns();
+   }
+
+   private void registerConfigurationsColumns() {
+      List<AtsAttributeValueColumn> columns = AtsConfigurationUtil.getConfigurations().getViews().getAttrColumns();
+      for (AtsAttributeValueColumn column : columns) {
+         registerColumns(new XViewerAtsAttributeValueColumn(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()),
+            column.getWidth(), getSwtAlign(column.getAlign()), column.isVisible(),
+            SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription()));
+      }
+   }
+
+   private int getSwtAlign(ColumnAlign align) {
+      if (align == ColumnAlign.Left) {
+         return SWT.LEFT;
+      } else if (align == ColumnAlign.Center) {
+         return SWT.CENTER;
+      } else if (align == ColumnAlign.Right) {
+         return SWT.RIGHT;
+      }
+      return 0;
    }
 
    public static void registerStateColumns(XViewerFactory factory) {

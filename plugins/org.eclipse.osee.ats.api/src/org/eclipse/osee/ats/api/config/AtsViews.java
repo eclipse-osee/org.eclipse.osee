@@ -18,21 +18,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AtsConfigurations {
+public class AtsViews {
+   private final List<AtsAttributeValueColumn> attrColumns = new ArrayList<AtsAttributeValueColumn>();
 
-   public final List<AtsConfiguration> configs = new ArrayList<AtsConfiguration>();
-   public AtsViews views = new AtsViews();
-
-   public List<AtsConfiguration> getConfigs() {
-      return configs;
-   }
-
-   public AtsViews getViews() {
-      return views;
-   }
-
-   public void setViews(AtsViews views) {
-      this.views = views;
+   public List<AtsAttributeValueColumn> getAttrColumns() {
+      return attrColumns;
    }
 
 }

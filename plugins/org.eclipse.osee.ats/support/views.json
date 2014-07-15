@@ -1,0 +1,59 @@
+{  
+   "attrColumns":[  
+      {  
+         "namespace":"org.eclipse.osee.ats.WorldXViewer",
+         "attrTypeId":1152922093379125418,
+         "attrTypeName":"ats.Originating PCR Id",
+         "width":60,
+         "align":"Left",
+         "visible":false,
+         "sortDataType":"String",
+         "columnMultiEdit":true,
+         "description":""
+      },
+      {  
+         "namespace":"org.eclipse.osee.ats.WorldXViewer",
+         "attrTypeId":1152922093378076842,
+         "attrTypeName":"ats.Duplicated PCR Id",
+         "width":60,
+         "align":"Left",
+         "visible":false,
+         "sortDataType":"String",
+         "columnMultiEdit":true,
+         "description":""
+      },
+      {  
+         "namespace":"org.eclipse.osee.ats.WorldXViewer",
+         "attrTypeId":1152921949227188394,
+         "attrTypeName":"ats.Applicable To Program",
+         "width":60,
+         "align":"Left",
+         "visible":false,
+         "sortDataType":"String",
+         "columnMultiEdit":true,
+         "description":""
+      },
+      {  
+         "namespace":"org.eclipse.osee.ats.WorldXViewer",
+         "attrTypeId":1152922093379715242,
+         "attrTypeName":"ats.Rationale",
+         "width":100,
+         "align":"Left",
+         "visible":false,
+         "sortDataType":"String",
+         "columnMultiEdit":true,
+         "description":""
+      },
+      {  
+         "namespace":"org.eclipse.osee.ats.WorldXViewer",
+         "attrTypeId":1152922093370736810,
+         "attrTypeName":"ats.PCR Tool Id",
+         "width":60,
+         "align":"Left",
+         "visible":false,
+         "sortDataType":"String",
+         "columnMultiEdit":true,
+         "description":""
+      }
+   ]
+}

@@ -132,7 +132,6 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ActivityId = createType(0x1000000000000382L, "Activity ID");
    public static final IAttributeType ActivityName = createType(0x1000000000000383L, "Activity Name");
    public static final IAttributeType WorkPackageGuid = createType(0x1000000000000384L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
-
    
    // Applicability Feature
    public static final IAttributeType ApplicabilityWorkflow = createType(0x10000078957000AAL, "Applicability Workflow");

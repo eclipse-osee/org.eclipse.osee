@@ -10,29 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AtsConfigurations {
-
-   public final List<AtsConfiguration> configs = new ArrayList<AtsConfiguration>();
-   public AtsViews views = new AtsViews();
-
-   public List<AtsConfiguration> getConfigs() {
-      return configs;
-   }
-
-   public AtsViews getViews() {
-      return views;
-   }
-
-   public void setViews(AtsViews views) {
-      this.views = views;
-   }
-
+public enum ColumnAlign {
+   Left,
+   Center,
+   Right;
 }

@@ -18,13 +18,18 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -81,16 +86,31 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          art.persist(transaction);
       }
 
-      Artifact configArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.ConfigFolder, atsBranch);
-      headingArt.addChild(configArt);
-      configArt.persist(transaction);
+      Artifact configFolderArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.ConfigFolder, atsBranch);
+      headingArt.addChild(configFolderArt);
+      configFolderArt.persist(transaction);
 
       for (IArtifactToken token : Arrays.asList(AtsArtifactToken.Users, AtsArtifactToken.ConfigsFolder)) {
          Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
-         configArt.addChild(art);
+         configFolderArt.addChild(art);
          art.persist(transaction);
       }
 
+      Artifact configArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.AtsConfig, atsBranch);
+      setConfigAttributes(configArt);
+      configFolderArt.addChild(configArt);
+      configArt.persist(transaction);
+
       transaction.execute();
+   }
+
+   private static void setConfigAttributes(Artifact configArt) throws OseeCoreException {
+      PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
+      try {
+         String json = Lib.fileToString(util.getPluginFile("support/views.json"));
+         configArt.addAttribute(CoreAttributeTypes.GeneralStringData, "views=" + json);
+      } catch (Exception ex) {
+         throw new OseeWrappedException("Error loading column views.json file", ex);
+      }
    }
 }

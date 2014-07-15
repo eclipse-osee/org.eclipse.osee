@@ -22,6 +22,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.BranchReadable;
@@ -44,6 +46,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
+import com.google.gson.Gson;
 
 /**
  * @author Donald G. Dunne
@@ -51,10 +54,12 @@ import org.eclipse.osee.template.engine.PageFactory;
 @Path("config")
 public final class ConfigResource {
 
+   private static final String VIEWS_KEY = "views";
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
    private final Log logger;
    private final IResourceRegistry registry;
+   private final Gson gson = new Gson();
 
    public ConfigResource(IAtsServer atsServer, OrcsApi orcsApi, Log logger, IResourceRegistry registry) {
       this.atsServer = atsServer;
@@ -65,6 +70,7 @@ public final class ConfigResource {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
+   @SuppressWarnings("unchecked")
    public AtsConfigurations get() throws Exception {
       ResultSet<ArtifactReadable> artifacts =
          orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.Configuration).getResults();
@@ -76,6 +82,17 @@ public final class ConfigResource {
          config.setUuid(art.getLocalId());
          config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
          config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
+      }
+      ArtifactReadable atsConfig =
+         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getExactlyOne();
+      if (atsConfig != null) {
+         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
+            String str = (String) obj;
+            if (str.startsWith(VIEWS_KEY)) {
+               AtsViews views = gson.fromJson(str.replaceFirst(VIEWS_KEY + "=", ""), AtsViews.class);
+               configs.setViews(views);
+            }
+         }
       }
       return configs;
    }
