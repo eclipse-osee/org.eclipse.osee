@@ -13,7 +13,9 @@ package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Generates xhtml pages using both static and dynamic substitutions. Designed to be thread safe; however, this means
@@ -86,27 +89,59 @@ public final class PageCreator {
    public void readKeyValuePairs(InputStream keyValueStream) {
       Scanner scanner = new Scanner(keyValueStream, "UTF-8");
       scanner.useDelimiter(xmlProcessingInstructionStartOrEnd);
-
       try {
+         String id = "";
+         StringBuilder substitution = null;
          while (scanner.hasNext()) {
             String token = scanner.next();
             if (emptyOrWhitespaceOnly.matcher(token).matches()) {
                continue;
             }
 
-            String id;
-            CharSequence substitution;
-
             if (token.startsWith("include")) {
-               id = getProcessingInstructionId(token);
-               substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
-               appendInclude((StringBuilder) substitution, token);
+               if (!Strings.isValid(id)) {
+                  id = getProcessingInstructionId(token);
+               }
+               if (substitution == null) {
+                  substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
+               }
+               appendInclude(substitution, token);
+               if (scanner.hasNext()) {
+                  substitution.append(trimToken(scanner.next()));
+               }
+
+            } else if (token.startsWith("rule ")) {
+               String ruleName = getRuleNamefromToken(token);
+               if (!Strings.isValid(ruleName)) {
+                  throw new OseeArgumentException("no rule name specified in token %s", token);
+               }
+               AppendableRule<?> rule = substitutions.get(ruleName);
+               if (rule == null) {
+                  throw new OseeArgumentException("no rule was found for token %s", token);
+               }
+               if (substitution == null) {
+                  substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
+               }
+               Map<String, String> attributes = new HashMap<String, String>();
+               // parse the arguments
+               parseArgumentList(token, attributes);
+               try {
+                  rule.applyTo(substitution, attributes);
+                  if (!Strings.isValid(id)) {
+                     id = token;
+                  }
+               } catch (IOException ex) {
+                  throw new OseeCoreException(ex);
+               }
+               if (scanner.hasNext()) {
+                  substitution.append(trimToken(scanner.next()));
+               }
             } else {
                id = token;
                if (scanner.hasNext()) {
-                  substitution = trimToken(scanner.next());
+                  substitution = new StringBuilder(trimToken(scanner.next()));
                } else {
-                  substitution = "";
+                  substitution = new StringBuilder();
                }
             }
 
@@ -179,13 +214,34 @@ public final class PageCreator {
             page.append("<?");
             page.append(token);
             page.append("?>");
+         } else if (token.startsWith("rule")) {
+            // get rule name 
+            String ruleName = getRuleNamefromToken(token);
+            if (!Strings.isValid(ruleName)) {
+               throw new OseeArgumentException("no rule name specified in token %s", token);
+            }
+            AppendableRule<?> rule = substitutions.get(ruleName);
+            if (rule == null) {
+               throw new OseeArgumentException("no rule was found for token %s", token);
+            }
+            Map<String, String> attributes = new HashMap<String, String>();
+            // parse the arguments
+            parseArgumentList(token, attributes);
+            try {
+               rule.applyTo(page, attributes);
+            } catch (IOException ex) {
+               throw new OseeCoreException(ex);
+            }
          } else {
             AppendableRule<?> rule = substitutions.get(token);
             if (rule == null) {
                throw new OseeArgumentException("no substitution was found for token %s", token);
             }
+            Map<String, String> attributes = new HashMap<String, String>();
+            // parse the arguments
+            parseArgumentList(token, attributes);
             try {
-               rule.applyTo(page);
+               rule.applyTo(page, attributes);
             } catch (IOException ex) {
                throw new OseeCoreException(ex);
             }
@@ -236,5 +292,52 @@ public final class PageCreator {
    @Override
    public String toString() {
       return substitutions.toString();
+   }
+
+   private String getRuleNamefromToken(String token) {
+      String toReturn = "";
+      String search = "name=\"";
+      int iName = token.indexOf(search);
+      if (iName > -1) {
+         iName += search.length();
+         toReturn = token.substring(iName);
+         int iQuote = toReturn.indexOf("\"");
+         toReturn = toReturn.substring(0, iQuote);
+      }
+      return toReturn;
+   }
+
+   private void parseArgumentList(String token, Map<String, String> attributes) {
+      /****************************************************
+       * it is actually easier to parse this from the end of the string instead of the beginning
+       */
+      StringBuilder working = new StringBuilder(token.trim());
+      int iSpace = working.lastIndexOf(" ");
+      int iEqual = working.lastIndexOf("=\"");
+      int iQuote = working.lastIndexOf("\"");
+      String key = "";
+      String value = null;
+      while (iSpace != -1) {
+         if (iQuote < iSpace) {
+            // An attribute without a value (i.e. keyword)
+            key = working.substring(iSpace + 1).trim();
+         } else {
+            if (iSpace > iEqual) {
+               iSpace = working.substring(0, iEqual).lastIndexOf(" ");
+            }
+            key = working.substring(iSpace, iEqual).trim();
+            value = working.substring(iEqual + 2, working.length() - 1);
+         }
+         if (!key.equalsIgnoreCase("name")) {
+            attributes.put(key, value);
+         }
+         key = "";
+         value = null;
+         working.delete(iSpace, working.length());
+         iSpace = working.lastIndexOf(" ");
+         iEqual = working.lastIndexOf("=\"");
+         iQuote = working.lastIndexOf("\"");
+
+      }
    }
 }

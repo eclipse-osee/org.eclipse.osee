@@ -1,0 +1,47 @@
+<select id="select_id_available" onchange="typeSelected()">
+<option value="" selected></option>/n<option value="Software Requirement">Software Requirement</option>
+</select><br>
+<select id="select_id" multiple oncontextmenu="typeDeselected(event)">
+<option value="Software Requirement">Software Requirement</option>
+</select><br>
+<script type="text/javascript">
+function typeSelected() {
+    var available = document.getElementById("select_id_available");
+    var selected = document.getElementById("select_id");
+    var availableOptions = available.options;
+    if(available.selectedIndex > -1) {
+        var index = available.selectedIndex
+        var text =  availableOptions[index].text;
+        if (text) {
+            return;
+        }
+        var foundIt = false;
+        var counter = 0;
+        var selectedOptions = selected.options;
+        while ((counter < selectedOptions.length) && !foundIt) {
+            if (selectedOptions[counter].text == text) {
+                foundIt = true;
+            }
+        counter++;
+        }
+        if (!foundIt) {
+            var option = document.createElement("option");
+            option.text = text;
+            option.value = availableOptions[index].value;
+            selected.add(option);
+        }
+    }
+    available.selectedIndex = -1;
+}
+function typeDeselected(evnt) {
+    var selected = document.getElementById("select_id");
+    var options = selected.options;
+    while(selected.selectedIndex > -1) {
+        selected.remove(selected.selectedIndex)
+    }
+    if (evnt) {
+       evnt.preventDefault();
+       evnt.returnValue = false;
+    }
+}
+</script>

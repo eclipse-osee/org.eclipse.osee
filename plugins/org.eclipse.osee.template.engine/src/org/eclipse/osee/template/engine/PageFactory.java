@@ -34,6 +34,15 @@ public final class PageFactory {
       return page;
    }
 
+   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource, AppendableRule<?>... rules) {
+      PageCreator page = newPageCreator(registry);
+      for (AppendableRule<?> rule : rules) {
+         page.addSubstitution(rule);
+      }
+      page.readKeyValuePairs(valuesResource);
+      return page;
+   }
+
    public static PageCreator newPageCreator(IResourceRegistry registry, Iterable<String> keyValues) {
       PageCreator page = new PageCreator(registry);
       page.addKeyValuePairs(keyValues);

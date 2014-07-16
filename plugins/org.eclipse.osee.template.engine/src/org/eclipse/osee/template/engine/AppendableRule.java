@@ -11,6 +11,7 @@
 package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
+import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
@@ -35,6 +36,10 @@ public abstract class AppendableRule<T> implements Named {
    public abstract void applyTo(Appendable appendable) throws IOException;
 
    public void applyTo(Appendable appendable, T data) throws IOException {
+      applyTo(appendable);
+   }
+
+   public void applyTo(Appendable appendable, Map<String, String> attributes) throws IOException {
       applyTo(appendable);
    }
 }

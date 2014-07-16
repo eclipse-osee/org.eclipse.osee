@@ -64,7 +64,7 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
       if (Strings.isValid(paragraph)) {
          String[] values = paragraph.split("\\.");
          for (int index = 0; index < values.length; index++) {
-            paragraphs.add(new Integer(values[index]));
+            paragraphs.add(new Integer(values[index].replace("-", "")));
          }
       }
       return paragraphs.toArray(new Integer[paragraphs.size()]);

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.template.engine.AppendableRule;
 import org.eclipse.osee.template.engine.CompositeRule;
 import org.eclipse.osee.template.engine.IdentifiableLongOptionsRule;
 import org.eclipse.osee.template.engine.PageCreator;
@@ -51,8 +52,15 @@ public class OseeAppletPage {
       return realizeApplet(registry, valuesToken);
    }
 
+   public String realizeApplet(IResourceRegistry registry, String name, Class<?> clazz, AppendableRule<?>... rules) {
+      ResourceToken valuesToken = new ClassBasedResourceToken(name, clazz);
+      PageCreator page = PageFactory.newPageCreator(registry, valuesToken, rules);
+
+      return realizeApplet(page);
+   }
+
    public String realizeApplet(IResourceRegistry registry, ResourceToken valuesToken) {
-      PageCreator page = PageFactory.newPageCreator(registry, valuesToken);
+      PageCreator page = PageFactory.newPageCreator(registry, valuesToken, new String[0]);
       return realizeApplet(page);
    }
 

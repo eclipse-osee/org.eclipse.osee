@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Ryan D. Brooks
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({PageCreatorTest.class, WordTemplateTest.class})
+@Suite.SuiteClasses({PageCreatorTest.class, WordTemplateTest.class, ArtifactTypeOptionRuleTest.class})
 public class OseeTemplateEngineTestSuite {
    // Test Suite
 }

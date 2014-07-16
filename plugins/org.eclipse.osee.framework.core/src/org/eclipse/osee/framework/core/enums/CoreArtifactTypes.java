@@ -20,8 +20,9 @@ public final class CoreArtifactTypes {
 
    // @formatter:off
    public static final IArtifactType AccessControlModel = TokenFactory.createArtifactType(0x0000000000000002L, "Access Control Model");
+   public static final IArtifactType AbstractHeading = TokenFactory.createArtifactType(0x0000000000000325L, "Abstract Heading");
    public static final IArtifactType AbstractSoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000017L, "Abstract Software Requirement");
-   public static final IArtifactType AbstractSystemRequirement = TokenFactory.createArtifactType(0x000000000000101EL, "Abstract System Requirement");
+   public static final IArtifactType AbstractSystemRequirement = TokenFactory.createArtifactType(0x000000000000031CL, "Abstract System Requirement");
    public static final IArtifactType AbstractSubsystemRequirement = TokenFactory.createArtifactType(0x000000000001001EL, "Abstract Subsystem Requirement");
    public static final IArtifactType AbstractTestResult = TokenFactory.createArtifactType(0x0000000000000026L, "Abstract Test Result");
    public static final IArtifactType Artifact = TokenFactory.createArtifactType(0x0000000000000001L, "Artifact");

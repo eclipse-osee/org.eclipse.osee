@@ -62,7 +62,7 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getNewSource() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml, new String[0]);
       List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
       for (ArtifactReadable ai : getAis()) {
          sortedAis.add(ai);
@@ -94,7 +94,7 @@ public final class AtsUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getSearch() throws Exception {
-      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml);
+      PageCreator page = PageFactory.newPageCreator(registry, AtsResourceTokens.AtsValuesHtml, new String[0]);
       return page.realizePage(AtsResourceTokens.AtsSearchHtml);
    }
 

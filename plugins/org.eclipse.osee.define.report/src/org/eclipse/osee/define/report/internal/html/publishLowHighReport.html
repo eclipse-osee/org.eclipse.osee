@@ -1,0 +1,27 @@
+<?author?>Marc Potter
+<?title?>Publish High/Low Requirement Report
+<?usageAndDescription?>
+       <strong>Publishes the High/Low Requirement Traceability Report</strong>
+       <ul>
+               <li>Selected Branch - provide the related Branch for the report</li>
+               <li>Select Types for report - Select any types listed in the drop down.  Selected items will show in the list below</li>
+               <li>&nbsp;&nbsp;&nbsp; Select one or more items in the selected list (using CTRL or SHIFT) and right click to remove</li>
+        </ul>
+<?widgets?>
+	<label>Selected Branch</label> <input id="selected_branch" type="text" list="workingAndBaselineBranches" required/><br />
+	<label>Select Types for report</label>
+	<?rule name="artifactTypeSelect" id="selected_types" types="Abstract Software Requirement" preselect="Software Requirement, Direct Software Requirement"?>
+<?javaScript?>
+function oseeAppStart(oseeAppParams) {
+    var branch = oseeAppParams["selected_branch"];
+    var csvTypes = oseeAppParams["selected_types"];
+    var uriTemplate = '##publishRequirementTemplate##';
+    var branchParam = '##branchParam##';
+    var selectedTypesParam = '##selectedTypesParam##';
+         
+    var publishUri = uriTemplate.replace(branchParam, encodeURI(branch));           
+    publishUri = publishUri.replace(selectedTypesParam, encodeURI(csvTypes));
+         
+    var absoluteUri = window.location.href + "/" + publishUri;
+    window.location.assign(absoluteUri);
+ }

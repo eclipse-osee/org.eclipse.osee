@@ -10,19 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
+import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.ArtifactSelect;
+import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.ArtifactSelectExpected;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_ListItems;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_MainPageHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.RealizePage_ValuesHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestMainPage_WithIncludeFileHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_IncludeHtml;
 import static org.eclipse.osee.template.engine.OseeTemplateTestTokens.TestValues_KeyValueHtml;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit Test for {@link PageCreator}
@@ -37,6 +45,11 @@ public class PageCreatorTest {
    public static void setup() {
       OseeTemplateTestTokens.register(registry);
       OseeTemplateTokens.register(registry);
+   }
+
+   @Before
+   public void setupTest() {
+      MockitoAnnotations.initMocks(this);
    }
 
    @Test
@@ -79,7 +92,7 @@ public class PageCreatorTest {
       String results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 
-      page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml);
+      page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml, new String[0]);
       results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 
@@ -162,4 +175,27 @@ public class PageCreatorTest {
       String actual = page.realizePage(RealizePage_ListItems);
       Assert.assertEquals(expected, actual);
    }
+
+   @Test
+   public void testArtifactSelectRule() {
+      PageCreator page = new PageCreator(registry);
+      Set<String> types = new HashSet<String>();
+      types.add("Software Requirement");
+      ArtifactTypeOptionsRule rule = new ArtifactTypeOptionsRule("select", types, types);
+      page.addSubstitution(rule);
+      String actual = page.realizePage(ArtifactSelect);
+      String expected = page.realizePage(ArtifactSelectExpected);
+      Assert.assertEquals(expected, actual);
+   }
+
+   private static <T> Answer<T> answer(final T value) {
+      return new Answer<T>() {
+
+         @Override
+         public T answer(InvocationOnMock invocation) throws Throwable {
+            return value;
+         }
+      };
+   }
+
 }
