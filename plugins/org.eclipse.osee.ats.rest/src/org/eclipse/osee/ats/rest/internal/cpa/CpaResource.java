@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -130,17 +131,13 @@ public final class CpaResource {
          decision.setOrigPcrLocation(getCpaPath().path(origPcrId).queryParam("pcrSystem", decision.getPcrSystem()).build().toString());
 
          // set location of duplicated pcr (if any)
-         String duplicatedLocation = "";
-         if (art.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null) != null) {
-            String duplicatedPcrId = (String) art.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId);
-            duplicatedLocation =
+         String duplicatedPcrId = art.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
+         if (Strings.isValid(duplicatedPcrId)) {
+            String duplicatedLocation =
                getCpaPath().path(duplicatedPcrId).queryParam("pcrSystem", decision.getPcrSystem()).build().toString();
+            decision.setDuplicatedPcrLocation(duplicatedLocation);
+            decision.setDuplicatedPcrId(duplicatedPcrId);
          }
-         decision.setDuplicatedPcrLocation(duplicatedLocation);
-
-         // set duplicatedPcrId
-         String duplicatePcrId = art.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
-         decision.setDuplicatedPcrId(duplicatePcrId);
 
          IAtsCpaService service = AtsCpaServices.getService(decision.getPcrSystem());
          decision.setOriginatingProgram(service.getProgramName(origPcrId));
