@@ -30,7 +30,7 @@
 				var inputElement = inputElements[i];
 				if(inputElement.getAttribute("type") == "radio") {
 					   if (inputElement.checked) {
-							params[inputElement.getAttribute("name")] = inputElement.nextSibling.nodeValue;
+							params[inputElement.getAttribute("name")] = inputElement.value;
 						}
 				} else {
 					var id = inputElement.getAttribute("id");
