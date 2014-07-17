@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.cpa;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
+import org.eclipse.osee.ats.api.cpa.ICpaPcr;
 import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 
 /**
@@ -21,8 +22,9 @@ import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDecision {
 
    private String applicability, rationale, assignees, pcrSystem, origPcrLocation, decisionLocation,
-      duplicatedPcrLocation, originatingProgram, completedBy, completedDate, duplicatedPcrId;
+      duplicatedPcrLocation, completedBy, completedDate, duplicatedPcrId;
    private boolean complete = false;
+   private ICpaPcr originatingPcr;
 
    public CpaDecision(String id, String name) {
       super(id, name);
@@ -87,14 +89,6 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.duplicatedPcrLocation = duplicatedPcrLocation;
    }
 
-   public String getOriginatingProgram() {
-      return originatingProgram;
-   }
-
-   public void setOriginatingProgram(String originatingProgram) {
-      this.originatingProgram = originatingProgram;
-   }
-
    @Override
    public String completedBy() {
       return null;
@@ -136,6 +130,14 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
 
    public void setDuplicatedPcrId(String duplicatedPcrId) {
       this.duplicatedPcrId = duplicatedPcrId;
+   }
+
+   public ICpaPcr getOriginatingPcr() {
+      return originatingPcr;
+   }
+
+   public void setOriginatingPcr(ICpaPcr originatingPcr) {
+      this.originatingPcr = originatingPcr;
    }
 
 }

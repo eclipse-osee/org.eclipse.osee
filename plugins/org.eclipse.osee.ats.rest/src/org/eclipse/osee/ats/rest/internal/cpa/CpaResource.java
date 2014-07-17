@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
+import org.eclipse.osee.ats.api.cpa.ICpaPcr;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -140,7 +141,8 @@ public final class CpaResource {
          }
 
          IAtsCpaService service = AtsCpaServices.getService(decision.getPcrSystem());
-         decision.setOriginatingProgram(service.getProgramName(origPcrId));
+         ICpaPcr origPcr = service.getPcr(origPcrId);
+         decision.setOriginatingPcr(origPcr);
 
          decisions.add(decision);
       }
