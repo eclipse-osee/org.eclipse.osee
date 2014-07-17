@@ -1702,4 +1702,29 @@ public final class Lib {
       return next;
    }
 
+   /**
+    * NOW_IS_THE_TIME to nowIsTheTime
+    */
+   public static String toCamelCase(String str) {
+      String[] words = str.split("_");
+      String result = "";
+      for (String word : words) {
+         result = result + word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+      }
+      String firstChar = result.substring(0, 1);
+      return result.replaceFirst(firstChar, firstChar.toLowerCase());
+   }
+
+   /**
+    * NOW_IS_THE_TIME to Now Is The Time
+    */
+   public static String toCamelCaseWithSpaces(String str) {
+      String[] words = str.split("_");
+      String result = "";
+      for (String word : words) {
+         result = result + word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+      }
+      return result;
+   }
+
 }
