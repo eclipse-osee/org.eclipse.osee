@@ -83,7 +83,7 @@ public final class MailUtils {
          throw new OseeCoreException(ex, "Error adding HTML content");
       }
       try {
-         text.setText(plainText, "UTF-8", MediaType.TEXT_PLAIN);
+         text.setText(plainText, "UTF-8");
       } catch (MessagingException ex) {
          throw new OseeCoreException(ex, "Error adding Text content");
       }
