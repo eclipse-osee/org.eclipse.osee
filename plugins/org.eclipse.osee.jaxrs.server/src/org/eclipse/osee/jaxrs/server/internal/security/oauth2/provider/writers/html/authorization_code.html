@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta charset="UTF-8">
+<title>OSEE - OAuth2 Registration Code</title>
+</head>
+<body>
+   <div class="container">
+      <h1>OSEE - OAuth2 Registration Code</h1>
+      <div class="media">
+         <a href="#" rel="tooltip" class="pull-left" title="Logged in as: <?loggedInAs?>"><span class="badge">i</span></a>
+         <div class="media-body">
+            <h3 class="media-heading">
+               Please enter the following registration code into your application within the next <b> <?expiresIn?>
+               </b>.
+            </h3>
+         </div>
+      </div>
+      <dl class="dl-horizontal well">
+         <dt>Registration Code:</dt>
+         <dd>
+            <?authorizationCode?>
+         </dd>
+         <dt>Client Id:</dt>
+         <dd>
+            <?clientId?>
+         </dd>
+      </dl>
+   </div>
+</body>
+</html>

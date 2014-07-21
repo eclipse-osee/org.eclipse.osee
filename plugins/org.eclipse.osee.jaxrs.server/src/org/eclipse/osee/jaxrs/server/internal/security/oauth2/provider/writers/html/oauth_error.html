@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta charset="UTF-8">
+<title>OSEE Error</title>
+<script type="text/javascript">
+	function toggleDisplay(id) {
+		var element = document.getElementById(id).style
+		element.display = (element.display == 'none') ? 'block' : 'none';
+	}
+	function toggleAllLocationElements() {
+		for (var i = 0; !(i >= document.all.locationElement.length); i++) {
+			document.all.locationElement[i].style.display == (document.all.locationElement[i].style.display == 'none') ? 'block'
+					: 'none';
+		}
+	}
+</script>
+</head>
+<body>
+   <div class="container">
+      <h1>OSEE - OAuth2 Error</h1>
+      <p>Oops! Something went wrong...</p>
+      <div class="panel panel-default">
+         <div class="container" class="panel-body">
+            <div class="lead">
+               <?errorDescription?>
+            </div>
+            <a onClick="toggleDisplay('errorDetails')">View Details &raquo;</a>
+            <div id="errorDetails" style="display: none">
+               <dl class="dl-horizontal">
+                  <dt>Error Code:</dt>
+                  <dd>
+                     <?errorCode?>
+                  </dd>
+                  <dt>Error URI:</dt>
+                  <dd>
+                     <?errorUri?>
+                  </dd>
+                  <dt>Error State:</dt>
+                  <dd>
+                     <?errorState?>
+                  </dd>
+               </dl>
+            </div>
+         </div>
+      </div>
+
+   </div>
+</body>
+</html>

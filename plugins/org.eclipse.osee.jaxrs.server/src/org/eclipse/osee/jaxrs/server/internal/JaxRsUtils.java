@@ -115,6 +115,24 @@ public final class JaxRsUtils {
       return collection == null || collection.isEmpty();
    }
 
+   public static long getLong(Map<String, Object> props, String key, long defaultValue) {
+      long toReturn = defaultValue;
+      String value = get(props, key, null);
+      if (value != null && Strings.isNumeric(value)) {
+         toReturn = Long.parseLong(value);
+      }
+      return toReturn;
+   }
+
+   public static boolean getBoolean(Map<String, Object> props, String key, boolean defaultValue) {
+      boolean toReturn = defaultValue;
+      String value = get(props, key, null);
+      if (value != null) {
+         toReturn = Boolean.parseBoolean(value);
+      }
+      return toReturn;
+   }
+
    public static String get(Map<String, Object> props, String key, String defaultValue) {
       String toReturn = defaultValue;
       Object object = props != null ? props.get(key) : null;

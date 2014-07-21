@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta charset="UTF-8">
+<title>OSEE - OAuth2 Authorization</title>
+</head>
+<body>
+   <div class="container">
+      <h1>OSEE - OAuth2 Authorization</h1>
+      <div class="media">
+         <a class="pull-left" href="<?applicationWebUri?>"><img class="media-object" alt="Logo" src="<?applicationLogoUri?>" /></a>
+         <div class="media-body">
+            <h3 class="media-heading">
+               <?applicationName?>
+               Application
+            </h3>
+            <p>
+               <?applicationDescription?>
+               <br/> <i> Logged in as: <?loggedInAs?>
+               </i>
+            </p>
+         </div>
+      </div>
+      <h4>This application would like to access your account with the following permissions:</h4>
+
+      <form class="form-horizontal" role="form" method="POST" action="<?replyTo?>">
+         <?hiddenFieldsSection?>
+         <?permissionsSection?>
+         <div class="container">
+            <div class="form-group">
+               <button type="submit" class="btn btn-default" name="<?authorizationDecisionKey?>" value="<?authorizationDecisionDeny?>">Cancel</button>
+               <button type="submit" class="btn btn-primary" name="<?authorizationDecisionKey?>" value="<?authorizationDecisionAllow?>">Accept</button>
+            </div>
+         </div>
+      </form>
+   </div>
+</body>
+</html>
