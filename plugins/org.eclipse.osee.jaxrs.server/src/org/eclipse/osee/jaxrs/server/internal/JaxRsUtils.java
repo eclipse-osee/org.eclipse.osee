@@ -115,6 +115,15 @@ public final class JaxRsUtils {
       return collection == null || collection.isEmpty();
    }
 
+   public static int getInt(Map<String, Object> props, String key, int defaultValue) {
+      int toReturn = defaultValue;
+      String value = get(props, key, null);
+      if (value != null && Strings.isNumeric(value)) {
+         toReturn = Integer.parseInt(value);
+      }
+      return toReturn;
+   }
+
    public static long getLong(Map<String, Object> props, String key, long defaultValue) {
       long toReturn = defaultValue;
       String value = get(props, key, null);
