@@ -56,6 +56,8 @@ public class TxDataLoaderImpl implements TxDataLoader {
       }
       DataLoader loader = dataLoaderFactory.newDataLoaderFromGuids(session, branch, ids);
       loader.withLoadLevel(LoadLevel.ALL);
+      loader.includeDeletedAttributes();
+      loader.includeDeletedRelations();
       return loader;
    }
 

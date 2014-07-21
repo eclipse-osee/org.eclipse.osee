@@ -240,6 +240,7 @@ public class TxDataManagerTest {
    public void testGetForWriteReadableButIsFromDifferentBranch() throws OseeCoreException {
       when(readable1.getBranch()).thenReturn(CoreBranches.COMMON);
       when(txData.getWriteable(readable1)).thenReturn(null);
+      when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
 
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
@@ -247,7 +248,8 @@ public class TxDataManagerTest {
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
       verify(txData).getWriteable(readable1);
-      verify(readable1).getBranch();
+      verify(proxyManager).asInternalArtifact(readable1);
+      verify(artifact1).getBranch();
       verify(loader).loadArtifacts(eq(session), eq(graph), idCaptor.capture());
 
       assertEquals(readable1, idCaptor.getValue().iterator().next());

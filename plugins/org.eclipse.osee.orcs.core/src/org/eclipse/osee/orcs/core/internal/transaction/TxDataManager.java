@@ -145,23 +145,38 @@ public class TxDataManager {
    private Artifact findArtifactLocallyForWrite(TxData txData, ArtifactId artifactId) throws OseeCoreException {
       Artifact node = txData.getWriteable(artifactId);
       if (node == null) {
+         Artifact source = null;
          if (artifactId instanceof Artifact) {
-            Artifact source = (Artifact) artifactId;
-            if (txData.getBranch().equals(source.getBranch())) {
-               node = copyArtifactForWrite(txData, source);
-            }
+            source = (Artifact) artifactId;
          } else if (artifactId instanceof ArtifactReadable) {
-            ArtifactReadable external = (ArtifactReadable) artifactId;
-            if (txData.getBranch().equals(external.getBranch())) {
-               int txId = txData.getGraph().getTransaction();
-               if (txId == external.getTransaction()) {
-                  Artifact source = proxyManager.asInternalArtifact(external);
-                  node = copyArtifactForWrite(txData, source);
-               }
-            }
+            ArtifactReadable readable = (ArtifactReadable) artifactId;
+            source = proxyManager.asInternalArtifact(readable);
+         }
+         if (isFromSameStripe(txData, source) && includesDeletedData(source)) {
+            node = copyArtifactForWrite(txData, source);
          }
       }
       return node;
+   }
+
+   private boolean isFromSameStripe(TxData txData, Artifact artifact) {
+      boolean result = false;
+      if (artifact != null && txData.getBranch().equals(artifact.getBranch())) {
+         int txId = txData.getGraph().getTransaction();
+         if (txId == artifact.getTransaction()) {
+            result = true;
+         }
+      }
+      return result;
+   }
+
+   private boolean includesDeletedData(Artifact artifact) {
+      boolean result = false;
+      if (artifact != null) {
+         result = true;
+         // Check load options
+      }
+      return result;
    }
 
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) throws OseeCoreException {
@@ -178,16 +193,21 @@ public class TxDataManager {
       }
 
       if (source == null) {
+         Artifact artifactSrc = null;
          if (artifactId instanceof Artifact) {
-            Artifact artifact = (Artifact) artifactId;
-            if (fromBranch.equals(artifact.getBranch())) {
-               source = artifact;
+            Artifact external = (Artifact) artifactId;
+            if (fromBranch.equals(external.getBranch())) {
+               artifactSrc = external;
             }
          } else if (artifactId instanceof ArtifactReadable) {
             ArtifactReadable external = (ArtifactReadable) artifactId;
             if (fromBranch.equals(external.getBranch())) {
-               source = proxyManager.asInternalArtifact(external);
+               artifactSrc = proxyManager.asInternalArtifact(external);
             }
+         }
+
+         if (includesDeletedData(artifactSrc)) {
+            source = artifactSrc;
          }
       }
       if (source == null) {

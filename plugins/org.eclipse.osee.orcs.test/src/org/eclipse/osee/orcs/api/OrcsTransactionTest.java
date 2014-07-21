@@ -979,6 +979,35 @@ public class OrcsTransactionTest {
       assertEquals("rationale5", rationale);
    }
 
+   @Test
+   public void testRelateUnrelateMultipleTimes() {
+      TransactionBuilder tx = createTx();
+      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx.createArtifact(CoreArtifactTypes.User, "User Artifact");
+      tx.relate(art1, CoreRelationTypes.Users_User, art2, "rationale1");
+      tx.commit();
+
+      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable otherSide = art.getRelated(CoreRelationTypes.Users_User).getExactlyOne();
+      assertEquals(true, art.areRelated(CoreRelationTypes.Users_User, otherSide));
+
+      tx = createTx();
+      tx.unrelate(art1, CoreRelationTypes.Users_User, art2);
+      tx.commit();
+
+      art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ResultSet<ArtifactReadable> otherSideResults = art.getRelated(CoreRelationTypes.Users_User);
+      assertEquals(true, otherSideResults.isEmpty());
+
+      tx = createTx();
+      tx.relate(art1, CoreRelationTypes.Users_User, art2);
+      tx.commit();
+
+      art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      otherSide = art.getRelated(CoreRelationTypes.Users_User).getExactlyOne();
+      assertEquals(true, art.areRelated(CoreRelationTypes.Users_User, otherSide));
+   }
+
    private TransactionBuilder createTx() throws OseeCoreException {
       return txFactory.createTransaction(COMMON, userArtifact, testName.getMethodName());
    }
