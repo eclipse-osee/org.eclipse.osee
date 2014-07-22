@@ -39,9 +39,6 @@ public final class PublishLowHighReqTraceabilityResource {
    private final OrcsApi orcsApi;
    private final IResourceRegistry resourceRegistry;
    private final Log logger;
-   private static final String REQ_REPORT__PUBLISH_TEMPLATE_URI_TAG = "##publishRequirementTemplate##";
-   private static final String REQ_REPORT__BRANCH_PARAM_TAG = "##branchParam##";
-   private static final String REQ_REPORT__SELECTED_TYPES_TAG = "##selectedTypesParam##";
 
    public PublishLowHighReqTraceabilityResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -76,18 +73,11 @@ public final class PublishLowHighReqTraceabilityResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
-
-      String templateUri = "..?branch={branch-id}&selected_types={selected-types}";
-
       OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
 
       ArtifactTypeOptionsRule selectRule =
          new ArtifactTypeOptionsRule("artifactTypeSelect", getTypes(), new HashSet<String>());
-      String toReturn = pageUtil.realizeApplet(resourceRegistry, "publishLowHighReport.html", getClass(), selectRule);
-      toReturn = toReturn.replaceAll(REQ_REPORT__PUBLISH_TEMPLATE_URI_TAG, templateUri);
-      toReturn = toReturn.replaceAll(REQ_REPORT__BRANCH_PARAM_TAG, "{branch-id}");
-      toReturn = toReturn.replaceAll(REQ_REPORT__SELECTED_TYPES_TAG, "{selected-types}");
-      return toReturn;
+      return pageUtil.realizeApplet(resourceRegistry, "publishLowHighReport.html", getClass(), selectRule);
    }
 
    private Set<String> getTypes() {

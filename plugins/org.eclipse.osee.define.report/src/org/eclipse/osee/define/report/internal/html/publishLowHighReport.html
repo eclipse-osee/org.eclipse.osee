@@ -14,14 +14,7 @@
 <?javaScript?>
 function oseeAppStart(oseeAppParams) {
     var branch = oseeAppParams["selected_branch"];
-    var csvTypes = oseeAppParams["selected_types"];
-    var uriTemplate = '##publishRequirementTemplate##';
-    var branchParam = '##branchParam##';
-    var selectedTypesParam = '##selectedTypesParam##';
-         
-    var publishUri = uriTemplate.replace(branchParam, encodeURI(branch));           
-    publishUri = publishUri.replace(selectedTypesParam, encodeURI(csvTypes));
-         
-    var absoluteUri = window.location.href + "/" + publishUri;
-    window.location.assign(absoluteUri);
+    var csvTypes = oseeAppParams["selected_types"];    
+    var publishUri = "..?branch=" + encodeURI(branch) + "&selected_types=" + encodeURI(csvTypes);
+    window.location.assign(window.location.href + "/" + publishUri);
  }
