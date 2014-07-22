@@ -42,4 +42,9 @@ public abstract class AppendableRule<T> implements Named {
    public void applyTo(Appendable appendable, Map<String, String> attributes) throws IOException {
       applyTo(appendable);
    }
+
+   @Override
+   public String toString() {
+      return ruleName;
+   }
 }

@@ -34,7 +34,7 @@ public final class PageFactory {
       return page;
    }
 
-   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource, AppendableRule<?>... rules) {
+   public static PageCreator newPageCreatorWithRules(IResourceRegistry registry, ResourceToken valuesResource, AppendableRule<?>... rules) {
       PageCreator page = newPageCreator(registry);
       for (AppendableRule<?> rule : rules) {
          page.addSubstitution(rule);

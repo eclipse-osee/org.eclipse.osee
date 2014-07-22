@@ -12,7 +12,7 @@ function typeSelected() {
     if(available.selectedIndex > -1) {
         var index = available.selectedIndex
         var text =  availableOptions[index].text;
-        if (text) {
+        if (!text) {
             return;
         }
         var foundIt = false;

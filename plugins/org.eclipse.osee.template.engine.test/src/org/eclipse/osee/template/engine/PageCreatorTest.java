@@ -92,7 +92,7 @@ public class PageCreatorTest {
       String results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 
-      page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml, new String[0]);
+      page = PageFactory.newPageCreator(registry, RealizePage_ValuesHtml);
       results = page.realizePage(RealizePage_MainPageHtml);
       Assert.assertEquals(expected, results);
 

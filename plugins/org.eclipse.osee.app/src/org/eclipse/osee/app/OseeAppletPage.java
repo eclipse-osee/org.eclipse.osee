@@ -54,13 +54,13 @@ public class OseeAppletPage {
 
    public String realizeApplet(IResourceRegistry registry, String name, Class<?> clazz, AppendableRule<?>... rules) {
       ResourceToken valuesToken = new ClassBasedResourceToken(name, clazz);
-      PageCreator page = PageFactory.newPageCreator(registry, valuesToken, rules);
+      PageCreator page = PageFactory.newPageCreatorWithRules(registry, valuesToken, rules);
 
       return realizeApplet(page);
    }
 
    public String realizeApplet(IResourceRegistry registry, ResourceToken valuesToken) {
-      PageCreator page = PageFactory.newPageCreator(registry, valuesToken, new String[0]);
+      PageCreator page = PageFactory.newPageCreator(registry, valuesToken);
       return realizeApplet(page);
    }
 

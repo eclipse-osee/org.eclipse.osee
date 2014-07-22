@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 //@formatter:on
 public class ArtifactTypeOptionsRule extends AppendableRule<String> {
    public static final String RULE_NAME = "artifactTypeSelect";
-   private final Appendable theHTML = null;
    private final Set<String> typeNames;
    private final Set<String> preselectedTypeNames;
    private String selectId;
@@ -52,7 +51,7 @@ public class ArtifactTypeOptionsRule extends AppendableRule<String> {
    "    if(available.selectedIndex > -1) {\n" + //
    "        var index = available.selectedIndex\n" + //
    "        var text =  availableOptions[index].text;\n" + //
-   "        if (text) {\n" + //
+   "        if (!text) {\n" + //
    "            return;\n" + //
    "        }\n" + //
    "        var foundIt = false;\n" + //
@@ -164,11 +163,4 @@ public class ArtifactTypeOptionsRule extends AppendableRule<String> {
       appendable.append(String.format(theJavaScript, availableName, selectId, selectId));
    }
 
-   @Override
-   public String toString() {
-      if (theHTML != null) {
-         return theHTML.toString();
-      }
-      return "";
-   }
 }
