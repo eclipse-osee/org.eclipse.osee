@@ -74,7 +74,11 @@ public class OteService implements IHostTestEnvironment, IService {
       enhancedProperties.setProperty("owner", System.getProperty("user.name"));
       enhancedProperties.setProperty("id", serviceID.toString());
       try {
-         enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+         if(System.getProperty("org.osgi.service.http.port") == null){
+            enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), 80));
+         } else {
+            enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+         }
       } catch (Exception e) {
          OseeLog.log(OteService.class, Level.SEVERE, "Failed to set the appServerURI", e);
       }

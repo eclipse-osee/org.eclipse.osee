@@ -161,9 +161,12 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		if (service != null) {
 			throw new OseeStateException("An ote Server has already been started.");
 		}
-
 		this.serviceSideConnector = serviceSideConnector;
-		System.out.printf("BETA SERVER URL[http://%s:%s/ote]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
+		if(System.getProperty("org.osgi.service.http.port") == null){
+		   System.out.println("Property org.osgi.service.http.port was not set, it will default to port 80.");
+		} else {
+		   System.out.printf("BETA SERVER URL[http://%s:%s/ote]\n", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port")));
+		}
 		brokerService = new BrokerService();
 
 		String strUri;
@@ -248,7 +251,11 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	   server.setStartTime(new Date().toString());
 	   server.setOwner(System.getProperty("user.name"));
 	   server.setUUID(uuid);
-	   server.setOteRestServer(String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+	   if(System.getProperty("org.osgi.service.http.port") == null){
+	      server.setOteRestServer(String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), 80));
+	   } else {
+	      server.setOteRestServer(String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+	   }
 	   server.setOteActivemqServer(nodeInfo.getUri().toString());
 	   return server;
 	}
