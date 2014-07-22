@@ -90,61 +90,37 @@ public final class PageCreator {
       Scanner scanner = new Scanner(keyValueStream, "UTF-8");
       scanner.useDelimiter(xmlProcessingInstructionStartOrEnd);
       try {
-         String id = "";
-         StringBuilder substitution = null;
+         String id = null;
+         StringBuilder substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
+         boolean isProcessingInstruction = false;
+
          while (scanner.hasNext()) {
+            isProcessingInstruction = scanner.findInLine(xmlProcessingInstructionStart) != null;
             String token = scanner.next();
             if (emptyOrWhitespaceOnly.matcher(token).matches()) {
                continue;
             }
-
             if (token.startsWith("include")) {
-               if (!Strings.isValid(id)) {
-                  id = getProcessingInstructionId(token);
-               }
-               if (substitution == null) {
-                  substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
-               }
-               appendInclude(substitution, token);
-               if (scanner.hasNext()) {
-                  substitution.append(trimToken(scanner.next()));
-               }
-
+               handleInclude(substitution, token);
+               substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
             } else if (token.startsWith("rule ")) {
-               String ruleName = getRuleNamefromToken(token);
-               if (!Strings.isValid(ruleName)) {
-                  throw new OseeArgumentException("no rule name specified in token %s", token);
-               }
-               AppendableRule<?> rule = substitutions.get(ruleName);
-               if (rule == null) {
-                  throw new OseeArgumentException("no rule was found for token %s", token);
-               }
-               if (substitution == null) {
-                  substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
-               }
-               Map<String, String> attributes = new HashMap<String, String>();
-               // parse the arguments
-               parseArgumentList(token, attributes);
-               try {
-                  rule.applyTo(substitution, attributes);
-                  if (!Strings.isValid(id)) {
-                     id = token;
+               handleRule(substitution, token);
+               substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
+            } else { // handle key
+               if (isProcessingInstruction) {
+                  // next instruction found, complete previous one
+                  if (id != null) {
+                     addKeyValuePair(id, substitution);
+                     substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
                   }
-               } catch (IOException ex) {
-                  throw new OseeCoreException(ex);
-               }
-               if (scanner.hasNext()) {
-                  substitution.append(trimToken(scanner.next()));
-               }
-            } else {
-               id = token;
-               if (scanner.hasNext()) {
-                  substitution = new StringBuilder(trimToken(scanner.next()));
+                  id = token;
                } else {
-                  substitution = new StringBuilder();
+                  substitution.append(trimToken(token));
                }
             }
-
+         }
+         // finish last token
+         if (id != null) {
             addKeyValuePair(id, substitution);
          }
       } catch (IOException ex) {
@@ -152,6 +128,29 @@ public final class PageCreator {
       } finally {
          scanner.close();
       }
+   }
+
+   private void handleRule(StringBuilder substitution, String token) {
+      String ruleName = getRuleNamefromToken(token);
+      if (!Strings.isValid(ruleName)) {
+         throw new OseeArgumentException("no rule name specified in token %s", token);
+      }
+      AppendableRule<?> rule = substitutions.get(ruleName);
+      if (rule == null) {
+         throw new OseeArgumentException("no rule was found for token %s", token);
+      }
+
+      Map<String, String> attributes = new HashMap<String, String>();
+      // parse the arguments
+      parseArgumentList(token, attributes);
+      try {
+         rule.applyTo(substitution, attributes);
+
+      } catch (IOException ex) {
+         throw new OseeCoreException(ex);
+      }
+      String id = attributes.get("id");
+      addKeyValuePair(id, substitution);
    }
 
    public String realizePage(ResourceToken templateResource) {
@@ -195,7 +194,7 @@ public final class PageCreator {
       if (pathMatcher.find()) {
          return Long.parseLong(pathMatcher.group(1), 16);
       }
-      throw new OseeArgumentException("include path from token[%s] is in of the expected format", token);
+      throw new OseeArgumentException("include path from token[%s] is not of the expected format", token);
    }
 
    private String getProcessingInstructionId(String token) {
@@ -203,7 +202,7 @@ public final class PageCreator {
       if (idMatcher.find()) {
          return idMatcher.group(1);
       }
-      throw new OseeArgumentException("include id from token [%s] is in of the expected format", token);
+      return null;
    }
 
    private void processToken(Appendable page, String token, boolean isProcessingInstruction) throws IOException {
@@ -268,6 +267,14 @@ public final class PageCreator {
          toReturn = Boolean.parseBoolean(matcher.group(1));
       }
       return toReturn;
+   }
+
+   private void handleInclude(StringBuilder substitution, String token) throws IOException {
+      appendInclude(substitution, token);
+      String id = getProcessingInstructionId(token);
+      if (id != null) {
+         addKeyValuePair(id, substitution);
+      }
    }
 
    private void appendInclude(Appendable page, String tokenStr) throws IOException {
