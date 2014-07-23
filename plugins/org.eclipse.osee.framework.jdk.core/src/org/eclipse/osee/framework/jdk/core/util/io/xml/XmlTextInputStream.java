@@ -28,6 +28,8 @@ public class XmlTextInputStream extends BufferedInputStream {
    private static final String END_WORDML_TEXT = "</w:t>";
    private static final String LINE_BREAK = "<w:br/>";
    private static final String TAB_REGEX = "<w:tab( .+)?/>";
+   private static final char[] OSEE_LINK_BEGIN = "OSEE_LINK(".toCharArray();
+   private static final char OSEE_LINK_END = ')';
 
    private IReadHelper readHelper;
 
@@ -196,6 +198,8 @@ public class XmlTextInputStream extends BufferedInputStream {
       private boolean lastCollect;
       private boolean lastIsCarriageReturn;
       private boolean lastIsStartOfParagraph;
+      private int linkIdx;
+      private boolean foundLink;
 
       public WordMlReadHelper() {
          buffer = new StringBuilder();
@@ -210,21 +214,36 @@ public class XmlTextInputStream extends BufferedInputStream {
          lastCollect = false;
          lastIsStartOfParagraph = false;
          lastIsCarriageReturn = false;
+         foundLink = false;
+         linkIdx = 0;
       }
 
       @Override
       public int process(int value) throws IOException {
          isStartOfParagraph = false;
          isBreak = false;
+
          if ((char) value == '<') {
             partOfTag = true;
             buffer.append((char) value);
+         } else {
+            linkIdx = (char) value == OSEE_LINK_BEGIN[linkIdx] ? linkIdx + 1 : 0;
          }
-         while ((partOfTag || isCarriageReturn || isStartOfParagraph != true && collect != true && isBreak != true) && available() > 0) {
+
+         while ((partOfTag || isCarriageReturn || isStartOfParagraph != true && collect != true && isBreak != true && foundLink != true) && available() > 0) {
             value = readFromOriginalBuffer();
             if ((char) value == '<') {
                partOfTag = true;
+            } else if ((char) value == OSEE_LINK_BEGIN[linkIdx++]) {
+               // check if we've matched all characters for OSEE_LINK
+               if (OSEE_LINK_BEGIN.length == linkIdx) {
+                  foundLink = true;
+                  linkIdx = 0;
+               }
+            } else {
+               linkIdx = 0;
             }
+
             if (partOfTag) {
                buffer.append((char) value);
             }
@@ -257,9 +276,19 @@ public class XmlTextInputStream extends BufferedInputStream {
                   if ((char) value == '<') {
                      partOfTag = true;
                      buffer.append((char) value);
+                  } else {
+                     if ((char) value != OSEE_LINK_BEGIN[linkIdx++]) {
+                        linkIdx = 0;
+                     }
                   }
                }
             }
+         }
+
+         if (foundLink && (char) value == OSEE_LINK_END) {
+            // end of OSEE_LINK
+            foundLink = false;
+            linkIdx = 0;
          }
 
          if (available() <= 0) {
@@ -290,4 +319,5 @@ public class XmlTextInputStream extends BufferedInputStream {
          lastIsCarriageReturn = isCarriageReturn;
       }
    }
+
 }

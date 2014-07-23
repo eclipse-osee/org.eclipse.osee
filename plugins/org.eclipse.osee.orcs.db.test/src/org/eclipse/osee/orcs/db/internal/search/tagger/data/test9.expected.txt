@@ -1,0 +1,1 @@
+The robot API shall provide method(s) to initialize the interface. For the daVinci research API, this would encompass the stream management functions. Ab3mWLAAUAwN2lhOnbQA Ab3mWNSjlFJ1o6C6kdgA

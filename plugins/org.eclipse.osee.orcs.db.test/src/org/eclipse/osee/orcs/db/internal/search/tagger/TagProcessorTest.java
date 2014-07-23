@@ -93,7 +93,7 @@ public class TagProcessorTest {
       List<Object[]> data = new ArrayList<Object[]>();
 
       TagProcessor tagProcess = new TagProcessor(new EnglishLanguage(new MockLog()), new TagEncoder());
-      for (int index = 1; index <= 8; index++) {
+      for (int index = 1; index <= 9; index++) {
          String name = "test" + index;
          String rawData = getResource(name + ".data.xml");
          String expectedParsed = getResource(name + ".expected.txt");
