@@ -30,16 +30,6 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
    }
 
    @Override
-   public boolean equals(Object obj) {
-      boolean equals = false;
-      if (obj instanceof BaseArtifactEditorInput) {
-         BaseArtifactEditorInput otherEdInput = (BaseArtifactEditorInput) obj;
-         equals = artifact == otherEdInput.artifact;
-      }
-      return equals;
-   }
-
-   @Override
    public boolean exists() {
       return true;
    }
@@ -89,12 +79,26 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       return artifact == null || artifact.isReadOnly();
    }
 
-   @Override
-   public int hashCode() {
-      return this.artifact.hashCode();
-   }
-
    public void setArtifact(Artifact art) {
       this.artifact = art;
    }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      boolean equals = false;
+      if (obj instanceof BaseArtifactEditorInput) {
+         BaseArtifactEditorInput otherEdInput = (BaseArtifactEditorInput) obj;
+         equals = artifact == otherEdInput.artifact;
+      }
+      return equals;
+   }
+
 }

@@ -56,22 +56,12 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (!super.equals(obj)) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
+      if (this == obj) return true;
+      if (!super.equals(obj)) return false;
+      if (getClass() != obj.getClass()) return false;
       SMAEditorInput other = (SMAEditorInput) obj;
-      if (artUuid != other.artUuid) {
-         return false;
-      }
-      if (branchUuid != other.branchUuid) {
-         return false;
-      }
+      if (artUuid != other.artUuid) return false;
+      if (branchUuid != other.branchUuid) return false;
       return true;
    }
 

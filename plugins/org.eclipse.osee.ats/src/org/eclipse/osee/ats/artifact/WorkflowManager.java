@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -319,15 +320,17 @@ public class WorkflowManager {
 
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) throws OseeStateException {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-      for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
-         awa.getWorkDefinition())) {
-         try {
-            StateXWidgetPage statePage =
-               new StateXWidgetPage(awa.getWorkDefinition(), stateDefinition, null,
-                  ATSXWidgetOptionResolver.getInstance());
-            statePages.add(statePage);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (awa != null) {
+         IAtsWorkDefinition definition = awa.getWorkDefinition();
+         ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();
+         for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
+            definition)) {
+            try {
+               StateXWidgetPage statePage = new StateXWidgetPage(definition, stateDefinition, null, optionResolver);
+               statePages.add(statePage);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
          }
       }
       return statePages;

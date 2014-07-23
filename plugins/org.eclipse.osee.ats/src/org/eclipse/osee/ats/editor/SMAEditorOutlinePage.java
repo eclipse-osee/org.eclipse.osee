@@ -94,13 +94,15 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (getTreeViewer() != null) {
             if (editor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
                getTreeViewer().setInput(editor);
-               IAtsStateDefinition stateDef;
                try {
-                  stateDef = WorkflowManager.getCurrentAtsWorkPage((editor).getAwa()).getStateDefinition();
-                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
-                  getTreeViewer().expandToLevel((editor).getAwa(), 2);
-                  getTreeViewer().expandToLevel(stateDef, 1);
-                  getTreeViewer().setSelection(newSelection);
+                  AbstractWorkflowArtifact awa = (editor).getAwa();
+                  if (awa != null) {
+                     IAtsStateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
+                     StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
+                     getTreeViewer().expandToLevel(awa, 2);
+                     getTreeViewer().expandToLevel(stateDef, 1);
+                     getTreeViewer().setSelection(newSelection);
+                  }
                } catch (OseeStateException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -186,12 +188,11 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       @Override
       public Object[] getChildren(Object element) {
          List<Object> items = new ArrayList<Object>();
-
          if (element instanceof SMAEditor) {
-            items.add(((SMAEditor) element).getAwa());
+            add(items, ((SMAEditor) element).getAwa());
             items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
          } else if (element instanceof AbstractWorkflowArtifact) {
-            items.add(((AbstractWorkflowArtifact) element).getWorkDefinitionMatch());
+            add(items, ((AbstractWorkflowArtifact) element).getWorkDefinitionMatch());
          } else if (element instanceof WrappedLayout) {
             items.addAll(((WrappedLayout) element).getStateItems());
          } else if (element instanceof WrappedPercentWeight) {
@@ -232,8 +233,13 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedStates) {
             items.addAll(((WrappedStates) element).getStates());
          }
-
          return items.toArray(new Object[items.size()]);
+      }
+
+      private void add(Collection<Object> items, Object toAdd) {
+         if (toAdd != null) {
+            items.add(toAdd);
+         }
       }
 
       @Override
@@ -345,7 +351,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Review Blocks: " + ((IAtsPeerReviewDefinition) element).getBlockingType().name());
          for (String userId : ((IAtsPeerReviewDefinition) element).getAssignees()) {
             try {
-               items.add(AtsClientService.get().getUserService().getUserById(userId));
+               add(items, AtsClientService.get().getUserService().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -366,7 +372,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
-               items.add(AtsClientService.get().getUserService().getUserById(userId));
+               add(items, AtsClientService.get().getUserService().getUserById(userId));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                items.add(String.format("Exception loading user from id [%s] [%s]", userId, ex.getLocalizedMessage()));
@@ -411,7 +417,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          for (String userId : revOpt.getUserIds()) {
             try {
                IAtsUser user = AtsClientService.get().getUserService().getUserById(userId);
-               items.add(user);
+               add(items, user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by id [%s] : [%s]", userId, ex.getLocalizedMessage()));
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -420,7 +426,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          for (String userName : revOpt.getUserNames()) {
             try {
                IAtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
-               items.add(user);
+               add(items, user);
             } catch (OseeCoreException ex) {
                items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
                OseeLog.log(Activator.class, Level.SEVERE, ex);
