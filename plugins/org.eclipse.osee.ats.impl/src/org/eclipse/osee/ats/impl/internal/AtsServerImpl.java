@@ -46,7 +46,6 @@ import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
-import org.eclipse.osee.ats.impl.internal.workitem.ActionUtility;
 import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
@@ -94,7 +93,6 @@ public class AtsServerImpl implements IAtsServer {
    private AtsSequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
    private ActionableItemManager actionableItemManager;
-   private ActionUtility actionUtil;
    private IOseeDatabaseService dbService;
 
    public static AtsServerImpl get() {
@@ -156,7 +154,6 @@ public class AtsServerImpl implements IAtsServer {
       sequenceProvider = new AtsSequenceProvider(dbService);
       config = new AtsArtifactConfigCache(this, orcsApi);
       actionableItemManager = new ActionableItemManager(config);
-      actionUtil = new ActionUtility(orcsApi);
       workItemPage = new WorkItemPage(logger, this);
       actionFactory =
          new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
