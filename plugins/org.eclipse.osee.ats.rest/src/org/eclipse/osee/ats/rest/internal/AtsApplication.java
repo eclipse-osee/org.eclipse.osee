@@ -70,13 +70,13 @@ public class AtsApplication extends Application {
       singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
       singletons.add(new ActionResource(atsServer, orcsApi, registry));
       singletons.add(new ConvertResource(atsServer, registry));
-      singletons.add(new TeamResource(orcsApi));
-      singletons.add(new VersionResource(orcsApi));
+      singletons.add(new TeamResource(atsServer));
+      singletons.add(new VersionResource(atsServer));
       singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
 
-      singletons.add(new AtsUiResource(registry, orcsApi));
+      singletons.add(new AtsUiResource(registry, atsServer));
       System.out.println("ATS - Application started - " + System.getProperty("OseeApplicationServer"));
    }
 

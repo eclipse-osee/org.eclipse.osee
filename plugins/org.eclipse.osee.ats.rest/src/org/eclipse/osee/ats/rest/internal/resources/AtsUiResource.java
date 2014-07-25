@@ -19,13 +19,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.AppendableRule;
 import org.eclipse.osee.template.engine.IdentifiableOptionsRule;
@@ -39,11 +38,11 @@ import org.eclipse.osee.template.engine.PageFactory;
 public final class AtsUiResource {
 
    private final IResourceRegistry registry;
-   private final OrcsApi orcsApi;
+   private final IAtsServer atsServer;
 
-   public AtsUiResource(IResourceRegistry registry, OrcsApi orcsApi) {
+   public AtsUiResource(IResourceRegistry registry, IAtsServer atsServer) {
       this.registry = registry;
-      this.orcsApi = orcsApi;
+      this.atsServer = atsServer;
    }
 
    /**
@@ -83,8 +82,7 @@ public final class AtsUiResource {
    };
 
    private ResultSet<ArtifactReadable> getAis() throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-         AtsArtifactTypes.ActionableItem).getResults();
+      return atsServer.getQuery().andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
    }
 
    /**

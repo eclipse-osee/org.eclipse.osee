@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
@@ -61,6 +62,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G Dunne
@@ -304,6 +306,11 @@ public class AtsServerImpl implements IAtsServer {
       return action;
    }
 
+   @Override
+   public QueryBuilder getQuery() {
+      return getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch());
+   }
+   
    @Override
    public String getConfigValue(String key) {
       String result = null;

@@ -69,5 +69,4 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime
 Export-Package: org.eclipse.osee.ats.impl,
  org.eclipse.osee.ats.impl.action,
- org.eclipse.osee.ats.impl.resource,
- org.eclipse.osee.ats.impl.util
+ org.eclipse.osee.ats.impl.resource

@@ -17,9 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.utility.RestUtil;
 import org.json.JSONArray;
@@ -31,17 +30,16 @@ import org.json.JSONObject;
 @Path("version")
 public final class VersionResource {
 
-   private final OrcsApi orcsApi;
+   private final IAtsServer atsServer;
 
-   public VersionResource(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public VersionResource(IAtsServer atsServer) {
+      this.atsServer = atsServer;
    }
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public String get() throws Exception {
-      ResultSet<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(AtsArtifactTypes.Version).getResults();
+      ResultSet<ArtifactReadable> artifacts = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.Version).getResults();
       JSONArray jsonArray = RestUtil.getDefaultJSonArray(artifacts);
       return RestUtil.jsonToPretty(jsonArray, true);
    }
@@ -50,8 +48,7 @@ public final class VersionResource {
    @Path("{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public String getVersion(@PathParam("uuid") int uuid) throws Exception {
-      ArtifactReadable verArt =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andLocalId(Integer.valueOf(uuid)).getResults().getExactlyOne();
+      ArtifactReadable verArt = atsServer.getQuery().andLocalId(Integer.valueOf(uuid)).getResults().getExactlyOne();
       JSONObject version = RestUtil.getDefaultJSon(verArt);
       version.put("workflows",
          RestUtil.getDefaultJSonArray(verArt.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)));

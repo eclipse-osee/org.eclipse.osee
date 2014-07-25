@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -56,7 +55,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -102,8 +100,8 @@ public final class CpaResource {
    public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
       List<IAtsCpaDecision> decisions = new ArrayList<IAtsCpaDecision>();
       QueryBuilder queryBuilder =
-         AtsUtilServer.getQuery(orcsApi).andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(
-            AtsAttributeTypes.ProgramUuid, Operator.EQUAL, uuid);
+         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ProgramUuid,
+            Operator.EQUAL, uuid);
       if (open != null) {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType, Operator.EQUAL,
             (open ? StateType.Working.name() : StateType.Completed.name()));
@@ -183,7 +181,7 @@ public final class CpaResource {
    @Path("decision")
    public Response putDecision(final DecisionUpdate update) throws Exception {
       ResultSet<ArtifactReadable> results =
-         AtsUtilServer.getQuery(orcsApi).and(AtsAttributeTypes.AtsId, Operator.EQUAL, update.getUuids()).getResults();
+         atsServer.getQuery().and(AtsAttributeTypes.AtsId, Operator.EQUAL, update.getUuids()).getResults();
       IAtsChangeSet changes =
          atsServer.getStoreFactory().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (ArtifactReadable art : results) {

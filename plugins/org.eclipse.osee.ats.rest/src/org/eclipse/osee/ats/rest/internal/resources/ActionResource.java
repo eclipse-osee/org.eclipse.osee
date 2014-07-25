@@ -141,8 +141,7 @@ public final class ActionResource {
          List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
 
          ArtifactReadable aiArt =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
-               AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults().getExactlyOne();
+            atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults().getExactlyOne();
          IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByGuid(aiArt.getGuid());
          aias.add(aia);
 
@@ -179,8 +178,7 @@ public final class ActionResource {
       if (!Strings.isValid(results)) {
          for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.AtsId, AtsAttributeTypes.LegacyPcrId)) {
             ResultSet<ArtifactReadable> legacyQueryResults =
-               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
-                  org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
+               atsServer.getQuery().and(attrType, org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
             if (legacyQueryResults.size() == 1) {
                results =
                   atsServer.getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(), "Action - " + searchId,

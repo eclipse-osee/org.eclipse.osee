@@ -17,9 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.utility.RestUtil;
 import org.json.JSONArray;
@@ -31,18 +30,17 @@ import org.json.JSONObject;
 @Path("team")
 public final class TeamResource {
 
-   private final OrcsApi orcsApi;
+   private final IAtsServer atsServer;
 
-   public TeamResource(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
+   public TeamResource(IAtsServer atsServer) {
+      this.atsServer = atsServer;
    }
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public String get() throws Exception {
       ResultSet<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
-            AtsArtifactTypes.TeamDefinition).getResults();
+         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamDefinition).getResults();
       JSONArray jsonArray = RestUtil.getDefaultJSonArray(artifacts);
       return RestUtil.jsonToPretty(jsonArray, true);
    }
@@ -51,8 +49,7 @@ public final class TeamResource {
    @Path("{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public String getTeam(@PathParam("uuid") int uuid) throws Exception {
-      ArtifactReadable teamArt =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andLocalId(Integer.valueOf(uuid)).getResults().getExactlyOne();
+      ArtifactReadable teamArt = atsServer.getQuery().andLocalId(Integer.valueOf(uuid)).getResults().getExactlyOne();
       JSONObject team = RestUtil.getDefaultJSon(teamArt);
       team.put("versions",
          RestUtil.getDefaultJSonArray(teamArt.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)));
