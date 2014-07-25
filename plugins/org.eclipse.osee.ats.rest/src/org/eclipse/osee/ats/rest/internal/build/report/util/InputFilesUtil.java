@@ -22,7 +22,7 @@ public class InputFilesUtil {
       // utility
    }
 
-   private static final String CHANGE_REPORTS_PATH = "/atsData/changeReports/";
+   private static final String CHANGE_REPORTS_PATH = "/changeReports/";
 
    public static File getBuildFile() {
       return new File(getBaseFileLocation() + AtsElementData.ATS_BUILD_DATA_XML);
