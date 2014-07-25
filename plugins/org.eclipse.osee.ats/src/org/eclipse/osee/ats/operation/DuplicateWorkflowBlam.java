@@ -22,9 +22,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsUtilService;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -159,6 +163,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          if (Strings.isValid(title)) {
             dupArt.setName(title);
          }
+         dupArt.setSoleAttributeFromString(AtsAttributeTypes.AtsId, getNexAtsId(teamArt));
+
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(),
             AtsClientService.get().getUserService().getCurrentUser().getUserId());
@@ -188,6 +194,17 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       for (TeamWorkFlowArtifact newTeamArt : newTeamArts) {
          SMAEditor.editArtifact(newTeamArt);
       }
+   }
+
+   private String getNexAtsId(TeamWorkFlowArtifact teamArt) {
+      IAtsClient iAtsClient = AtsClientService.get();
+      IAtsUtilService utilService = iAtsClient.getUtilService();
+      ISequenceProvider sequenceProvider = AtsClientService.get().getSequenceProvider();
+
+      IAtsTeamDefinition teamDefinition = teamArt.getTeamDefinition();
+      String nextAtsId = utilService.getNextAtsId(sequenceProvider, null, teamDefinition);
+
+      return nextAtsId;
    }
 
    @Override
