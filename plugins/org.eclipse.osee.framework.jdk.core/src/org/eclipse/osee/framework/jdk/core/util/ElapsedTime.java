@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.utility;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Date;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
