@@ -92,7 +92,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    @Override
    public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
-      Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
+      Map<Branch, Long> childToParent = new HashMap<Branch, Long>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
@@ -110,7 +110,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
       getLogger().info("Branch Cache loaded [%s]", Lib.getElapseString(startTime));
    }
 
-   private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
+   private void loadBranches(BranchCache cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
@@ -126,7 +126,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
                   branchFactory.createOrUpdate(cache, branchUuid, branchName, branchType, branchState, isArchived,
                      StorageState.LOADED, inheritAccessControl == 1);
 
-               Integer parentBranchId = chStmt.getInt("parent_branch_id");
+               Long parentBranchId = chStmt.getLong("parent_branch_id");
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {
                   childToParent.put(branch, parentBranchId);
                }
@@ -172,8 +172,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
       }
    }
 
-   private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Integer> childToParent) throws OseeCoreException {
-      for (Entry<Branch, Integer> entry : childToParent.entrySet()) {
+   private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Long> childToParent) throws OseeCoreException {
+      for (Entry<Branch, Long> entry : childToParent.entrySet()) {
          Branch childBranch = entry.getKey();
          Branch parentBranch = branchCache.getByUuid(entry.getValue());
          if (parentBranch == null) {
@@ -189,10 +189,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
-            Branch sourceBranch = branchCache.getByUuid(chStmt.getInt("source_branch_id"));
-            Branch destBranch = branchCache.getByUuid(chStmt.getInt("dest_branch_id"));
+            Branch sourceBranch = branchCache.getByUuid(chStmt.getLong("source_branch_id"));
+            Branch destBranch = branchCache.getByUuid(chStmt.getLong("dest_branch_id"));
 
-            MergeBranch mergeBranch = (MergeBranch) branchCache.getByUuid(chStmt.getInt("merge_branch_id"));
+            MergeBranch mergeBranch = (MergeBranch) branchCache.getByUuid(chStmt.getLong("merge_branch_id"));
             mergeBranch.setSourceBranch(sourceBranch);
             mergeBranch.setDestinationBranch(destBranch);
          }
