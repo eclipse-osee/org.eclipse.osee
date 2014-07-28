@@ -35,8 +35,11 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
-         IAtsActionableItem ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+         IAtsActionableItem ai = getAtsServer().getConfig().getSoleByGuid(aiGuid, IAtsActionableItem.class);
+         if (ai == null) {
+            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+            ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+         }
          ais.add(ai);
       }
       return ais;
@@ -45,9 +48,11 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
-      ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
-      IAtsTeamDefinition teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
+      IAtsTeamDefinition teamDef = getAtsServer().getConfig().getSoleByGuid(teamDefGuid, IAtsTeamDefinition.class);
+      if (teamDef == null) {
+         ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
+         teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
+      }
       return teamDef;
    }
-
 }
