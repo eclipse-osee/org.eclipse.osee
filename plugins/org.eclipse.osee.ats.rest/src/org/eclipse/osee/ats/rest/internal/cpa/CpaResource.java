@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -283,8 +284,10 @@ public final class CpaResource {
    @Produces(MediaType.APPLICATION_JSON)
    public CpaConfig getConfigs() throws Exception {
       CpaConfig config = new CpaConfig();
-      config.getApplicabilityOptions().add("Yes");
-      config.getApplicabilityOptions().add("No");
+      for (EnumEntry entry : orcsApi.getOrcsTypes(null).getAttributeTypes().getEnumType(
+         AtsAttributeTypes.ApplicableToProgram).values()) {
+         config.getApplicabilityOptions().add(entry.getName());
+      }
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          config.getTools().add(new CpaConfigTool(service.getId()));
       }
