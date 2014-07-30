@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
+import org.eclipse.osee.framework.ui.skynet.render.word.ArtifactDataRightsProvider;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -65,7 +66,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public static final String FIRST_TIME = "FirstTime";
    public static final String SECOND_TIME = "SecondTime";
 
-   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this);
+   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this,
+      new ArtifactDataRightsProvider());
 
    private final IComparator comparator;
 

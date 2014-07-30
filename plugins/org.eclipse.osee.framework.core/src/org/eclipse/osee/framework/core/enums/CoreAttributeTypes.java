@@ -36,6 +36,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType Country = TokenFactory.createAttributeType(0x1000000000000060L, "Country");
    public static final IAttributeType CrewInterfaceRequirement = TokenFactory.createAttributeType(0x1000000000000082L, "Crew Interface Requirement");
    public static final IAttributeType Csci = TokenFactory.createAttributeType(0x10000000000000A0L, "CSCI");
+   public static final IAttributeType DataRightsClassification = TokenFactory.createAttributeType(0x1000000000000155L, "Data Rights Classification");
    public static final IAttributeType DefaultMailServer = TokenFactory.createAttributeType(0x1000000000000057L, "osee.config.Default Mail Server");
    public static final IAttributeType DefaultGroup = TokenFactory.createAttributeType(0x100000000000006EL, "Default Group");
    public static final IAttributeType Description = TokenFactory.createAttributeType(0x1000000000000072L, "Description");

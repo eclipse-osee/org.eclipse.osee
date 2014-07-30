@@ -118,8 +118,18 @@ public class WordTemplateProcessor {
    private boolean excludeFolders;
    private CharSequence paragraphNumber = null;
 
-   public WordTemplateProcessor(WordTemplateRenderer renderer) {
+   private String previousClassification = null;
+   private boolean firstArtifact = true;
+   private boolean dataRightsDetected = false;
+   private final DataRightsProvider dataRightsProvider;
+
+   public static interface DataRightsProvider {
+      String getDataClassificationFooter(String classification, boolean createNewPageFooter);
+   }
+
+   public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightsProvider dataRightsProvider) {
       this.renderer = renderer;
+      this.dataRightsProvider = dataRightsProvider;
       loadIgnoreAttributeExtensions();
    }
 
@@ -263,6 +273,10 @@ public class WordTemplateProcessor {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
          }
+         if (dataRightsDetected) {
+            String footer = dataRightsProvider.getDataClassificationFooter(previousClassification, false);
+            wordMl.addWordMl(footer);
+         }
       }
       // maintain a list of artifacts that have been processed so we do not
       // have duplicates.
@@ -377,7 +391,13 @@ public class WordTemplateProcessor {
             boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
             boolean includeUUIDs = renderer.getBooleanOption("INCLUDE UUIDS");
 
+            String dataRights = "";
+
             if (!ignoreArtifact) {
+
+               dataRights = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+               dataRightsDetected = dataRightsDetected || Strings.isValid(dataRights);
+
                handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
 
                if (outlining && !templateOnly) {
@@ -392,6 +412,15 @@ public class WordTemplateProcessor {
                   if (mergeTag != null && mergeTag) {
                      headingText = headingText.concat(" [MERGED]");
                   }
+
+                  if (!firstArtifact && !dataRights.equals(previousClassification)) {
+                     String footer = dataRightsProvider.getDataClassificationFooter(previousClassification, true);
+                     wordMl.addWordMl(footer);
+                  } else if (dataRightsDetected && !Strings.isValid(dataRights)) {
+                     String footer = dataRightsProvider.getDataClassificationFooter(dataRights, true);
+                     wordMl.addWordMl(footer);
+                  }
+                  firstArtifact = false;
 
                   if (!publishInline && !templateOnly) {
                      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -419,6 +448,7 @@ public class WordTemplateProcessor {
                }
 
                processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
+               previousClassification = dataRights;
             }
             // Check for option that may have been set from Publish with Diff BLAM to recurse
             if ((recurseChildren && !renderer.getBooleanOption(RECURSE_ON_LOAD)) || (renderer.getBooleanOption(RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff"))) {
