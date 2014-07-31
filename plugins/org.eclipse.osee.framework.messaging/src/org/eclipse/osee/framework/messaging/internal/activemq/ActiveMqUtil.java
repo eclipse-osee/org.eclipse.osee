@@ -38,8 +38,9 @@ class ActiveMqUtil {
          if (clazz != null) {
             try {
                messageBody = JAXBUtil.unmarshal(text, clazz);
-            } catch (UnsupportedEncodingException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+            } catch (Exception ex) {
+               throw new OseeCoreException(ex.getCause(), "Unmarshal exception for text [%s] and class [%s]", text,
+                  clazz);
             }
          } else {
             messageBody = text;
