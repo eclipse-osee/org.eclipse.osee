@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+	<implementation class="org.eclipse.osee.jaxrs.server.internal.mvc.ViewModelWriter" />
+ <service>
+    <provide interface="java.lang.Object"/>
+    <provide interface="javax.ws.rs.ext.MessageBodyWriter"/>
+ </service>
+ <reference bind="addResolver"  unbind="removeResolver" cardinality="1..n" interface="org.eclipse.osee.jaxrs.mvc.ViewResolver" name="ViewResolver" policy="dynamic"/>
+</scr:component>
