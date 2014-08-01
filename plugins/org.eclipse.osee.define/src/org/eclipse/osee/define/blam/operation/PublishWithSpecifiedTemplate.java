@@ -56,6 +56,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private final String IS_ARTIFACTS = "IS Artifacts";
    private final String PUBLISH_AS_DIFF = "Publish As Diff";
    private final String WAS_BRANCH = "WAS Branch";
+   private final String INCLUDE_ARTIFACT_UUIDS = "Include Artifact UUIDs";
 
    @Override
    public String getName() {
@@ -68,6 +69,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       boolean useArtifactNameInLinks = variableMap.getBoolean(USE_ARTIFACT_NAMES);
       boolean useParagraphNumbersInLinks = variableMap.getBoolean(USE_PARAGRAPH_NUMBERS);
+      boolean includeArtifactUUIDs = variableMap.getBoolean(INCLUDE_ARTIFACT_UUIDS);
 
       if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
          throw new OseeArgumentException("Please select at least one Document Link Format");
@@ -117,6 +119,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             variableMap.getBranch(WAS_BRANCH),
             "Publish As Diff",
             variableMap.getValue(PUBLISH_AS_DIFF),
+            "INCLUDE UUIDS",
+            variableMap.getValue(INCLUDE_ARTIFACT_UUIDS),
             "linkType",
             linkType,
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
@@ -149,6 +153,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       sb.append("<form>Use a template to publish a document or diff the document against a different version.<br/>");
       sb.append("Select Parameters<br/>");
       sb.append("<li>Select Update Paragraph Numbers if authorized to update them</li>");
+      sb.append("<li>Choose whether or not you want the UUIDs published</li>");
       sb.append("<li>Select the Document Link format(s)</li>");
       sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
       sb.append("<li>Drag &amp; Drop the IS Artifacts into the box</li>");
@@ -164,6 +169,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append(String.format(
          "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          UPDATE_PARAGRAPH_NUMBERS));
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
+         INCLUDE_ARTIFACT_UUIDS));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append(String.format(

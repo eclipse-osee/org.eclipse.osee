@@ -375,12 +375,19 @@ public class WordTemplateProcessor {
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
+            boolean includeUUIDs = renderer.getBooleanOption("INCLUDE UUIDS");
 
             if (!ignoreArtifact) {
                handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
 
                if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
+
+                  if (includeUUIDs) {
+                     String UUIDtext = String.format(" <UUID = %s>", artifact.getArtId());
+                     headingText = headingText.concat(UUIDtext);
+                  }
+
                   Boolean mergeTag = (Boolean) renderer.getOption(ITemplateRenderer.ADD_MERGE_TAG);
                   if (mergeTag != null && mergeTag) {
                      headingText = headingText.concat(" [MERGED]");
