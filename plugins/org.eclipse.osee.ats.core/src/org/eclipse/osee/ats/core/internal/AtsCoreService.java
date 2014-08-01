@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal;
 
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -48,7 +46,6 @@ public class AtsCoreService {
    private static IAtsStateFactory stateFactory;
    private static IAttributeResolver attrResolver;
    private static IAtsWorkDefinitionService workDefService;
-   private static IAtsNotificationServiceProvider notifyServiceProvider;
    private static IAtsUserService userService;
    private static Boolean started = null;
    private static IAtsWorkItemServiceProvider workItemServiceProvider;
@@ -68,10 +65,6 @@ public class AtsCoreService {
 
    public static void setAtsWorkDefService(IAtsWorkDefinitionService workDefService) {
       AtsCoreService.workDefService = workDefService;
-   }
-
-   public static void setAtsNotificationServiceProvider(IAtsNotificationServiceProvider notifyServiceProvider) {
-      AtsCoreService.notifyServiceProvider = notifyServiceProvider;
    }
 
    public static void setAtsWorkItemServiceProvider(IAtsWorkItemServiceProvider workItemServiceProvider) {
@@ -95,7 +88,6 @@ public class AtsCoreService {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
       Conditions.checkNotNull(workItemServiceProvider, "IAtsWorkItemServiceProvider");
       Conditions.checkNotNull(attrResolver, "IAttributeResolver");
-      Conditions.checkNotNull(notifyServiceProvider, "IAtsNotificationService");
       Conditions.checkNotNull(branchServiceProvider, "IAtsBranchServiceProvider");
       Conditions.checkNotNull(reviewServiceProvider, "IAtsReviewServiceProvider");
 
@@ -126,11 +118,6 @@ public class AtsCoreService {
       return workDefService;
    }
 
-   public static IAtsNotificationService getNotifyService() throws OseeCoreException {
-      checkStarted();
-      return notifyServiceProvider.getNotifyService();
-   }
-
    public static IAtsUserService getUserService() throws OseeStateException {
       checkStarted();
       return userService;
@@ -147,7 +134,7 @@ public class AtsCoreService {
 
    public static IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = new AtsStateFactory(attrResolver, getWorkStateFactory(), getNotifyService());
+         stateFactory = new AtsStateFactory(attrResolver, getWorkStateFactory());
       }
       return stateFactory;
    }

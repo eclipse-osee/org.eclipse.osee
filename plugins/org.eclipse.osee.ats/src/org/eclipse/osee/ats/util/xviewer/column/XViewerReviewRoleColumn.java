@@ -63,7 +63,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    private static String getRolesStr(AbstractReviewArtifact reviewArt, IAtsUser user) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       for (UserRole role : UserRoleManager.getUserRoles(reviewArt)) {
-         if (AtsClientService.get().getUserService().getUserById(role.getUserId()).equals(user)) {
+         if (UserRoleManager.getUser(role).equals(user)) {
             builder.append(role.getRole().name());
             builder.append(", ");
          }

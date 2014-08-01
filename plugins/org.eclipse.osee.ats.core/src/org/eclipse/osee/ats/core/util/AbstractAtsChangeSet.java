@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.util;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
@@ -29,10 +30,13 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<Object>();
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<IExecuteListener>();
    protected final IAtsUser user;
+   protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
 
    public AbstractAtsChangeSet(String comment, IAtsUser user) {
       this.comment = comment;
       this.user = user;
+      Conditions.checkNotNullOrEmpty(comment, "comment");
+      Conditions.checkNotNull(user, "user");
    }
 
    @Override
@@ -97,6 +101,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    public String getComment() {
       return comment;
+   }
+
+   @Override
+   public AtsNotificationCollector getNotifications() {
+      return notifications;
    }
 
 }

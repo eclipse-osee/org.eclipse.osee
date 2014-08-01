@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
-import org.eclipse.osee.ats.core.client.internal.notify.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.query.AtsQuery;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
@@ -119,7 +118,6 @@ public class AtsClientImpl implements IAtsClient {
    private ISequenceProvider sequenceProvider;
    private IAtsWorkStateFactory workStateFactory;
    private IAtsLogFactory logFactory;
-   private IAtsNotificationService notificationService;
    private IAtsColumnUtilities columnUtilities;
    private IAtsUtilService utilService;
    private IOseeDatabaseService dbService;
@@ -446,7 +444,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = AtsCoreFactory.newStateFactory(getAttributeResolver(), getUserService(), getNotifyService());
+         stateFactory = AtsCoreFactory.newStateFactory(getAttributeResolver(), getUserService());
       }
       return stateFactory;
    }
@@ -468,14 +466,6 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsNotificationService getNotifyService() {
-      if (notificationService == null) {
-         notificationService = new AtsNotificationServiceImpl();
-      }
-      return notificationService;
-   }
-
-   @Override
    public IAtsColumnUtilities getColumnUtilities() {
       if (columnUtilities == null) {
          columnUtilities = AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService());
@@ -492,6 +482,11 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
+   public void sendNotifications(AtsNotificationCollector notifications) {
+      AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+   }
+      
+   @Override 
    public String getConfigValue(String key) {
       String result = null;
       Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());

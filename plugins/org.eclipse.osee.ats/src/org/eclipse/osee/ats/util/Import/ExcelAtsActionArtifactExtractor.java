@@ -30,6 +30,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
@@ -40,7 +41,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -233,8 +233,10 @@ public class ExcelAtsActionArtifactExtractor {
          }
          AtsUtilClient.setEmailEnabled(true);
          if (emailPOCs) {
-            for (TeamWorkFlowArtifact team : teamWfs) {
-               AtsNotificationManager.notify(team, AtsNotifyType.Assigned);
+            for (TeamWorkFlowArtifact teamWf : teamWfs) {
+               changes.getNotifications().addWorkItemNotificationEvent(
+                  AtsNotificationEventFactory.getWorkItemNotificationEvent(
+                     AtsClientService.get().getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
             }
          }
       } catch (OseeCoreException ex) {

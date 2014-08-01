@@ -8,18 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.resources;
+package org.eclipse.osee.ats.rest.internal;
 
 import java.util.concurrent.Callable;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
@@ -32,13 +28,14 @@ import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -51,8 +48,7 @@ import com.google.gson.Gson;
 /**
  * @author Donald G. Dunne
  */
-@Path("config")
-public final class ConfigResource {
+public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private static final String VIEWS_KEY = "views";
    private final OrcsApi orcsApi;
@@ -61,17 +57,15 @@ public final class ConfigResource {
    private final IResourceRegistry registry;
    private final Gson gson = new Gson();
 
-   public ConfigResource(IAtsServer atsServer, OrcsApi orcsApi, Log logger, IResourceRegistry registry) {
+   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger, IResourceRegistry registry) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.registry = registry;
    }
 
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   @SuppressWarnings("unchecked")
-   public AtsConfigurations get() throws Exception {
+   @Override
+   public AtsConfigurations get() {
       ResultSet<ArtifactReadable> artifacts =
          orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.Configuration).getResults();
       AtsConfigurations configs = new AtsConfigurations();
@@ -83,45 +77,22 @@ public final class ConfigResource {
          config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
          config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
       }
-      ArtifactReadable atsConfig =
-         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getExactlyOne();
-      if (atsConfig != null) {
-         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
-            String str = (String) obj;
-            if (str.startsWith(VIEWS_KEY)) {
-               AtsViews views = gson.fromJson(str.replaceFirst(VIEWS_KEY + "=", ""), AtsViews.class);
-               configs.setViews(views);
-            }
-         }
+      String viewsStr = atsServer.getConfigValue(VIEWS_KEY);
+      if (Strings.isValid(viewsStr)) {
+         AtsViews views = gson.fromJson(viewsStr, AtsViews.class);
+         configs.setViews(views);
       }
       return configs;
    }
 
-   /**
-    * @return html5 action entry page
-    */
-   @Path("ui/NewAtsBranchConfig")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getNewSource() throws Exception {
+   @Override
+   public String getNewSource() {
       PageCreator page = PageFactory.newPageCreator(registry);
       return page.realizePage(AtsResourceTokens.AtsNewAtsConfigBranchHtml);
    }
 
-   /**
-    * Create new ATS configuration branch and ATS config object on Common branch
-    * 
-    * @param form containing information to configure new ATS branch
-    * @param form.fromBranchUuid of branch to get config artifacts from
-    * @param form.newBranchName of new branch
-    * @param form.userId - userId of user performing transition
-    * @param uriInfo
-    * @return json object with new branchUuid
-    */
-   @POST
-   @Consumes("application/x-www-form-urlencoded")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+   @Override
+   public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) {
 
       // get parameters
       String query = uriInfo.getPath();
@@ -142,7 +113,12 @@ public final class ConfigResource {
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =
          orcsApi.getBranchOps(null).createTopLevelBranch(TokenFactory.createBranch(newBranchName), userArt);
-      BranchReadable newBranch = newBranchCallable.call();
+      BranchReadable newBranch;
+      try {
+         newBranch = newBranchCallable.call();
+      } catch (Exception ex) {
+         throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Error creating new branch");
+      }
       long newBranchUuid = newBranch.getUuid();
 
       // Introduce all ATS heading artifacts to new branch

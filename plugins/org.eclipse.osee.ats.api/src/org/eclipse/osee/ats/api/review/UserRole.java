@@ -10,15 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.review;
 
-import java.rmi.activation.Activator;
 import java.text.NumberFormat;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -86,7 +83,7 @@ public class UserRole {
          }
          this.guid = AXml.getTagData(xml, "guid");
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         throw new OseeCoreException("Can't parse User Role", ex);
       }
    }
 

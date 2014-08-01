@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -505,7 +505,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
          }
       }
-      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
+      changes.getNotifications().addWorkItemNotificationEvent(
+         AtsNotificationEventFactory.getWorkItemNotificationEvent(
+            AtsClientService.get().getUserService().getCurrentUser(), this, AtsNotifyType.Originator));
    }
 
    private void logCreatedByChange(IAtsUser user, Date date) throws OseeCoreException {
@@ -532,14 +534,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
+   @Override
    public Date getCreatedDate() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
    }
 
+   @Override
    public Date getCancelledDate() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
    }
 
+   @Override
    public IAtsUser getCreatedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
@@ -552,6 +557,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
    }
 
+   @Override
    public IAtsUser getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
@@ -560,6 +566,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
+   @Override
    public String getCancelledReason() throws OseeCoreException {
       String reason = getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
       if (!Strings.isValid(reason)) {
@@ -576,14 +583,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
+   @Override
    public String getCancelledFromState() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
    }
 
+   @Override
    public Date getCompletedDate() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
    }
 
+   @Override
    public IAtsUser getCompletedBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
@@ -608,6 +618,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getLog().getStateEvent(LogType.StateCancelled, stateName);
    }
 
+   @Override
    public String getCompletedFromState() throws OseeCoreException {
       String fromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null);
       if (!Strings.isValid(fromState)) {

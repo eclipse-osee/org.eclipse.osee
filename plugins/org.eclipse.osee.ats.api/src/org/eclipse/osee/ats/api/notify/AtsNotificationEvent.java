@@ -11,35 +11,21 @@
 package org.eclipse.osee.ats.api.notify;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import java.util.HashSet;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
+@XmlRootElement
 public class AtsNotificationEvent {
 
-   private Collection<IAtsUser> users;
-   private final String id;
+   private Collection<String> userIds = new HashSet<String>();
+   private String id;
+   private String fromUserId;
    private String type;
    private String description;
    private String url;
-
-   public AtsNotificationEvent(Collection<IAtsUser> users, String id, String type, String description) {
-      this.users = users;
-      this.id = id;
-      this.type = type;
-      this.description = description;
-   }
-
-   public AtsNotificationEvent(Collection<IAtsUser> users, String id, String type, String description, String url) {
-      this(users, id, type, description);
-      this.url = url;
-   }
-
-   @Override
-   public String toString() {
-      return type + " - " + id + " - " + users + " - " + description;
-   }
 
    public String getId() {
       return id;
@@ -51,14 +37,6 @@ public class AtsNotificationEvent {
 
    public String getDescription() {
       return description;
-   }
-
-   public Collection<IAtsUser> getUsers() {
-      return users;
-   }
-
-   public void setUsers(Collection<IAtsUser> users) {
-      this.users = users;
    }
 
    public void setDescription(String description) {
@@ -76,4 +54,30 @@ public class AtsNotificationEvent {
    public void setUrl(String url) {
       this.url = url;
    }
+
+   public Collection<String> getUserIds() {
+      return userIds;
+   }
+
+   public void setUserIds(Collection<String> userIds) {
+      this.userIds = userIds;
+   }
+
+   public void setId(String id) {
+      this.id = id;
+   }
+
+   public String getFromUserId() {
+      return fromUserId;
+   }
+
+   public void setFromUserId(String fromUserId) {
+      this.fromUserId = fromUserId;
+   }
+
+   @Override
+   public String toString() {
+      return "AtsNotificationEvent [userIds=" + userIds + ", id=" + id + ", fromUserId=" + fromUserId + ", type=" + type + ", description=" + description + "]";
+   }
+
 }

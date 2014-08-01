@@ -49,14 +49,11 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -136,15 +133,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                         createToolBar();
 
-                        // add search text box
-                        AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
-                        composite.addDisposeListener(new DisposeListener() {
-
-                           @Override
-                           public void widgetDisposed(DisposeEvent e) {
-                              OseeNotificationManager.getInstance().sendNotifications();
-                           }
-                        });
+                        new AtsQuickSearchComposite(xNavComp, SWT.NONE);
 
                         userLabel = new Label(xNavComp, SWT.None);
                         userLabel.addListener(SWT.MouseDoubleClick, new Listener() {

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.client.demo.DemoChoice;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.init.DatabaseInitOpFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -65,8 +66,12 @@ public class DbInitTest {
          ClientSessionManager.releaseSession();
          ClientSessionManager.getSession();
          UserManager.releaseUser();
+         AtsClientService.get().getUserService().releaseUser();
 
          if (UserManager.getUser().getUserId().equals("bootstrap")) {
+            throw new OseeStateException("Should not be bootstrap user here");
+         }
+         if (AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");
          }
       }

@@ -12,8 +12,7 @@ package org.eclipse.osee.ats.impl;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
+import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
@@ -42,7 +41,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsNotificationServiceProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
+public interface IAtsServer extends IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
@@ -52,9 +51,6 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
 
    @Override
    ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
-
-   @Override
-   IAtsNotificationService getNotifyService() throws OseeCoreException;
 
    IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
@@ -86,6 +82,8 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
    ArtifactReadable getActionById(String id);
 
    QueryBuilder getQuery();
+
+   boolean isProduction();
 
    String getConfigValue(String key);
 

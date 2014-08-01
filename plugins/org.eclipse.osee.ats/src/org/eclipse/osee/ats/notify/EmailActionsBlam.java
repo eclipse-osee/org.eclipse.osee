@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.notify.EmailActionsData.EmailRecipient;
@@ -28,14 +31,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
-import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -92,28 +92,29 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    private void sendEmailNotifications(EmailActionsData data) throws Exception {
-
-      OseeNotificationManager oseeNotificationManager = OseeNotificationManager.getInstance();
+      AtsNotificationCollector notifications = new AtsNotificationCollector();
       for (Artifact art : data.getWorkflows()) {
          if (art instanceof AbstractWorkflowArtifact) {
-            addNotification(data, (AbstractWorkflowArtifact) art, oseeNotificationManager);
+            addNotification(data, (AbstractWorkflowArtifact) art, notifications);
          }
       }
-      int sent = oseeNotificationManager.getNotificationEvents().size();
-      oseeNotificationManager.sendNotifications(data.getSubject(), data.getBody());
+      int sent = notifications.getNotificationEvents().size();
+      notifications.setSubject(data.getSubject());
+      notifications.setBody(data.getBody());
+      AtsClientService.get().sendNotifications(notifications);
       logf("Sent %s notifications.", sent);
    }
 
-   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, OseeNotificationManager oseeNotificationManager) throws OseeCoreException {
-      Collection<User> recipients = getRecipients(data.getEmailRecipient(), awa);
-      Collection<User> activeEmailUsers = EmailUtil.getActiveEmailUsers(recipients);
+   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, AtsNotificationCollector notifications) throws OseeCoreException {
+      Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), awa);
+      Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
       if (recipients.isEmpty()) {
          logf("No active " + data.getEmailRecipient() + " for workflow [%s].", awa.toStringWithId());
          return;
       }
 
       List<String> emailAddresses = new ArrayList<String>();
-      for (User basicUser : activeEmailUsers) {
+      for (IAtsUser basicUser : activeEmailUsers) {
          if (EmailUtil.isEmailValid(basicUser.getEmail())) {
             emailAddresses.add(basicUser.getEmail());
          }
@@ -130,7 +131,8 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      oseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(recipients, getIdString(awa),
+      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+         AtsClientService.get().getUserService().getCurrentUser(), recipients, getIdString(awa),
          data.getEmailRecipient().name(), String.format(
             "You are the %s of [%s] in state [%s] titled [%s] created on [%s]", data.getEmailRecipient().name(),
             awa.getArtifactTypeName(), awa.getStateMgr().getCurrentStateName(), awa.getName(),
@@ -138,11 +140,11 @@ public class EmailActionsBlam extends AbstractBlam {
 
    }
 
-   private Collection<User> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
-      List<User> recipients = new ArrayList<User>();
+   private Collection<IAtsUser> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
+      List<IAtsUser> recipients = new ArrayList<IAtsUser>();
       if (emailRecipient == EmailRecipient.Assignees) {
          try {
-            recipients.addAll(AtsClientService.get().getUserServiceClient().getOseeUsers(awa.getAssignees()));
+            recipients.addAll(awa.getAssignees());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -150,7 +152,7 @@ public class EmailActionsBlam extends AbstractBlam {
          try {
             IAtsUser createdBy = awa.getCreatedBy();
             if (createdBy.isActive()) {
-               recipients.add(AtsClientService.get().getUserServiceClient().getOseeUser(awa.getCreatedBy()));
+               recipients.add(awa.getCreatedBy());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -158,7 +160,7 @@ public class EmailActionsBlam extends AbstractBlam {
       }
       if (recipients.isEmpty()) {
          try {
-            recipients.add(AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
+            recipients.add(AtsClientService.get().getUserService().getCurrentUser());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

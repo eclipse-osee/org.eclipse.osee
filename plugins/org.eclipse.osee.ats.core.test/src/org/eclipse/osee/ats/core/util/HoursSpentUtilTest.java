@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.util;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -54,7 +53,6 @@ public class HoursSpentUtilTest {
    @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsWorkItemServiceProvider workItemServiceProvider;
    @Mock IAttributeResolver attrResolver;
-   @Mock IAtsNotificationServiceProvider notifyServiceProvider ;
    @Mock IAtsBranchServiceProvider branchServiceProvider;
    @Mock IAtsReviewServiceProvider reviewServiceProvider;
 
@@ -70,7 +68,6 @@ public class HoursSpentUtilTest {
       AtsCoreService.setAtsWorkDefService(workDefService);
       AtsCoreService.setAtsWorkItemServiceProvider(workItemServiceProvider);
       AtsCoreService.setAtsAttributeResolver(attrResolver);
-      AtsCoreService.setAtsNotificationServiceProvider(notifyServiceProvider);
       AtsCoreService.setAtsBranchServiceProvider(branchServiceProvider);
       AtsCoreService.setAtsReviewServiceProvider(reviewServiceProvider);
       atsCore.start();

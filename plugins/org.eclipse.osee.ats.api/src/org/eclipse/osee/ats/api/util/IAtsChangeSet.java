@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.util;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -63,5 +64,7 @@ public interface IAtsChangeSet {
    Object createArtifact(IArtifactType artifactType, String name, String guid);
 
    void relate(Object object1, IRelationTypeSide relationSide, Object object2);
+
+   AtsNotificationCollector getNotifications();
 
 }

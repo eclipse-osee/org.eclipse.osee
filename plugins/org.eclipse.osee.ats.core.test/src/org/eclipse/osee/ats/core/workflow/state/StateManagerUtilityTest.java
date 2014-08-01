@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -56,7 +55,6 @@ public class StateManagerUtilityTest {
    @Mock IAtsStateManager stateMgr;
    @Mock IAtsWorkStateFactory workStateFactory;
    @Mock IAtsUserService userService;
-   @Mock IAtsNotificationService notifyService;
    // @formatter:on
 
    @Before

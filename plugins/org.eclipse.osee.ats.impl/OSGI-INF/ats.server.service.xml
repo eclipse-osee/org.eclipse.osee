@@ -8,9 +8,9 @@
       <provide interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider"/>
       <provide interface="org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider"/>
       <provide interface="org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider"/>
-      <provide interface="org.eclipse.osee.ats.api.notify.IAtsNotificationServiceProvider"/>
       <provide interface="org.eclipse.osee.ats.core.config.IAtsConfigProvider"/>
       <provide interface="org.eclipse.osee.ats.impl.IAtsServer"/>
    </service>
    <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="addNotifier" cardinality="1..n" interface="org.eclipse.osee.ats.impl.internal.notify.IAtsNotifierServer" name="IAtsNotifierServer" policy="dynamic" unbind="removeNotifier"/>
 </scr:component>

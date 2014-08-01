@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
+import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
 /**
@@ -29,8 +32,22 @@ public class ArtifactEmailWizard extends EmailWizard {
    public ArtifactEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) throws OseeCoreException {
       super(
          AtsNotificationManagerUI.getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
-         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(),
-         AtsNotificationManager.getEmailableGroups(sma), toAddress);
+         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), getEmailableGroups(sma), toAddress);
+   }
+
+   public static List<EmailGroup> getEmailableGroups(IAtsWorkItem workItem) throws OseeCoreException {
+      ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
+      ArrayList<String> emails = new ArrayList<String>();
+      emails.add(workItem.getCreatedBy().getEmail());
+      groupNames.add(new EmailGroup("Originator", emails));
+      if (workItem.getStateMgr().getAssignees().size() > 0) {
+         emails = new ArrayList<String>();
+         for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
+            emails.add(user.getEmail());
+         }
+         groupNames.add(new EmailGroup("Assignees", emails));
+      }
+      return groupNames;
    }
 
 }

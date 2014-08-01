@@ -213,4 +213,14 @@ public class MockWorkItem implements IAtsWorkItem {
       this.cancelledFromState = stateName;
    }
 
+   @Override
+   public Date getCancelledDate() {
+      return null;
+   }
+
+   @Override
+   public String getCancelledReason() {
+      return null;
+   }
+
 }

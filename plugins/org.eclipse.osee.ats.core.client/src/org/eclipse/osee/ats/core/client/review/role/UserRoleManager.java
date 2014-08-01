@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
@@ -24,7 +26,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
@@ -108,9 +109,8 @@ public class UserRoleManager {
    public List<IAtsUser> getRoleUsers(Role role) throws OseeCoreException {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role && !users.contains(AtsClientService.get().getUserService().getUserById(
-            uRole.getUserId()))) {
-            users.add(AtsClientService.get().getUserService().getUserById(uRole.getUserId()));
+         if (uRole.getRole() == role && !users.contains(getUser(uRole))) {
+            users.add(getUser(uRole));
          }
       }
       return users;
@@ -167,14 +167,14 @@ public class UserRoleManager {
             artifact.addAttributeFromString(ATS_ROLE_STORAGE_TYPE, AXml.addTagData(ROLE_ITEM_TAG, newRole.toXml()));
          }
          rollupHoursSpentToReviewState(artifact);
-         validateUserRolesCompleted(artifact, storedUserRoles, userRoles);
+         validateUserRolesCompleted(artifact, storedUserRoles, userRoles, changes);
          changes.add(artifact);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't create ats review role document", ex);
       }
    }
 
-   private void validateUserRolesCompleted(Artifact artifact, List<UserRole> currentUserRoles, List<UserRole> newUserRoles) {
+   private void validateUserRolesCompleted(Artifact artifact, List<UserRole> currentUserRoles, List<UserRole> newUserRoles, IAtsChangeSet changes) {
       //all reviewers are complete; send notification to author/moderator
       int numCurrentCompleted = 0, numNewCompleted = 0;
       for (UserRole role : newUserRoles) {
@@ -195,7 +195,10 @@ public class UserRoleManager {
       }
       if (numNewCompleted != numCurrentCompleted) {
          try {
-            AtsNotificationManager.notify((AbstractWorkflowArtifact) artifact, AtsNotifyType.Peer_Reviewers_Completed);
+            changes.getNotifications().addWorkItemNotificationEvent(
+               AtsNotificationEventFactory.getWorkItemNotificationEvent(
+                  AtsClientService.get().getUserService().getCurrentUser(), (IAtsWorkItem) artifact,
+                  AtsNotifyType.Peer_Reviewers_Completed));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -213,9 +216,8 @@ public class UserRoleManager {
       }
       if (!found) {
          roleItems.add(userRole);
-         IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(userRole.getUserId());
-         if (!peerArt.getAssignees().contains(atsUser)) {
-            peerArt.getStateMgr().addAssignee(atsUser);
+         if (!peerArt.getAssignees().contains(getUser(userRole))) {
+            peerArt.getStateMgr().addAssignee(getUser(userRole));
          }
       }
    }
@@ -229,23 +231,23 @@ public class UserRoleManager {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles(peerArt)) {
-         IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(item.getUserId());
+         IAtsUser user = getUser(item);
          String name = "";
-         if (atsUser != null) {
-            name = atsUser.getName();
+         if (user != null) {
+            name = user.getName();
             if (!Strings.isValid(name)) {
-               name = atsUser.getName();
+               name = user.getName();
             }
          }
          builder.append("<TR>");
          builder.append("<TD>" + item.getRole().name() + "</TD>");
-         builder.append("<TD>" + atsUser.getName() + "</TD>");
-         builder.append("<TD>" + AtsUtilCore.doubleToI18nString(item.getHoursSpent(), true) + "</TD>");
+         builder.append("<TD>" + user.getName() + "</TD>");
+         builder.append("<TD>" + AtsUtilCore.doubleToI18nString(item.getHoursSpent()) + "</TD>");
 
          ReviewDefectManager defectMgr = new ReviewDefectManager(peerArt);
-         builder.append("<TD>" + defectMgr.getNumMajor(atsUser) + "</TD>");
-         builder.append("<TD>" + defectMgr.getNumMinor(atsUser) + "</TD>");
-         builder.append("<TD>" + defectMgr.getNumIssues(atsUser) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumMajor(user) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumMinor(user) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumIssues(user) + "</TD>");
          builder.append("</TR>");
       }
       builder.append("</TABLE>");
@@ -261,5 +263,9 @@ public class UserRoleManager {
       awa.getStateMgr().setMetrics(awa.getStateDefinition(), hoursSpent,
          awa.getStateMgr().getPercentComplete(awa.getCurrentStateName()), true,
          AtsClientService.get().getUserService().getCurrentUser(), new Date());
+   }
+
+   public static IAtsUser getUser(UserRole item) {
+      return AtsClientService.get().getUserService().getUserById(item.getUserId());
    }
 }

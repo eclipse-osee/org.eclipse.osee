@@ -238,4 +238,14 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
    }
 
+   @Override
+   public Date getCancelledDate() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
+   }
+
+   @Override
+   public String getCancelledReason() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
+   }
+
 }

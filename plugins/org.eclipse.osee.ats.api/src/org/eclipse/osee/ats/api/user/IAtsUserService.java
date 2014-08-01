@@ -46,4 +46,6 @@ public interface IAtsUserService {
 
    boolean currentUserHasAccessToAtsBranch(Long branchUuid);
 
+   void releaseUser();
+
 }

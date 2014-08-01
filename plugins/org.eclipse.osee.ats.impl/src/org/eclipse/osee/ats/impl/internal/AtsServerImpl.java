@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.impl.internal;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -38,10 +40,13 @@ import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
 import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.ats.impl.internal.action.ActionFactory;
 import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
+import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
+import org.eclipse.osee.ats.impl.internal.notify.AtsNotifierServiceImpl;
+import org.eclipse.osee.ats.impl.internal.notify.IAtsNotifierServer;
+import org.eclipse.osee.ats.impl.internal.notify.WorkItemNotificationProcessor;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
-import org.eclipse.osee.ats.impl.internal.util.AtsNotificationServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
@@ -57,8 +62,8 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -76,7 +81,6 @@ public class AtsServerImpl implements IAtsServer {
    private static AtsServerImpl instance;
    private static IAtsWorkDefinitionService workDefService;
    private static IAtsUserService userService;
-   private static IAtsNotificationService notifyService;
    private IAtsWorkItemService workItemService;
    private IAtsBranchService branchService;
    private IAtsReviewService reviewService;
@@ -96,6 +100,9 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsActionFactory actionFactory;
    private ActionableItemManager actionableItemManager;
    private IOseeDatabaseService dbService;
+   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
+   private WorkItemNotificationProcessor workItemNotificationProcessor;
+   private AtsNotificationEventProcessor notificationEventProcessor;
 
    public static AtsServerImpl get() {
       checkStarted();
@@ -127,14 +134,18 @@ public class AtsServerImpl implements IAtsServer {
       AtsServerImpl.userService = userService;
    }
 
+   public void addNotifier(IAtsNotifierServer notifier) {
+      notifiers.add(notifier);
+   }
+
+   public void removeNotifier(IAtsNotifierServer notifier) {
+      notifiers.remove(notifier);
+   }
+
    public void start() throws OseeCoreException {
-      Conditions.checkNotNull(orcsApi, "OrcsApi");
-      Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
-      Conditions.checkNotNull(userService, "IAtsUserService");
       instance = this;
       workItemFactory = new WorkItemFactory(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
-      notifyService = new AtsNotificationServiceImpl();
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
       branchService = new AtsBranchServiceImpl(orcsApi);
@@ -149,7 +160,7 @@ public class AtsServerImpl implements IAtsServer {
             attributeResolverService);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
-      atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService, notifyService);
+      atsStateFactory = AtsCoreFactory.newStateFactory(attributeResolverService, userService);
       atsStoreFactory = new AtsStoreFactoryImpl(this);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
@@ -199,12 +210,6 @@ public class AtsServerImpl implements IAtsServer {
    public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
       checkStarted();
       return AtsUtilServer.getArtifact(orcsApi, atsObject);
-   }
-
-   @Override
-   public IAtsNotificationService getNotifyService() throws OseeCoreException {
-      checkStarted();
-      return notifyService;
    }
 
    @Override
@@ -329,4 +334,25 @@ public class AtsServerImpl implements IAtsServer {
       return result;
    }
 
+   @Override
+   public boolean isProduction() {
+      return getDatabaseService().isProduction();
+   }
+
+   @Override
+   public void sendNotifications(AtsNotificationCollector notifications) {
+      if (notificationEventProcessor == null) {
+         workItemNotificationProcessor =
+            new WorkItemNotificationProcessor(this, orcsApi, workItemFactory, userService, attributeResolverService);
+         notificationEventProcessor =
+            new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
+               getConfigValue("NoReplyEmail"));
+      }
+      if (notifiers.isEmpty() || !isProduction()) {
+         OseeLog.log(AtsNotifierServiceImpl.class, Level.INFO, "Osee Notification Disabled");
+         return;
+      } else {
+         notificationEventProcessor.sendNotifications(notifications, notifiers);
+      }
+   }
 }

@@ -435,11 +435,11 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
          for (UserRole item : roleMgr.getUserRoles()) {
-            IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(item.getUserId());
+            IAtsUser atsUser = UserRoleManager.getUser(item);
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
                atsUser.getName(),
-               AtsUtilCore.doubleToI18nString(item.getHoursSpent(), true),
+               AtsUtilCore.doubleToI18nString(item.getHoursSpent()),
                defectMgr.getNumMajor(atsUser) + "",
                defectMgr.getNumMinor(atsUser) + "",
                defectMgr.getNumIssues(atsUser) + ""}));

@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager.ConfigurationProvider;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -25,18 +19,7 @@ public class Activator implements BundleActivator {
 
    @Override
    public void start(BundleContext bundleContext) throws Exception {
-      AtsNotificationManager.setConfigurationProvider(new ConfigurationProvider() {
-
-         @Override
-         public INotificationManager getNotificationManager() {
-            return OseeNotificationManager.getInstance();
-         }
-
-         @Override
-         public boolean isProduction() throws OseeCoreException {
-            return ClientSessionManager.isProductionDataStore();
-         }
-      });
+      //
    }
 
    @Override

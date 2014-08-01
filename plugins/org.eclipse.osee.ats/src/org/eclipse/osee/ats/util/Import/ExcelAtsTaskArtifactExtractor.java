@@ -21,10 +21,10 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.notify.AtsNotificationManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
@@ -197,7 +197,9 @@ public class ExcelAtsTaskArtifactExtractor {
          // always persist
          changes.add(taskArt);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-            AtsNotificationManager.notify(sma, AtsNotifyType.Assigned);
+            changes.getNotifications().addWorkItemNotificationEvent(
+               AtsNotificationEventFactory.getWorkItemNotificationEvent(
+                  AtsClientService.get().getUserService().getCurrentUser(), sma, AtsNotifyType.Assigned));
          }
       }
 

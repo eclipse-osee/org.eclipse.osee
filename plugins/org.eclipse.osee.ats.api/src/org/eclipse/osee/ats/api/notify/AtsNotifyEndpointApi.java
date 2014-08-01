@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.utility;
+package org.eclipse.osee.ats.api.notify;
 
-import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * @author Donald G. Dunne
  */
-public interface INotificationManager {
+public interface AtsNotifyEndpointApi {
 
-   public void addNotificationEvent(OseeNotificationEvent notificationEvent);
-
-   public void clear();
-
-   public List<OseeNotificationEvent> getNotificationEvents();
-
-   public void sendNotifications() throws OseeCoreException;
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response sendNotifications(AtsNotificationCollector notifications);
 
 }

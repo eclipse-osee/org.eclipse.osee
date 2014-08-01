@@ -113,6 +113,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
+   public void releaseUser() {
+      currentUser = null;
+      currentUserId = null;
+   }
+
+   @Override
    public void clearCache() {
       userIdToAdmin.clear();
       userIdToAtsUser.clear();

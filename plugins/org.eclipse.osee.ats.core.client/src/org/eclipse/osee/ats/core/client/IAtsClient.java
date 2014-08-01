@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
-import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
+import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsClient extends IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
    <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
@@ -109,8 +109,6 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
    IAtsWorkStateFactory getWorkStateFactory();
 
    IAtsLogFactory getLogFactory();
-
-   IAtsNotificationService getNotifyService();
 
    IAtsColumnUtilities getColumnUtilities();
 

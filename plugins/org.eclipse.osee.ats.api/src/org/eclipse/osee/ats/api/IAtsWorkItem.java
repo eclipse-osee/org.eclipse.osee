@@ -60,4 +60,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    Date getCompletedDate();
 
+   Date getCancelledDate();
+
+   String getCancelledReason();
+
 }

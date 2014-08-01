@@ -70,7 +70,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             IAtsStateManager stateMgr = workItem.getStateMgr();
             if (stateMgr.isDirty()) {
-               atsServer.getStateFactory().writeToStore(workItem, this);
+               atsServer.getStateFactory().writeToStore(user, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
                atsServer.getLogFactory().writeToStore(workItem, AtsServerService.get().getAttributeResolver(), this);
@@ -89,6 +89,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
+      atsServer.sendNotifications(getNotifications());
    }
 
    public static void execute(IAtsServer atsServer, String comment, IAtsUser user, Object object, Object... objects) throws OseeCoreException {

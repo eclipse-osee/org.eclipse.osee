@@ -49,7 +49,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) workItem;
          for (UserRole uRole : UserRoleManager.getUserRoles(peerArt)) {
             if (!uRole.isCompleted()) {
-               assignees.add(AtsClientService.get().getUserService().getUserById(uRole.getUserId()));
+               assignees.add(UserRoleManager.getUser(uRole));
             }
          }
          assignees.addAll(workItem.getStateMgr().getAssignees());

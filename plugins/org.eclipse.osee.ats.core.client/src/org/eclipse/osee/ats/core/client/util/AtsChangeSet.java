@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 
 /**
  * @author Donald G. Dunne
@@ -44,7 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    public AtsChangeSet(String comment) {
-      super(comment, null);
+      super(comment, AtsClientService.get().getUserService().getCurrentUser());
    }
 
    @Override
@@ -59,7 +58,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             if (workItem.getStateMgr().isDirty()) {
-               AtsClientService.get().getStateFactory().writeToStore(workItem, this);
+               AtsClientService.get().getStateFactory().writeToStore(user, workItem, this);
                ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
             if (workItem.getLog().isDirty()) {
@@ -96,7 +95,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
-      OseeNotificationManager.getInstance().sendNotifications();
+      AtsClientService.get().sendNotifications(getNotifications());
    }
 
    private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {
