@@ -36,12 +36,11 @@ public class AccountApplication extends Application {
    }
 
    public void start() {
-      PageWriter writer = new PageWriter();
       AccountOps ops = new AccountOps(accountAdmin);
 
       singletons.add(new AccountsResource(ops));
       singletons.add(new SubscriptionsResource(subscriptionAdmin));
-      singletons.add(new UnsubscribeResource(subscriptionAdmin, writer));
+      singletons.add(new UnsubscribeResource(subscriptionAdmin));
    }
 
    public void stop() {

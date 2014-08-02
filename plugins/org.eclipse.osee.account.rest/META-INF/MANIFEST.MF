@@ -6,6 +6,7 @@ Bundle-Version: 0.19.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Service-Component: OSGI-INF/*.xml
+Osee-Template: OSEE-INF/templates/*.html
 Import-Package: javax.annotation.security,
  javax.servlet,
  javax.servlet.http,
