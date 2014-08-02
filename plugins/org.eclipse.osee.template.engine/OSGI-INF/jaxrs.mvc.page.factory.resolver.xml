@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" >
+	<implementation class="org.eclipse.osee.template.engine.internal.PageFactoryViewResolver" />
+ 	<service>
+   	 <provide interface="org.eclipse.osee.jaxrs.mvc.ViewResolver"/>
+ 	</service>
+ 	<reference bind="setTemplateRegistry" cardinality="1..1" interface="org.eclipse.osee.template.engine.internal.TemplateRegistry" name="TemplateRegistry" policy="static"/>
+</scr:component>
