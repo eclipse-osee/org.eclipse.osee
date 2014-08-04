@@ -44,15 +44,17 @@ public class ArtifactDataRightsProvider implements DataRightsProvider {
          initialize();
       }
 
+      String key = classification;
       String footer = null;
-      if (!Strings.isValid(classification)) {
-         footer = String.format(GENERIC_FOOTER, "DATA RIGHTS CLASSIFICATION MISSING");
-      } else {
-         footer = dataRightsToFooters.get(classification);
-         if (!Strings.isValid(footer)) {
-            String text = String.format("FOOTER NOT DEFINED FOR [%s]", classification);
-            footer = String.format(GENERIC_FOOTER, text);
-         }
+      if (!Strings.isValid(key)) {
+         key = "DEFAULT";
+      }
+
+      footer = String.format(GENERIC_FOOTER, "DATA RIGHTS CLASSIFICATION MISSING");
+      footer = dataRightsToFooters.get(key);
+      if (!Strings.isValid(footer)) {
+         String text = String.format("FOOTER NOT DEFINED FOR [%s]", key);
+         footer = String.format(GENERIC_FOOTER, text);
       }
       return createNewPageFooter ? String.format(NEW_PAGE_TEMPLATE, footer) : String.format(SAME_PAGE_TEMPLATE, footer);
    }
