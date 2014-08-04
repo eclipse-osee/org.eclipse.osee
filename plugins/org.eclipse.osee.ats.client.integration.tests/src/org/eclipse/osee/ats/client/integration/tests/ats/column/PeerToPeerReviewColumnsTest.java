@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -30,8 +32,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.Role;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;

@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.client.review.role;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;

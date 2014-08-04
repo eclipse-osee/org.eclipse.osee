@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review.role;
+package org.eclipse.osee.ats.api.review;
 
 import java.util.Collection;
 import java.util.HashSet;

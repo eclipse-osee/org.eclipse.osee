@@ -18,6 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.Activator;
@@ -27,6 +29,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
 import org.eclipse.osee.ats.core.client.validator.ArtifactValueProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -105,8 +108,9 @@ public class UserRoleManager {
    public List<IAtsUser> getRoleUsers(Role role) throws OseeCoreException {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (UserRole uRole : getUserRoles()) {
-         if (uRole.getRole() == role && !users.contains(uRole.getUser())) {
-            users.add(uRole.getUser());
+         if (uRole.getRole() == role && !users.contains(AtsClientService.get().getUserService().getUserById(
+            uRole.getUserId()))) {
+            users.add(AtsClientService.get().getUserService().getUserById(uRole.getUserId()));
          }
       }
       return users;
@@ -209,8 +213,9 @@ public class UserRoleManager {
       }
       if (!found) {
          roleItems.add(userRole);
-         if (!peerArt.getAssignees().contains(userRole.getUser())) {
-            peerArt.getStateMgr().addAssignee(userRole.getUser());
+         IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(userRole.getUserId());
+         if (!peerArt.getAssignees().contains(atsUser)) {
+            peerArt.getStateMgr().addAssignee(atsUser);
          }
       }
    }
@@ -224,23 +229,23 @@ public class UserRoleManager {
       StringBuilder builder = new StringBuilder();
       builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles(peerArt)) {
-         IAtsUser user = item.getUser();
+         IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(item.getUserId());
          String name = "";
-         if (user != null) {
-            name = user.getName();
+         if (atsUser != null) {
+            name = atsUser.getName();
             if (!Strings.isValid(name)) {
-               name = user.getName();
+               name = atsUser.getName();
             }
          }
          builder.append("<TR>");
          builder.append("<TD>" + item.getRole().name() + "</TD>");
-         builder.append("<TD>" + item.getUser().getName() + "</TD>");
-         builder.append("<TD>" + item.getHoursSpentStr() + "</TD>");
+         builder.append("<TD>" + atsUser.getName() + "</TD>");
+         builder.append("<TD>" + AtsUtilCore.doubleToI18nString(item.getHoursSpent(), true) + "</TD>");
 
          ReviewDefectManager defectMgr = new ReviewDefectManager(peerArt);
-         builder.append("<TD>" + defectMgr.getNumMajor(item.getUser()) + "</TD>");
-         builder.append("<TD>" + defectMgr.getNumMinor(item.getUser()) + "</TD>");
-         builder.append("<TD>" + defectMgr.getNumIssues(item.getUser()) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumMajor(atsUser) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumMinor(atsUser) + "</TD>");
+         builder.append("<TD>" + defectMgr.getNumIssues(atsUser) + "</TD>");
          builder.append("</TR>");
       }
       builder.append("</TABLE>");

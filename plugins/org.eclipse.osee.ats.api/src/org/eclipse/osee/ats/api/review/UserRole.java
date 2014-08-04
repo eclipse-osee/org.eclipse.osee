@@ -8,20 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review.role;
+package org.eclipse.osee.ats.api.review;
 
+import java.rmi.activation.Activator;
 import java.text.NumberFormat;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 
 /**
  * @author Donald G. Dunne
@@ -33,10 +30,6 @@ public class UserRole {
    private Double hoursSpent = null;
    private String guid = GUID.create();
    private Boolean completed = false;
-
-   public UserRole() throws OseeCoreException {
-      this(Role.Reviewer, AtsClientService.get().getUserService().getCurrentUser().getUserId(), null, false);
-   }
 
    public UserRole(Role role, IAtsUser user) throws OseeCoreException {
       this(role, user.getUserId());
@@ -124,20 +117,8 @@ public class UserRole {
       this.role = role;
    }
 
-   public IAtsUser getUser() throws OseeCoreException {
-      return AtsClientService.get().getUserService().getUserById(userId);
-   }
-
-   public void setUser(User user) throws OseeCoreException {
-      this.userId = user.getUserId();
-   }
-
    public Double getHoursSpent() {
       return hoursSpent;
-   }
-
-   public String getHoursSpentStr() {
-      return hoursSpent == null ? "" : AtsUtilCore.doubleToI18nString(hoursSpent, true);
    }
 
    public void setHoursSpent(Double hoursSpent) {
@@ -162,5 +143,9 @@ public class UserRole {
 
    public String getUserId() {
       return userId;
+   }
+
+   public void setUserId(String userId) {
+      this.userId = userId;
    }
 }

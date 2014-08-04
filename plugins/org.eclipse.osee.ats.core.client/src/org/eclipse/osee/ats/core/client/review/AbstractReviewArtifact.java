@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -27,7 +28,7 @@ import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -58,8 +59,9 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       } else {
          List<IAtsUser> users = getImplementersByState(this, PeerToPeerReviewState.Review);
          for (UserRole role : UserRoleManager.getUserRoles(this)) {
-            if (!users.contains(role.getUser())) {
-               users.add(role.getUser());
+            IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(role.getUserId());
+            if (!users.contains(atsUser)) {
+               users.add(atsUser);
             }
          }
          return users;

@@ -21,8 +21,8 @@ import org.eclipse.nebula.widgets.xviewer.XPromptChange;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
-import org.eclipse.osee.ats.core.client.review.role.Role;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -203,8 +203,8 @@ public class UserRoleXViewer extends XViewer {
    private boolean setUser(Collection<UserRole> userRoles, User user) throws OseeCoreException {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
-         if (user != null && !userRole.getUser().equals(user)) {
-            userRole.setUser(user);
+         if (user != null && !userRole.getUserId().equals(user.getUserId())) {
+            userRole.setUserId(user.getUserId());
             if (!modified) {
                modified = true;
             }

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -22,8 +23,8 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -48,7 +49,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) workItem;
          for (UserRole uRole : UserRoleManager.getUserRoles(peerArt)) {
             if (!uRole.isCompleted()) {
-               assignees.add(uRole.getUser());
+               assignees.add(AtsClientService.get().getUserService().getUserById(uRole.getUserId()));
             }
          }
          assignees.addAll(workItem.getStateMgr().getAssignees());

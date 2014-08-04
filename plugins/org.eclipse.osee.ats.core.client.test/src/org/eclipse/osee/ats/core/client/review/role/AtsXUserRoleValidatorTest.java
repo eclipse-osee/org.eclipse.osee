@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.core.client.review.role;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;

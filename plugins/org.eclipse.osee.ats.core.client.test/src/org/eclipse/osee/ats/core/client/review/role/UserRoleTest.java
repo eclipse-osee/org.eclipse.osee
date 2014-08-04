@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review.role;
 
-import org.eclipse.osee.ats.core.client.review.role.Role;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.junit.Assert;
 
 /**

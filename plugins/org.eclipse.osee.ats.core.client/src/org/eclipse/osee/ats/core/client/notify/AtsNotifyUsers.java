@@ -17,12 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.review.role.Role;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -124,7 +124,7 @@ public class AtsNotifyUsers {
          Collection<IAtsUser> authorModerator = new ArrayList<IAtsUser>();
          for (UserRole role : roleMgr.getUserRoles()) {
             if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
-               authorModerator.add(role.getUser());
+               authorModerator.add(AtsClientService.get().getUserService().getUserById(role.getUserId()));
             }
          }
          authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);

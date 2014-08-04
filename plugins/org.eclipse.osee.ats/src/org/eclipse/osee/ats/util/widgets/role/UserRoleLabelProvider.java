@@ -15,9 +15,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.review.UserRole;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -46,7 +47,8 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
       UserRole roleItem = (UserRole) element;
       try {
          if (dCol.equals(UserRoleXViewerFactory.User_Col)) {
-            return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(roleItem.getUser()));
+            return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(
+               AtsClientService.get().getUserService().getUserById(roleItem.getUserId())));
          } else if (dCol.equals(UserRoleXViewerFactory.Role_Col)) {
             return ImageManager.getImage(AtsImage.ROLE);
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
@@ -70,8 +72,9 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
 
       UserRole defectItem = (UserRole) element;
+      IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(defectItem.getUserId());
       if (aCol.equals(UserRoleXViewerFactory.User_Col)) {
-         return defectItem.getUser().getName();
+         return atsUser.getName();
       } else if (aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
          return defectItem.getHoursSpent() == null ? "" : AtsUtilCore.doubleToI18nString(defectItem.getHoursSpent(),
             false);
@@ -81,13 +84,13 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          return String.valueOf(defectItem.isCompleted());
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
          ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
-         return defectMgr.getNumMajor(defectItem.getUser()) + "";
+         return defectMgr.getNumMajor(atsUser) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {
          ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
-         return defectMgr.getNumMinor(defectItem.getUser()) + "";
+         return defectMgr.getNumMinor(atsUser) + "";
       } else if (aCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
          ReviewDefectManager defectMgr = new ReviewDefectManager(xViewer.getXUserRoleViewer().getReviewArt());
-         return defectMgr.getNumIssues(defectItem.getUser()) + "";
+         return defectMgr.getNumIssues(atsUser) + "";
       }
       return "unhandled column";
    }

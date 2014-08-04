@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.util.widgets.role;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.client.review.role.Role;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

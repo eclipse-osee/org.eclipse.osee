@@ -26,17 +26,19 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.UserRole;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleError;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleValidator;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -433,13 +435,14 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
          for (UserRole item : roleMgr.getUserRoles()) {
+            IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(item.getUserId());
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                item.getRole().name(),
-               item.getUser().getName(),
-               item.getHoursSpentStr(),
-               defectMgr.getNumMajor(item.getUser()) + "",
-               defectMgr.getNumMinor(item.getUser()) + "",
-               defectMgr.getNumIssues(item.getUser()) + ""}));
+               atsUser.getName(),
+               AtsUtilCore.doubleToI18nString(item.getHoursSpent(), true),
+               defectMgr.getNumMajor(atsUser) + "",
+               defectMgr.getNumMinor(atsUser) + "",
+               defectMgr.getNumIssues(atsUser) + ""}));
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
