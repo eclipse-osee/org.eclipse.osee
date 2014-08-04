@@ -22,21 +22,30 @@ public class DispoSetDescriptorData {
 
    private String name;
    private String importPath;
+   private String dispoType;
 
    public String getName() {
       return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
    }
 
    public String getImportPath() {
       return importPath;
    }
 
+   public String getDispoType() {
+      return dispoType;
+   }
+
    public void setImportPath(String importPath) {
       this.importPath = importPath;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void setDispoType(String dispoType) {
+      this.dispoType = dispoType;
    }
 
 }

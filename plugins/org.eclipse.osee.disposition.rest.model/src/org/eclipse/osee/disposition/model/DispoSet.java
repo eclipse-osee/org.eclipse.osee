@@ -25,4 +25,6 @@ public interface DispoSet extends Identifiable<String> {
    JSONArray getNotesList();
 
    String getImportState();
+
+   DispoConfig getDispoConfig();
 }

@@ -12,6 +12,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSetData;
@@ -55,8 +56,29 @@ public class DispoDataFactory {
       newSet.setImportPath(descriptor.getImportPath());
       newSet.setImportState("NONE");
       newSet.setNotesList(new JSONArray());
+      newSet.setDispoConfig(buildDispoConfigFromType(descriptor.getDispoType()));
 
       return newSet;
+   }
+
+   private DispoConfig buildDispoConfigFromType(String dispoType) {
+      DispoConfig toReturn = new DispoConfig();
+      if (dispoType.equalsIgnoreCase("testScript")) {
+         toReturn.setName("Test Script");
+         toReturn.setPeerNotes("Develop Notes");
+         toReturn.setCustomerNotes("Customer Notes");
+         toReturn.setResolutionTitle("PCR");
+         toReturn.setResolutionType("PCR Type");
+         toReturn.setType("");
+      } else {
+         toReturn.setName("Code Method");
+         toReturn.setPeerNotes("Develop Notes");
+         toReturn.setCustomerNotes("Customer Notes");
+         toReturn.setResolutionTitle("Coverage Method Type");
+         toReturn.setResolutionType("Coverage Method");
+         toReturn.setType("");
+      }
+      return toReturn;
    }
 
    public void initDispoItem(DispoItemData itemToInit) {

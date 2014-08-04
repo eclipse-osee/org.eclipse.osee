@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.logger.Log;
 
@@ -19,12 +20,14 @@ import org.eclipse.osee.logger.Log;
 public class DispoResolutionValidator {
 
    private Log logger;
+   private String resolutionRegex;
 
    public void setLogger(Log logger) {
       this.logger = logger;
    }
 
-   public void start() {
+   public void start(Map<String, Object> properties) {
+      resolutionRegex = (String) properties.get("TestScriptResolution");
       logger.trace("Starting ResolutionValidator...");
    }
 
@@ -35,7 +38,7 @@ public class DispoResolutionValidator {
    public boolean validate(DispoAnnotationData annotation) {
       String pcr = annotation.getResolution().toUpperCase().trim();
       boolean isValid = false;
-      if (pcr.matches("^\\s*[a-zA-Z]{1,}\\s*\\d{1,}$")) {
+      if (pcr.matches(resolutionRegex)) {
          isValid = true;
       }
 

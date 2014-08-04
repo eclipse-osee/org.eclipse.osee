@@ -5,4 +5,5 @@
       <provide interface="org.eclipse.osee.disposition.rest.internal.DispoResolutionValidator"/>
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <property name="TestScriptResolution" type="String" value="^[a-zA-Z]\d+$"/>
 </scr:component>

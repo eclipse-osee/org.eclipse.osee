@@ -25,6 +25,7 @@ public final class DispoConstants {
    public static final IArtifactType DispoSet = TokenFactory.createArtifactType(0x0000000000000327, "Disposition Set");
    public static final IArtifactType DispoItem = TokenFactory.createArtifactType(0x0000000000000328, "Dispositionable Item");
 
+   public static final IAttributeType DispoConfig= TokenFactory.createAttributeType(0x1000000000000395L, "dispo.Dispo Config");
    public static final IAttributeType ImportPath= TokenFactory.createAttributeType(0x1000000000000389L, "dispo.Import Path");
    public static final IAttributeType ImportState= TokenFactory.createAttributeType(0x3000000000000196L, "dispo.Import State");
    public static final IAttributeType DispoAnnotationsJson = TokenFactory.createAttributeType(0x1000000000000386L, "dispo.Annotations JSON");

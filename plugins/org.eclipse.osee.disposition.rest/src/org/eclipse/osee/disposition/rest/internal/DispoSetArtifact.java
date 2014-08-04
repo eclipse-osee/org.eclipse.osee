@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -18,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
+import com.google.gson.Gson;
 
 /**
  * @author Angel Avila
@@ -67,5 +69,11 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet, 
    @Override
    public String getImportState() {
       return artifact.getSoleAttributeAsString(DispoConstants.ImportState, "NOT_SET");
+   }
+
+   @Override
+   public DispoConfig getDispoConfig() {
+      Gson gson = new Gson();
+      return gson.fromJson(artifact.getSoleAttributeAsString(DispoConstants.DispoConfig, "{}"), DispoConfig.class);
    }
 }
