@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import org.eclipse.osee.orcs.rest.internal.search.dsl.DslTranslatorImplTest;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDslTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateHandlerTest;
@@ -26,7 +25,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   DslTranslatorImplTest.class,
    SearchDslTest.class,
    AttributeTypePredicateHandlerTest.class,
    ExistsTypePredicateHandlerTest.class,

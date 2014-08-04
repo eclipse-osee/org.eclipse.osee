@@ -35,14 +35,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -515,8 +512,8 @@ public class ArtifactQuery {
    public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
       QueryBuilderArtifact queryBuilder = createQueryBuilder(branch);
       queryBuilder.includeDeleted(deletionFlag.areDeletedAllowed());
-      QueryOption matchCase = CaseType.getCaseType(isCaseSensitive);
-      QueryOption matchWordOrder = TokenOrderType.getTokenOrderType(isMatchWordOrder);
+      QueryOption matchCase = QueryOption.getCaseType(isCaseSensitive);
+      QueryOption matchWordOrder = QueryOption.getTokenOrderType(isMatchWordOrder);
       Collection<IAttributeType> typesToSearch =
          attributeTypes.length == 0 ? Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
       queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
@@ -539,13 +536,13 @@ public class ArtifactQuery {
       QueryBuilderArtifact queryBuilder = createQueryBuilder(searchRequest.getBranch());
       SearchOptions options = searchRequest.getOptions();
       queryBuilder.includeDeleted(options.getDeletionFlag().areDeletedAllowed());
-      QueryOption matchCase = CaseType.getCaseType(options.isCaseSensitive());
-      QueryOption matchWordOrder = TokenOrderType.getTokenOrderType(options.isMatchWordOrder());
-      QueryOption matchExact = TokenDelimiterMatch.ANY;
+      QueryOption matchCase = QueryOption.getCaseType(options.isCaseSensitive());
+      QueryOption matchWordOrder = QueryOption.getTokenOrderType(options.isMatchWordOrder());
+      QueryOption matchExact = QueryOption.TOKEN_DELIMITER__ANY;
       if (options.isExactMatch()) {
-         matchCase = CaseType.MATCH_CASE;
-         matchWordOrder = TokenOrderType.MATCH_ORDER;
-         matchExact = TokenDelimiterMatch.EXACT;
+         matchCase = QueryOption.CASE__MATCH;
+         matchWordOrder = QueryOption.TOKEN_MATCH_ORDER__MATCH;
+         matchExact = QueryOption.TOKEN_DELIMITER__EXACT;
       }
 
       Collection<IAttributeType> typesToSearch =

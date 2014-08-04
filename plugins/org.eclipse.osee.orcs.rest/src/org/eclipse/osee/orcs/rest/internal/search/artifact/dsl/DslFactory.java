@@ -37,10 +37,6 @@ public class DslFactory {
       return builder;
    }
 
-   public static DslTranslator createTranslator() {
-      return new DslTranslatorImpl_V1();
-   }
-
    public static Map<SearchMethod, PredicateHandler> getHandlers() {
       Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
       handlers.put(SearchMethod.IDS, new IdsPredicateHandler());

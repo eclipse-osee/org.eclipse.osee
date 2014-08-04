@@ -177,8 +177,7 @@ public final class ActionResource {
       }
       if (!Strings.isValid(results)) {
          for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.AtsId, AtsAttributeTypes.LegacyPcrId)) {
-            ResultSet<ArtifactReadable> legacyQueryResults =
-               atsServer.getQuery().and(attrType, org.eclipse.osee.framework.core.enums.Operator.EQUAL, searchId).getResults();
+            ResultSet<ArtifactReadable> legacyQueryResults = atsServer.getQuery().and(attrType, searchId).getResults();
             if (legacyQueryResults.size() == 1) {
                results =
                   atsServer.getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(), "Action - " + searchId,

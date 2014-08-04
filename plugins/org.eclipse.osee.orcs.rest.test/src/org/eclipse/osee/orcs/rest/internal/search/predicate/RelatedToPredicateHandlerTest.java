@@ -14,18 +14,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.RelatedToPredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -55,10 +52,8 @@ public class RelatedToPredicateHandlerTest {
    @Test
    public void testRelatedToLocalIds() throws OseeCoreException {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
-      List<SearchFlag> emptySearchFlags = Collections.emptyList();
       Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags,
-            TokenDelimiterMatch.ANY, Arrays.asList("4", "5"));
+         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
       verify(builder, times(2)).andRelatedToLocalIds(rtsCaptor.capture(), idsCaptor.capture());
       List<IRelationTypeSide> rts = rtsCaptor.getAllValues();
@@ -74,10 +69,9 @@ public class RelatedToPredicateHandlerTest {
    @Test(expected = UnsupportedOperationException.class)
    public void testUnsupportedOperation() throws OseeCoreException {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
-      List<SearchFlag> emptySearchFlags = Collections.emptyList();
       Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), SearchOp.EQUALS, emptySearchFlags,
-            TokenDelimiterMatch.ANY, Arrays.asList(GUID.create()));
+         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), Arrays.asList(GUID.create()),
+            QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
    }
 

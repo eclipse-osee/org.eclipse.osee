@@ -31,7 +31,6 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
-import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -112,17 +111,17 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public int getCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
-      SearchResponse result = performSearch(RequestType.COUNT, OutputFormat.XML, branch, predicates, options);
+      SearchResponse result = performSearch(RequestType.COUNT, branch, predicates, options);
       return result.getTotal();
    }
 
    @Override
    public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
-      SearchResponse result = performSearch(request, OutputFormat.XML, branch, predicates, options);
+      SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   private SearchResponse performSearch(RequestType requestType, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       int fromTx = 0;
       if (options.isHistorical()) {
          fromTx = options.getFromTransaction();
@@ -133,9 +132,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          includeDeleted = true;
       }
 
-      SearchRequest params =
-         new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
-            requestType.name().toLowerCase(), fromTx, includeDeleted);
+      SearchRequest params = new SearchRequest(branch.getUuid(), predicates, requestType, fromTx, includeDeleted);
 
       JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getUuid());
       try {

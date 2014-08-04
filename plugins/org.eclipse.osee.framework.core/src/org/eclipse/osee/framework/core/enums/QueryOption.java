@@ -13,7 +13,40 @@ package org.eclipse.osee.framework.core.enums;
 /**
  * @author John Misinco
  */
-public interface QueryOption {
+public enum QueryOption {
+   CASE__MATCH,
+   CASE__IGNORE,
 
-   void accept(OptionVisitor visitor);
+   // these are used for attribute and relation existence
+   EXISTANCE__EXISTS,
+   EXISTANCE__NOT_EXISTS,
+
+   TOKEN_COUNT__MATCH,
+   TOKEN_COUNT__IGNORE,
+
+   // how to tokenize the search
+   TOKEN_DELIMITER__EXACT,
+   TOKEN_DELIMITER__WHITESPACE,
+   TOKEN_DELIMITER__ANY,
+
+   // matching the token order
+   TOKEN_MATCH_ORDER__ANY,
+   TOKEN_MATCH_ORDER__MATCH;
+
+   public static QueryOption getTokenOrderType(boolean matchOrder) {
+      return matchOrder ? TOKEN_MATCH_ORDER__MATCH : TOKEN_MATCH_ORDER__ANY;
+   }
+
+   public static boolean isMatchTokenCount(QueryOption... options) {
+      for (QueryOption option : options) {
+         if (option == TOKEN_COUNT__MATCH) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public static QueryOption getCaseType(boolean isCaseSensitive) {
+      return isCaseSensitive ? CASE__MATCH : CASE__IGNORE;
+   }
 }

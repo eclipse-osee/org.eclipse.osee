@@ -11,21 +11,14 @@
 package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -39,78 +32,19 @@ public class AttributeTypePredicateHandler implements PredicateHandler {
       if (predicate.getType() != SearchMethod.ATTRIBUTE_TYPE) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.ATTRIBUTE_TYPE);
       }
-      List<SearchFlag> flags = predicate.getFlags();
       List<String> typeParameters = predicate.getTypeParameters();
       Collection<IAttributeType> attributeTypes = PredicateHandlerUtil.getIAttributeTypes(typeParameters);
-      SearchOp op = predicate.getOp();
       Collection<String> values = predicate.getValues();
       Conditions.checkNotNull(values, "values");
 
-      if (!containsAny(Collections.singleton(op), SearchOp.GREATER_THAN, SearchOp.LESS_THAN)) {
-         CaseType ct = getCaseType(flags);
-         TokenOrderType orderType = getTokenOrderType(flags);
-         MatchTokenCountType countType = getMatchTokenCountType(flags);
-         if (values.size() == 1) {
-            builder =
-               builder.and(attributeTypes, values.iterator().next(), predicate.getDelimiter(), ct, orderType, countType);
-         } else {
-            for (IAttributeType type : attributeTypes) {
-               builder = builder.and(type, getOperator(op), values);
-            }
-         }
+      if (values.size() == 1) {
+         builder = builder.and(attributeTypes, values.iterator().next(), predicate.getOptions());
       } else {
-         Operator operator = getOperator(op);
          for (IAttributeType type : attributeTypes) {
-            builder = builder.and(type, operator, values);
+            builder = builder.and(type, values, predicate.getOptions());
          }
       }
       return builder;
-   }
-
-   private boolean containsAny(Collection<?> data, Object... values) {
-      boolean result = false;
-      for (Object object : values) {
-         if (data.contains(object)) {
-            result = true;
-            break;
-         }
-      }
-      return result;
-   }
-
-   private CaseType getCaseType(List<SearchFlag> flags) {
-      if (flags != null && flags.contains(SearchFlag.MATCH_CASE)) {
-         return CaseType.MATCH_CASE;
-      }
-      return CaseType.IGNORE_CASE;
-   }
-
-   private TokenOrderType getTokenOrderType(List<SearchFlag> flags) {
-      if (flags != null && flags.contains(SearchFlag.MATCH_TOKEN_ORDER)) {
-         return TokenOrderType.MATCH_ORDER;
-      }
-      return TokenOrderType.ANY_ORDER;
-   }
-
-   private MatchTokenCountType getMatchTokenCountType(List<SearchFlag> flags) {
-      if (flags != null && flags.contains(SearchFlag.MATCH_TOKEN_COUNT)) {
-         return MatchTokenCountType.MATCH_TOKEN_COUNT;
-      }
-      return MatchTokenCountType.IGNORE_TOKEN_COUNT;
-   }
-
-   //   EQUAL("="), // Exact Match as in Strings.equals
-   //   NOT_EQUAL("<>"), // inverse of exact match - !Strings.equals
-   //   LESS_THAN("<"),
-   //   GREATER_THAN(">");
-   private Operator getOperator(SearchOp op) {
-      if (op.equals(SearchOp.GREATER_THAN)) {
-         return Operator.GREATER_THAN;
-      }
-      if (op.equals(SearchOp.LESS_THAN)) {
-         return Operator.LESS_THAN;
-      }
-      return Operator.EQUAL;
    }
 
 }

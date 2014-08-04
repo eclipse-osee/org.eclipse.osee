@@ -13,14 +13,9 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -54,21 +49,8 @@ public class OrcsAttributeSearchTest {
    }
 
    @Test
-   public void testNameAttributeNotEqualSearch() throws OseeCoreException {
-      QueryBuilder builder =
-         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.NOT_EQUAL, "User Groups");
-
-      ResultSet<ArtifactReadable> resultSet = builder.getResults();
-
-      for (ArtifactReadable artifact : resultSet) {
-         assertTrue(artifact.getLocalId() != 7);
-      }
-   }
-
-   @Test
    public void testNameAttributeEqualSearch() throws OseeCoreException {
-      QueryBuilder builder =
-         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Name, "User Groups");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
@@ -85,8 +67,8 @@ public class OrcsAttributeSearchTest {
    public void testWTCAttributeEqualSearch() throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent, "commands",
-            TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, CaseType.IGNORE_CASE,
-            MatchTokenCountType.IGNORE_TOKEN_COUNT);
+            QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
+            QueryOption.TOKEN_COUNT__IGNORE);
 
       assertEquals(3, builder.getCount());
 
@@ -98,8 +80,7 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testBooleanAttributeSearch() throws OseeCoreException {
-      QueryBuilder builder =
-         queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, Operator.EQUAL, "true");
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.DefaultGroup, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(1, resultSet.size());

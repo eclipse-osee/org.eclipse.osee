@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -22,6 +21,7 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IdsPredicat
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -55,7 +55,7 @@ public class IdsPredicateHandlerTest {
       //all digits get treated as artId
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
       handler.handle(builder, testPredicate);
       verify(builder).andLocalIds(localIdsCaptor.capture());
       Assert.assertEquals(1, localIdsCaptor.getValue().size());
@@ -70,14 +70,14 @@ public class IdsPredicateHandlerTest {
       //all digits get treated as artId
       String id1 = GUID.create();
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
       IdsPredicateHandler handler = new IdsPredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null, null, null, null);
+      Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null);
       handler.handle(builder, testPredicate);
    }
 
@@ -86,7 +86,7 @@ public class IdsPredicateHandlerTest {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);
       handler.handle(builder, testPredicate);
    }
 }

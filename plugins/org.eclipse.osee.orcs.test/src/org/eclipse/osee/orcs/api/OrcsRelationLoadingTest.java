@@ -19,7 +19,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -93,8 +92,7 @@ public class OrcsRelationLoadingTest {
 
    private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
       QueryBuilder builder =
-         queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, Operator.EQUAL,
-            "Design Constraints");
+         queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, "Design Constraints");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(1, resultSet.size());

@@ -21,12 +21,9 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -137,8 +134,8 @@ public class OseeClientQueryTest {
    public void searchForArtifactWithActionInName() throws OseeCoreException {
       final int EXPECTED_RESULTS = 43;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).and(CoreAttributeTypes.Name, "SAW", CaseType.IGNORE_CASE,
-            TokenOrderType.MATCH_ORDER, TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT).getSearchResult(
+         createClient.createQueryBuilder(COMMON).and(CoreAttributeTypes.Name, "SAW", QueryOption.CASE__IGNORE,
+            QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_COUNT__IGNORE).getSearchResult(
             RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }

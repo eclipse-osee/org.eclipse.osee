@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.rest.model.search.artifact;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -23,25 +23,17 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class Predicate {
    private SearchMethod type;
    private List<String> typeParameters;
-   private SearchOp op;
-   private List<SearchFlag> flags;
    private List<String> values;
-   private TokenDelimiterMatch delimiter;
+   private QueryOption[] options;
 
    public Predicate() {
    }
 
-   public Predicate(SearchMethod type, List<String> typeParameters, SearchOp op, List<SearchFlag> flags, TokenDelimiterMatch delimiter, List<String> values) {
+   public Predicate(SearchMethod type, List<String> typeParameters, List<String> values, QueryOption... options) {
       this.type = type;
       this.typeParameters = typeParameters;
-      this.op = op;
-      this.flags = flags;
       this.values = values;
-      this.delimiter = delimiter;
-   }
-
-   public void setDelimiter(TokenDelimiterMatch delimiter) {
-      this.delimiter = delimiter;
+      this.options = options;
    }
 
    public void setType(SearchMethod type) {
@@ -50,14 +42,6 @@ public class Predicate {
 
    public void setTypeParameters(List<String> typeParameters) {
       this.typeParameters = typeParameters;
-   }
-
-   public void setOp(SearchOp op) {
-      this.op = op;
-   }
-
-   public void setFlags(List<SearchFlag> flags) {
-      this.flags = flags;
    }
 
    public void setValues(List<String> values) {
@@ -72,27 +56,23 @@ public class Predicate {
       return typeParameters;
    }
 
-   public SearchOp getOp() {
-      return op;
-   }
-
-   public List<SearchFlag> getFlags() {
-      return flags;
-   }
-
    public List<String> getValues() {
       return values;
    }
 
-   public TokenDelimiterMatch getDelimiter() {
-      return delimiter;
+   public QueryOption[] getOptions() {
+      return options;
+   }
+
+   public void setOptions(QueryOption[] options) {
+      this.options = options;
    }
 
    @Override
    public String toString() {
-      return String.format("type:[%s],typeParameters:[%s],op[%s],flags[%s],values[%s],delimiter[%s]", type,
-         Collections.toString(",", typeParameters), op, Collections.toString(",", flags),
-         Collections.toString(",", values), delimiter);
+      return String.format("type:[%s],typeParameters:[%s],values[%s],options[%s]", type,
+         Collections.toString(",", typeParameters), Collections.toString(",", values),
+         Collections.toString(",", options));
    }
 
 }

@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 
 import java.io.InputStream;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.orcs.db.internal.search.tagger.StreamMatcher;
@@ -29,14 +27,13 @@ public class SecondPassMatcher implements StreamMatcher {
       this.processorFactory = processorFactory;
    }
 
-   private String normalizeCase(CaseType caseType, String token) {
-      return caseType.isCaseSensitive() ? token : token.toLowerCase();
+   private String normalizeCase(QueryOption caseType, String token) {
+      return caseType == QueryOption.CASE__MATCH ? token : token.toLowerCase();
    }
 
    @Override
    public List<MatchLocation> findInStream(InputStream inputStream, String toSearch, boolean findAllMatchLocations, QueryOption... options) {
-      CheckedOptions checkedOptions = new CheckedOptions();
-      checkedOptions.accept(options);
+      CheckedOptions checkedOptions = new CheckedOptions(options);
 
       TokenOrderProcessor processor = processorFactory.createTokenProcessor(checkedOptions);
 
@@ -67,7 +64,7 @@ public class SecondPassMatcher implements StreamMatcher {
          while (inputStreamScanner.hasNext()) {
             ++numTokensProcessed;
 
-            if (numTokensProcessed > processor.getTotalTokensToMatch() && MatchTokenCountType.MATCH_TOKEN_COUNT == options.getCountType()) {
+            if (numTokensProcessed > processor.getTotalTokensToMatch() && QueryOption.TOKEN_COUNT__MATCH == options.getCountType()) {
                processor.getLocations().clear();
                break;
             }

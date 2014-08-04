@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -247,28 +246,18 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException {
-      Criteria criteria =
-         criteriaFactory.createAttributeCriteria(attributeType, operator, Collections.singleton(value));
-      return addAndCheck(getQueryData(), criteria);
-   }
-
-   @Override
-   public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
-      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, operator, values);
+   public QueryBuilder and(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createAttributeCriteria(attributeType, values, options);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
    public QueryBuilder and(IAttributeType attributeType, String value, QueryOption... options) throws OseeCoreException {
-      Criteria criteria =
-         criteriaFactory.createAttributeCriteria(Collections.singleton(attributeType), Collections.singleton(value),
-            options);
-      return addAndCheck(getQueryData(), criteria);
+      return and(Collections.singleton(attributeType), value, options);
    }
 
    @Override
-   public QueryBuilder and(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
+   public QueryBuilder and(Collection<IAttributeType> attributeTypes, String value, QueryOption... options) throws OseeCoreException {
       Criteria criteria =
          criteriaFactory.createAttributeCriteria(attributeTypes, Collections.singleton(value), options);
       return addAndCheck(getQueryData(), criteria);
@@ -282,7 +271,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andNameEquals(String artifactName) throws OseeCoreException {
-      return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+      return and(CoreAttributeTypes.Name, artifactName);
    }
 
    @Override

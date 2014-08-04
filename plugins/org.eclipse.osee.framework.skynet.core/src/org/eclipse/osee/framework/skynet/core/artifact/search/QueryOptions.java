@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 
 /**
  * @author John Misinco
@@ -22,14 +18,14 @@ import org.eclipse.osee.framework.core.enums.TokenOrderType;
 public final class QueryOptions {
 
    public static final QueryOption[] EXACT_MATCH_OPTIONS = {
-      CaseType.MATCH_CASE,
-      TokenOrderType.MATCH_ORDER,
-      TokenDelimiterMatch.EXACT,
-      MatchTokenCountType.MATCH_TOKEN_COUNT};
+      QueryOption.CASE__MATCH,
+      QueryOption.TOKEN_MATCH_ORDER__MATCH,
+      QueryOption.TOKEN_DELIMITER__EXACT,
+      QueryOption.TOKEN_COUNT__MATCH};
 
    public static final QueryOption[] CONTAINS_MATCH_OPTIONS = {
-      CaseType.IGNORE_CASE,
-      TokenOrderType.MATCH_ORDER,
-      TokenDelimiterMatch.ANY,
-      MatchTokenCountType.IGNORE_TOKEN_COUNT};
+      QueryOption.CASE__IGNORE,
+      QueryOption.TOKEN_MATCH_ORDER__MATCH,
+      QueryOption.TOKEN_DELIMITER__ANY,
+      QueryOption.TOKEN_COUNT__IGNORE};
 }

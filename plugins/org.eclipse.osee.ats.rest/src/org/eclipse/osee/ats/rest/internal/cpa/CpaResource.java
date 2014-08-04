@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -101,10 +100,9 @@ public final class CpaResource {
    public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
       List<IAtsCpaDecision> decisions = new ArrayList<IAtsCpaDecision>();
       QueryBuilder queryBuilder =
-         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ProgramUuid,
-            Operator.EQUAL, uuid);
+         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ProgramUuid, uuid);
       if (open != null) {
-         queryBuilder.and(AtsAttributeTypes.CurrentStateType, Operator.EQUAL,
+         queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));
       }
       for (ArtifactReadable art : queryBuilder.getResults()) {
@@ -182,7 +180,7 @@ public final class CpaResource {
    @Path("decision")
    public Response putDecision(final DecisionUpdate update) throws Exception {
       ResultSet<ArtifactReadable> results =
-         atsServer.getQuery().and(AtsAttributeTypes.AtsId, Operator.EQUAL, update.getUuids()).getResults();
+         atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getUuids()).getResults();
       IAtsChangeSet changes =
          atsServer.getStoreFactory().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (ArtifactReadable art : results) {

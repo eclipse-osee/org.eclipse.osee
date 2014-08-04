@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.db.internal.search.tagger.StreamMatcher;
 
 /**
@@ -28,7 +29,7 @@ public class MatcherFactory {
    private static final class TokenOrderProcessorFactoryImpl implements TokenOrderProcessorFactory {
       @Override
       public TokenOrderProcessor createTokenProcessor(CheckedOptions options) {
-         return options.getOrderType().isMatchOrder() ? new MatchTokenOrderProcessor() : new AnyTokenOrderProcessor();
+         return options.getOrderType() == QueryOption.TOKEN_MATCH_ORDER__MATCH ? new MatchTokenOrderProcessor() : new AnyTokenOrderProcessor();
       }
    }
 }

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -143,17 +142,11 @@ public interface QueryBuilder {
    QueryBuilder andNameEquals(String artifactName) throws OseeCoreException;
 
    /**
-    * Search criteria that finds an attribute of the given type with its current value relative to the given value based
-    * on the operator provided.
-    */
-   QueryBuilder and(IAttributeType attributeType, Operator operator, String value) throws OseeCoreException;
-
-   /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException;
+   QueryBuilder and(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based

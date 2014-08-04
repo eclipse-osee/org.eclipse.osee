@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
@@ -188,17 +187,12 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andNameEquals(String artifactName) {
-      return and(CoreAttributeTypes.Name, Operator.EQUAL, artifactName);
+      return and(CoreAttributeTypes.Name, artifactName);
    }
 
    @Override
-   public QueryBuilder and(IAttributeType attributeType, Operator operator, String value) {
-      return and(attributeType, operator, Collections.singleton(value));
-   }
-
-   @Override
-   public QueryBuilder and(IAttributeType attributeType, Operator operator, Collection<String> values) {
-      predicates.add(predicateFactory.createAttributeTypeSearch(Collections.singleton(attributeType), operator, values));
+   public QueryBuilder and(IAttributeType attributeType, Collection<String> values, QueryOption... options) {
+      predicates.add(predicateFactory.createAttributeTypeSearch(Collections.singleton(attributeType), values, options));
       return this;
    }
 

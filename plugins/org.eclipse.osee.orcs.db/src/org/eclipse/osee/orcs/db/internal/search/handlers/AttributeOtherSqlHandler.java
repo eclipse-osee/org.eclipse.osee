@@ -13,13 +13,15 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -34,10 +36,15 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
    private String artAlias2;
    private String txs2Alias2;
 
-   private String joinAlias;
-   private String value;
+   private String valueJoinAlias;
+   private AbstractJoinQuery valueJoinQuery;
 
-   private AbstractJoinQuery joinQuery;
+   private String typeJoinAlias;
+   private AbstractJoinQuery typeJoinQuery;
+
+   private Collection<String> values;
+   private boolean ignoreCase;
+   private Collection<IAttributeType> types;
 
    @Override
    public void setData(CriteriaAttributeOther criteria) {
@@ -46,15 +53,18 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      Collection<String> values = criteria.getValues();
-      if (values.size() == 1) {
-         this.value = values.iterator().next();
-      } else {
-         joinQuery = writer.writeCharJoin(values);
+      values = getValuesForSearch();
+      if (values.size() > 1) {
+         valueJoinQuery = writer.writeCharJoin(values);
+         valueJoinAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }
-      if (joinQuery != null && criteria.getOperator().isEquals()) {
-         joinAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
+
+      types = criteria.getAttributeTypes();
+      if (types.size() > 1) {
+         typeJoinQuery = writer.writeIdentifiableJoin(types);
+         typeJoinAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
+
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
 
@@ -69,50 +79,73 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       }
    }
 
+   private Collection<String> getValuesForSearch() {
+      List<String> copy = Lists.newArrayList(criteria.getValues());
+      ignoreCase = criteria.getOptions().contains(QueryOption.CASE__IGNORE);
+      if (ignoreCase) {
+         copy = Lists.transform(copy, new Function<String, String>() {
+
+            @Override
+            public String apply(String arg0) {
+               return arg0.toLowerCase();
+            }
+         });
+      }
+      return copy;
+   }
+
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      IAttributeType attributeType = criteria.getAttributeType();
-      Operator operator = criteria.getOperator();
+      Collection<IAttributeType> attributeTypes = criteria.getAttributeTypes();
 
-      if (attributeType != null) {
+      if (attributeTypes.size() == 1) {
          writer.write(attrAlias);
          writer.write(".attr_type_id = ?");
-         writer.addParameter(attributeType.getGuid());
+         writer.addParameter(attributeTypes.iterator().next().getGuid());
+      } else if (attributeTypes.size() > 1) {
+         writer.write(attrAlias);
+         writer.write(".attr_type_id = ");
+         writer.write(typeJoinAlias);
+         writer.write(".id");
+         writer.write(" AND ");
+         writer.write(typeJoinAlias);
+         writer.write(".query_id = ?");
+         writer.addParameter(typeJoinQuery.getQueryId());
       }
 
-      if (value != null) {
+      if (values.size() == 1) {
+         String value = values.iterator().next();
          writer.write(" AND ");
+         if (ignoreCase) {
+            writer.write("lower(");
+         }
          writer.write(attrAlias);
-         writer.write(".value ");
+         writer.write(".value");
+         String ending = ignoreCase ? ") " : " ";
+         writer.write(ending);
          if (value.contains("%")) {
-            if (operator.isNotEquals()) {
-               writer.write(" NOT");
-            }
             writer.write(" LIKE ");
          } else {
-            writer.write(operator.toString());
+            writer.write("=");
          }
          writer.write(" ?");
          writer.addParameter(value);
       }
 
-      if (joinQuery != null) {
+      if (valueJoinQuery != null) {
          writer.write(" AND ");
-         if (operator.isEquals()) {
-            writer.write(attrAlias);
-            writer.write(".value = ");
-            writer.write(joinAlias);
-            writer.write(".id AND ");
-            writer.write(joinAlias);
-            writer.write(".query_id = ?");
-         } else {
-            writer.write("NOT EXISTS (SELECT 1 FROM ");
-            writer.write(TableEnum.CHAR_JOIN_TABLE.getName());
-            writer.write(" WHERE id = ");
-            writer.write(attrAlias);
-            writer.write(".value AND query_id = ?)");
+         if (ignoreCase) {
+            writer.write("lower(");
          }
-         writer.addParameter(joinQuery.getQueryId());
+         writer.write(attrAlias);
+         writer.write(".value");
+         String ending = ignoreCase ? ") = " : " = ";
+         writer.write(ending);
+         writer.write(valueJoinAlias);
+         writer.write(".id AND ");
+         writer.write(valueJoinAlias);
+         writer.write(".query_id = ?");
+         writer.addParameter(valueJoinQuery.getQueryId());
       }
 
       List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);

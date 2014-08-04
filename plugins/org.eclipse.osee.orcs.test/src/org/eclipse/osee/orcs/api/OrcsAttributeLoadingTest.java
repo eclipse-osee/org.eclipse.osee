@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -78,7 +77,7 @@ public class OrcsAttributeLoadingTest {
    @Test
    public void testLoadWordTemplateContentAttributes() throws OseeCoreException {
       QueryBuilder builder =
-         query.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, Operator.EQUAL, "Haptic Constraints");
+         query.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

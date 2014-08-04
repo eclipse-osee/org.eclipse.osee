@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -30,18 +30,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public final class SecondPassScanner {
 
    private InputStream input;
-   private final TokenDelimiterMatch delimiter;
+   private final QueryOption delimiter;
    private String next;
    private int start, end = -1, bytesRead = 0;
    private boolean eof = false;
    private final StringBuilder buffer = new StringBuilder();
 
-   public SecondPassScanner(InputStream input, TokenDelimiterMatch delimiter) {
+   public SecondPassScanner(InputStream input, QueryOption delimiter) {
       this.input = input;
       this.delimiter = delimiter;
    }
 
-   public SecondPassScanner(String input, TokenDelimiterMatch delimiter) {
+   public SecondPassScanner(String input, QueryOption delimiter) {
       try {
          this.input = Lib.stringToInputStream(input);
       } catch (UnsupportedEncodingException ex) {
@@ -97,7 +97,7 @@ public final class SecondPassScanner {
    private boolean processChar(int read) {
       boolean done = false;
       switch (delimiter) {
-         case ANY:
+         case TOKEN_DELIMITER__ANY:
             if (Character.isLetterOrDigit(read)) {
                buffer.append((char) read);
             } else {
@@ -107,14 +107,14 @@ public final class SecondPassScanner {
                }
             }
             break;
-         case EXACT:
+         case TOKEN_DELIMITER__EXACT:
             if (read != -1) {
                end = bytesRead;
                buffer.append((char) read);
             }
             done = true;
             break;
-         case WHITESPACE:
+         case TOKEN_DELIMITER__WHITESPACE:
             if (Character.isWhitespace((char) read) || read == -1) {
                if (buffer.length() != 0) {
                   end = start + buffer.length();

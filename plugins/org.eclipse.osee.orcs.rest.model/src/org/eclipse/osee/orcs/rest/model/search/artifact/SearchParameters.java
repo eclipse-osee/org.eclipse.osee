@@ -22,9 +22,7 @@ public interface SearchParameters {
 
    List<Predicate> getPredicates();
 
-   String getAlt();
-
-   String getFields();
+   RequestType getRequestType();
 
    boolean isIncludeDeleted();
 

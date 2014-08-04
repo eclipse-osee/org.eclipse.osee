@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -236,6 +238,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
       for (Number id : ids) {
          joinQuery.add(id.longValue());
+      }
+      addJoin(joinQuery);
+      return joinQuery;
+   }
+
+   public IdJoinQuery writeIdentifiableJoin(Collection<? extends Identifiable<Long>> ids) {
+      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
+      for (Identity<Long> id : ids) {
+         joinQuery.add(id.getGuid());
       }
       addJoin(joinQuery);
       return joinQuery;

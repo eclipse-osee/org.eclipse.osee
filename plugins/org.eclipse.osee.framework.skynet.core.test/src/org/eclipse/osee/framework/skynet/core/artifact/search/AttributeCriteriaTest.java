@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.junit.Test;
@@ -36,17 +37,12 @@ public class AttributeCriteriaTest {
       List<String> values = Arrays.asList("true", "false");
       criteria = new AttributeCriteria(CoreAttributeTypes.Active, values);
       criteria.addToQueryBuilder(builder);
-      verify(builder).and(CoreAttributeTypes.Active, Operator.EQUAL, values);
+      verify(builder).and(CoreAttributeTypes.Active, values);
 
       reset(builder);
-      criteria = new AttributeCriteria(CoreAttributeTypes.Active, "true", Operator.LESS_THAN);
+      criteria = new AttributeCriteria(CoreAttributeTypes.Active, "true", QueryOption.TOKEN_MATCH_ORDER__ANY);
       criteria.addToQueryBuilder(builder);
-      verify(builder).and(CoreAttributeTypes.Active, Operator.LESS_THAN, "true");
-
-      reset(builder);
-      criteria = new AttributeCriteria(CoreAttributeTypes.Active, "true", TokenOrderType.ANY_ORDER);
-      criteria.addToQueryBuilder(builder);
-      verify(builder).and(CoreAttributeTypes.Active, "true", TokenOrderType.ANY_ORDER);
+      verify(builder).and(CoreAttributeTypes.Active, "true", QueryOption.TOKEN_MATCH_ORDER__ANY);
 
       reset(builder);
       criteria = new AttributeCriteria(CoreAttributeTypes.Active, "true");

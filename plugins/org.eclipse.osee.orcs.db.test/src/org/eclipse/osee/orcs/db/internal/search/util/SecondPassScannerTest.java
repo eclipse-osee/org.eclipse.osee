@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.db.internal.search.SearchAsserts;
@@ -33,9 +33,9 @@ public class SecondPassScannerTest {
 
    private final String input;
    private final List<Pair<String, MatchLocation>> expectedMatches;
-   private final TokenDelimiterMatch delimiter;
+   private final QueryOption delimiter;
 
-   public SecondPassScannerTest(String input, List<Pair<String, MatchLocation>> expectedMatches, TokenDelimiterMatch delimiter) {
+   public SecondPassScannerTest(String input, List<Pair<String, MatchLocation>> expectedMatches, QueryOption delimiter) {
       this.input = input;
       this.expectedMatches = expectedMatches;
       this.delimiter = delimiter;
@@ -65,27 +65,27 @@ public class SecondPassScannerTest {
       data.add(new Object[] {
          "What->does] .this. mean",
          getExpected(Arrays.asList("What", "does", "this", "mean"), 0, 4, 6, 10, 13, 17, 19, 23),
-         TokenDelimiterMatch.ANY});
+         QueryOption.TOKEN_DELIMITER__ANY});
       data.add(new Object[] {
          "Wh\ndo\rth. r",
          getExpected(Arrays.asList("Wh", "do", "th", "r"), 0, 2, 3, 5, 6, 8, 10, 11),
-         TokenDelimiterMatch.ANY});
+         QueryOption.TOKEN_DELIMITER__ANY});
       data.add(new Object[] {
          "Â ® …tags… the",
          getExpected(Arrays.asList("tags", "the"), 5, 9, 11, 14),
-         TokenDelimiterMatch.ANY});
+         QueryOption.TOKEN_DELIMITER__ANY});
       data.add(new Object[] {
          "What   does   this mean",
          getExpected(Arrays.asList("What", "does", "this", "mean"), 0, 4, 7, 11, 14, 18, 19, 23),
-         TokenDelimiterMatch.WHITESPACE});
+         QueryOption.TOKEN_DELIMITER__WHITESPACE});
       data.add(new Object[] {
          "at->do]",
          getExpected(Arrays.asList("a", "t", "-", ">", "d", "o", "]"), 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7),
-         TokenDelimiterMatch.EXACT});
+         QueryOption.TOKEN_DELIMITER__EXACT});
       data.add(new Object[] {
          "Â ® …ta]",
          getExpected(Arrays.asList(" ", " ", "t", "a", "]"), 1, 2, 3, 4, 5, 6, 6, 7, 7, 8),
-         TokenDelimiterMatch.EXACT});
+         QueryOption.TOKEN_DELIMITER__EXACT});
 
       return data;
    }

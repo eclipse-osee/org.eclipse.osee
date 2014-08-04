@@ -59,7 +59,7 @@ public class TypeEqualsPredicateHandlerTest {
 
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, values);
       handler.handle(builder, testPredicate);
 
       verify(builder).andTypeEquals(artifactTypesCaptor.capture());
@@ -74,7 +74,7 @@ public class TypeEqualsPredicateHandlerTest {
       String id2 = "45678";
       List<String> values = Arrays.asList(id1, id2);
 
-      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, values);
       handler.handle(builder, testPredicate);
 
       verify(builder).andTypeEquals(artifactTypesCaptor.capture());
@@ -89,7 +89,7 @@ public class TypeEqualsPredicateHandlerTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
-      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, null, null, null, null);
+      Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, null);
       handler.handle(builder, testPredicate);
    }
 
@@ -97,7 +97,7 @@ public class TypeEqualsPredicateHandlerTest {
    public void testBadSearchMethod() throws OseeCoreException {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);
       handler.handle(builder, testPredicate);
    }
 }

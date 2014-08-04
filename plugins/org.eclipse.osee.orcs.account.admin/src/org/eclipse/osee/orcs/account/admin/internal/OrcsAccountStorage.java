@@ -21,7 +21,6 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -105,7 +104,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, Operator.EQUAL, email).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).getResults();
       return getFactory().newAccountResultSet(results);
    }
 

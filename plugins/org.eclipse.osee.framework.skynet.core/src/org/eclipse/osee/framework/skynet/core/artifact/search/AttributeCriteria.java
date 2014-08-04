@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 
@@ -27,7 +27,6 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
    private final IAttributeType attributeType;
    private String value;
    private Collection<String> values;
-   private final Operator operator;
    private final QueryOption[] options;
 
    public IAttributeType getAttributeType() {
@@ -42,10 +41,6 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
       return values;
    }
 
-   public Operator getOperator() {
-      return operator;
-   }
-
    public QueryOption[] getOptions() {
       return options;
    }
@@ -57,33 +52,15 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * @param value to search;
     */
    public AttributeCriteria(IAttributeType attributeType, String value, QueryOption... options) {
-      this(attributeType, value, null, Operator.EQUAL, options);
+      this(attributeType, value, null, options);
    }
 
    /**
     * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
     * existence)
     */
-   public AttributeCriteria(IAttributeType attributeType) {
-      this(attributeType, null, null, Operator.EQUAL);
-   }
-
-   /**
-    * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal to
-    * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
-    * if the single value constructor was called. This search does not support the wildcard for multiple values. Throws
-    * OseeArgumentException values is empty or null
-    */
-   public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
-      this(attributeType, null, validate(values), Operator.EQUAL);
-   }
-
-   /**
-    * Constructor for search criteria that finds an attribute of the given type with its current value relative to the
-    * given value based on the operator provided.
-    */
-   public AttributeCriteria(IAttributeType attributeType, String value, Operator operator) {
-      this(attributeType, value, null, operator);
+   public AttributeCriteria(IAttributeType attributeType, QueryOption... options) {
+      this(attributeType, null, null, options);
    }
 
    /**
@@ -92,8 +69,8 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
     */
-   public AttributeCriteria(IAttributeType attributeType, Collection<String> values, Operator operator) throws OseeCoreException {
-      this(attributeType, null, validate(values), operator);
+   public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
+      this(attributeType, null, validate(values));
    }
 
    private static Collection<String> validate(Collection<String> values) throws OseeArgumentException {
@@ -103,10 +80,10 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
       return values;
    }
 
-   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, Operator operator, QueryOption... options) {
+   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, QueryOption... options) {
       this.attributeType = attributeType;
 
-      if (values == null) {
+      if (!Conditions.hasValues(values)) {
          this.value = value;
       } else {
          if (values.size() == 1) {
@@ -115,9 +92,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
             this.values = values;
          }
       }
-      this.operator = operator;
-
-      if (this.value != null && operator == Operator.EQUAL && options.length == 0) {
+      if (this.value != null && options.length == 0) {
          this.options = QueryOptions.EXACT_MATCH_OPTIONS;
       } else {
          this.options = options;
@@ -133,8 +108,6 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
          strB.append("*");
       }
       strB.append(" ");
-      strB.append(operator);
-      strB.append(" ");
       if (value != null) {
          strB.append(value);
       }
@@ -145,13 +118,9 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
    @Override
    public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
       if (Strings.isValid(getValue())) {
-         if (getOperator() == Operator.EQUAL) {
-            builder.and(getAttributeType(), getValue(), getOptions());
-         } else {
-            builder.and(getAttributeType(), getOperator(), getValue());
-         }
+         builder.and(getAttributeType(), getValue(), getOptions());
       } else if (getValues() != null) {
-         builder.and(getAttributeType(), getOperator(), getValues());
+         builder.and(getAttributeType(), getValues(), getOptions());
       } else {
          builder.andExists(getAttributeType());
       }

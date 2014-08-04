@@ -19,12 +19,11 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -66,11 +65,8 @@ public class SearchDslTest {
       when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
 
       Predicate predicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), SearchOp.EQUALS, null, null,
-            Arrays.asList("AtsAdmin"));
-      SearchRequest params =
-         new SearchRequest(BRANCH.getUuid(), Arrays.asList(predicate), Strings.EMPTY_STRING, Strings.EMPTY_STRING, 0,
-            false);
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), Arrays.asList("AtsAdmin"));
+      SearchRequest params = new SearchRequest(BRANCH.getUuid(), Arrays.asList(predicate), RequestType.IDS, 0, false);
 
       dsl.build(queryFactory, params);
 

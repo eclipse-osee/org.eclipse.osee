@@ -17,18 +17,15 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -89,15 +86,16 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    private static final Criteria GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
    private static final Criteria IDS = new CriteriaArtifactIds(asList(1, 2, 3, 4, 5));
    private static final Criteria TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
-   private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(CoreAttributeTypes.Name, asList("Hello"),
-      Operator.EQUAL);
+   private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(Collections.singleton(CoreAttributeTypes.Name),
+      asList("Hello"));
    private static final Criteria ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(asList(CoreAttributeTypes.Name));
    private static final Criteria REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
       CoreRelationTypes.Default_Hierarchical__Child);
 
    private static final Criteria ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, asList(
       CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, QUICK_SEARCH_VALUE,
-      TokenDelimiterMatch.ANY, TokenOrderType.MATCH_ORDER, MatchTokenCountType.IGNORE_TOKEN_COUNT, CaseType.MATCH_CASE);
+      QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
+      QueryOption.CASE__MATCH);
 
    private static final Criteria RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
       asList(45, 61));

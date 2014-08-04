@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,12 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
@@ -41,12 +37,14 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaFactory {
 
+   private static final int MAX_EXACT_SEARCH_LEN = 4000;
    private final ArtifactTypes artifactTypeCache;
    private final AttributeTypes attributeTypeCache;
 
@@ -87,19 +85,37 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
-   public Criteria createAttributeCriteria(IAttributeType attributeType, Operator operator, Collection<String> values) throws OseeCoreException {
-      if (operator == Operator.EQUAL) {
-         return createAttributeCriteria(Collections.singleton(attributeType), values, CaseType.MATCH_CASE,
-            TokenOrderType.MATCH_ORDER, TokenDelimiterMatch.EXACT, MatchTokenCountType.MATCH_TOKEN_COUNT);
+   public Criteria createAttributeCriteria(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException {
+      return createAttributeCriteria(Collections.singleton(attributeType), values, options);
+   }
+
+   public Criteria createAttributeCriteria(Collection<IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
+      if (isExactMatch(options) && checkSearchLength(values)) {
+         return new CriteriaAttributeOther(attributeTypes, values, options);
       } else {
-         return new CriteriaAttributeOther(attributeType, values, operator);
+         Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
+         boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+         return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
       }
    }
 
-   public Criteria createAttributeCriteria(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
-      Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
-      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
+   private boolean checkSearchLength(Collection<String> values) {
+      for (String value : values) {
+         if (value.length() > MAX_EXACT_SEARCH_LEN) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   private boolean isExactMatch(QueryOption[] options) {
+      ArrayList<QueryOption> optionsList = Lists.newArrayList(options);
+      optionsList.removeAll(CriteriaAttributeOther.VALID_OPTIONS);
+      if (optionsList.size() == 0) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
    public Criteria createArtifactTypeCriteria(Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {

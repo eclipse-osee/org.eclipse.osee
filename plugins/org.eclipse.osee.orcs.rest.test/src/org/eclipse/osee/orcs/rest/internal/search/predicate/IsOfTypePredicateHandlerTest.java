@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.predicate;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,6 +23,7 @@ import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.IsOfTypePre
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -54,7 +54,7 @@ public class IsOfTypePredicateHandlerTest {
 
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, values);
       handler.handle(builder, testPredicate);
       verify(builder).andIsOfType(artifactTypesCaptor.capture());
       Assert.assertEquals(1, artifactTypesCaptor.getValue().size());
@@ -69,7 +69,7 @@ public class IsOfTypePredicateHandlerTest {
       String id2 = "45678";
       List<String> values = Arrays.asList(id1, id2);
 
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, values);
       handler.handle(builder, testPredicate);
       verify(builder).andIsOfType(artifactTypesCaptor.capture());
       Assert.assertEquals(2, artifactTypesCaptor.getValue().size());
@@ -81,7 +81,7 @@ public class IsOfTypePredicateHandlerTest {
    @Test(expected = OseeArgumentException.class)
    public void testHandleBadValues() throws OseeCoreException {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null, null, null, null);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null);
       handler.handle(builder, testPredicate);
    }
 
@@ -90,7 +90,7 @@ public class IsOfTypePredicateHandlerTest {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, null, null, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);
       handler.handle(builder, testPredicate);
    }
 }

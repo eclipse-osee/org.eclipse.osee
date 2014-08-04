@@ -10,74 +10,77 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.OptionVisitor;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 
 /**
  * @author John Misinco
  */
-public class CheckedOptions implements OptionVisitor {
+public class CheckedOptions {
 
-   private TokenOrderType orderType;
-   private CaseType caseType;
-   private MatchTokenCountType countType;
-   private TokenDelimiterMatch delimiter;
+   private QueryOption orderType;
+   private QueryOption caseType;
+   private QueryOption countType;
+   private QueryOption delimiter;
+   private QueryOption exists;
 
-   public CheckedOptions() {
-      initialize();
+   public CheckedOptions(QueryOption... options) {
+      initialize(options);
    }
 
-   private void initialize() {
-      orderType = TokenOrderType.ANY_ORDER;
-      caseType = CaseType.IGNORE_CASE;
-      countType = MatchTokenCountType.IGNORE_TOKEN_COUNT;
-      delimiter = TokenDelimiterMatch.ANY;
-   }
+   private void initialize(QueryOption... options) {
+      orderType = QueryOption.TOKEN_MATCH_ORDER__ANY;
+      caseType = QueryOption.CASE__IGNORE;
+      countType = QueryOption.TOKEN_COUNT__IGNORE;
+      delimiter = QueryOption.TOKEN_DELIMITER__ANY;
+      exists = QueryOption.EXISTANCE__EXISTS;
 
-   public TokenOrderType getOrderType() {
-      return orderType;
-   }
-
-   public CaseType getCaseType() {
-      return caseType;
-   }
-
-   public MatchTokenCountType getCountType() {
-      return countType;
-   }
-
-   public TokenDelimiterMatch getDelimiter() {
-      return delimiter;
-   }
-
-   public void accept(QueryOption... options) {
-      initialize();
       for (QueryOption option : options) {
-         option.accept(this);
+         switch (option) {
+            case CASE__MATCH:
+            case CASE__IGNORE:
+               caseType = option;
+               break;
+            case EXISTANCE__EXISTS:
+            case EXISTANCE__NOT_EXISTS:
+               exists = option;
+               break;
+            case TOKEN_COUNT__MATCH:
+            case TOKEN_COUNT__IGNORE:
+               countType = option;
+               break;
+            case TOKEN_DELIMITER__EXACT:
+            case TOKEN_DELIMITER__WHITESPACE:
+            case TOKEN_DELIMITER__ANY:
+               delimiter = option;
+               break;
+            case TOKEN_MATCH_ORDER__ANY:
+            case TOKEN_MATCH_ORDER__MATCH:
+               orderType = option;
+               break;
+            default:
+
+         }
       }
    }
 
-   @Override
-   public void asCaseType(CaseType option) {
-      caseType = option;
+   public QueryOption getOrderType() {
+      return orderType;
    }
 
-   @Override
-   public void asTokenOrderType(TokenOrderType option) {
-      orderType = option;
+   public QueryOption getCaseType() {
+      return caseType;
    }
 
-   @Override
-   public void asMatchTokenCountType(MatchTokenCountType option) {
-      countType = option;
+   public QueryOption getCountType() {
+      return countType;
    }
 
-   @Override
-   public void asTokenDelimiterMatch(TokenDelimiterMatch delimiter) {
-      this.delimiter = delimiter;
+   public QueryOption getDelimiter() {
+      return delimiter;
    }
+
+   public QueryOption getExists() {
+      return exists;
+   }
+
 };

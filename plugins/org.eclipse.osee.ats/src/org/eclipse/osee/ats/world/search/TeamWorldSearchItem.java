@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -133,7 +132,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
       // If set, add attrType and attrValue to search criteria
       if (getAttrValueSearchType() != null && !attrValueSearchOrValues.isEmpty()) {
-         criteria.add(new AttributeCriteria(getAttrValueSearchType(), attrValueSearchOrValues, Operator.EQUAL));
+         criteria.add(new AttributeCriteria(getAttrValueSearchType(), attrValueSearchOrValues));
       }
 
       if (changeType != null) {

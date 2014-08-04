@@ -71,8 +71,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       IAtsUser atsUser = null;
       ResultSet<ArtifactReadable> results =
          orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-            CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
-            org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
+            CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, userId).getResults();
       if (!results.isEmpty()) {
          ArtifactReadable userArt = results.getExactlyOne();
          atsUser = new AtsUser(userArt);
@@ -85,8 +84,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       IAtsUser atsUser = null;
       ArtifactReadable userArt =
          orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-            CoreArtifactTypes.User).and(CoreAttributeTypes.Name, org.eclipse.osee.framework.core.enums.Operator.EQUAL,
-            name).getResults().getExactlyOne();
+            CoreArtifactTypes.User).and(CoreAttributeTypes.Name, name).getResults().getExactlyOne();
       if (userArt != null) {
          atsUser = new AtsUser(userArt);
       }
@@ -117,8 +115,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    public static ArtifactReadable getCurrentUserArt() throws OseeCoreException {
       // TODO Switch to real user
       return orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-         CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, org.eclipse.osee.framework.core.enums.Operator.EQUAL,
-         SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
+         CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
    }
 
    @Override
@@ -157,8 +154,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Guest.getUserId())) {
             ResultSet<ArtifactReadable> results =
                orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-                  CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
-                  org.eclipse.osee.framework.core.enums.Operator.EQUAL, userId).getResults();
+                  CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, userId).getResults();
             hasPermission = (results.size() == 1);
          }
       }

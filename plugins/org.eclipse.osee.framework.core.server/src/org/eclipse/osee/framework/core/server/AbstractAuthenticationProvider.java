@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -54,7 +53,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
          QueryFactory queryFactory = orcsApi.getQueryFactory(null);
          QueryBuilder query =
             queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
-               CoreAttributeTypes.UserId, Operator.EQUAL, userId);
+               CoreAttributeTypes.UserId, userId);
 
          ArtifactReadable artifact = query.getResults().getOneOrNull();
          if (artifact != null) {

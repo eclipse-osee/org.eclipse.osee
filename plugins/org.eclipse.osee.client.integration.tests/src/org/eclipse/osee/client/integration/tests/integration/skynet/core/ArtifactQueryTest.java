@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -27,7 +28,9 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -44,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
@@ -142,7 +146,7 @@ public class ArtifactQueryTest {
    public void testNotTaggableGetArtifactListFromAttributeType() {
       List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
 
-      criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common"));
+      criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common", QueryOption.TOKEN_DELIMITER__ANY));
       // test against a couple of attributes types that are not taggable; expect exception
       try {
          ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
@@ -153,14 +157,15 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active, "true",
-            BranchManager.getCommonBranch());
+            BranchManager.getCommonBranch(), QueryOption.TOKEN_DELIMITER__ANY);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
       }
       // test against a couple attributes types that are taggable; do not expect exception
       criteria.clear();
-      criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com"));
+      criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com",
+         QueryOption.TOKEN_DELIMITER__ANY));
       try {
          ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
@@ -170,7 +175,7 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
-            "My Notes", BranchManager.getCommonBranch());
+            "My Notes", BranchManager.getCommonBranch(), QueryOption.TOKEN_DELIMITER__ANY);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());
@@ -263,6 +268,31 @@ public class ArtifactQueryTest {
          }
       }
       Assert.assertTrue(found);
+   }
+
+   @Test
+   public void testMultipleValues() {
+      QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
+      builder.and(CoreAttributeTypes.Name, Arrays.asList("Everyone", "OseeAdmin"));
+      int count = builder.getCount();
+      Assert.assertEquals(2, count);
+   }
+
+   @Test
+   public void testMultipleValuesIgnoreCase() {
+      QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
+      builder.and(CoreAttributeTypes.Name, Arrays.asList("everyone", "oseeadmin"), QueryOption.CASE__IGNORE);
+      int count = builder.getCount();
+      Assert.assertEquals(2, count);
+   }
+
+   @Test
+   public void testMultipleTypes() {
+      QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
+      builder.and(Arrays.asList(CoreAttributeTypes.Name, CoreAttributeTypes.StaticId), "everyone",
+         QueryOption.CASE__IGNORE);
+      int count = builder.getCount();
+      Assert.assertEquals(1, count);
    }
 
    private String longStr() {

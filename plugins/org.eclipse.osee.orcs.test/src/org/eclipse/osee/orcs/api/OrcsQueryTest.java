@@ -21,22 +21,17 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CaseType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -171,7 +166,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryAttributeValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
-      builder.and(CoreAttributeTypes.Name, Operator.EQUAL, "User Groups");
+      builder.and(CoreAttributeTypes.Name, "User Groups");
 
       assertEquals(1, builder.getCount());
 
@@ -199,7 +194,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryArtifactTypeAndNameValue() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
+      builder.and(CoreAttributeTypes.Name, "Requirements", QueryOption.TOKEN_COUNT__IGNORE);
 
       assertEquals(7, builder.getCount());
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
@@ -221,7 +216,7 @@ public class OrcsQueryTest {
 
       //////////////////////
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
+      builder1.and(CoreAttributeTypes.Name, "Requirements", QueryOption.TOKEN_COUNT__IGNORE);
       builder1.andTypeEquals(CoreArtifactTypes.SubsystemRequirementMSWord);
       assertEquals(1, builder1.getCount());
       ResultSet<ArtifactReadable> subSystemReqs = builder1.getResults();
@@ -231,7 +226,7 @@ public class OrcsQueryTest {
 
       //////////////////////
       QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder2.and(CoreAttributeTypes.Name, "Requirements", MatchTokenCountType.IGNORE_TOKEN_COUNT);
+      builder2.and(CoreAttributeTypes.Name, "Requirements", QueryOption.TOKEN_COUNT__IGNORE);
       builder2.andIsOfType(CoreArtifactTypes.Requirement);
       assertEquals(3, builder2.getCount());
 
@@ -248,8 +243,8 @@ public class OrcsQueryTest {
    @Test
    public void testQueryRequirementsAsLocalIds() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", CaseType.IGNORE_CASE, TokenOrderType.MATCH_ORDER,
-         TokenDelimiterMatch.ANY, MatchTokenCountType.IGNORE_TOKEN_COUNT);
+      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_COUNT__IGNORE);
 
       ResultSet<HasLocalId<Integer>> results = builder.getResultsAsLocalIds();
       assertEquals(7, results.size());
@@ -259,7 +254,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryAttributeKeyword() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", TokenDelimiterMatch.ANY);
+      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.TOKEN_DELIMITER__ANY);
 
       assertEquals(7, builder.getCount());
       ResultSet<ArtifactReadable> requirements = builder.getResults();
@@ -290,14 +285,14 @@ public class OrcsQueryTest {
       // @formatter:on
 
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, "REQUIREMENTS", TokenDelimiterMatch.ANY, CaseType.MATCH_CASE);
+      builder1.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__MATCH);
       assertEquals(0, builder1.getCount());
    }
 
    @Test
    public void testRelatedToTest() throws OseeCoreException {
       QueryBuilder builder1 = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder1.and(CoreAttributeTypes.Name, Operator.EQUAL, "Frame Synchronization");
+      builder1.and(CoreAttributeTypes.Name, "Frame Synchronization");
       assertEquals("Frame Synchronization", builder1.getResults().getExactlyOne().getName());
 
       QueryBuilder builder2 = factory.fromBranch(TestBranches.SAW_Bld_1);
@@ -327,7 +322,7 @@ public class OrcsQueryTest {
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {
       author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
-      IOseeBranch branchToken = TokenFactory.createBranch( "TestAndNameEquals");
+      IOseeBranch branchToken = TokenFactory.createBranch("TestAndNameEquals");
       BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");
       tx.createArtifact(CoreArtifactTypes.Folder, "First Folder");

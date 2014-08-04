@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
@@ -51,29 +51,38 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
                builder.andExists(attributeTypes);
             }
          } else if ("relType".equals(existsType)) {
-            SearchOp op = predicate.getOp();
+            QueryOption[] options = predicate.getOptions();
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
-               if (op == SearchOp.EQUALS) {
-                  builder.andExists(rt);
-               } else {
+               if (searchNotExists(options)) {
                   builder.andNotExists(rt);
+               } else {
+                  builder.andExists(rt);
                }
             }
          } else if ("relTypeSide".equals(existsType)) {
-            SearchOp op = predicate.getOp();
+            QueryOption[] options = predicate.getOptions();
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
                IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, rt.getGuid(), "SearchRelTypeSide");
-               if (op == SearchOp.EQUALS) {
-                  builder.andExists(rts);
-               } else {
+               if (searchNotExists(options)) {
                   builder.andNotExists(rts);
+               } else {
+                  builder.andExists(rts);
                }
             }
          }
       }
 
       return builder;
+   }
+
+   private boolean searchNotExists(QueryOption[] options) {
+      for (QueryOption option : options) {
+         if (option == QueryOption.EXISTANCE__NOT_EXISTS) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

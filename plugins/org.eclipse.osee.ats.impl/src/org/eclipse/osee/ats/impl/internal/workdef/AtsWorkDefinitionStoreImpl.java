@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
 import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -63,7 +63,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       ArtifactReadable artifact =
          orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andTypeEquals(
-            AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, TokenDelimiterMatch.EXACT).getResults().getExactlyOne();
+            AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.TOKEN_DELIMITER__EXACT).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }
 

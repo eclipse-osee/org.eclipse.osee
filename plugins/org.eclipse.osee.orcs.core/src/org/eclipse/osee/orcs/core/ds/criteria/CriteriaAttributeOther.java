@@ -10,63 +10,76 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.Operator;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaAttributeOther extends Criteria {
 
-   private final IAttributeType attributeType;
-   private final Collection<String> values;
-   private final Operator operator;
+   public static final List<QueryOption> VALID_OPTIONS = Arrays.asList(QueryOption.TOKEN_COUNT__MATCH,
+      QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
+      QueryOption.CASE__MATCH);
 
-   public CriteriaAttributeOther(IAttributeType attributeType, Collection<String> values, Operator operator) {
+   private final Collection<IAttributeType> attributeTypes;
+   private final Collection<String> values;
+   private final List<QueryOption> options;
+
+   public CriteriaAttributeOther(Collection<IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) {
       super();
-      this.attributeType = attributeType;
+      this.attributeTypes = attributeTypes;
       this.values = values;
-      this.operator = operator;
+      this.options = Lists.newArrayList(options);
    }
 
-   public IAttributeType getAttributeType() {
-      return attributeType;
+   public Collection<IAttributeType> getAttributeTypes() {
+      return attributeTypes;
    }
 
    public Collection<String> getValues() {
       return values;
    }
 
-   public Operator getOperator() {
-      return operator;
+   public List<QueryOption> getOptions() {
+      return options;
    }
 
    @Override
    public void checkValid(Options options) throws OseeCoreException {
-      Conditions.checkNotNull(getAttributeType(), "attributeType");
-      Conditions.checkExpressionFailOnTrue(getAttributeType().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
+      Conditions.checkNotNullOrEmptyOrContainNull(getAttributeTypes(), "attributeType");
+      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
          "Any attribute type is not allowed");
 
-      Operator operator = getOperator();
-      for (String value : getValues()) {
-         if (value != null && value.contains("%") && operator.isGreaterThanOrLessThan()) {
-            throw new OseeArgumentException(
-               "When value contains %%, one of the following operators must be used: %s, %s", Operator.EQUAL,
-               Operator.NOT_EQUAL);
-         }
+      List<QueryOption> unsupportedOptions = getUnsupportedOptions();
+      if (unsupportedOptions.size() != 0) {
+         throw new OseeArgumentException("Invalid QueryOptions present: [%s]", Collections.toString(",",
+            unsupportedOptions));
       }
+   }
+
+   private List<QueryOption> getUnsupportedOptions() {
+      ArrayList<QueryOption> selectedOptions = Lists.newArrayList(options);
+      selectedOptions.removeAll(VALID_OPTIONS);
+      return selectedOptions;
    }
 
    @Override
    public String toString() {
-      return "CriteriaAttributeOther [attributeType=" + attributeType + ", values=" + values + ", operator=" + operator + "]";
+      return "CriteriaAttributeOther [attributeTypes=" + Collections.toString(",", attributeTypes) + ", values=" + values + ", options=" + Collections.toString(
+         ",", options) + "]";
    }
 
 }

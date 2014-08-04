@@ -20,17 +20,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.enums.CaseType;
-import org.eclipse.osee.framework.core.enums.MatchTokenCountType;
-import org.eclipse.osee.framework.core.enums.Operator;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.enums.TokenDelimiterMatch;
-import org.eclipse.osee.framework.core.enums.TokenOrderType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchFlag;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
-import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 
 /**
  * @author John Misinco
@@ -38,13 +31,11 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchOp;
 public class PredicateFactoryImpl implements PredicateFactory {
 
    private final List<String> emptyStringList = Collections.emptyList();
-   private final List<SearchFlag> emptySearchFlagList = Collections.emptyList();
 
    public static interface RestSearchOptions {
 
-      List<SearchFlag> getFlags();
+      List<QueryOption> getOptions();
 
-      TokenDelimiterMatch getDelimiter();
    }
 
    @Override
@@ -72,82 +63,61 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    private Predicate createIdsSearch(SearchMethod method, List<String> ids) {
-      return new Predicate(method, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null, ids);
+      return new Predicate(method, emptyStringList, ids);
    }
 
    @Override
    public Predicate createIsOfTypeSearch(Collection<? extends IArtifactType> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
-      return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null,
-         typeIds);
+      return new Predicate(SearchMethod.IS_OF_TYPE, emptyStringList, typeIds);
    }
 
    @Override
    public Predicate createTypeEqualsSearch(Collection<? extends IArtifactType> artifactType) {
       List<String> typeIds = getLongIds(artifactType);
-      return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, SearchOp.EQUALS, emptySearchFlagList, null,
-         typeIds);
+      return new Predicate(SearchMethod.TYPE_EQUALS, emptyStringList, typeIds);
    }
 
    @Override
    public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, String value, QueryOption... options) {
-      List<String> typeIds = getLongIds(attributeTypes);
-      List<String> values = Collections.singletonList(value);
-      RestSearchOptions option = convertToSearchFlags(options);
-      return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, SearchOp.EQUALS, option.getFlags(),
-         option.getDelimiter(), values);
+      return createAttributeTypeSearch(attributeTypes, Collections.singleton(value), options);
    }
 
    @Override
-   public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, Operator operator, Collection<String> values) {
+   public Predicate createAttributeTypeSearch(Collection<? extends IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) {
       List<String> typeIds = getLongIds(attributeTypes);
-      List<String> valuesList = new LinkedList<String>(values);
-      if (operator == Operator.EQUAL) {
-         RestSearchOptions option =
-            convertToSearchFlags(CaseType.MATCH_CASE, TokenOrderType.MATCH_ORDER,
-               MatchTokenCountType.MATCH_TOKEN_COUNT, TokenDelimiterMatch.EXACT);
-         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, SearchOp.EQUALS, option.getFlags(),
-            option.getDelimiter(), valuesList);
-      } else {
-         SearchOp op = convertToSearchOp(operator);
-         return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, op, emptySearchFlagList, null, valuesList);
-      }
-
+      return new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeIds, new LinkedList<String>(values), options);
    }
 
    @Override
    public Predicate createAttributeExistsSearch(Collection<? extends IAttributeType> attributeTypes) {
       List<String> typeIds = getLongIds(attributeTypes);
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("attrType"), SearchOp.EQUALS, emptySearchFlagList,
-         null, typeIds);
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("attrType"), typeIds);
    }
 
    @Override
    public Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), SearchOp.EQUALS, emptySearchFlagList,
-         null, typeIds);
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), typeIds);
    }
 
    @Override
    public Predicate createRelationTypeSideExistsSearch(IRelationTypeSide relationTypeSide) {
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), SearchOp.EQUALS,
-         emptySearchFlagList, null, getLongIds(relationTypeSide));
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), getLongIds(relationTypeSide));
    }
 
    @Override
    public Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide) {
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), SearchOp.NOT_EQUALS,
-         emptySearchFlagList, null, getLongIds(relationTypeSide));
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), getLongIds(relationTypeSide),
+         QueryOption.EXISTANCE__NOT_EXISTS);
    }
 
    @Override
    public Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), SearchOp.NOT_EQUALS,
-         emptySearchFlagList, null, typeIds);
+      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), typeIds, QueryOption.EXISTANCE__NOT_EXISTS);
    }
 
    @Override
@@ -161,8 +131,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
             values.add(id.toString());
          }
       }
-      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()),
-         SearchOp.EQUALS, emptySearchFlagList, null, values);
+      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()), values);
    }
 
    private List<String> getLongIds(Collection<? extends Identity<Long>> types) {
@@ -176,30 +145,6 @@ public class PredicateFactoryImpl implements PredicateFactory {
 
    private List<String> getLongIds(Identity<Long> type) {
       return getLongIds(Collections.singletonList(type));
-   }
-
-   private SearchOp convertToSearchOp(Operator op) {
-      SearchOp toReturn = SearchOp.EQUALS;
-      switch (op) {
-         case EQUAL:
-            toReturn = SearchOp.EQUALS;
-            break;
-         case GREATER_THAN:
-            toReturn = SearchOp.GREATER_THAN;
-            break;
-         case LESS_THAN:
-            toReturn = SearchOp.LESS_THAN;
-            break;
-         default:
-            break;
-      }
-      return toReturn;
-   }
-
-   private RestSearchOptions convertToSearchFlags(QueryOption... options) {
-      OptionConverter visitor = new OptionConverter();
-      visitor.accept(options);
-      return visitor;
    }
 
 }
