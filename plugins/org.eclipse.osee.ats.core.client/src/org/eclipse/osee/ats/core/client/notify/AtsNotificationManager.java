@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.email.EmailGroup;
 import org.eclipse.osee.framework.skynet.core.utility.INotificationManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
@@ -36,8 +35,6 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeNotificationEvent;
  * @author Donald G. Dunne
  */
 public class AtsNotificationManager {
-
-   private static ExtensionDefinedObjects<IAtsNotification> contributions;
 
    private static boolean inTest = false;
 
@@ -90,15 +87,6 @@ public class AtsNotificationManager {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   public static synchronized List<IAtsNotification> getAtsNotificationItems() {
-      if (contributions == null) {
-         contributions =
-            new ExtensionDefinedObjects<IAtsNotification>("org.eclipse.osee.ats.AtsNotification", "AtsNotification",
-               "classname", true);
-      }
-      return contributions.getObjects();
    }
 
    protected static String getIdString(AbstractWorkflowArtifact sma) {

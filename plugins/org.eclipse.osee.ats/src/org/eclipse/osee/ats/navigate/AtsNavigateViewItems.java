@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.internal.ATSPerspective;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.EmailTeamsItem.MemberType;
-import org.eclipse.osee.ats.notify.AtsNotificationNavigateItem;
 import org.eclipse.osee.ats.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.operation.MoveTeamWorkflowsBlam;
@@ -202,8 +201,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new ImportWorkDefinitionsItem(dbConvertItems);
          new XNavigateItemBlam(dbConvertItems, new ConvertWorkflowStatesBlam());
 
-         new AtsNotificationNavigateItem(adminItems);
-         new AtsNotificationNavigateItem(adminItems, true);
          new DisplayCurrentOseeEventListeners(adminItems);
          new AtsRemoteEventTestItem(adminItems);
 
