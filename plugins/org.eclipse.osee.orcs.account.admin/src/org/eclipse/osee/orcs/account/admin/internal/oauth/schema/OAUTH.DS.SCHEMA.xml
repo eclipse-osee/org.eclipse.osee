@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableConfig>
+
+	<Table name="OSEE_OAUTH_AUTHORIZATION" schema="OSEE" tablespace="osee_data">
+		<Column id="ID" defaultValue="not null" type="BIGINT" />
+		<Column id="CLIENT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="SUBJECT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ISSUED_AT" defaultValue="not null" type="BIGINT" />
+		<Column id="EXPIRES_IN" defaultValue="not null" type="BIGINT" />
+
+		<Column id="CODE" defaultValue="not null" limits="512" type="VARCHAR" />
+
+		<Column id="REDIRECT_URI" limits="512" type="VARCHAR" />
+		<Column id="VERIFIER" limits="512" type="VARCHAR" />
+		<Column id="AUDIENCE" limits="512" type="VARCHAR" />
+		<Column id="APPROVED_SCOPES" limits="2000" type="VARCHAR" />
+
+		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTHORIZATION__ID_PK" type="PRIMARY KEY" appliesTo="ID" />
+		<Index id="OSEE_OAUTH_AUTHORIZATION__C_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="CODE" />
+		</Index>
+	</Table>
+
+	<Table name="OSEE_OAUTH_TOKEN" schema="OSEE" tablespace="osee_data">
+		<Column id="ID" defaultValue="not null" type="BIGINT" />
+		<Column id="CLIENT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="SUBJECT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="ISSUED_AT" defaultValue="not null" type="BIGINT" />
+		<Column id="EXPIRES_IN" defaultValue="not null" type="BIGINT" />
+
+		<Column id="TOKEN_KEY" defaultValue="not null" limits="512" type="VARCHAR" />
+		<Column id="GRANT_TYPE" defaultValue="not null" limits="255" type="VARCHAR" />
+
+		<Column id="TYPE_ID" defaultValue="not null" type="SMALLINT" />
+		<Column id="TOKEN_TYPE" defaultValue="not null" limits="255" type="VARCHAR" />
+		<Column id="AUDIENCE" limits="512" type="VARCHAR" />
+		<Column id="PARENT_TOKEN_ID" defaultValue="not null" type="BIGINT" />
+
+		<Constraint schema="OSEE" id="OSEE_OAUTH_TOKEN__ID_PK" type="PRIMARY KEY" appliesTo="ID" />
+		<Index id="OSEE_OAUTH_TOKEN__TK_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="TOKEN_KEY" />
+		</Index>
+	</Table>
+
+</TableConfig>

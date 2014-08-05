@@ -1,0 +1,208 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.account.admin.internal.oauth;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.logger.Log;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public abstract class AbstractDatabaseStorage<T> {
+
+   private final Log logger;
+   private final IOseeDatabaseService dbService;
+
+   public AbstractDatabaseStorage(Log logger, IOseeDatabaseService dbService) {
+      super();
+      this.logger = logger;
+      this.dbService = dbService;
+   }
+
+   protected Object asVarcharOrNull(String value) {
+      return value != null ? value : SQL3DataType.VARCHAR;
+   }
+
+   protected abstract Object[] asInsert(T item);
+
+   protected abstract Object[] asUpdate(T item);
+
+   protected abstract Object[] asDelete(T item);
+
+   protected abstract T readData(IOseeStatement chStmt);
+
+   protected <R> R execute(Callable<R> callable) {
+      try {
+         return callable.call();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+   }
+
+   protected T selectOneOrNull(final String query, final Object... data) {
+      return execute(select(query, data)).getOneOrNull();
+   }
+
+   protected ResultSet<T> selectItems(final String query, final Object... data) {
+      return execute(select(query, data));
+   }
+
+   protected void insertItems(final String insertSql, final T... items) {
+      insertItems(insertSql, Arrays.asList(items));
+   }
+
+   protected void insertItems(final String insertSql, final Iterable<T> items) {
+      execute(insert(insertSql, items));
+   }
+
+   protected void deleteItems(final String deleteSql, final T... items) {
+      deleteItems(deleteSql, Arrays.asList(items));
+   }
+
+   protected void deleteItems(final String deleteSql, final Iterable<T> items) {
+      execute(delete(deleteSql, items));
+   }
+
+   protected void updateItems(final String insertSql, final T... items) {
+      updateItems(insertSql, Arrays.asList(items));
+   }
+
+   protected void updateItems(final String updateSql, final Iterable<T> items) {
+      execute(update(updateSql, items));
+   }
+
+   protected long countItems(final String countSql, final Object... data) {
+      return execute(count(countSql, data));
+   }
+
+   private Callable<ResultSet<T>> select(final String query, final Object... data) {
+      return new AbstractCallable<Object[], ResultSet<T>>(query, data) {
+
+         @Override
+         protected ResultSet<T> innerCall() throws Exception {
+            List<T> list = new LinkedList<T>();
+            IOseeStatement chStmt = dbService.getStatement();
+            try {
+               chStmt.runPreparedQuery(query, data);
+               while (chStmt.next()) {
+                  T data = readData(chStmt);
+                  list.add(data);
+               }
+            } finally {
+               chStmt.close();
+            }
+            return ResultSets.newResultSet(list);
+         }
+      };
+   }
+
+   private Callable<Long> count(final String query, final Object... data) {
+      return new AbstractCallable<Object[], Long>(query, data) {
+
+         @Override
+         protected Long innerCall() throws Exception {
+            return dbService.runPreparedQueryFetchObject(-1L, query, data);
+         }
+      };
+   }
+
+   private Callable<Integer> insert(final String insertSql, final Iterable<T> items) {
+      return new AbstractCallable<Iterable<T>, Integer>(insertSql, items) {
+
+         @Override
+         protected Integer innerCall() throws Exception {
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (T item : items) {
+               data.add(asInsert(item));
+            }
+            return dbService.runBatchUpdate(insertSql, data);
+         }
+      };
+   }
+
+   private Callable<Integer> delete(final String deleteSql, final Iterable<T> items) {
+      return new AbstractCallable<Iterable<T>, Integer>(deleteSql, items) {
+
+         @Override
+         protected Integer innerCall() throws Exception {
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (T item : items) {
+               data.add(asDelete(item));
+            }
+            return dbService.runBatchUpdate(deleteSql, data);
+         }
+      };
+   }
+
+   private Callable<Integer> update(final String updateSql, final Iterable<T> items) {
+      return new AbstractCallable<Iterable<T>, Integer>(updateSql, items) {
+
+         @Override
+         protected Integer innerCall() throws Exception {
+            List<Object[]> data = new ArrayList<Object[]>();
+            for (T item : items) {
+               data.add(asUpdate(item));
+            }
+            return dbService.runBatchUpdate(updateSql, data);
+         }
+      };
+   }
+
+   protected abstract class AbstractCallable<I, O> implements Callable<O> {
+
+      protected final String query;
+      protected final I data;
+
+      public AbstractCallable(String query, I data) {
+         super();
+         this.query = query;
+         this.data = data;
+      }
+
+      protected IOseeDatabaseService getDbService() {
+         return dbService;
+      }
+
+      @Override
+      public final O call() throws Exception {
+         long startTime = System.currentTimeMillis();
+         long endTime = startTime;
+         O result = null;
+         try {
+            if (logger.isTraceEnabled()) {
+               logger.trace("%s [start] - [%s] [%s]", getClass().getSimpleName(), query, data);
+            }
+            result = innerCall();
+         } finally {
+            endTime = System.currentTimeMillis() - startTime;
+         }
+         if (logger.isTraceEnabled()) {
+            logger.trace("%s [finished] - [%s] [%s] [%s]", getClass().getSimpleName(), Lib.asTimeString(endTime),
+               query, data);
+         }
+         return result;
+      }
+
+      protected abstract O innerCall() throws Exception;
+   }
+
+}
