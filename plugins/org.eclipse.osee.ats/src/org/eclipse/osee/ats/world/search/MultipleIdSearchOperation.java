@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
+import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -64,6 +64,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
    private final Set<Artifact> artifacts = new HashSet<Artifact>();
    private final MultipleIdSearchData data;
+   private boolean multiLine;
 
    public MultipleIdSearchOperation(MultipleIdSearchData data) {
       super(data.getName(), Activator.PLUGIN_ID);
@@ -74,6 +75,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!data.hasValidInput()) {
          MultipleIdSearchUi ui = new MultipleIdSearchUi(data);
+         ui.setMultiLine(multiLine);
          if (!ui.getInput()) {
             return;
          }
@@ -101,7 +103,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             } else if (data.getAtsEditor() == AtsEditor.ChangeReport) {
                openChangeReport(resultAtsArts, data.getEnteredIds());
             } else {
-               WorldEditor.open(new WorldEditorOperationProvider(this));
+               WorldEditor.open(new WorldEditorSimpleProvider(getName(), resultAtsArts));
             }
          }
       }
@@ -244,9 +246,14 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    @Override
    public String getName() {
       if (Strings.isValid(data.getEnteredIds())) {
-         return String.format("%s - [%s]", super.getName(), data.getEnteredIds());
+         return String.format("%s - [%s]", super.getName(),
+            Strings.truncate(data.getEnteredIds(), WorldEditor.TITLE_MAX_LENGTH));
       }
       return super.getName();
+   }
+
+   public void setMultiLine(boolean multiLine) {
+      this.multiLine = multiLine;
    }
 
 }

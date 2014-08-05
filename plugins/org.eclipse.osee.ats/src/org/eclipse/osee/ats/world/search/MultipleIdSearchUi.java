@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class MultipleIdSearchUi {
 
    private final MultipleIdSearchData data;
+   private boolean multiLine;
 
    public MultipleIdSearchUi(MultipleIdSearchData data) {
       this.data = data;
@@ -58,9 +61,13 @@ public class MultipleIdSearchUi {
                   "Enter Legacy ID, Guid or ID (comma separated)", MessageDialog.QUESTION,
                   new String[] {"OK", "Cancel"}, 0);
          }
+         if (multiLine) {
+            ed.setFillVertically(true);
+         }
          int response = ed.open();
          if (response == 0) {
-            data.setEnteredIds(ed.getEntry());
+            String entry = processEntry(ed.getEntry());
+            data.setEnteredIds(entry);
             if (ed instanceof EntryCheckDialog) {
                data.setIncludeArtIds(((EntryCheckDialog) ed).isChecked());
                if (data.isIncludeArtIds()) {
@@ -85,4 +92,21 @@ public class MultipleIdSearchUi {
 
    }
 
+   public void setMultiLine(boolean multiLine) {
+      this.multiLine = multiLine;
+   }
+
+   public String processEntry(String entry) {
+      String result = entry;
+      if (multiLine) {
+         Set<String> entries = new HashSet<String>(50);
+         for (String line : entry.split(System.getProperty("line.separator"))) {
+            line = line.replaceFirst("^ +", "");
+            line = line.replaceFirst(" +$", "");
+            entries.add(line);
+         }
+         result = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", entries);
+      }
+      return result;
+   }
 }

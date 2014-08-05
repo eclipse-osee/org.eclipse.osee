@@ -171,6 +171,9 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             new MultipleIdSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
          items.add(new XNavigateItemOperation(item, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
             new MultipleIdSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
+         items.add(new XNavigateItemOperation(item, AtsImage.OPEN_BY_ID,
+            "Search by ID(s) - Multi-Line - Open World Editor", new MultipleIdMultiLineSearchOperationFactory(
+               "Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
             new MultipleIdSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.GLOBE, "Quick Search",
@@ -356,6 +359,25 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       @Override
       public IOperation createOperation() {
          return new MultipleIdSearchOperation(new MultipleIdSearchData(operationName, atsEditor));
+      }
+   }
+
+   private static final class MultipleIdMultiLineSearchOperationFactory implements IOperationFactory {
+
+      private final AtsEditor atsEditor;
+      private final String operationName;
+
+      public MultipleIdMultiLineSearchOperationFactory(String operationName, AtsEditor atsEditor) {
+         this.operationName = operationName;
+         this.atsEditor = atsEditor;
+      }
+
+      @Override
+      public IOperation createOperation() {
+         MultipleIdSearchOperation op =
+            new MultipleIdSearchOperation(new MultipleIdSearchData(operationName, atsEditor));
+         op.setMultiLine(true);
+         return op;
       }
    }
 
