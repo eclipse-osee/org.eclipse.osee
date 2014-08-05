@@ -19,7 +19,7 @@ import java.util.List;
 public class ResultsXViewerRow implements IResultsXViewerRow {
 
    private final List<String> values;
-   private final Object data;
+   private Object data;
 
    public ResultsXViewerRow(List<String> values, Object data) {
       this.data = data;
@@ -51,6 +51,10 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
    @Override
    public Object getData() {
       return data;
+   }
+
+   public void setData(Object data) {
+      this.data = data;
    }
 
 }

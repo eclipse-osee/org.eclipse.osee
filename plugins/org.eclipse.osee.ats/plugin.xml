@@ -277,6 +277,13 @@
                         value="org.eclipse.osee.ats.editor.SMAEditor">
                   </equals>
                </with>
+              <with
+                 variable="activePartId">
+                 <equals
+                        value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+                 </equals>
+              </with>
+               
             </or>
          </activeWhen>
       </handler>
@@ -353,6 +360,12 @@
                         value="org.eclipse.osee.ats.editor.SMAEditor">
                   </equals>
                </with>
+              <with
+                 variable="activePartId">
+                 <equals
+                        value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+                 </equals>
+              </with>
             </or>
          </activeWhen>
       </handler>
