@@ -10,16 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import java.util.List;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface JaxRsSessionProvider {
+public interface OAuthCodeGrant {
 
-   String createSessionToken(Long subjectId);
+   long getUuid();
 
-   String removeSessionToken(Long subjectId);
+   long getSubjectId();
 
-   String getSessionToken(Long subjectId);
+   long getClientId();
+
+   long getIssuedAt();
+
+   long getExpiresIn();
+
+   String getCode();
+
+   String getRedirectUri();
+
+   String getClientCodeVerifier();
+
+   String getAudience();
+
+   List<String> getApprovedScopes();
 
 }

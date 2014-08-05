@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints;
+package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
 import org.apache.cxf.rs.security.oauth2.common.Client;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ClientDataProvider {
+public interface ClientProvider {
 
    Client getClient(String clientId);
 
    Client createClient();
+
+   long getClientId(Client client);
 
 }

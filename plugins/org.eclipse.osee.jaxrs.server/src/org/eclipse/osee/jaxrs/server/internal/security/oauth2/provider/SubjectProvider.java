@@ -8,29 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
+package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
-import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
+import org.apache.cxf.rs.security.oauth2.grants.owner.ResourceOwnerLoginHandler;
+import org.apache.cxf.rs.security.oauth2.provider.ResourceOwnerNameProvider;
+import org.apache.cxf.rs.security.oauth2.provider.SessionAuthenticityTokenProvider;
 import org.apache.cxf.rs.security.oauth2.provider.SubjectCreator;
-import org.eclipse.osee.logger.Log;
+import org.apache.cxf.security.SecurityContext;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CxfSubjectCreator implements SubjectCreator {
-   private final Log logger;
+public interface SubjectProvider extends SessionAuthenticityTokenProvider, SubjectCreator, ResourceOwnerNameProvider, ResourceOwnerLoginHandler {
 
-   public CxfSubjectCreator(Log logger) {
-      super();
-      this.logger = logger;
-   }
+   long getSubjectId(UserSubject subject);
 
-   @Override
-   public UserSubject createUserSubject(MessageContext mc) throws OAuthServiceException {
-      logger.debug("createUserSubject called");
-      return null;
-   }
+   void authenticate(MessageContext mc, String scheme, String username, String password);
+
+   SecurityContext getSecurityContextFromSession(MessageContext mc);
 
 }

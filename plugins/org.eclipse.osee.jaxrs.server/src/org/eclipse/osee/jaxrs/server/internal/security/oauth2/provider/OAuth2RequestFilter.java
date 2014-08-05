@@ -11,29 +11,24 @@
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
 import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil.newAuthorizationRequiredResponse;
-import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil.newUserSubject;
 import java.net.URI;
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.filters.OAuthRequestFilter;
-import org.apache.cxf.rs.security.oauth2.grants.owner.ResourceOwnerLoginHandler;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator;
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator.Subject;
-import org.eclipse.osee.jaxrs.server.security.JaxRsSessionProvider;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -46,20 +41,18 @@ import org.eclipse.osee.logger.Log;
  */
 @PreMatching
 @Priority(Priorities.AUTHENTICATION)
-public class OAuth2RequestFilter extends OAuthRequestFilter implements ResourceOwnerLoginHandler {
+public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private final Log logger;
-   private final JaxRsAuthenticator authenticator;
-   private final JaxRsSessionProvider sessionProvider;
+   private final SubjectProvider sessionProvider;
 
    private volatile boolean useUserSubject;
    private volatile URI redirectURI;
    private volatile boolean ignoreBasePath;
 
-   public OAuth2RequestFilter(Log logger, JaxRsAuthenticator authenticator, JaxRsSessionProvider sessionProvider) {
+   public OAuth2RequestFilter(Log logger, SubjectProvider sessionProvider) {
       super();
       this.logger = logger;
-      this.authenticator = authenticator;
       this.sessionProvider = sessionProvider;
    }
 
@@ -76,9 +69,6 @@ public class OAuth2RequestFilter extends OAuthRequestFilter implements ResourceO
    public void setIgnoreBasePath(boolean ignoreBasePath) {
       this.ignoreBasePath = ignoreBasePath;
    }
-
-   private @Context
-   HttpServletRequest request;
 
    @Override
    public void filter(ContainerRequestContext context) {
@@ -100,15 +90,16 @@ public class OAuth2RequestFilter extends OAuthRequestFilter implements ResourceO
 
    private void handleResourceOwnerRequest(ContainerRequestContext context) {
       Message msg = JAXRSUtils.getCurrentMessage();
-      String authorizationHeader = context.getHeaderString(HttpHeaders.AUTHORIZATION);
-      Object sc = sessionProvider.getFromSession(request);
-      if (sc != null) {
-         msg.put(SecurityContext.class, (SecurityContext) sc);
-      } else {
+      MessageContext mc = getMessageContext();
+
+      SecurityContext sc = sessionProvider.getSecurityContextFromSession(mc);
+      if (sc == null) {
+         String authorizationHeader = context.getHeaderString(HttpHeaders.AUTHORIZATION);
+
          Response jaxRsResponse = null;
          if (isAuthenticationSchemeSupported(authorizationHeader)) {
             try {
-               doBasicAuthentication(context, msg, authorizationHeader);
+               doBasicAuthentication(mc, authorizationHeader);
             } catch (Exception ex) {
                jaxRsResponse = getAuthenticationException(ex, msg);
             }
@@ -132,29 +123,12 @@ public class OAuth2RequestFilter extends OAuthRequestFilter implements ResourceO
       return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg);
    }
 
-   private void doBasicAuthentication(ContainerRequestContext context, Message msg, String header) {
+   private void doBasicAuthentication(MessageContext mc, String header) {
       logger.debug("doBasicAuthentication called");
       String[] basicAuthParts = OAuthUtil.decodeCredentials(header);
       String username = basicAuthParts[0];
       String password = basicAuthParts[1];
-      authenticate(context, OAuthConstants.BASIC_SCHEME, username, password, msg);
-   }
-
-   private void authenticate(ContainerRequestContext context, String scheme, String username, String password, Message msg) {
-      UserSubject subject = authenticate(scheme, username, password);
-      SecurityContext sc = OAuthUtil.newSecurityContext(subject);
-      sessionProvider.createSession(request, scheme, sc);
-      msg.put(SecurityContext.class, sc);
-   }
-
-   private UserSubject authenticate(String scheme, String username, String password) {
-      Subject user = authenticator.authenticate(scheme, username, password);
-      return newUserSubject(user);
-   }
-
-   @Override
-   public UserSubject createSubject(String username, String password) {
-      return authenticate(OAuthConstants.BASIC_SCHEME, username, password);
+      sessionProvider.authenticate(mc, OAuthConstants.BASIC_SCHEME, username, password);
    }
 
    @Override

@@ -10,31 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
-import org.apache.cxf.rs.security.oauth2.common.Client;
-
 /**
  * @author Roberto E. Escobar
  */
 public interface JaxRsOAuthStorage {
 
-   Client getClient(String clientId);
+   OAuthCodeGrant getCodeGrant(String code);
 
-   void storeCodeGrant(String encrypted);
+   void storeCodeGrant(OAuthCodeGrant codeGrant);
 
-   void removeCodeGrant(String code);
+   void removeCodeGrant(OAuthCodeGrant codeGrant);
 
-   String getAccessTokenByRefreshToken(String refreshToken);
+   Iterable<OAuthToken> getAccessTokensByRefreshToken(String refreshToken);
 
-   void storeAccessToken(String encryptedToken);
+   OAuthToken getPreauthorizedToken(long clientId, long subjectId, String grantType);
 
-   void storeRefreshToken(String encryptedRefreshToken, String encryptedAccessToken);
+   void storeToken(OAuthToken... tokens);
 
-   void removeRefreshToken(String refreshToken);
+   void relateTokens(OAuthToken refreshToken, OAuthToken accessToken);
 
-   void removeAccessToken(String tokenKey);
+   void removeToken(Iterable<OAuthToken> tokens);
 
-   String getPreauthorizedToken(String clientId, String subjectId, String grantType);
-
-   String getCodeGrant(String code);
+   void removeTokenByKey(String tokenKey);
 
 }

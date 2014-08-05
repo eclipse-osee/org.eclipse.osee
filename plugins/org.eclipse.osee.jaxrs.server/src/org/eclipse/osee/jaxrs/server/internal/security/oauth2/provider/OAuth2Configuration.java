@@ -51,6 +51,9 @@ public class OAuth2Configuration {
    public static final String OAUTH2_PROVIDER__USE_USER_SUBJECT = qualify("use.user.subject");
    public static final String OAUTH2_PROVIDER__WRITE_CUSTOM_ERRORS = qualify("write.custom.errors");
    public static final String OAUTH2_PROVIDER__WRITE_OPTIONAL_PARAMETERS = qualify("write.optional.parameters");
+
+   public static final String OAUTH2_PROVIDER__SECRET_KEY_ALGORITHM = qualify("secret.key.algorithm");
+   public static final String OAUTH2_PROVIDER__ENCODED_SECRET_KEY = qualify("secret.key");
    //@formatter:on
 
    public static final boolean DEFAULT_OAUTH2_PROVIDER__SERVICE_ENABLED = false;
@@ -74,6 +77,8 @@ public class OAuth2Configuration {
    public static final boolean DEFAULT_OAUTH2_PROVIDER__USE_USER_SUBJECT = false;
    public static final boolean DEFAULT_OAUTH2_PROVIDER__WRITE_CUSTOM_ERRORS = true;
    public static final boolean DEFAULT_OAUTH2_PROVIDER__WRITE_OPTIONAL_PARAMETERS = true;
+   public static final String DEFAULT_OAUTH2_PROVIDER__SECRET_KEY_ALGORITHM = null;
+   public static final String DEFAULT_OAUTH2_PROVIDER__ENCODED_SECRET_KEY = null;
 
    public static OAuth2Configuration fromProperties(Map<String, Object> props) {
       OAuth2Configuration config = new OAuth2Configuration(props);
@@ -191,4 +196,11 @@ public class OAuth2Configuration {
          DEFAULT_OAUTH2_PROVIDER__WRITE_OPTIONAL_PARAMETERS);
    }
 
+   public String getSecretKeyAlgorithm() {
+      return get(props, OAUTH2_PROVIDER__SECRET_KEY_ALGORITHM, DEFAULT_OAUTH2_PROVIDER__SECRET_KEY_ALGORITHM);
+   }
+
+   public String getEncodedSecretKey() {
+      return get(props, OAUTH2_PROVIDER__ENCODED_SECRET_KEY, DEFAULT_OAUTH2_PROVIDER__ENCODED_SECRET_KEY);
+   }
 }

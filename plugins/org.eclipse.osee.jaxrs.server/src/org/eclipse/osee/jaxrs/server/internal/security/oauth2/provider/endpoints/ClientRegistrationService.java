@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.rs.security.oauth2.common.Client;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.ClientProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -22,9 +23,9 @@ import org.apache.cxf.rs.security.oauth2.common.Client;
 @Path("/clients")
 public class ClientRegistrationService {
 
-   private ClientDataProvider provider;
+   private ClientProvider provider;
 
-   public void setDataProvider(ClientDataProvider provider) {
+   public void setDataProvider(ClientProvider provider) {
       this.provider = provider;
    }
 

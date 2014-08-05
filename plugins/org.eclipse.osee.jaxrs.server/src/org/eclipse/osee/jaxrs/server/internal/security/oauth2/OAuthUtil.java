@@ -169,9 +169,25 @@ public final class OAuthUtil {
    }
 
    public static OseePrincipal newOseePrincipal(UserSubject subject) {
-      String value = subject.getId();
-      Long id = Strings.isNumeric(value) ? Long.parseLong(value) : -1L;
+      Long id = getUserSubjectUuid(subject);
       return new UserSubjectWrapper(id, subject);
+   }
+
+   public static Long getUserSubjectUuid(UserSubject subject) {
+      String value = subject.getId();
+      return Strings.isNumeric(value) ? Long.parseLong(value) : -1L;
+   }
+
+   public static String getDisplayName(UserSubject subject) {
+      return getProperty(subject.getProperties(), SUBJECT_DISPLAY_NAME, subject.getLogin());
+   }
+
+   public static String getProperty(Map<String, String> props, String key, String defaultValue) {
+      String toReturn = props.get(key);
+      if (toReturn == null) {
+         toReturn = defaultValue;
+      }
+      return toReturn;
    }
 
    private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {
@@ -229,11 +245,8 @@ public final class OAuthUtil {
       }
 
       private String get(String key, String defaultValue) {
-         String toReturn = subject.getProperties().get(key);
-         if (toReturn == null) {
-            toReturn = defaultValue;
-         }
-         return toReturn;
+         return getProperty(getProperties(), key, defaultValue);
       }
    }
+
 }

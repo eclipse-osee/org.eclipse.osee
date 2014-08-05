@@ -10,16 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
-
 /**
  * @author Roberto E. Escobar
  */
-public interface JaxRsSessionProvider {
+public interface OAuthToken {
 
-   String createSessionToken(Long subjectId);
+   long getUuid();
 
-   String removeSessionToken(Long subjectId);
+   long getSubjectId();
 
-   String getSessionToken(Long subjectId);
+   long getClientId();
+
+   long getIssuedAt();
+
+   long getExpiresIn();
+
+   String getTokenKey();
+
+   String getTokenType();
+
+   String getGrantType();
+
+   String getAudience();
+
+   OAuthTokenType getType();
+
+   String getRefreshToken();
 
 }

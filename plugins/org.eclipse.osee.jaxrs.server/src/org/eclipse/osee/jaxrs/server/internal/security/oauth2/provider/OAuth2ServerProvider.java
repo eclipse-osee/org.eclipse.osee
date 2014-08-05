@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.crypto.SecretKey;
 import javax.ws.rs.core.Application;
 import org.apache.cxf.rs.security.oauth2.grants.AbstractGrantHandler;
 import org.apache.cxf.rs.security.oauth2.grants.clientcred.ClientCredentialsGrantHandler;
@@ -29,11 +28,7 @@ import org.apache.cxf.rs.security.oauth2.grants.owner.ResourceOwnerLoginHandler;
 import org.apache.cxf.rs.security.oauth2.grants.refresh.RefreshTokenGrantHandler;
 import org.apache.cxf.rs.security.oauth2.provider.AccessTokenGrantHandler;
 import org.apache.cxf.rs.security.oauth2.provider.AccessTokenValidator;
-import org.apache.cxf.rs.security.oauth2.provider.DefaultResourceOwnerNameProvider;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthDataProvider;
-import org.apache.cxf.rs.security.oauth2.provider.ResourceOwnerNameProvider;
-import org.apache.cxf.rs.security.oauth2.provider.SessionAuthenticityTokenProvider;
-import org.apache.cxf.rs.security.oauth2.provider.SubjectCreator;
 import org.apache.cxf.rs.security.oauth2.services.AbstractAccessTokenValidator;
 import org.apache.cxf.rs.security.oauth2.services.AbstractOAuthService;
 import org.apache.cxf.rs.security.oauth2.services.AbstractTokenService;
@@ -47,12 +42,11 @@ import org.apache.cxf.rs.security.oauth2.tokens.hawk.HawkAccessTokenValidator;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceStore;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifier;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifierImpl;
-import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.CxfAuthorizationCodeService;
-import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.CxfSubjectCreator;
-import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientDataProvider;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.OAuthEncryption;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.SubjectProviderImpl;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientRegistrationService;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.AuthorizationDataHtmlWriter;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.OOBAuthorizationResponseHtmlWriter;
@@ -67,13 +61,13 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Roberto E. Escobar
  */
-public class OAuth2Provider {
+public class OAuth2ServerProvider {
 
    private static final String OAUTH2_APPLICATION_COMPONENT_NAME = qualify("application");
 
    private final Set<String> registeredProviders = new HashSet<String>();
    private List<String> audiences;
-   private CxfOAuthDataProvider dataProvider;
+   private OAuth2DataProvider dataProvider;
    private NonceVerifier nonceVerifier;
 
    private OAuth2RequestFilter filter;
@@ -137,18 +131,15 @@ public class OAuth2Provider {
    }
 
    private void initialize(OAuth2Configuration config) {
-      SecretKey secretKey = CryptoUtils.getSecretKey("AES");
-
-      SubjectCreator subjectCreator = new CxfSubjectCreator(logger);
-      ResourceOwnerNameProvider nameProvider = new DefaultResourceOwnerNameProvider();
-      SessionAuthenticityTokenProvider tokenSessionProvider = null; //new CxfSessionAuthenticityTokenProvider(logger);
+      ClientProvider clientProvider = null;
+      SubjectProvider subjectProvider = new SubjectProviderImpl(logger, sessionProvider, authenticator);
 
       audiences = Collections.emptyList();
 
-      dataProvider = new CxfOAuthDataProvider(storage);
-      dataProvider.setSecretKey(secretKey);
+      OAuthEncryption serializer = new OAuthEncryption();
+      dataProvider = new OAuth2DataProvider(clientProvider, subjectProvider, serializer, storage);
 
-      filter = new OAuth2RequestFilter(logger, authenticator, sessionProvider);
+      filter = new OAuth2RequestFilter(logger, subjectProvider);
       bind(filter, dataProvider);
 
       endpoints = new HashSet<Object>();
@@ -156,12 +147,12 @@ public class OAuth2Provider {
       endpoints.add(bind(new TokenRevocationService(), dataProvider));
 
       //@formatter:off
-      endpoints.add(bind(new CxfAuthorizationCodeService(), dataProvider, subjectCreator, nameProvider, tokenSessionProvider));
-      endpoints.add(bind(new ImplicitGrantService(), dataProvider, subjectCreator, nameProvider, tokenSessionProvider));
+      endpoints.add(bind(new CxfAuthorizationCodeService(), dataProvider, subjectProvider));
+      endpoints.add(bind(new ImplicitGrantService(), dataProvider, subjectProvider));
       //@formatter:on
 
       endpoints.add(bind(new AccessTokenValidatorService(), dataProvider));
-      endpoints.add(bind(new ClientRegistrationService(), dataProvider));
+      endpoints.add(bind(new ClientRegistrationService(), clientProvider));
 
       // Add OAuth2 application local Writers
       endpoints.add(new AuthorizationDataHtmlWriter());
@@ -172,7 +163,7 @@ public class OAuth2Provider {
       grantHandlers = new ArrayList<AccessTokenGrantHandler>();
       grantHandlers.add(bind(new AuthorizationCodeGrantHandler(), dataProvider, new DigestCodeVerifier()));
       grantHandlers.add(bind(new ClientCredentialsGrantHandler(), dataProvider));
-      grantHandlers.add(bind(new ResourceOwnerGrantHandler(), dataProvider, filter));
+      grantHandlers.add(bind(new ResourceOwnerGrantHandler(), dataProvider, subjectProvider));
       grantHandlers.add(bind(new RefreshTokenGrantHandler(), dataProvider));
 
       tokenValidators = new ArrayList<AccessTokenValidator>();
@@ -238,11 +229,15 @@ public class OAuth2Provider {
       }
    }
 
-   private void configure(OAuth2Configuration config, CxfOAuthDataProvider provider) {
+   private void configure(OAuth2Configuration config, OAuth2DataProvider provider) {
       provider.setRefreshTokenAllowed(config.isRefreshTokenAllowed());
       provider.setCodeGrantExpiration(config.getCodeGrantExpiration());
       provider.setAccessTokenExpiration(config.getAccessTokenExpiration());
       provider.setRefreshTokenExpiration(config.getRefreshTokenExpiration());
+
+      provider.setSecretKeyAlgorithm(config.getSecretKeyAlgorithm());
+      provider.setSecretKeyEncoded(config.getEncodedSecretKey());
+
       configureObject(config, provider);
    }
 
@@ -319,10 +314,9 @@ public class OAuth2Provider {
          accessTokenService.setAudiences(audiences);
          accessTokenService.setGrantHandlers(grantHandlers);
       }
-
    }
 
-   private static ClientRegistrationService bind(ClientRegistrationService object, ClientDataProvider dataProvider) {
+   private static ClientRegistrationService bind(ClientRegistrationService object, ClientProvider dataProvider) {
       object.setDataProvider(dataProvider);
       return object;
    }
@@ -332,10 +326,10 @@ public class OAuth2Provider {
       return object;
    }
 
-   private static AbstractOAuthService bind(RedirectionBasedGrantService object, OAuthDataProvider dataProvider, SubjectCreator subjectCreator, ResourceOwnerNameProvider nameProvider, SessionAuthenticityTokenProvider sessionProvider) {
-      object.setResourceOwnerNameProvider(nameProvider);
-      object.setSessionAuthenticityTokenProvider(sessionProvider);
-      object.setSubjectCreator(subjectCreator);
+   private static AbstractOAuthService bind(RedirectionBasedGrantService object, OAuthDataProvider dataProvider, SubjectProvider subjectProvider) {
+      object.setResourceOwnerNameProvider(subjectProvider);
+      object.setSessionAuthenticityTokenProvider(subjectProvider);
+      object.setSubjectCreator(subjectProvider);
       bind(object, dataProvider);
       return object;
    }
