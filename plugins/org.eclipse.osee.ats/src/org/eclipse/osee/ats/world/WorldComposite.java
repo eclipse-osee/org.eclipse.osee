@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -233,8 +234,9 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            iWorldEditor.setTableTitle(title, warning);
-            worldXViewer.setReportingTitle(title + " - " + DateUtil.getDateNow());
+            String useTitle = Strings.truncate(title, WorldEditor.TITLE_MAX_LENGTH);
+            iWorldEditor.setTableTitle(useTitle, warning);
+            worldXViewer.setReportingTitle(useTitle + " - " + DateUtil.getDateNow());
          };
       });
    }

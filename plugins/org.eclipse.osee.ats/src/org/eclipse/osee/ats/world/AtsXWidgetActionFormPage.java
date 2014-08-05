@@ -211,7 +211,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public abstract void handleSaveButtonPressed();
 
    public void setTableTitle(final String title, final boolean warning) {
-      this.title = title;
+      this.title = Strings.truncate(title, WorldEditor.TITLE_MAX_LENGTH);
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -229,11 +229,11 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    public String getCurrentTitleLabel() {
+      String useTitle = WorldEditor.EDITOR_ID;
       if (title != null) {
-         return title;
-      } else {
-         return WorldEditor.EDITOR_ID;
+         useTitle = title;
       }
+      return Strings.truncate(useTitle, WorldEditor.TITLE_MAX_LENGTH);
    }
 
 }
