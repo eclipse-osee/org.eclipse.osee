@@ -12,15 +12,17 @@ package org.eclipse.osee.jaxrs.server.internal.resources;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.Providers;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 
 /**
@@ -29,6 +31,9 @@ import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
 @Provider
 public abstract class AbstractHtmlWriter<T> extends AbstractMessageBodyWriter<T> {
 
+   @Context
+   private Providers providers;
+
    @Override
    public Collection<MediaType> getSupportedMediaTypes() {
       return JaxRsUtils.HTML_MEDIA_TYPES;
@@ -36,14 +41,12 @@ public abstract class AbstractHtmlWriter<T> extends AbstractMessageBodyWriter<T>
 
    @Override
    public final void writeTo(T data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      Writer writer = new OutputStreamWriter(entityStream, JaxRsUtils.UTF_8_ENCODING);
-      try {
-         writeTo(data, type, genericType, annotations, mediaType, httpHeaders, writer);
-      } finally {
-         writer.flush();
-      }
+      ViewModel model = asViewModel(data);
+      MessageBodyWriter<ViewModel> writer =
+         providers.getMessageBodyWriter(ViewModel.class, genericType, annotations, mediaType);
+      writer.writeTo(model, ViewModel.class, genericType, annotations, mediaType, httpHeaders, entityStream);
    }
 
-   public abstract void writeTo(T data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, Writer writer) throws IOException, WebApplicationException;
+   public abstract ViewModel asViewModel(T data);
 
 }

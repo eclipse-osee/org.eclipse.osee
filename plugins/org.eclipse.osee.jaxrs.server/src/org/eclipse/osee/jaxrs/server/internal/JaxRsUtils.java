@@ -21,10 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
-import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.framework.ServiceReference;
 
@@ -39,7 +35,7 @@ public final class JaxRsUtils {
 
    public static final String UTF_8_ENCODING = "UTF-8";
    public static final List<MediaType> HTML_MEDIA_TYPES = Collections.unmodifiableList(Arrays.asList(
-      MediaType.APPLICATION_XHTML_XML_TYPE, MediaType.TEXT_HTML_TYPE));
+      MediaType.TEXT_HTML_TYPE, MediaType.APPLICATION_XHTML_XML_TYPE));
 
    public static boolean isHtmlSupported(List<MediaType> acceptableMediaTypes) {
       return !JAXRSUtils.intersectMimeTypes(acceptableMediaTypes, HTML_MEDIA_TYPES, false).isEmpty();
@@ -52,16 +48,6 @@ public final class JaxRsUtils {
          toReturn = toReturn.replaceAll("\r?\n", "<br/>");
       }
       return toReturn;
-   }
-
-   public static ResourceToken newTemplate(String resource, Class<?> clazz) {
-      return new ClassBasedResourceToken(resource, clazz);
-   }
-
-   public static IResourceRegistry newSingleTemplateRegistry(ResourceToken token) {
-      IResourceRegistry registry = new ResourceRegistry();
-      registry.registerResource(-1L, token);
-      return registry;
    }
 
    public static String getComponentName(ServiceReference<?> reference) {

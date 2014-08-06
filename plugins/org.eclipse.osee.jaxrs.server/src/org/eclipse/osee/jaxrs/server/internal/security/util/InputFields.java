@@ -11,17 +11,15 @@
 package org.eclipse.osee.jaxrs.server.internal.security.util;
 
 import static org.eclipse.osee.jaxrs.server.internal.JaxRsUtils.asTemplateValue;
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.template.engine.AppendableRule;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class InputFields extends AppendableRule<Object> {
+public final class InputFields {
 
    public static enum InputType {
       text,
@@ -54,24 +52,23 @@ public final class InputFields extends AppendableRule<Object> {
       }
    }
 
-   public static InputFields newListGroup(String tag) {
-      return new InputFields(tag, ContainerType.LIST_GROUP, false);
+   public static InputFields newListGroup() {
+      return new InputFields(ContainerType.LIST_GROUP, false);
    }
 
-   public static InputFields newListGroupContainer(String tag) {
-      return new InputFields(tag, ContainerType.LIST_GROUP, true);
+   public static InputFields newListGroupContainer() {
+      return new InputFields(ContainerType.LIST_GROUP, true);
    }
 
-   public static InputFields newForm(String tag) {
-      return new InputFields(tag, ContainerType.FORM_GROUP, false);
+   public static InputFields newForm() {
+      return new InputFields(ContainerType.FORM_GROUP, false);
    }
 
    private final Map<String, Data> data = new LinkedHashMap<String, Data>();
    private final ContainerType containerType;
    private final boolean wrapInContainer;
 
-   private InputFields(String ruleName, ContainerType containerType, boolean wrapInContainer) {
-      super(ruleName);
+   private InputFields(ContainerType containerType, boolean wrapInContainer) {
       this.containerType = containerType;
       this.wrapInContainer = wrapInContainer;
    }
@@ -101,7 +98,7 @@ public final class InputFields extends AppendableRule<Object> {
       return this;
    }
 
-   private void write(Appendable writer, String msg, Object... data) throws IOException {
+   private void write(StringBuilder writer, String msg, Object... data) {
       writer.append(String.format(msg, data));
    }
 
@@ -121,7 +118,7 @@ public final class InputFields extends AppendableRule<Object> {
       return toReturn;
    }
 
-   private void write(Appendable writer, String key, Data data) throws IOException {
+   private void write(StringBuilder writer, String key, Data data) {
       write(writer, "<div class=\"%s%s\">\n", containerType.getStyle(), ifTrue(" has-error", data.hasError));
       switch (data.type) {
          case checkbox:
@@ -150,17 +147,18 @@ public final class InputFields extends AppendableRule<Object> {
       writer.append("</div>\n");
    }
 
-   @Override
-   public void applyTo(Appendable writer) throws IOException {
+   public String build() {
+      StringBuilder builder = new StringBuilder();
       if (wrapInContainer) {
-         writer.append("<div class=\"container\">\n");
+         builder.append("<div class=\"container\">\n");
       }
       for (Entry<String, Data> entry : data.entrySet()) {
-         write(writer, entry.getKey(), entry.getValue());
+         write(builder, entry.getKey(), entry.getValue());
       }
       if (wrapInContainer) {
-         writer.append("</div>\n");
+         builder.append("</div>\n");
       }
+      return builder.toString();
    }
 
    private class Data {
