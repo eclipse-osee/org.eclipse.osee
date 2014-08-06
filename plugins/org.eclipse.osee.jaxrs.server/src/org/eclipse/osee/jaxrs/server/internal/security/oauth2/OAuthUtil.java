@@ -14,8 +14,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -147,7 +149,7 @@ public final class OAuthUtil {
       return new SecurityContext() {
          @Override
          public boolean isUserInRole(String role) {
-            List<String> roles = principal.getRoles();
+            Collection<String> roles = principal.getRoles();
             if (roles == null) {
                roles = Collections.emptyList();
             }
@@ -189,7 +191,12 @@ public final class OAuthUtil {
 
    public static OseePrincipal newOseePrincipal(UserSubject subject) {
       Long id = getUserSubjectUuid(subject);
-      return new UserSubjectWrapper(id, subject);
+      Set<String> roles = new LinkedHashSet<String>();
+      List<String> sRoles = subject.getRoles();
+      if (sRoles != null) {
+         roles.addAll(sRoles);
+      }
+      return new UserSubjectWrapper(id, subject, roles);
    }
 
    public static Long getUserSubjectUuid(UserSubject subject) {
@@ -226,10 +233,12 @@ public final class OAuthUtil {
    private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {
 
       private final UserSubject subject;
+      private final Set<String> roles;
 
-      public UserSubjectWrapper(Long id, UserSubject subject) {
+      public UserSubjectWrapper(Long id, UserSubject subject, Set<String> roles) {
          super(id);
          this.subject = subject;
+         this.roles = roles;
       }
 
       @Override
@@ -243,8 +252,8 @@ public final class OAuthUtil {
       }
 
       @Override
-      public List<String> getRoles() {
-         return subject.getRoles();
+      public Set<String> getRoles() {
+         return roles;
       }
 
       @Override

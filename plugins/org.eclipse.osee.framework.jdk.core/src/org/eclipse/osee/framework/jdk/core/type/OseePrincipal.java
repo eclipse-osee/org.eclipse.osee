@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
@@ -21,7 +21,7 @@ public interface OseePrincipal extends Principal, Identity<Long> {
 
    String getLogin();
 
-   List<String> getRoles();
+   Set<String> getRoles();
 
    String getDisplayName();
 

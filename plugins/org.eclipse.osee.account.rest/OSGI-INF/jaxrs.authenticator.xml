@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" configuration-policy="optional" deactivate="stop" modified="update">
+	<implementation class="org.eclipse.osee.account.rest.internal.JaxRsAuthenticatorImpl" />
+	<service>
+		<provide interface="org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator" />
+	</service>
+	<reference bind="setAccountAdmin" cardinality="1..1" interface="org.eclipse.osee.account.admin.AccountAdmin" name="AccountAdmin" policy="static" />
+   <reference bind="setAuthenticationAdmin" cardinality="1..1" interface="org.eclipse.osee.authentication.admin.AuthenticationAdmin" name="AuthenticationAdmin" policy="static"/>
+   <property name="jaxrs.authenticator.automatic.account.creation.allowed" type="Boolean" value="true"/>
+</scr:component>
