@@ -435,11 +435,11 @@ public abstract class TestScript implements ITimeout {
    }
 
    /**
-    * Takes result of test point and updates the total test point tally.
+    * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}. Takes result of test point and updates the total test point tally.
     * 
     * @return total number of test points completed as an int.
     */
-   public int recordTestPoint(boolean passed) {
+   public int __recordTestPoint(boolean passed) {
       return testPointTally.tallyTestPoint(passed);
    }
 
@@ -567,6 +567,14 @@ public abstract class TestScript implements ITimeout {
       return null;
    }
 
+   /**
+    * Log a test point to the test.
+    * 
+    * @param isPassed
+    * @param testPointName
+    * @param expected
+    * @param actual
+    */
    public void logTestPoint(boolean isPassed, String testPointName, String expected, String actual) {
       this.getLogger().testpoint(this.getTestEnvironment(), this, this.getTestCase(), isPassed, testPointName,
          expected, actual);
@@ -600,7 +608,11 @@ public abstract class TestScript implements ITimeout {
       OseeLog.log(TestScript.class, Level.FINEST, "calling dispose on the TestScript.class");
    }
 
-   public void addTestPoint(boolean pass) {
+   /**
+    * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}.
+    * 
+    */
+   public void __addTestPoint(boolean pass) {
       if (pass) {
          this.pass++;
       } else {

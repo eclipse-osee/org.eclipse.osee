@@ -61,7 +61,7 @@ public class TestPointRecord extends TestRecord {
     public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase accessor, ITestPoint testPoint, boolean timeStamp) {
         super(source, TestLevel.TEST_POINT, "", timeStamp);
         this.testPoint = testPoint;
-        script.addTestPoint(testPoint.isPass());
+        script.__addTestPoint(testPoint.isPass());
         // this.testCase = accessor.getTestCase();
         if (accessor == null) {
             // OseeLog.log(Activator.class, Level.INFO, "test case null");
@@ -71,7 +71,7 @@ public class TestPointRecord extends TestRecord {
         if (testPoint == null) {
             OseeLog.log(TestEnvironment.class, Level.INFO, "test point null");
         }
-        this.number = script.recordTestPoint(testPoint.isPass());
+        this.number = script.__recordTestPoint(testPoint.isPass());
     }
 
     /**
