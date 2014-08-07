@@ -14,10 +14,11 @@ import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.cxf.jaxrs.ext.MessageContext;
+import org.apache.cxf.jaxrs.ext.MessageContextImpl;
+import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
-import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
 import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
@@ -112,7 +113,7 @@ public class SubjectProviderImpl implements SubjectProvider {
       UserSubject subject = mc.getContent(UserSubject.class);
       if (subject == null) {
          SecurityContext securityContext = getSecurityContext(mc);
-         subject = OAuthUtils.createSubject(securityContext);
+         subject = OAuthUtil.newSubject(securityContext);
       }
       return subject;
    }
@@ -121,8 +122,7 @@ public class SubjectProviderImpl implements SubjectProvider {
    public SecurityContext getSecurityContextFromSession(MessageContext mc) {
       SecurityContext securityContext = null;
       if (sessionDelegate != null) {
-         //         Long subjectId = OAuthUtil.getUserSubjectUuid(subject);
-         //         sessionDelegate.getSecurityContext(subjectId);
+         // Add security context resolution through session delegate
       } else {
          HttpSession session = mc.getHttpServletRequest().getSession(false);
          if (session != null) {
@@ -139,8 +139,7 @@ public class SubjectProviderImpl implements SubjectProvider {
       SecurityContext securityContext = OAuthUtil.newSecurityContext(subject);
 
       if (sessionDelegate != null) {
-         //         Long subjectId = OAuthUtil.getUserSubjectUuid(subject);
-         //         sessionDelegate.storeSecurityContext(subjectId, sc);
+         // Add security context resolution through session delegate
       } else {
          HttpSession session = mc.getHttpServletRequest().getSession(true);
          session.setAttribute(SESSION_SECURITY_CONTEXT, securityContext);
@@ -176,5 +175,26 @@ public class SubjectProviderImpl implements SubjectProvider {
          mc.put(SecurityContext.class, securityContext);
          mc.put(SecurityContext.class.getName(), securityContext);
       }
+   }
+
+   @Override
+   public UserSubject getSubjectById(long subjectId) {
+      MessageContext mc = new MessageContextImpl(PhaseInterceptorChain.getCurrentMessage());
+      UserSubject subject = mc.getContent(UserSubject.class);
+      if (subject == null) {
+         SecurityContext securityContext = getSecurityContext(mc);
+         if (securityContext != null) {
+            subject = OAuthUtil.newSubject(securityContext);
+         }
+      }
+
+      long subjectId2 = getSubjectId(subject);
+      if (subjectId2 != subjectId) {
+         if (sessionDelegate != null) {
+            Subject user = sessionDelegate.getSubjectById(subjectId);
+            subject = OAuthUtil.newUserSubject(user);
+         }
+      }
+      return subject;
    }
 }

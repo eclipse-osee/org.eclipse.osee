@@ -121,7 +121,12 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
    @Override
    public Client getClient(String clientId) {
-      return clientProvider.getClient(clientId);
+      Client client = clientProvider.getClient(clientId);
+      if (client == null) {
+         OAuthError error = new OAuthError(OAuthConstants.INVALID_CLIENT, "Client Id not found.");
+         throw new OAuthServiceException(error);
+      }
+      return client;
    }
 
    @Override
@@ -295,7 +300,7 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       OAuthToken accessToken = storage.getPreauthorizedToken(clientId, subjectId, grantType);
 
       ServerAccessToken token = null;
-      if (accessToken != null) {
+      if (accessToken != null && accessToken.getType() != OAuthTokenType.REFRESH_TOKEN && accessToken.getType() != OAuthTokenType.UNKNOW_TOKEN) {
          token = serializer.decryptAccessToken(this, accessToken.getTokenKey(), getSecretKey());
       }
       return token;

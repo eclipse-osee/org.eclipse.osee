@@ -44,11 +44,17 @@ import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifier;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifierImpl;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry;
-import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.CxfAuthorizationCodeService;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.ClientProviderImpl;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.OAuthEncryption;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.SubjectProviderImpl;
-import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientRegistrationService;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.AbstractClientService;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.AuthorizationCodeEndpoint;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientEndpoint;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientRegistrationEndpoint;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ImplicitGrantEndpoint;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.AuthorizationDataHtmlWriter;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.ClientRegistrationDataHtmlWriter;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.ClientRegistrationResponseHtmlWriter;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.OOBAuthorizationResponseHtmlWriter;
 import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuth;
@@ -131,8 +137,8 @@ public class OAuth2ServerProvider {
    }
 
    private void initialize(OAuth2Configuration config) {
-      ClientProvider clientProvider = null;
       SubjectProvider subjectProvider = new SubjectProviderImpl(logger, sessionProvider, authenticator);
+      ClientProvider clientProvider = new ClientProviderImpl(subjectProvider, storage);
 
       audiences = Collections.emptyList();
 
@@ -147,16 +153,19 @@ public class OAuth2ServerProvider {
       endpoints.add(bind(new TokenRevocationService(), dataProvider));
 
       //@formatter:off
-      endpoints.add(bind(new CxfAuthorizationCodeService(), dataProvider, subjectProvider));
-      endpoints.add(bind(new ImplicitGrantService(), dataProvider, subjectProvider));
+      endpoints.add(bind(new AuthorizationCodeEndpoint(clientProvider), dataProvider, subjectProvider));
+      endpoints.add(bind(new ImplicitGrantEndpoint(clientProvider), dataProvider, subjectProvider));
       //@formatter:on
 
       endpoints.add(bind(new AccessTokenValidatorService(), dataProvider));
-      endpoints.add(bind(new ClientRegistrationService(), clientProvider));
+      endpoints.add(bind(new ClientRegistrationEndpoint(logger), clientProvider, subjectProvider));
+      endpoints.add(bind(new ClientEndpoint(logger), clientProvider, subjectProvider));
 
       // Add OAuth2 application local Writers
       endpoints.add(new AuthorizationDataHtmlWriter());
       endpoints.add(new OOBAuthorizationResponseHtmlWriter());
+      endpoints.add(new ClientRegistrationDataHtmlWriter());
+      endpoints.add(new ClientRegistrationResponseHtmlWriter());
 
       application = new OAuth2Application(endpoints);
 
@@ -314,10 +323,18 @@ public class OAuth2ServerProvider {
          accessTokenService.setAudiences(audiences);
          accessTokenService.setGrantHandlers(grantHandlers);
       }
+
+      if (object instanceof AbstractClientService) {
+         AbstractClientService clientService = (AbstractClientService) object;
+         clientService.setBlockUnsecureRequests(config.isBlockUnsecureRequests());
+      }
    }
 
-   private static ClientRegistrationService bind(ClientRegistrationService object, ClientProvider dataProvider) {
+   private static AbstractClientService bind(AbstractClientService object, ClientProvider dataProvider, SubjectProvider subjectProvider) {
       object.setDataProvider(dataProvider);
+      object.setResourceOwnerNameProvider(subjectProvider);
+      object.setSessionAuthenticityTokenProvider(subjectProvider);
+      object.setSubjectCreator(subjectProvider);
       return object;
    }
 

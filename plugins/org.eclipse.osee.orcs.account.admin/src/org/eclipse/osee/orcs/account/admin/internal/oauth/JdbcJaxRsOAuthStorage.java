@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
+import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
 import org.eclipse.osee.jaxrs.server.security.OAuthToken;
 import org.eclipse.osee.logger.Log;
@@ -87,6 +89,31 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    @Override
    public void removeTokenByKey(String tokenKey) {
       tokenStorage.deleteTokenByKey(tokenKey);
+   }
+
+   @Override
+   public long getClientUuidByKey(String clientKey) {
+      return 0;
+   }
+
+   @Override
+   public OAuthClient getClientByClientGuid(String guid) {
+      return null;
+   }
+
+   @Override
+   public OAuthClient getClientByClientKey(String clientKey) {
+      return null;
+   }
+
+   @Override
+   public void storeClient(OseePrincipal principal, OAuthClient client) {
+      //
+   }
+
+   @Override
+   public void removeClient(OseePrincipal principal, OAuthClient client) {
+      //
    }
 
 }

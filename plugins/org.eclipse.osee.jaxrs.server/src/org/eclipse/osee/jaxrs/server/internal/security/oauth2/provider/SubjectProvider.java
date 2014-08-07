@@ -29,4 +29,5 @@ public interface SubjectProvider extends SessionAuthenticityTokenProvider, Subje
 
    SecurityContext getSecurityContextFromSession(MessageContext mc);
 
+   UserSubject getSubjectById(long subjectId);
 }

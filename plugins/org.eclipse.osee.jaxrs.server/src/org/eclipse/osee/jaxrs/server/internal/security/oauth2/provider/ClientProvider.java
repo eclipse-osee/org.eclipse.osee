@@ -10,17 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
+import java.io.InputStream;
+import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.rs.security.oauth2.common.Client;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientFormData;
+import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface ClientProvider {
+public interface ClientProvider extends ClientLogoUriResolver {
+
+   long getClientId(Client client);
 
    Client getClient(String clientId);
 
-   Client createClient();
+   Client createClient(UriInfo uriInfo, OseePrincipal principal, ClientFormData data);
 
-   long getClientId(Client client);
+   InputSupplier<InputStream> getClientLogoSupplier(UriInfo uriInfo, String applicationGuid);
 
 }

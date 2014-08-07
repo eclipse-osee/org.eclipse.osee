@@ -8,21 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.security;
+package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator.Subject;
+import java.net.URI;
+import javax.ws.rs.core.UriInfo;
+import org.apache.cxf.rs.security.oauth2.common.Client;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface JaxRsSessionProvider {
+public interface ClientLogoUriResolver {
 
-   String createSessionToken(Long subjectId);
-
-   String removeSessionToken(Long subjectId);
-
-   String getSessionToken(Long subjectId);
-
-   Subject getSubjectById(Long subjectId);
+   URI getClientLogoUri(UriInfo uriInfo, Client client);
 
 }

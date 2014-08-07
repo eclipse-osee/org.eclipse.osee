@@ -12,11 +12,13 @@ package org.eclipse.osee.jaxrs.server.internal.security.oauth2;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -30,6 +32,7 @@ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.AuthorizationUtils;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
+import org.apache.cxf.security.LoginSecurityContext;
 import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
@@ -188,6 +191,20 @@ public final class OAuthUtil {
          toReturn = defaultValue;
       }
       return toReturn;
+   }
+
+   public static UserSubject newSubject(SecurityContext securityContext) {
+      Principal principal = securityContext.getUserPrincipal();
+      String name = principal != null ? principal.getName() : "UNKNOWN";
+      List<String> roleNames = Collections.emptyList();
+      if (securityContext instanceof LoginSecurityContext) {
+         roleNames = new ArrayList<String>();
+         Set<Principal> roles = ((LoginSecurityContext) securityContext).getUserRoles();
+         for (Principal p : roles) {
+            roleNames.add(p.getName());
+         }
+      }
+      return new UserSubject(name, roleNames);
    }
 
    private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {

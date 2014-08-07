@@ -10,10 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface JaxRsOAuthStorage {
+
+   long getClientUuidByKey(String clientKey);
+
+   OAuthClient getClientByClientGuid(String guid);
+
+   OAuthClient getClientByClientKey(String clientKey);
+
+   void storeClient(OseePrincipal principal, OAuthClient client);
+
+   void removeClient(OseePrincipal principal, OAuthClient client);
 
    OAuthCodeGrant getCodeGrant(String code);
 
