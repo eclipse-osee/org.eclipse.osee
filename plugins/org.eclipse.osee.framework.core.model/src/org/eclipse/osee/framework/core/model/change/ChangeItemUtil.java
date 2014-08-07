@@ -120,7 +120,7 @@ public final class ChangeItemUtil {
       isAlreadyOnDestination(changeItem) || //
       isDeletedAndDoesNotExistInDestination(changeItem) || //
       (hasBeenDeletedInDestination(changeItem) && !isResurrected(changeItem)) || //
-      hasBeenReplacedWithVersion(changeItem);
+      (hasBeenReplacedWithVersion(changeItem) && !isResurrected(changeItem));
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {

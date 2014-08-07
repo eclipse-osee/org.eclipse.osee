@@ -179,7 +179,7 @@ public class ConflictManagerInternal {
          long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
 
          chStmt.runPreparedQuery(sql, sourceBranch.getUuid(), sourceBranch.getBaseTransaction().getId(),
-            destinationBranch.getUuid(), commonBranchId, commonTransactionNumber);
+            destinationBranch.getUuid(), commonBranchId, commonTransactionNumber, commonTransactionNumber);
 
          ArtifactConflictBuilder artifactConflictBuilder;
          int artId = 0;

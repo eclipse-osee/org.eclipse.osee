@@ -33,6 +33,7 @@ import org.junit.runners.Suite;
    BranchStateTest.class,
    ChangeManagerTest.class,
    ConflictDeletionTest.class,
+   ConflictIntroduceTest.class,
    ConflictTest.class,
    CreateBranchOperationTest.class,
    CrossBranchRelationLinkTest.class,
