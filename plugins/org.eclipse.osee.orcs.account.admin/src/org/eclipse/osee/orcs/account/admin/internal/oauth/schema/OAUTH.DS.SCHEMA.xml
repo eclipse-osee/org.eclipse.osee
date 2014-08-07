@@ -19,6 +19,9 @@
 		<Index id="OSEE_OAUTH_AUTHORIZATION__C_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="CODE" />
 		</Index>
+		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTHORIZATION__CI_FK" type="FOREIGN KEY" appliesTo="CLIENT_ID">
+			<References schema="OSEE" table="OSEE_OAUTH_CLIENT_CREDENTIAL" column="CLIENT_ID" onDelete="CASCADE" />
+		</Constraint>
 	</Table>
 
 	<Table name="OSEE_OAUTH_TOKEN" schema="OSEE" tablespace="osee_data">
@@ -39,6 +42,27 @@
 		<Constraint schema="OSEE" id="OSEE_OAUTH_TOKEN__ID_PK" type="PRIMARY KEY" appliesTo="ID" />
 		<Index id="OSEE_OAUTH_TOKEN__TK_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="TOKEN_KEY" />
+		</Index>
+		<Constraint schema="OSEE" id="OSEE_OAUTH_TOKEN__CI_FK" type="FOREIGN KEY" appliesTo="CLIENT_ID">
+			<References schema="OSEE" table="OSEE_OAUTH_CLIENT_CREDENTIAL" column="CLIENT_ID" onDelete="CASCADE" />
+		</Constraint>
+	</Table>
+
+	<Table name="OSEE_OAUTH_CLIENT_CREDENTIAL" schema="OSEE" tablespace="osee_data">
+		<Column id="CLIENT_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="APPLICATION_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="SUBJECT_ID" defaultValue="not null" type="BIGINT" />
+
+		<Column id="CLIENT_KEY" defaultValue="not null" limits="255" type="VARCHAR" />
+		<Column id="CLIENT_SECRET" limits="255" type="VARCHAR" />
+		<Column id="CLIENT_CERT" limits="255" type="VARCHAR" />
+
+		<Constraint schema="OSEE" id="OSEE_OAUTH_CLIENT_CREDENTIAL__U_PK" type="PRIMARY KEY" appliesTo="CLIENT_ID" />
+		<Index id="OSEE_OAUTH_CLIENT_CREDENTIAL__CK_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="CLIENT_KEY" />
+		</Index>
+		<Index id="OSEE_OAUTH_CLIENT_CREDENTIAL__AI_IDX" tablespace="osee_index">
+			<AppliesTo id="APPLICATION_ID" />
 		</Index>
 	</Table>
 

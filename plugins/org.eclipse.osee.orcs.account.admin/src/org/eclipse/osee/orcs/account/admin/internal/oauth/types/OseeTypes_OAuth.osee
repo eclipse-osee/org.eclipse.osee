@@ -1,0 +1,92 @@
+import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
+
+artifactType "OAuth Client" extends "Artifact" {
+	uuid 0x0A811854041F8326
+	attribute "Description"
+	attribute "Website URI"
+	attribute "Logo URI"
+	attribute "Is Confidential"
+	attribute "Authorized Grant Type"
+	attribute "Authorized Redirect URI"
+	attribute "Authorized Scope"
+	attribute "Authorized Audience"
+	attribute "Properties"
+	attribute "Image Content"
+}
+
+attributeType "Website URI" extends StringAttribute {
+	uuid 0x6C96C4E7AA77D058
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Logo URI" extends StringAttribute {
+	uuid 0x6CDB5B52A133AFB1
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Is Confidential" extends BooleanAttribute {
+	uuid 0x0774F815D1F9E731
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	mediaType "text/plain"
+	defaultValue "true"
+}
+
+attributeType "Authorized Grant Type" extends EnumeratedAttribute {
+	uuid 0x1ADA826121357000
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 4
+	taggerId DefaultAttributeTaggerProvider
+	enumType "oauth.grant.type"
+	mediaType "text/plain"
+}
+
+oseeEnumType "oauth.grant.type" {
+	uuid 0x1471F8E388582611
+	entry "Authorization Code Grant"
+	entry "Implicit Grant"
+	entry "Resource Owner Password Credentials Grant"
+	entry "Client Credentials Grant"
+}
+
+attributeType "Authorized Redirect URI" extends StringAttribute {
+	uuid 0x4B4665B8E1002F28
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Authorized Scope" extends StringAttribute {
+	uuid 0x315964489A850F7A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Authorized Audience" extends StringAttribute {
+	uuid 0x635EBFA0D4A82E22
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "Properties" extends StringAttribute {
+	uuid 0x4E2EA052F480510A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "application/json"
+}
