@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -79,30 +78,7 @@ public final class ActionResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAction(@PathParam("id") String id) throws Exception {
       ArtifactReadable action = AtsServerService.get().getActionById(id);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, ActionLoadLevel.HEADER, resourceRegistry);
-   }
-
-   /**
-    * @param id of action to display
-    * @return html representation of the action w/ all ids resolved
-    */
-   @Path("{id}/full")
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getActionFull(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = AtsServerService.get().getActionById(id);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, ActionLoadLevel.HEADER_FULL,
-         resourceRegistry);
-   }
-
-   /**
-    * @param id of action to operate on
-    * @return StateResource for the give action
-    */
-   @Path("{id}/state")
-   public StateResource transitionAction(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = AtsServerService.get().getActionById(id);
-      return new StateResource(atsServer, action.getGuid(), resourceRegistry);
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry);
    }
 
    /**
@@ -163,7 +139,7 @@ public final class ActionResource {
          htmlStr =
             atsServer.getWorkItemPage().getHtml(
                ((ArtifactReadable) action.getTeamWorkflows().iterator().next().getStoreObject()),
-               "Action Created - " + action.getGuid(), ActionLoadLevel.HEADER, resourceRegistry);
+               "Action Created - " + action.getGuid(), resourceRegistry);
       }
 
       return Response.status(200).entity(htmlStr).build();
@@ -178,9 +154,7 @@ public final class ActionResource {
       if (action != null) {
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
          if (workItem != null) {
-            results =
-               atsServer.getWorkItemPage().getHtml(action, "Action - " + searchId, ActionLoadLevel.HEADER,
-                  resourceRegistry);
+            results = atsServer.getWorkItemPage().getHtml(action, "Action - " + searchId, resourceRegistry);
          } else {
             results = AHTML.simplePage(String.format("Undisplayable %s", action));
          }
@@ -193,7 +167,7 @@ public final class ActionResource {
             if (legacyQueryResults.size() == 1) {
                results =
                   atsServer.getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(), "Action - " + searchId,
-                     ActionLoadLevel.HEADER, resourceRegistry);
+                     resourceRegistry);
                break;
             } else if (legacyQueryResults.size() > 1) {
                results = getGuidListHtml(legacyQueryResults);

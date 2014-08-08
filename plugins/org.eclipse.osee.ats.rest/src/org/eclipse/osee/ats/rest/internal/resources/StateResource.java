@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -63,7 +62,7 @@ public final class StateResource {
    @Produces(MediaType.TEXT_HTML)
    public String getStates() throws Exception {
       ArtifactReadable action = atsServer.getArtifactByGuid(guid);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, ActionLoadLevel.STATE, resourceRegistry);
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, resourceRegistry);
    }
 
    /**
@@ -75,8 +74,7 @@ public final class StateResource {
    @Produces(MediaType.TEXT_HTML)
    public String getTransition() throws Exception {
       ArtifactReadable action = AtsServerService.get().getActionById(guid);
-      return atsServer.getWorkItemPage().getHtmlWithStates(action, "Action - " + guid, ActionLoadLevel.STATE,
-         resourceRegistry);
+      return atsServer.getWorkItemPage().getHtmlWithTransition(action, "Action - " + guid, resourceRegistry);
    }
 
    /**
@@ -133,8 +131,7 @@ public final class StateResource {
          // reload before display
          action = atsServer.getArtifactByGuid(guid);
          htmlStr =
-            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(),
-               ActionLoadLevel.HEADER, resourceRegistry);
+            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(), resourceRegistry);
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);
       }

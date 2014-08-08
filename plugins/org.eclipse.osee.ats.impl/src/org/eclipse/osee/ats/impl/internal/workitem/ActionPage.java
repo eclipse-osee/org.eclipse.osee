@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.ActionLoadLevel;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -44,7 +43,6 @@ import org.eclipse.osee.template.engine.StringOptionsRule;
 public class ActionPage {
 
    private String pageTemplate;
-   private final ActionLoadLevel actionLoadLevel;
    private PageCreator page;
    private IAtsWorkItem workItem;
    private final IResourceRegistry registry;
@@ -52,14 +50,14 @@ public class ActionPage {
    private final ArtifactReadable action;
    private final IAtsServer atsServer;
    private final Log logger;
+   private boolean addTransition = false;
 
-   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, ActionLoadLevel actionLoadLevel) {
+   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title) {
       this.logger = logger;
       this.atsServer = atsServer;
       this.registry = registry;
       this.action = action;
       this.title = title;
-      this.actionLoadLevel = actionLoadLevel;
    }
 
    private IAtsWorkItem getWorkItem() {
@@ -110,52 +108,28 @@ public class ActionPage {
    }
 
    private String getWorkDefStr(IAtsWorkItem workItem) {
-      String results = "<only on full>";
-      if (isShowHeaderFull()) {
-         results = workItem.getWorkDefinition().getName();
-      }
-      return results;
+      return workItem.getWorkDefinition().getName();
    }
 
    private String getAssigneesStr(IAtsWorkItem workItem, ArtifactReadable action) {
-      String results = "";
-      if (isShowHeaderFull()) {
-         results = workItem.getStateMgr().getAssigneesStr();
-      } else {
-         String currState = action.getSoleAttributeAsString(AtsAttributeTypes.CurrentState);
-         String[] split = currState.split(";");
-         if (split.length >= 2) {
-            String assignees = split[1];
-            assignees = assignees.replaceAll("><", "; ");
-            assignees = assignees.replaceAll(">", "");
-            assignees = assignees.replaceAll("<", "");
-            results = assignees;
-         }
-      }
-      return results;
+      return workItem.getStateMgr().getAssigneesStr();
    }
 
    private String getTeamStr(ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition);
-      if (isShowHeaderFull()) {
-         results = atsServer.getArtifactByGuid(results).getName();
-      }
+      results = atsServer.getArtifactByGuid(results).getName();
       return results;
    }
 
    private String getAIStr(ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.ActionableItem);
-      if (isShowHeaderFull()) {
-         results = atsServer.getArtifactByGuid(results).getName();
-      }
+      results = atsServer.getArtifactByGuid(results).getName();
       return results;
    }
 
    private String getCreatedByStr(IAtsWorkItem workItem, ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.CreatedBy);
-      if (isShowHeaderFull()) {
-         results = workItem.getCreatedBy().getName();
-      }
+      results = workItem.getCreatedBy().getName();
       return results;
    }
 
@@ -181,56 +155,44 @@ public class ActionPage {
 
    private String getVersion(IAtsWorkItem workItem) {
       String version = "<on full load>";
-      if (isShowHeaderFull()) {
-         try {
-            IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-            String str = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
-            if (Strings.isValid(str)) {
-               version = str;
-            }
-         } catch (OseeCoreException ex) {
-            logger.error(ex, "Error getting version for [%s]", workItem);
-            version = "exception: " + ex.getLocalizedMessage();
+      try {
+         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+         String str = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
+         if (Strings.isValid(str)) {
+            version = str;
          }
+      } catch (OseeCoreException ex) {
+         logger.error(ex, "Error getting version for [%s]", workItem);
+         version = "exception: " + ex.getLocalizedMessage();
       }
       return version;
    }
 
    private void addStates(PageCreator page, IAtsWorkItem workItem, ArtifactReadable action) throws Exception {
       StringBuilder statesSb = new StringBuilder();
-      if (isShowStates()) {
-         IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
-         Collection<String> visitedStates = workItem.getStateMgr().getVisitedStateNames();
-         List<IAtsStateDefinition> statesOrderedByOrdinal =
-            atsServer.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
-         for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
-            IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
-            if (visitedStates.contains(state.getName())) {
-               String stateHtmlTemplate = getStateHtmlTemplate();
+      IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
+      Collection<String> visitedStates = workItem.getStateMgr().getVisitedStateNames();
+      List<IAtsStateDefinition> statesOrderedByOrdinal =
+         atsServer.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
+      for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
+         IAtsStateDefinition state = statesOrderedByOrdinal.get(index);
+         if (visitedStates.contains(state.getName())) {
+            String stateHtmlTemplate = getStateHtmlTemplate();
 
-               String stateName = state.getName();
-               if (stateName.equals(workItem.getStateMgr().getCurrentStateName())) {
-                  stateName = "CURRENT STATE => " + stateName;
-               }
-               stateHtmlTemplate = stateHtmlTemplate.replace("TITLE", stateName);
-
-               StringBuilder widgets = new StringBuilder();
-               addWidgets(widgets, workItem, state.getLayoutItems());
-               stateHtmlTemplate = stateHtmlTemplate.replace("WIDGETS", widgets.toString());
-
-               statesSb.append(stateHtmlTemplate);
+            String stateName = state.getName();
+            if (stateName.equals(workItem.getStateMgr().getCurrentStateName())) {
+               stateName = "CURRENT STATE => " + stateName;
             }
+            stateHtmlTemplate = stateHtmlTemplate.replace("TITLE", stateName);
+
+            StringBuilder widgets = new StringBuilder();
+            addWidgets(widgets, workItem, state.getLayoutItems());
+            stateHtmlTemplate = stateHtmlTemplate.replace("WIDGETS", widgets.toString());
+
+            statesSb.append(stateHtmlTemplate);
          }
       }
       page.addKeyValuePair("states", statesSb.toString());
-   }
-
-   private boolean isShowStates() {
-      return (actionLoadLevel == ActionLoadLevel.STATE);
-   }
-
-   private boolean isShowHeaderFull() {
-      return (actionLoadLevel == ActionLoadLevel.HEADER_FULL);
    }
 
    private void addWidgets(StringBuilder sb, IAtsWorkItem workItem, Collection<IAtsLayoutItem> items) {
@@ -258,7 +220,7 @@ public class ActionPage {
          if (attributesToStringList.size() > 1) {
             sb.append(attributesToStringList.toString());
          } else if (attributesToStringList.size() == 1) {
-            sb.append(attributesToStringList.iterator().next().toString());
+            sb.append(String.valueOf(attributesToStringList.iterator().next()));
          }
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
@@ -284,6 +246,14 @@ public class ActionPage {
          sb.append("exception: " + ex.getLocalizedMessage());
       }
       page.addKeyValuePair("debug", sb.toString());
+   }
+
+   public boolean isAddTransition() {
+      return addTransition;
+   }
+
+   public void setAddTransition(boolean addTransition) {
+      this.addTransition = addTransition;
    }
 
 }
