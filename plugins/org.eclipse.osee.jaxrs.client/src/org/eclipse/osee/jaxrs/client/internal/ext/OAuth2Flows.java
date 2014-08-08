@@ -83,8 +83,11 @@ public class OAuth2Flows {
       }
 
       if (response.isOobAuthorization()) {
-         ClientAccessToken token =
-            exchangeCodeForToken(sessionCookie, response.getAuthorizationCode(), state, scope, redirectUri);
+         String authorizationCode = response.getAuthorizationCode();
+         if (!Strings.isValid(authorizationCode)) {
+            throw newException("Authorization code was null");
+         }
+         ClientAccessToken token = exchangeCodeForToken(sessionCookie, authorizationCode, state, scope, redirectUri);
          if (Strings.isValid(tokenValidationUri)) {
             validateToken(response.getAuthenticityCookie(), token);
          }
