@@ -59,8 +59,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                   refreshEnablement(button);
                   return;
                }
-               AtsBranchManagerCore.createWorkingBranch_Create(getTeamArt());
-               Thread.sleep(2000);
+               AtsBranchManagerCore.createWorkingBranch_Create(getTeamArt(), true);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
