@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -541,6 +542,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public WorkState createStateData(String name, List<? extends IAtsUser> assignees) {
+      Conditions.checkNotNullOrContainNull(assignees, "assignees");
       return new WorkStateImpl(name, assignees);
    }
 
@@ -551,6 +553,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) {
+      Conditions.checkNotNullOrContainNull(assignees, "assignees");
       return new WorkStateImpl(name, assignees, hoursSpent, percentComplete);
    }
 

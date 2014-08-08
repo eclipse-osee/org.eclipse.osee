@@ -109,7 +109,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       Set<IAtsUser> results = new HashSet<IAtsUser>();
       try {
          for (ArtifactReadable userArt : artifact.getRelated(relation)) {
-            IAtsUser lead = getAtsServer().getUserService().getUserById(userArt.getGuid());
+            IAtsUser lead =
+               getAtsServer().getUserService().getUserById(
+                  (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
             results.add(lead);
          }
       } catch (OseeCoreException ex) {

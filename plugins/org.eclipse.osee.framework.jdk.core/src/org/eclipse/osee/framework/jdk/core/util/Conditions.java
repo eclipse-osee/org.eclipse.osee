@@ -160,4 +160,11 @@ public final class Conditions {
          checkNotNull(object, objectName);
       }
    }
+
+   public static void checkNotNullOrContainNull(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
+      checkNotNull(collection, objectName);
+      for (Object object : collection) {
+         checkNotNull(object, objectName);
+      }
+   }
 }

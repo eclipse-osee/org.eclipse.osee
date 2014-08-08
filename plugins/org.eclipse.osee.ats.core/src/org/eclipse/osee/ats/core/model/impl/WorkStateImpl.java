@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -71,9 +72,10 @@ public class WorkStateImpl implements WorkState {
    }
 
    @Override
-   public void addAssignee(IAtsUser steve) {
-      if (!assignees.contains(steve)) {
-         assignees.add(steve);
+   public void addAssignee(IAtsUser user) {
+      Conditions.checkNotNull(user, "user");
+      if (!assignees.contains(user)) {
+         assignees.add(user);
       }
    }
 
