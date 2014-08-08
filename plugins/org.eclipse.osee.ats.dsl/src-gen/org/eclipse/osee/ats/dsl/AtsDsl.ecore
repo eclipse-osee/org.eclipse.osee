@@ -37,6 +37,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="workDefinition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="relatedTaskWorkDefinition"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="teamWorkflowArtifactType"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessContextId" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="version" upperBound="-1"
@@ -72,7 +74,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="released" eType="#//BooleanDef"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowCreateBranch" eType="#//BooleanDef"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowCommitBranch" eType="#//BooleanDef"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baselineBranchGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="baselineBranchUuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="parallelVersion" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

@@ -21,7 +21,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getReleased <em>Released</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCreateBranch <em>Allow Create Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCommitBranch <em>Allow Commit Branch</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid <em>Baseline Branch Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
@@ -216,32 +215,6 @@ public interface VersionDef extends EObject
    * @generated
    */
   void setAllowCommitBranch(BooleanDef value);
-
-  /**
-   * Returns the value of the '<em><b>Baseline Branch Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Baseline Branch Guid</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Baseline Branch Guid</em>' attribute.
-   * @see #setBaselineBranchGuid(String)
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef_BaselineBranchGuid()
-   * @model
-   * @generated
-   */
-  String getBaselineBranchGuid();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid <em>Baseline Branch Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Baseline Branch Guid</em>' attribute.
-   * @see #getBaselineBranchGuid()
-   * @generated
-   */
-  void setBaselineBranchGuid(String value);
 
   /**
    * Returns the value of the '<em><b>Baseline Branch Uuid</b></em>' attribute.

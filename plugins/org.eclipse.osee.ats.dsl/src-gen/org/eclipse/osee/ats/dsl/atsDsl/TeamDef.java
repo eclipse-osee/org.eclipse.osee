@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getPrivileged <em>Privileged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getWorkDefinition <em>Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getChildren <em>Children</em>}</li>
@@ -248,6 +249,32 @@ public interface TeamDef extends EObject
    * @generated
    */
   void setRelatedTaskWorkDefinition(String value);
+
+  /**
+   * Returns the value of the '<em><b>Team Workflow Artifact Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Team Workflow Artifact Type</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Team Workflow Artifact Type</em>' attribute.
+   * @see #setTeamWorkflowArtifactType(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_TeamWorkflowArtifactType()
+   * @model
+   * @generated
+   */
+  String getTeamWorkflowArtifactType();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Team Workflow Artifact Type</em>' attribute.
+   * @see #getTeamWorkflowArtifactType()
+   * @generated
+   */
+  void setTeamWorkflowArtifactType(String value);
 
   /**
    * Returns the value of the '<em><b>Access Context Id</b></em>' attribute list.

@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPrivileged <em>Privileged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getWorkDefinition <em>Work Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getRelatedTaskWorkDefinition <em>Related Task Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getChildren <em>Children</em>}</li>
@@ -201,6 +202,26 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * @ordered
    */
   protected String relatedTaskWorkDefinition = RELATED_TASK_WORK_DEFINITION_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTeamWorkflowArtifactType() <em>Team Workflow Artifact Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTeamWorkflowArtifactType()
+   * @generated
+   * @ordered
+   */
+  protected static final String TEAM_WORKFLOW_ARTIFACT_TYPE_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTeamWorkflowArtifactType() <em>Team Workflow Artifact Type</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTeamWorkflowArtifactType()
+   * @generated
+   * @ordered
+   */
+  protected String teamWorkflowArtifactType = TEAM_WORKFLOW_ARTIFACT_TYPE_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getAccessContextId() <em>Access Context Id</em>}' attribute list.
@@ -443,6 +464,29 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getTeamWorkflowArtifactType()
+  {
+    return teamWorkflowArtifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTeamWorkflowArtifactType(String newTeamWorkflowArtifactType)
+  {
+    String oldTeamWorkflowArtifactType = teamWorkflowArtifactType;
+    teamWorkflowArtifactType = newTeamWorkflowArtifactType;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE, oldTeamWorkflowArtifactType, teamWorkflowArtifactType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<String> getAccessContextId()
   {
     if (accessContextId == null)
@@ -534,6 +578,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getWorkDefinition();
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
         return getRelatedTaskWorkDefinition();
+      case AtsDslPackage.TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE:
+        return getTeamWorkflowArtifactType();
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         return getAccessContextId();
       case AtsDslPackage.TEAM_DEF__VERSION:
@@ -589,6 +635,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return;
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
         setRelatedTaskWorkDefinition((String)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE:
+        setTeamWorkflowArtifactType((String)newValue);
         return;
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         getAccessContextId().clear();
@@ -646,6 +695,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
         setRelatedTaskWorkDefinition(RELATED_TASK_WORK_DEFINITION_EDEFAULT);
         return;
+      case AtsDslPackage.TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE:
+        setTeamWorkflowArtifactType(TEAM_WORKFLOW_ARTIFACT_TYPE_EDEFAULT);
+        return;
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         getAccessContextId().clear();
         return;
@@ -689,6 +741,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return WORK_DEFINITION_EDEFAULT == null ? workDefinition != null : !WORK_DEFINITION_EDEFAULT.equals(workDefinition);
       case AtsDslPackage.TEAM_DEF__RELATED_TASK_WORK_DEFINITION:
         return RELATED_TASK_WORK_DEFINITION_EDEFAULT == null ? relatedTaskWorkDefinition != null : !RELATED_TASK_WORK_DEFINITION_EDEFAULT.equals(relatedTaskWorkDefinition);
+      case AtsDslPackage.TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE:
+        return TEAM_WORKFLOW_ARTIFACT_TYPE_EDEFAULT == null ? teamWorkflowArtifactType != null : !TEAM_WORKFLOW_ARTIFACT_TYPE_EDEFAULT.equals(teamWorkflowArtifactType);
       case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
         return accessContextId != null && !accessContextId.isEmpty();
       case AtsDslPackage.TEAM_DEF__VERSION:
@@ -724,6 +778,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
     result.append(workDefinition);
     result.append(", relatedTaskWorkDefinition: ");
     result.append(relatedTaskWorkDefinition);
+    result.append(", teamWorkflowArtifactType: ");
+    result.append(teamWorkflowArtifactType);
     result.append(", accessContextId: ");
     result.append(accessContextId);
     result.append(')');

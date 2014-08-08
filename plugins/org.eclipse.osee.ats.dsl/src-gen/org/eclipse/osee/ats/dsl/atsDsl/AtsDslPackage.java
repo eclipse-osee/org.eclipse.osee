@@ -286,13 +286,22 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__RELATED_TASK_WORK_DEFINITION = 9;
 
   /**
+   * The feature id for the '<em><b>Team Workflow Artifact Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE = 10;
+
+  /**
    * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__ACCESS_CONTEXT_ID = 10;
+  int TEAM_DEF__ACCESS_CONTEXT_ID = 11;
 
   /**
    * The feature id for the '<em><b>Version</b></em>' containment reference list.
@@ -301,7 +310,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__VERSION = 11;
+  int TEAM_DEF__VERSION = 12;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -310,7 +319,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__CHILDREN = 12;
+  int TEAM_DEF__CHILDREN = 13;
 
   /**
    * The number of structural features of the '<em>Team Def</em>' class.
@@ -319,7 +328,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF_FEATURE_COUNT = 13;
+  int TEAM_DEF_FEATURE_COUNT = 14;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl <em>Actionable Item Def</em>}' class.
@@ -513,22 +522,13 @@ public interface AtsDslPackage extends EPackage
   int VERSION_DEF__ALLOW_COMMIT_BRANCH = 6;
 
   /**
-   * The feature id for the '<em><b>Baseline Branch Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_DEF__BASELINE_BRANCH_GUID = 7;
-
-  /**
    * The feature id for the '<em><b>Baseline Branch Uuid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION_DEF__BASELINE_BRANCH_UUID = 8;
+  int VERSION_DEF__BASELINE_BRANCH_UUID = 7;
 
   /**
    * The feature id for the '<em><b>Parallel Version</b></em>' attribute list.
@@ -537,7 +537,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF__PARALLEL_VERSION = 9;
+  int VERSION_DEF__PARALLEL_VERSION = 8;
 
   /**
    * The number of structural features of the '<em>Version Def</em>' class.
@@ -546,7 +546,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_DEF_FEATURE_COUNT = 10;
+  int VERSION_DEF_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl <em>Work Def</em>}' class.
@@ -1768,6 +1768,17 @@ public interface AtsDslPackage extends EPackage
   EAttribute getTeamDef_RelatedTaskWorkDefinition();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Team Workflow Artifact Type</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamWorkflowArtifactType()
+   * @see #getTeamDef()
+   * @generated
+   */
+  EAttribute getTeamDef_TeamWorkflowArtifactType();
+
+  /**
    * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2017,17 +2028,6 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getVersionDef_AllowCommitBranch();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid <em>Baseline Branch Guid</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Baseline Branch Guid</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid()
-   * @see #getVersionDef()
-   * @generated
-   */
-  EAttribute getVersionDef_BaselineBranchGuid();
 
   /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}'.
@@ -3177,6 +3177,14 @@ public interface AtsDslPackage extends EPackage
     EAttribute TEAM_DEF__RELATED_TASK_WORK_DEFINITION = eINSTANCE.getTeamDef_RelatedTaskWorkDefinition();
 
     /**
+     * The meta object literal for the '<em><b>Team Workflow Artifact Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE = eINSTANCE.getTeamDef_TeamWorkflowArtifactType();
+
+    /**
      * The meta object literal for the '<em><b>Access Context Id</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3363,14 +3371,6 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute VERSION_DEF__ALLOW_COMMIT_BRANCH = eINSTANCE.getVersionDef_AllowCommitBranch();
-
-    /**
-     * The meta object literal for the '<em><b>Baseline Branch Guid</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION_DEF__BASELINE_BRANCH_GUID = eINSTANCE.getVersionDef_BaselineBranchGuid();
 
     /**
      * The meta object literal for the '<em><b>Baseline Branch Uuid</b></em>' attribute feature.

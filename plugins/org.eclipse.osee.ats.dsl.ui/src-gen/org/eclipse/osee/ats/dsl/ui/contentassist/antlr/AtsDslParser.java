@@ -75,7 +75,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getTeamDefAccess().getGroup_11(), "rule__TeamDef__Group_11__0");
 					put(grammarAccess.getTeamDefAccess().getGroup_12(), "rule__TeamDef__Group_12__0");
 					put(grammarAccess.getTeamDefAccess().getGroup_13(), "rule__TeamDef__Group_13__0");
-					put(grammarAccess.getTeamDefAccess().getGroup_13_2(), "rule__TeamDef__Group_13_2__0");
+					put(grammarAccess.getTeamDefAccess().getGroup_14(), "rule__TeamDef__Group_14__0");
+					put(grammarAccess.getTeamDefAccess().getGroup_14_2(), "rule__TeamDef__Group_14_2__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup(), "rule__ActionableItemDef__Group__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2(), "rule__ActionableItemDef__Group_2__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_1(), "rule__ActionableItemDef__Group_2_1__0");
@@ -97,7 +98,6 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVersionDefAccess().getGroup_7(), "rule__VersionDef__Group_7__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_8(), "rule__VersionDef__Group_8__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_9(), "rule__VersionDef__Group_9__0");
-					put(grammarAccess.getVersionDefAccess().getGroup_10(), "rule__VersionDef__Group_10__0");
 					put(grammarAccess.getWorkDefAccess().getGroup(), "rule__WorkDef__Group__0");
 					put(grammarAccess.getWorkDefAccess().getGroup_2(), "rule__WorkDef__Group_2__0");
 					put(grammarAccess.getWorkDefAccess().getGroup_3(), "rule__WorkDef__Group_3__0");
@@ -160,9 +160,10 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getTeamDefAccess().getPrivilegedAssignment_8_1(), "rule__TeamDef__PrivilegedAssignment_8_1");
 					put(grammarAccess.getTeamDefAccess().getWorkDefinitionAssignment_9_1(), "rule__TeamDef__WorkDefinitionAssignment_9_1");
 					put(grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionAssignment_10_1(), "rule__TeamDef__RelatedTaskWorkDefinitionAssignment_10_1");
-					put(grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_11_1(), "rule__TeamDef__AccessContextIdAssignment_11_1");
-					put(grammarAccess.getTeamDefAccess().getVersionAssignment_12_1(), "rule__TeamDef__VersionAssignment_12_1");
-					put(grammarAccess.getTeamDefAccess().getChildrenAssignment_13_2_1(), "rule__TeamDef__ChildrenAssignment_13_2_1");
+					put(grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeAssignment_11_1(), "rule__TeamDef__TeamWorkflowArtifactTypeAssignment_11_1");
+					put(grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_12_1(), "rule__TeamDef__AccessContextIdAssignment_12_1");
+					put(grammarAccess.getTeamDefAccess().getVersionAssignment_13_1(), "rule__TeamDef__VersionAssignment_13_1");
+					put(grammarAccess.getTeamDefAccess().getChildrenAssignment_14_2_1(), "rule__TeamDef__ChildrenAssignment_14_2_1");
 					put(grammarAccess.getActionableItemDefAccess().getNameAssignment_0(), "rule__ActionableItemDef__NameAssignment_0");
 					put(grammarAccess.getActionableItemDefAccess().getAiDefOptionAssignment_1(), "rule__ActionableItemDef__AiDefOptionAssignment_1");
 					put(grammarAccess.getActionableItemDefAccess().getGuidAssignment_2_1_1(), "rule__ActionableItemDef__GuidAssignment_2_1_1");
@@ -181,9 +182,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVersionDefAccess().getReleasedAssignment_5_1(), "rule__VersionDef__ReleasedAssignment_5_1");
 					put(grammarAccess.getVersionDefAccess().getAllowCreateBranchAssignment_6_1(), "rule__VersionDef__AllowCreateBranchAssignment_6_1");
 					put(grammarAccess.getVersionDefAccess().getAllowCommitBranchAssignment_7_1(), "rule__VersionDef__AllowCommitBranchAssignment_7_1");
-					put(grammarAccess.getVersionDefAccess().getBaselineBranchGuidAssignment_8_1(), "rule__VersionDef__BaselineBranchGuidAssignment_8_1");
-					put(grammarAccess.getVersionDefAccess().getBaselineBranchUuidAssignment_9_1(), "rule__VersionDef__BaselineBranchUuidAssignment_9_1");
-					put(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_10_1(), "rule__VersionDef__ParallelVersionAssignment_10_1");
+					put(grammarAccess.getVersionDefAccess().getBaselineBranchUuidAssignment_8_1(), "rule__VersionDef__BaselineBranchUuidAssignment_8_1");
+					put(grammarAccess.getVersionDefAccess().getParallelVersionAssignment_9_1(), "rule__VersionDef__ParallelVersionAssignment_9_1");
 					put(grammarAccess.getWorkDefAccess().getNameAssignment_0(), "rule__WorkDef__NameAssignment_0");
 					put(grammarAccess.getWorkDefAccess().getIdAssignment_2_1(), "rule__WorkDef__IdAssignment_2_1");
 					put(grammarAccess.getWorkDefAccess().getStartStateAssignment_3_1(), "rule__WorkDef__StartStateAssignment_3_1");

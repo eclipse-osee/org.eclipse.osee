@@ -612,15 +612,37 @@ ruleTeamDef returns [EObject current=null]
 	    }
 
 )
-))?(	otherlv_19='accessContextId' 
+))?(	otherlv_19='teamWorkflowArtifactType' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_11_0());
+    	newLeafNode(otherlv_19, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeKeyword_11_0());
     }
 (
 (
-		lv_accessContextId_20_0=RULE_STRING
+		lv_teamWorkflowArtifactType_20_0=RULE_STRING
 		{
-			newLeafNode(lv_accessContextId_20_0, grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_11_1_0()); 
+			newLeafNode(lv_teamWorkflowArtifactType_20_0, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeSTRINGTerminalRuleCall_11_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getTeamDefRule());
+	        }
+       		setWithLastConsumed(
+       			$current, 
+       			"teamWorkflowArtifactType",
+        		lv_teamWorkflowArtifactType_20_0, 
+        		"STRING");
+	    }
+
+)
+))?(	otherlv_21='accessContextId' 
+    {
+    	newLeafNode(otherlv_21, grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_12_0());
+    }
+(
+(
+		lv_accessContextId_22_0=RULE_STRING
+		{
+			newLeafNode(lv_accessContextId_22_0, grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_12_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -629,70 +651,70 @@ ruleTeamDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"accessContextId",
-        		lv_accessContextId_20_0, 
+        		lv_accessContextId_22_0, 
         		"STRING");
 	    }
 
 )
-))*(	otherlv_21='version' 
+))*(	otherlv_23='version' 
     {
-    	newLeafNode(otherlv_21, grammarAccess.getTeamDefAccess().getVersionKeyword_12_0());
+    	newLeafNode(otherlv_23, grammarAccess.getTeamDefAccess().getVersionKeyword_13_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_12_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_13_1_0()); 
 	    }
-		lv_version_22_0=ruleVersionDef		{
+		lv_version_24_0=ruleVersionDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"version",
-        		lv_version_22_0, 
+        		lv_version_24_0, 
         		"VersionDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_23='children' 
+))*(	otherlv_25='children' 
     {
-    	newLeafNode(otherlv_23, grammarAccess.getTeamDefAccess().getChildrenKeyword_13_0());
+    	newLeafNode(otherlv_25, grammarAccess.getTeamDefAccess().getChildrenKeyword_14_0());
     }
-	otherlv_24='{' 
+	otherlv_26='{' 
     {
-    	newLeafNode(otherlv_24, grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_13_1());
+    	newLeafNode(otherlv_26, grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_14_1());
     }
-(	otherlv_25='teamDefinition' 
+(	otherlv_27='teamDefinition' 
     {
-    	newLeafNode(otherlv_25, grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_13_2_0());
+    	newLeafNode(otherlv_27, grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_14_2_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_13_2_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_14_2_1_0()); 
 	    }
-		lv_children_26_0=ruleTeamDef		{
+		lv_children_28_0=ruleTeamDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"children",
-        		lv_children_26_0, 
+        		lv_children_28_0, 
         		"TeamDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))+	otherlv_27='}' 
+))+	otherlv_29='}' 
     {
-    	newLeafNode(otherlv_27, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_13_3());
+    	newLeafNode(otherlv_29, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_14_3());
     }
-)?	otherlv_28='}' 
+)?	otherlv_30='}' 
     {
-    	newLeafNode(otherlv_28, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_14());
+    	newLeafNode(otherlv_30, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_15());
     }
 )
 ;
@@ -1200,37 +1222,15 @@ ruleVersionDef returns [EObject current=null]
 	    }
 
 )
-))?(	otherlv_14='baselineBranchGuid' 
+))?(	otherlv_14='baselineBranchUuid' 
     {
-    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getBaselineBranchGuidKeyword_8_0());
+    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getBaselineBranchUuidKeyword_8_0());
     }
 (
 (
-		lv_baselineBranchGuid_15_0=RULE_STRING
+		lv_baselineBranchUuid_15_0=RULE_STRING
 		{
-			newLeafNode(lv_baselineBranchGuid_15_0, grammarAccess.getVersionDefAccess().getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getVersionDefRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"baselineBranchGuid",
-        		lv_baselineBranchGuid_15_0, 
-        		"STRING");
-	    }
-
-)
-))?(	otherlv_16='baselineBranchUuid' 
-    {
-    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getBaselineBranchUuidKeyword_9_0());
-    }
-(
-(
-		lv_baselineBranchUuid_17_0=RULE_STRING
-		{
-			newLeafNode(lv_baselineBranchUuid_17_0, grammarAccess.getVersionDefAccess().getBaselineBranchUuidSTRINGTerminalRuleCall_9_1_0()); 
+			newLeafNode(lv_baselineBranchUuid_15_0, grammarAccess.getVersionDefAccess().getBaselineBranchUuidSTRINGTerminalRuleCall_8_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1239,20 +1239,20 @@ ruleVersionDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"baselineBranchUuid",
-        		lv_baselineBranchUuid_17_0, 
+        		lv_baselineBranchUuid_15_0, 
         		"STRING");
 	    }
 
 )
-))?(	otherlv_18='parallelVersion' 
+))?(	otherlv_16='parallelVersion' 
     {
-    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_10_0());
+    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0());
     }
 (
 (
-		lv_parallelVersion_19_0=RULE_STRING
+		lv_parallelVersion_17_0=RULE_STRING
 		{
-			newLeafNode(lv_parallelVersion_19_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_10_1_0()); 
+			newLeafNode(lv_parallelVersion_17_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1261,14 +1261,14 @@ ruleVersionDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"parallelVersion",
-        		lv_parallelVersion_19_0, 
+        		lv_parallelVersion_17_0, 
         		"STRING");
 	    }
 
 )
-))*	otherlv_20='}' 
+))*	otherlv_18='}' 
     {
-    	newLeafNode(otherlv_20, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_11());
+    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10());
     }
 )
 ;

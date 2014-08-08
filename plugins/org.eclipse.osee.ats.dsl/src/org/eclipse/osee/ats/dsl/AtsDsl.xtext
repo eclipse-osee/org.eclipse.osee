@@ -34,6 +34,7 @@ TeamDef:
 		('privileged' privileged+=UserRef)*
 		('workDefinition' workDefinition=STRING)?
 		('relatedTaskWorkDefinition' relatedTaskWorkDefinition=STRING)?
+		('teamWorkflowArtifactType' teamWorkflowArtifactType=STRING)?
 		('accessContextId' accessContextId+=STRING)*
 		('version' version+=VersionDef)*
 		('children' '{'

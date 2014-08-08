@@ -139,6 +139,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             newTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, dslTeamDef.getWorkDefinition());
          }
+         if (Strings.isValid(dslTeamDef.getTeamWorkflowArtifactType())) {
+            newTeam.setSoleAttributeValue(AtsAttributeTypes.TeamWorkflowArtifactType,
+               dslTeamDef.getTeamWorkflowArtifactType());
+         }
          if (Strings.isValid(dslTeamDef.getRelatedTaskWorkDefinition())) {
             newTeam.setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
                dslTeamDef.getRelatedTaskWorkDefinition());

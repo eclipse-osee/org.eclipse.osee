@@ -312,7 +312,7 @@ public class TeamWorkFlowManager {
    }
 
    public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
-      IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
+      IArtifactType teamWorkflowArtifactType = null;
       if (teamDef.getStoreObject() != null) {
          String artifactTypeName =
             ((Artifact) teamDef.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamWorkflowArtifactType,
@@ -333,9 +333,14 @@ public class TeamWorkFlowManager {
             }
          }
       }
-      ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
-      if (teamWorkflowProvider != null) {
-         teamWorkflowArtifactType = teamWorkflowProvider.getTeamWorkflowArtifactType(teamDef, actionableItems);
+      if (teamWorkflowArtifactType == null) {
+         ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
+         if (teamWorkflowProvider != null) {
+            teamWorkflowArtifactType = teamWorkflowProvider.getTeamWorkflowArtifactType(teamDef, actionableItems);
+         }
+      }
+      if (teamWorkflowArtifactType == null) {
+         teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       }
       return teamWorkflowArtifactType;
    }

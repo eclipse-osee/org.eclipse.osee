@@ -543,7 +543,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getTeamDef_AccessContextId()
+  public EAttribute getTeamDef_TeamWorkflowArtifactType()
   {
     return (EAttribute)teamDefEClass.getEStructuralFeatures().get(10);
   }
@@ -553,9 +553,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getTeamDef_AccessContextId()
+  {
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(11);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getTeamDef_Version()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(11);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(12);
   }
 
   /**
@@ -565,7 +575,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    */
   public EReference getTeamDef_Children()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(12);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(13);
   }
 
   /**
@@ -773,7 +783,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_BaselineBranchGuid()
+  public EAttribute getVersionDef_BaselineBranchUuid()
   {
     return (EAttribute)versionDefEClass.getEStructuralFeatures().get(7);
   }
@@ -783,19 +793,9 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionDef_BaselineBranchUuid()
-  {
-    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(8);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getVersionDef_ParallelVersion()
   {
-    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(9);
+    return (EAttribute)versionDefEClass.getEStructuralFeatures().get(8);
   }
 
   /**
@@ -1703,6 +1703,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEReference(teamDefEClass, TEAM_DEF__PRIVILEGED);
     createEAttribute(teamDefEClass, TEAM_DEF__WORK_DEFINITION);
     createEAttribute(teamDefEClass, TEAM_DEF__RELATED_TASK_WORK_DEFINITION);
+    createEAttribute(teamDefEClass, TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE);
     createEAttribute(teamDefEClass, TEAM_DEF__ACCESS_CONTEXT_ID);
     createEReference(teamDefEClass, TEAM_DEF__VERSION);
     createEReference(teamDefEClass, TEAM_DEF__CHILDREN);
@@ -1728,7 +1729,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(versionDefEClass, VERSION_DEF__RELEASED);
     createEAttribute(versionDefEClass, VERSION_DEF__ALLOW_CREATE_BRANCH);
     createEAttribute(versionDefEClass, VERSION_DEF__ALLOW_COMMIT_BRANCH);
-    createEAttribute(versionDefEClass, VERSION_DEF__BASELINE_BRANCH_GUID);
     createEAttribute(versionDefEClass, VERSION_DEF__BASELINE_BRANCH_UUID);
     createEAttribute(versionDefEClass, VERSION_DEF__PARALLEL_VERSION);
 
@@ -1903,6 +1903,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEReference(getTeamDef_Privileged(), this.getUserRef(), null, "privileged", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_WorkDefinition(), ecorePackage.getEString(), "workDefinition", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_RelatedTaskWorkDefinition(), ecorePackage.getEString(), "relatedTaskWorkDefinition", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTeamDef_TeamWorkflowArtifactType(), ecorePackage.getEString(), "teamWorkflowArtifactType", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_AccessContextId(), ecorePackage.getEString(), "accessContextId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Version(), this.getVersionDef(), null, "version", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Children(), this.getTeamDef(), null, "children", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1928,7 +1929,6 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getVersionDef_Released(), this.getBooleanDef(), "released", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_AllowCreateBranch(), this.getBooleanDef(), "allowCreateBranch", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_AllowCommitBranch(), this.getBooleanDef(), "allowCommitBranch", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVersionDef_BaselineBranchGuid(), ecorePackage.getEString(), "baselineBranchGuid", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_BaselineBranchUuid(), ecorePackage.getEString(), "baselineBranchUuid", null, 0, 1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getVersionDef_ParallelVersion(), ecorePackage.getEString(), "parallelVersion", null, 0, -1, VersionDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

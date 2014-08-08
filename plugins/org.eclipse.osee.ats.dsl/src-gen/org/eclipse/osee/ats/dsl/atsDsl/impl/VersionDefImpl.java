@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getReleased <em>Released</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getAllowCreateBranch <em>Allow Create Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getAllowCommitBranch <em>Allow Commit Branch</em>}</li>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getBaselineBranchGuid <em>Baseline Branch Guid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
@@ -172,26 +171,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * @ordered
    */
   protected BooleanDef allowCommitBranch = ALLOW_COMMIT_BRANCH_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getBaselineBranchGuid() <em>Baseline Branch Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getBaselineBranchGuid()
-   * @generated
-   * @ordered
-   */
-  protected static final String BASELINE_BRANCH_GUID_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getBaselineBranchGuid() <em>Baseline Branch Guid</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getBaselineBranchGuid()
-   * @generated
-   * @ordered
-   */
-  protected String baselineBranchGuid = BASELINE_BRANCH_GUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getBaselineBranchUuid() <em>Baseline Branch Uuid</em>}' attribute.
@@ -401,29 +380,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getBaselineBranchGuid()
-  {
-    return baselineBranchGuid;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setBaselineBranchGuid(String newBaselineBranchGuid)
-  {
-    String oldBaselineBranchGuid = baselineBranchGuid;
-    baselineBranchGuid = newBaselineBranchGuid;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID, oldBaselineBranchGuid, baselineBranchGuid));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public String getBaselineBranchUuid()
   {
     return baselineBranchUuid;
@@ -480,8 +436,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
         return getAllowCreateBranch();
       case AtsDslPackage.VERSION_DEF__ALLOW_COMMIT_BRANCH:
         return getAllowCommitBranch();
-      case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
-        return getBaselineBranchGuid();
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_UUID:
         return getBaselineBranchUuid();
       case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
@@ -522,9 +476,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
         return;
       case AtsDslPackage.VERSION_DEF__ALLOW_COMMIT_BRANCH:
         setAllowCommitBranch((BooleanDef)newValue);
-        return;
-      case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
-        setBaselineBranchGuid((String)newValue);
         return;
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_UUID:
         setBaselineBranchUuid((String)newValue);
@@ -568,9 +519,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
       case AtsDslPackage.VERSION_DEF__ALLOW_COMMIT_BRANCH:
         setAllowCommitBranch(ALLOW_COMMIT_BRANCH_EDEFAULT);
         return;
-      case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
-        setBaselineBranchGuid(BASELINE_BRANCH_GUID_EDEFAULT);
-        return;
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_UUID:
         setBaselineBranchUuid(BASELINE_BRANCH_UUID_EDEFAULT);
         return;
@@ -605,8 +553,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
         return allowCreateBranch != ALLOW_CREATE_BRANCH_EDEFAULT;
       case AtsDslPackage.VERSION_DEF__ALLOW_COMMIT_BRANCH:
         return allowCommitBranch != ALLOW_COMMIT_BRANCH_EDEFAULT;
-      case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
-        return BASELINE_BRANCH_GUID_EDEFAULT == null ? baselineBranchGuid != null : !BASELINE_BRANCH_GUID_EDEFAULT.equals(baselineBranchGuid);
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_UUID:
         return BASELINE_BRANCH_UUID_EDEFAULT == null ? baselineBranchUuid != null : !BASELINE_BRANCH_UUID_EDEFAULT.equals(baselineBranchUuid);
       case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
@@ -640,8 +586,6 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     result.append(allowCreateBranch);
     result.append(", allowCommitBranch: ");
     result.append(allowCommitBranch);
-    result.append(", baselineBranchGuid: ");
-    result.append(baselineBranchGuid);
     result.append(", baselineBranchUuid: ");
     result.append(baselineBranchUuid);
     result.append(", parallelVersion: ");
