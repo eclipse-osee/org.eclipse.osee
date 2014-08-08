@@ -37,7 +37,11 @@ public class PageFactoryViewResolver extends AbstractViewResolver<ResourceToken>
 
    @Override
    public ResourceToken resolve(String viewId, MediaType mediaType) {
-      return registry.resolveTemplate(viewId, mediaType);
+      ResourceToken toReturn = null;
+      if (MediaType.TEXT_HTML_TYPE.equals(mediaType) || MediaType.WILDCARD_TYPE.equals(mediaType)) {
+         toReturn = registry.resolveTemplate(viewId, mediaType);
+      }
+      return toReturn;
    }
 
    @Override

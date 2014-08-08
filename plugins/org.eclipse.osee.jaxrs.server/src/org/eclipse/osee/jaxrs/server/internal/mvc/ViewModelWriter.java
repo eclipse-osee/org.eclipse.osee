@@ -136,15 +136,25 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
    }
 
    private static List<MediaType> getMediaTypesProduced(ResourceInfo resourceInfo) {
-      List<MediaType> produces = new ArrayList<MediaType>();
+      ArrayList<MediaType> produces = new ArrayList<MediaType>();
 
+      boolean hasText = false;
       Method method = resourceInfo.getResourceMethod();
       List<Produces> annotations = getAnnotations(method, Produces.class);
       for (Produces annotation : annotations) {
          String[] mediaTypes = annotation.value();
          for (String mediaType : mediaTypes) {
-            produces.add(MediaType.valueOf(mediaType));
+            MediaType toAdd = MediaType.valueOf(mediaType);
+            if (MediaType.TEXT_HTML_TYPE.equals(toAdd)) {
+               hasText = true;
+            } else {
+               produces.add(toAdd);
+            }
          }
+      }
+
+      if (hasText) {
+         produces.add(0, MediaType.TEXT_HTML_TYPE);
       }
       if (produces.isEmpty()) {
          produces.add(MediaType.WILDCARD_TYPE);
