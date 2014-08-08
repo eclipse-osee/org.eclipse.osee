@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -312,6 +313,26 @@ public class TeamWorkFlowManager {
 
    public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
       IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
+      if (teamDef.getStoreObject() != null) {
+         String artifactTypeName =
+            ((Artifact) teamDef.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamWorkflowArtifactType,
+               null);
+         if (Strings.isValid(artifactTypeName)) {
+            boolean found = false;
+            for (IArtifactType type : ArtifactTypeManager.getAllTypes()) {
+               if (type.getName().equals(artifactTypeName)) {
+                  teamWorkflowArtifactType = type;
+                  found = true;
+                  break;
+               }
+            }
+            if (!found) {
+               throw new OseeArgumentException(
+                  "Team Workflow Artifact Type name [%s] off Team Definition %s could not be found.", artifactTypeName,
+                  teamDef.toStringWithId());
+            }
+         }
+      }
       ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
       if (teamWorkflowProvider != null) {
          teamWorkflowArtifactType = teamWorkflowProvider.getTeamWorkflowArtifactType(teamDef, actionableItems);
