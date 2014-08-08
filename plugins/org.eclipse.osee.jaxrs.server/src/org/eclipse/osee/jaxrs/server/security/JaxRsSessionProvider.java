@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator.Subject;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar
@@ -23,6 +23,6 @@ public interface JaxRsSessionProvider {
 
    String getSessionToken(Long subjectId);
 
-   Subject getSubjectById(Long subjectId);
+   OseePrincipal getSubjectById(Long subjectId);
 
 }

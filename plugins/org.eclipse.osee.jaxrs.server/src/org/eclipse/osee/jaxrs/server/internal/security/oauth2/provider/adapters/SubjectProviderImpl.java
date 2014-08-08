@@ -20,11 +20,11 @@ import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.SubjectProvider;
 import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator;
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator.Subject;
 import org.eclipse.osee.jaxrs.server.security.JaxRsSessionProvider;
 import org.eclipse.osee.logger.Log;
 
@@ -135,9 +135,8 @@ public class SubjectProviderImpl implements SubjectProvider {
 
    @Override
    public void authenticate(MessageContext mc, String scheme, String username, String password) {
-      UserSubject subject = authenticate(scheme, username, password);
-      SecurityContext securityContext = OAuthUtil.newSecurityContext(subject);
-
+      OseePrincipal principal = authenticate(scheme, username, password);
+      SecurityContext securityContext = OAuthUtil.newSecurityContext(principal);
       if (sessionDelegate != null) {
          // Add security context resolution through session delegate
       } else {
@@ -149,14 +148,13 @@ public class SubjectProviderImpl implements SubjectProvider {
 
    @Override
    public UserSubject createSubject(String username, String password) {
-      return authenticate(OAuthConstants.BASIC_SCHEME, username, password);
+      OseePrincipal principal = authenticate(OAuthConstants.BASIC_SCHEME, username, password);
+      return OAuthUtil.newUserSubject(principal);
    }
 
-   private UserSubject authenticate(String scheme, String username, String password) {
+   private OseePrincipal authenticate(String scheme, String username, String password) {
       logger.debug("Authenticate  - scheme[%s] username[%s]", scheme, username);
-
-      Subject user = authenticator.authenticate(scheme, username, password);
-      return OAuthUtil.newUserSubject(user);
+      return authenticator.authenticate(scheme, username, password);
    }
 
    private SecurityContext getSecurityContext(MessageContext mc) {
@@ -191,10 +189,11 @@ public class SubjectProviderImpl implements SubjectProvider {
       long subjectId2 = getSubjectId(subject);
       if (subjectId2 != subjectId) {
          if (sessionDelegate != null) {
-            Subject user = sessionDelegate.getSubjectById(subjectId);
-            subject = OAuthUtil.newUserSubject(user);
+            OseePrincipal principal = sessionDelegate.getSubjectById(subjectId);
+            subject = OAuthUtil.newUserSubject(principal);
          }
       }
       return subject;
    }
+
 }

@@ -10,30 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface JaxRsAuthenticator {
 
-   public interface Subject {
-
-      long getId();
-
-      String getDisplayName();
-
-      String getUserName();
-
-      String getEmailAddress();
-
-      boolean isActive();
-
-      Iterable<String> getRoles();
-
-      boolean isAuthenticated();
-
-   }
-
-   Subject authenticate(String scheme, String username, String password);
+   OseePrincipal authenticate(String scheme, String username, String password);
 
 }

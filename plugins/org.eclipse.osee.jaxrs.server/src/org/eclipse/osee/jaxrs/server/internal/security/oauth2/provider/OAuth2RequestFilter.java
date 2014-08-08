@@ -23,7 +23,6 @@ import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
-import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.filters.OAuthRequestFilter;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
@@ -44,16 +43,16 @@ import org.eclipse.osee.logger.Log;
 public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private final Log logger;
-   private final SubjectProvider sessionProvider;
+   private final SubjectProvider subjectProvider;
 
    private volatile boolean useUserSubject;
    private volatile URI redirectURI;
    private volatile boolean ignoreBasePath;
 
-   public OAuth2RequestFilter(Log logger, SubjectProvider sessionProvider) {
+   public OAuth2RequestFilter(Log logger, SubjectProvider subjectProvider) {
       super();
       this.logger = logger;
-      this.sessionProvider = sessionProvider;
+      this.subjectProvider = subjectProvider;
    }
 
    @Override
@@ -92,7 +91,7 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
       Message msg = JAXRSUtils.getCurrentMessage();
       MessageContext mc = getMessageContext();
 
-      SecurityContext sc = sessionProvider.getSecurityContextFromSession(mc);
+      SecurityContext sc = subjectProvider.getSecurityContextFromSession(mc);
       if (sc == null) {
          String authorizationHeader = context.getHeaderString(HttpHeaders.AUTHORIZATION);
 
@@ -128,20 +127,11 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
       String[] basicAuthParts = OAuthUtil.decodeCredentials(header);
       String username = basicAuthParts[0];
       String password = basicAuthParts[1];
-      sessionProvider.authenticate(mc, OAuthConstants.BASIC_SCHEME, username, password);
+      subjectProvider.authenticate(mc, OAuthConstants.BASIC_SCHEME, username, password);
    }
 
    @Override
    protected SecurityContext createSecurityContext(HttpServletRequest request, AccessTokenValidation accessTokenV) {
-      UserSubject resourceOwnerSubject = accessTokenV.getTokenSubject();
-      UserSubject clientSubject = accessTokenV.getClientSubject();
-
-      UserSubject subject;
-      if (resourceOwnerSubject != null || useUserSubject) {
-         subject = resourceOwnerSubject;
-      } else {
-         subject = clientSubject;
-      }
-      return OAuthUtil.newSecurityContext(subject);
+      return OAuthUtil.getSecurityContext(accessTokenV, useUserSubject);
    }
 }

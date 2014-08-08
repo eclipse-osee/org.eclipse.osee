@@ -22,7 +22,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.ext.Provider;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
-import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.filters.OAuthRequestFilter;
 import org.apache.cxf.rs.security.oauth2.provider.AccessTokenValidator;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
@@ -177,16 +176,7 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
 
          @Override
          protected SecurityContext createSecurityContext(HttpServletRequest request, AccessTokenValidation accessTokenV) {
-            UserSubject resourceOwnerSubject = accessTokenV.getTokenSubject();
-            UserSubject clientSubject = accessTokenV.getClientSubject();
-
-            UserSubject subject;
-            if (resourceOwnerSubject != null || useUserSubject) {
-               subject = resourceOwnerSubject;
-            } else {
-               subject = clientSubject;
-            }
-            return OAuthUtil.newSecurityContext(subject);
+            return OAuthUtil.getSecurityContext(accessTokenV, useUserSubject);
          }
 
       }

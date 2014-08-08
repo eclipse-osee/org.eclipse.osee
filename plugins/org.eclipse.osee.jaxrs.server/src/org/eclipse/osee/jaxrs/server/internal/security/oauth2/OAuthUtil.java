@@ -28,6 +28,7 @@ import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.jaxrs.impl.HttpHeadersImpl;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.AuthorizationUtils;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
-import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator.Subject;
 
 /**
  * @author Roberto E. Escobar
@@ -125,8 +125,25 @@ public final class OAuthUtil {
       }
    }
 
+   public static SecurityContext getSecurityContext(AccessTokenValidation accessTokenV, boolean useUserSubject) {
+      UserSubject resourceOwnerSubject = accessTokenV.getTokenSubject();
+      UserSubject clientSubject = accessTokenV.getClientSubject();
+
+      UserSubject subject;
+      if (resourceOwnerSubject != null || useUserSubject) {
+         subject = resourceOwnerSubject;
+      } else {
+         subject = clientSubject;
+      }
+      return OAuthUtil.newSecurityContext(subject);
+   }
+
    public static SecurityContext newSecurityContext(UserSubject subject) {
       final OseePrincipal principal = newOseePrincipal(subject);
+      return newSecurityContext(principal);
+   }
+
+   public static SecurityContext newSecurityContext(final OseePrincipal principal) {
       return new SecurityContext() {
          @Override
          public boolean isUserInRole(String role) {
@@ -144,19 +161,19 @@ public final class OAuthUtil {
       };
    }
 
-   public static final String SUBJECT_USERNAME = "username";
-   public static final String SUBJECT_DISPLAY_NAME = "display.name";
-   public static final String SUBJECT_EMAIL = "email";
-   public static final String SUBJECT_IS_ACTIVE = "is.active";
-   public static final String SUBJECT_IS_AUTHENTICATED = "is.authenticated";
+   private static final String SUBJECT_USERNAME = "username";
+   private static final String SUBJECT_DISPLAY_NAME = "display.name";
+   private static final String SUBJECT_EMAIL = "email";
+   private static final String SUBJECT_IS_ACTIVE = "is.active";
+   private static final String SUBJECT_IS_AUTHENTICATED = "is.authenticated";
 
-   public static UserSubject newUserSubject(Subject subject) {
+   public static UserSubject newUserSubject(OseePrincipal subject) {
       List<String> roles = new ArrayList<String>();
       for (String role : subject.getRoles()) {
          roles.add(role);
       }
       UserSubject data = new UserSubject();
-      data.setId(String.valueOf(subject.getId()));
+      data.setId(String.valueOf(subject.getGuid()));
       data.setLogin(subject.getUserName());
       data.setRoles(roles);
 
@@ -166,7 +183,6 @@ public final class OAuthUtil {
       properties.put(SUBJECT_EMAIL, subject.getEmailAddress());
       properties.put(SUBJECT_IS_ACTIVE, Boolean.toString(subject.isActive()));
       properties.put(SUBJECT_IS_AUTHENTICATED, Boolean.toString(subject.isAuthenticated()));
-
       data.setProperties(properties);
       return data;
    }
@@ -185,7 +201,7 @@ public final class OAuthUtil {
       return getProperty(subject.getProperties(), SUBJECT_DISPLAY_NAME, subject.getLogin());
    }
 
-   public static String getProperty(Map<String, String> props, String key, String defaultValue) {
+   private static String getProperty(Map<String, String> props, String key, String defaultValue) {
       String toReturn = props.get(key);
       if (toReturn == null) {
          toReturn = defaultValue;
