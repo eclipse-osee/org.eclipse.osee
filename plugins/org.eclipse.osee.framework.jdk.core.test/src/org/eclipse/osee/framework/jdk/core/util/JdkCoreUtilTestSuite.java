@@ -30,6 +30,7 @@ import org.junit.runners.Suite;
    EncryptUtilityTest.class,
    GUIDTest.class,
    HashCollectionTest.class,
+   HexUtilTest.class,
    ReservedCharactersTest.class,
    StringsTest.class,
    UrlQueryTest.class})
