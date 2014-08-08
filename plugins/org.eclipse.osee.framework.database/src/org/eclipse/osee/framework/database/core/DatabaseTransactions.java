@@ -34,7 +34,7 @@ public final class DatabaseTransactions {
 
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
-         deferConstraintChecking(dbService, connection);
+         setConstraintChecking(dbService, connection, false);
          dbWork.handleTxWork(connection);
 
          connection.commit();
@@ -54,8 +54,15 @@ public final class DatabaseTransactions {
          try {
             try {
                if (!connection.isClosed()) {
-                  connection.setAutoCommit(initialAutoCommit);
-                  connection.close();
+                  try {
+                     setConstraintChecking(dbService, connection, true);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(DatabaseTransactions.class, Level.WARNING, "Error while enabling constraint checking",
+                        ex);
+                  } finally {
+                     connection.setAutoCommit(initialAutoCommit);
+                     connection.close();
+                  }
                }
             } finally {
                dbWork.handleTxFinally();
@@ -73,19 +80,21 @@ public final class DatabaseTransactions {
       }
    }
 
-   private static void deferConstraintChecking(IOseeDatabaseService dbService, OseeConnection connection) throws OseeCoreException {
+   private static void setConstraintChecking(IOseeDatabaseService dbService, OseeConnection connection, boolean enable) throws OseeCoreException {
+      String cmd = null;
       SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection.getMetaData());
       switch (dbType) {
          case h2:
-            dbService.runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
+            cmd = String.format("SET REFERENTIAL_INTEGRITY = %s", Boolean.toString(enable).toUpperCase());
             break;
          case hsql:
-            dbService.runPreparedUpdate(connection, "SET DATABASE REFERENTIAL INTEGRITY FALSE");
+            cmd = String.format("SET DATABASE REFERENTIAL INTEGRITY %s", Boolean.toString(enable).toUpperCase());
             break;
          default:
             // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-            dbService.runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
+            cmd = String.format("SET CONSTRAINTS ALL %s", enable ? "IMMEDIATE" : "DEFERRED");
             break;
       }
+      dbService.runPreparedUpdate(connection, cmd);
    }
 }
