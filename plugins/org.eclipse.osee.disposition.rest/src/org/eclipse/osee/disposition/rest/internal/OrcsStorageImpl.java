@@ -244,24 +244,20 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public void updateDispoSet(ArtifactReadable author, DispoProgram program, String setId, DispoSet newData) {
       ArtifactReadable dispoSet = findDispoArtifact(program, setId, DispoConstants.DispoSet);
+      DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
 
       String name = newData.getName();
       String importPath = newData.getImportPath();
-      String importState = newData.getImportState();
-      //      DispoOperationsEnum operationRequest = dispositionSet.getOperation(); //  Operation classes still not created
       JSONArray notesList = newData.getNotesList();
 
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Delete Dispo Set");
-      if (name != null) {
+      if (name != null && !name.equals(origSetAs.getName())) {
          tx.setName(dispoSet, name);
       }
-      if (importPath != null) {
+      if (importPath != null && !importPath.equals(origSetAs.getImportPath())) {
          tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportPath, importPath);
       }
-      if (importState != null) {
-         tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, importState);
-      }
-      if (notesList != null) {
+      if (notesList != null && !notesList.toString().equals(origSetAs.getNotesList().toString())) {
          tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoNotesJson, notesList.toString());
       }
       tx.commit();
@@ -293,7 +289,7 @@ public class OrcsStorageImpl implements Storage {
       tx.commit();
    }
 
-   private void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactId currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
+   private void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
       JSONObject discrepanciesList = newItemData.getDiscrepanciesList();
@@ -309,38 +305,41 @@ public class OrcsStorageImpl implements Storage {
          needsRerun = newItemData.getNeedsRerun();
       }
 
-      if (name != null) {
+      DispoItemArtifact origItem = new DispoItemArtifact(currentItemArt);
+
+      if (name != null && !name.equals(origItem.getName())) {
          tx.setName(currentItemArt, name);
       }
-      if (discrepanciesList != null) {
+      if (discrepanciesList != null && !discrepanciesList.equals(origItem.getDiscrepanciesList())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoDiscrepanciesJson,
             discrepanciesList.toString());
       }
-      if (annotationsList != null) {
+      if (annotationsList != null && !annotationsList.equals(origItem.getAnnotationsList())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoAnnotationsJson, annotationsList.toString());
       }
-      if (assignee != null) {
+      if (assignee != null && !assignee.equals(origItem.getAssignee())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemAssignee, assignee);
       }
-      if (status != null) {
+      if (status != null && !status.equals(origItem.getStatus())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemStatus, status);
       }
-      if (lastUpdate != null) {
+      if (lastUpdate != null && !lastUpdate.equals(origItem.getLastUpdate())) {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoLastUpdated, lastUpdate);
       }
-      if (needsRerun != null) {
+      if (needsRerun != null && !needsRerun.equals(origItem.getNeedsRerun())) {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemNeedsRerun, needsRerun.booleanValue());
       }
-      if (totalPoints != null) {
+      if (totalPoints != null && !totalPoints.equals(origItem.getTotalPoints())) {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemTotalPoints, totalPoints);
       }
+
    }
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
       IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispo Item");
-      ArtifactId dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
+      ArtifactReadable dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
       updateSingleItem(author, program, dispoItemArt, data, tx, false);
       tx.commit();
    }
@@ -350,7 +349,7 @@ public class OrcsStorageImpl implements Storage {
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Multiple Dispo Items");
 
       for (DispoItem newItem : data) {
-         ArtifactId dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);
+         ArtifactReadable dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);
          updateSingleItem(author, program, dispoItemArt, newItem, tx, resetRerunFlag);
       }
 

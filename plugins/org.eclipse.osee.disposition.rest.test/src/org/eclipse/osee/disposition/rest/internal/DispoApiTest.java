@@ -360,38 +360,44 @@ public class DispoApiTest {
       // mocks for data util translation
       when(jsonObject.has("id")).thenReturn(true);
       when(jsonObject.getString("id")).thenReturn(expectedId);
+      when(jsonObject.has("locationRefs")).thenReturn(true);
+      when(jsonObject.getString("locationRefs")).thenReturn("5-10");
+      when(jsonObject.has("resolution")).thenReturn(true);
+      when(jsonObject.getString("resolution")).thenReturn("resOrig");
       when(jsonObject.has("index")).thenReturn(false);
-      when(jsonObject.has("locationRefs")).thenReturn(false);
       when(jsonObject.has("idsOfCoveredDiscrepancies")).thenReturn(false);
       when(jsonObject.has("notesList")).thenReturn(false);
+      when(jsonObject.has("resolutionType")).thenReturn(true);
+      when(jsonObject.getString("resolutionType")).thenReturn("CODE");
       when(jsonObject.has("isResolutionValid")).thenReturn(true);
       when(jsonObject.getBoolean("isResolutionValid")).thenReturn(true); // We'll have the old annotation have a valid resolution to start
+
       // end
 
-      newAnnotation.setLocationRefs("1-10");
+      // First with location refs, resolution type and resolution the same
+      newAnnotation.setLocationRefs("5-10");
+      newAnnotation.setResolution("resOrig");
+      newAnnotation.setResolutionType("CODE");
       boolean actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
-      // reset loc ref to null and set new (invalid) resolution 
-      newAnnotation.setLocationRefs(null);
-      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
-      newAnnotation.setResolution("CPCR 13");
+      // Now change Location Refs, disconnector should be called
+      newAnnotation.setLocationRefs("1-10");
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(false);
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
-      // reset the resolution and change just the resolution type
-      newAnnotation.setLocationRefs(null);
+      // reset the resolution and change just the resolution type, disconnector and should be called
+      newAnnotation.setLocationRefs("5-10");
+      newAnnotation.setResolutionType("TEST");
       when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
-      newAnnotation.setResolution(null);
-      newAnnotation.setResolutionType("None");
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 
-      //  notes are the only thing being modified, no need to disconnect or connect
-      newAnnotation.setLocationRefs(null);
-      newAnnotation.setResolution(null);
-      newAnnotation.setResolutionType(null);
-      newAnnotation.setDeveloperNotes("");
+      // Reset resolution type, only change to resolution, disconnector is called
+      newAnnotation.setResolutionType("CODE");
+      newAnnotation.setResolution("NEW");
+      when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);
       actual = dispoApi.editDispoAnnotation(program, itemId.getGuid(), expectedId, newAnnotation, "name");
       assertTrue(actual);
 

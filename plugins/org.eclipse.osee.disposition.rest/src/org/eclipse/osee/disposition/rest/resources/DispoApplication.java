@@ -27,7 +27,7 @@ import org.eclipse.osee.disposition.rest.util.TemplateRegistry;
 /**
  * @author Angel Avila
  */
-@ApplicationPath("dispo")
+@ApplicationPath("dispor")
 public final class DispoApplication extends Application {
 
    private DispoApi dispoApi;
@@ -52,7 +52,7 @@ public final class DispoApplication extends Application {
       singletons.add(new DispoAnnotationMessageWriter());
 
       DispoHtmlWriter writer = new DispoHtmlWriter(TemplateRegistry.newRegistry());
-      singletons.add(new DispoProgramResource(dispoApi, writer, dispoApi.getDispoFactory()));
+      singletons.add(new DispoProgramResource(dispoApi, dispoApi.getDispoFactory()));
       singletons.add(new DispoInitResource(writer));
       singletons.add(new DispoAdminResource(writer));
    }

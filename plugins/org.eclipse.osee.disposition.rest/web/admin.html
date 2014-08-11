@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>Dispo Admin</title>
+</head>
+
+<body>
+
+    <div class="row">
+        <div class="span4 offset2">
+            <div class="row">
+                <h5>Select ATS Version</h5>
+                <select class="form-control" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
+            </div>
+            <div class="row" id=reportRow>
+                <div class="span3 offset1" id=reportContainer>
+                    <h3>STRS Report</h3>
+                    <h5>Select Primary Set (Demo Set)</h5>
+                    <select class="form-control" ng-model="primarySet" ng-options="obj.guid as obj.name for obj in sets"></select>
+                    <h5>Select Secondary Set (Dryrun Set)</h5>
+                    <select class="form-control" ng-model="secondarySet" ng-options="obj.guid as obj.name for obj in sets"></select>
+                    <button ng-click="generateReport()" class="btn btn-primary active" id=generateReportBtn>Generate Report</button>
+                </div>
+            </div>
+        </div>
+        <div class="span7 offset1">
+            <div class="row">
+                <button ng-disabled="programSelection == null" ng-click="createNewSetModal()" class="btn pull-left">New</button>
+                <button ng-disabled="programSelection == null" ng-click="toggleReadOnly()" class="btn pull-right">Edit</button>
+            </div>
+            <div class="row">
+                <div style="height: 600px;" class="gridStyle" ng-grid="gridOptions"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--  definitions for modal forms -->
+    <script type="text/ng-template" id="popup.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Create Set</h3>
+        </div>
+        <div class="modal-body" style="height: 300px; overflow: auto;">
+            <div class="form-group">
+                <label for="setNameInput">Set Name</label>
+                <input ng-model="setName" class="form-control" name="setName" placeholder="Enter Set Name" required>
+            </div>
+            <div class="form-group">
+                <label for="setPathInput">Path</label>
+                <input ng-model="importPath" class="form-control" name="setPath" placeholder="Enter Import Path" required>
+            </div>
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input ng-model="dispoType" type="radio" name="Test Scripts" id="option1" value="testScripts" checked>Test Scripts Dispo
+                </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+
+    </script>
+
+</body>
+
+</html>

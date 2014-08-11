@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -18,6 +21,7 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.LocationRange;
 import org.eclipse.osee.disposition.model.Note;
+import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,13 +96,14 @@ public final class DispoUtil {
          dispoSetData.setImportPath(dispoSet.getImportPath());
          dispoSetData.setNotesList(dispoSet.getNotesList());
          dispoSetData.setGuid(dispoSet.getGuid());
+         dispoSetData.setDispoConfig(dispoSet.getDispoConfig());
       } else {
          dispoSetData = null;
       }
       return dispoSetData;
    }
 
-   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt) {
+   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(dispoItemArt.getName());
       dispoItemData.setGuid(dispoItemArt.getGuid());
@@ -109,9 +114,28 @@ public final class DispoUtil {
       dispoItemData.setStatus(dispoItemArt.getStatus());
       dispoItemData.setTotalPoints(dispoItemArt.getTotalPoints());
       dispoItemData.setNeedsRerun(dispoItemArt.getNeedsRerun());
-      dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
-      dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
+      if (isIncludeDiscrepancies) {
+         dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
+      }
       return dispoItemData;
+   }
+
+   @SuppressWarnings("unchecked")
+   private static String discrepanciesToString(JSONObject discrepanciesList) {
+      List<Integer> discrepanciesPoints = new ArrayList<Integer>();
+      Iterator<String> iterator = discrepanciesList.keys();
+      while (iterator.hasNext()) {
+         try {
+            JSONObject jObject = discrepanciesList.getJSONObject(iterator.next());
+            int location = jObject.getInt("location");
+            discrepanciesPoints.add(location);
+         } catch (JSONException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
+
+      return LocationRangesCompressor.compress(discrepanciesPoints);
+
    }
 
    public static DispoItemData jsonObjToDispoItem(JSONObject jsonObject) {
@@ -172,11 +196,17 @@ public final class DispoUtil {
       return dispoSet;
    }
 
-   public static JSONObject dispoItemToJsonObj(DispoItemData dispoItem) {
-      JSONObject jsonObject = new JSONObject(dispoItem, true);
+   public static JSONObject dispoItemToJsonObj(DispoItem dispoItem) {
+      JSONObject jsonObject = new JSONObject();
       try {
-         jsonObject.put("annotationsList", dispoItem.getAnnotationsList());
-         jsonObject.put("discrepanciesList", dispoItem.getDiscrepanciesList());
+         jsonObject.put("discrepanciesAsRanges", discrepanciesToString(dispoItem.getDiscrepanciesList()));
+         jsonObject.put("failureCount", dispoItem.getDiscrepanciesList().length());
+         jsonObject.put("name", dispoItem.getName());
+         jsonObject.put("status", dispoItem.getStatus());
+         jsonObject.put("totalPoints", dispoItem.getTotalPoints());
+         jsonObject.put("assignee", dispoItem.getAssignee());
+         jsonObject.put("needsRerun", dispoItem.getNeedsRerun());
+         jsonObject.put("guid", dispoItem.getGuid());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

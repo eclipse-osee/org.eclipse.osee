@@ -72,7 +72,7 @@ public class DispoDataFactory {
          toReturn.setType("");
       } else {
          toReturn.setName("Code Method");
-         toReturn.setPeerNotes("Develop Notes");
+         toReturn.setPeerNotes("Developer Notes");
          toReturn.setCustomerNotes("Customer Notes");
          toReturn.setResolutionTitle("Coverage Method Type");
          toReturn.setResolutionType("Coverage Method");

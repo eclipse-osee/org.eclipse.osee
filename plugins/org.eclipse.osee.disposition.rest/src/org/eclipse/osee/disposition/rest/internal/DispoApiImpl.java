@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
@@ -219,52 +218,40 @@ public class DispoApiImpl implements DispoApi {
          JSONArray annotationsList = dispoItem.getAnnotationsList();
          JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
          try {
-            DispoAnnotationData oldAnnotation =
+            DispoAnnotationData origAnnotation =
                DispoUtil.jsonObjToDispoAnnotationData(DispoUtil.getById(annotationsList, annotationId));
-            int indexOfAnnotation = oldAnnotation.getIndex();
-
-            DispoAnnotationData consolidatedAnnotation = oldAnnotation;
-
-            String newDeveloperNotes = newAnnotation.getDeveloperNotes();
-            if (Strings.isValid(newDeveloperNotes)) {
-               consolidatedAnnotation.setDeveloperNotes(newDeveloperNotes);
-            }
-            String newCustomerNotes = newAnnotation.getCustomerNotes();
-            if (Strings.isValid(newCustomerNotes)) {
-               consolidatedAnnotation.setCustomerNotes(newCustomerNotes);
-            }
+            int indexOfAnnotation = origAnnotation.getIndex();
 
             boolean needToReconnect = false;
             // now if the new Annotation modified the location Reference or resolution then disconnect the annotation and try to match it to discrepancies again
             String newLocationRefs = newAnnotation.getLocationRefs();
             String newResolution = newAnnotation.getResolution();
             String newResolutionType = newAnnotation.getResolutionType();
-            if (newResolution != null) {
-               consolidatedAnnotation.setResolution(newResolution);
-               consolidatedAnnotation.setIsResolutionValid(validateResolution(consolidatedAnnotation));
+
+            if (!origAnnotation.getResolutionType().equals(newResolutionType) || !origAnnotation.getResolution().equals(
+               newResolution)) {
+               newAnnotation.setIsResolutionValid(validateResolution(newAnnotation));
                needToReconnect = true;
             }
-            if (newResolutionType != null) {
-               consolidatedAnnotation.setResolutionType(newAnnotation.getResolutionType());
-               needToReconnect = true;
-            }
-            if (newLocationRefs != null) {
-               consolidatedAnnotation.setLocationRefs(newLocationRefs);
+            if (!origAnnotation.getLocationRefs().equals(newLocationRefs)) {
                needToReconnect = true;
             }
 
             if (needToReconnect == true) {
-               consolidatedAnnotation.disconnect();
-               dispoConnector.connectAnnotation(consolidatedAnnotation, discrepanciesList);
+               newAnnotation.disconnect();
+               dispoConnector.connectAnnotation(newAnnotation, discrepanciesList);
             }
-            //
 
-            JSONObject annotationAsJsonObject = DispoUtil.annotationToJsonObj(consolidatedAnnotation);
+            JSONObject annotationAsJsonObject = DispoUtil.annotationToJsonObj(newAnnotation);
             annotationsList.put(indexOfAnnotation, annotationAsJsonObject);
 
-            DispoItem updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
             ArtifactReadable author = getQuery().findUser();
-            getWriter().updateDispoItem(author, program, dispoItem.getGuid(), updatedItem);
+            DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(program, itemId), true);
+
+            modifiedDispoItem.setAnnotationsList(annotationsList);
+            modifiedDispoItem.setStatus(dispoConnector.allDiscrepanciesAnnotated(modifiedDispoItem));
+            getWriter().updateDispoItem(author, program, dispoItem.getGuid(), modifiedDispoItem);
+
             wasUpdated = true;
          } catch (JSONException ex) {
             throw new OseeCoreException(ex);
@@ -396,6 +383,12 @@ public class DispoApiImpl implements DispoApi {
          } catch (Exception ex) {
             throw new OseeCoreException(ex);
          }
+      } else if (operation.equals("cleanPCRTypes")) {
+         List<DispoItem> dispoItems = getDispoItems(program, setToEdit.getGuid());
+         List<DispoItem> toModify = DispoSetDataCleaner.cleanUpPcrTypes(dispoItems);
+
+         ArtifactReadable author = getQuery().findUser();
+         getWriter().updateDispoItems(author, program, toModify, false);
       }
 
       // Create the Note to document the Operation

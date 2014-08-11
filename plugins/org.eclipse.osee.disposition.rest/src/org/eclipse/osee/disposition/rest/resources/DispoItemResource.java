@@ -21,45 +21,38 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.json.JSONArray;
 
 /**
  * @author Angel Avila
  */
 public class DispoItemResource {
    private final DispoApi dispoApi;
-   private final DispoHtmlWriter writer;
    private final DispoProgram program;
    private final String setId;
 
-   public DispoItemResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program, String setId) {
+   public DispoItemResource(DispoApi dispoApi, DispoProgram program, String setId) {
       this.dispoApi = dispoApi;
       this.program = program;
       this.setId = setId;
-      this.writer = writer;
    }
 
-   /**
-    * Get all Dispositionable Items under the Disposition Set
-    * 
-    * @return The Dispositionable Items found under the Disposition Set
-    * @throws Exception
-    * @response.representation.200.doc OK, Found Dispositionable Items
-    * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
-    */
    @GET
-   @Produces(MediaType.TEXT_HTML)
+   @Produces(MediaType.APPLICATION_JSON)
    public Response getAllDispoItems() throws Exception {
       List<DispoItem> dispoItems = dispoApi.getDispoItems(program, setId);
-      StreamingOutput streamingOutput = new DispoHtmlOutputStream(dispoItems);
-      ResponseBuilder builder = Response.ok(streamingOutput);
+      JSONArray jarray = new JSONArray();
+      for (DispoItem dispoItem : dispoItems) {
+         jarray.put(DispoUtil.dispoItemToJsonObj(dispoItem));
+      }
+
+      ResponseBuilder builder = Response.ok(jarray.toString());
       return builder.build();
    }
 
@@ -74,13 +67,13 @@ public class DispoItemResource {
    @Path("{itemId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoItemsByIdJson(@PathParam("itemId") String itemId) {
+   public Response getDispoItemsById(@PathParam("itemId") String itemId) {
       Response response;
       DispoItem result = dispoApi.getDispoItemById(program, itemId);
       if (result == null) {
          response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
       } else {
-         response = Response.status(Response.Status.OK).entity(DispoUtil.itemArtToItemData(result)).build();
+         response = Response.status(Response.Status.OK).entity(DispoUtil.itemArtToItemData(result, false)).build();
       }
       return response;
    }
@@ -131,6 +124,6 @@ public class DispoItemResource {
 
    @Path("{itemId}/annotation/")
    public AnnotationResource getAnnotation(@PathParam("itemId") String itemId) {
-      return new AnnotationResource(dispoApi, writer, program, setId, itemId);
+      return new AnnotationResource(dispoApi, program, setId, itemId);
    }
 }

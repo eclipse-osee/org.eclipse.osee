@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Disposition</title>
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+    <link href="/lib/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="http://angular-ui.github.com/ng-grid/css/ng-grid.css" />
+    <link href="css/user.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+
+<body ng-app="dispoApp">
+
+    <nav ng-controller="mainController" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/user">Disposition</a>
+            </div>
+            <p class="navbar-text">Signed in as {{ cachedName }}</p>
+            <div class="collapse navbar-collapse" ng-controller="HeaderController">
+                <ul class="nav navbar-nav navbar-right">
+                    <li ng-class="{ active: isActive('/user')}"><a href="#/user">User</a>
+                    </li>
+                    <li ng-class="{ active: isActive('/admin')}"><a href="#/admin">Admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div ng-view></div>
+
+    <script>
+        function HeaderController($scope, $location) {
+            $scope.isActive = function(viewLocation) {
+                return viewLocation === $location.path();
+            };
+        }
+    </script>
+
+    <script src="/lib/js/jquery-2.0.3.min.js"></script>
+    <script src="/lib/js/angular.min.js"></script>
+    <script src="/lib/js/angular-route.min.js"></script>
+    <script src="/lib/js/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-cookies.js"></script>
+    <script src="/lib/js/ng-grid-2.0.11.min.js"></script>
+    <script src="/lib/js/bootstrap.min.js"></script>
+    <script src="/lib/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="js/resizer.js"></script>
+    <script src="js/dispoApp.js"></script>
+    <script src="js/userController.js"></script>
+    <script src="js/adminController.js"></script>
+    <script src="js/mainController.js"></script>
+</body>
+
+</html>

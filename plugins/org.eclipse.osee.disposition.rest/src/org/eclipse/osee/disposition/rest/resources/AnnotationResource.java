@@ -29,22 +29,22 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * @author Angel Avila
  */
 public class AnnotationResource {
    private final DispoApi dispoApi;
-   private final DispoHtmlWriter writer;
    private final DispoProgram program;
    private final String itemId;
 
-   public AnnotationResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program, String setUuid, String dispResourceId) {
+   public AnnotationResource(DispoApi dispoApi, DispoProgram program, String setUuid, String dispResourceId) {
       this.dispoApi = dispoApi;
       this.program = program;
       this.itemId = dispResourceId;
-      this.writer = writer;
    }
 
    /**
@@ -82,20 +82,23 @@ public class AnnotationResource {
     * Get all Annotations for the DisposionableItem
     * 
     * @return The Annotation found for the DisposionableItem
+    * @throws JSONException
     * @throws IOException
     * @response.representation.200.doc OK, Found Annotations
     * @response.representation.404.doc Not Found, Could not find any Annotations
     */
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getAllDispoAnnotations() throws IOException {
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getAllDispoAnnotations() throws JSONException {
       Response.Status status;
-      String html;
       List<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(program, itemId);
 
       status = Status.OK;
-      html = writer.createSubTable(dispositionAnnotations);
-      return Response.status(status).entity(html).build();
+      JSONArray array = new JSONArray();
+      for (DispoAnnotationData annotation : dispositionAnnotations) {
+         array.put(annotation.getIndex(), DispoUtil.annotationToJsonObj(annotation));
+      }
+      return Response.status(status).entity(array.toString()).build();
    }
 
    /**
@@ -136,8 +139,7 @@ public class AnnotationResource {
       Response response;
       boolean wasEdited = dispoApi.editDispoAnnotation(program, itemId, annotationId, newAnnotation, userName);
       if (wasEdited) {
-         DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
-         response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
+         response = Response.status(Response.Status.OK).build();
 
       } else {
          response = Response.status(Response.Status.NOT_MODIFIED).build();

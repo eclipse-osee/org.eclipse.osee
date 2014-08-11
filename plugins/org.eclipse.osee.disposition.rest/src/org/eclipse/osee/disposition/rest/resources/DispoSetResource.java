@@ -28,8 +28,10 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -37,12 +39,10 @@ import org.eclipse.osee.disposition.rest.util.DispoUtil;
 public class DispoSetResource {
 
    private final DispoApi dispoApi;
-   private final DispoHtmlWriter writer;
    private final DispoProgram program;
 
-   public DispoSetResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program) {
+   public DispoSetResource(DispoApi dispoApi, DispoProgram program) {
       this.dispoApi = dispoApi;
-      this.writer = writer;
       this.program = program;
    }
 
@@ -63,8 +63,9 @@ public class DispoSetResource {
       Response response;
       String name = descriptor.getName();
       String importPath = descriptor.getImportPath();
+      String dispoType = descriptor.getDispoType();
 
-      if (!name.isEmpty() && !importPath.isEmpty()) {
+      if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(program, name);
          if (isUniqueSetName) {
             String createdSetId = dispoApi.createDispoSet(program, descriptor).getGuid();
@@ -80,29 +81,6 @@ public class DispoSetResource {
          response = Response.status(status).entity(DispoMessages.Set_EmptyNameOrPath).build();
       }
       return response;
-   }
-
-   /**
-    * Get all Disposition Sets on the given program branch
-    * 
-    * @return The Disposition Sets found on the program branch
-    * @response.representation.200.doc OK, Found Disposition Sets
-    * @response.representation.404.doc Not Found, Could not find any Disposition Sets
-    */
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getAllDispoSets() {
-      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
-      Response.Status status;
-      String html;
-      if (allDispoSets.isEmpty()) {
-         status = Status.NOT_FOUND;
-         html = DispoMessages.Set_NoneFound;
-      } else {
-         status = Status.OK;
-         html = writer.createSelectSet(allDispoSets);
-      }
-      return Response.status(status).entity(html).build();
    }
 
    /**
@@ -128,23 +106,34 @@ public class DispoSetResource {
    }
 
    /**
-    * Get a specific Disposition Set given a setId
+    * Get all Disposition Sets on the given program branch
     * 
-    * @return The found Disposition Set if successful. Error Code otherwise
-    * @response.representation.200.doc OK, Found Disposition Set
+    * @return The Disposition Sets found on the program branch
+    * @throws JSONException
+    * @response.representation.200.doc OK, Found Disposition Sets
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets
     */
-   // Will go away once we implement the angular stuff
-   @Path("/admin")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoSetsAdmin() {
+   public Response getAllDispoSets() throws JSONException {
       List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
-      Response.Status status;
-      String html;
-      status = Status.OK;
-      html = writer.createAllSetsTableHTML(allDispoSets);
-      return Response.status(status).entity(html).build();
+      JSONArray jarray = new JSONArray();
+
+      for (DispoSet set : allDispoSets) {
+         JSONObject jobject = new JSONObject();
+         jobject.put("guid", set.getGuid());
+         jobject.put("name", set.getName());
+         jobject.put("importPath", set.getImportPath());
+         jobject.put("notesList", set.getNotesList());
+         jarray.put(jobject);
+      }
+      Status status;
+      if (allDispoSets.isEmpty()) {
+         status = Status.NOT_FOUND;
+      } else {
+         status = Status.OK;
+      }
+      return Response.status(status).entity(jarray.toString()).build();
    }
 
    /**
@@ -193,7 +182,6 @@ public class DispoSetResource {
 
    @Path("{setId}/item")
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
-      return new DispoItemResource(dispoApi, writer, program, setId);
+      return new DispoItemResource(dispoApi, program, setId);
    }
-
 }

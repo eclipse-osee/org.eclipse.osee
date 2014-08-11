@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2013 Boein g.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,10 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,8 +37,6 @@ public class DispoItemResourceTest {
 
    @Mock
    private DispoApi dispositionApi;
-   @Mock
-   private DispoHtmlWriter htmlWriter;
    @Mock
    private Identifiable<String> id1;
    @Mock
@@ -52,33 +51,39 @@ public class DispoItemResourceTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoItemResource(dispositionApi, htmlWriter, program, "setId");
+      resource = new DispoItemResource(dispositionApi, program, "setId");
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
       when(setArt.getGuid()).thenReturn("setId");
    }
 
    @Test
-   public void testGetAllAsHtml() throws Exception {
+   public void testGetAll() throws Exception {
       // No Items
       List<DispoItem> emptyResultSet = new ArrayList<DispoItem>();
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
       Response noItemsResponse = resource.getAllDispoItems();
       assertEquals(Response.Status.OK.getStatusCode(), noItemsResponse.getStatus());
 
-      DispoItem item = new DispoItemData();
-      List<DispoItem> resultSet = Collections.singletonList(item);
+      DispoItemData item = new DispoItemData();
+      item.setAnnotationsList(new JSONArray());
+      item.setDiscrepanciesList(new JSONObject());
+      item.setGuid(id1.getGuid());
+      List<DispoItem> resultSet = Collections.singletonList((DispoItem) item);
 
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(resultSet);
-      Response oneSetResponse = resource.getAllDispoItems();
-      assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
+      Response response = resource.getAllDispoItems();
+      JSONArray entity = new JSONArray((String) response.getEntity());
+      JSONObject itemFromResponse = entity.getJSONObject(0);
+      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      assertEquals(id1.getGuid(), itemFromResponse.getString("guid"));
    }
 
    @Test
-   public void testGetSingleSetAsJson() {
+   public void testGetSingleSet() {
       // No items
       when(dispositionApi.getDispoItemById(program, id2.getGuid())).thenReturn(null);
-      Response noItemsResponse = resource.getDispoItemsByIdJson(id2.getGuid());
+      Response noItemsResponse = resource.getDispoItemsById(id2.getGuid());
       String messageActual = (String) noItemsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
       assertEquals(DispoMessages.Item_NotFound, messageActual);
@@ -89,7 +94,7 @@ public class DispoItemResourceTest {
       expectedItem.setNeedsRerun(false);
       expectedItem.setTotalPoints("4");
       when(dispositionApi.getDispoItemById(program, expectedItem.getGuid())).thenReturn(expectedItem);
-      Response oneSetResponse = resource.getDispoItemsByIdJson(expectedItem.getGuid());
+      Response oneSetResponse = resource.getDispoItemsById(expectedItem.getGuid());
       DispoItemData returnedItem = (DispoItemData) oneSetResponse.getEntity();
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
       assertEquals(expectedItem.getGuid(), returnedItem.getGuid());

@@ -22,8 +22,10 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,8 +39,6 @@ public class DispoSetResourceTest {
    @Mock
    private DispoApi dispositionApi;
    @Mock
-   private DispoHtmlWriter htmlWriter;
-   @Mock
    private Identifiable<String> id1;
    @Mock
    private Identifiable<String> id2;
@@ -50,7 +50,7 @@ public class DispoSetResourceTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      resource = new DispoSetResource(dispositionApi, htmlWriter, program);
+      resource = new DispoSetResource(dispositionApi, program);
       when(id1.getGuid()).thenReturn("abcdef");
       when(id2.getGuid()).thenReturn("fedcba");
    }
@@ -61,6 +61,7 @@ public class DispoSetResourceTest {
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName("Name");
       descriptor.setImportPath("c:");
+      descriptor.setDispoType("testScripts");
 
       DispoSetData expected = new DispoSetData();
       expected.setGuid(id1.getGuid());
@@ -104,6 +105,7 @@ public class DispoSetResourceTest {
       DispoSetDescriptorData descriptor = new DispoSetDescriptorData();
       descriptor.setName("Name");
       descriptor.setImportPath("c:");
+      descriptor.setDispoType("testScript");
 
       when(dispositionApi.isUniqueSetName(program, descriptor.getName())).thenReturn(false);
 
@@ -114,28 +116,29 @@ public class DispoSetResourceTest {
    }
 
    @Test
-   public void testGetAllAsHtml() {
+   public void testGetAll() throws JSONException {
       // No Sets
       List<DispoSet> emptyResultSet = new ArrayList<DispoSet>();
       when(dispositionApi.getDispoSets(program)).thenReturn(emptyResultSet);
       Response noSetsResponse = resource.getAllDispoSets();
       String messageActual = (String) noSetsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noSetsResponse.getStatus());
-      assertEquals(DispoMessages.Set_NoneFound, messageActual);
+      assertEquals("[]", messageActual);
 
-      DispoSet set = new DispoSetData();
-      List<DispoSet> resultSet = Collections.singletonList(set);
+      DispoSetData set = new DispoSetData();
+      set.setGuid(id1.getGuid());
+      List<DispoSet> resultSet = Collections.singletonList((DispoSet) set);
 
       when(dispositionApi.getDispoSets(program)).thenReturn(resultSet);
-      when(htmlWriter.createSelectSet(resultSet)).thenReturn("htmlFromWriter");
       Response oneSetResponse = resource.getAllDispoSets();
-      String html = (String) oneSetResponse.getEntity();
+      JSONArray entity = new JSONArray((String) oneSetResponse.getEntity());
+      JSONObject setFromEntity = entity.getJSONObject(0);
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals("htmlFromWriter", html);
+      assertEquals(id1.getGuid(), setFromEntity.getString("guid"));
    }
 
    @Test
-   public void testGetSingleSetAsJson() {
+   public void testGetSingleSet() {
       // No Sets
       when(dispositionApi.getDispoSetById(program, id2.getGuid())).thenReturn(null);
       Response noSetsResponse = resource.getDispoSetByIdJson(id2.getGuid());

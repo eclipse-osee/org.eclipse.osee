@@ -17,12 +17,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -31,45 +32,49 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public class DispoProgramResource {
 
    private final DispoApi dispoApi;
-   private final DispoHtmlWriter writer;
    private final DispoFactory dispoFactory;
 
-   public DispoProgramResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoFactory dispoFactory) {
+   public DispoProgramResource(DispoApi dispoApi, DispoFactory dispoFactory) {
       this.dispoApi = dispoApi;
-      this.writer = writer;
       this.dispoFactory = dispoFactory;
    }
 
    /**
-    * Get all Disposition Programs
+    * Get all Disposition Programs as JSON
     * 
     * @return The Disposition Programs found
+    * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Program
     * @response.representation.404.doc Not Found, Could not find any Disposition Programs
     */
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public Response getAllPrograms() {
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getAllPrograms() throws JSONException {
       ResultSet<IOseeBranch> allPrograms = dispoApi.getDispoPrograms();
-      Response.Status status;
-      String html;
+      JSONArray jarray = new JSONArray();
+
+      for (IOseeBranch branch : allPrograms) {
+         JSONObject jobject = new JSONObject();
+         jobject.put("value", branch.getGuid());
+         jobject.put("text", branch.getName());
+         jarray.put(jobject);
+      }
+      Status status;
       if (allPrograms.isEmpty()) {
          status = Status.NOT_FOUND;
-         html = DispoMessages.Program_NoneFound;
       } else {
          status = Status.OK;
-         html = writer.createSelectPrograms(allPrograms);
       }
-      return Response.status(status).entity(html).build();
+      return Response.status(status).entity(jarray.toString()).build();
    }
 
    @Path("{programId}/set")
    public DispoSetResource getAnnotation(@PathParam("programId") String programId) {
-      return new DispoSetResource(dispoApi, writer, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+      return new DispoSetResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
 
    @Path("{programId}/report")
    public DispoReportResource getDispoSetReport(@PathParam("programId") String programId) {
-      return new DispoReportResource(dispoApi, writer, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+      return new DispoReportResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
 }

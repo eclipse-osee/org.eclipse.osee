@@ -25,7 +25,6 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
 
 /**
  * @author Angel Avila
@@ -35,7 +34,7 @@ public class DispoReportResource {
    private final DispoApi dispoApi;
    private final DispoProgram program;
 
-   public DispoReportResource(DispoApi dispoApi, DispoHtmlWriter writer, DispoProgram program) {
+   public DispoReportResource(DispoApi dispoApi, DispoProgram program) {
       this.dispoApi = dispoApi;
       this.program = program;
    }
