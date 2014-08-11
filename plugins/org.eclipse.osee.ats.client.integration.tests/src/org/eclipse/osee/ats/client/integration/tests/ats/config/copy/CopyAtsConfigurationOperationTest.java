@@ -51,7 +51,8 @@ public class CopyAtsConfigurationOperationTest {
       Operations.executeWork(operation);
       Assert.assertFalse(rd.isErrors());
 
-      Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getTeamDefinitionsNameStartsWith("CISv2");
+      Collection<IAtsTeamDefinition> teamDefs =
+         TeamDefinitions.getTeamDefinitionsNameStartsWith("CISv2", AtsClientService.get().getConfig());
       Assert.assertEquals(5, teamDefs.size());
 
       Collection<IAtsActionableItem> ais = getActionableItemsNameStartsWith("CISv2");

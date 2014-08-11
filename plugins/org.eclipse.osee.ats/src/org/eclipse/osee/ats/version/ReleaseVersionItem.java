@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -69,7 +68,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             IAtsVersion verArt = (IAtsVersion) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtilClient.isAtsAdmin() && !AtsVersionService.get().getTeamDefinition(verArt).getLeads().contains(
+            if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(verArt).getLeads().contains(
                AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
@@ -125,7 +124,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
+      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
       int result = ld.open();
       if (result == 0) {
          return (IAtsTeamDefinition) ld.getResult()[0];

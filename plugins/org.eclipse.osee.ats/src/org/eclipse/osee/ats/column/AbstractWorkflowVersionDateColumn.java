@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -77,7 +77,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
+         IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          if (verArt != null) {
             if (attributeType == AtsAttributeTypes.ReleaseDate) {
                return verArt.getReleaseDate();
@@ -107,7 +107,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
       String versionDate = getDateStrFromTargetedVersion(attributeType, artifact);
       if (Strings.isValid(workflowDate) && Strings.isValid(versionDate)) {
          return String.format("%s; [%s - %s]", workflowDate,
-            AtsVersionService.get().getTargetedVersion(artifact), versionDate);
+            AtsClientService.get().getVersionService().getTargetedVersion(artifact), versionDate);
       } else if (Strings.isValid(workflowDate)) {
          return workflowDate;
       } else if (Strings.isValid(versionDate)) {

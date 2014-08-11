@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,14 +38,13 @@ public class Versions {
       return names;
    }
 
-   public static String getTargetedVersionStr(Object object) throws OseeCoreException {
+   public static String getTargetedVersionStr(Object object, IAtsVersionService versionService) throws OseeCoreException {
       if (object instanceof IAtsWorkItem) {
          IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
          if (teamWf != null) {
-            IAtsVersion version = AtsVersionService.get().getTargetedVersion(object);
+            IAtsVersion version = versionService.getTargetedVersion(object);
             if (version != null) {
-               if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && AtsVersionService.get().isReleased(
-                  teamWf)) {
+               if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
                   String errStr =
                      "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
                   // only log error once

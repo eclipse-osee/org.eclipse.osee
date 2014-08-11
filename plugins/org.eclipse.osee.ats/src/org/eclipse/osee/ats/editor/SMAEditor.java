@@ -35,8 +35,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
@@ -618,7 +618,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
-      return AtsVersionService.get().getTargetedVersion(awa);
+      return AtsClientService.get().getVersionService().getTargetedVersion(awa);
    }
 
    @Override

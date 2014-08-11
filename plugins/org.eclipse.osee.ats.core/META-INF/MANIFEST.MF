@@ -6,12 +6,6 @@ Bundle-Version: 0.19.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.inject,
- org.eclipse.emf.common,
- org.eclipse.emf.common.util,
- org.eclipse.emf.ecore,
- org.eclipse.emf.ecore.resource,
- org.eclipse.emf.ecore.resource.impl,
- org.eclipse.emf.ecore.xmi.impl,
  org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.commit,
@@ -63,10 +57,10 @@ Export-Package: org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.util,
  org.eclipse.osee.ats.core.validator,
  org.eclipse.osee.ats.core.workdef,
- org.eclipse.osee.ats.core.workdef.provider,
  org.eclipse.osee.ats.core.workflow,
  org.eclipse.osee.ats.core.workflow.log,
  org.eclipse.osee.ats.core.workflow.state,
  org.eclipse.osee.ats.core.workflow.transition
 Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
 Service-Component: OSGI-INF/*.xml
+

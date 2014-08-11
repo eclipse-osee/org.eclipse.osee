@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -94,7 +95,7 @@ public class ConfigData {
       if (teamDef.getParentTeamDef() != null) {
          parentTeamDef = teamDef.getParentTeamDef();
       } else {
-         parentTeamDef = TeamDefinitions.getTopTeamDefinition();
+         parentTeamDef = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig());
       }
       return parentTeamDef;
    }
@@ -106,7 +107,7 @@ public class ConfigData {
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
-         parentActionableItem = ActionableItems.getTopActionableItem();
+         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get().getConfig());
       }
       return parentActionableItem;
    }

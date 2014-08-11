@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +35,8 @@ public class MockTransitionHelper extends TransitionHelper {
    public Boolean overrideTransitionValidityCheck = null;
 
    public MockTransitionHelper(String name, Collection<? extends AbstractWorkflowArtifact> awas, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, TransitionOption... transitionOption) {
-      super(name, awas, toStateName, toAssignees, cancellationReason, changes, transitionOption);
+      super(name, awas, toStateName, toAssignees, cancellationReason, changes, AtsClientService.get().getServices(),
+         transitionOption);
    }
 
    @Override

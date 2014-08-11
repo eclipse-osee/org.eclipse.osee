@@ -20,18 +20,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
 import org.eclipse.osee.ats.core.internal.Activator;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -61,9 +62,13 @@ public class StateManager implements IAtsStateManager {
    private final List<IAtsUser> initialAssignees = new ArrayList<IAtsUser>();
    private boolean dirty = false;
    private final String instanceGuid;
+   private final IAtsLogFactory logFactory;
+   private final IAtsServices services;
 
-   public StateManager(IAtsWorkItem workItem) {
+   public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, IAtsServices services) {
       this.workItem = workItem;
+      this.logFactory = logFactory;
+      this.services = services;
       this.factory = this;
       this.instanceGuid = GUID.create();
    }
@@ -111,7 +116,7 @@ public class StateManager implements IAtsStateManager {
          setHoursSpent(state.getName(), remaining);
       }
 
-      if (AtsCoreService.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+      if (services.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
          setPercentComplete(state.getName(), percentComplete);
       } else {
          this.percentCompleteValue = percentComplete;
@@ -123,20 +128,15 @@ public class StateManager implements IAtsStateManager {
    }
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
-      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem));
-      logMetrics(workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem) + "", hoursSpent, state, user,
-         date);
+      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, services));
+      logMetrics(services, logFactory, workItem,
+         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services) + "", hoursSpent, state, user, date);
    }
 
-   public static void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
+   public static void logMetrics(IAtsServices services, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
       IAtsLogItem logItem =
-         AtsCoreService.getLogFactory().newLogItem(
-            LogType.Metrics,
-            date,
-            user,
-            state.getName(),
-            String.format("Percent %s Hours %s", PercentCompleteTotalUtil.getPercentCompleteTotal(workItem),
-               Double.parseDouble(hours)));
+         logFactory.newLogItem(LogType.Metrics, date, user, state.getName(), String.format("Percent %s Hours %s",
+            PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services), Double.parseDouble(hours)));
       workItem.getLog().addLogItem(logItem);
    }
 

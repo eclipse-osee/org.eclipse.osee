@@ -22,6 +22,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -128,7 +129,7 @@ public class TransitionToMenu {
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
-      final ITransitionHelper helper = new TransitionHelperAdapter() {
+      final ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
          private AtsChangeSet changes;
 
@@ -258,6 +259,11 @@ public class TransitionToMenu {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             return java.util.Collections.emptyList();
+         }
+
+         @Override
+         public IAtsServices getServices() {
+            return AtsClientService.get().getServices();
          }
 
       };

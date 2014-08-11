@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -60,6 +62,7 @@ import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactRea
 import org.eclipse.osee.ats.core.client.internal.store.TeamDefinitionArtifactWriter;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.VersionArtifactWriter;
+import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
@@ -130,14 +133,8 @@ public class AtsClientImpl implements IAtsClient {
       this.workDefService = workDefService;
    }
 
-   public void setAtsUserService(IAtsUserService atsUserService) {
-      this.userService = atsUserService;
-      this.userServiceClient = (IAtsUserServiceClient) userService;
-   }
-
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(workDefService, "IAtsWorkDefinitionService");
-      Conditions.checkNotNull(userService, "IAtsUserService");
       Map<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>> writers =
          new HashMap<Class<? extends IAtsConfigObject>, IAtsArtifactWriter<? extends IAtsConfigObject>>();
 
@@ -147,6 +144,9 @@ public class AtsClientImpl implements IAtsClient {
       writers.put(IAtsActionableItem.class, new ActionableItemArtifactWriter());
       writers.put(IAtsTeamDefinition.class, new TeamDefinitionArtifactWriter());
       writers.put(IAtsVersion.class, new VersionArtifactWriter());
+
+      userService = new AtsUserServiceImpl();
+      userServiceClient = (IAtsUserServiceClient) userService;
 
       artifactStore = new AtsArtifactStore(readers, writers);
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
@@ -444,7 +444,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsStateFactory getStateFactory() {
       if (stateFactory == null) {
-         stateFactory = AtsCoreFactory.newStateFactory(getAttributeResolver(), getUserService());
+         stateFactory = AtsCoreFactory.newStateFactory(getServices(), getLogFactory());
       }
       return stateFactory;
    }
@@ -467,8 +467,17 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public IAtsColumnUtilities getColumnUtilities() {
+      final IAtsEarnedValueService fEarnedValueService = earnedValueService;
       if (columnUtilities == null) {
-         columnUtilities = AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService());
+         columnUtilities =
+            AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService(),
+               new IAtsEarnedValueServiceProvider() {
+
+                  @Override
+                  public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+                     return fEarnedValueService;
+                  }
+               });
       }
       return columnUtilities;
    }
@@ -500,6 +509,16 @@ public class AtsClientImpl implements IAtsClient {
          }
       }
       return result;
+   }
+
+   @Override
+   public IAtsServices getServices() {
+      return this;
+   }
+
+   @Override
+   public IAtsWorkDefinitionService getWorkDefService() {
+      return workDefService;
    }
 
 }

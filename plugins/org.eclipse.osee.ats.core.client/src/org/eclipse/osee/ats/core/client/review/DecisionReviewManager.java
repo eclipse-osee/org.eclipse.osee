@@ -107,7 +107,7 @@ public class DecisionReviewManager {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList((user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user)), null,
-            changes, TransitionOption.None);
+            changes, AtsClientService.get().getServices(), TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -139,7 +139,7 @@ public class DecisionReviewManager {
       // transition to decision
       TransitionHelper helper =
          new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, changes, TransitionOption.OverrideAssigneeCheck);
+            assignees, null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
 

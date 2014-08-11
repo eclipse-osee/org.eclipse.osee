@@ -80,7 +80,7 @@ public class BurndownSelectionDialog extends SelectionDialog {
       List<Object> objs = new ArrayList<Object>();
       try {
          Set<IAtsTeamDefinition> teamReleaseableDefinitions =
-            TeamDefinitions.getTeamReleaseableDefinitions(this.active);
+            TeamDefinitions.getTeamReleaseableDefinitions(this.active, AtsClientService.get().getConfig());
          for (IAtsTeamDefinition teamDef : teamReleaseableDefinitions) {
             Artifact artifact = AtsClientService.get().getConfigArtifact(teamDef);
             objs.add(artifact);

@@ -42,8 +42,6 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -67,13 +65,13 @@ public class TransitionManager implements IAtsTransitionManager {
    private final IAtsWorkDefinitionService workDefService;
    private final IAttributeResolver attrResolver;
 
-   public TransitionManager(ITransitionHelper helper, IAtsUserService userService, IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefService, IAttributeResolver attrResolver) {
+   public TransitionManager(ITransitionHelper helper) {
       this.helper = helper;
-      this.userService = userService;
-      this.reviewService = reviewService;
-      this.workItemService = workItemService;
-      this.workDefService = workDefService;
-      this.attrResolver = attrResolver;
+      this.userService = helper.getServices().getUserService();
+      this.reviewService = helper.getServices().getReviewService();
+      this.workItemService = helper.getServices().getWorkItemService();
+      this.workDefService = helper.getServices().getWorkDefService();
+      this.attrResolver = helper.getServices().getAttributeResolver();
    }
 
    @Override
@@ -139,7 +137,7 @@ public class TransitionManager implements IAtsTransitionManager {
                   String errStr =
                      String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
                         toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
-                  OseeLog.log(AtsCoreService.class, Level.SEVERE, errStr);
+                  OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
                   results.addResult(workItem, new TransitionResult(errStr));
                   continue;
                }
@@ -375,7 +373,7 @@ public class TransitionManager implements IAtsTransitionManager {
 
          // Only check this if TeamWorkflow, not for reviews
          if (workItem.isTeamWorkflow() && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-         !AtsVersionService.get().hasTargetedVersion(workItem) && //
+         !helper.getServices().getVersionService().hasTargetedVersion(workItem) && //
          !toStateDef.getStateType().isCancelledState()) {
             results.addResult(workItem, TransitionResult.MUST_BE_TARGETED_FOR_VERSION);
          }

@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
-import org.eclipse.osee.ats.core.workdef.provider.AtsCore_WorkDefProvider_JT_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsWorkDefinitionAdminImplTest.class,
-   AtsCore_WorkDefProvider_JT_Suite.class,
    WorkDefinitionMatchTest.class,
    WorkDefinitionSheetTest.class,
    StateEventTypeTest.class,

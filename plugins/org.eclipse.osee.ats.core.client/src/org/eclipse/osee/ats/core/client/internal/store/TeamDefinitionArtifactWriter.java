@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -129,9 +130,10 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
 
       // set parent artifact to top team def
       if (teamDef.getParentTeamDef() == null && !teamDef.getGuid().equals(
-         TeamDefinitions.getTopTeamDefinition().getGuid())) {
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getGuid())) {
          // if parent is null, add to top team definition
-         Artifact topTeamDefArt = cache.getSoleArtifact(TeamDefinitions.getTopTeamDefinition());
+         Artifact topTeamDefArt =
+            cache.getSoleArtifact(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()));
          topTeamDefArt.addChild(artifact);
          changes.add(topTeamDefArt);
       } else {

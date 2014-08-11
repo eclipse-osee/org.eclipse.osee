@@ -257,7 +257,7 @@ public class Overview {
          AtsLogUtility.getTable(
             artifactLog,
             AtsClientService.get().getLogFactory().getLogProvider(artifact,
-               AtsClientService.get().getAttributeResolver()));
+               AtsClientService.get().getAttributeResolver()), AtsClientService.get().getUserService());
       }
    }
 

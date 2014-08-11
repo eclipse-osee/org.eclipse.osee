@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -285,10 +284,10 @@ public class AtsBranchManagerCore {
          return Result.FalseResult;
       }
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (!AtsVersionService.get().hasTargetedVersion(teamArt)) {
+         if (!AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         IAtsVersion targetedVersion = AtsVersionService.get().getTargetedVersion(teamArt);
+         IAtsVersion targetedVersion = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          Result result = targetedVersion.isAllowCommitBranchInherited();
          if (result.isFalse()) {
             return result;
@@ -319,10 +318,10 @@ public class AtsBranchManagerCore {
       }
 
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (!AtsVersionService.get().hasTargetedVersion(teamArt)) {
+         if (!AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
             return new Result(false, "Workflow not targeted for Version");
          }
-         IAtsVersion targetedVersion = AtsVersionService.get().getTargetedVersion(teamArt);
+         IAtsVersion targetedVersion = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          Result result = targetedVersion.isAllowCreateBranchInherited();
          if (result.isFalse()) {
             return result;
@@ -368,8 +367,8 @@ public class AtsBranchManagerCore {
    public static Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Set<ICommitConfigItem> configObjects = new HashSet<ICommitConfigItem>();
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
-            AtsVersionService.get().getTargetedVersion(teamArt).getParallelVersions(configObjects);
+         if (AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
+            AtsClientService.get().getVersionService().getTargetedVersion(teamArt).getParallelVersions(configObjects);
          }
       } else {
          if (teamArt.isTeamWorkflow() && AtsClientService.get().getBranchService().isBranchValid(
@@ -382,8 +381,8 @@ public class AtsBranchManagerCore {
 
    public static ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         if (AtsVersionService.get().hasTargetedVersion(teamArt)) {
-            return AtsVersionService.get().getTargetedVersion(teamArt);
+         if (AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
+            return AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          }
       } else {
          if (teamArt.isTeamWorkflow() && AtsClientService.get().getBranchService().isBranchValid(
@@ -482,7 +481,7 @@ public class AtsBranchManagerCore {
 
       // Check for parent branch uuid in Version artifact
       if (teamArt.getTeamDefinition().isTeamUsesVersions()) {
-         IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
+         IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          if (verArt != null) {
             parentBranch = AtsClientService.get().getBranchService().getBranch((IAtsConfigObject) verArt);
          }

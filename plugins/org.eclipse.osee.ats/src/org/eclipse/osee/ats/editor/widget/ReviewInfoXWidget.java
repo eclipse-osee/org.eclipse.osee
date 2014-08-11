@@ -318,7 +318,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      AtsChangeSet changes = new AtsChangeSet("Admin Auto-Complete Reviews");
                      TransitionHelper helper =
                         new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
-                           null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                           null, changes, AtsClientService.get().getServices(),
+                           TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {

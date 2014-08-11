@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -127,7 +126,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          }
          Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
          for (TaskArtifact taskArt : userTaskArts) {
-            if (verArt != null && !verArt.equals(AtsVersionService.get().getTargetedVersion(
+            if (verArt != null && !verArt.equals(AtsClientService.get().getVersionService().getTargetedVersion(
                taskArt.getParentTeamWorkflow()))) {
                removeTaskArts.add(taskArt);
             }

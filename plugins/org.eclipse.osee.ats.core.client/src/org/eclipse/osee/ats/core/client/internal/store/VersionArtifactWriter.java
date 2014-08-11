@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +74,7 @@ public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion
       }
 
       // set parent artifact to top team def
-      IAtsTeamDefinition teamDefinition = AtsVersionService.get().getTeamDefinition(version);
+      IAtsTeamDefinition teamDefinition = AtsClientService.get().getVersionService().getTeamDefinition(version);
       if (teamDefinition != null) {
          Artifact teamDefArt = cache.getArtifact(teamDefinition);
          if (teamDefArt != null) {

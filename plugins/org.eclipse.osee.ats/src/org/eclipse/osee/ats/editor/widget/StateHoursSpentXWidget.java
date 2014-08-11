@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -86,7 +87,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
-               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page)));
+               HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get().getServices())));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
@@ -96,7 +97,8 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          }
          if (breakoutNeeded) {
             setToolTip(sb.toString());
-            return String.format("%5.2f", HoursSpentUtil.getHoursSpentStateTotal(sma, page));
+            return String.format("%5.2f",
+               HoursSpentUtil.getHoursSpentStateTotal(sma, page, AtsClientService.get().getServices()));
          } else {
             return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
          }

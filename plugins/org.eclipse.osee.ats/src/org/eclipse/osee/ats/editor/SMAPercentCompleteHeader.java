@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -107,7 +108,7 @@ public class SMAPercentCompleteHeader extends Composite {
 
    public String getPercentCompleteStr() throws OseeCoreException {
       int awaPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
-      int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(awa);
+      int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get().getServices());
       if (awaPercent != totalPecent) {
          return String.format("%d | %d", awaPercent, totalPecent);
       } else {

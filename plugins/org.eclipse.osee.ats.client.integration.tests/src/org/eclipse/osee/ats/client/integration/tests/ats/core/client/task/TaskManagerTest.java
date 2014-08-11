@@ -155,7 +155,7 @@ public class TaskManagerTest extends TaskManager {
       changes.execute();
 
       Assert.assertEquals(TaskStates.Completed.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
+      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt, AtsClientService.get().getServices()), 0.0);
       Assert.assertEquals("", taskArt.getStateMgr().getAssigneesStr());
 
       // ensure nothing dirty
@@ -169,7 +169,7 @@ public class TaskManagerTest extends TaskManager {
       Assert.assertEquals(Result.TrueResult, result);
       changes.execute();
       Assert.assertEquals(TaskStates.InWork.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt), 0.0);
+      Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt, AtsClientService.get().getServices()), 0.0);
       Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
    }
 

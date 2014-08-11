@@ -83,13 +83,15 @@ public class SMAWorkflowMetricsHeader extends Composite {
             totalPercentHeader.refresh();
          }
          if (percentLabel != null && !percentLabel.isDisposed()) {
-            percentLabel.setText(String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal(awa)));
+            percentLabel.setText(String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal(awa,
+               AtsClientService.get().getServices())));
          }
          if (estimatedHoursHeader != null) {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            hoursSpentLabel.setText(String.valueOf(AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(awa))));
+            hoursSpentLabel.setText(String.valueOf(AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(
+               awa, AtsClientService.get().getServices()))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(awa);

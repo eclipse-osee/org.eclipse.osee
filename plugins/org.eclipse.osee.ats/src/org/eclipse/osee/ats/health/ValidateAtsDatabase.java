@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -638,7 +637,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (parentBranchUuid > 0) {
                      validateBranchUuid(version, parentBranchUuid, results);
                   }
-                  if (AtsVersionService.get().getTeamDefinition(version) == null) {
+                  if (AtsClientService.get().getVersionService().getTeamDefinition(version) == null) {
                      results.log(artifact, "testVersionArtifacts",
                         "Error: " + version.toStringWithId() + " not related to Team Definition");
                   }
@@ -993,7 +992,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
                // Test that targeted version belongs to teamDefHoldingVersion
                else {
-                  IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
+                  IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
                   if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
                      if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                         results.log(
@@ -1023,7 +1022,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(teamArt);
+               IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
                if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
                   if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
                      results.log(
@@ -1210,7 +1209,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   AtsLogUtility.getHtml(
                      awa.getLog(),
                      AtsClientService.get().getLogFactory().getLogProvider(awa,
-                        AtsClientService.get().getAttributeResolver()), true);
+                        AtsClientService.get().getAttributeResolver()), true, AtsClientService.get().getUserService());
                   // Verify that all users are resolved
                   for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
                      if (logItem.getUserId() == null) {

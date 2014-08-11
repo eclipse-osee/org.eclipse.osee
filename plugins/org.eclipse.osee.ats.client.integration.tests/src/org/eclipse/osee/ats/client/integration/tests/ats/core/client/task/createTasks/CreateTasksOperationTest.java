@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.core.client.task.createtasks.TaskMetadata;
 import org.eclipse.osee.ats.core.client.task.createtasks.TaskOpModify;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -239,9 +239,9 @@ public class CreateTasksOperationTest {
          ver2_ChangesWithoutTasks.setName(ver2_ChangesWithoutTasks.getName() + " ChangesWithoutTasks");
          ver3_TasksWithoutChanges.setName(ver3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
 
-         AtsVersionService.get().setTargetedVersion(destTeamWf1_Proper, ver1_Proper);
-         AtsVersionService.get().setTargetedVersion(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
-         AtsVersionService.get().setTargetedVersion(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
+         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf1_Proper, ver1_Proper);
+         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
+         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
 
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
          verArt4.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());

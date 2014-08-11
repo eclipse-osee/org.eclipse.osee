@@ -86,7 +86,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       isEditable =
          WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-            page.getStateDefinition(), editor.isPrivilegedEditModeEnabled());
+            page.getStateDefinition(), editor.isPrivilegedEditModeEnabled(), AtsClientService.get().getUserService());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -369,7 +369,7 @@ public class SMAWorkFlowSection extends SectionPart {
             IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
             }
          } else if (sma.isCancelled()) {
             if (!sma.getCurrentStateName().equals(StateType.Cancelled.toString())) {
@@ -380,7 +380,7 @@ public class SMAWorkFlowSection extends SectionPart {
             IAtsLogItem item = sma.getStateMgr().getStateStartedData(statePageName);
             if (item != null) {
                sb.append(" by ");
-               sb.append(AtsLogUtility.getUserName(item.getUserId()));
+               sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
             }
          }
          if (sma.getStateMgr().getAssignees().size() > 0) {
@@ -399,7 +399,7 @@ public class SMAWorkFlowSection extends SectionPart {
          if (item != null) {
             sb.append(item.getDate(DateUtil.MMDDYYHHMM));
             sb.append(" by ");
-            sb.append(AtsLogUtility.getUserName(item.getUserId()));
+            sb.append(AtsLogUtility.getUserName(item.getUserId(), AtsClientService.get().getUserService()));
          }
       }
       return sb.toString();
@@ -433,7 +433,7 @@ public class SMAWorkFlowSection extends SectionPart {
                      sma.getStateDefinition(),
                      sma,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-                        sma.getStateDefinition(), false));
+                        sma.getStateDefinition(), false, AtsClientService.get().getUserService()));
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

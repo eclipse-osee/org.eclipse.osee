@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -44,8 +43,8 @@ public class TeamDefinitions {
       return guids;
    }
 
-   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition();
+   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(config);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
@@ -81,25 +80,25 @@ public class TeamDefinitions {
       return children;
    }
 
-   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active) throws OseeCoreException {
-      return Collections.castAll(getActive(AtsCoreService.getConfig().get(IAtsTeamDefinition.class), active));
+   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
+      return Collections.castAll(getActive(config.get(IAtsTeamDefinition.class), active));
    }
 
-   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition();
+   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(config);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
    }
 
-   public static IAtsTeamDefinition getTopTeamDefinition() throws OseeCoreException {
-      return AtsCoreService.getConfig().getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
+   public static IAtsTeamDefinition getTopTeamDefinition(IAtsConfig config) throws OseeCoreException {
+      return config.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
    }
 
-   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : getTeamDefinitions(active)) {
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, config)) {
          if (teamDef.getVersions().size() > 0) {
             teamDefs.add(teamDef);
          }
@@ -130,9 +129,9 @@ public class TeamDefinitions {
       }
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsConfig config) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsCoreService.getConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
          }
@@ -140,9 +139,9 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsConfig config) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
-      for (IAtsTeamDefinition teamDef : AtsCoreService.getConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
          }

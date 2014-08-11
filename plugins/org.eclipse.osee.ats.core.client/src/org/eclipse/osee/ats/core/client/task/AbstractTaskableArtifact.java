@@ -230,7 +230,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       int spent = 0;
       Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToState);
       for (TaskArtifact taskArt : taskArts) {
-         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt);
+         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
       }
       if (spent == 0) {
          return 0;

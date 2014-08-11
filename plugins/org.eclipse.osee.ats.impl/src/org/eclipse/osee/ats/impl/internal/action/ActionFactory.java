@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -74,8 +75,9 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
+   private final IAtsConfig config;
 
-   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory) {
+   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config) {
       this.orcsApi = orcsApi;
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
@@ -85,6 +87,7 @@ public class ActionFactory implements IAtsActionFactory {
       this.userService = userService;
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
+      this.config = config;
    }
 
    @Override
@@ -100,7 +103,7 @@ public class ActionFactory implements IAtsActionFactory {
       IAtsAction action = workItemFactory.getAction(actionArt);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
-      utilService.setAtsId(sequenceProvider, action, TeamDefinitions.getTopTeamDefinition(), changes);
+      utilService.setAtsId(sequenceProvider, action, TeamDefinitions.getTopTeamDefinition(config), changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);

@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -245,8 +245,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          return verArt;
       }
       for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof AbstractWorkflowArtifact && AtsVersionService.get().hasTargetedVersion(artifact)) {
-            return AtsVersionService.get().getTargetedVersion(artifact);
+         if (artifact instanceof AbstractWorkflowArtifact && AtsClientService.get().getVersionService().hasTargetedVersion(
+            artifact)) {
+            return AtsClientService.get().getVersionService().getTargetedVersion(artifact);
          }
       }
       return null;

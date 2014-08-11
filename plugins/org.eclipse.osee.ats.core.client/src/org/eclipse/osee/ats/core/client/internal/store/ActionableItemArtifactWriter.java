@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -100,9 +101,11 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       }
 
       // set parent artifact to top team def
-      if (ai.getParentActionableItem() == null && !ai.getGuid().equals(ActionableItems.getTopActionableItem().getGuid())) {
+      if (ai.getParentActionableItem() == null && !ai.getGuid().equals(
+         ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()).getGuid())) {
          // if parent is null, add to top team definition
-         Artifact topAIArt = cache.getSoleArtifact(ActionableItems.getTopActionableItem());
+         Artifact topAIArt =
+            cache.getSoleArtifact(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
          topAIArt.addChild(artifact);
          changes.add(topAIArt);
       } else {

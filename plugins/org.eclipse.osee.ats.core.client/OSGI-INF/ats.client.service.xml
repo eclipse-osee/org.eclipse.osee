@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.ats.core.client.internal.AtsClientImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
    <implementation class="org.eclipse.osee.ats.core.client.internal.AtsClientImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.core.client.IAtsClient"/>
       <provide interface="org.eclipse.osee.ats.core.config.IAtsConfigProvider"/>
       <provide interface="org.eclipse.osee.ats.api.query.IAtsQueryService"/>
-      <provide interface="org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider"/>
-      <provide interface="org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider"/>
-      <provide interface="org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider"/>
       <provide interface="org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider"/>
-      <provide interface="org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider"/>
-      <provide interface="org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider"/>
    </service>
    <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
-   <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
    <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
 </scr:component>

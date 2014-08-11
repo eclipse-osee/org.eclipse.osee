@@ -61,7 +61,7 @@ public class ActionManager {
          (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtilCore.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), actionArt,
-         TeamDefinitions.getTopTeamDefinition(), null);
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), null);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {

@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -125,7 +124,7 @@ public class AtsConfigOperation extends AbstractOperation {
       IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), teamDefName);
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
       teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
-      TeamDefinitions.getTopTeamDefinition().getChildrenTeamDefinitions().add(teamDef);
+      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(teamDef);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       return teamDef;
    }
@@ -162,7 +161,7 @@ public class AtsConfigOperation extends AbstractOperation {
             IAtsVersion version = AtsClientService.get().createVersion(name);
             teamDef.getVersions().add(version);
             AtsClientService.get().storeConfigObject(version, changes);
-            AtsVersionService.get().setTeamDefinition(version, teamDef);
+            AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef);
          }
       }
    }

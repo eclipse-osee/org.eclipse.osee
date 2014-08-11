@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
@@ -60,7 +59,7 @@ public class WorkflowManager {
       awa.isAccessControlWrite() && //
 
       (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
-         awa.getStateDefinition(), privilegedEditEnabled) || //
+         awa.getStateDefinition(), privilegedEditEnabled, AtsClientService.get().getUserService()) || //
          // page is define to allow anyone to edit
          awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
          // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
@@ -209,7 +208,7 @@ public class WorkflowManager {
    public static Double getHoursSpent(Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       Double hoursSpent = 0.0;
       for (AbstractWorkflowArtifact awa : artifacts) {
-         hoursSpent += HoursSpentUtil.getHoursSpentTotal(awa);
+         hoursSpent += HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get().getServices());
       }
       return hoursSpent;
    }
@@ -284,10 +283,10 @@ public class WorkflowManager {
          if (awa.getParentTeamWorkflow() == null) {
             continue;
          }
-         if (!AtsVersionService.get().hasTargetedVersion(awa)) {
+         if (!AtsClientService.get().getVersionService().hasTargetedVersion(awa)) {
             continue;
          }
-         if (versionArts.contains(AtsVersionService.get().getTargetedVersion(awa))) {
+         if (versionArts.contains(AtsClientService.get().getVersionService().getTargetedVersion(awa))) {
             returnawas.add(awa);
          }
       }

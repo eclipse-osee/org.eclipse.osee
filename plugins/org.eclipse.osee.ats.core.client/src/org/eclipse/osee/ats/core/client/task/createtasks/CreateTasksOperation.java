@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -152,7 +151,8 @@ public class CreateTasksOperation extends AbstractOperation {
          if (derivedArt instanceof TeamWorkFlowArtifact) {
             derivedTeamWfArt = (TeamWorkFlowArtifact) derivedArt;
 
-            IAtsVersion derivedArtVersion = AtsVersionService.get().getTargetedVersion(derivedTeamWfArt);
+            IAtsVersion derivedArtVersion =
+               AtsClientService.get().getVersionService().getTargetedVersion(derivedTeamWfArt);
             boolean isDestVersion = destVersion.equals(derivedArtVersion);
 
             ActionableItemManager actionableItemsDamFromArt = derivedTeamWfArt.getActionableItemsDam();
@@ -190,10 +190,10 @@ public class CreateTasksOperation extends AbstractOperation {
 
          destTeamWf =
             ActionManager.createTeamWorkflow(actionArt, teamDef, Collections.singleton(actionableItemArt),
-               Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, createdDate, createdBy,
-               null, CreateTeamOption.Duplicate_If_Exists);
+               Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), changes, createdDate,
+               createdBy, null, CreateTeamOption.Duplicate_If_Exists);
          if (destTeamWf != null) {
-            AtsVersionService.get().setTargetedVersionAndStore(destTeamWf, destVersion);
+            AtsClientService.get().getVersionService().setTargetedVersionAndStore(destTeamWf, destVersion);
          }
       }
       return destTeamWf;

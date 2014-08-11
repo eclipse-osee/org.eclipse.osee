@@ -31,9 +31,9 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -128,7 +128,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
-         if (AtsVersionService.get().isReleased(teamArt) || AtsVersionService.get().isVersionLocked(teamArt)) {
+         if (AtsClientService.get().getVersionService().isReleased(teamArt) || AtsClientService.get().getVersionService().isVersionLocked(
+            teamArt)) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
             if (AtsUtilClient.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
@@ -155,9 +156,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       final VersionListDialog vld =
          new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions(
             versionReleaseType, versionLockType));
-      if (awas.size() == 1 && AtsVersionService.get().hasTargetedVersion(teamArt)) {
+      if (awas.size() == 1 && AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
          Object[] objs = new Object[1];
-         objs[0] = AtsVersionService.get().getTargetedVersion(teamArt);
+         objs[0] = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
          vld.setInitialSelections(objs);
       }
       int result = vld.open();
@@ -178,7 +179,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       }
 
       for (TeamWorkFlowArtifact teamArt1 : awas) {
-         AtsVersionService.get().setTargetedVersionAndStore(teamArt1, newVersion);
+         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamArt1, newVersion);
       }
       Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
       return true;
@@ -190,7 +191,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               String str = Versions.getTargetedVersionStr(team);
+               String str = Versions.getTargetedVersionStr(team, AtsClientService.get().getVersionService());
                if (Strings.isValid(str)) {
                   strs.add(str);
                }
@@ -198,7 +199,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             return Collections.toString(";", strs);
 
          } else {
-            return Versions.getTargetedVersionStr(element);
+            return Versions.getTargetedVersionStr(element, AtsClientService.get().getVersionService());
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
@@ -218,7 +219,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
          }
 
-         promptChangeVersion(awas, AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+         promptChangeVersion(awas,
+            AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
          getXViewer().update(awas.toArray(), null);
          return;

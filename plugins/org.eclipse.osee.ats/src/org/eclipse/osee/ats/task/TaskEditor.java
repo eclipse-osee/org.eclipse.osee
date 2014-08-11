@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -325,8 +325,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    @Override
    public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
       for (TaskArtifact taskArt : tasks) {
-         if (AtsVersionService.get().hasTargetedVersion(taskArt)) {
-            return AtsVersionService.get().getTargetedVersion(taskArt);
+         if (AtsClientService.get().getVersionService().hasTargetedVersion(taskArt)) {
+            return AtsClientService.get().getVersionService().getTargetedVersion(taskArt);
          }
       }
       return null;

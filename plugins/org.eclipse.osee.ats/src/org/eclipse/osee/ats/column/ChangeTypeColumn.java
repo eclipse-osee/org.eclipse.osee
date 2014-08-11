@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workflow.ChangeTypeDialog;
 import org.eclipse.osee.ats.workflow.ChangeTypeToSwtImage;
@@ -79,7 +79,8 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
-            if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
+            if (AtsClientService.get().getVersionService().isReleased(team) || AtsClientService.get().getVersionService().isVersionLocked(
+               team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;

@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
@@ -59,7 +60,8 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(ActionableItems.getTopLevelActionableItems(active));
+         getTreeViewer().getViewer().setInput(
+            ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getConfig()));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {

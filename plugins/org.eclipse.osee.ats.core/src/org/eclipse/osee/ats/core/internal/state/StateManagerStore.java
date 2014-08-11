@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -54,7 +53,7 @@ public class StateManagerStore {
                postPersistNotifyReset(asUser, workItem, stateMgr, assigneesAdded, attrResolver, workStateFactory,
                   changes);
             } catch (OseeCoreException ex) {
-               OseeLog.log(AtsCoreService.class, Level.SEVERE, ex);
+               OseeLog.log(StateManagerStore.class, Level.SEVERE, ex);
             }
          }
       };

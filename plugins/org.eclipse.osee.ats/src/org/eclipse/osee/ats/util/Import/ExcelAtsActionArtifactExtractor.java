@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
@@ -182,14 +181,16 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionArt == null) {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                     aData.priorityStr, false, null, ActionableItems.getActionableItems(aData.actionableItems),
+                     aData.priorityStr, false, null,
+                     ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig()),
                      createdDate, createdBy, null, changes);
                newTeamArts = ActionManager.getTeams(actionArt);
                addToGoal(newTeamArts, changes);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
-               Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(aData.actionableItems);
+               Set<IAtsActionableItem> aias =
+                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig());
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 
@@ -213,7 +214,7 @@ public class ExcelAtsActionArtifactExtractor {
                      throw new OseeArgumentException("No version [%s] configured for Team Definition [%s]",
                         aData.version, team.getTeamDefinition());
                   }
-                  AtsVersionService.get().setTargetedVersionAndStore(team, version);
+                  AtsClientService.get().getVersionService().setTargetedVersionAndStore(team, version);
                }
             }
             if (aData.estimatedHours != null) {

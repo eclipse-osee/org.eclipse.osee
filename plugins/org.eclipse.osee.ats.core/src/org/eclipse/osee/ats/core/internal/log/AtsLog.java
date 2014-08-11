@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -38,7 +37,7 @@ public class AtsLog implements IAtsLog {
       try {
          return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", getLogItems());
       } catch (Exception ex) {
-         OseeLog.log(AtsCoreService.class, Level.SEVERE, ex);
+         OseeLog.log(AtsLog.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
       }
    }

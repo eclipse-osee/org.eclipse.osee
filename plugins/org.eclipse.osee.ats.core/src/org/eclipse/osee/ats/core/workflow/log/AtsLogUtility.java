@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.core.workflow.log;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogHtml;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -24,25 +24,25 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  */
 public class AtsLogUtility {
 
-   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider) throws OseeCoreException {
-      return getHtml(atsLog, storageProvider, true);
+   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService) throws OseeCoreException {
+      return getHtml(atsLog, storageProvider, true, userService);
    }
 
-   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle) throws OseeCoreException {
-      return (new AtsLogHtml(atsLog, storageProvider, AtsCoreService.getUserService(), showLogTitle)).get();
+   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle, IAtsUserService userService) throws OseeCoreException {
+      return (new AtsLogHtml(atsLog, storageProvider, userService, showLogTitle)).get();
    }
 
-   public static String getTable(IAtsLog atsLog, ILogStorageProvider storageProvider) throws OseeCoreException {
-      return (new AtsLogHtml(atsLog, storageProvider, AtsCoreService.getUserService(), true)).getTable();
+   public static String getTable(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService) throws OseeCoreException {
+      return (new AtsLogHtml(atsLog, storageProvider, userService, true)).getTable();
    }
 
-   public static String getToStringUser(IAtsLogItem item) {
-      IAtsUser user = AtsCoreService.getUserService().getUserById(item.getUserId());
+   public static String getToStringUser(IAtsLogItem item, IAtsUserService userService) {
+      IAtsUser user = userService.getUserById(item.getUserId());
       return user == null ? "unknown" : user.getName();
    }
 
-   public static String toString(IAtsLogItem item) {
-      IAtsUser user = AtsCoreService.getUserService().getUserById(item.getUserId());
+   public static String toString(IAtsLogItem item, IAtsUserService userService) {
+      IAtsUser user = userService.getUserById(item.getUserId());
       return String.format("%s (%s)%s by %s on %s", getToStringMsg(item), item.getType(), getToStringState(item),
          user.getName(), DateUtil.getMMDDYYHHMM(item.getDate()));
    }
@@ -55,9 +55,9 @@ public class AtsLogUtility {
       return item.getMsg().isEmpty() ? "" : item.getMsg();
    }
 
-   public static String getUserName(String userId) {
+   public static String getUserName(String userId, IAtsUserService userService) {
       String name = "unknown (" + userId + ")";
-      IAtsUser user = AtsCoreService.getUserService().getUserById(userId);
+      IAtsUser user = userService.getUserById(userId);
       if (user != null) {
          name = user.getName();
       }

@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -63,7 +62,7 @@ public class PopulateSawBuild2Actions {
 
    public static void run() throws OseeCoreException {
 
-      version = AtsVersionService.get().getById(DemoArtifactToken.SAW_Bld_2);
+      version = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
       Conditions.checkNotNull(version, "SAW_Bld_2");
 
       // Create SAW_Bld_2 Actions
@@ -126,7 +125,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
          changes.add(teamWf);
       }
       return actionArt;
@@ -198,7 +197,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
          changes.add(teamWf);
       }
       return actionArt;
@@ -272,7 +271,7 @@ public class PopulateSawBuild2Actions {
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
-         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
          changes.add(teamWf);
       }
       return actionArt;
@@ -329,7 +328,7 @@ public class PopulateSawBuild2Actions {
          }
 
          changes.add(teamWf);
-         AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
+         AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
       }
       return actionArt;
    }
@@ -422,7 +421,7 @@ public class PopulateSawBuild2Actions {
             false,
             true,
             AtsClientService.get().getBranchService().getBranch(
-               (IAtsConfigObject) AtsVersionService.get().getTargetedVersion(reqTeam)), true);
+               (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeam)), true);
       Operations.executeWorkAndCheckStatus(op);
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Completing Action");

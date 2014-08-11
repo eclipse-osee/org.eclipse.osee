@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.log;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.ILogStorageProvider;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +58,7 @@ public class AtsLogWriterTest {
    public void testEmpty() {
       when(storeProvider.getLogXml()).thenReturn("");
       AtsLogWriter writer = new AtsLogWriter(log, storeProvider);
+      when(storeProvider.saveLogXml(any(String.class), any(IAtsChangeSet.class))).thenReturn(Result.TrueResult);
       writer.save(changes);
       verify(storeProvider).saveLogXml(getEmptyLog(), changes);
    }
@@ -72,6 +75,7 @@ public class AtsLogWriterTest {
       item = log.addLog(LogType.StateEntered, "Analyze", "", "456");
       item.setDate(testDate2011);
       AtsLogWriter writer = new AtsLogWriter(log, storeProvider);
+      when(storeProvider.saveLogXml(any(String.class), any(IAtsChangeSet.class))).thenReturn(Result.TrueResult);
       writer.save(changes);
       verify(storeProvider).saveLogXml(getLogStr(), changes);
    }

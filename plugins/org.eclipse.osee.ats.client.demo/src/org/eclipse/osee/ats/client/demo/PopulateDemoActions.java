@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -329,8 +328,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
                }
                if (versionToken != null) {
-                  IAtsVersion version = AtsVersionService.get().getById(versionToken);
-                  AtsVersionService.get().setTargetedVersionAndStore(teamWf, version);
+                  IAtsVersion version = AtsClientService.get().getVersionService().getById(versionToken);
+                  AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, version);
                }
             }
          }

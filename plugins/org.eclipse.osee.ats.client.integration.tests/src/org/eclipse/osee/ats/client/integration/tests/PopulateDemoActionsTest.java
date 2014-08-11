@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -478,7 +477,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(priority, teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
       // want targeted version, not error/exception
       String targetedVerStr = "";
-      IAtsVersion version = AtsVersionService.get().getTargetedVersion(teamArt);
+      IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
       if (version != null) {
          targetedVerStr = version.getName();
       }

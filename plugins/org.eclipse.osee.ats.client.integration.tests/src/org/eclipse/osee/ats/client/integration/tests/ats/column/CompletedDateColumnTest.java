@@ -61,7 +61,8 @@ public class CompletedDateColumnTest {
 
       TransitionHelper helper =
          new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(), null,
-            null, changes, TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
+            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
+            TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -76,7 +77,8 @@ public class CompletedDateColumnTest {
       helper =
          new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
             Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
-            TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
+            AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
+            TransitionOption.OverrideAssigneeCheck);
       transitionMgr = TransitionFactory.getTransitionManager(helper);
       results = transitionMgr.handleAll();
       Assert.assertTrue(results.toString(), results.isEmpty());

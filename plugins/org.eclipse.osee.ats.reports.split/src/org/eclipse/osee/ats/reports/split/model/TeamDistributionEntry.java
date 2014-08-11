@@ -11,6 +11,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
+import org.eclipse.osee.ats.reports.split.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -49,7 +50,7 @@ public class TeamDistributionEntry {
          if (this.teamSplitMap.containsKey(teamName)) {
             work = this.teamSplitMap.get(teamName);
          }
-         double hoursSpent = HoursSpentUtil.getHoursSpentTotal(workflow);
+         double hoursSpent = HoursSpentUtil.getHoursSpentTotal(workflow, AtsClientService.get().getServices());
          this.teamSplitMap.put(teamName, work + hoursSpent);
       }
    }

@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -103,7 +102,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getTeamDefinition().isTeamUsesVersions()) {
-            IAtsVersion version = AtsVersionService.get().getTargetedVersion(this);
+            IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
             return String.format("%s: [%s] - %s", getType(), version != null ? version : "Un-Targeted", getName());
          }
       } catch (OseeCoreException ex) {

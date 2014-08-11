@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.version.VersionMetrics;
 import org.eclipse.osee.ats.version.VersionTeamMetrics;
@@ -65,7 +66,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
 
       Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
       try {
-         teamReleaseableDefinitions = TeamDefinitions.getTeamReleaseableDefinitions(Active.Both);
+         teamReleaseableDefinitions =
+            TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }

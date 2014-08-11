@@ -44,7 +44,8 @@ public class ReviewWorldSearchItemDemoTest {
    @org.junit.Test
    public void testAiSearch() throws Exception {
       IAtsUser joe = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith);
-      Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
+      Set<IAtsActionableItem> aias =
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig());
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
@@ -55,7 +56,8 @@ public class ReviewWorldSearchItemDemoTest {
    @org.junit.Test
    public void testState() throws Exception {
       IAtsUser joe = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith);
-      Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
+      Set<IAtsActionableItem> aias =
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig());
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, joe, null, null, "Prepare");
       Collection<Artifact> arts = search.performSearchGetResults();
@@ -65,7 +67,8 @@ public class ReviewWorldSearchItemDemoTest {
 
    @org.junit.Test
    public void testIncludeCompleted() throws Exception {
-      Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
+      Set<IAtsActionableItem> aias =
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig());
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, true, false, false, null, null, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();
@@ -76,7 +79,8 @@ public class ReviewWorldSearchItemDemoTest {
    @org.junit.Test
    public void testAssignee_Kay() throws Exception {
       IAtsUser Kay_Jones = AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones);
-      Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(Arrays.asList("SAW Code"));
+      Set<IAtsActionableItem> aias =
+         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig());
       ReviewWorldSearchItem search =
          new ReviewWorldSearchItem("", aias, false, false, false, null, Kay_Jones, null, null, null);
       Collection<Artifact> arts = search.performSearchGetResults();

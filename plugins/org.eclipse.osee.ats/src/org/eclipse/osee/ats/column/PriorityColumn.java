@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -64,7 +64,8 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
-            if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
+            if (AtsClientService.get().getVersionService().isReleased(team) || AtsClientService.get().getVersionService().isVersionLocked(
+               team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;
@@ -98,7 +99,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
                return false;
             }
             TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) useArt;
-            if (AtsVersionService.get().isReleased(team) || AtsVersionService.get().isVersionLocked(team)) {
+            if (AtsClientService.get().getVersionService().isReleased(team) || AtsClientService.get().getVersionService().isVersionLocked(team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;

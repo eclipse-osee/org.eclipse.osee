@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -57,10 +57,10 @@ public final class AtsUsersUtility {
       return false;
    }
 
-   public static Collection<? extends IAtsUser> getUsers(Collection<String> userIds) {
+   public static Collection<? extends IAtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
       Set<IAtsUser> users = new HashSet<IAtsUser>();
       for (String userId : userIds) {
-         users.add(AtsCoreService.getUserService().getUserById(userId));
+         users.add(userService.getUserById(userId));
       }
       return users;
    }

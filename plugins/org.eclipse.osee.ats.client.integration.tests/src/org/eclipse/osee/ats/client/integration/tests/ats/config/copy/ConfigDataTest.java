@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
 import org.eclipse.osee.ats.client.demo.DemoTeam;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -72,7 +73,8 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(TeamDefinitions.getTopTeamDefinition(), data.getParentTeamDef());
+      Assert.assertEquals(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()),
+         data.getParentTeamDef());
    }
 
    @org.junit.Test
@@ -84,7 +86,8 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItems.getTopActionableItem(), data.getParentActionableItem());
+      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()),
+         data.getParentActionableItem());
 
    }
 }

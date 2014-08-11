@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workflow.transition;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -69,5 +70,7 @@ public interface ITransitionHelper {
    public IAtsUser getTransitionUser() throws OseeCoreException;
 
    public void setTransitionUser(IAtsUser user) throws OseeCoreException;
+
+   public IAtsServices getServices();
 
 }

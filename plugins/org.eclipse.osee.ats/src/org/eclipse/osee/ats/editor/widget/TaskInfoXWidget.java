@@ -137,6 +137,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                               TransitionHelper helper =
                                  new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
                                     TaskStates.Completed.getName(), null, null, changes,
+                                    AtsClientService.get().getServices(),
                                     TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                               IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();

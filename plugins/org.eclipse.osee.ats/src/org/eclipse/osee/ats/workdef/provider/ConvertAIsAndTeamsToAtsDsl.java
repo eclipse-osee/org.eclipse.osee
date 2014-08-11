@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -53,11 +54,13 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
       try {
          // Add all TeamDef definitions
-         TeamDef topTeam = convertTeamDef(TeamDefinitions.getTopTeamDefinition(), null);
+         TeamDef topTeam =
+            convertTeamDef(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), null);
          atsDsl.getTeamDef().add(topTeam);
 
          // Add all AI definitions
-         ActionableItemDef topAi = convertAIDef(ActionableItems.getTopActionableItem(), null);
+         ActionableItemDef topAi =
+            convertAIDef(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()), null);
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {

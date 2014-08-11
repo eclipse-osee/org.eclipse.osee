@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
@@ -51,7 +52,7 @@ public class MockWorkItem implements IAtsWorkItem {
    public MockWorkItem(String name) {
       this.name = name;
       atsId = name;
-      this.stateMgr = new StateManager(this);
+      this.stateMgr = new StateManager(this, new AtsLogFactory(), null);
    }
 
    @Override

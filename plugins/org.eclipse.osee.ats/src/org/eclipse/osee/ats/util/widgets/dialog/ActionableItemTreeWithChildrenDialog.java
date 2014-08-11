@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,7 +41,7 @@ public class ActionableItemTreeWithChildrenDialog extends OSEECheckedFilteredTre
    protected Composite dialogComp;
 
    public ActionableItemTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, ActionableItems.getTopLevelActionableItems(active));
+      this(active, ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getConfig()));
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {

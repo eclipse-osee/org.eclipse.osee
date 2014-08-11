@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -159,7 +158,7 @@ public class AtsBranchConfigurationTest {
       }
 
       Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
+         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get().getConfig());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.clear();
@@ -168,7 +167,7 @@ public class AtsBranchConfigurationTest {
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      AtsVersionService.get().setTargetedVersionAndStore(teamWf, versionToTarget);
+      AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, versionToTarget);
       changes.execute();
 
       TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
@@ -270,7 +269,8 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
       }
       Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
+         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"),
+            AtsClientService.get().getConfig());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.reset("Test branch via team definition: create action");
@@ -278,7 +278,8 @@ public class AtsBranchConfigurationTest {
       changes.clear();
       Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+            selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
+            changes);
       changes.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();

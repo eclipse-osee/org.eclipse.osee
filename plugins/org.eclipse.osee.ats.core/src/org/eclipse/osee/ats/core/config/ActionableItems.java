@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -89,10 +88,10 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsConfig config) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem ai : AtsCoreService.getConfig().get(IAtsActionableItem.class)) {
+         for (IAtsActionableItem ai : config.get(IAtsActionableItem.class)) {
             if (ai.getName().equals(actionableItemName)) {
                ais.add(ai);
             }
@@ -105,24 +104,24 @@ public class ActionableItems {
       return TeamDefinitions.getImpactedTeamDefs(ais);
    }
 
-   public static List<IAtsActionableItem> getActionableItems(Active active) throws OseeCoreException {
-      return Collections.castAll(getActive(AtsCoreService.getConfig().get(IAtsActionableItem.class), active));
+   public static List<IAtsActionableItem> getActionableItems(Active active, IAtsConfig config) throws OseeCoreException {
+      return Collections.castAll(getActive(config.get(IAtsActionableItem.class), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getGuid() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem() throws OseeCoreException {
-      return AtsCoreService.getConfig().getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
+   public static IAtsActionableItem getTopActionableItem(IAtsConfig config) throws OseeCoreException {
+      return config.getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
    }
 
-   public static List<IAtsActionableItem> getActionableItemsAll() throws OseeCoreException {
-      return getActionableItems(Active.Both);
+   public static List<IAtsActionableItem> getActionableItemsAll(IAtsConfig config) throws OseeCoreException {
+      return getActionableItems(Active.Both, config);
    }
 
-   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active) throws OseeCoreException {
-      IAtsActionableItem topAi = getTopActionableItem();
+   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsConfig config) throws OseeCoreException {
+      IAtsActionableItem topAi = getTopActionableItem(config);
       if (topAi == null) {
          return java.util.Collections.emptyList();
       }

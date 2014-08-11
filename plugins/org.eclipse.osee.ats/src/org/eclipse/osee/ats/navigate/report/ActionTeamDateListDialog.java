@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.workflow.ChangeTypeLabelProvider;
@@ -147,7 +148,8 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       }
       Set<Object> objs = new HashSet<Object>();
       try {
-         for (IAtsTeamDefinition teamDef : TeamDefinitions.getTeamDefinitions(Active.Both)) {
+         for (IAtsTeamDefinition teamDef : TeamDefinitions.getTeamDefinitions(Active.Both,
+            AtsClientService.get().getConfig())) {
             objs.add(teamDef);
          }
       } catch (Exception ex) {

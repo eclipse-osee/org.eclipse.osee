@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -164,7 +164,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            IAtsVersion verArt = AtsVersionService.get().getTargetedVersion(art);
+            IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(art);
             if (verArt != null) {
                Date estRelDate = verArt.getEstimatedReleaseDate();
                if (estRelDate != null) {
@@ -277,7 +277,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
-                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa);
+                     cummulativePercentComplete +=
+                        PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
+                           AtsClientService.get().getServices());
                      processedArts.add(awa);
                   }
                }

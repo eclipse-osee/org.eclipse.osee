@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
-import org.eclipse.osee.ats.core.internal.AtsCoreService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -26,18 +24,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
-   private final IAtsUserService userService;
-   private final IAtsBranchService branchService;
+   private final IAtsServices services;
+   private IAtsUser transitionUser;
 
-   public TransitionHelperAdapter(IAtsUserService userService, IAtsBranchService branchService) {
-      this.userService = userService;
-      this.branchService = branchService;
+   public TransitionHelperAdapter(IAtsServices services) {
+      this.services = services;
    }
-
-   public TransitionHelperAdapter() {
-      this(AtsCoreService.getUserService(), AtsCoreService.getBranchService());
-   }
-   IAtsUser transitionUser;
 
    @Override
    public boolean isPrivilegedEditEnabled() {
@@ -56,12 +48,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return branchService.isWorkingBranchInWork(teamWf);
+      return services.getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return branchService.isBranchInCommit(teamWf);
+      return services.getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
@@ -84,7 +76,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public IAtsUser getTransitionUser() throws OseeStateException, OseeCoreException {
       IAtsUser user = transitionUser;
       if (user == null) {
-         user = userService.getCurrentUser();
+         user = services.getUserService().getCurrentUser();
       }
       return user;
    }

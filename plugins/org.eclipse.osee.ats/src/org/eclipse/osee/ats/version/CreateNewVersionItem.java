@@ -140,7 +140,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          return teamDefHoldingVersions;
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active));
+      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
       int result = ld.open();
       if (result == 0) {
          return (IAtsTeamDefinition) ld.getResult()[0];

@@ -19,11 +19,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
@@ -99,7 +99,7 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("5", testWf.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
       Assert.assertTrue(testWf.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0) == 4.0);
       Assert.assertEquals("Improvement", testWf.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      Assert.assertEquals("SAW_Bld_3", AtsVersionService.get().getTargetedVersion(testWf).getName());
+      Assert.assertEquals("SAW_Bld_3", AtsClientService.get().getVersionService().getTargetedVersion(testWf).getName());
    }
 
    @org.junit.Test

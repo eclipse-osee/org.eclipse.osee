@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -58,7 +59,7 @@ public class ActionTeamListDialog extends ListDialog {
       setMessage("Select Team(s)");
       ArrayList<IAtsTeamDefinition> arts = new ArrayList<IAtsTeamDefinition>();
       try {
-         for (IAtsTeamDefinition prod : TeamDefinitions.getTeamDefinitions(active)) {
+         for (IAtsTeamDefinition prod : TeamDefinitions.getTeamDefinitions(active, AtsClientService.get().getConfig())) {
             arts.add(prod);
          }
       } catch (Exception ex) {

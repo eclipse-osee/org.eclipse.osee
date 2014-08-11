@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -169,7 +170,8 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Date_Created) {
             values.add(CreatedDateColumn.getDateStr(sma));
          } else if (col == Columns.Version) {
-            values.add((!Strings.isValid(Versions.getTargetedVersionStr(sma)) ? "." : Versions.getTargetedVersionStr(sma)));
+            values.add((!Strings.isValid(Versions.getTargetedVersionStr(sma, AtsClientService.get().getVersionService())) ? "." : Versions.getTargetedVersionStr(
+               sma, AtsClientService.get().getVersionService())));
          }
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));

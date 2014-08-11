@@ -13,6 +13,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.reports.AtsReport;
 import org.eclipse.osee.ats.reports.ReportTabFactory;
 import org.eclipse.osee.ats.reports.efficiency.internal.Activator;
+import org.eclipse.osee.ats.reports.efficiency.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -43,7 +44,7 @@ public class EfficiencyAtsReport implements AtsReport<IAtsTeamDefinition, Object
       IAtsTeamDefinition atsTeamDefinition = null;
       TeamDefinitionDialog dlg =
          new TeamDefinitionDialog("Team Efficiency Report", "Please Select the Team Definition");
-      dlg.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both));
+      dlg.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
       int open = dlg.open();
       if (open == 0) {
          Object[] result = dlg.getResult();

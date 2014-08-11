@@ -14,10 +14,12 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -43,6 +45,7 @@ public class TransitionHelperAdapterTest {
    @Mock IAtsUser Joe, Kay;
    @Mock IAtsUserService userService;
    @Mock IAtsBranchService branchService;
+   @Mock IAttributeResolver attrResolver;
    // @formatter:on
 
    TestTransitionHelper helper = null;
@@ -96,7 +99,7 @@ public class TransitionHelperAdapterTest {
    private class TestTransitionHelper extends TransitionHelperAdapter {
 
       public TestTransitionHelper() {
-         super(userService, branchService);
+         super(null);
       }
 
       @Override
@@ -136,6 +139,11 @@ public class TransitionHelperAdapterTest {
 
       @Override
       public Collection<ITransitionListener> getTransitionListeners() {
+         return null;
+      }
+
+      @Override
+      public IAtsServices getServices() {
          return null;
       }
 

@@ -67,10 +67,14 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
-      importTeamDefinitions(atsDsl.getTeamDef(),
-         AtsClientService.get().getConfigArtifact(TeamDefinitions.getTopTeamDefinition()));
-      importActionableItems(atsDsl.getActionableItemDef(),
-         AtsClientService.get().getConfigArtifact(ActionableItems.getTopActionableItem()));
+      importTeamDefinitions(
+         atsDsl.getTeamDef(),
+         AtsClientService.get().getConfigArtifact(
+            TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig())));
+      importActionableItems(
+         atsDsl.getActionableItemDef(),
+         AtsClientService.get().getConfigArtifact(
+            ActionableItems.getTopActionableItem(AtsClientService.get().getConfig())));
    }
 
    private void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
@@ -275,9 +279,13 @@ public class ImportAIsAndTeamDefinitionsToDb {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       if (parent == null) {
          if (isTeamDef) {
-            parent = AtsClientService.get().storeConfigObject(TeamDefinitions.getTopTeamDefinition(), changes);
+            parent =
+               AtsClientService.get().storeConfigObject(
+                  TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), changes);
          } else {
-            parent = AtsClientService.get().storeConfigObject(ActionableItems.getTopActionableItem(), changes);
+            parent =
+               AtsClientService.get().storeConfigObject(
+                  ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()), changes);
          }
          changes.execute();
       }

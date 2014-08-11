@@ -117,7 +117,8 @@ public class SMAPrint extends Action {
       }
       resultData.addRaw(AHTML.newline());
       resultData.addRaw(AtsLogUtility.getHtml(sma.getLog(),
-         AtsClientService.get().getLogFactory().getLogProvider(sma, AtsClientService.get().getAttributeResolver())));
+         AtsClientService.get().getLogFactory().getLogProvider(sma, AtsClientService.get().getAttributeResolver()),
+         AtsClientService.get().getUserService()));
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
@@ -148,8 +149,8 @@ public class SMAPrint extends Action {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
                AssigneeColumn.instance.getAssigneeStr(art),
-               PercentCompleteTotalUtil.getPercentCompleteTotal(art) + "",
-               HoursSpentUtil.getHoursSpentTotal(art) + "",
+               PercentCompleteTotalUtil.getPercentCompleteTotal(art, AtsClientService.get().getServices()) + "",
+               HoursSpentUtil.getHoursSpentTotal(art, AtsClientService.get().getServices()) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getAtsId()}));
          }

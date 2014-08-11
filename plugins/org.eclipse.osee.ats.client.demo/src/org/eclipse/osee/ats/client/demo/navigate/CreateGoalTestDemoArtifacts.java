@@ -92,7 +92,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
-            null, ActionableItems.getActionableItems(Arrays.asList("Network")), createdDate, createdBy, null, changes);
+            null, ActionableItems.getActionableItems(Arrays.asList("Network"), AtsClientService.get().getConfig()),
+            createdDate, createdBy, null, changes);
       facilitiesGoal.addMember(action);
       changes.add(facilitiesGoal);
    }
@@ -101,8 +102,9 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
          Artifact action =
             ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4",
-               false, null, ActionableItems.getActionableItems(Arrays.asList(msaTool)), createdDate, createdBy, null,
-               changes);
+               false, null,
+               ActionableItems.getActionableItems(Arrays.asList(msaTool), AtsClientService.get().getConfig()),
+               createdDate, createdBy, null, changes);
          facilitiesGoal.addMember(ActionManager.getFirstTeam(action));
          teamArt = ActionManager.getFirstTeam(action);
          TaskArtifact taskArt = teamArt.createNewTask("Task 1", createdDate, createdBy, changes);
@@ -118,8 +120,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem, "4", false,
-            null, ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")), createdDate,
-            createdBy, null, changes);
+            null, ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
+               AtsClientService.get().getConfig()), createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       cisReqGoal.addMember(ActionManager.getFirstTeam(action));
    }
@@ -127,8 +129,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) throws OseeCoreException {
       ActionArtifact action =
          ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
-            ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements")), createdDate, createdBy,
-            null, changes);
+            ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
+               AtsClientService.get().getConfig()), createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       cisReqGoal.addMember(ActionManager.getFirstTeam(action));
    }
@@ -136,7 +138,8 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    private TeamWorkFlowArtifact createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) throws OseeCoreException {
       Artifact action =
          ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItems.getActionableItems(Arrays.asList("SAW Code")), createdDate, createdBy, null, changes);
+            ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig()),
+            createdDate, createdBy, null, changes);
       sawCodeGoal.addMember(ActionManager.getFirstTeam(action));
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);
       PeerToPeerReviewArtifact peerReviewArt =

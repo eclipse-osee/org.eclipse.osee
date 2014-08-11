@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -121,7 +122,7 @@ public class ReviewManager {
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt, relatedToState)) {
-         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt);
+         spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get().getServices());
       }
       return spent;
    }
@@ -135,7 +136,7 @@ public class ReviewManager {
       int spent = 0;
       Collection<AbstractReviewArtifact> reviewArts = getReviews(teamArt, relatedToState);
       for (AbstractReviewArtifact reviewArt : reviewArts) {
-         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt);
+         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsClientService.get().getServices());
       }
       if (spent == 0) {
          return 0;

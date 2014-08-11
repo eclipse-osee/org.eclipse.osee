@@ -96,7 +96,7 @@ public class PeerToPeerReviewManager {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null, changes,
-            TransitionOption.OverrideAssigneeCheck);
+            AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -170,7 +170,8 @@ public class PeerToPeerReviewManager {
                actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef, changes);
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef,
+         changes);
       changes.add(peerArt);
       return peerArt;
    }

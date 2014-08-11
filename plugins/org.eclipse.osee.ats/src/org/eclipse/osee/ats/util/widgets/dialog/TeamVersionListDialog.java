@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -66,7 +67,8 @@ public class TeamVersionListDialog extends SelectionDialog {
 
       ArrayList<Object> objs = new ArrayList<Object>();
       try {
-         for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active)) {
+         for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active,
+            AtsClientService.get().getConfig())) {
             objs.add(art);
          }
       } catch (Exception ex) {

@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
@@ -60,6 +62,8 @@ public class StateManagerStoreTest {
    @Mock IAtsWorkStateFactory workStateFactory;
    @Mock IAtsUserService userService;
    @Mock AtsNotificationCollector notifications;
+   @Mock IAtsLogFactory logFactory;
+   @Mock IAtsServices services;
    // @formatter:on
 
    @Before
@@ -73,6 +77,9 @@ public class StateManagerStoreTest {
       when(workDef.getStateByName("Completed")).thenReturn(completedState);
       when(completedState.getStateType()).thenReturn(StateType.Completed);
 
+      when(services.getAttributeResolver()).thenReturn(attrResolver);
+      when(services.getUserService()).thenReturn(userService);
+
    }
 
    @Test
@@ -82,7 +89,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testWriteToStore() {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
       Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());
@@ -96,7 +103,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testLoad() {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
@@ -114,7 +121,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testPostPersistNotifyReset() {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
@@ -134,7 +141,7 @@ public class StateManagerStoreTest {
 
    @Test
    public void testGetPostPersistExecutionListener() {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       stateMgr.setCurrentStateName("Analyze");
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);

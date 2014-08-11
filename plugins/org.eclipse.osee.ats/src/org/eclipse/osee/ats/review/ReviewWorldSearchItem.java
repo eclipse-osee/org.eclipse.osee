@@ -31,10 +31,10 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldUISearchItem;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -166,7 +166,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       // don't include if version specified and workflow's not targeted for version
       if (versionArt != null) {
          TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
-         IAtsVersion version = AtsVersionService.get().getTargetedVersion(team);
+         IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(team);
          if (team != null && (version == null || !version.equals(versionArt))) {
             return false;
          }

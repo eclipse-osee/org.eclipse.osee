@@ -66,7 +66,7 @@ public class VersionEfficiency {
          double actual = 0;
          for (TeamWorkFlowArtifact twa : teams.get(teamName)) {
             estimated += twa.getEstimatedHoursTotal();
-            actual += HoursSpentUtil.getHoursSpentTotal(twa);
+            actual += HoursSpentUtil.getHoursSpentTotal(twa, AtsClientService.get().getServices());
          }
          if (actual != 0) {
             this.efficiency.put(teamName, estimated / actual);

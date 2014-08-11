@@ -124,7 +124,7 @@ public class SMAPromptChangeStatusTest {
       changes.clear();
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
-            null, null, changes, TransitionOption.None);
+            null, null, changes, AtsClientService.get().getServices(), TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       assertEquals("Transition should have no errors", true, results.isEmpty());
@@ -174,10 +174,10 @@ public class SMAPromptChangeStatusTest {
             assertEquals("ats.CurrentState wrong " + awa.getAtsId(), awa.getStateMgr().getCurrentStateName() + ";;;",
                awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
-         assertEquals("Percent wrong for " + awa.getAtsId(), PercentCompleteTotalUtil.getPercentCompleteTotal(awa),
-            totalPercent);
-         assertEquals("Hours Spent wrong for " + awa.getAtsId(), HoursSpentUtil.getHoursSpentTotal(awa), hoursSpent,
-            0.0);
+         assertEquals("Percent wrong for " + awa.getAtsId(),
+            PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get().getServices()), totalPercent);
+         assertEquals("Hours Spent wrong for " + awa.getAtsId(),
+            HoursSpentUtil.getHoursSpentTotal(awa, AtsClientService.get().getServices()), hoursSpent, 0.0);
 
          for (String xml : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             WorkState state = AtsClientService.get().getWorkStateFactory().fromStoreStr(xml);

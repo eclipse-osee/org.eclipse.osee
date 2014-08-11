@@ -140,7 +140,8 @@ public class AtsBranchAccessManagerTest {
       String aiContextId = "ai.context.1";
       Artifact aiArt =
          AtsClientService.get().getConfigArtifact(
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName())).iterator().next());
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
+               AtsClientService.get().getConfig()).iterator().next());
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 

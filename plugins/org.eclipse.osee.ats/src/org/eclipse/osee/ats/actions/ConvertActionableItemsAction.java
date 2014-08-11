@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -108,7 +109,7 @@ public class ConvertActionableItemsAction extends Action {
             //
             "You will be prompted to confirm this conversion.", Active.Both);
 
-      diag.setInput(ActionableItems.getTopLevelActionableItems(Active.Both));
+      diag.setInput(ActionableItems.getTopLevelActionableItems(Active.Both, AtsClientService.get().getConfig()));
       if (diag.open() != 0) {
          return Result.FalseResult;
       }

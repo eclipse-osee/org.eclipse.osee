@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
@@ -55,6 +57,8 @@ public class StateManagerUtilityTest {
    @Mock IAtsStateManager stateMgr;
    @Mock IAtsWorkStateFactory workStateFactory;
    @Mock IAtsUserService userService;
+   @Mock IAtsLogFactory logFactory;
+   @Mock IAtsServices services;
    // @formatter:on
 
    @Before
@@ -77,7 +81,7 @@ public class StateManagerUtilityTest {
 
    @Test
    public void testInitializeStateMachine() {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
       Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());

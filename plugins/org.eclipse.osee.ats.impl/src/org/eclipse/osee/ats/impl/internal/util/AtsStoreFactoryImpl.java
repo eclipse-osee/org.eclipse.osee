@@ -10,25 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
+import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsStoreFactoryImpl implements IAtsStoreFactory {
 
-   private final IAtsServer atsServer;
+   private final OrcsApi orcsApi;
+   private final IAtsStateFactory stateFactory;
+   private final IAtsLogFactory logFactory;
+   private final IAtsNotifier notifier;
 
-   public AtsStoreFactoryImpl(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsStoreFactoryImpl(OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+      this.logFactory = logFactory;
+      this.stateFactory = stateFactory;
+      this.orcsApi = orcsApi;
+      this.notifier = notifier;
    }
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
-      return new AtsChangeSet(atsServer, comment, user);
+      return new AtsChangeSet(orcsApi, stateFactory, logFactory, comment, user, notifier);
    }
 
 }

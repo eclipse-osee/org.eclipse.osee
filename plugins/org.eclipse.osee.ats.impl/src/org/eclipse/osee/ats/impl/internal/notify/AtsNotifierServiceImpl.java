@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.notify;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
+import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.mail.api.MailService;
 
 /**
@@ -31,7 +32,8 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
    @Override
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
       SendNotificationEvents job =
-         new SendNotificationEvents(mailService, fromUserEmail, testingUserEmail, subject, body, notificationEvents);
+         new SendNotificationEvents(mailService, fromUserEmail, testingUserEmail, subject, body, notificationEvents,
+            AtsServerService.get().getUserService());
       job.run();
    }
 

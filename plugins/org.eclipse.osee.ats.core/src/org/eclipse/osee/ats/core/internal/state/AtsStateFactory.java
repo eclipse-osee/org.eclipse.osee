@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.state;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
@@ -24,17 +25,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AtsStateFactory implements IAtsStateFactory {
 
-   private final IAttributeResolver attrResolver;
    private final IAtsWorkStateFactory workStateFactory;
+   private final IAtsLogFactory logFactory;
+   private final IAtsServices services;
 
-   public AtsStateFactory(IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) {
-      this.attrResolver = attrResolver;
+   public AtsStateFactory(IAtsServices services, IAtsWorkStateFactory workStateFactory, IAtsLogFactory logFactory) {
+      this.services = services;
       this.workStateFactory = workStateFactory;
+      this.logFactory = logFactory;
    }
 
    @Override
    public IAtsStateManager getStateManager(IAtsWorkItem workItem) {
-      StateManager stateMgr = new StateManager(workItem);
+      StateManager stateMgr = new StateManager(workItem, logFactory, services);
       return stateMgr;
    }
 
@@ -42,20 +45,20 @@ public class AtsStateFactory implements IAtsStateFactory {
    public IAtsStateManager getStateManager(IAtsWorkItem workItem, boolean load) throws OseeCoreException {
       IAtsStateManager stateMgr = getStateManager(workItem);
       if (load) {
-         StateManagerStore.load(workItem, stateMgr, attrResolver, workStateFactory);
+         StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
       }
       return stateMgr;
    }
 
    @Override
    public void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException {
-      StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(), attrResolver, changes,
-         workStateFactory);
+      StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(),
+         services.getAttributeResolver(), changes, workStateFactory);
    }
 
    @Override
    public void load(IAtsWorkItem workItem, IAtsStateManager stateMgr) {
-      StateManagerStore.load(workItem, stateMgr, attrResolver, workStateFactory);
+      StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
    }
 
 }

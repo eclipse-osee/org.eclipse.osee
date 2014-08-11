@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
@@ -42,14 +43,16 @@ public class SendNotificationEvents {
    private final MailService mailService;
    private final String fromUserEmail;
    private final String testingUserEmail;
+   private final IAtsUserService userService;
 
-   protected SendNotificationEvents(MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
+   protected SendNotificationEvents(MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
       this.mailService = mailService;
       this.fromUserEmail = fromUserEmail;
       this.testingUserEmail = testingUserEmail;
       this.subject = subject;
       this.body = body;
       this.notificationEvents = notificationEvents;
+      this.userService = userService;
       if (isTesting()) {
          OseeLog.log(SendNotificationEvents.class, Level.SEVERE,
             "OseeNotifyUsersJob: testing is enabled....turn off for production.");
@@ -60,7 +63,7 @@ public class SendNotificationEvents {
       try {
          Set<IAtsUser> uniqueUusers = new HashSet<IAtsUser>();
          for (AtsNotificationEvent notificationEvent : notificationEvents) {
-            uniqueUusers.addAll(AtsUsersUtility.getUsers(notificationEvent.getUserIds()));
+            uniqueUusers.addAll(AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService));
          }
          XResultData resultData = new XResultData();
          if (isTesting()) {
@@ -70,7 +73,7 @@ public class SendNotificationEvents {
          for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
             List<AtsNotificationEvent> notifyEvents = new ArrayList<AtsNotificationEvent>();
             for (AtsNotificationEvent notificationEvent : notificationEvents) {
-               if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds()).contains(user)) {
+               if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(user)) {
                   notifyEvents.add(notificationEvent);
                }
             }

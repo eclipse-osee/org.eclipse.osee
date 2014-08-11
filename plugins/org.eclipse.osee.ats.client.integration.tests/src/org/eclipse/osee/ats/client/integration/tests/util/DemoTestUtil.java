@@ -101,7 +101,8 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), new Date(),
+            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
+               AtsClientService.get().getConfig()), new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
@@ -114,7 +115,8 @@ public class DemoTestUtil {
    }
 
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) throws OseeCoreException {
-      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()));
+      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()),
+         AtsClientService.get().getConfig());
    }
 
    public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) throws OseeCoreException {

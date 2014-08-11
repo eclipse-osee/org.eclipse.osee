@@ -51,7 +51,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
@@ -549,7 +548,7 @@ public class AtsTestUtil {
    private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
-            Arrays.asList(user), null, changes, transitionOptions);
+            Arrays.asList(user), null, changes, AtsClientService.get().getServices(), transitionOptions);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -640,7 +639,7 @@ public class AtsTestUtil {
                AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
          teamArt4 = actionArt4.getFirstTeam();
-         AtsVersionService.get().setTargetedVersion(teamArt4, verArt4);
+         AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4);
          changes.execute();
       }
       return teamArt4;
@@ -726,8 +725,8 @@ public class AtsTestUtil {
       verArt.setAllowCreateBranch(true);
       verArt.setAllowCommitBranch(true);
       verArt.setBaselineBranchUuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getUuid());
-      if (!AtsVersionService.get().hasTargetedVersion(getTeamWf())) {
-         AtsVersionService.get().setTargetedVersion(getTeamWf(), getVerArt1());
+      if (!AtsClientService.get().getVersionService().hasTargetedVersion(getTeamWf())) {
+         AtsClientService.get().getVersionService().setTargetedVersion(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       }
    }

@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -423,7 +422,8 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testTeamWorkflowSearch() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
-      List<IAtsTeamDefinition> selectedTeamDefs = TeamDefinitions.getTeamTopLevelDefinitions(Active.Active);
+      List<IAtsTeamDefinition> selectedTeamDefs =
+         TeamDefinitions.getTeamTopLevelDefinitions(Active.Active, AtsClientService.get().getConfig());
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
@@ -441,7 +441,7 @@ public class AtsNavigateItemsToWorldViewTest {
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Test");
       teamDefs.add("SAW Design");
-      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs);
+      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
@@ -511,7 +511,8 @@ public class AtsNavigateItemsToWorldViewTest {
 
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItems.getActionableItems(Arrays.asList("SAW Code")));
+      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItems.getActionableItems(
+         Arrays.asList("SAW Code"), AtsClientService.get().getConfig()));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
@@ -525,7 +526,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
-      IAtsVersion version = AtsVersionService.get().getById(DemoArtifactToken.SAW_Bld_2);
+      IAtsVersion version = AtsClientService.get().getVersionService().getById(DemoArtifactToken.SAW_Bld_2);
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(version);
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
@@ -540,7 +541,7 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
       ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitions.getTeamDefinitions(
-         Arrays.asList("SAW SW")).iterator().next());
+         Arrays.asList("SAW SW"), AtsClientService.get().getConfig()).iterator().next());
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
    }

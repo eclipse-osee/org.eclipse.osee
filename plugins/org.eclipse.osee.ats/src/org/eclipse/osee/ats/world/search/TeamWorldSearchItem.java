@@ -28,11 +28,11 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -153,7 +153,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             // don't include if version specified and workflow's not targeted for version
             if (versionArt != null) {
                TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
-               if (team != null && (!AtsVersionService.get().hasTargetedVersion(team) || !AtsVersionService.get().getTargetedVersion(
+               if (team != null && (!AtsClientService.get().getVersionService().hasTargetedVersion(team) || !AtsClientService.get().getVersionService().getTargetedVersion(
                   team).equals(versionArt))) {
                   continue;
                }
@@ -163,7 +163,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
                TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
                if (team != null) {
                   // skip if released is desired and version artifact is not set
-                  IAtsVersion setVerArt = AtsVersionService.get().getTargetedVersion(team);
+                  IAtsVersion setVerArt = AtsClientService.get().getVersionService().getTargetedVersion(team);
                   if (setVerArt == null && releasedOption == ReleasedOption.Released) {
                      continue;
                   }

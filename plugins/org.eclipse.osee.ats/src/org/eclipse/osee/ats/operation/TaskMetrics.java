@@ -132,7 +132,8 @@ public class TaskMetrics extends AbstractBlam {
          assignees = ImplementersColumn.instance.getImplementers(task);
       }
       for (IAtsUser user : assignees) {
-         int percentComplete = PercentCompleteTotalUtil.getPercentCompleteTotal(task);
+         int percentComplete =
+            PercentCompleteTotalUtil.getPercentCompleteTotal(task, AtsClientService.get().getServices());
          if (percentComplete == COMPLETED_CANCELLED_PERCENT) {
             if (task.getStateMgr().getStateType().isCompletedOrCancelledState()) {
                metrics.put(user, COMPLETED_CANCELLED_PERCENT);

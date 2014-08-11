@@ -121,7 +121,8 @@ public class NewActionPage1 extends WizardPage {
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
          try {
-            treeViewer.getViewer().setInput(ActionableItems.getTopLevelActionableItems(Active.Active));
+            treeViewer.getViewer().setInput(
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getConfig()));
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -178,8 +179,8 @@ public class NewActionPage1 extends WizardPage {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
             atsAi =
-               AtsClientService.get().getConfig().getSoleByGuid(
-                  ATS_Actionable_Item_Guid_For_Training_And_Demos, IAtsActionableItem.class);
+               AtsClientService.get().getConfig().getSoleByGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos,
+                  IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
                treeViewer.setInitalChecked(Arrays.asList(atsAi));

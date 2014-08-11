@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -122,7 +123,7 @@ public class DemoDbUtil {
    public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (String str : aiasNames) {
-         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll()) {
+         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll(AtsClientService.get().getConfig())) {
             if (str.equals(aia.getName())) {
                aias.add(aia);
             }

@@ -80,8 +80,8 @@ public class AtsDeleteManagerTest {
       AtsChangeSet changes = new AtsChangeSet("Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtDeleteOneWorkflow,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), changes);
+         createAction(TestNames.TeamArtDeleteOneWorkflow, ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()), changes);
       changes.execute();
 
       // Verify exists
@@ -104,8 +104,9 @@ public class AtsDeleteManagerTest {
       AtsChangeSet changes = new AtsChangeSet("Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItems.getActionableItems(Arrays.asList(
-            DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())), changes);
+         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName()),
+            AtsClientService.get().getConfig()), changes);
       changes.execute();
 
       // Verify exists
@@ -123,8 +124,8 @@ public class AtsDeleteManagerTest {
       AtsChangeSet changes = new AtsChangeSet("Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtPurge,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), changes);
+         createAction(TestNames.TeamArtPurge, ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()), changes);
       changes.execute();
 
       // Verify exists
@@ -142,8 +143,8 @@ public class AtsDeleteManagerTest {
       AtsChangeSet changes = new AtsChangeSet("Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.ActionDelete,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), changes);
+         createAction(TestNames.ActionDelete, ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()), changes);
       changes.execute();
 
       // Verify exists
@@ -161,8 +162,8 @@ public class AtsDeleteManagerTest {
       AtsChangeSet changes = new AtsChangeSet("Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.ActionPurge,
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())), changes);
+         createAction(TestNames.ActionPurge, ActionableItems.getActionableItems(
+            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()), changes);
       changes.execute();
 
       // Verify exists

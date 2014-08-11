@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
@@ -19,7 +21,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
-import org.eclipse.osee.ats.core.internal.AtsEarnedValueService;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
@@ -35,17 +36,16 @@ public final class AtsCoreFactory {
       //
    }
 
-   public static IAtsStateFactory newStateFactory(IAttributeResolver attrResolver, IAtsUserService userService) {
-      return new AtsStateFactory(attrResolver, new AtsWorkStateFactory(userService));
+   public static IAtsStateFactory newStateFactory(IAtsServices services, IAtsLogFactory logFactory) {
+      return new AtsStateFactory(services, new AtsWorkStateFactory(services.getUserService()), logFactory);
    }
 
    public static IAtsLogFactory newLogFactory() {
       return new AtsLogFactory();
    }
 
-   public static IAtsColumnUtilities getColumnUtilities(IAtsReviewService reviewService, IAtsWorkItemService workItemService) {
-      return new AtsColumnUtilities(reviewService, workItemService,
-         AtsEarnedValueService.getEarnedValueServiceProvider());
+   public static IAtsColumnUtilities getColumnUtilities(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+      return new AtsColumnUtilities(reviewService, workItemService, earnedValueServiceProvider);
    }
 
    public static IAtsWorkStateFactory getWorkStateFactory(IAtsUserService userService) {

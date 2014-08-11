@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -59,7 +60,8 @@ public class AtsNavigateItemsToTaskEditorTest {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
 
       AtsBulkLoad.reloadConfig(true);
-      Collection<IAtsTeamDefinition> selectedUsers = TeamDefinitions.getTeamTopLevelDefinitions(Active.Active);
+      Collection<IAtsTeamDefinition> selectedUsers =
+         TeamDefinitions.getTeamTopLevelDefinitions(Active.Active, AtsClientService.get().getConfig());
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
@@ -70,7 +72,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       selectedUsers.clear();
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Code");
-      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs);
+      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
       runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);

@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.impl.internal.util;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
-import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -35,18 +38,23 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    private TransactionBuilder transaction;
-   private final IAtsServer atsServer;
+   private final OrcsApi orcsApi;
+   private final IAtsStateFactory stateFactory;
+   private final IAtsLogFactory logFactory;
+   private final IAtsNotifier notifier;
 
-   public AtsChangeSet(IAtsServer atsServer, String comment, IAtsUser user) {
+   public AtsChangeSet(OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
       super(comment, user);
-      this.atsServer = atsServer;
+      this.orcsApi = orcsApi;
+      this.stateFactory = stateFactory;
+      this.logFactory = logFactory;
+      this.notifier = notifier;
    }
 
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilServer.getAtsBranch(),
-               getUser(user), comment);
+            orcsApi.getTransactionFactory(null).createTransaction(AtsUtilServer.getAtsBranch(), getUser(user), comment);
       }
       return transaction;
    }
@@ -55,8 +63,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(
-         user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    @Override
@@ -70,10 +77,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             IAtsStateManager stateMgr = workItem.getStateMgr();
             if (stateMgr.isDirty()) {
-               atsServer.getStateFactory().writeToStore(user, workItem, this);
+               stateFactory.writeToStore(user, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               atsServer.getLogFactory().writeToStore(workItem, AtsServerService.get().getAttributeResolver(), this);
+               logFactory.writeToStore(workItem, AtsServerService.get().getAttributeResolver(), this);
             }
          }
       }
@@ -89,16 +96,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
-      atsServer.sendNotifications(getNotifications());
-   }
-
-   public static void execute(IAtsServer atsServer, String comment, IAtsUser user, Object object, Object... objects) throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(atsServer, comment, user);
-      changes.add(object);
-      for (Object obj : objects) {
-         changes.add(obj);
-      }
-      changes.execute();
+      notifier.sendNotifications(getNotifications());
    }
 
    @Override

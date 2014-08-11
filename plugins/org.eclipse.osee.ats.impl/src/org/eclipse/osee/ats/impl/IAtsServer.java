@@ -12,18 +12,17 @@ package org.eclipse.osee.ats.impl;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -41,13 +40,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
+public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
    IAtsWorkItemFactory getWorkItemFactory() throws OseeCoreException;
-
-   IAtsUserService getUserService() throws OseeCoreException;
 
    @Override
    ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
@@ -55,8 +52,6 @@ public interface IAtsServer extends IAtsNotifier, IAtsConfigItemFactoryProvider,
    IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
    ArtifactReadable getArtifactByGuid(String guid);
-
-   IAttributeResolver getAttributeResolver();
 
    IAtsStoreFactory getStoreFactory();
 
@@ -86,5 +81,7 @@ public interface IAtsServer extends IAtsNotifier, IAtsConfigItemFactoryProvider,
    boolean isProduction();
 
    String getConfigValue(String key);
+
+   IAtsServices getServices();
 
 }

@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.AtsVersionService;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -102,7 +101,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
       Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
          AtsTestUtil.getTeamWf4().getActionableItemsDam().getActionableItems().iterator().next());
-      Assert.assertEquals(AtsVersionService.get().getTargetedVersion(AtsTestUtil.getTeamWf4()),
+      Assert.assertEquals(AtsClientService.get().getVersionService().getTargetedVersion(AtsTestUtil.getTeamWf4()),
          AtsTestUtil.getVerArt4());
 
       AtsTestUtil.cleanup();

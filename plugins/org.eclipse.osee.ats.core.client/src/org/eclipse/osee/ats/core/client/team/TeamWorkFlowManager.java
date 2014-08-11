@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -176,7 +177,7 @@ public class TeamWorkFlowManager {
    private Result transitionToState(boolean popup, TeamWorkFlowArtifact teamArt, IStateToken toState, Collection<IAtsUser> transitionToAssignees, IAtsChangeSet changes) {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
-            transitionToAssignees, null, changes, transitionOptions);
+            transitionToAssignees, null, changes, AtsClientService.get().getServices(), transitionOptions);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {

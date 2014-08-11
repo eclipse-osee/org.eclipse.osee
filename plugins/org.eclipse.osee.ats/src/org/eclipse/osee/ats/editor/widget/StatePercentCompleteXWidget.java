@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -98,7 +99,8 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
-            return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page));
+            return String.valueOf(PercentCompleteTotalUtil.getPercentCompleteSMAStateTotal(sma, page,
+               AtsClientService.get().getServices()));
          } else {
             return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
          }

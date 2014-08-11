@@ -64,7 +64,7 @@ public class TaskManager {
          }
          TransitionHelper helper =
             new TransitionHelper("Transition to Completed", Arrays.asList(taskArt), TaskStates.Completed.getName(),
-               null, null, changes);
+               null, null, changes, AtsClientService.get().getServices());
          IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
 
@@ -85,7 +85,8 @@ public class TaskManager {
       }
       TransitionHelper helper =
          new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
-            Arrays.asList(toUser), null, changes, TransitionOption.OverrideAssigneeCheck);
+            Arrays.asList(toUser), null, changes, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (!results.isEmpty()) {

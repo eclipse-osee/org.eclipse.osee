@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -37,8 +38,8 @@ public class AtsConfigResultsEditorNavigateItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       final List<IAtsConfigObject> objs = new ArrayList<IAtsConfigObject>();
-      objs.add(TeamDefinitions.getTopTeamDefinition());
-      objs.add(ActionableItems.getTopActionableItem());
+      objs.add(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()));
+      objs.add(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
       Job job = new Job("ATS Config Viewer") {
 
          @Override

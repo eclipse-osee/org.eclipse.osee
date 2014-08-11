@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.util.Result;
@@ -60,7 +61,8 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(TeamDefinitions.getTopLevelTeamDefinitions(active));
+         getTreeViewer().getViewer().setInput(
+            TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getConfig()));
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
          }

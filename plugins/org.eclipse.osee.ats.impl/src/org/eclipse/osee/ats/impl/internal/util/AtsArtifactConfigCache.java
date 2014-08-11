@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.impl.internal.util;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.internal.AtsServerImpl;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -29,10 +28,10 @@ public class AtsArtifactConfigCache implements IAtsConfig {
 
    private final OrcsApi orcsApi;
    private final AtsConfigCache cache;
-   private final IAtsServer server;
+   private final IAtsConfigItemFactory configItemFactory;
 
-   public AtsArtifactConfigCache(IAtsServer server, OrcsApi orcsApi) {
-      this.server = server;
+   public AtsArtifactConfigCache(IAtsConfigItemFactory configItemFactory, OrcsApi orcsApi) {
+      this.configItemFactory = configItemFactory;
       this.orcsApi = orcsApi;
       cache = new AtsConfigCache();
    }
@@ -60,7 +59,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
-            result = (A) server.getConfigItemFactory().getConfigObject(artifact);
+            result = (A) configItemFactory.getConfigObject(artifact);
             if (result != null) {
                cache.cache(result);
             }
@@ -76,7 +75,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
          ArtifactReadable artifact =
             orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
-            result = AtsServerImpl.get().getConfigItemFactory().getConfigObject(artifact);
+            result = configItemFactory.getConfigObject(artifact);
             if (result != null) {
                cache.cache(result);
             }

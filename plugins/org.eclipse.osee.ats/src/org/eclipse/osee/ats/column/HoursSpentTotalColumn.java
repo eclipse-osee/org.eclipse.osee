@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,7 +53,8 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsWorkItem) {
-            return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element));
+            return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element,
+               AtsClientService.get().getServices()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

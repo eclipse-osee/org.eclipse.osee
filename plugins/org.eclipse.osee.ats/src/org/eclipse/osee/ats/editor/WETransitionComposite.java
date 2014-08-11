@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -193,7 +194,7 @@ public class WETransitionComposite extends Composite {
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
-      ITransitionHelper helper = new TransitionHelperAdapter() {
+      ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
          private AtsChangeSet changes;
 
@@ -291,6 +292,11 @@ public class WETransitionComposite extends Composite {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             return java.util.Collections.emptyList();
+         }
+
+         @Override
+         public IAtsServices getServices() {
+            return AtsClientService.get().getServices();
          }
 
       };

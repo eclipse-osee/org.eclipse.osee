@@ -148,7 +148,8 @@ public class AtsOseeCmService implements IOseeCmService {
          if (cType == null) {
             cType = ChangeType.Improvement;
          }
-         Set<IAtsActionableItem> aias = ActionableItems.getActionableItems(productNames);
+         Set<IAtsActionableItem> aias =
+            ActionableItems.getActionableItems(productNames, AtsClientService.get().getConfig());
          if (aias.isEmpty()) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }

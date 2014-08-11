@@ -87,7 +87,7 @@ public class ValidateReviewManager {
          TransitionHelper helper =
             new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
                DecisionReviewState.Decision.getName(), Arrays.asList(teamArt.getCreatedBy()), null, changes,
-               TransitionOption.None);
+               AtsClientService.get().getServices(), TransitionOption.None);
          IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
          if (!results.isEmpty()) {

@@ -261,7 +261,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (est == 0) {
          return getEstimatedHoursFromArtifact();
       }
-      return est - est * PercentCompleteTotalUtil.getPercentCompleteTotal(this) / 100.0;
+      return est - est * PercentCompleteTotalUtil.getPercentCompleteTotal(this, AtsClientService.get().getServices()) / 100.0;
    }
 
    public double getRemainHoursTotal() throws OseeCoreException {

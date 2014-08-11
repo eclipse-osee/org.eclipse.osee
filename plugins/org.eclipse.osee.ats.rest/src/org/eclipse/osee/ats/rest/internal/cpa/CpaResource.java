@@ -206,7 +206,7 @@ public final class CpaResource {
 
             TransitionHelper helper =
                new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-                  TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes,
+                  TeamState.Analyze.getName(), teamWf.getAssignees(), "", changes, atsServer.getServices(),
                   TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
@@ -221,7 +221,8 @@ public final class CpaResource {
 
             TransitionHelper helper =
                new TransitionHelper("Transition " + teamWf.getAtsId(), Arrays.asList(teamWf),
-                  TeamState.Completed.getName(), null, "", changes, TransitionOption.OverrideAssigneeCheck);
+                  TeamState.Completed.getName(), null, "", changes, atsServer.getServices(),
+                  TransitionOption.OverrideAssigneeCheck);
             helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
