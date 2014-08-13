@@ -26,13 +26,18 @@ public class JaxRsAdminApplication extends Application {
    private final Set<Object> singletons = new LinkedHashSet<Object>();
 
    private JaxRsApplicationRegistry registry;
+   private JaxRsResourceManager manager;
 
    public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
       this.registry = registry;
    }
 
+   public void setJaxRsResourceManager(JaxRsResourceManager manager) {
+      this.manager = manager;
+   }
+
    public void start() {
-      singletons.add(new JaxRsContributionsResource(registry));
+      singletons.add(new JaxRsContributionsResource(registry, manager));
    }
 
    public void stop() {

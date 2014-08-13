@@ -67,6 +67,7 @@ Import-Package: com.google.common.cache,
  org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jaxrs.mvc,
  org.eclipse.osee.logger,
+ org.eclipse.osgi.util,
  org.osgi.framework,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
