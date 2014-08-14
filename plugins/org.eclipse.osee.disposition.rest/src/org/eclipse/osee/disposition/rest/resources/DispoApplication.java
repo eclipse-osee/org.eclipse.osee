@@ -21,8 +21,6 @@ import org.eclipse.osee.disposition.rest.messages.DispoItemMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageWriter;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageWriter;
-import org.eclipse.osee.disposition.rest.util.DispoHtmlWriter;
-import org.eclipse.osee.disposition.rest.util.TemplateRegistry;
 
 /**
  * @author Angel Avila
@@ -51,10 +49,7 @@ public final class DispoApplication extends Application {
       singletons.add(new DispoAnnotationMessageReader());
       singletons.add(new DispoAnnotationMessageWriter());
 
-      DispoHtmlWriter writer = new DispoHtmlWriter(TemplateRegistry.newRegistry());
       singletons.add(new DispoProgramResource(dispoApi, dispoApi.getDispoFactory()));
-      singletons.add(new DispoInitResource(writer));
-      singletons.add(new DispoAdminResource(writer));
    }
 
    public void stop() {

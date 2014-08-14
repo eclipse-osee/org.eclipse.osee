@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
  */
 public interface DispoFactory {
 
-   public DispoProgram createProgram(String name);
+   DispoProgram createProgram(String name);
 
-   public DispoProgram createProgram(String name, Long uuid);
+   DispoProgram createProgram(String name, Long uuid);
 
-   public DispoProgram createProgram(IOseeBranch branch);
+   DispoProgram createProgram(IOseeBranch branch);
 
 }
