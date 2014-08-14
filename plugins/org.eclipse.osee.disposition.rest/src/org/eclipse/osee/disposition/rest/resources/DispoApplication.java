@@ -27,7 +27,7 @@ import org.eclipse.osee.disposition.rest.util.TemplateRegistry;
 /**
  * @author Angel Avila
  */
-@ApplicationPath("dispor")
+@ApplicationPath("dispo")
 public final class DispoApplication extends Application {
 
    private DispoApi dispoApi;

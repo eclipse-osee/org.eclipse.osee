@@ -52,7 +52,7 @@ app.directive('ngModelOnblur', function() {
 app.provider('Program', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Program = $resource('/dispor/program/:programId', {}, {});
+            var Program = $resource('/dispo/program/:programId', {}, {});
             return Program;
         }
     ];
@@ -61,7 +61,7 @@ app.provider('Program', function() {
 app.provider('Report', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Program = $resource('/dispor/program/:programId/report', {}, {});
+            var Program = $resource('/dispo/program/:programId/report', {}, {});
             return Program;
         }
     ];
@@ -70,7 +70,7 @@ app.provider('Report', function() {
 app.provider('Set', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Set = $resource('/dispor/program/:programId/set/:setId', {}, {
+            var Set = $resource('/dispo/program/:programId/set/:setId', {}, {
                 update: {
                     method: 'PUT'
                 }
@@ -85,7 +85,7 @@ app.provider('Item', function() {
         '$resource',
         function($resource) {
             var Item = $resource(
-                '/dispor/program/:programId/set/:setId/item/:itemId', {}, {
+                '/dispo/program/:programId/set/:setId/item/:itemId', {}, {
                     update: {
                         method: 'PUT'
                     }
@@ -100,7 +100,7 @@ app.provider('Annotation', function() {
         '$resource',
         function($resource) {
             var Annotation = $resource(
-                '/dispor/program/:programId/set/:setId/item/:itemId/annotation/:annotationId', {}, {
+                '/dispo/program/:programId/set/:setId/item/:itemId/annotation/:annotationId', {}, {
                     update: {
                         method: 'PUT'
                     }

@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Disposition REST (Incubation)
-Bundle-SymbolicName: org.eclipse.osee.disposition.rest;singleton:=true
+Bundle-SymbolicName: org.eclipse.osee.disposition.rest
 Bundle-Version: 0.19.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
+Osee-JaxRs-Resource: /web/*;path=/dispo
 Import-Package: 
  com.google.common.collect,
  com.google.common.io,
@@ -31,4 +32,3 @@ Import-Package:
  org.eclipse.osee.orcs.utility,
  org.eclipse.osee.template.engine,
  org.json
-Require-Bundle: org.eclipse.equinox.http.registry
