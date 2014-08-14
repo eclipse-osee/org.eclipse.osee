@@ -119,8 +119,8 @@ public class OseeDatabaseServiceImpl implements DatabaseService {
          if ((exlist = ex.getNextException()) != null) {
             OseeLog.log(OseeDatabaseServiceImpl.class, Level.SEVERE, "This is the nested exception", exlist);
          }
-         throw new OseeCoreException("sql update failed: \n%s\n%s", query,
-            StatementUtil.getBatchErrorMessage(dataList), ex);
+         throw new OseeCoreException(ex, "sql update failed: \n%s\n%s", query,
+            StatementUtil.getBatchErrorMessage(dataList));
       } finally {
          StatementUtil.close(preparedStatement);
       }
