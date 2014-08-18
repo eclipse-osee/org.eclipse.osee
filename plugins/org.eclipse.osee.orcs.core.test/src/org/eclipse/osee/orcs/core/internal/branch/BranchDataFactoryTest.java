@@ -17,14 +17,17 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,15 +42,18 @@ public class BranchDataFactoryTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private BranchCache branchCache;
-   @Mock private TransactionCache txCache;
+   @Mock private BranchQuery branchQuery;
+   @Mock private TransactionQuery txQuery;
+   @Mock private QueryFactory queryFactory;
    
    @Mock private IOseeBranch branch;
    @Mock private IOseeBranch parentToken;
-   @Mock private Branch parent;
+   @Mock private BranchReadable parent;
    @Mock private ArtifactReadable author;
    @Mock private ArtifactReadable associatedArtifact;
-   @Mock private TransactionRecord txRecord;
+   @Mock private TransactionReadable txRecord;
+   @Mock private ResultSet<TransactionReadable> results;
+   @Mock private ResultSet<BranchReadable> branchResults;
    // @formatter:on
 
    private BranchDataFactory factory;
@@ -58,7 +64,9 @@ public class BranchDataFactoryTest {
 
       when(author.getLocalId()).thenReturn(55);
       when(associatedArtifact.getLocalId()).thenReturn(66);
-      factory = new BranchDataFactory(branchCache);
+      when(queryFactory.transactionQuery()).thenReturn(txQuery);
+      when(queryFactory.branchQuery()).thenReturn(branchQuery);
+      factory = new BranchDataFactory(queryFactory);
    }
 
    @Test
@@ -68,13 +76,13 @@ public class BranchDataFactoryTest {
       when(branch.getName()).thenReturn(branchName);
       when(branch.getUuid()).thenReturn(branchUuid);
 
-      when(branchCache.getSystemRootBranch()).thenReturn(parent);
-      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(txQuery.andIsHead(CoreBranches.SYSTEM_ROOT)).thenReturn(txQuery);
+      when(txQuery.getResults()).thenReturn(results);
+      when(results.getExactlyOne()).thenReturn(txRecord);
 
       CreateBranchData result = factory.createTopLevelBranchData(branch, author);
 
-      verify(branchCache).getSystemRootBranch();
-      verify(branchCache).getHeadTransaction(parent);
+      verify(txQuery).andIsHead(CoreBranches.SYSTEM_ROOT);
 
       String comment = "Branch Creation for " + branchName;
       assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, null, false);
@@ -87,13 +95,13 @@ public class BranchDataFactoryTest {
       when(branch.getName()).thenReturn(branchName);
       when(branch.getUuid()).thenReturn(branchUuid);
 
-      when(branchCache.get(parentToken)).thenReturn(parent);
-      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(txQuery.andIsHead(parentToken)).thenReturn(txQuery);
+      when(txQuery.getResults()).thenReturn(results);
+      when(results.getExactlyOne()).thenReturn(txRecord);
 
       CreateBranchData result = factory.createBaselineBranchData(branch, author, parentToken, associatedArtifact);
 
-      verify(branchCache).get(parentToken);
-      verify(branchCache).getHeadTransaction(parent);
+      verify(txQuery).andIsHead(parentToken);
 
       String comment = "Branch Creation for " + branchName;
       assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, associatedArtifact,
@@ -107,18 +115,17 @@ public class BranchDataFactoryTest {
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
       when(branch.getUuid()).thenReturn(branchUuid);
+      when(parentToken.getName()).thenReturn(parentName);
 
-      when(parent.getName()).thenReturn(parentName);
-
-      when(branchCache.get(parentToken)).thenReturn(parent);
-      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(txQuery.andIsHead(parentToken)).thenReturn(txQuery);
+      when(txQuery.getResults()).thenReturn(results);
+      when(results.getExactlyOne()).thenReturn(txRecord);
 
       CreateBranchData result = factory.createWorkingBranchData(branch, author, parentToken, associatedArtifact);
 
-      verify(branchCache).get(parentToken);
-      verify(branchCache).getHeadTransaction(parent);
+      verify(txQuery).andIsHead(parentToken);
 
-      String comment = String.format("New Branch from %s (%s)", parentName, txRecord.getId());
+      String comment = String.format("New Branch from %s (%s)", parentName, txRecord.getGuid());
       assertData(result, branchName, branchUuid, BranchType.WORKING, comment, txRecord, author, associatedArtifact,
          false);
    }
@@ -130,18 +137,24 @@ public class BranchDataFactoryTest {
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
       when(branch.getUuid()).thenReturn(branchUuid);
-
       when(parent.getName()).thenReturn(parentName);
-
-      when(branchCache.getOrLoad(99)).thenReturn(txRecord);
-      when(txRecord.getBranch()).thenReturn(parent);
 
       ITransaction tx = TokenFactory.createTransaction(99);
 
+      when(txQuery.andTxId(tx.getGuid())).thenReturn(txQuery);
+      when(txQuery.getResults()).thenReturn(results);
+      when(results.getExactlyOne()).thenReturn(txRecord);
+      when(txRecord.getBranchId()).thenReturn(44L);
+      when(txRecord.getGuid()).thenReturn(99);
+
+      when(branchQuery.andUuids(txRecord.getBranchId())).thenReturn(branchQuery);
+      when(branchQuery.getResults()).thenReturn(branchResults);
+      when(branchResults.getExactlyOne()).thenReturn(parent);
+
       CreateBranchData result = factory.createCopyTxBranchData(branch, author, tx, null);
 
-      verify(branchCache).getOrLoad(99);
-      verify(txRecord).getBranch();
+      verify(txQuery).andTxId(99);
+      verify(branchQuery).andUuids(txRecord.getBranchId());
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", 99, parentName, branchName);
       assertData(result, branchName, branchUuid, BranchType.WORKING, comment, txRecord, author, null, true);
@@ -154,24 +167,30 @@ public class BranchDataFactoryTest {
       Long branchUuid = Lib.generateUuid();
       when(branch.getName()).thenReturn(branchName);
       when(branch.getUuid()).thenReturn(branchUuid);
-
       when(parent.getName()).thenReturn(parentName);
-
-      when(branchCache.getOrLoad(99)).thenReturn(txRecord);
-      when(txRecord.getBranch()).thenReturn(parent);
 
       ITransaction tx = TokenFactory.createTransaction(99);
 
+      when(txQuery.andTxId(tx.getGuid())).thenReturn(txQuery);
+      when(txQuery.getResults()).thenReturn(results);
+      when(results.getExactlyOne()).thenReturn(txRecord);
+      when(txRecord.getGuid()).thenReturn(99);
+      when(txRecord.getBranchId()).thenReturn(44L);
+
+      when(branchQuery.andUuids(txRecord.getBranchId())).thenReturn(branchQuery);
+      when(branchQuery.getResults()).thenReturn(branchResults);
+      when(branchResults.getExactlyOne()).thenReturn(parent);
+
       CreateBranchData result = factory.createPortBranchData(branch, author, tx, null);
 
-      verify(branchCache).getOrLoad(99);
-      verify(txRecord).getBranch();
+      verify(txQuery).andTxId(99);
+      verify(branchQuery).andUuids(44L);
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", 99, parentName, branchName);
       assertData(result, branchName, branchUuid, BranchType.PORT, comment, txRecord, author, null, true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionRecord fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, Long branchUuid, BranchType type, String comment, TransactionReadable fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
       assertEquals(branchUuid, actual.getGuid());
 

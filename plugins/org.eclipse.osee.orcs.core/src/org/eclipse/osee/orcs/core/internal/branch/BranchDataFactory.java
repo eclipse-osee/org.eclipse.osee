@@ -13,53 +13,52 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author David W. Miller
  */
 public class BranchDataFactory {
 
-   private final BranchCache branchCache;
+   private final QueryFactory queryFactory;
 
-   public BranchDataFactory(BranchCache branchCache) {
-      super();
-      this.branchCache = branchCache;
+   public BranchDataFactory(QueryFactory queryFactory) {
+      this.queryFactory = queryFactory;
    }
 
    public CreateBranchData createTopLevelBranchData(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
-      Branch parentBranch = branchCache.getSystemRootBranch();
-      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
-
+      TransactionQuery txQuery = queryFactory.transactionQuery();
+      TransactionReadable fromTx = txQuery.andIsHead(CoreBranches.SYSTEM_ROOT).getResults().getExactlyOne();
       String creationComment = String.format("Branch Creation for %s", branch.getName());
       return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, null, false);
    }
 
    public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      Branch parentBranch = branchCache.get(parent);
-      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
-
+      TransactionQuery txQuery = queryFactory.transactionQuery();
+      TransactionReadable fromTx = txQuery.andIsHead(parent).getResults().getExactlyOne();
       String creationComment = String.format("Branch Creation for %s", branch.getName());
       return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, associatedArtifact, false);
    }
 
    public CreateBranchData createWorkingBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      Branch parentBranch = branchCache.get(parent);
-      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
-
-      String creationComment = String.format("New Branch from %s (%s)", parentBranch.getName(), fromTx.getId());
+      TransactionQuery txQuery = queryFactory.transactionQuery();
+      TransactionReadable fromTx = txQuery.andIsHead(parent).getResults().getExactlyOne();
+      String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx.getGuid());
       return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, false);
    }
 
    public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
-      int value = fromTransaction.getGuid();
-      TransactionRecord fromTx = branchCache.getOrLoad(value);
-      IOseeBranch parent = fromTx.getBranch();
+      TransactionQuery txQuery = queryFactory.transactionQuery();
+      BranchQuery branchQuery = queryFactory.branchQuery();
+      TransactionReadable fromTx = txQuery.andTxId(fromTransaction.getGuid()).getResults().getExactlyOne();
+      IOseeBranch parent = branchQuery.andUuids(fromTx.getBranchId()).getResults().getExactlyOne();
 
       String creationComment =
          String.format("Transaction %s copied from %s to create Branch %s", fromTransaction, parent.getName(),
@@ -68,16 +67,18 @@ public class BranchDataFactory {
    }
 
    public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
+      TransactionQuery txQuery = queryFactory.transactionQuery();
+      BranchQuery branchQuery = queryFactory.branchQuery();
       int value = fromTransaction.getGuid();
-      TransactionRecord fromTx = branchCache.getOrLoad(value);
-      IOseeBranch parent = fromTx.getBranch();
+      TransactionReadable fromTx = txQuery.andTxId(value).getResults().getExactlyOne();
+      IOseeBranch parent = branchQuery.andUuids(fromTx.getBranchId()).getResults().getExactlyOne();
 
       String creationComment =
          String.format("Transaction %d ported from %s to create Branch %s", value, parent.getName(), branch.getName());
       return createBranchData(branch, BranchType.PORT, creationComment, fromTx, author, associatedArtifact, true);
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, BranchType branchType, String creationComment, ITransaction fromTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
+   private CreateBranchData createBranchData(IOseeBranch branch, BranchType branchType, String creationComment, TransactionReadable sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
       createData.setUuid(branch.getUuid());
       createData.setName(branch.getName());
@@ -86,7 +87,7 @@ public class BranchDataFactory {
       }
       createData.setBranchType(branchType);
       createData.setCreationComment(creationComment);
-      createData.setFromTransaction(fromTx);
+      createData.setFromTransaction(sysRootHeadTx);
       createData.setUserArtifact(author);
       createData.setAssociatedArtifact(associatedArtifact);
       createData.setTxCopyBranchType(bCopyTx);

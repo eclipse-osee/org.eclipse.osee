@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -55,7 +56,7 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
    }
 
    @Override
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, IOseeBranch branch, TransactionVersion transactionType) {
       return null;
    }
 

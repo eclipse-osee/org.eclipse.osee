@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
@@ -94,6 +95,21 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
    @Override
    public String toString() {
       return "TransactionDataImpl [authorId=" + authorId + ", branchUuid=" + branchUuid + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
+   }
+
+   @Override
+   public Integer getGuid() {
+      return super.getLocalId();
+   }
+
+   @Override
+   public boolean matches(Identity<?>... identities) {
+      for (Identity<?> identity : identities) {
+         if (identity.getGuid().equals(this.getGuid())) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

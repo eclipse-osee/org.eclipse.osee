@@ -228,8 +228,9 @@ public class OrcsApiImpl implements OrcsApi {
             return new FutureTask<ArtifactReadable>(callable);
          }
       };
-      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), cacheService.getBranchCache(),
-         systemUser, getOrcsTypes(context));
+      QueryFactory queryFactory = getQueryFactory(context);
+      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser,
+         getOrcsTypes(context), cacheService.getBranchCache(), cacheService.getTransactionCache());
    }
 
    @Override

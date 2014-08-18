@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -90,7 +91,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, IOseeBranch branch, TransactionVersion transactionType) throws OseeCoreException {
       ensureDependantCachePopulated();
       TransactionRecord toReturn = null;
       switch (transactionType) {

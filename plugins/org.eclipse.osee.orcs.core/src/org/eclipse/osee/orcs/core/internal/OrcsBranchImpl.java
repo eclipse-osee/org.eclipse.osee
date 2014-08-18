@@ -42,6 +42,7 @@ import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -52,17 +53,20 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    private final OrcsSession session;
    private final BranchDataStore branchStore;
-   private final BranchCache branchCache;
    private final BranchDataFactory branchDataFactory;
    private final OrcsTypes orcsTypes;
 
-   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
+   private final BranchCache branchCache;
+   private final TransactionCache txCache;
+
+   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes, BranchCache branchCache, TransactionCache txCache) {
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;
+      branchDataFactory = new BranchDataFactory(queryFactory);
+      this.orcsTypes = orcsTypes;
       this.branchCache = branchCache;
       branchDataFactory = new BranchDataFactory(branchCache);
-      this.orcsTypes = orcsTypes;
    }
 
    @Override

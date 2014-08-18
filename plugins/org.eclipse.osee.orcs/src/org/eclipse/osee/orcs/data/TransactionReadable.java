@@ -11,12 +11,13 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface TransactionReadable extends HasLocalId<Integer> {
+public interface TransactionReadable extends HasLocalId<Integer>, ITransaction {
 
    TransactionDetailsType getTxType();
 
