@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.SWT;
 

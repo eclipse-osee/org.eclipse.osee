@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

@@ -102,6 +102,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
    }
 
+   @SuppressWarnings("deprecation")
    private void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
       for (TeamDef dslTeamDef : teamDefs) {
          String dslTeamName = Strings.unquote(dslTeamDef.getName());
@@ -127,7 +128,6 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
          newTeam.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslTeamDef.getActive(), true));
-         //         newTeam.setSoleAttributeValue(CoreAttributeTypes.Active, BooleanDefUtil.get(dslTeamDef.getActive(), true));
          for (String staticId : dslTeamDef.getStaticId()) {
             newTeam.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
          }
@@ -226,6 +226,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
+   @SuppressWarnings("deprecation")
    private void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) throws OseeCoreException {
       for (ActionableItemDef dslAIDef : aiDefs) {
          String dslAIName = Strings.unquote(dslAIDef.getName());

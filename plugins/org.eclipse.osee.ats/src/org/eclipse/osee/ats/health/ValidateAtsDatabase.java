@@ -275,6 +275,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
+   @SuppressWarnings({"unused", "unchecked"})
    private List<Collection<Integer>> getFromGuids() {
       List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
