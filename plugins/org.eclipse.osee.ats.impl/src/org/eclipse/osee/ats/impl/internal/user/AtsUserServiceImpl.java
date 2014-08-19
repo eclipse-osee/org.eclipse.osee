@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.impl.internal.user;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -160,4 +162,14 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       }
       return hasPermission;
    }
+
+   @Override
+   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
+      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
+      for (ArtifactReadable art : ((ArtifactReadable) workItem).getRelated(AtsRelationTypes.SubscribedUser_User)) {
+         arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
+      }
+      return arts;
+   }
+
 }

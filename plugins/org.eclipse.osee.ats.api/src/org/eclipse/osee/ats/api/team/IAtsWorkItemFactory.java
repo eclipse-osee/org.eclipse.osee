@@ -35,4 +35,6 @@ public interface IAtsWorkItemFactory {
 
    IAtsAction getAction(Object artifact);
 
+   IAtsWorkItem getWorkItemByAtsId(String atsId);
+
 }

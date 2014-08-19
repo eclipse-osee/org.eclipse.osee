@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -119,6 +120,12 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
          }
       }
       return action;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItemByAtsId(String atsId) {
+      ArtifactReadable artifact = atsServer.getQuery().and(AtsAttributeTypes.AtsId, atsId).getResults().getOneOrNull();
+      return getWorkItem(artifact);
    }
 
 }

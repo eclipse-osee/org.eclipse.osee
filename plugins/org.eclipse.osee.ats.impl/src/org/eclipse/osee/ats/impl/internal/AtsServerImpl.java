@@ -343,7 +343,7 @@ public class AtsServerImpl implements IAtsServer {
    public void sendNotifications(AtsNotificationCollector notifications) {
       if (notificationEventProcessor == null) {
          workItemNotificationProcessor =
-            new WorkItemNotificationProcessor(this, orcsApi, workItemFactory, userService, attributeResolverService);
+            new WorkItemNotificationProcessor(this, workItemFactory, userService, attributeResolverService);
          notificationEventProcessor =
             new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
                getConfigValue("NoReplyEmail"));

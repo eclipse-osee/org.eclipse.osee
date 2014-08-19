@@ -36,7 +36,7 @@ public class AtsNotificationEventProcessor {
          workItemNotificationProcessor.run(notifications, workItemEvent);
       }
 
-      String testingUserEmail = "donald.g.dunne@boeing.com"; // change to email address for testing purposes; all emails will go there
+      String testingUserEmail = ""; // change to email address for testing purposes; all emails will go there
       String fromUserEmail = getFromUserEmail(notifications);
 
       for (IAtsNotifierServer notifier : notifiers) {

@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -223,6 +225,15 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
       oseeUsers.addAll(getOseeUsers(activeUsers));
       Collections.sort(oseeUsers);
       return oseeUsers;
+   }
+
+   @Override
+   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
+      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
+      for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
+         arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
+      }
+      return arts;
    }
 
 }

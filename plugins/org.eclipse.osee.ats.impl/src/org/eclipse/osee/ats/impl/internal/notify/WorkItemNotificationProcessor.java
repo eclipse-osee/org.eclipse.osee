@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
@@ -37,15 +36,11 @@ import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -54,14 +49,12 @@ public class WorkItemNotificationProcessor {
 
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
-   private final OrcsApi orcsApi;
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsServer atsServer;
    private static String actionUrl;
 
-   public WorkItemNotificationProcessor(IAtsServer atsServer, OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) throws OseeCoreException {
+   public WorkItemNotificationProcessor(IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) throws OseeCoreException {
       this.atsServer = atsServer;
-      this.orcsApi = orcsApi;
       this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.attrResolver = attrResolver;
@@ -81,7 +74,7 @@ public class WorkItemNotificationProcessor {
          notifyUsers.add(userService.getUserById(userId));
       }
       for (String atsId : event.getAtsIds()) {
-         IAtsWorkItem workItem = workItemFactory.getWorkItem(AtsUtilServer.getArtifactByAtsId(orcsApi, atsId));
+         IAtsWorkItem workItem = workItemFactory.getWorkItemByAtsId(atsId);
 
          if (types.contains(AtsNotifyType.Originator)) {
             IAtsUser originator = workItem.getCreatedBy();
@@ -125,7 +118,7 @@ public class WorkItemNotificationProcessor {
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
             Collection<IAtsUser> subscribed = new HashSet<IAtsUser>();
-            subscribed.addAll(getSubscribed(workItem));
+            subscribed.addAll(userService.getSubscribed(workItem));
             subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
             subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
             if (subscribed.size() > 0) {
@@ -234,14 +227,6 @@ public class WorkItemNotificationProcessor {
          fromUser = userService.getUserById(event.getFromUserId());
       }
       return fromUser;
-   }
-
-   private List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
-      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
-      for (ArtifactReadable art : ((ArtifactReadable) workItem).getRelated(AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(userService.getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
-      }
-      return arts;
    }
 
    private String getIdString(IAtsWorkItem workItem) {

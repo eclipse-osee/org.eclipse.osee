@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl;
+package org.eclipse.osee.ats.impl.internal.notify;
 
-import org.eclipse.osee.ats.impl.internal.model.ModelTestSuite;
-import org.eclipse.osee.ats.impl.internal.notify.AtsImpl_Notify_Suite;
-import org.eclipse.osee.ats.impl.internal.workdef.WorkDefTestSuite;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,7 +20,16 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({WorkDefTestSuite.class, ModelTestSuite.class, AtsImpl_Notify_Suite.class})
-public class AllAtsImplTestSuite {
-   // Test Suite
+@Suite.SuiteClasses({WorkItemNotificationProcessorTest.class})
+public class AtsImpl_Notify_Suite {
+   @BeforeClass
+   public static void setUp() throws Exception {
+      OseeProperties.setIsInTest(true);
+      System.out.println("\n\nBegin " + AtsImpl_Notify_Suite.class.getSimpleName());
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      System.out.println("End " + AtsImpl_Notify_Suite.class.getSimpleName());
+   }
 }

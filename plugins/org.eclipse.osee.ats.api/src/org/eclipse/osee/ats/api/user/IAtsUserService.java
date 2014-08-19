@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -47,5 +48,7 @@ public interface IAtsUserService {
    boolean currentUserHasAccessToAtsBranch(Long branchUuid);
 
    void releaseUser();
+
+   Collection<IAtsUser> getSubscribed(IAtsWorkItem workItem);
 
 }
