@@ -61,6 +61,5 @@ Export-Package: org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.workflow.log,
  org.eclipse.osee.ats.core.workflow.state,
  org.eclipse.osee.ats.core.workflow.transition
-Bundle-Activator: org.eclipse.osee.ats.core.internal.Activator
 Service-Component: OSGI-INF/*.xml
 

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -143,7 +142,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
       try {
          return workItemService.getTransitionListeners();
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(TransitionHelper.class, Level.SEVERE, ex);
       }
       return java.util.Collections.emptyList();
    }

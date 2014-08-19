@@ -22,6 +22,5 @@ Import-Package: org.eclipse.birt.report.viewer.utilities,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.ui,
- org.eclipse.osee.framework.ui.skynet
+Require-Bundle: org.eclipse.ui
 Export-Package: org.eclipse.osee.ats.reports

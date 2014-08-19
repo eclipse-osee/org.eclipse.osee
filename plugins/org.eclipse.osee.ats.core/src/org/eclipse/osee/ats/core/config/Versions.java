@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -49,7 +48,7 @@ public class Versions {
                      "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
                   // only log error once
                   if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
-                     OseeLog.log(Activator.class, Level.SEVERE, errStr, null);
+                     OseeLog.log(Versions.class, Level.SEVERE, errStr, null);
                      targetErrorLoggedForId.add(teamWf.getGuid());
                   }
                   return "!Error " + errStr;

@@ -13,8 +13,4 @@ Require-Bundle: org.junit,
 Export-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.validator
 Import-Package: org.eclipse.osee.ats.core.validator,
- org.eclipse.osee.ats.mocks,
- org.eclipse.osee.framework.database.core,
- org.eclipse.osee.framework.plugin.core,
- org.eclipse.osee.framework.skynet.core,
- org.eclipse.osee.support.test.util
+ org.eclipse.osee.ats.mocks

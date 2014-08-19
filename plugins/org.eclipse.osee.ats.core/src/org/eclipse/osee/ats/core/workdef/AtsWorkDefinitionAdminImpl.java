@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -119,11 +118,11 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
             }
          }
          if (match.isMatched()) {
-            OseeLog.logf(Activator.class, Level.INFO, "Loaded Work Definition [%s]", match);
+            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.INFO, "Loaded Work Definition [%s]", match);
             getCache().cache(id, match);
             toReturn = match;
          } else {
-            OseeLog.logf(Activator.class, Level.INFO, "Unable to load Work Definition [%s]", id);
+            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.INFO, "Unable to load Work Definition [%s]", id);
          }
       }
       if (toReturn == null) {

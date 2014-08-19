@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.WorkStateFactory;
-import org.eclipse.osee.ats.core.internal.Activator;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -322,7 +321,7 @@ public class StateManager implements IAtsStateManager {
       if (getVisitedStateNames().contains(name)) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", name, factory.getId());
          if (logError) {
-            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+            OseeLog.log(StateManager.class, Level.SEVERE, errorStr);
          }
          return;
       } else {
@@ -566,7 +565,7 @@ public class StateManager implements IAtsStateManager {
       if (getVisitedStateNames().contains(state.getName())) {
          String errorStr = String.format("Error: Duplicate state [%s] for [%s]", state.getName(), factory.getId());
          if (logError) {
-            OseeLog.log(Activator.class, Level.SEVERE, errorStr);
+            OseeLog.log(StateManager.class, Level.SEVERE, errorStr);
          }
          return;
       } else {
