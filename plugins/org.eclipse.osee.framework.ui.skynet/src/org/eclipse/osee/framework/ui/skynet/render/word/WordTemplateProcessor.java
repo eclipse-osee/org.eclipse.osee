@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor.DataRightsProvider.FooterOption;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -121,10 +122,18 @@ public class WordTemplateProcessor {
    private String previousClassification = null;
    private boolean firstArtifact = true;
    private boolean dataRightsDetected = false;
+   private boolean previousWasLandscape = false;
    private final DataRightsProvider dataRightsProvider;
 
    public static interface DataRightsProvider {
-      String getDataClassificationFooter(String classification, boolean createNewPageFooter);
+
+      public enum FooterOption {
+         NEW_PAGE,
+         SAME_PAGE,
+         FOOTER_ONLY
+      }
+
+      String getDataClassificationFooter(String classification, FooterOption option);
    }
 
    public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightsProvider dataRightsProvider) {
@@ -273,8 +282,11 @@ public class WordTemplateProcessor {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
          }
-         if (dataRightsDetected) {
-            String footer = dataRightsProvider.getDataClassificationFooter(previousClassification, false);
+
+         // if previous was landscape, it would've had the footer inserted in the setPageLayout
+         if (dataRightsDetected && !previousWasLandscape) {
+            String footer =
+               dataRightsProvider.getDataClassificationFooter(previousClassification, FooterOption.SAME_PAGE);
             wordMl.addWordMl(footer);
          }
       }
@@ -397,6 +409,7 @@ public class WordTemplateProcessor {
 
                dataRights = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
                dataRightsDetected = dataRightsDetected || Strings.isValid(dataRights);
+               boolean isLandscape = isLandscape(artifact);
 
                handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
 
@@ -413,14 +426,19 @@ public class WordTemplateProcessor {
                      headingText = headingText.concat(" [MERGED]");
                   }
 
-                  if (!firstArtifact && !dataRights.equals(previousClassification)) {
-                     String footer = dataRightsProvider.getDataClassificationFooter(previousClassification, true);
-                     wordMl.addWordMl(footer);
+                  String footer = null;
+                  if (!firstArtifact && (!dataRights.equals(previousClassification) || isLandscape != previousWasLandscape)) {
+                     footer =
+                        dataRightsProvider.getDataClassificationFooter(previousClassification, FooterOption.NEW_PAGE);
                   } else if (dataRightsDetected && !Strings.isValid(dataRights)) {
-                     String footer = dataRightsProvider.getDataClassificationFooter(dataRights, true);
-                     wordMl.addWordMl(footer);
+                     footer = dataRightsProvider.getDataClassificationFooter(dataRights, FooterOption.NEW_PAGE);
                   }
                   firstArtifact = false;
+
+                  // if previous was landscape, it would've had the footer inserted in the setPageLayout
+                  if (Strings.isValid(footer) && !previousWasLandscape) {
+                     wordMl.addWordMl(footer);
+                  }
 
                   if (!publishInline && !templateOnly) {
                      paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
@@ -447,8 +465,9 @@ public class WordTemplateProcessor {
                   }
                }
 
-               processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
+               previousWasLandscape = isLandscape;
                previousClassification = dataRights;
+               processAttributes(artifact, wordMl, presentationType, multipleArtifacts, publishInline);
             }
             // Check for option that may have been set from Publish with Diff BLAM to recurse
             if ((recurseChildren && !renderer.getBooleanOption(RECURSE_ON_LOAD)) || (renderer.getBooleanOption(RECURSE_ON_LOAD) && !renderer.getBooleanOption("Orig Publish As Diff"))) {
@@ -468,19 +487,24 @@ public class WordTemplateProcessor {
    }
 
    private void handleLandscapeArtifactSectionBreak(Artifact artifact, WordMLProducer wordMl, boolean multipleArtifacts) throws OseeCoreException {
-      String pageTypeValue = null;
       // There is no reason to add an additional page break if there is a
       // single artifacts
       if (multipleArtifacts) {
-         if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
-            pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
-         }
-         boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
+         boolean landscape = isLandscape(artifact);
 
          if (landscape) {
             wordMl.setPageBreak();
          }
       }
+   }
+
+   private boolean isLandscape(Artifact artifact) {
+      String pageTypeValue = null;
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
+         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
+      }
+      boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
+      return landscape;
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
@@ -503,7 +527,11 @@ public class WordTemplateProcessor {
             }
          }
       }
-      wordMl.setPageLayout(artifact);
+      String footer = null;
+      if (dataRightsDetected) {
+         footer = dataRightsProvider.getDataClassificationFooter(previousClassification, FooterOption.FOOTER_ONLY);
+      }
+      wordMl.setPageLayout(artifact, footer);
    }
 
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {

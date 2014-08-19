@@ -39,7 +39,7 @@ public class ArtifactDataRightsProvider implements DataRightsProvider {
    private Map<String, String> dataRightsToFooters;
 
    @Override
-   public String getDataClassificationFooter(String classification, boolean createNewPageFooter) {
+   public String getDataClassificationFooter(String classification, FooterOption option) {
       if (dataRightsToFooters == null) {
          initialize();
       }
@@ -50,13 +50,25 @@ public class ArtifactDataRightsProvider implements DataRightsProvider {
          key = "DEFAULT";
       }
 
-      footer = String.format(GENERIC_FOOTER, "DATA RIGHTS CLASSIFICATION MISSING");
       footer = dataRightsToFooters.get(key);
       if (!Strings.isValid(footer)) {
          String text = String.format("FOOTER NOT DEFINED FOR [%s]", key);
          footer = String.format(GENERIC_FOOTER, text);
       }
-      return createNewPageFooter ? String.format(NEW_PAGE_TEMPLATE, footer) : String.format(SAME_PAGE_TEMPLATE, footer);
+
+      switch (option) {
+         case NEW_PAGE:
+            footer = String.format(NEW_PAGE_TEMPLATE, footer);
+            break;
+         case SAME_PAGE:
+            footer = String.format(SAME_PAGE_TEMPLATE, footer);
+            break;
+         case FOOTER_ONLY:
+         default:
+            // do nothing, return footer only
+      }
+
+      return footer;
    }
 
    private void initialize() {

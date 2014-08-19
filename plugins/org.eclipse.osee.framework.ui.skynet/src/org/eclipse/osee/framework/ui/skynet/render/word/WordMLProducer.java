@@ -367,6 +367,10 @@ public class WordMLProducer extends Producer {
     * would be set back to portrait.
     */
    public void setPageLayout(Artifact artifact) throws OseeCoreException {
+      setPageLayout(artifact, null);
+   }
+
+   public void setPageLayout(Artifact artifact, String footerMl) throws OseeCoreException {
       String pageTypeValue = null;
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
          pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
@@ -378,6 +382,9 @@ public class WordMLProducer extends Producer {
          append("<w:p>");
          append("<w:pPr>");
          append("<w:sectPr>");
+         if (Strings.isValid(footerMl)) {
+            append(footerMl);
+         }
          append("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />");
          append("</w:sectPr>");
          append("</w:pPr>");
