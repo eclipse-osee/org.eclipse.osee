@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.integration.tests.ats.actions;
+package org.eclipse.osee.define.internal;
 
-import org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenAtsPerspectiveActionTest extends AbstractAtsActionPerspectiveTest {
+public class OpenDefinePerspectiveHandler extends AbstractHandler {
 
-   @Override
-   public IWorkbenchWindowActionDelegate getPerspectiveAction() {
-      return new OpenAtsPerspectiveAction();
+   public OpenDefinePerspectiveHandler() {
    }
 
+   @Override
+   public Object execute(ExecutionEvent event) {
+      AWorkbench.openPerspective(DefinePerspectiveFactory.ID);
+      return null;
+   }
 }

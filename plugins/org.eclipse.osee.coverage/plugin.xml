@@ -20,27 +20,47 @@
                id="org.eclipse.osee.coverage.CoveragePerspective"
                name="Coverage"/>
       </extension>
-         <extension point="org.eclipse.ui.actionSets">
-      <actionSet
-         label="OSEE Coverage"
-         visible="true"
-         id="osee.coverage.actionSet">
-			<menu
-            label="&amp;OSEE"
-            id="osee.product.oseeMenu">
-            <separator name="perspectives"/>
-            <separator name="properties"/>
-         </menu>         
-         <action
-               class="org.eclipse.osee.coverage.internal.OpenCoveragePerspectiveAction"
-               icon="images/coverage.gif"
-               id="org.eclipse.osee.coverage.internal.OpenCoveragePerspectiveAction"
-               label="OSEE &amp;Coverage"
-               menubarPath="osee.product.oseeMenu/perspectives"
-               tooltip="Open OSEE Coverage Perspective">
-         </action>
-      </actionSet>
-      </extension>
+
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="OSEE Category"
+            id="osee.product.commands.category">
+      </category>
+      <command
+            name="OSEE Coverage"
+            categoryId="osee.product.commands.category"
+            id="org.eclipse.osee.coverage.internal.OpenCoveragePerspective">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.osee.coverage.internal.OpenCoveragePerspective"
+            class="org.eclipse.osee.coverage.internal.OpenCoveragePerspectiveHandler"> 
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.commandImages">
+     <image commandId="org.eclipse.osee.coverage.internal.OpenCoveragePerspective" icon="images/coverage.gif"> </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="OSEE"
+               mnemonic="O"
+               id="osee.product.oseeMenu">
+            <command commandId="org.eclipse.osee.coverage.internal.OpenCoveragePerspective"
+                  mnemonic="V"
+                  id="org.eclipse.osee.coverage.internal.OpenCoveragePerspective">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+
+
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
          <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">

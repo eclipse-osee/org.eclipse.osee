@@ -206,27 +206,53 @@
           className="org.eclipse.osee.define.traceability.report.PublishStdStpTraceability">
     </Operation>
  </extension>
- <extension point="org.eclipse.ui.actionSets">
-      <actionSet
-         label="OSEE Define"
-         visible="true"
-         id="osee.define.actionSet">
-			<menu
-            label="&amp;OSEE"
-            id="osee.product.oseeMenu">
-            <separator name="perspectives"/>
-            <separator name="properties"/>
-         </menu>         
-         <action
-               class="org.eclipse.osee.define.internal.OpenDefinePerspectiveAction"
-               icon="images/laser_16_16.gif"
-               id="org.eclipse.osee.define.OpenDefinePerspectiveAction"
-               label="OSEE &amp;Define"
-               menubarPath="osee.product.oseeMenu/perspectives"
-               tooltip="Open OSEE Define Perspective">
-         </action>
-      </actionSet>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="OSEE Category"
+            id="osee.product.commands.category">
+      </category>
+      <command
+            name="OSEE Define"
+            categoryId="osee.product.commands.category"
+            id="org.eclipse.osee.define.internal.OpenDefinePerspective">
+      </command>
    </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
+            class="org.eclipse.osee.define.internal.OpenDefinePerspectiveHandler"> 
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+D"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>   
+   <extension point="org.eclipse.ui.commandImages">
+     <image commandId="org.eclipse.osee.define.internal.OpenDefinePerspective" icon="images/laser_16_16.gif"> </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="OSEE"
+               mnemonic="O"
+               id="osee.product.oseeMenu">
+            <command commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
+                  mnemonic="D"
+                  id="org.eclipse.osee.define.internal.OpenDefinePerspective">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+
  <extension
        id="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
        name="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"

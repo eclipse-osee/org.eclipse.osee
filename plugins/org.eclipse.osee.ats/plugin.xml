@@ -571,34 +571,68 @@
             classname="org.eclipse.osee.ats.review.ReviewNavigateViewItems">
       </XCommonNavigateItem>
    </extension>
-      <extension point="org.eclipse.ui.actionSets">
-      <actionSet
-         label="OSEE ATS"
-         visible="true"
-         id="osee.ats.actionSet">
-			<menu
-            label="&amp;OSEE"
-            id="osee.product.oseeMenu">
-            <separator name="perspectives"/>
-            <separator name="properties"/>
-         </menu>         <action
-               class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
-               icon="images/review.gif"
-               id="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
-               label="OSEE &amp;Review"
-               menubarPath="osee.product.oseeMenu/perspectives"
-               tooltip="Open OSEE Review Perspective">
-         </action>
-          <action
-                class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
-                icon="images/action.gif"
-                id="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
-                label="OSEE &amp;ATS"
-                menubarPath="osee.product.oseeMenu/perspectives"
-                tooltip="Open OSEE ATS Perspective">
-          </action>
-      </actionSet>
+   
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="OSEE Category"
+            id="osee.ats.product.commands.category">
+      </category>
+      <command
+            name="OSEE ATS"
+            categoryId="osee.ats.product.commands.category"
+            id="org.eclipse.osee.ats.actions.OpenAtsPerspective">
+      </command>
+      <command
+            name="OSEE Review"
+            categoryId="osee.ats.product.commands.category"
+            id="org.eclipse.osee.ats.actions.OpenReviewPerspective">
+      </command>
    </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
+            class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveHandler"> 
+      </handler>
+      <handler
+            commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective"
+            class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveHandler">  
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+A"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>   
+   <extension point="org.eclipse.ui.commandImages">
+     <image commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective" icon="images/action.gif"> </image>
+     <image commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective" icon="images/review.gif"> </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="OSEE"
+               mnemonic="O"
+               id="osee.product.oseeMenu">
+            <command commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
+                  mnemonic="A"
+                  id="org.eclipse.osee.ats.actions.OpenAtsPerspective">
+            </command>
+            <command commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective"
+                  mnemonic="R"
+                  id="org.eclipse.osee.ats.actions.OpenReviewPerspective">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   
+   
       <extension
             id="AtsTransitionListener"
             name="AtsTransitionListener"

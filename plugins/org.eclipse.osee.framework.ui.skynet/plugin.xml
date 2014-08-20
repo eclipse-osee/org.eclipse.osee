@@ -671,16 +671,6 @@
         </with>
      </enabledWhen>
       </handler>
-      <handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.GenericDiffHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.genericDiff.command">
-     <enabledWhen>
-        <with
-              variable="selection">
-           <count
-                 value="+">
-           </count>
-        </with>
-     </enabledWhen>
-      </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewChangeReportWasIsHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReportWasIs.command">
      <enabledWhen>
         <with
@@ -1860,35 +1850,62 @@
             name="User Management">
       </perspective>
    </extension>
-   <extension point="org.eclipse.ui.actionSets">
-      <actionSet
-         label="OSEE"
-         visible="true"
-         id="osee.actionSet">
-			<menu
-            label="&amp;OSEE"
-            id="osee.product.oseeMenu">
-            <separator name="perspectives"/>
-            <separator name="properties"/>
-         </menu>         
-         <action
-               class="org.eclipse.osee.framework.ui.skynet.action.OpenOseePropertiesWorkbenchAction"
-               icon="images/gear.gif"
-               id="org.eclipse.osee.framework.ui.skynet.action.OpenOseePropertiesWorkbenchAction"
-               label="Properties"
-               menubarPath="osee.product.oseeMenu/properties"
-               tooltip="Open OSEE Properties">
-         </action>
-         <action
-               class="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsWorkbenchAction"
-               icon="images/gear.gif"
-               id="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsAction"
-               label="Configuration Details"
-               menubarPath="osee.product.oseeMenu/properties"
-               tooltip="Open OSEE Configuration Details">
-         </action>
-      </actionSet>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="OSEE Category"
+            id="osee.product.commands.category">
+      </category>
+      <command
+            name="Configuration Details"
+            categoryId="osee.product.commands.category"
+            id="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails">
+      </command>
+      <command
+            name="Properties"
+            categoryId="osee.product.commands.category"
+            id="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties">
+      </command>
    </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails"
+            class="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsHandler"> 
+      </handler>
+      <handler
+            commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties"
+            class="org.eclipse.osee.framework.ui.skynet.action.OpenPropertiesHandler">  
+      </handler>
+   </extension>
+   <extension point="org.eclipse.ui.commandImages">
+     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails" icon="images/gear.gif"> </image>
+     <image commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties" icon="images/gear.gif"> </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               label="OSEE"
+               mnemonic="O"
+               id="osee.product.oseeMenu">
+             <separator
+               name="other"
+               visible="true">
+            </separator>
+                       <command commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails"
+                  id="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails">
+            </command>
+            <command commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties"
+                  id="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   
+
+
    <extension
          point="org.eclipse.osee.framework.skynet.core.OseeValidator">
       <OseeValidator
