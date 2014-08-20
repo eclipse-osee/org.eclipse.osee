@@ -159,7 +159,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    private void processBundle(Bundle bundle, int state) {
-      boolean isActive = true;
+      boolean isActive = false;
       boolean isStopping = false;
       if (state == Bundle.ACTIVE //
          || state == Bundle.STARTING //
