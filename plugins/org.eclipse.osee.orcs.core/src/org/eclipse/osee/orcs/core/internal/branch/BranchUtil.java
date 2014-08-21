@@ -11,12 +11,12 @@
 package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
+import com.google.common.collect.Lists;
 
 public class BranchUtil {
 
@@ -24,9 +24,9 @@ public class BranchUtil {
       //Utility class
    }
 
-   public static List<Branch> orderByParent(Collection<Branch> branches) throws OseeCoreException {
+   public static List<Branch> orderByParent(Iterable<Branch> branches) throws OseeCoreException {
 
-      ArrayList<Branch> sorted = new ArrayList<Branch>(branches);
+      ArrayList<Branch> sorted = Lists.newArrayList(branches);
       for (int i = 0; i < sorted.size(); i++) {
          Branch current = sorted.get(i);
          Branch parent = current.getParentBranch();
@@ -41,8 +41,8 @@ public class BranchUtil {
       return sorted;
    }
 
-   public static List<BranchReadable> orderByParentReadable(final QueryFactory queryFactory, Collection<BranchReadable> branches) throws OseeCoreException {
-      List<BranchReadable> sorted = new ArrayList<BranchReadable>(branches);
+   public static List<BranchReadable> orderByParentReadable(final QueryFactory queryFactory, Iterable<BranchReadable> branches) throws OseeCoreException {
+      List<BranchReadable> sorted = Lists.newArrayList(branches);
 
       for (int i = 0; i < sorted.size(); i++) {
          BranchReadable current = sorted.get(i);
