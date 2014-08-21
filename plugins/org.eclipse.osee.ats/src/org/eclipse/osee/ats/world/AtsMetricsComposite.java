@@ -200,7 +200,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             sMet.getNumNotEstimated()), sMet.getNumNotEstimated() > 0));
 
       lines.add(XBarGraphLine.getPercentLine(
-         "By Workflow Percents (" + sMet.getCummulativeWorkflowPercentComplete() + "/" + sMet.getNumTeamWfs() + ")",
+         "By Workflow Percents (" + sMet.getCummulativeWorkflowPercentComplete() + "/" + sMet.getNumSMAs() + ")",
          (int) sMet.getPercentCompleteByWorkflowPercents()));
       lines.add(XBarGraphLine.getPercentLine(
          "By Number of Workflows (" + sMet.getCompletedWorkflows().size() + "/" + sMet.getNumSMAs() + ")",
