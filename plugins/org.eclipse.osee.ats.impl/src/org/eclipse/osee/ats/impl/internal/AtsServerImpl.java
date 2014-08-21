@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
@@ -51,6 +52,8 @@ import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -302,6 +305,24 @@ public class AtsServerImpl implements IAtsServer {
          action = getArtifactByAtsId(id);
       }
       return action;
+   }
+
+   @Override
+   public String getConfigValue(String key) {
+      String result = null;
+      @SuppressWarnings("unchecked")
+      ArtifactReadable atsConfig =
+         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getExactlyOne();
+      if (atsConfig != null) {
+         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
+            String str = (String) obj;
+            if (str.startsWith(key)) {
+               result = str.replaceFirst(key + "=", "");
+               break;
+            }
+         }
+      }
+      return result;
    }
 
 }

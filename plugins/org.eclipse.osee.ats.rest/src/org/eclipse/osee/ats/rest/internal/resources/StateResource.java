@@ -56,16 +56,6 @@ public final class StateResource {
    }
 
    /**
-    * @return html representation of action with states
-    */
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getStates() throws Exception {
-      ArtifactReadable action = atsServer.getArtifactByGuid(guid);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + guid, resourceRegistry);
-   }
-
-   /**
     * @param id
     * @return html representation w/ transition ui
     */
@@ -74,7 +64,7 @@ public final class StateResource {
    @Produces(MediaType.TEXT_HTML)
    public String getTransition() throws Exception {
       ArtifactReadable action = AtsServerService.get().getActionById(guid);
-      return atsServer.getWorkItemPage().getHtmlWithTransition(action, "Action - " + guid, resourceRegistry);
+      return atsServer.getWorkItemPage().getHtmlWithTransition(action, "Action - " + guid, resourceRegistry, false);
    }
 
    /**
@@ -131,7 +121,8 @@ public final class StateResource {
          // reload before display
          action = atsServer.getArtifactByGuid(guid);
          htmlStr =
-            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(), resourceRegistry);
+            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(), resourceRegistry,
+               false);
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);
       }

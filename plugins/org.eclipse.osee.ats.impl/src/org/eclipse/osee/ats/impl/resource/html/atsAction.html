@@ -12,7 +12,7 @@
 <div class="container">
    <div><h2>ATS - <?atsId?></h2><div>
 	
-<table border="1" cellpadding="3" cellspacing="0" width="100%" class="table table-striped">
+<table border="2" cellpadding="3" cellspacing="0" width="100%" class="table table-striped">
    <tr>
       <td colspan="3">Title: <b><?title?></b></td>
    </tr>
@@ -25,13 +25,12 @@
    
    <tr>
    	<td>Team: <b><?team?></b></td>
-   	<td>Id: <b><?id?></b></td>
+		<td>Targeted Version: <b><?version?></b></td>
    	<td>ATS Id: <b><?atsId?></b></td>
 	</tr>
 	
    <tr>
-		<td>Targeted Version: <b><?version?></b></td>
-		<td colspan="2">Assignees: <b><?assignees?></b></td>
+		<td colspan="3">Assignees: <b><?assignees?></b></td>
 	</tr>
 	
    <tr>
@@ -53,11 +52,12 @@
 <?transition?>
 </div>
 
-<table border="1" cellpadding="3" cellspacing="0" width="100%">
+<table cellpadding="3" cellspacing="0" width="100%">
    <tr><td>
       <?states?>   
    </td></tr>
 </table>
 
+<?details?>
 </body>
 </html>

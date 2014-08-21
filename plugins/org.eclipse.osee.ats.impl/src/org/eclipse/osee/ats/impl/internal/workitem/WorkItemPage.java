@@ -30,14 +30,14 @@ public class WorkItemPage implements IWorkItemPage {
    }
 
    @Override
-   public String getHtml(ArtifactReadable action, String title, IResourceRegistry registry) throws Exception {
-      ActionPage page = new ActionPage(logger, atsServer, registry, action, title);
+   public String getHtml(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception {
+      ActionPage page = new ActionPage(logger, atsServer, registry, action, title, details);
       return page.generate();
    }
 
    @Override
-   public String getHtmlWithTransition(ArtifactReadable action, String title, IResourceRegistry registry) throws Exception {
-      ActionPage page = new ActionPage(logger, atsServer, registry, action, title);
+   public String getHtmlWithTransition(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception {
+      ActionPage page = new ActionPage(logger, atsServer, registry, action, title, details);
       page.addTransitionStates();
       return page.generate();
    }

@@ -78,7 +78,25 @@ public final class ActionResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAction(@PathParam("id") String id) throws Exception {
       ArtifactReadable action = AtsServerService.get().getActionById(id);
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry);
+      if (action == null) {
+         return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
+      }
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry, false);
+   }
+
+   /**
+    * @param id (guid, atsId) of action to display
+    * @return html representation of the action
+    */
+   @Path("{id}/details")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getActionWithDetails(@PathParam("id") String id) throws Exception {
+      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      if (action == null) {
+         return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
+      }
+      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry, true);
    }
 
    /**
@@ -139,7 +157,7 @@ public final class ActionResource {
          htmlStr =
             atsServer.getWorkItemPage().getHtml(
                ((ArtifactReadable) action.getTeamWorkflows().iterator().next().getStoreObject()),
-               "Action Created - " + action.getGuid(), resourceRegistry);
+               "Action Created - " + action.getGuid(), resourceRegistry, false);
       }
 
       return Response.status(200).entity(htmlStr).build();
@@ -154,7 +172,7 @@ public final class ActionResource {
       if (action != null) {
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
          if (workItem != null) {
-            results = atsServer.getWorkItemPage().getHtml(action, "Action - " + searchId, resourceRegistry);
+            results = atsServer.getWorkItemPage().getHtml(action, "Action - " + searchId, resourceRegistry, false);
          } else {
             results = AHTML.simplePage(String.format("Undisplayable %s", action));
          }
@@ -167,7 +185,7 @@ public final class ActionResource {
             if (legacyQueryResults.size() == 1) {
                results =
                   atsServer.getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(), "Action - " + searchId,
-                     resourceRegistry);
+                     resourceRegistry, false);
                break;
             } else if (legacyQueryResults.size() > 1) {
                results = getGuidListHtml(legacyQueryResults);

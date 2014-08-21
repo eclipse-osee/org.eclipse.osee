@@ -68,7 +68,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAtsTeamWorkflow getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException {
-      return workItemFactory.getWorkItem(workItem).getParentTeamWorkflow();
+      return workItem.getParentTeamWorkflow();
    }
 
    @Override

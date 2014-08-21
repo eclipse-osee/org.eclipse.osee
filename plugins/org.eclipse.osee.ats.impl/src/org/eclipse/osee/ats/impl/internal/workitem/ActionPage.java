@@ -11,10 +11,15 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -24,10 +29,13 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -42,6 +50,13 @@ import org.eclipse.osee.template.engine.StringOptionsRule;
  */
 public class ActionPage {
 
+   private static final String DEFECT_TABLE_HEADER =
+      "<table border=\"1\" align=\"center\" width=\"98%\"><tr><th>Severity</th><th>Disposition</th><th>Closed</th><th>User</th><th>Created</th><th>Injected</th><th>Description</th><th>Location</th><th>Resolution</th></tr>";
+   private static final String ROLE_TABLE_HEADER =
+      "<table border=\"1\" align=\"center\" width=\"90%\"><tr><th>Role</th><th>User</th><th>Completed</th><th>Hours Spent</th></tr>";
+   private static final String COMMIT_MANAGER_WIDGET_NAME = "Commit Manager";
+   private static final String REVIEW_DEFECT_WIDGET_NAME = "Review Defect";
+   private static final String ROLE_WIDGET_NAME = "Role";
    private String pageTemplate;
    private PageCreator page;
    private IAtsWorkItem workItem;
@@ -51,13 +66,19 @@ public class ActionPage {
    private final IAtsServer atsServer;
    private final Log logger;
    private boolean addTransition = false;
+   private static final List<String> roleKeys = Arrays.asList("role", "userId", "completed", "hoursSpent");
+   private static final List<String> defectKeys = Arrays.asList("severity", "disposition", "closed", "user", "date",
+      "injectionActivity", "description", "location", "resolution");
+   private static List<String> ignoredWidgets;
+   private final boolean details;
 
-   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title) {
+   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, boolean details) {
       this.logger = logger;
       this.atsServer = atsServer;
       this.registry = registry;
       this.action = action;
       this.title = title;
+      this.details = details;
    }
 
    private IAtsWorkItem getWorkItem() {
@@ -102,7 +123,7 @@ public class ActionPage {
       }
 
       addStates(page, workItem, action);
-      addDebug(page, workItem, action);
+      addDetails(page, workItem, action);
 
       return page.realizePage(AtsResourceTokens.AtsActionHtml);
    }
@@ -116,15 +137,40 @@ public class ActionPage {
    }
 
    private String getTeamStr(ArtifactReadable action) {
-      String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition);
-      results = atsServer.getArtifactByGuid(results).getName();
+      String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition, "");
+      if (Strings.isValid(results)) {
+         results = atsServer.getArtifactByGuid(results).getName();
+      } else {
+         ArtifactReadable teamWf = getParentTeamWf(action);
+         if (teamWf != null) {
+            results = getTeamStr(teamWf);
+         }
+      }
       return results;
    }
 
+   private ArtifactReadable getParentTeamWf(ArtifactReadable action2) {
+      ArtifactReadable teamWf = null;
+      if (action.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         teamWf = action;
+      } else if (action.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+         teamWf = action.getRelated(AtsRelationTypes.TeamWorkflowToReview_Team).getOneOrNull();
+      } else if (action.isOfType(AtsArtifactTypes.Task)) {
+         teamWf = action.getRelated(AtsRelationTypes.TeamWfToTask_TeamWf).getOneOrNull();
+      }
+      return teamWf;
+   }
+
    private String getAIStr(ArtifactReadable action) {
-      String results = action.getSoleAttributeAsString(AtsAttributeTypes.ActionableItem);
-      results = atsServer.getArtifactByGuid(results).getName();
-      return results;
+      StringBuilder sb = new StringBuilder();
+      ArtifactReadable teamWf = getParentTeamWf(action);
+      if (teamWf != null) {
+         for (AttributeReadable<Object> aiGuid : teamWf.getAttributes(AtsAttributeTypes.ActionableItem)) {
+            sb.append(atsServer.getArtifactByGuid(aiGuid.toString()).getName());
+            sb.append(", ");
+         }
+      }
+      return sb.toString().replaceFirst(", $", "");
    }
 
    private String getCreatedByStr(IAtsWorkItem workItem, ArtifactReadable action) {
@@ -199,22 +245,118 @@ public class ActionPage {
       addLayoutItems(sb, workItem, items);
    }
 
+   private boolean inComposite = false;
+
    private void addLayoutItems(StringBuilder sb, IAtsWorkItem workItem, Collection<IAtsLayoutItem> items) {
       for (IAtsLayoutItem layout : items) {
          if (layout instanceof IAtsCompositeLayoutItem) {
+            inComposite = true;
+            sb.append("<tr><td><table width=\"100%\"><tr>");
             addWidgets(sb, workItem, ((IAtsCompositeLayoutItem) layout).getaLayoutItems());
+            sb.append("</tr></table></td></tr>");
+            inComposite = false;
          } else {
-            addWidget(sb, workItem, (IAtsWidgetDefinition) layout);
+            IAtsWidgetDefinition widget = (IAtsWidgetDefinition) layout;
+            if (!getIgnoreWidgetNames().contains(widget.getName())) {
+               if (!inComposite) {
+                  sb.append("<tr><td>");
+               } else {
+                  sb.append("<td>");
+               }
+               addWidget(sb, workItem, widget);
+               if (!inComposite) {
+                  sb.append("</td></tr>");
+               } else {
+                  sb.append("</td>");
+               }
+            }
          }
       }
    }
 
-   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition layout) {
-      sb.append("<tr><td>");
-      sb.append(layout.getName());
+   private void addWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+      if (widget.getName().equals(ROLE_WIDGET_NAME)) {
+         addRoleWidget(sb, workItem, widget);
+      } else if (widget.getName().equals(REVIEW_DEFECT_WIDGET_NAME)) {
+         addDefectWidget(sb, workItem, widget);
+      } else if (widget.getName().equals(COMMIT_MANAGER_WIDGET_NAME)) {
+         addCommitManager(sb, workItem, widget);
+      } else {
+         addWidgetDefault(sb, workItem, widget);
+      }
+   }
+
+   private void addCommitManager(StringBuilder sb, IAtsWorkItem workItem2, IAtsWidgetDefinition widget) {
+      sb.append("Commit Manager: ");
+      IOseeBranch branch = atsServer.getBranchService().getBranch((IAtsTeamWorkflow) workItem);
+      if (branch != null) {
+         sb.append(branch.getName());
+      }
+   }
+
+   private List<String> getIgnoreWidgetNames() {
+      if (ignoredWidgets == null) {
+         ignoredWidgets = new ArrayList<String>();
+         for (String widgetName : atsServer.getConfigValue("IgnoredWidgetNames").split(";")) {
+            ignoredWidgets.add(widgetName);
+         }
+      }
+      return ignoredWidgets;
+   }
+
+   private void addRoleWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+      sb.append("Roles: ");
+      Collection<String> roles =
+         atsServer.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.Role);
+      if (!roles.isEmpty()) {
+         sb.append(ROLE_TABLE_HEADER);
+         for (String xml : roles) {
+            sb.append("<tr>");
+            for (String key : roleKeys) {
+               sb.append("<td>");
+               String data = AXml.getTagData(xml, key);
+               if (key.equals("userId")) {
+                  data = atsServer.getUserService().getUserById(data).getName();
+               }
+               sb.append(data);
+               sb.append("</td>");
+            }
+            sb.append("</tr>");
+         }
+         sb.append("</table>");
+      }
+   }
+
+   private void addDefectWidget(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+      sb.append("Defects: ");
+      Collection<String> defects =
+         atsServer.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ReviewDefect);
+      if (!defects.isEmpty()) {
+         sb.append(DEFECT_TABLE_HEADER);
+         for (String xml : defects) {
+            sb.append("<tr>");
+            for (String key : defectKeys) {
+               sb.append("<td>");
+               String data = AXml.getTagData(xml, key);
+               if (key.equals("user")) {
+                  data = atsServer.getUserService().getUserById(data).getName();
+               } else if (key.equals("date")) {
+                  data = DateUtil.getDateStr(new Date(Long.valueOf(data)), DateUtil.MMDDYYHHMM);
+               }
+               sb.append(data);
+               sb.append("</td>");
+            }
+            sb.append("</tr>");
+         }
+         sb.append("</table>");
+      }
+   }
+
+   private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
+      sb.append(widget.getName());
       sb.append(": <b>");
       try {
-         IAttributeType attributeType = atsServer.getAttributeResolver().getAttributeType(layout.getAtrributeName());
+         IAttributeType attributeType = atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
          Collection<String> attributesToStringList =
             atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
          if (attributesToStringList.size() > 1) {
@@ -225,7 +367,7 @@ public class ActionPage {
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
       }
-      sb.append("</b></td></tr>");
+      sb.append("</b>");
    }
 
    private String getStateHtmlTemplate() throws IOException {
@@ -235,17 +377,28 @@ public class ActionPage {
       return pageTemplate;
    }
 
-   private static void addDebug(PageCreator page, IAtsWorkItem workItem, ArtifactReadable artifact) {
+   private void addDetails(PageCreator page, IAtsWorkItem workItem, ArtifactReadable artifact) {
       StringBuilder sb = new StringBuilder();
-      try {
-         for (AttributeReadable<?> attr : artifact.getAttributes()) {
-            sb.append(String.format("%s [%s]\n", attr.getAttributeType(),
-               AHTML.textToHtml(String.valueOf(attr.getValue()))));
+      if (details) {
+         try {
+            addDetail(sb, "Guid", artifact.getGuid());
+            addDetail(sb, "Artifact Type", artifact.getArtifactType().getName());
+            sb.append("</br><b>Attribute Raw Data:</b></br>");
+            for (AttributeReadable<?> attr : artifact.getAttributes()) {
+               addDetail(sb, attr.getAttributeType().getName(), AHTML.textToHtml(String.valueOf(attr.getValue())));
+            }
+         } catch (OseeCoreException ex) {
+            sb.append("exception: " + ex.getLocalizedMessage());
          }
-      } catch (OseeCoreException ex) {
-         sb.append("exception: " + ex.getLocalizedMessage());
       }
-      page.addKeyValuePair("debug", sb.toString());
+      page.addKeyValuePair("details", sb.toString());
+   }
+
+   private static void addDetail(StringBuilder sb, String key, String value) {
+      sb.append(key);
+      sb.append(": <b>");
+      sb.append(value);
+      sb.append("</b></br>");
    }
 
    public boolean isAddTransition() {

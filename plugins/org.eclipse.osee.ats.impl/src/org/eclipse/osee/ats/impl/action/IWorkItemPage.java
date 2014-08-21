@@ -18,8 +18,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface IWorkItemPage {
 
-   String getHtml(ArtifactReadable action, String title, IResourceRegistry registry) throws Exception;
+   String getHtml(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception;
 
-   String getHtmlWithTransition(ArtifactReadable action, String title, IResourceRegistry registry) throws Exception;
+   String getHtmlWithTransition(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception;
 
 }

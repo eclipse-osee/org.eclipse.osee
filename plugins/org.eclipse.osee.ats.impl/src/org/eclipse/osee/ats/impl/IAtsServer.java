@@ -84,4 +84,6 @@ public interface IAtsServer extends IAtsConfigItemFactoryProvider, IAtsConfigPro
 
    ArtifactReadable getActionById(String id);
 
+   String getConfigValue(String key);
+
 }
