@@ -14,7 +14,9 @@ import java.util.List;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public class AtsNotificationEventProcessor {
@@ -49,8 +51,11 @@ public class AtsNotificationEventProcessor {
       String email = noReplyEmail;
       for (AtsNotificationEvent event : notifications.getNotificationEvents()) {
          if (Strings.isValid(event.getFromUserId())) {
-            email = userService.getUserById(event.getFromUserId()).getEmail();
-            break;
+            IAtsUser userById = userService.getUserById(event.getFromUserId());
+            if (EmailUtil.isEmailValid(userById.getEmail())) {
+               email = userById.getEmail();
+               break;
+            }
          }
       }
       return email;
