@@ -23,13 +23,14 @@ import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientAttributeTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientBranchAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientOseeEnumTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientRelationTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransactionAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseTransactionRecordAccessor;
 
 /**
  * @author Roberto E. Escobar
@@ -37,11 +38,16 @@ import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransacti
 public class ClientCachingServiceProxy implements IOseeCachingService {
 
    private IOseeModelFactoryService modelFactory;
+   private IOseeDatabaseService dbService;
 
    private IOseeCachingService proxiedService;
 
    public void setModelFactory(IOseeModelFactoryService modelFactory) {
       this.modelFactory = modelFactory;
+   }
+
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
    }
 
    public void start() {
@@ -110,14 +116,13 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    private IOseeCachingService createService(IOseeModelFactoryService factory) {
       TransactionCache transactionCache = new TransactionCache();
-      ClientBranchAccessor clientBranchAccessor =
-         new ClientBranchAccessor(factory.getBranchFactory(), transactionCache);
+      DatabaseBranchAccessor clientBranchAccessor =
+         new DatabaseBranchAccessor(dbService, transactionCache, factory.getBranchFactory());
       BranchCache branchCache = new BranchCache(clientBranchAccessor, transactionCache);
-      clientBranchAccessor.setBranchCache(branchCache);
 
       TransactionRecordFactory txFactory = factory.getTransactionFactory();
 
-      transactionCache.setAccessor(new ClientTransactionAccessor(txFactory, branchCache));
+      transactionCache.setAccessor(new DatabaseTransactionRecordAccessor(dbService, branchCache, txFactory));
       OseeEnumTypeCache oseeEnumTypeCache =
          new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factory.getOseeEnumTypeFactory()));
 

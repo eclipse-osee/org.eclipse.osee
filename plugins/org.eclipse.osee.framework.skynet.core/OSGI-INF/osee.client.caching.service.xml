@@ -6,4 +6,5 @@
       <provide interface="org.eclipse.osee.framework.core.services.TempCachingService"/>
    </service>
    <reference bind="setModelFactory" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
+   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
 </scr:component>
