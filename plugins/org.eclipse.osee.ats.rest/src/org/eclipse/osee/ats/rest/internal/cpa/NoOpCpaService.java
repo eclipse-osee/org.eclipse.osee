@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.cpa.ICpaPcr;
@@ -47,6 +49,11 @@ public class NoOpCpaService implements IAtsCpaService {
    @Override
    public ICpaPcr getPcr(String pcrId) {
       return null;
+   }
+
+   @Override
+   public Map<String, ICpaPcr> getOriginatingPcr(Map<String, IAtsCpaDecision> origPcrIdToDecision) {
+      return Collections.emptyMap();
    }
 
 }

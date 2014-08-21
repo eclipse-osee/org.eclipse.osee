@@ -13,7 +13,10 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -54,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -67,7 +71,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public final class CpaResource {
 
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;  
+   private final IAtsServer atsServer;
    private final CpaServiceRegistry cpaRegistry;
    private String cpaBasepath;
 
@@ -105,12 +109,18 @@ public final class CpaResource {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));
       }
+      Map<String, IAtsCpaDecision> origPcrIdToDecision = new HashMap<String, IAtsCpaDecision>();
+      String pcrToolId = null;
       for (ArtifactReadable art : queryBuilder.getResults()) {
          IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(art);
          CpaDecision decision = CpaFactory.getDecision(teamWf, null);
          decision.setApplicability(art.getSoleAttributeValue(AtsAttributeTypes.ApplicableToProgram, ""));
          decision.setRationale(art.getSoleAttributeValue(AtsAttributeTypes.Rationale, ""));
-         decision.setPcrSystem(art.getSoleAttributeValue(AtsAttributeTypes.PcrToolId, ""));
+         String pcrToolIdValue = art.getSoleAttributeValue(AtsAttributeTypes.PcrToolId, "");
+         if (pcrToolId == null) {
+            pcrToolId = pcrToolIdValue;
+         }
+         decision.setPcrSystem(pcrToolIdValue);
          boolean completed =
             art.getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(StateType.Completed.name());
          decision.setComplete(completed);
@@ -125,6 +135,7 @@ public final class CpaResource {
 
          // set location of originating pcr
          String origPcrId = art.getSoleAttributeValue(AtsAttributeTypes.OriginatingPcrId);
+         origPcrIdToDecision.put(origPcrId, decision);
          decision.setOrigPcrLocation(getCpaPath().path(origPcrId).queryParam("pcrSystem", decision.getPcrSystem()).build().toString());
 
          // set location of duplicated pcr (if any)
@@ -136,12 +147,15 @@ public final class CpaResource {
             decision.setDuplicatedPcrId(duplicatedPcrId);
          }
 
-         IAtsCpaService service = cpaRegistry.getServiceById(decision.getPcrSystem());
-         ICpaPcr origPcr = service.getPcr(origPcrId);
-         decision.setOriginatingPcr(origPcr);
-
          decisions.add(decision);
       }
+
+      IAtsCpaService service = cpaRegistry.getServiceById(pcrToolId);
+      for (Entry<String, ICpaPcr> entry : service.getOriginatingPcr(origPcrIdToDecision).entrySet()) {
+         CpaDecision decision = (CpaDecision) origPcrIdToDecision.get(entry.getKey());
+         decision.setOriginatingPcr(entry.getValue());
+      }
+
       return decisions;
    }
 

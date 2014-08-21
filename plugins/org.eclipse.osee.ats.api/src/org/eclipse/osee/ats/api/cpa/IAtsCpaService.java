@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.cpa;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Donald G. Dunne
@@ -27,4 +28,6 @@ public interface IAtsCpaService {
    URI getLocation(URI uri, String uuid);
 
    ICpaPcr getPcr(String pcrId);
+
+   Map<String, ICpaPcr> getOriginatingPcr(Map<String, IAtsCpaDecision> origPcrIdToDecision);
 }
