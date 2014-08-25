@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,7 +35,7 @@ public class ChangeBranchTypeCallable extends AbstractBranchCallable<ChangeBranc
       IOseeBranch toModify = getBranchFromUuid(request.getBranchId());
       BranchType newBranchType = request.getType();
 
-      Callable<BranchReadable> callable = getBranchOps().changeBranchType(toModify, newBranchType);
+      Callable<Void> callable = getBranchOps().changeBranchType(toModify, newBranchType);
       callAndCheckForCancel(callable);
       return Boolean.TRUE;
    }

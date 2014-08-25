@@ -32,7 +32,6 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
-import org.eclipse.osee.orcs.core.internal.branch.ChangeBranchTypeCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CommitBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CompareBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
@@ -112,8 +111,8 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> changeBranchType(IOseeBranch branch, BranchType branchType) {
-      return new ChangeBranchTypeCallable(logger, session, branchStore, branchCache, branch, branchType);
+   public Callable<Void> changeBranchType(IOseeBranch branch, BranchType branchType) {
+      return branchStore.changeBranchType(session, branch, branchType);
    }
 
    @Override

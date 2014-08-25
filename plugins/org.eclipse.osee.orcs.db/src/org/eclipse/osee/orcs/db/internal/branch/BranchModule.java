@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -35,6 +36,7 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchStateCallable;
+import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchTypeCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
@@ -131,6 +133,11 @@ public class BranchModule {
          @Override
          public Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState) {
             return new ChangeBranchStateCallable(logger, session, dbService, branch, newState);
+         }
+
+         @Override
+         public Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType newType) {
+            return new ChangeBranchTypeCallable(logger, session, dbService, branch, newType);
          }
 
       };
