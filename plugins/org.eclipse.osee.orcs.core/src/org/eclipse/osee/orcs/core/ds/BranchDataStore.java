@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
@@ -49,5 +50,7 @@ public interface BranchDataStore {
    Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState);
 
    Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType newType);
+
+   Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op);
 
 }

@@ -31,9 +31,11 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
+import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
+import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchStateCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchTypeCallable;
@@ -138,6 +140,11 @@ public class BranchModule {
          @Override
          public Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType newType) {
             return new ChangeBranchTypeCallable(logger, session, dbService, branch, newType);
+         }
+
+         @Override
+         public Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op) {
+            return new ArchiveUnarchiveBranchCallable(logger, session, dbService, branch, op);
          }
 
       };

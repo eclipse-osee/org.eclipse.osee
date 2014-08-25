@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -49,8 +48,7 @@ public class CommitBranchCallable extends AbstractBranchCallable<BranchCommitReq
       responseData.setTransaction(transactionRecord);
 
       if (request.isArchiveAllowed()) {
-         Callable<BranchReadable> archiveCallable =
-            getBranchOps().archiveUnarchiveBranch(source, ArchiveOperation.ARCHIVE);
+         Callable<Void> archiveCallable = getBranchOps().archiveUnarchiveBranch(source, ArchiveOperation.ARCHIVE);
          callAndCheckForCancel(archiveCallable);
       }
       return responseData;

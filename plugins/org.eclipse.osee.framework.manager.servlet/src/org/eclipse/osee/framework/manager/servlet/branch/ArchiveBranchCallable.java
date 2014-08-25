@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -38,7 +37,7 @@ public class ArchiveBranchCallable extends AbstractBranchCallable<ChangeBranchAr
       ArchiveOperation archiveOp =
          request.getState().isArchived() ? ArchiveOperation.ARCHIVE : ArchiveOperation.UNARCHIVE;
 
-      Callable<BranchReadable> callable = getBranchOps().archiveUnarchiveBranch(toArchive, archiveOp);
+      Callable<Void> callable = getBranchOps().archiveUnarchiveBranch(toArchive, archiveOp);
       callAndCheckForCancel(callable);
 
       return Boolean.TRUE;

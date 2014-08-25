@@ -68,7 +68,7 @@ public interface OrcsBranch {
 
    Callable<BranchReadable> createBranch(CreateBranchData branchData);
 
-   Callable<BranchReadable> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
+   Callable<Void> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
 
    Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse);
 
