@@ -58,7 +58,7 @@ public interface OrcsBranch {
 
    /////////////////////////////////////////////////////////////////////////
 
-   Callable<BranchReadable> changeBranchState(IOseeBranch branch, BranchState newState);
+   Callable<Void> changeBranchState(IOseeBranch branch, BranchState newState);
 
    Callable<BranchReadable> changeBranchType(IOseeBranch branch, BranchType branchType);
 

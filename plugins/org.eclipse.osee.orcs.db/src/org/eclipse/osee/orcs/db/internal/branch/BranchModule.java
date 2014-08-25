@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -33,6 +34,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
+import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchStateCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
@@ -124,6 +126,11 @@ public class BranchModule {
          public Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck) {
             return new CheckBranchExchangeIntegrityCallable(logger, session, dbService, preferences, resourceManager,
                fileToCheck);
+         }
+
+         @Override
+         public Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState) {
+            return new ChangeBranchStateCallable(logger, session, dbService, branch, newState);
          }
 
       };

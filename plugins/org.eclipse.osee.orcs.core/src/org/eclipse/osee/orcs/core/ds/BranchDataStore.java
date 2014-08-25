@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -43,5 +44,7 @@ public interface BranchDataStore {
    Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<IOseeBranch> branches, PropertyStore options);
 
    Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
+
+   Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState);
 
 }
