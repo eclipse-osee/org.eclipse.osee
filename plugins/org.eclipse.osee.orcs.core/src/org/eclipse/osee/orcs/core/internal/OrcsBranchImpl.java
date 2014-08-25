@@ -51,6 +51,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final BranchDataStore branchStore;
    private final BranchDataFactory branchDataFactory;
    private final OrcsTypes orcsTypes;
+   private final QueryFactory queryFactory;
 
    private final BranchCache branchCache;
    private final TransactionCache txCache;
@@ -63,6 +64,7 @@ public class OrcsBranchImpl implements OrcsBranch {
       this.orcsTypes = orcsTypes;
       this.branchCache = branchCache;
       branchDataFactory = new BranchDataFactory(branchCache);
+      this.queryFactory = queryFactory;
    }
 
    @Override
@@ -82,7 +84,7 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse) {
-      return new PurgeBranchCallable(logger, session, branchStore, branchCache, branch, recurse);
+      return new PurgeBranchCallable(logger, session, branchStore, branch, recurse, queryFactory);
    }
 
    @Override

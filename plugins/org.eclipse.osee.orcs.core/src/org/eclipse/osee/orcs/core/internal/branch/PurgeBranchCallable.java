@@ -10,70 +10,66 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
-import org.eclipse.osee.orcs.core.internal.branch.provider.BranchProvider;
-import org.eclipse.osee.orcs.core.internal.branch.provider.MultiBranchProvider;
-import org.eclipse.osee.orcs.core.internal.branch.provider.SingleBranchProvider;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch>> {
 
-   private final BranchCache branchCache;
    private final IOseeBranch branchToken;
    private final boolean isRecursive;
+   private final QueryFactory queryFactory;
 
-   public PurgeBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, IOseeBranch branchToken, boolean isRecursive) {
+   public PurgeBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, IOseeBranch branchToken, boolean isRecursive, QueryFactory queryFactory) {
       super(logger, session, branchStore);
-      this.branchCache = branchCache;
       this.branchToken = branchToken;
       this.isRecursive = isRecursive;
-   }
-
-   private BranchProvider createProvider(Branch branch, boolean isRecursive) {
-      BranchProvider provider;
-      if (isRecursive) {
-         provider = new MultiBranchProvider(true, Collections.singleton(branch), new BranchFilter());
-      } else {
-         provider = new SingleBranchProvider(branch);
-      }
-      return provider;
+      this.queryFactory = queryFactory;
    }
 
    @Override
    protected List<IOseeBranch> innerCall() throws Exception {
-      Conditions.checkNotNull(branchCache, "branchCache");
       Conditions.checkNotNull(branchToken, "branchToPurge");
 
-      Branch branch = branchCache.get(branchToken);
+      BranchQuery branchQuery = queryFactory.branchQuery();
+      branchQuery.andIds(branchToken);
+      if (isRecursive) {
+         branchQuery.andIsChildOf(branchToken);
+      }
 
-      Conditions.checkNotNull(branch, "branchToPurge");
-
-      BranchProvider provider = createProvider(branch, isRecursive);
-
-      Collection<Branch> branches = provider.getBranches();
-      Conditions.checkNotNull(branches, "branchesToPurge");
+      ResultSet<BranchReadable> branches = branchQuery.getResults();
 
       List<IOseeBranch> purged = new LinkedList<IOseeBranch>();
-      List<Branch> orderedBranches = BranchUtil.orderByParent(branches);
-      for (Branch aBranch : orderedBranches) {
+      List<BranchReadable> orderedBranches = BranchUtil.orderByParentReadable(queryFactory, branches);
+      for (BranchReadable aBranch : orderedBranches) {
          checkForCancelled();
-         Callable<Branch> callable = getBranchStore().purgeBranch(getSession(), aBranch);
-         purged.add(callAndCheckForCancel(callable));
+         checkForChildBranches(aBranch);
+         Callable<Void> callable = getBranchStore().purgeBranch(getSession(), aBranch);
+         callAndCheckForCancel(callable);
+         purged.add(aBranch);
       }
       return purged;
+   }
+
+   private void checkForChildBranches(BranchReadable aBranch) {
+      BranchQuery branchQuery = queryFactory.branchQuery();
+      branchQuery.andIsChildOf(aBranch);
+      if (branchQuery.getCount() > 0) {
+         throw new OseeArgumentException("Unable to purge a branch containing children: branchUuid[%s] branchType[%s]",
+            aBranch.getUuid(), aBranch.getBranchType());
+      }
    }
 }

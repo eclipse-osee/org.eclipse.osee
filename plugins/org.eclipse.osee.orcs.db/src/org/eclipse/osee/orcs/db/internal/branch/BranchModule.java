@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
@@ -102,8 +103,8 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<Branch> purgeBranch(OrcsSession session, Branch branch) {
-            return new PurgeBranchDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(), branch);
+         public Callable<Void> purgeBranch(OrcsSession session, BranchReadable toDelete) {
+            return new PurgeBranchDatabaseCallable(logger, session, dbService, toDelete);
          }
 
          @Override

@@ -11,16 +11,12 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Megumi Telles
@@ -28,7 +24,7 @@ import org.eclipse.osee.orcs.OrcsSession;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Branch> {
+public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String DELETE_FROM_BRANCH_TABLE = "DELETE FROM osee_branch WHERE branch_id = ?";
    private static final String DELETE_FROM_MERGE =
       "DELETE FROM osee_merge WHERE merge_branch_id = ? AND source_branch_id = ?";
@@ -37,46 +33,31 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Bra
    private final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
    private final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
 
-   private final Branch branch;
-   private final String sourceTableName;
-   private final BranchCache branchCache;
+   private final BranchReadable toDelete;
 
-   public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, Branch branch) {
-      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getUuid(),
-         branch.getShortName()));
-      this.branch = branch;
-      this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
-      this.branchCache = branchCache;
+   public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchReadable toDelete) {
+      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", toDelete.getUuid(),
+         toDelete.getName()));
+      this.toDelete = toDelete;
    }
 
    @Override
-   protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
-      if (branch.getStorageState() != StorageState.PURGED) {
-         if (!branch.getAllChildBranches(false).isEmpty()) {
-            throw new OseeArgumentException(
-               "Unable to purge a branch containing children: branchUuid[%s] branchType[%s]", branch.getUuid(),
-               branch.getBranchType());
-         }
+   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      String sourceTableName = toDelete.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
+      long branchUuid = toDelete.getUuid();
+      String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
+      purgeFromTable(connection, sql, 0.20, branchUuid);
 
-         long branchUuid = branch.getUuid();
-         String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
-         purgeFromTable(connection, sql, 0.20, branchUuid);
-
-         purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchUuid);
-         purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchUuid);
-         if (branch.hasParentBranch()) {
-            purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid, branch.getParentBranch().getUuid());
-         }
-         purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchUuid);
-
-         purgeAccessControlTables(branchUuid);
-
-         branch.setStorageState(StorageState.PURGED);
-         branchCache.storeItems(branch);
-         branch.setBranchState(BranchState.PURGED);
-         branch.internalRemovePurgedBranchFromParent();
+      purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchUuid);
+      purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchUuid);
+      Long parentUuid = toDelete.getParentBranch();
+      if (parentUuid != null) {
+         purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid, parentUuid);
       }
-      return branch;
+      purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchUuid);
+
+      purgeAccessControlTables(branchUuid);
+      return null;
    }
 
    private void purgeAccessControlTables(long branchUuid) throws OseeCoreException {

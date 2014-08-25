@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
@@ -35,7 +36,7 @@ public interface BranchDataStore {
 
    Callable<Branch> createBranchCopyTx(OrcsSession session, CreateBranchData branchData);
 
-   Callable<Branch> purgeBranch(OrcsSession session, Branch branch);
+   Callable<Void> purgeBranch(OrcsSession session, BranchReadable branch);
 
    Callable<TransactionRecord> commitBranch(OrcsSession session, ArtifactReadable committer, Branch source, Branch destination);
 
