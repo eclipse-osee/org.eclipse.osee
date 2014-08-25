@@ -53,4 +53,6 @@ public interface BranchDataStore {
 
    Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op);
 
+   Callable<Void> deleteBranch(OrcsSession session, IOseeBranch branch);
+
 }

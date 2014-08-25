@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
+import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchStateCallable;
@@ -42,6 +43,7 @@ import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchTypeCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.callable.CompositeDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CreateBranchDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ExportBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ImportBranchDatabaseCallable;
@@ -145,6 +147,18 @@ public class BranchModule {
          @Override
          public Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op) {
             return new ArchiveUnarchiveBranchCallable(logger, session, dbService, branch, op);
+         }
+
+         @Override
+         public Callable<Void> deleteBranch(OrcsSession session, IOseeBranch branch) {
+            AbstractDatastoreTxCallable<?> deleteBranch =
+               (AbstractDatastoreTxCallable<?>) changeBranchState(session, branch, BranchState.DELETED);
+            AbstractDatastoreTxCallable<?> archiveBranch =
+               (AbstractDatastoreTxCallable<?>) archiveUnArchiveBranch(session, branch, ArchiveOperation.ARCHIVE);
+            CompositeDatastoreTxCallable composite =
+               new CompositeDatastoreTxCallable(logger, session, dbService,
+                  String.format("Delete Branch [%s]", branch), deleteBranch, archiveBranch);
+            return composite;
          }
 
       };

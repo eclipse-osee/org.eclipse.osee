@@ -34,7 +34,6 @@ import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
 import org.eclipse.osee.orcs.core.internal.branch.CommitBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CompareBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
-import org.eclipse.osee.orcs.core.internal.branch.DeleteBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -77,8 +76,8 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> deleteBranch(IOseeBranch branch) {
-      return new DeleteBranchCallable(logger, session, branchStore, branchCache, branch);
+   public Callable<Void> deleteBranch(IOseeBranch branch) {
+      return branchStore.deleteBranch(session, branch);
    }
 
    @Override
