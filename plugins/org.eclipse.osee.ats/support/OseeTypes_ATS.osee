@@ -83,6 +83,7 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Id Prefix"
 	attribute "ats.Id Sequence Name"
 	attribute "ats.Team Workflow Artifact Type"
+	attribute "ats.closure.Active"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
@@ -102,6 +103,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
 	attribute "ats.Released"
 	attribute "ats.Version Locked"
 	attribute "ats.TestRunToSourceLocator"
+	attribute "ats.closure.Closure State"
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
@@ -1433,5 +1435,33 @@ attributeType "ats.TestRunToSourceLocator" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	mediaType "text/plain"
+}
+
+attributeType "ats.closure.Active" extends BooleanAttribute {
+	uuid 0x10000056457000BB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+oseeEnumType "ats.closure.states" {
+	uuid 0x300000000000019C
+	entry "Closed"
+	entryGuid "CArJmR2JDn5DXT9FGRQB"
+	entry "Closing"
+	entryGuid "CArJmR3xrEmbw7zbyzhA"
+	entry "Open"
+	entryGuid "CArJmR5WzHmGBBBOKhQA"
+}
+
+attributeType "ats.closure.Closure State" extends EnumeratedAttribute {
+	uuid 0x10000000000001DC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "ats.closure.states"
 	mediaType "text/plain"
 }

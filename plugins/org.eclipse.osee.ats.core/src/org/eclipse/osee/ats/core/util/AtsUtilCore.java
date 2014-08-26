@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -79,6 +83,14 @@ public class AtsUtilCore {
          atsBranch = TokenFactory.createBranch(Long.valueOf(branchUuid), name);
          atsConfigName = name;
       }
+   }
+
+   public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
+      List<String> guids = new ArrayList<String>(atsObjects.size());
+      for (IAtsObject atsObj : atsObjects) {
+         guids.add(atsObj.getGuid());
+      }
+      return guids;
    }
 
    public static void storeAtsBranch(IOseeBranch branch, String name) {
