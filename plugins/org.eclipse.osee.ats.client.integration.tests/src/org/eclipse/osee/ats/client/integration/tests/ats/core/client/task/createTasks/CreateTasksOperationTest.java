@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.createtasks.CreateTasksOperation;
 import org.eclipse.osee.ats.core.client.task.createtasks.GenerateTaskOpList;
@@ -240,18 +240,20 @@ public class CreateTasksOperationTest {
          ver3_TasksWithoutChanges.setName(ver3_TasksWithoutChanges.getName() + " TasksWithoutChanges");
 
          AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf1_Proper, ver1_Proper);
-         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf2_ChangesWithoutTasks, ver2_ChangesWithoutTasks);
-         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf3_TasksWithoutChanges, ver3_TasksWithoutChanges);
+         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf2_ChangesWithoutTasks,
+            ver2_ChangesWithoutTasks);
+         AtsClientService.get().getVersionService().setTargetedVersion(destTeamWf3_TasksWithoutChanges,
+            ver3_TasksWithoutChanges);
 
          IAtsVersion verArt4 = AtsTestUtil.getVerArt4();
          verArt4.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
          verArt4.setAllowCreateBranch(true);
 
          reqTeamWf = AtsTestUtil.getTeamWf4();
-         Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeamWf);
+         Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeamWf);
          Assert.assertTrue(result.isTrue());
 
-         Job createBranchJob = AtsBranchManagerCore.createWorkingBranch_Create(reqTeamWf);
+         Job createBranchJob = AtsBranchUtil.createWorkingBranch_Create(reqTeamWf);
          createBranchJob.join();
          int count = 0;
          while (count++ < 10 && reqTeamWf.getWorkingBranch() == null) {

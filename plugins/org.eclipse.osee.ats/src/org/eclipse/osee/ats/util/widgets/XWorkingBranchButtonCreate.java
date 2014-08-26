@@ -11,8 +11,9 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,13 +44,14 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             disableAll = true;
             refreshEnablement(button);
             // Create working branch
-            Result result = AtsBranchManagerCore.createWorkingBranch_Validate(getTeamArt());
+            Result result = AtsBranchUtil.createWorkingBranch_Validate(getTeamArt());
             if (result.isFalse()) {
                AWorkbench.popup(result);
                return;
             }
             try {
-               IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(getTeamArt());
+               IOseeBranch parentBranch =
+                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(
                   Displays.getActiveShell(),
@@ -59,7 +61,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                   refreshEnablement(button);
                   return;
                }
-               AtsBranchManagerCore.createWorkingBranch_Create(getTeamArt(), true);
+               AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), true);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.actions;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,7 +37,8 @@ public class ShowMergeManagerAction extends Action {
       setText("Show Merge Manager");
       setToolTipText(getText());
       try {
-         setEnabled(AtsBranchManagerCore.isWorkingBranchInWork(teamArt) || AtsBranchManagerCore.isCommittedBranchExists(teamArt));
+         setEnabled(AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt) || AtsClientService.get().getBranchService().isCommittedBranchExists(
+            teamArt));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

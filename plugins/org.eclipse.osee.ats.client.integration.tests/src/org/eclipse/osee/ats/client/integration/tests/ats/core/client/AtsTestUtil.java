@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -424,7 +424,7 @@ public class AtsTestUtil {
          AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
 
          if (teamWfToDelete.getWorkingBranch() != null) {
-            Result result = AtsBranchManagerCore.deleteWorkingBranch(teamWfToDelete, true);
+            Result result = AtsBranchUtil.deleteWorkingBranch(teamWfToDelete, true);
             if (result.isFalse()) {
                throw new OseeStateException("Error deleting working branch [%s]", result.getText());
             }
@@ -711,11 +711,11 @@ public class AtsTestUtil {
 
    public static Result createWorkingBranchFromTeamWf() throws OseeCoreException {
       configureVer1ForWorkingBranch();
-      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamArt);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
       if (result.isFalse()) {
          return result;
       }
-      AtsBranchManagerCore.createWorkingBranch_Create(teamArt, true);
+      AtsBranchUtil.createWorkingBranch_Create(teamArt, true);
       teamArt.getWorkingBranchForceCacheUpdate();
       return Result.TrueResult;
    }

@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -59,14 +59,15 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
             if (derivedArt != null && derivedArt instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact derivedTeamWf = (TeamWorkFlowArtifact) derivedArt;
                // First, attempt to get from Working Branch if still exists
-               IOseeBranch workingBranch = AtsBranchManagerCore.getWorkingBranch(derivedTeamWf);
+               IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
                if (workingBranch != null) {
                   retArt = ArtifactQuery.getArtifactFromId(guid, workingBranch, DeletionFlag.EXCLUDE_DELETED);
                } else {
                   // Else get from first commit transaction
                   // NOTE: Each workflow has it's own commit in parallel dev
                   TransactionRecord earliestTransactionId =
-                     AtsBranchManagerCore.getEarliestTransactionId(derivedTeamWf);
+                     (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(
+                        derivedTeamWf);
                   if (earliestTransactionId != null) {
                      retArt =
                         ArtifactQuery.getHistoricalArtifactFromId(guid, earliestTransactionId,

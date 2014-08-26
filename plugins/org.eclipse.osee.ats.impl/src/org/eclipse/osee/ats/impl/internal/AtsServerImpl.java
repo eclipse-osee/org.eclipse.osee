@@ -145,7 +145,7 @@ public class AtsServerImpl implements IAtsServer {
       configItemFactory = new ConfigItemFactory(logger, this);
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
-      branchService = new AtsBranchServiceImpl(orcsApi);
+      branchService = new AtsBranchServiceImpl(this, orcsApi, dbService);
       reviewService = new AtsReviewServiceImpl(this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 

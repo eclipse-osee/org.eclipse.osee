@@ -194,8 +194,8 @@ public final class TransactionManager {
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
-         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getUuid(), comment,
-            transactionTime, authorArtId, 0, txType, getBranchCache());
+         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getUuid(), comment, transactionTime,
+            authorArtId, 0, txType, getBranchCache());
       return transactionId;
    }
 
@@ -214,7 +214,8 @@ public final class TransactionManager {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchUuid, new Timestamp(maxDateExclusive.getTime()));
+         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchUuid,
+            new Timestamp(maxDateExclusive.getTime()));
          if (chStmt.next()) {
             int transactionId = chStmt.getInt("transaction_id");
             if (chStmt.wasNull()) {

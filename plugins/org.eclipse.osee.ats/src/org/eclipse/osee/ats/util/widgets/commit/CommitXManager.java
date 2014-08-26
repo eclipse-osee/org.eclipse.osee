@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -101,7 +100,7 @@ public class CommitXManager extends XViewer {
          }
 
          CommitStatus commitStatus =
-            AtsBranchManagerCore.getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
+            AtsClientService.get().getBranchService().getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
          if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
             RebaselineInProgressHandler.handleRebaselineInProgress(xCommitManager.getTeamArt().getWorkingBranch());
          } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
@@ -117,8 +116,13 @@ public class CommitXManager extends XViewer {
                "Talk to project lead as to why commit disabled for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
             IOperation operation =
-               AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
-                  AtsBranchManagerCore.isBranchesAllCommittedExcept(xCommitManager.getTeamArt(), branch));
+               AtsBranchManager.commitWorkingBranch(
+                  xCommitManager.getTeamArt(),
+                  true,
+                  false,
+                  branch,
+                  AtsClientService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
+                     branch));
             Operations.executeAsJob(operation, true);
          } else if (commitStatus == CommitStatus.Committed) {
             AtsBranchManager.showChangeReportForBranch(xCommitManager.getTeamArt(), branch);

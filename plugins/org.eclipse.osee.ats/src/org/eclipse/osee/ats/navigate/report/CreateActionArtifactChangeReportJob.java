@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -118,7 +117,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
                teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
-         for (ICommitConfigItem commitConfigArt : AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamArt)) {
+         for (ICommitConfigItem commitConfigArt : AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
+            teamArt)) {
             processTeam(teamArt, AtsClientService.get().getBranchService().getBranchShortName(commitConfigArt),
                attributeType, commitConfigArt, rd);
          }

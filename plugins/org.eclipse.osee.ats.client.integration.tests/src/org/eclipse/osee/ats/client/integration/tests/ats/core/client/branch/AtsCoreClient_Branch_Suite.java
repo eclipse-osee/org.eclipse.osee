@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsBranchManagerCoreTest.class})
+@Suite.SuiteClasses({AtsBranchServiceImplTest.class})
 public class AtsCoreClient_Branch_Suite {
 
    @BeforeClass

@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
@@ -763,10 +762,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
-               Branch workingBranch = (Branch) AtsBranchManagerCore.getWorkingBranch(teamArt);
+               Branch workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                if (workingBranch != null && workingBranch.getBranchType() != BranchType.BASELINE) {
                   if (workingBranch.getBranchState() != BranchState.COMMITTED) {
-                     Collection<IOseeBranch> branchesCommittedTo = AtsBranchManagerCore.getBranchesCommittedTo(teamArt);
+                     Collection<IOseeBranch> branchesCommittedTo =
+                        AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);
                      if (branchesCommittedTo.size() > 0) {
                         results.log(
                            artifact,
@@ -775,7 +775,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      }
                   } else if (workingBranch.getBranchState() == BranchState.COMMITTED && !workingBranch.getArchiveState().isArchived()) {
                      Collection<IOseeBranch> branchesLeftToCommit =
-                        AtsBranchManagerCore.getBranchesLeftToCommit(teamArt);
+                        AtsClientService.get().getBranchService().getBranchesLeftToCommit(teamArt);
                      if (branchesLeftToCommit.size() == 0) {
                         results.log(
                            artifact,

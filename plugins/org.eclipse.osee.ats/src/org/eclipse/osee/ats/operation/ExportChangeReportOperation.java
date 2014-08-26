@@ -25,9 +25,9 @@ import java.util.Set;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -141,10 +141,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
 
       List<Change> changes = new ArrayList<Change>();
       IOperation operation = null;
-      if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
+      if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
       } else {
-         IOseeBranch workingBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+         IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
          if (workingBranch != null && !BranchManager.getBranchType(workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }

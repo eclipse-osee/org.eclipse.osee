@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.util.widgets;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -140,11 +140,14 @@ public class XWorkingBranchEnablement {
             public BranchEnablementData call() throws Exception {
                BranchEnablementData enablementData = new BranchEnablementData(teamArt);
                if (teamArt != null) {
-                  Branch workingBranch = (Branch) AtsBranchManagerCore.getWorkingBranch(teamArt, true);
+                  Branch workingBranch =
+                     (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
 
-                  enablementData.setWorkingBranchInWork(AtsBranchManagerCore.isWorkingBranchInWork(teamArt));
-                  enablementData.setCommittedBranchExists(AtsBranchManagerCore.isCommittedBranchExists(teamArt));
+                  enablementData.setWorkingBranchInWork(AtsClientService.get().getBranchService().isWorkingBranchInWork(
+                     teamArt));
+                  enablementData.setCommittedBranchExists(AtsClientService.get().getBranchService().isCommittedBranchExists(
+                     teamArt));
 
                   enablementData.setDisableAll(enablementData.isWorkingBranchCommitInProgress());
                }

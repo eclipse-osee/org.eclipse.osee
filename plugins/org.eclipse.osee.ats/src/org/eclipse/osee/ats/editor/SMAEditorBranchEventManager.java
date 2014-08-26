@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -97,7 +97,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                case Committed:
                   if (awa instanceof TeamWorkFlowArtifact) {
                      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-                     IOseeBranch assocBranch = AtsBranchManagerCore.getWorkingBranch(teamArt);
+                     IOseeBranch assocBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                      if (assocBranch != null && branchUuid.equals(assocBranch.getUuid())) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override

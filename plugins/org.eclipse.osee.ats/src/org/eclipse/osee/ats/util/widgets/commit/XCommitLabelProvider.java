@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -67,7 +66,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
             CommitStatus commitStatus =
-               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
+               AtsClientService.get().getBranchService().getCommitStatus(
+                  commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
             commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
@@ -88,7 +88,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
             CommitStatus commitStatus =
-               AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
+               AtsClientService.get().getBranchService().getCommitStatus(
+                  commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
@@ -118,7 +119,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
 
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
-         return AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch).getDisplayName();
+         return AtsClientService.get().getBranchService().getCommitStatus(
+            commitXManager.getXCommitViewer().getTeamArt(), branch).getDisplayName();
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          return "";
       } else if (xCol.equals(CommitXManagerFactory.Version_Col)) {
@@ -157,7 +159,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleCommitDateColumn(IOseeBranch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
-         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
+         (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
+            commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
          new DateUtil();
          return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
@@ -167,7 +170,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleCommitCommentColumn(IOseeBranch branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
-         AtsBranchManagerCore.getCommitTransactionRecord(commitXManager.getXCommitViewer().getTeamArt(), branch);
+         (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
+            commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (transactionRecord != null) {
          return transactionRecord.getComment();
       }
@@ -198,7 +202,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleActionColumn(IOseeBranch branch) throws OseeCoreException {
       CommitStatus commitStatus =
-         AtsBranchManagerCore.getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(), branch);
+         AtsClientService.get().getBranchService().getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(),
+            branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
          return "Finish Update";
       } else if (commitStatus == CommitStatus.Branch_Not_Configured) {

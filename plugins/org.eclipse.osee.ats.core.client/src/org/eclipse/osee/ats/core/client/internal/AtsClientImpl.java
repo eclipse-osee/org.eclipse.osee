@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
+import org.eclipse.osee.ats.core.client.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
@@ -70,7 +71,6 @@ import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.client.workflow.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
@@ -176,7 +176,7 @@ public class AtsClientImpl implements IAtsClient {
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
-      branchService = new AtsBranchServiceImpl();
+      branchService = new AtsBranchServiceImpl(this);
       reviewService = new AtsReviewServiceImpl(this);
    }
 

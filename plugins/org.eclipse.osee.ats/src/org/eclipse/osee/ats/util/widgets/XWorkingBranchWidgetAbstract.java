@@ -15,10 +15,10 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -134,19 +134,19 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    }
 
    private void updateBranchState() throws OseeCoreException {
-      workingBranch = (Branch) AtsBranchManagerCore.getWorkingBranch(teamArt, true);
+      workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
       workingBranchCreationInProgress =
          teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS);
       workingBranchCommitInProgress =
          teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
-      workingBranchInWork = AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
+      workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
       if (workingBranch == null) {
          workingBranchCommitInProgress = false;
       } else {
          workingBranchCommitWithMergeInProgress =
             BranchManager.hasMergeBranches(workingBranch) && !workingBranch.getBranchState().isRebaselineInProgress();
       }
-      committedBranchExists = AtsBranchManagerCore.isCommittedBranchExists(teamArt);
+      committedBranchExists = AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt);
       disableAll = workingBranchCommitInProgress;
    }
 

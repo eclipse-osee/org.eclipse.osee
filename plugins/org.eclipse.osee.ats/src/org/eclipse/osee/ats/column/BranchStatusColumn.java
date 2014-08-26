@@ -16,8 +16,8 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,10 +70,11 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
          if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) element;
             try {
-               if (AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
+               if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
                   return "Working";
-               } else if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
-                  if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(teamArt) || !AtsBranchManagerCore.isBranchesAllCommitted(teamArt)) {
+               } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
+                  if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(teamArt) || !AtsClientService.get().getBranchService().isBranchesAllCommitted(
+                     teamArt)) {
                      return "Needs Commit";
                   }
                   return "Committed";

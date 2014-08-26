@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -350,12 +350,12 @@ public class PopulateSawBuild2Actions {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
-      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchManagerCore.createWorkingBranch_Create(reqTeam);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
 
       DemoDbUtil.sleep(5000);
 
@@ -442,12 +442,12 @@ public class PopulateSawBuild2Actions {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
-      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchManagerCore.createWorkingBranch_Create(reqTeam);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
 
       DemoDbUtil.sleep(5000);
 
@@ -494,12 +494,12 @@ public class PopulateSawBuild2Actions {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Creating working branch");
       }
-      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(reqTeam);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(reqTeam);
       if (result.isFalse()) {
          throw new OseeArgumentException(
             new StringBuilder("Error creating working branch: ").append(result.getText()).toString());
       }
-      AtsBranchManagerCore.createWorkingBranch_Create(reqTeam);
+      AtsBranchUtil.createWorkingBranch_Create(reqTeam);
 
       DemoDbUtil.sleep(5000);
 

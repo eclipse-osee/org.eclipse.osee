@@ -16,10 +16,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -115,7 +116,7 @@ public final class PortPairsOperation extends AbstractOperation {
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
       if (destinationWorkflow.getWorkingBranchForceCacheUpdate() == null) {
-         AtsBranchManagerCore.createWorkingBranch_Create(destinationWorkflow, true);
+         AtsBranchUtil.createWorkingBranch_Create(destinationWorkflow, true);
       }
 
       Branch destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
@@ -148,7 +149,8 @@ public final class PortPairsOperation extends AbstractOperation {
          BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {
-         TransactionRecord transRecord = AtsBranchManagerCore.getEarliestTransactionId(sourceWorkflow);
+         TransactionRecord transRecord =
+            (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(sourceWorkflow);
          if (transRecord == null) {
             return null;
          } else {

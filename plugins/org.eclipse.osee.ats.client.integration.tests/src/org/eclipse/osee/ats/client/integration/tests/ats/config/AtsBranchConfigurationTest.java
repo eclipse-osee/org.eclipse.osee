@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -412,17 +412,17 @@ public class AtsBranchConfigurationTest {
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       IOperation op =
          AtsBranchManager.commitWorkingBranch(teamWf, false, true,
-            BranchManager.getParentBranch(AtsBranchManagerCore.getWorkingBranch(teamWf)), true);
+            BranchManager.getParentBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
       Operations.executeWorkAndCheckStatus(op);
    }
 
    public static void createBranch(String namespace, TeamWorkFlowArtifact teamWf) throws Exception {
-      Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamWf);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
          AWorkbench.popup(result);
          return;
       }
-      AtsBranchManagerCore.createWorkingBranch_Create(teamWf);
+      AtsBranchUtil.createWorkingBranch_Create(teamWf);
       TestUtil.sleep(4000);
    }
 

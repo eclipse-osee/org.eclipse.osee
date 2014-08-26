@@ -16,8 +16,9 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
 import org.eclipse.osee.ats.core.validator.IValueProvider;
@@ -34,15 +35,16 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       WidgetResult result = WidgetResult.Valid;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {
+            IAtsBranchService branchService = AtsClientService.get().getBranchService();
             if (provider instanceof ArtifactValueProvider && ((ArtifactValueProvider) provider).getArtifact() instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ((ArtifactValueProvider) provider).getArtifact();
-               if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(teamArt)) {
+               if (!branchService.isAllObjectsToCommitToConfigured(teamArt)) {
                   return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                      "All branches must be configured for commit.");
                }
                boolean changesExistToCommit =
-                  AtsBranchManagerCore.isWorkingBranchInWork(teamArt) || AtsBranchManagerCore.isCommittedBranchExists(teamArt);
-               if (changesExistToCommit && !transitionToWithWorkingBranchRuleExists(toStateDef) && !AtsBranchManagerCore.isBranchesAllCommitted(teamArt)) {
+                  branchService.isWorkingBranchInWork(teamArt) || branchService.isCommittedBranchExists(teamArt);
+               if (changesExistToCommit && !transitionToWithWorkingBranchRuleExists(toStateDef) && !branchService.isBranchesAllCommitted(teamArt)) {
                   return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                      "All branches must be committed.");
                }

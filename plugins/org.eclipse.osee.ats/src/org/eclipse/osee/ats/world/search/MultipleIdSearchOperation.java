@@ -24,11 +24,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -114,14 +114,16 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-               if (AtsBranchManagerCore.isCommittedBranchExists(team) || AtsBranchManagerCore.isWorkingBranchInWork(team)) {
+               if (AtsClientService.get().getBranchService().isCommittedBranchExists(team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
+                  team)) {
                   addedArts.add(team);
                }
             }
          }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (AtsBranchManagerCore.isCommittedBranchExists(teamArt) || AtsBranchManagerCore.isWorkingBranchInWork(teamArt)) {
+            if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
+               teamArt)) {
                addedArts.add(artifact);
             }
          }

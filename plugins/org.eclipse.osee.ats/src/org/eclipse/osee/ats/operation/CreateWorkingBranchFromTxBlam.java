@@ -15,10 +15,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -57,11 +58,11 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
                Artifact art = AtsArtifactQuery.getArtifactFromId(idNumber);
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
-                  if (AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
+                  if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
                      AWorkbench.popup("Committed branch already exists. Can not create another working branch once changes have been committed.");
                      return;
                   }
-                  AtsBranchManagerCore.createWorkingBranch(teamArt, parentTransactionId, true);
+                  AtsBranchUtil.createWorkingBranch(teamArt, parentTransactionId, true);
                } else {
                   AWorkbench.popup("ERROR", "Must enter a Team Workflow ID");
                   return;

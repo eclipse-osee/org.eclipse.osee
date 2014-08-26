@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -205,7 +205,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          try {
             // Retrieve all config to commit items for this team Wf, which will contain all parallel version artifacts
             Collection<ICommitConfigItem> configArtifactsConfiguredToCommitTo =
-               AtsBranchManagerCore.getConfigArtifactsConfiguredToCommitTo(teamWf);
+               AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(teamWf);
             for (Object obj : configArtifactsConfiguredToCommitTo) {
                if (obj instanceof IAtsVersion) {
                   IAtsVersion version = (IAtsVersion) obj;

@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -61,7 +61,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Branch workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
-         AtsBranchManagerCore.branchesInCommit.add(workflowWorkingBranch);
+         AtsClientService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {
             throw new OseeStateException("Commit Branch Failed: Can not locate branch for workflow [%s]",
                teamArt.getAtsId());
@@ -119,7 +119,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
             // Create reviews as necessary
             AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Commit");
             boolean added =
-               AtsBranchManagerCore.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
+               AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
                   AtsCoreUsers.SYSTEM_USER, changes);
             if (added) {
                changes.execute();
@@ -127,7 +127,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          }
       } finally {
          if (workflowWorkingBranch != null) {
-            AtsBranchManagerCore.branchesInCommit.remove(workflowWorkingBranch);
+            AtsClientService.get().getBranchService().getBranchesInCommit().remove(workflowWorkingBranch);
          }
       }
    }

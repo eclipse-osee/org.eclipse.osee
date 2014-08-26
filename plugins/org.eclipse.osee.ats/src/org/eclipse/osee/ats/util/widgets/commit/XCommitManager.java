@@ -24,12 +24,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -132,7 +132,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          if (teamArt.isWorkingBranchCreationInProgress()) {
             labelWidget.setText(getLabel() + ": Branch Creation in Progress");
-         } else if (!AtsBranchManagerCore.isWorkingBranchInWork(teamArt) && !AtsBranchManagerCore.isCommittedBranchExists(teamArt)) {
+         } else if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt) && !AtsClientService.get().getBranchService().isCommittedBranchExists(
+            teamArt)) {
             labelWidget.setText(getLabel() + ": No Working Branch or Committed changes available.");
          } else {
 
@@ -158,7 +159,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         try {
                            // commit all branches in order
                            Map<Long, Branch> branchUuidToBranchMap = new HashMap<Long, Branch>();
-                           for (IOseeBranch destinationBranch : AtsBranchManagerCore.getBranchesLeftToCommit(teamArt)) {
+                           for (IOseeBranch destinationBranch : AtsClientService.get().getBranchService().getBranchesLeftToCommit(
+                              teamArt)) {
                               branchUuidToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
                            }
                            List<Long> branchUuids = new ArrayList<Long>();
@@ -259,7 +261,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          if (xCommitManager != null && teamArt != null && xCommitManager.getContentProvider() != null) {
             Collection<Object> commitMgrInputObjs =
-               AtsBranchManagerCore.getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
+               AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
             xCommitManager.setInput(commitMgrInputObjs);
             xCommitManager.refresh();
             refresh();
@@ -334,7 +336,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          int backgroundColor = SWT.COLOR_BLACK;
          String infoStr = "Double-click item to perform Action";
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
-            if (!AtsBranchManagerCore.isAllObjectsToCommitToConfigured(xCommitManager.getXCommitViewer().getTeamArt())) {
+            if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
+               xCommitManager.getXCommitViewer().getTeamArt())) {
                infoStr = "All branches must be configured - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
                returnStatus =

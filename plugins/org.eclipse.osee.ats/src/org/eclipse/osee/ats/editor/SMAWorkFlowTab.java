@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
@@ -51,6 +50,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.walker.action.OpenActionViewAction;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
@@ -465,7 +465,9 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
       toolBarMgr.removeAll();
 
-      if (awa.isTeamWorkflow() && (AtsBranchManagerCore.isCommittedBranchExists(((TeamWorkFlowArtifact) awa)) || AtsBranchManagerCore.isWorkingBranchInWork(((TeamWorkFlowArtifact) awa)))) {
+      if (awa.isTeamWorkflow() && (AtsClientService.get().getBranchService().isCommittedBranchExists(
+         ((TeamWorkFlowArtifact) awa)) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
+         ((TeamWorkFlowArtifact) awa)))) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
       }

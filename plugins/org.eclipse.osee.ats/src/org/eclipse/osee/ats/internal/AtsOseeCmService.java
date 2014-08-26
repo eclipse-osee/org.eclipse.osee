@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -168,7 +167,9 @@ public class AtsOseeCmService implements IOseeCmService {
       boolean toReturn = false;
       if (art instanceof TeamWorkFlowArtifact) {
          try {
-            toReturn = AtsBranchManagerCore.isBranchesAllCommittedExcept((TeamWorkFlowArtifact) art, branch);
+            toReturn =
+               AtsClientService.get().getBranchService().isBranchesAllCommittedExcept((TeamWorkFlowArtifact) art,
+                  branch);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
             toReturn = false;

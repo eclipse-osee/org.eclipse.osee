@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
+import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.Activator;
@@ -154,13 +154,14 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             }
             refreshEnablement();
             // Create working branch
-            Result result = AtsBranchManagerCore.createWorkingBranch_Validate(teamArt);
+            Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
             if (result.isFalse()) {
                AWorkbench.popup(result);
                return;
             }
             try {
-               IOseeBranch parentBranch = AtsBranchManagerCore.getConfiguredBranchForWorkflow(teamArt);
+               IOseeBranch parentBranch =
+                  AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
                // Retrieve parent branch to create working branch from
                if (!MessageDialog.openConfirm(
                   Displays.getActiveShell(),
@@ -170,7 +171,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                   refreshEnablement();
                   return;
                }
-               AtsBranchManagerCore.createWorkingBranch_Create(teamArt);
+               AtsBranchUtil.createWorkingBranch_Create(teamArt);
                Thread.sleep(2000);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -269,7 +270,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    private void markWorkingBranchAsFavorite() {
       try {
          User user =
-            AtsClientService.get().getUserServiceClient().getOseeUser(AtsClientService.get().getUserService().getCurrentUser());
+            AtsClientService.get().getUserServiceClient().getOseeUser(
+               AtsClientService.get().getUserService().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
@@ -373,7 +375,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    }
 
    public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return AtsBranchManagerCore.isWorkingBranchInWork(teamArt);
+      return AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
    }
 
    @Override

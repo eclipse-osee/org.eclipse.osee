@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
-import org.eclipse.osee.ats.core.client.branch.AtsBranchManagerCore;
 import org.eclipse.osee.ats.core.client.config.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -235,11 +234,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    public Branch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
-      return (Branch) AtsBranchManagerCore.getWorkingBranch(this, true);
+      return (Branch) AtsClientService.get().getBranchService().getWorkingBranch(this, true);
    }
 
    public Branch getWorkingBranch() throws OseeCoreException {
-      return (Branch) AtsBranchManagerCore.getWorkingBranch(this);
+      return (Branch) AtsClientService.get().getBranchService().getWorkingBranch(this);
    }
 
    public String getBranchName() {
