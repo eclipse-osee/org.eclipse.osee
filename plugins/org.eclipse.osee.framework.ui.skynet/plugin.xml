@@ -592,6 +592,12 @@
                     value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
               </equals>
            </with>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+              </equals>
+           </with>
         </or>
      </activeWhen>
       </handler>
