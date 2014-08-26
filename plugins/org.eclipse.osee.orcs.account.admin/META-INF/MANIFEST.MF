@@ -6,7 +6,7 @@ Bundle-Version: 0.19.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.io,
+Import-Package: com.google.common.io;version="[11.0.0,15.0.0)",
  com.google.gson,
  com.google.gson.reflect,
  org.eclipse.osee.account.admin,

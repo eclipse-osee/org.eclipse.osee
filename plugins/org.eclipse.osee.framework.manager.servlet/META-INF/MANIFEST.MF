@@ -4,8 +4,8 @@ Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet
 Bundle-Version: 0.19.0.qualifier
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.common.base,
- com.google.common.collect,
+Import-Package: com.google.common.base;version="[11.0.0,15.0.0)",
+ com.google.common.collect;version="[11.0.0,15.0.0)",
  javax.servlet,
  javax.servlet.http,
  javax.ws.rs,

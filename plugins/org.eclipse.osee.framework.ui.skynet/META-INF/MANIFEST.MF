@@ -8,9 +8,9 @@ Bundle-Activator: org.eclipse.osee.framework.ui.skynet.internal.Activator
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: com.google.common.base,
- com.google.common.cache,
- com.google.common.collect,
+Import-Package: com.google.common.base;version="[11.0.0,15.0.0)",
+ com.google.common.cache;version="[11.0.0,15.0.0)",
+ com.google.common.collect;version="[11.0.0,15.0.0)",
  com.lowagie.text,
  com.lowagie.text.html,
  com.lowagie.text.pdf,
