@@ -15,38 +15,32 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.MergeBranch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
-import org.eclipse.osee.orcs.db.internal.util.IdUtil;
+import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<Branch> {
+public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
 
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
@@ -89,23 +83,21 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final String GET_BRANCH_ACCESS_CONTROL_LIST =
       "SELECT permission_id, privilege_entity_id FROM osee_branch_acl WHERE branch_id= ?";
 
-   private boolean passedPreConditions;
-   private boolean wasSuccessful;
+   private static final String INSERT_BRANCH_WITH_GUID =
+      "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+   private static final String INSERT_BRANCH =
+      "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
+   protected static final int NULL_PARENT_BRANCH_ID = -1;
+   private static final String SELECT_INHERIT_ACCESS_CONTROL =
+      "SELECT inherit_access_control from osee_branch where branch_id = ?";
+
    private int systemUserId;
 
-   private final BranchCache branchCache;
-   private final BranchFactory branchFactory;
-   private final TransactionRecordFactory txFactory;
    private final CreateBranchData newBranchData;
-   private Branch branch;
 
-   public CreateBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+   public CreateBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, CreateBranchData branchData) {
       super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
-      this.branchCache = branchCache;
-      this.branchFactory = branchFactory;
-      this.txFactory = txFactory;
       this.newBranchData = branchData;
-      this.wasSuccessful = false;
       this.systemUserId = -1;
    }
 
@@ -121,12 +113,12 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       return systemUserId;
    }
 
-   public void checkPreconditions(IOseeBranch parentBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public void checkPreconditions(Long parentBranch, Long destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
-         if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getUuid(),
-            destinationBranch.getUuid()) > 0) {
-            throw new OseeStateException("Existing merge branch detected for [%s] and [%s]", parentBranch.getName(),
-               destinationBranch.getName());
+         if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch,
+            destinationBranch) > 0) {
+            throw new OseeStateException("Existing merge branch detected for [%d] and [%d]", parentBranch,
+               destinationBranch);
          }
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
          int associatedArtifactId = newBranchData.getAssociatedArtifactId();
@@ -165,117 +157,116 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    @SuppressWarnings("unchecked")
    @Override
-   protected Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
-      Branch parentBranch = branchCache.getByUuid(IdUtil.getParentBranchId(newBranchData, branchCache));
-      Branch destinationBranch = branchCache.getByUuid(newBranchData.getMergeDestinationBranchId());
+   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      Long parentBranchUuid = newBranchData.getParentBranchUuid();
+      Long destinationBranchUuid = newBranchData.getMergeDestinationBranchId();
 
-      passedPreConditions = false;
-      checkPreconditions(parentBranch, destinationBranch);
-      passedPreConditions = true;
+      checkPreconditions(parentBranchUuid, destinationBranchUuid);
 
       long uuid = newBranchData.getUuid();
 
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
-      boolean inheritAccessControl = parentBranch == null ? false : parentBranch.isInheritAccessControl();
-      branch =
-         branchFactory.create(uuid, truncatedName, newBranchData.getBranchType(), BranchState.CREATION_IN_PROGRESS,
-            false, inheritAccessControl);
-
-      branch.setParentBranch(parentBranch);
-      branch.setAssociatedArtifactId(newBranchData.getAssociatedArtifactId());
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
 
-      if (branch.getBranchType().isSystemRootBranch()) {
-         TransactionRecord systemTx =
-            txFactory.create(nextTransactionId, branch, newBranchData.getCreationComment(), timestamp,
-               newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined);
-         branch.setSourceTransaction(systemTx);
+      int sourceTx;
+      if (newBranchData.getBranchType().isSystemRootBranch()) {
+         sourceTx = nextTransactionId;
       } else {
-         int srcTx = IdUtil.getSourceTxId(newBranchData, branchCache);
+         sourceTx = RelationalConstants.TRANSACTION_SENTINEL;
 
-         branch.setSourceTransaction(branchCache.getOrLoad(srcTx));
+         if (BranchType.SYSTEM_ROOT != newBranchData.getBranchType()) {
+            sourceTx = newBranchData.getFromTransaction().getGuid();
+         }
       }
 
-      if (branch.getBranchType().isMergeBranch()) {
-         ((MergeBranch) branch).setSourceBranch(parentBranch);
-         ((MergeBranch) branch).setDestinationBranch(destinationBranch);
+      int inheritAccessControl = 0;
+      if (parentBranchUuid != null) {
+         inheritAccessControl =
+            getDatabaseService().runPreparedQueryFetchObject(connection, 0, SELECT_INHERIT_ACCESS_CONTROL,
+               parentBranchUuid);
       }
 
-      branchCache.cache(branch);
-      branchCache.storeItems(branch);
-
-      if (parentBranch != null && inheritAccessControl) {
-         copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranch, branch);
+      //write to branch table
+      boolean insertBranchGuid = isBranchGuidNeeded(connection);
+      long parentBranchId = parentBranchUuid != null ? parentBranchUuid : NULL_PARENT_BRANCH_ID;
+      Object[] toInsert;
+      if (insertBranchGuid) {
+         toInsert =
+            new Object[] {
+               uuid,
+               GUID.create(),
+               truncatedName,
+               parentBranchId,
+               sourceTx,
+               BranchArchivedState.UNARCHIVED.getValue(),
+               newBranchData.getAssociatedArtifactId(),
+               newBranchData.getBranchType().getValue(),
+               BranchState.CREATED.getValue(),
+               nextTransactionId,
+               inheritAccessControl};
+      } else {
+         toInsert =
+            new Object[] {
+               uuid,
+               truncatedName,
+               parentBranchId,
+               sourceTx,
+               BranchArchivedState.UNARCHIVED.getValue(),
+               newBranchData.getAssociatedArtifactId(),
+               newBranchData.getBranchType().getValue(),
+               BranchState.CREATED.getValue(),
+               nextTransactionId,
+               inheritAccessControl};
       }
 
-      getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getUuid(), nextTransactionId,
+      String insertBranch = insertBranchGuid ? INSERT_BRANCH_WITH_GUID : INSERT_BRANCH;
+      getDatabaseService().runPreparedUpdate(connection, insertBranch, toInsert);
+
+      if (inheritAccessControl != 0) {
+         copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranchUuid, uuid);
+      }
+
+      getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
          newBranchData.getCreationComment(), timestamp, newBranchData.getUserArtifactId(),
          TransactionDetailsType.Baselined.getId());
 
-      TransactionRecord record =
-         txFactory.create(nextTransactionId, branch, newBranchData.getCreationComment(), timestamp,
-            newBranchData.getUserArtifactId(), -1, TransactionDetailsType.Baselined);
+      populateBaseTransaction(0.30, connection, nextTransactionId, sourceTx);
 
-      if (branch.getBranchType().isSystemRootBranch()) {
-         branch.setSourceTransaction(record);
-      }
-      branch.setBaseTransaction(record);
-      branchCache.cache(record);
-      populateBaseTransaction(0.30, connection, branch, newBranchData.getMergeAddressingQueryId());
-
-      addMergeBranchEntry(0.20, connection, branch, newBranchData.getMergeDestinationBranchId());
-      wasSuccessful = true;
-      return branch;
+      addMergeBranchEntry(0.20, connection);
+      return null;
    }
 
-   @Override
-   protected void handleTxException(Exception ex) {
-      if (passedPreConditions) {
-         try {
-            branch.setStorageState(StorageState.PURGED);
-            branchCache.storeItems(branch);
-         } catch (OseeCoreException ex1) {
-            getLogger().error(ex1, "Error during create branch [%s]", branch);
-         }
-      }
+   private boolean isBranchGuidNeeded(OseeConnection connection) {
+      return getDatabaseService().runPreparedQueryFetchObject(connection, false,
+         "select osee_value from osee_info where osee_key = ?", "osee.insert.branch.guid.on.create");
    }
 
-   @Override
-   protected void handleTxFinally() throws OseeCoreException {
-      if (wasSuccessful) {
-         branch.setBranchState(BranchState.CREATED);
-         branchCache.storeItems(branch);
-      }
-   }
-
-   private void addMergeBranchEntry(double workAmount, OseeConnection connection, Branch branch, long destinationBranchId) throws OseeCoreException {
-      if (branch.getBranchType().isMergeBranch()) {
-         long parentBranchId = branch.hasParentBranch() ? branch.getParentBranch().getUuid() : -1;
+   private void addMergeBranchEntry(double workAmount, OseeConnection connection) {
+      if (newBranchData.getBranchType().isMergeBranch()) {
+         long parentBranchId = newBranchData.getParentBranchUuid() != null ? newBranchData.getParentBranchUuid() : -1;
          getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
-            newBranchData.getMergeDestinationBranchId(), branch.getUuid(), 0);
+            newBranchData.getMergeDestinationBranchId(), newBranchData.getUuid(), 0);
       }
       checkForCancelled();
    }
 
-   private void populateBaseTransaction(double workAmount, OseeConnection connection, Branch branch, int mergeAddressingQueryId) throws OseeCoreException {
-      if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
+   private void populateBaseTransaction(double workAmount, OseeConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
+      if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
          List<Object[]> data = new ArrayList<Object[]>();
          HashSet<Integer> gammas = new HashSet<Integer>(100000);
          long parentBranchId = -1;
-         if (branch.hasParentBranch()) {
-            parentBranchId = branch.getParentBranch().getUuid();
+         if (newBranchData.getParentBranchUuid() != null) {
+            parentBranchId = newBranchData.getParentBranchUuid();
          }
-         int baseTxId = branch.getBaseTransaction().getId();
-         if (branch.getBranchType().isMergeBranch()) {
+         if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), mergeAddressingQueryId);
+               parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
             populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), mergeAddressingQueryId);
+               parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
          } else {
-            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId,
-               branch.getSourceTransaction().getId());
+            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId, sourceTxId);
          }
          if (!data.isEmpty()) {
             getDatabaseService().runBatchUpdate(connection, INSERT_ADDRESSING, data);
@@ -294,7 +285,12 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branch.getUuid()});
+               data.add(new Object[] {
+                  baseTxId,
+                  gamma,
+                  modType.getValue(),
+                  txCurrent.getValue(),
+                  newBranchData.getUuid()});
                gammas.add(gamma);
             }
          }
@@ -303,15 +299,14 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       }
    }
 
-   private void copyAccessRules(OseeConnection connection, int userArtId, IOseeBranch parentBranch, Branch destinationBranch) {
-      Long branchUuid = destinationBranch.getUuid();
+   private void copyAccessRules(OseeConnection connection, int userArtId, Long parentBranch, Long branchUuid) {
       int owner = PermissionEnum.OWNER.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<Object[]>();
       IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch.getUuid());
+         chStmt.runPreparedQuery(MAX_FETCH, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);
          while (chStmt.next()) {
             int permissionId = chStmt.getInt("permission_id");
             int priviledgeId = chStmt.getInt("privilege_entity_id");

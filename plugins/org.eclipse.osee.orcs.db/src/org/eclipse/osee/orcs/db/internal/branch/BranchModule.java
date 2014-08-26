@@ -17,8 +17,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.TempCachingService;
@@ -35,6 +33,7 @@ import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
@@ -85,21 +84,19 @@ public class BranchModule {
          new MissingChangeItemFactoryImpl(identityService, dataLoaderFactory);
       return new BranchDataStore() {
          @Override
-         public Callable<Branch> createBranch(OrcsSession session, CreateBranchData branchData) {
-            return new CreateBranchDatabaseTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(), branchData);
+         public Callable<Void> createBranch(OrcsSession session, CreateBranchData branchData) {
+            return new CreateBranchDatabaseTxCallable(logger, session, dbService, branchData);
          }
 
          @Override
-         public Callable<Branch> createBranchCopyTx(OrcsSession session, CreateBranchData branchData) {
-            return new BranchCopyTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(), branchData);
+         public Callable<Void> createBranchCopyTx(OrcsSession session, CreateBranchData branchData) {
+            return new BranchCopyTxCallable(logger, session, dbService, branchData);
          }
 
          @Override
-         public Callable<TransactionRecord> commitBranch(OrcsSession session, ArtifactReadable committer, Branch source, Branch destination) {
-            return new CommitBranchDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(),
-               modelFactory.getTransactionFactory(), committer, source, destination, missingChangeItemFactory);
+         public Callable<Integer> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionReadable sourceHead, BranchReadable destination, TransactionReadable destinationHead) {
+            return new CommitBranchDatabaseCallable(logger, session, dbService, committer, source, sourceHead,
+               destination, destinationHead, missingChangeItemFactory);
          }
 
          @Override
@@ -108,9 +105,9 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionRecord sourceTx, TransactionRecord destinationTx) {
-            return new CompareDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(), sourceTx,
-               destinationTx, missingChangeItemFactory);
+         public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionReadable sourceTx, TransactionReadable destinationTx) {
+            return new CompareDatabaseCallable(logger, session, dbService, sourceTx, destinationTx,
+               missingChangeItemFactory);
          }
 
          @Override

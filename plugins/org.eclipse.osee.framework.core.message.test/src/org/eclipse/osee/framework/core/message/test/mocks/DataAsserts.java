@@ -131,7 +131,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals(expected.getTransaction(), actual.getTransaction());
+         Assert.assertEquals(expected.getTransactionId(), actual.getTransactionId());
       }
    }
 

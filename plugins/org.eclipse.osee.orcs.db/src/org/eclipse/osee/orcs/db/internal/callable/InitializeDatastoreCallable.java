@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -86,10 +85,8 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       CreateBranchData systemRootData = getSystemRootData();
 
       // TODO tie in the session information
-      Callable<Branch> createSystemRoot = branchStore.createBranch(getSession(), systemRootData);
-      Branch systemRoot = callAndCheckForCancel(createSystemRoot);
-
-      Conditions.checkNotNull(systemRoot, "System Root Branch");
+      Callable<Void> createSystemRoot = branchStore.createBranch(getSession(), systemRootData);
+      callAndCheckForCancel(createSystemRoot);
 
       Callable<DataStoreInfo> fetchCallable =
          new FetchDatastoreInfoCallable(getLogger(), getSession(), getDatabaseService(), schemaProvider, preferences);
@@ -112,7 +109,6 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       data.setFromTransaction(null);
 
       data.setMergeAddressingQueryId(RelationalConstants.JOIN_QUERY_ID_SENTINEL);
-      data.setMergeDestinationBranchId(RelationalConstants.BRANCH_SENTINEL);
       return data;
    }
 

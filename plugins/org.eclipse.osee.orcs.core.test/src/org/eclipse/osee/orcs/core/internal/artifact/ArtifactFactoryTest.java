@@ -28,18 +28,19 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory.BranchProviderFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
-import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -62,7 +63,7 @@ public class ArtifactFactoryTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private Branch branch;
+   @Mock private BranchReadable branch;
    @Mock private IArtifactType artifactType;
    @Mock private ArtifactData artifactData;
    @Mock private VersionData artifactVersion;
@@ -71,12 +72,13 @@ public class ArtifactFactoryTest {
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
    @Mock private ArtifactTypes artifactTypeCache;
-   @Mock private ValueProviderFactory providerFactory;
-   @Mock private ValueProvider<Branch, OrcsData> branchProvider;
+   @Mock private BranchProviderFactory branchProviderFactory;
+   @Mock private BranchProvider branchProvider;
    
    @Mock private Attribute<Object> attribute;
    @Mock private AttributeData attributeData;
    @Mock private Artifact source;
+   @Mock private OrcsSession session;
    
    @Mock private ArtifactData otherArtifactData;
    // @formatter:on
@@ -89,7 +91,8 @@ public class ArtifactFactoryTest {
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache, providerFactory);
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache, branchProviderFactory);
+      when(branchProviderFactory.createBranchProvider(any(OrcsSession.class))).thenReturn(branchProvider);
 
       guid = GUID.create();
 
@@ -103,6 +106,7 @@ public class ArtifactFactoryTest {
       when(artifactData.getTypeUuid()).thenReturn(65L);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
       when(artifactVersion.getBranchId()).thenReturn(23L);
+      when(branch.getGuid()).thenReturn(23L);
 
       when(
          attributeFactory.copyAttribute(any(AttributeData.class), any(IOseeBranch.class), any(AttributeManager.class))).thenReturn(
@@ -113,10 +117,7 @@ public class ArtifactFactoryTest {
       when(otherArtifactData.getTypeUuid()).thenReturn(65L);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
-      when(providerFactory.createBranchProvider(artifactData)).thenReturn(branchProvider);
-      when(providerFactory.createBranchProvider(otherArtifactData)).thenReturn(branchProvider);
-
-      when(branchProvider.get()).thenReturn(branch);
+      when(branchProvider.getBranch(23L)).thenReturn(branch);
 
       when(artifactTypeCache.getByUuid(65L)).thenReturn(artifactType);
    }
@@ -125,7 +126,7 @@ public class ArtifactFactoryTest {
    public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
       when(dataFactory.create(branch, artifactType, guid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(branch, artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(session, branch, artifactType, guid);
 
       verify(dataFactory).create(branch, artifactType, guid);
       assertEquals(artifactType, artifact.getArtifactType());
@@ -134,7 +135,7 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testCreateArtifactFromArtifactData() throws OseeCoreException {
-      Artifact artifact = artifactFactory.createArtifact(artifactData);
+      Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
@@ -151,7 +152,7 @@ public class ArtifactFactoryTest {
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
@@ -168,7 +169,7 @@ public class ArtifactFactoryTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Source artifact is on the same branch as [" + branch + "]");
-      artifactFactory.introduceArtifact(source, branch);
+      artifactFactory.introduceArtifact(session, source, branch);
    }
 
    @Test
@@ -187,7 +188,7 @@ public class ArtifactFactoryTest {
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.introduceArtifact(source, branch);
+      Artifact actual = artifactFactory.introduceArtifact(session, source, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
@@ -211,7 +212,7 @@ public class ArtifactFactoryTest {
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, branch);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);

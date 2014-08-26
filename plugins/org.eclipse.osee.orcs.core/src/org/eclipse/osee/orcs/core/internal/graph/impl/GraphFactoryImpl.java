@@ -11,10 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
 
@@ -23,23 +20,9 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
  */
 public class GraphFactoryImpl implements GraphFactory {
 
-   private final BranchCache branchCache;
-
-   public GraphFactoryImpl(BranchCache branchCache) {
-      super();
-      this.branchCache = branchCache;
-   }
-
    @Override
-   public GraphData createGraph(IOseeBranch branch, int transactionId) {
-      return new GraphDataImpl(branch, transactionId);
-   }
-
-   @Override
-   public GraphData createGraphSetToHeadTx(IOseeBranch branch) throws OseeCoreException {
-      Branch fullBranch = branchCache.get(branch);
-      TransactionRecord headTransaction = branchCache.getHeadTransaction(fullBranch);
-      return createGraph(branch, headTransaction.getId());
+   public GraphData createGraph(OrcsSession session, IOseeBranch branch, int transactionId) {
+      return new GraphDataImpl(session, branch, transactionId);
    }
 
 }

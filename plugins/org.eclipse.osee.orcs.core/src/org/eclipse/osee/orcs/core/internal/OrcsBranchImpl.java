@@ -17,10 +17,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,7 +33,9 @@ import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
@@ -53,23 +51,18 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final OrcsTypes orcsTypes;
    private final QueryFactory queryFactory;
 
-   private final BranchCache branchCache;
-   private final TransactionCache txCache;
-
-   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes, BranchCache branchCache, TransactionCache txCache) {
+   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;
       branchDataFactory = new BranchDataFactory(queryFactory);
       this.orcsTypes = orcsTypes;
-      this.branchCache = branchCache;
-      branchDataFactory = new BranchDataFactory(branchCache);
       this.queryFactory = queryFactory;
    }
 
    @Override
    public Callable<BranchReadable> createBranch(CreateBranchData branchData) {
-      return new CreateBranchCallable(logger, session, branchStore, branchData);
+      return new CreateBranchCallable(logger, session, branchStore, branchData, queryFactory);
    }
 
    @Override
@@ -88,20 +81,21 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<TransactionRecord> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
-      return new CommitBranchCallable(logger, session, branchStore, branchCache, committer, source, destination);
+   public Callable<TransactionReadable> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
+      return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination);
    }
 
    @Override
-   public Callable<List<ChangeItem>> compareBranch(ITransaction sourceTx, ITransaction destinationTx) {
-      return new CompareBranchCallable(logger, session, branchCache, branchStore, sourceTx, destinationTx);
+   public Callable<List<ChangeItem>> compareBranch(TransactionReadable sourceTx, TransactionReadable destinationTx) {
+      return new CompareBranchCallable(logger, session, branchStore, sourceTx, destinationTx);
    }
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException {
-      Branch fullBranch = branchCache.get(branch);
-      TransactionRecord fromTx = fullBranch.getBaseTransaction();
-      TransactionRecord toTx = branchCache.getHeadTransaction(fullBranch);
+      int baseTransaction = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne().getBaseTransaction();
+      TransactionReadable fromTx =
+         queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
+      TransactionReadable toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
       return branchStore.compareBranch(session, fromTx, toTx);
    }
 

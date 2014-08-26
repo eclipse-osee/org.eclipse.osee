@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,7 +54,8 @@ public final class UpdateBranchArchivedStateHttpRequestOperation extends Abstrac
             CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE, requestData, null);
 
       if (response.wasSuccessful()) {
-         BranchManager.refreshBranches();
+         Branch branch = BranchManager.getBranch(branchUuid);
+         branch.setArchived(branchState.isArchived());
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchUuid));
       }
    }

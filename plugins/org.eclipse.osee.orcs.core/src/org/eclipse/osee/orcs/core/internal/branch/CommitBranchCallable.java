@@ -12,48 +12,48 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 
-public class CommitBranchCallable extends AbstractBranchCallable<TransactionRecord> {
+public class CommitBranchCallable extends AbstractBranchCallable<TransactionReadable> {
 
-   private final BranchCache branchCache;
    private final ArtifactReadable committer;
    private final IOseeBranch source;
    private final IOseeBranch destination;
+   private final QueryFactory queryFactory;
 
-   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
       super(logger, session, branchStore);
-      this.branchCache = branchCache;
       this.committer = committer;
       this.source = source;
       this.destination = destination;
-   }
-
-   private BranchCache getBranchCache() {
-      return branchCache;
+      this.queryFactory = queryFactory;
    }
 
    @Override
-   protected TransactionRecord innerCall() throws Exception {
-      Conditions.checkNotNull(branchCache, "branchCache");
+   protected TransactionReadable innerCall() throws Exception {
       Conditions.checkNotNull(source, "sourceBranch");
       Conditions.checkNotNull(destination, "destinationBranch");
 
-      Branch sourceBranch = getBranchCache().get(source);
-      Branch destinationBranch = getBranchCache().get(destination);
+      BranchReadable sourceBranch = queryFactory.branchQuery().andIds(source).getResults().getExactlyOne();
+      TransactionReadable sourceHead = queryFactory.transactionQuery().andIsHead(source).getResults().getExactlyOne();
+      BranchReadable destinationBranch = queryFactory.branchQuery().andIds(destination).getResults().getExactlyOne();
+      TransactionReadable destinationHead =
+         queryFactory.transactionQuery().andIsHead(destination).getResults().getExactlyOne();
 
       Conditions.checkNotNull(sourceBranch, "sourceBranch");
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
-      Callable<TransactionRecord> commitBranchCallable =
-         getBranchStore().commitBranch(getSession(), committer, sourceBranch, destinationBranch);
-      return callAndCheckForCancel(commitBranchCallable);
+      Callable<Integer> commitBranchCallable =
+         getBranchStore().commitBranch(getSession(), committer, sourceBranch, sourceHead, destinationBranch,
+            destinationHead);
+      Integer newTx = callAndCheckForCancel(commitBranchCallable);
+      return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }
 }

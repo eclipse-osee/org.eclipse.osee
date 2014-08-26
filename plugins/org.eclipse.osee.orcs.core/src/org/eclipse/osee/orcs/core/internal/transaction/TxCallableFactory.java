@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -23,6 +22,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -49,12 +49,12 @@ public class TxCallableFactory {
       };
    }
 
-   public CancellableCallable<TransactionRecord> createTx(final TxData txData) {
-      return new AbstractTxCallable<TransactionRecord>("CommitTransaction", txData.getSession()) {
+   public CancellableCallable<TransactionReadable> createTx(final TxData txData) {
+      return new AbstractTxCallable<TransactionReadable>("CommitTransaction", txData.getSession()) {
 
          @Override
-         protected TransactionRecord innerCall() throws Exception {
-            TransactionRecord transaction = null;
+         protected TransactionReadable innerCall() throws Exception {
+            TransactionReadable transaction = null;
             try {
                txManager.startTx(txData);
                TransactionResult result = doCommit();

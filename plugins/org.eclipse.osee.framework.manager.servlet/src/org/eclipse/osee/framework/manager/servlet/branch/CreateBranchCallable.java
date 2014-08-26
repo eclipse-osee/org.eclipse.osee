@@ -17,11 +17,11 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
@@ -55,6 +55,8 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchCreationR
       createData.setAssociatedArtifact(associatedWith);
 
       createData.setMergeDestinationBranchId(request.getMergeDestinationBranchId());
+      Long parentBranch = getBranchUuidFromTxId(request.getSourceTransactionId());
+      createData.setParentBranchUuid(parentBranch);
       createData.setMergeAddressingQueryId(request.getMergeAddressingQueryId());
       createData.setTxCopyBranchType(request.txIsCopied());
       Callable<BranchReadable> callable;

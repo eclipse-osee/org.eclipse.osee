@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -115,7 +115,7 @@ public class TransactionWriter {
       }
    }
 
-   public void write(OseeConnection connection, TransactionRecord tx, OrcsChangeSet txData) throws OseeCoreException {
+   public void write(OseeConnection connection, TransactionReadable tx, OrcsChangeSet txData) throws OseeCoreException {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
@@ -124,7 +124,7 @@ public class TransactionWriter {
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 
-         long branchUuid = tx.getBranch().getUuid();
+         long branchUuid = tx.getBranchId();
          List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
          for (Entry<SqlOrderEnum, ? extends AbstractJoinQuery> entry : sqlBuilder.getTxNotCurrents()) {
             fetchTxNotCurrent(connection, branchUuid, txNotCurrentData, entry.getKey().getTxsNotCurrentQuery(),
@@ -139,7 +139,6 @@ public class TransactionWriter {
             }
          }
          dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
-         tx.clearDirty();
       } finally {
          sqlBuilder.clear();
       }

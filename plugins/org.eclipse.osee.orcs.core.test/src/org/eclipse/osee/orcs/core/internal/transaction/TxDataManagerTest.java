@@ -40,11 +40,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
+import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -53,7 +54,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Before;
@@ -86,6 +86,7 @@ public class TxDataManagerTest {
    @Mock private ArtifactFactory artifactFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
+   @Mock private BranchProvider provider;
    
    @Mock private TxData txData;
    @Mock private GraphData graph;
@@ -121,6 +122,9 @@ public class TxDataManagerTest {
 
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
+
+      when(branch.getUuid()).thenReturn(111L);
+      when(provider.getBranch(111L)).thenReturn(branch);
 
       when(txData.getSession()).thenReturn(session);
       when(txData.getBranch()).thenReturn(branch);
@@ -225,13 +229,13 @@ public class TxDataManagerTest {
    public void testGetForWriteReadable() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(null);
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-      when(artifactFactory.clone(artifact1)).thenReturn(artifact2);
+      when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(artifactFactory).clone(artifact1);
+      verify(artifactFactory).clone(session, artifact1);
 
       assertEquals(artifact2, actual);
    }
@@ -259,12 +263,12 @@ public class TxDataManagerTest {
    @Test
    public void testGetForWriteArtifact() throws OseeCoreException {
       when(txData.getWriteable(artifact1)).thenReturn(null);
-      when(artifactFactory.clone(artifact1)).thenReturn(artifact2);
+      when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
 
       verify(txData).getWriteable(artifact1);
-      verify(artifactFactory).clone(artifact1);
+      verify(artifactFactory).clone(session, artifact1);
 
       assertEquals(artifact2, actual);
    }
@@ -313,7 +317,7 @@ public class TxDataManagerTest {
    @Test
    public void testGetForWriteDuringWrite() throws OseeCoreException {
       when(txData.add(artifact1)).thenReturn(artifact3);
-      when(artifactFactory.clone(artifact1)).thenReturn(artifact1);
+      when(artifactFactory.clone(session, artifact1)).thenReturn(artifact1);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Another instance of writeable detected - writeable tracking would be inconsistent");
@@ -352,13 +356,13 @@ public class TxDataManagerTest {
    public void testCreateArtifact() throws OseeCoreException {
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
-      when(artifactFactory.createArtifact(branch, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
+      when(artifactFactory.createArtifact(session, branch, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
 
       ArtifactReadable actual =
          txDataManager.createArtifact(txData, DirectSoftwareRequirement, "Direct SW requirement", guid);
 
-      verify(artifactFactory).createArtifact(branch, DirectSoftwareRequirement, guid);
+      verify(artifactFactory).createArtifact(session, branch, DirectSoftwareRequirement, guid);
       assertEquals(readable1, actual);
    }
 
@@ -367,13 +371,13 @@ public class TxDataManagerTest {
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
-      when(artifactFactory.copyArtifact(artifact1, types, branch)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, readable1);
 
       verify(txData).getWriteable(readable1);
-      verify(artifactFactory).copyArtifact(artifact1, types, branch);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, branch);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -387,14 +391,14 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(null);
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
 
-      when(artifactFactory.copyArtifact(artifact1, types, branch)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, readable1);
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(artifactFactory).copyArtifact(artifact1, types, branch);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, branch);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -405,14 +409,13 @@ public class TxDataManagerTest {
       String guid = GUID.create();
 
       ArtifactData data = Mockito.mock(ArtifactData.class);
-
-      @SuppressWarnings("unchecked")
-      ValueProvider<IOseeBranch, OrcsData> provider = Mockito.mock(ValueProvider.class);
+      VersionData version = Mockito.mock(VersionData.class);
+      when(data.getVersion()).thenReturn(version);
+      when(version.getBranchId()).thenReturn(111L);
 
       Artifact sourceArtifact = Mockito.spy(new ArtifactImpl(null, data, null, provider));
 
       when(data.getGuid()).thenReturn(guid);
-      when(provider.get()).thenReturn(branch);
 
       List<? extends IAttributeType> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
@@ -420,13 +423,13 @@ public class TxDataManagerTest {
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
       when(txData.getWriteable(sourceArtifact)).thenReturn(null);
-      when(artifactFactory.copyArtifact(sourceArtifact, copyTypes, branch)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, sourceArtifact, copyTypes, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, sourceArtifact);
 
       verify(txData).getWriteable(sourceArtifact);
-      verify(artifactFactory).copyArtifact(sourceArtifact, copyTypes, branch);
+      verify(artifactFactory).copyArtifact(session, sourceArtifact, copyTypes, branch);
 
       assertEquals(readable2, actual);
    }
@@ -437,13 +440,13 @@ public class TxDataManagerTest {
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
       when(txData.getWriteable(artifactId1)).thenReturn(artifact1);
       when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
-      when(artifactFactory.copyArtifact(artifact1, types, branch)).thenReturn(artifact2);
+      when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, artifactId1);
 
       verify(txData).getWriteable(artifactId1);
-      verify(artifactFactory).copyArtifact(artifact1, types, branch);
+      verify(artifactFactory).copyArtifact(session, artifact1, types, branch);
       verify(proxyManager).asExternalArtifact(session, artifact2);
 
       assertEquals(readable2, actual);
@@ -468,21 +471,21 @@ public class TxDataManagerTest {
 
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(COMMON), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
-      when(artifactFactory.introduceArtifact(artifact1, branch)).thenReturn(artifact2);
+      when(artifactFactory.introduceArtifact(session, artifact1, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
       ArtifactReadable actual = txDataManager.introduceArtifact(txData, COMMON, artifactId1);
 
       verify(loader).loadArtifacts(eq(session), eq(COMMON), idCaptor.capture());
       assertEquals(artifactId1, idCaptor.getValue().iterator().next());
-      verify(artifactFactory).introduceArtifact(artifact1, branch);
+      verify(artifactFactory).introduceArtifact(session, artifact1, branch);
       verify(proxyManager).asExternalArtifact(session, artifact2);
       assertEquals(readable2, actual);
    }
 
    @Test
    public void testDeleteArtifact() throws OseeCoreException {
-      when(artifactFactory.clone(artifact1)).thenReturn(artifact2);
+      when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
       txDataManager.deleteArtifact(txData, artifact1);
 

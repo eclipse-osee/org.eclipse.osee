@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -29,6 +28,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -78,18 +78,19 @@ public class OrcsPortingTest {
       String assocArtifactGuid = GUID.create();
       setupAssociatedArtifact(assocArtifactGuid);
 
-      TransactionRecord mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-      TransactionRecord transactionToCopy = createWorkingBranchChanges(mainBranchTx.getBranch(), artifactGuid);
+      TransactionReadable mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "MainFromBranch");
+      TransactionReadable transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
 
       IOseeBranch copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocArtifactGuid);
-      TransactionRecord finalTx = commitToDestinationBranch(copyTxBranch);
+      TransactionReadable finalTx = commitToDestinationBranch(copyTxBranch);
 
       // now check to make sure everything is as expected
       // we should have a SoftwareRequirement named "SecondRequirement" with an attribute named "test changed" (changed on child branch to this)
       // the attribute for the SecondRequirement should not be named "test changed again" (on the branch after the copy from)
       // we should have a folder named "childBranch folder", but no folder named "folder after transaction"
       ResultSet<ArtifactReadable> artifacts =
-         query.fromBranch(finalTx.getBranch()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
+         query.fromBranch(finalTx.getBranchId()).andTypeEquals(CoreArtifactTypes.Artifact).getResults();
       for (ArtifactReadable art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.SoftwareRequirement)) {
             assertEquals(2, art.getAttributes().size());
@@ -118,8 +119,8 @@ public class OrcsPortingTest {
       String assocArtifactGuid = GUID.create();
       setupAssociatedArtifact(assocArtifactGuid);
 
-      TransactionRecord mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-      TransactionRecord differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
+      TransactionReadable mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
+      TransactionReadable differentBranchTx = createBaselineBranchAndArtifacts(differentGuid);
 
       IOseeBranch copyTxBranch = createCopyFromTransactionBranch(mainBranchTx, assocArtifactGuid);
       assertNotNull(copyTxBranch);
@@ -131,7 +132,7 @@ public class OrcsPortingTest {
       fail(); // should never get here due to thrown exception
    }
 
-   private TransactionRecord createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
+   private TransactionReadable createBaselineBranchAndArtifacts(String artifactGuid) throws Exception {
       // set up the main branch
       IOseeBranch branch = TokenFactory.createBranch("MainFromBranch");
       branchApi.createTopLevelBranch(branch, author).call();
@@ -157,10 +158,10 @@ public class OrcsPortingTest {
       tx.commit();
    }
 
-   private TransactionRecord createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
+   private TransactionReadable createWorkingBranchChanges(IOseeBranch parentBranch, String artifactToModifyGuid) throws Exception {
       // set up the child branch to copy to
 
-      IOseeBranch childBranch = TokenFactory.createBranch( "childBranch");
+      IOseeBranch childBranch = TokenFactory.createBranch("childBranch");
       branchApi.createWorkingBranch(childBranch, author, parentBranch, null).call();
 
       TransactionBuilder tx3 = txFactory.createTransaction(childBranch, author, "update second requirement");
@@ -174,7 +175,7 @@ public class OrcsPortingTest {
       tx3.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
 
       // set this aside to use in the copy from transaction for the branch
-      TransactionRecord transactionToCopy = tx3.commit();
+      TransactionReadable transactionToCopy = tx3.commit();
 
       // make an additional transaction to make sure it doesn't get copied also
       TransactionBuilder tx4 = txFactory.createTransaction(childBranch, author, "after second requirement");
@@ -191,7 +192,7 @@ public class OrcsPortingTest {
       return transactionToCopy;
    }
 
-   private IOseeBranch createCopyFromTransactionBranch(TransactionRecord transactionToCopy, String assocArtifactGuid) throws Exception {
+   private IOseeBranch createCopyFromTransactionBranch(TransactionReadable transactionToCopy, String assocArtifactGuid) throws Exception {
       // create the branch with the copied transaction
       IOseeBranch branch = TokenFactory.createBranch(branchString);
 
@@ -205,7 +206,7 @@ public class OrcsPortingTest {
       return branchApi.createPortBranch(branch, author, transactionToCopy, readableReq).call();
    }
 
-   private TransactionRecord commitToDestinationBranch(IOseeBranch copyTxBranch) throws Exception {
+   private TransactionReadable commitToDestinationBranch(IOseeBranch copyTxBranch) throws Exception {
       IOseeBranch destinationBranch = TokenFactory.createBranch("IndepToBranch");
       branchApi.createTopLevelBranch(destinationBranch, author).call();
       return branchApi.commitBranch(author, copyTxBranch, destinationBranch).call();

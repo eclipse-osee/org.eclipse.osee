@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
@@ -31,6 +29,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,8 +68,7 @@ public class TransactionWriterTest {
    
    @Mock private TxSqlBuilder builder;
    @Mock private OseeConnection connection;
-   @Mock private TransactionRecord tx;
-   @Mock private Branch branch;
+   @Mock private TransactionReadable tx;
    @Mock private DaoToSql dao1;
    @Mock private DaoToSql dao2;
    
@@ -100,8 +98,7 @@ public class TransactionWriterTest {
       when(join1.getQueryId()).thenReturn(QUERY_ID_1);
       when(join2.getQueryId()).thenReturn(QUERY_ID_2);
 
-      when(tx.getBranch()).thenReturn(branch);
-      when(branch.getUuid()).thenReturn(BRANCH_ID);
+      when(tx.getBranchId()).thenReturn(BRANCH_ID);
       when(builder.getBinaryStores()).thenReturn(stores);
       when(builder.getTxNotCurrents()).thenAnswer(new Answer<Set<Entry<SqlOrderEnum, IdJoinQuery>>>() {
 
@@ -165,7 +162,6 @@ public class TransactionWriterTest {
       inOrder.verify(dbService).runBatchUpdate(eq(connection), eq(TransactionWriter.UPDATE_TXS_NOT_CURRENT),
          paramCaptor.capture());
 
-      inOrder.verify(tx).clearDirty();
       inOrder.verify(builder).clear();
 
       Iterator<Object[]> params = paramCaptor.getValue().iterator();

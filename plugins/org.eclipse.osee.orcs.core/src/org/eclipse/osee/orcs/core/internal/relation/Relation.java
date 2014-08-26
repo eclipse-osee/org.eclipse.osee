@@ -13,13 +13,10 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
@@ -28,16 +25,14 @@ import org.eclipse.osee.orcs.data.RelationTypes;
 public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
 
    private final RelationTypes relationTypes;
-   private final ValueProvider<Branch, OrcsData> branchProvider;
 
    private RelationData relationData;
    private boolean isDirty;
 
-   public Relation(RelationTypes relationTypes, RelationData relationData, ValueProvider<Branch, OrcsData> branchProvider) {
+   public Relation(RelationTypes relationTypes, RelationData relationData) {
       super();
       this.relationTypes = relationTypes;
       this.relationData = relationData;
-      this.branchProvider = branchProvider;
    }
 
    @Override
@@ -48,7 +43,6 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    @Override
    public void setOrcsData(RelationData data) {
       this.relationData = data;
-      branchProvider.setOrcsData(data);
    }
 
    public IRelationType getRelationType() throws OseeCoreException {
@@ -67,10 +61,6 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    @Override
    public void delete() {
       markAsChanged(ModificationType.DELETED);
-   }
-
-   public Branch getBranch() throws OseeCoreException {
-      return branchProvider.get();
    }
 
    @Override

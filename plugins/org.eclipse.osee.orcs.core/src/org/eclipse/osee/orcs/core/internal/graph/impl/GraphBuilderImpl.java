@@ -76,7 +76,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
       GraphData graph = getGraph();
       Artifact artifact = graph.getNode(data);
       if (artifact == null) {
-         artifact = artifactFactory.createArtifact(data);
+         artifact = artifactFactory.createArtifact(graph.getSession(), data);
          graph.addNode(artifact);
 
          RelationNodeAdjacencies adjacencies = relationFactory.createRelationContainer();

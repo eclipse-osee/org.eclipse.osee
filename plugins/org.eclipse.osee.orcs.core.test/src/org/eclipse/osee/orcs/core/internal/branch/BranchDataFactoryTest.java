@@ -199,7 +199,7 @@ public class BranchDataFactoryTest {
       assertEquals(fromTx, actual.getFromTransaction());
 
       assertEquals(-1, actual.getMergeAddressingQueryId());
-      assertEquals(-1, actual.getMergeDestinationBranchId());
+      assertEquals(-1L, actual.getMergeDestinationBranchId());
 
       assertEquals(author, actual.getUserArtifact());
       assertEquals(author.getLocalId(), actual.getUserArtifactId());

@@ -39,11 +39,11 @@ public class BranchCommitResponseTest {
 
    @Test
    public void testGetSetTransaction() {
-      Assert.assertNull(response.getTransaction());
-      response.setTransaction(transaction);
+      Assert.assertNull(response.getTransactionId());
+      response.setTransactionId(transaction.getGuid());
 
-      Assert.assertNotNull(response.getTransaction());
-      Assert.assertEquals(transaction, response.getTransaction());
+      Assert.assertNotNull(response.getTransactionId());
+      Assert.assertEquals(transaction.getGuid(), response.getTransactionId());
    }
 
    @Parameters

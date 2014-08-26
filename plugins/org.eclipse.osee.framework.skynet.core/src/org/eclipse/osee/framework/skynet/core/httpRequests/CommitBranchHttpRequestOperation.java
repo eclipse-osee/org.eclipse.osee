@@ -96,6 +96,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          response =
             HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
                CoreTranslatorId.BRANCH_COMMIT_REQUEST, requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+         sourceBranch.setBranchState(BranchState.COMMITTED);
       } catch (OseeCoreException ex) {
          sourceBranch.setBranchState(currentState);
          OseeEventManager.kickBranchEvent(getClass(),
@@ -109,7 +110,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleResponse(BranchCommitResponse response, IProgressMonitor monitor, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      TransactionRecord newTransaction = response.getTransaction();
+      Integer newTxId = response.getTransactionId();
+      TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
 

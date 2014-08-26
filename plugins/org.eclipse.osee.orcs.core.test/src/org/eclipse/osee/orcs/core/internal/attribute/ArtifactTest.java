@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -58,12 +58,12 @@ public class ArtifactTest {
    @Mock private Artifact artifact;
    @Mock private ArtifactData artifactData;
    @Mock private AttributeFactory attributeFactory;
-   @Mock private ValueProvider<Branch, OrcsData> branchProvider;
    @Mock private ArtifactTypes types;
+   @Mock private BranchProvider branchProvider;
 
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
-   @Mock private Branch branch;
+   @Mock private BranchReadable branch;
    
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute;
@@ -103,7 +103,8 @@ public class ArtifactTest {
       when(artifactData.getVersion()).thenReturn(version);
       when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
       when(artifactData.getLocalId()).thenReturn(0);
-      when(branchProvider.get()).thenReturn(branch);
+      when(version.getBranchId()).thenReturn(55L);
+      when(branchProvider.getBranch(55L)).thenReturn(branch);
 
       when(deleted.isDeleted()).thenReturn(true);
       when(notDeleted.getOrcsData()).thenReturn(attributeData);
@@ -157,13 +158,6 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testSetOrcsData() {
-      ArtifactData newOrcsData = mock(ArtifactData.class);
-      artifact.setOrcsData(newOrcsData);
-      verify(branchProvider).setOrcsData(newOrcsData);
-   }
-
-   @Test
    public void testGetLocalId() {
       artifact.getLocalId();
       verify(artifactData).getLocalId();
@@ -194,12 +188,6 @@ public class ArtifactTest {
 
       assertEquals(10, actual);
       verify(version).getTransactionId();
-   }
-
-   @Test
-   public void testGetBranch() throws OseeCoreException {
-      artifact.getBranch();
-      verify(branchProvider).get();
    }
 
    @Test

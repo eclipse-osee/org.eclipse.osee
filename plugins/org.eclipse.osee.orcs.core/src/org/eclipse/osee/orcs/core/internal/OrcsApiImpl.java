@@ -35,6 +35,8 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory.BranchProviderFactory;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -56,12 +58,13 @@ import org.eclipse.osee.orcs.core.internal.session.OrcsSessionImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxCallableFactory;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
+import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.TransactionProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
-import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -153,14 +156,14 @@ public class OrcsApiImpl implements OrcsApi {
       AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
       AttributeFactory attributeFactory =
          new AttributeFactory(resolver, module.getDataFactory(), orcsTypes.getAttributeTypes());
-      ValueProviderFactory providerFactory = new ValueProviderFactory(cacheService.getBranchCache());
+
       ArtifactFactory artifactFactory =
-         new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes(), providerFactory);
+         new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes(),
+            new BranchProviderFactoryImpl());
 
-      RelationFactory relationFactory =
-         new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory(), providerFactory);
+      RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory());
 
-      final GraphFactory graphFactory = new GraphFactoryImpl(cacheService.getBranchCache());
+      final GraphFactory graphFactory = new GraphFactoryImpl();
       GraphBuilderFactory graphBuilderFactory =
          new GraphBuilderFactory(logger, artifactFactory, attributeFactory, relationFactory);
 
@@ -172,14 +175,24 @@ public class OrcsApiImpl implements OrcsApi {
 
          @Override
          public GraphData getGraph(OrcsSession session, IOseeBranch branch, int transactionId) throws OseeCoreException {
-            return graphFactory.createGraph(branch, transactionId);
+            return graphFactory.createGraph(session, branch, transactionId);
          }
       };
 
       ExternalArtifactManager proxyManager = new ExternalArtifactManagerImpl(relationManager);
 
+      TransactionProvider txProvider = new TransactionProvider() {
+
+         @Override
+         public int getHeadTransaction(OrcsSession session, IOseeBranch branch) {
+            QueryFactory queryFactory = queryModule.createQueryFactory(session);
+            return queryFactory.transactionQuery().andIsHead(branch).getResultsAsIds().getExactlyOne();
+         }
+      };
+
       TxDataLoader txDataLoader =
-         new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory, graphProvider);
+         new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory, graphProvider,
+            txProvider);
       txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
@@ -230,7 +243,7 @@ public class OrcsApiImpl implements OrcsApi {
       };
       QueryFactory queryFactory = getQueryFactory(context);
       return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser,
-         getOrcsTypes(context), cacheService.getBranchCache(), cacheService.getTransactionCache());
+         getOrcsTypes(context));
    }
 
    @Override
@@ -282,6 +295,29 @@ public class OrcsApiImpl implements OrcsApi {
    private OrcsSession createSession() {
       String sessionId = GUID.create();
       return new OrcsSessionImpl(sessionId);
+   }
+
+   private class BranchProviderFactoryImpl implements BranchProviderFactory {
+
+      @Override
+      public BranchProvider createBranchProvider(final OrcsSession session) {
+         BranchProvider provider = new BranchProvider() {
+
+            BranchReadable cached = null;
+
+            @Override
+            public BranchReadable getBranch(Long branchUuid) {
+               if (cached == null || !cached.getUuid().equals(branchUuid)) {
+                  BranchQuery query = queryModule.createQueryFactory(session).branchQuery();
+                  cached = query.andUuids(branchUuid).getResults().getExactlyOne();
+               }
+               return cached;
+            }
+
+         };
+         return provider;
+      }
+
    }
 
 }

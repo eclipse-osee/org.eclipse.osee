@@ -51,7 +51,7 @@ public class TxDataManager {
 
    public interface TxDataLoader {
 
-      GraphData createGraph(IOseeBranch branch) throws OseeCoreException;
+      GraphData createGraph(OrcsSession session, IOseeBranch branch) throws OseeCoreException;
 
       ResultSet<Artifact> loadArtifacts(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException;
 
@@ -72,7 +72,7 @@ public class TxDataManager {
    }
 
    public TxData createTxData(OrcsSession session, IOseeBranch branch) throws OseeCoreException {
-      GraphData graphData = loader.createGraph(branch);
+      GraphData graphData = loader.createGraph(session, branch);
       return new TxData(session, graphData);
    }
 
@@ -180,7 +180,7 @@ public class TxDataManager {
    }
 
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) throws OseeCoreException {
-      Artifact artifact = artifactFactory.clone(source);
+      Artifact artifact = artifactFactory.clone(txData.getSession(), source);
       txData.getGraph().addNode(artifact);
       relationManager.cloneRelations(txData.getSession(), source, artifact);
       return artifact;
@@ -240,7 +240,7 @@ public class TxDataManager {
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Artifact artifact = artifactFactory.createArtifact(txData.getBranch(), artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid);
       artifact.setName(name);
       return asExternalArtifact(txData, artifact);
    }
@@ -258,7 +258,8 @@ public class TxDataManager {
    }
 
    private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      Artifact copy = artifactFactory.copyArtifact(source, attributesToDuplicate, txData.getBranch());
+      Artifact copy =
+         artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranch());
       return asExternalArtifact(txData, copy);
    }
 
@@ -266,7 +267,7 @@ public class TxDataManager {
       checkChangesAllowed(txData);
       checkAreOnDifferentBranches(txData, fromBranch);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
-      Artifact artifact = artifactFactory.introduceArtifact(source, txData.getBranch());
+      Artifact artifact = artifactFactory.introduceArtifact(txData.getSession(), source, txData.getBranch());
       return asExternalArtifact(txData, artifact);
    }
 

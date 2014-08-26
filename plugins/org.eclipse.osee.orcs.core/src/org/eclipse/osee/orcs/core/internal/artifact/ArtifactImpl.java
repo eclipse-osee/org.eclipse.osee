@@ -21,25 +21,27 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 
 public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    private final ArtifactTypes artifactTypeCache;
-   private final ValueProvider<? extends IOseeBranch, OrcsData> branchProvider;
 
    private EditState objectEditState;
    private ArtifactData artifactData;
    private GraphData graph;
+   private final BranchProvider branchProvider;
 
-   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, ValueProvider<? extends IOseeBranch, OrcsData> branchProvider) {
+   public static interface BranchProvider {
+      IOseeBranch getBranch(Long branchUuid);
+   }
+
+   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, BranchProvider branchProvider) {
       super(artifactData.getGuid(), attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
@@ -66,7 +68,6 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    public void setOrcsData(ArtifactData data) {
       this.artifactData = data;
       objectEditState = EditState.NO_CHANGE;
-      branchProvider.setOrcsData(data);
    }
 
    private ModificationType getModificationType() {
@@ -94,7 +95,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public IOseeBranch getBranch() throws OseeCoreException {
-      return branchProvider.get();
+      return branchProvider.getBranch(artifactData.getVersion().getBranchId());
    }
 
    @Override

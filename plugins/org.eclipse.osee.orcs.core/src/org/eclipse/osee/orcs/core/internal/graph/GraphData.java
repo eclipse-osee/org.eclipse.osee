@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.graph;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.data.HasTransaction;
@@ -45,5 +46,7 @@ public interface GraphData extends HasBranch, HasTransaction {
    <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId<Integer> node);
 
    <T extends GraphAdjacencies> T removeAdjacencies(Integer id);
+
+   OrcsSession getSession();
 
 }

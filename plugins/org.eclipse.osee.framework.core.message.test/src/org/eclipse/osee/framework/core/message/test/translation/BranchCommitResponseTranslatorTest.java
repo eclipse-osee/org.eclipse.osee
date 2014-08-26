@@ -20,11 +20,7 @@ import org.eclipse.osee.framework.core.message.internal.translation.BranchCommit
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.message.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -55,16 +51,14 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
 
       List<Object[]> data = new ArrayList<Object[]>();
       IDataTranslationService service = new DataTranslationService();
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
-      service.addTranslator(new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache),
-         CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new TransactionRecordTranslator(), CoreTranslatorId.TRANSACTION_RECORD);
 
       ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator(service);
       for (int index = 1; index <= 2; index++) {
          TransactionRecord tx = MockDataFactory.createTransaction(index, index * 3);
 
          BranchCommitResponse response = new BranchCommitResponse();
-         response.setTransaction(tx);
+         response.setTransactionId(tx.getGuid());
          data.add(new Object[] {response, translator});
       }
       data.add(new Object[] {new BranchCommitResponse(), translator});

@@ -14,13 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
-import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.message.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.message.test.mocks.MockOseeDataAccessor;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
@@ -34,26 +27,23 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class TransactionRecordTranslatorTest extends BaseTranslatorTest<TransactionRecord> {
+public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Integer> {
 
-   public TransactionRecordTranslatorTest(TransactionRecord data, ITranslator<TransactionRecord> translator) {
+   public TransactionRecordTranslatorTest(Integer data, ITranslator<Integer> translator) {
       super(data, translator);
    }
 
    @Override
-   protected void checkEquals(TransactionRecord expected, TransactionRecord actual) {
-      Assert.assertNotSame(expected, actual);
-      DataAsserts.assertEquals(expected, actual);
+   protected void checkEquals(Integer expected, Integer actual) {
+      Assert.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
-      ITranslator<TransactionRecord> translator =
-         new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache);
+      ITranslator<Integer> translator = new TransactionRecordTranslator();
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
-         data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});
+         data.add(new Object[] {index * 10, translator});
       }
       return data;
    }

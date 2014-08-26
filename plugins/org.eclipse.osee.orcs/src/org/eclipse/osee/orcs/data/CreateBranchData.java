@@ -39,6 +39,7 @@ public class CreateBranchData implements Identifiable<Long> {
    private long mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
    private boolean txCopyBranchType = false;
+   private Long parentBranchUuid;
 
    public CreateBranchData() {
       this(Lib.generateUuid());
@@ -179,6 +180,14 @@ public class CreateBranchData implements Identifiable<Long> {
          throw new OseeStateException("uuid [%d] must be > 0", uuid);
       }
       this.branchUuid = uuid;
+   }
+
+   public void setParentBranchUuid(Long uuid) {
+      this.parentBranchUuid = uuid;
+   }
+
+   public Long getParentBranchUuid() {
+      return parentBranchUuid;
    }
 
 }

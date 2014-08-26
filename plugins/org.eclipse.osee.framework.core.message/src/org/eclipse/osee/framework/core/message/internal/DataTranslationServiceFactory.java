@@ -53,8 +53,7 @@ public class DataTranslationServiceFactory {
 
    public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory, TempCachingService cachingService) throws OseeCoreException {
       BranchCache branchCache = cachingService.getBranchCache();
-      service.addTranslator(new TransactionRecordTranslator(txRecordFactory, branchCache),
-         CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new TransactionRecordTranslator(), CoreTranslatorId.TRANSACTION_RECORD);
 
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
       service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);

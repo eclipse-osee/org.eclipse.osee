@@ -12,14 +12,13 @@ package org.eclipse.osee.orcs.core.internal.graph;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.OrcsSession;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface GraphFactory {
 
-   GraphData createGraph(IOseeBranch branch, int transactionId) throws OseeCoreException;
-
-   GraphData createGraphSetToHeadTx(IOseeBranch branch) throws OseeCoreException;
+   GraphData createGraph(OrcsSession session, IOseeBranch branch, int transactionId) throws OseeCoreException;
 
 }

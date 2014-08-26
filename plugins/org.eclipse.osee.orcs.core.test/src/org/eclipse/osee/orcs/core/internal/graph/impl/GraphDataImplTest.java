@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
@@ -84,6 +85,8 @@ public class GraphDataImplTest {
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    
+   @Mock private OrcsSession session;
+   
    // @formatter:on
 
    private GraphDataImpl graph;
@@ -93,7 +96,7 @@ public class GraphDataImplTest {
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
 
-      graph = new GraphDataImpl(branch, TRANSACTION_ID);
+      graph = new GraphDataImpl(session, branch, TRANSACTION_ID);
    }
 
    @Test

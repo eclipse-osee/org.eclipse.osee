@@ -170,7 +170,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
-      return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1,
-         ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch.getUuid()));
+      String query = ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
+      return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1, query, branch.getUuid()));
    }
 }

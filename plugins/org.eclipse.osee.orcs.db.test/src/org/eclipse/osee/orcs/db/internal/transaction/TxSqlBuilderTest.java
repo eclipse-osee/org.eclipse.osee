@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,6 +41,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
@@ -93,7 +93,7 @@ public class TxSqlBuilderTest {
    @Mock private IOseeDatabaseService dbService;
    @Mock private IdentityManager idManager;
    
-   @Mock private TransactionRecord tx;
+   @Mock private TransactionReadable tx;
    @Mock private OrcsChangeSet txData;
 
    @Mock private DataProxy dataProxy;
@@ -145,12 +145,12 @@ public class TxSqlBuilderTest {
       relData.setArtIdB(B_ART_ID);
       relData.setRationale(RATIONALE);
 
-      when(tx.getId()).thenReturn(EXPECTED_TX_ID);
-      when(tx.getAuthor()).thenReturn(EXPECTED_AUTHOR_ID);
+      when(tx.getGuid()).thenReturn(EXPECTED_TX_ID);
+      when(tx.getAuthorId()).thenReturn(EXPECTED_AUTHOR_ID);
       when(tx.getBranchId()).thenReturn(EXPECTED_BRANCH_ID);
       when(tx.getComment()).thenReturn(EXPECTED_COMMENT);
       when(tx.getCommit()).thenReturn(EXPECTED_COMMIT_ID);
-      when(tx.getTimeStamp()).thenReturn(EXPECTED_TX_TIME);
+      when(tx.getDate()).thenReturn(EXPECTED_TX_TIME);
       when(tx.getTxType()).thenReturn(EXPECTED_TX_TYPE);
 
       when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);

@@ -11,13 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,7 +26,9 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
+import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
@@ -39,18 +38,16 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public final class CommitTransactionDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionResult> {
 
-   private final BranchCache branchCache;
-   private final TransactionRecordFactory factory;
    private final TransactionData transactionData;
 
    private final TransactionProcessorProvider provider;
    private final TransactionWriter writer;
+   private static final String UPDATE_BRANCH_STATE =
+      "UPDATE osee_branch SET branch_state = ? WHERE branch_id = ? and branch_state = ?";
 
-   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
       super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
-      this.branchCache = branchCache;
-      this.factory = factory;
       this.provider = provider;
 
       this.writer = writer;
@@ -74,7 +71,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
       String comment = transactionData.getComment();
-      Branch branch = branchCache.get(transactionData.getBranch());
+      IOseeBranch branch = transactionData.getBranch();
       ArtifactReadable author = transactionData.getAuthor();
       OrcsChangeSet changeSet = transactionData.getChangeSet();
 
@@ -85,14 +82,13 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
 
       process(TxWritePhaseEnum.BEFORE_TX_WRITE);
 
-      TransactionRecord txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
+      TransactionReadable txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
       writer.write(connection, txRecord, changeSet);
 
-      if (branch.getBranchState() == BranchState.CREATED) {
-         branch.setBranchState(BranchState.MODIFIED);
-         branchCache.storeItems(branch);
-      }
-      branchCache.cache(txRecord);
+      Object[] params =
+         new Object[] {BranchState.MODIFIED.getValue(), branch.getUuid(), BranchState.CREATED.getValue()};
+      getDatabaseService().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
+
       return new TransactionResultImpl(txRecord, changeSet);
    }
 
@@ -108,28 +104,36 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionRecord createTransactionRecord(Branch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
+   private TransactionReadable createTransactionRecord(IOseeBranch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
       int authorArtId = author.getLocalId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
-      return factory.create(transactionNumber, branch, comment, transactionTime, authorArtId,
-         RelationalConstants.ART_ID_SENTINEL, txType);
+      TransactionDataImpl created = new TransactionDataImpl();
+      created.setAuthorId(authorArtId);
+      created.setBranchId(branch.getUuid());
+      created.setComment(comment);
+      created.setCommit(RelationalConstants.ART_ID_SENTINEL);
+      created.setDate(transactionTime);
+      created.setLocalId(transactionNumber);
+      created.setTxType(txType);
+
+      return created;
    }
 
    private static final class TransactionResultImpl implements TransactionResult {
 
-      private final TransactionRecord tx;
+      private final TransactionReadable tx;
       private final OrcsChangeSet data;
 
-      public TransactionResultImpl(TransactionRecord tx, OrcsChangeSet data) {
+      public TransactionResultImpl(TransactionReadable tx, OrcsChangeSet data) {
          super();
          this.tx = tx;
          this.data = data;
       }
 
       @Override
-      public TransactionRecord getTransaction() {
+      public TransactionReadable getTransaction() {
          return tx;
       }
 

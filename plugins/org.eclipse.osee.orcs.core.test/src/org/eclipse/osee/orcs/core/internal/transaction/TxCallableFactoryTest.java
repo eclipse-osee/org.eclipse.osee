@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -36,6 +35,7 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -117,13 +117,13 @@ public class TxCallableFactoryTest {
          }
       });
 
-      TransactionRecord newTx = mock(TransactionRecord.class);
+      TransactionReadable newTx = mock(TransactionReadable.class);
 
       when(txResult.getTransaction()).thenReturn(newTx);
 
       Assert.assertFalse(data.isCommitInProgress());
 
-      TransactionRecord actual = txFactory.createTx(data).call();
+      TransactionReadable actual = txFactory.createTx(data).call();
 
       assertEquals(newTx, actual);
       assertFalse(data.isCommitInProgress());

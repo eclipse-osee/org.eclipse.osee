@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -56,6 +55,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -348,8 +348,8 @@ public class TransactionBuilderImplTest {
    @SuppressWarnings("unchecked")
    @Test
    public void testCommit() throws Exception {
-      CancellableCallable<TransactionRecord> callable = mock(CancellableCallable.class);
-      TransactionRecord tx = mock(TransactionRecord.class);
+      CancellableCallable<TransactionReadable> callable = mock(CancellableCallable.class);
+      TransactionReadable tx = mock(TransactionReadable.class);
 
       when(txCallableFactory.createTx(txData)).thenReturn(callable);
       when(callable.call()).thenReturn(tx);

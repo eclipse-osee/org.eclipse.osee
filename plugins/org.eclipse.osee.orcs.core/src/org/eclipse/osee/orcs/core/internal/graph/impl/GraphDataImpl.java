@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
@@ -30,9 +31,11 @@ public class GraphDataImpl implements GraphData {
 
    private final IOseeBranch branch;
    private final int txId;
+   private final OrcsSession orcsSession;
 
-   public GraphDataImpl(IOseeBranch branch, int txId) {
+   public GraphDataImpl(OrcsSession session, IOseeBranch branch, int txId) {
       super();
+      this.orcsSession = session;
       this.branch = branch;
       this.txId = txId;
    }
@@ -160,6 +163,11 @@ public class GraphDataImpl implements GraphData {
          return false;
       }
       return true;
+   }
+
+   @Override
+   public OrcsSession getSession() {
+      return orcsSession;
    }
 
 }

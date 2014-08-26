@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -33,6 +32,8 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -119,9 +120,9 @@ public class OrcsBranchTest {
       int SOURCE_TX_ID = 16;
 
       // get the list of changes from the original branch
-      Callable<List<ChangeItem>> callable =
-         branchInterface.compareBranch(TokenFactory.createTransaction(PRIOR_TX_ID),
-            TokenFactory.createTransaction(SOURCE_TX_ID));
+      TransactionReadable priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
+      TransactionReadable sourceTx = query.transactionQuery().andTxId(SOURCE_TX_ID).getResults().getExactlyOne();
+      Callable<List<ChangeItem>> callable = branchInterface.compareBranch(priorTx, sourceTx);
       List<ChangeItem> priorItems = callable.call();
 
       // create the branch with the copied transaction

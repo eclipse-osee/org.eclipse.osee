@@ -23,13 +23,13 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeId;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -291,10 +291,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public TransactionRecord commit() throws OseeCoreException {
-      TransactionRecord tx = null;
+   public TransactionReadable commit() throws OseeCoreException {
+      TransactionReadable tx = null;
       try {
-         CancellableCallable<TransactionRecord> callable = txFactory.createTx(txData);
+         CancellableCallable<TransactionReadable> callable = txFactory.createTx(txData);
          tx = callable.call();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

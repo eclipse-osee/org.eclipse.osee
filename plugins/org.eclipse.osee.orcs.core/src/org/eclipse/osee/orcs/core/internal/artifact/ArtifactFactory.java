@@ -17,17 +17,15 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
+import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
-import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
@@ -39,35 +37,34 @@ public class ArtifactFactory {
    private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
    private final ArtifactTypes artifactTypeCache;
-   private final ValueProviderFactory providerFactory;
+   private final BranchProviderFactory branchProviderFactory;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, ArtifactTypes artifactTypeCache, ValueProviderFactory providerFactory) {
-      super();
+   public static interface BranchProviderFactory {
+      BranchProvider createBranchProvider(OrcsSession session);
+   }
+
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, ArtifactTypes artifactTypeCache, BranchProviderFactory branchProviderFactory) {
       this.factory = factory;
       this.attributeFactory = attributeFactory;
       this.artifactTypeCache = artifactTypeCache;
-      this.providerFactory = providerFactory;
+      this.branchProviderFactory = branchProviderFactory;
    }
 
-   public Artifact createArtifact(ArtifactData artifactData) throws OseeCoreException {
-      //TODO implement an artifact class resolver for specific artifact types
-      ValueProvider<Branch, OrcsData> branchProvider = providerFactory.createBranchProvider(artifactData);
+   public Artifact createArtifact(final OrcsSession session, ArtifactData artifactData) throws OseeCoreException {
+      BranchProvider branchProvider = branchProviderFactory.createBranchProvider(session);
       return new ArtifactImpl(artifactTypeCache, artifactData, attributeFactory, branchProvider);
    }
 
-   public Artifact createArtifact(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
+   public Artifact createArtifact(OrcsSession session, IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException {
       ArtifactData artifactData = factory.create(branch, artifactType, guid);
-      Artifact artifact = createArtifact(artifactData);
+      Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
-
-      // ArtifactCache.cache(artifact);
-      // artifact.setLinksLoaded(true);
       return artifact;
    }
 
-   public Artifact copyArtifact(Artifact source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
+   public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
-      Artifact copy = createArtifact(artifactData);
+      Artifact copy = createArtifact(session, artifactData);
       Collection<? extends IAttributeType> typeToCopy = getAllowedTypes(copy, types);
       for (IAttributeType attributeType : typeToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
@@ -79,12 +76,12 @@ public class ArtifactFactory {
       return copy;
    }
 
-   public Artifact introduceArtifact(Artifact source, IOseeBranch ontoBranch) throws OseeCoreException {
+   public Artifact introduceArtifact(OrcsSession session, Artifact source, IOseeBranch ontoBranch) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(ontoBranch.equals(source.getBranch()),
          "Source artifact is on the same branch as [%s]", ontoBranch);
 
       ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
-      Artifact introducedArt = createArtifact(artifactData);
+      Artifact introducedArt = createArtifact(session, artifactData);
       Collection<? extends IAttributeType> typeToCopy =
          getAllowedTypes(introducedArt, source.getExistingAttributeTypes());
       for (IAttributeType attributeType : typeToCopy) {
@@ -97,9 +94,9 @@ public class ArtifactFactory {
       return introducedArt;
    }
 
-   public Artifact clone(Artifact source) throws OseeCoreException {
+   public Artifact clone(OrcsSession session, Artifact source) throws OseeCoreException {
       ArtifactData artifactData = factory.clone(source.getOrcsData());
-      Artifact copy = createArtifact(artifactData);
+      Artifact copy = createArtifact(session, artifactData);
       for (IAttributeType attributeType : source.getExistingAttributeTypes()) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
             AttributeData data = getAttributeData(attributeSource);

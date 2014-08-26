@@ -10,23 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Megumi Telles
  */
 public class BranchCommitResponse {
-   private TransactionRecord transactionRecord;
+   private Integer transactionId;
 
    public BranchCommitResponse() {
-      this.transactionRecord = null;
+      this.transactionId = null;
    }
 
-   public TransactionRecord getTransaction() {
-      return transactionRecord;
+   public Integer getTransactionId() {
+      return transactionId;
    }
 
-   public void setTransaction(TransactionRecord transactionRecord) {
-      this.transactionRecord = transactionRecord;
+   public void setTransactionId(Integer transactionId) {
+      this.transactionId = transactionId;
    }
 }

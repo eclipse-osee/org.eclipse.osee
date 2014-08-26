@@ -15,15 +15,12 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -41,6 +38,7 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,8 +64,8 @@ public class MissingChangeItemFactoryTest {
    @Mock private DataLoader destDataLoader;
    @Mock private Branch sourceBranch;
    @Mock private Branch destBranch;
-   @Mock private TransactionRecord sourceTx;
-   @Mock private TransactionRecord destTx;
+   @Mock private TransactionReadable sourceTx;
+   @Mock private TransactionReadable destTx;
    @Mock private OrcsSession session;
    @Mock private HasCancellation cancellation;
    // @formatter:on
@@ -110,8 +108,8 @@ public class MissingChangeItemFactoryTest {
          sourceDataLoader);
       when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
          destDataLoader);
-      when(sourceTx.getBranch()).thenReturn(sourceBranch);
-      when(destTx.getBranch()).thenReturn(destBranch);
+      when(sourceTx.getBranchId()).thenReturn(sourceBranch.getGuid());
+      when(destTx.getBranchId()).thenReturn(destBranch.getGuid());
       changeItemFactory = new MissingChangeItemFactoryImpl(identityService, dataLoaderFactory);
    }
 

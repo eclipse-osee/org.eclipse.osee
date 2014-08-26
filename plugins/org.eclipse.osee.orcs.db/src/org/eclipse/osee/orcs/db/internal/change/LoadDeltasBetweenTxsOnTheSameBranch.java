@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -28,6 +26,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.data.TransactionReadableDelta;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
@@ -44,10 +44,10 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
-   private final TransactionDelta txDelta;
+   private final TransactionReadableDelta txDelta;
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionDelta txDelta) {
+   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionReadableDelta txDelta) {
       super(logger, session, dbService);
       this.txDelta = txDelta;
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
@@ -57,11 +57,11 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       return getEndTx().getBranchId();
    }
 
-   private TransactionRecord getEndTx() {
+   private TransactionReadable getEndTx() {
       return txDelta.getEndTx();
    }
 
-   private TransactionRecord getStartTx() {
+   private TransactionReadable getStartTx() {
       return txDelta.getStartTx();
    }
 
@@ -94,8 +94,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private void loadChangesAtEndTx(TransactionJoinQuery txJoin) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(), getStartTx().getId(),
-            getEndTx().getId());
+         chStmt.runPreparedQuery(MAX_FETCH, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(), getStartTx().getGuid(),
+            getEndTx().getGuid());
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
@@ -127,14 +127,14 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       changeData.addAll(changesByItemId.values());
    }
 
-   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionRecord transactionLimit) throws OseeCoreException {
+   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit) throws OseeCoreException {
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
             + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
             " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
-         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, transactionLimit.getBranchId(), transactionLimit.getId());
+         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, transactionLimit.getBranchId(), transactionLimit.getGuid());
 
          while (chStmt.next()) {
             checkForCancelled();

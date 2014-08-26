@@ -12,16 +12,12 @@ package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.RelationDataFactory;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.util.OrcsConditions;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
-import org.eclipse.osee.orcs.core.internal.util.ValueProviderFactory;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
@@ -31,12 +27,10 @@ public class RelationFactory {
 
    private final RelationTypes relationTypes;
    private final RelationDataFactory relationDataFactory;
-   private final ValueProviderFactory providerFactory;
 
-   public RelationFactory(RelationTypes relationTypes, RelationDataFactory relationDataFactory, ValueProviderFactory providerFactory) {
+   public RelationFactory(RelationTypes relationTypes, RelationDataFactory relationDataFactory) {
       this.relationTypes = relationTypes;
       this.relationDataFactory = relationDataFactory;
-      this.providerFactory = providerFactory;
    }
 
    public RelationNodeAdjacencies createRelationContainer() {
@@ -44,8 +38,7 @@ public class RelationFactory {
    }
 
    public Relation createRelation(RelationData data) {
-      ValueProvider<Branch, OrcsData> branch = providerFactory.createBranchProvider(data);
-      return new Relation(relationTypes, data, branch);
+      return new Relation(relationTypes, data);
    }
 
    public Relation createRelation(RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {

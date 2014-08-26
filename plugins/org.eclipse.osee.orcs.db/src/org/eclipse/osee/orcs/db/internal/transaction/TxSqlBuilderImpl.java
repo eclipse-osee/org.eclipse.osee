@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -33,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.OrcsVisitor;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
@@ -85,13 +85,13 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void accept(TransactionRecord tx, OrcsChangeSet changeSet) throws OseeCoreException {
-      txId = tx.getId();
+   public void accept(TransactionReadable tx, OrcsChangeSet changeSet) throws OseeCoreException {
+      txId = tx.getGuid();
       binaryStores = new ArrayList<DaoToSql>();
       dataItemInserts = new HashCollection<SqlOrderEnum, Object[]>();
       txNotCurrentsJoin = new HashMap<SqlOrderEnum, IdJoinQuery>();
 
-      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getTimeStamp(), tx.getAuthor(), tx.getBranchId(),
+      addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthorId(), tx.getBranchId(),
          tx.getTxType().getId());
       changeSet.accept(this);
    }

@@ -37,21 +37,24 @@ public class BranchDataFactory {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionReadable fromTx = txQuery.andIsHead(CoreBranches.SYSTEM_ROOT).getResults().getExactlyOne();
       String creationComment = String.format("Branch Creation for %s", branch.getName());
-      return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, null, false);
+      return createBranchData(branch, CoreBranches.SYSTEM_ROOT, BranchType.BASELINE, creationComment, fromTx, author,
+         null, false);
    }
 
    public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionReadable fromTx = txQuery.andIsHead(parent).getResults().getExactlyOne();
       String creationComment = String.format("Branch Creation for %s", branch.getName());
-      return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, associatedArtifact, false);
+      return createBranchData(branch, parent, BranchType.BASELINE, creationComment, fromTx, author, associatedArtifact,
+         false);
    }
 
    public CreateBranchData createWorkingBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionReadable fromTx = txQuery.andIsHead(parent).getResults().getExactlyOne();
       String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx.getGuid());
-      return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, false);
+      return createBranchData(branch, parent, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact,
+         false);
    }
 
    public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
@@ -63,7 +66,8 @@ public class BranchDataFactory {
       String creationComment =
          String.format("Transaction %s copied from %s to create Branch %s", fromTransaction, parent.getName(),
             branch.getName());
-      return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, true);
+      return createBranchData(branch, parent, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact,
+         true);
    }
 
    public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
@@ -75,10 +79,11 @@ public class BranchDataFactory {
 
       String creationComment =
          String.format("Transaction %d ported from %s to create Branch %s", value, parent.getName(), branch.getName());
-      return createBranchData(branch, BranchType.PORT, creationComment, fromTx, author, associatedArtifact, true);
+      return createBranchData(branch, parent, BranchType.PORT, creationComment, fromTx, author, associatedArtifact,
+         true);
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, BranchType branchType, String creationComment, TransactionReadable sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
+   private CreateBranchData createBranchData(IOseeBranch branch, IOseeBranch parent, BranchType branchType, String creationComment, TransactionReadable sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
       createData.setUuid(branch.getUuid());
       createData.setName(branch.getName());
@@ -91,6 +96,9 @@ public class BranchDataFactory {
       createData.setUserArtifact(author);
       createData.setAssociatedArtifact(associatedArtifact);
       createData.setTxCopyBranchType(bCopyTx);
+      if (parent != null) {
+         createData.setParentBranchUuid(parent.getGuid());
+      }
       return createData;
    }
 

@@ -40,13 +40,19 @@ public class TxDataLoaderImpl implements TxDataLoader {
    private final GraphFactory graphFactory;
    private final GraphBuilderFactory graphBuilderFactory;
    private final GraphProvider graphProvider;
+   private final TransactionProvider txProvider;
 
-   public TxDataLoaderImpl(DataLoaderFactory dataLoaderFactory, GraphFactory graphFactory, GraphBuilderFactory graphBuilderFactory, GraphProvider graphProvider) {
+   public static interface TransactionProvider {
+      int getHeadTransaction(OrcsSession session, IOseeBranch branch);
+   }
+
+   public TxDataLoaderImpl(DataLoaderFactory dataLoaderFactory, GraphFactory graphFactory, GraphBuilderFactory graphBuilderFactory, GraphProvider graphProvider, TransactionProvider txProvider) {
       super();
       this.dataLoaderFactory = dataLoaderFactory;
       this.graphProvider = graphProvider;
       this.graphFactory = graphFactory;
       this.graphBuilderFactory = graphBuilderFactory;
+      this.txProvider = txProvider;
    }
 
    private DataLoader createLoader(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
@@ -79,8 +85,9 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public GraphData createGraph(IOseeBranch branch) throws OseeCoreException {
-      return graphFactory.createGraphSetToHeadTx(branch);
+   public GraphData createGraph(OrcsSession session, IOseeBranch branch) throws OseeCoreException {
+      int headTransaction = txProvider.getHeadTransaction(session, branch);
+      return graphFactory.createGraph(session, branch, headTransaction);
    }
 
 }

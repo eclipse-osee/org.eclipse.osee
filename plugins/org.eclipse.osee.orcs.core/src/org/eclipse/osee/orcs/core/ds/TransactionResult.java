@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 public interface TransactionResult extends HasOrcsChangeSet {
 
-   TransactionRecord getTransaction();
+   TransactionReadable getTransaction();
 
 }

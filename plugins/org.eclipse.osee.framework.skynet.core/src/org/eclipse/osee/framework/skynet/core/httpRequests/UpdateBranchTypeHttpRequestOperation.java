@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,7 +54,8 @@ public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperatio
             requestData, null);
 
       if (response.wasSuccessful()) {
-         BranchManager.refreshBranches();
+         Branch branch = BranchManager.getBranch(branchUuid);
+         branch.setBranchType(type);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchUuid));
       }
    }

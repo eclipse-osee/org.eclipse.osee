@@ -17,12 +17,12 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -41,11 +41,11 @@ public class CommitBranchCallable extends AbstractBranchCallable<BranchCommitReq
 
       ArtifactReadable committer = getArtifactById(request.getUserArtId());
 
-      Callable<TransactionRecord> callable = getBranchOps().commitBranch(committer, source, destination);
-      TransactionRecord transactionRecord = callAndCheckForCancel(callable);
+      Callable<TransactionReadable> callable = getBranchOps().commitBranch(committer, source, destination);
+      TransactionReadable transactionRecord = callAndCheckForCancel(callable);
 
       BranchCommitResponse responseData = new BranchCommitResponse();
-      responseData.setTransaction(transactionRecord);
+      responseData.setTransactionId(transactionRecord.getGuid());
 
       if (request.isArchiveAllowed()) {
          Callable<Void> archiveCallable = getBranchOps().archiveUnarchiveBranch(source, ArchiveOperation.ARCHIVE);

@@ -19,11 +19,8 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import org.eclipse.osee.orcs.core.internal.util.ValueProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +38,6 @@ public class RelationTest {
    private static final long TYPE_UUID = 123124514L;
 
    // @formatter:off
-   @Mock private ValueProvider<Branch, OrcsData> branchProvider; 
    @Mock private RelationTypes relationTypes;
    @Mock RelationData data;
    // @formatter:on
@@ -52,7 +48,7 @@ public class RelationTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      relation = new Relation(relationTypes, data, branchProvider);
+      relation = new Relation(relationTypes, data);
 
       when(data.getTypeUuid()).thenReturn(TYPE_UUID);
    }
@@ -84,12 +80,6 @@ public class RelationTest {
    }
 
    @Test
-   public void testGetBranch() throws OseeCoreException {
-      relation.getBranch();
-      verify(branchProvider).get();
-   }
-
-   @Test
    public void testGetRelationType() throws OseeCoreException {
       relation.getRelationType();
 
@@ -105,13 +95,6 @@ public class RelationTest {
    @Test
    public void testGetOrcsData() {
       assertEquals(data, relation.getOrcsData());
-   }
-
-   @Test
-   public void testSetOrcsData() {
-      relation.setOrcsData(data);
-
-      verify(branchProvider).setOrcsData(data);
    }
 
    @Test

@@ -16,15 +16,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -35,20 +32,15 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
-import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 
 /**
  * the behavior of this class - it needs to: have a branch
  * 
  * @author David Miller
  */
-public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Branch> {
+public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void> {
 
-   private final BranchCache branchCache;
-   private final BranchFactory branchFactory;
-   private final TransactionRecordFactory txFactory;
    private final CreateBranchData branchData;
-   private Branch internalBranch;
 
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
@@ -59,77 +51,66 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
-   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+   private static final String GET_PRIOR_TRANSACTION =
+      "select max(transaction_id) FROM osee_tx_details where branch_id = ? and transaction_id < ?";
+
+   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, CreateBranchData branchData) {
       super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
-      this.branchCache = branchCache;
-      this.branchFactory = branchFactory;
-      this.txFactory = txFactory;
       this.branchData = branchData;
       //this.systemUserId = -1;
    }
 
-   private BranchCache getBranchCache() {
-      return branchCache;
-   }
-
    @SuppressWarnings("unchecked")
    @Override
-   public Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
+   public Void handleTxWork(OseeConnection connection) throws OseeCoreException {
       // get the previous transaction, if there is one
-      int sourceTx = IdUtil.getSourceTxId(branchData, branchCache);
-      TransactionRecord savedTx = branchCache.getOrLoad(sourceTx);
+      int sourceTx = branchData.getFromTransaction().getGuid();
 
-      TransactionRecord priorTx = branchCache.getPriorTransaction(savedTx);
+      int priorTransactionId =
+         getDatabaseService().runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchData.getUuid(), sourceTx);
+
       // copy the branch up to the prior transaction - the goal is to have the provided
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
 
+      ITransaction priorTx = TokenFactory.createTransaction(priorTransactionId);
       branchData.setFromTransaction(priorTx);
 
-      Callable<Branch> callable =
-         new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getBranchCache(),
-            branchFactory, txFactory, branchData);
+      Callable<Void> callable =
+         new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), branchData);
 
       try {
-         internalBranch = callable.call();
+         callable.call();
          // TODO figure out if this call is "stackable", is the data passed in above
          // still valid after the branch creation, or do I need to get it all from the new branch???
 
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
 
-         String creationComment = branchData.getCreationComment() + " and copied transaction " + savedTx.getId();
+         String creationComment = branchData.getCreationComment() + " and copied transaction " + sourceTx;
 
-         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, internalBranch.getUuid(),
-            nextTransactionId, creationComment, timestamp, branchData.getUserArtifactId(),
-            TransactionDetailsType.NonBaselined.getId());
+         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
+            creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
 
-         TransactionRecord record =
-            txFactory.create(nextTransactionId, internalBranch, creationComment, timestamp,
-               branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined);
-
-         branchCache.cache(record);
-
-         populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
+         populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranchUuid(), sourceTx);
 
          UpdatePreviousTxCurrent updater =
-            new UpdatePreviousTxCurrent(getDatabaseService(), connection, internalBranch.getUuid());
-         updater.updateTxNotCurrentsFromTx(record.getId());
+            new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchData.getUuid());
+         updater.updateTxNotCurrentsFromTx(nextTransactionId);
 
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
-      return internalBranch;
+      return null;
    }
 
-   private void populateTransaction(double workAmount, OseeConnection connection, int intoTx, Branch branch, TransactionRecord copyTx) throws OseeCoreException {
+   private void populateTransaction(double workAmount, OseeConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
       long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
-      if (branch.hasParentBranch()) {
-         parentBranchId = branch.getParentBranch().getUuid();
+      if (parentBranch != null) {
+         parentBranchId = parentBranch;
       }
-      int copyTxId = copyTx.getId();
 
       populateAddressingToCopy(connection, data, intoTx, gammas, SELECT_ADDRESSING, parentBranchId, copyTxId);
 
@@ -150,12 +131,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {
-                  baseTxId,
-                  gamma,
-                  modType.getValue(),
-                  txCurrent.getValue(),
-                  internalBranch.getUuid()});
+               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branchData.getUuid()});
                gammas.add(gamma);
             }
          }

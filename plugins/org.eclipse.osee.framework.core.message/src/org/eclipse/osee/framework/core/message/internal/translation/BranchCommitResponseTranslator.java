@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.message.internal.translation;
 
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,15 +36,15 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
    public BranchCommitResponse convert(PropertyStore propertyStore) throws OseeCoreException {
       BranchCommitResponse response = new BranchCommitResponse();
       PropertyStore innerStore = propertyStore.getPropertyStore(Entry.TRANSACTION_NUMBER.name());
-      TransactionRecord transactionRecord = service.convert(innerStore, CoreTranslatorId.TRANSACTION_RECORD);
-      response.setTransaction(transactionRecord);
+      Integer transactionRecord = service.convert(innerStore, CoreTranslatorId.TRANSACTION_RECORD);
+      response.setTransactionId(transactionRecord);
       return response;
    }
 
    @Override
    public PropertyStore convert(BranchCommitResponse data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      TransactionRecord record = data.getTransaction();
+      Integer record = data.getTransactionId();
       PropertyStore property = service.convert(record, CoreTranslatorId.TRANSACTION_RECORD);
       store.put(Entry.TRANSACTION_NUMBER.name(), property);
       return store;
