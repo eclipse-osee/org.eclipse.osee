@@ -620,10 +620,12 @@ attributeType "Access Context Id" extends StringAttribute {
 artifactType "Requirement" extends "Artifact" {
 	uuid 0x0000000000000015
 	attribute "Development Assurance Level"
+	attribute "Severity Category"
 	attribute "Qualification Method"
 	attribute "Subsystem"
 	attribute "Technical Performance Parameter"
 	attribute "PublishInline"
+	
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
@@ -822,6 +824,7 @@ artifactType "Design" extends "MS Word Template" {
 	uuid 0x000000000000015A
 	attribute "Development Assurance Level"
 	attribute "Safety Criticality"
+	attribute "Severity Category"
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
 }
@@ -1144,6 +1147,15 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
 	enumType "enum.req.development.assurance.level"
 	description "Development Assurance Level"
 	defaultValue "E"
+	mediaType "text/plain"
+}
+
+
+attributeType "Severity Category" extends StringAttribute {
+	uuid 0x0B473ECCDBFF0E6D
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	mediaType "text/plain"
 }
 
