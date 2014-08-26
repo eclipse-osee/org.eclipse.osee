@@ -28,7 +28,7 @@
 
 		<module>../../plugins/org.eclipse.osee.ats.impl</module>
 		<module>../../plugins/org.eclipse.osee.ats.impl.test</module>
-		
+
 		<module>../../plugins/org.eclipse.osee.ats.rest</module>
 
 		<module>../../features/org.eclipse.osee.x.ats.feature</module>

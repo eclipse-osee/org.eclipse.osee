@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -27,13 +28,14 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class AtsXWidgetValidateManagerTest {
+   IAtsServices atsServices;
 
    @Test
    public void testValidateTransition_emptyValidators() {
       List<WidgetResult> results = new LinkedList<WidgetResult>();
 
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
-      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null);
+      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null, atsServices);
       Assert.assertTrue(results.isEmpty());
    }
 
@@ -43,7 +45,7 @@ public class AtsXWidgetValidateManagerTest {
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsValidator()));
-      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null);
+      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null, atsServices);
       Assert.assertTrue(results.isEmpty());
    }
 
@@ -53,7 +55,7 @@ public class AtsXWidgetValidateManagerTest {
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsErrorValidator()));
-      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null);
+      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null, atsServices);
       Assert.assertFalse(results.isEmpty());
    }
 
@@ -64,7 +66,7 @@ public class AtsXWidgetValidateManagerTest {
 
       manager.add(new TestValidatorProvider(new AtsExceptoinValidator()));
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("Widget Name");
-      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, widgetDef, null, null);
+      manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, widgetDef, null, null, atsServices);
       Assert.assertFalse(results.isEmpty());
       Assert.assertEquals(results.iterator().next().getStatus(), WidgetStatus.Exception);
       Assert.assertEquals(
@@ -82,7 +84,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
          return new WidgetResult(WidgetStatus.Valid, null, "Here it is");
       }
 
@@ -90,7 +92,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsErrorValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, null, "Here it is");
       }
 
@@ -98,7 +100,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsExceptoinValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeStateException {
+      public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) throws OseeStateException {
          throw new OseeStateException("problem");
       }
 

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -25,6 +26,7 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public class AtsXDateValidatorTest {
+   private IAtsServices atsServices;
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
@@ -40,18 +42,23 @@ public class AtsXDateValidatorTest {
 
       // Valid for anything not XIntegerDam
       WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XDateDam");
 
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
    }
 
@@ -70,7 +77,8 @@ public class AtsXDateValidatorTest {
       MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(new Date()));
 
       // Valid for valid date
-      WidgetResult result = validator.validateTransition(dateProvider, widgetDef, fromStateDef, toStateDef);
+      WidgetResult result =
+         validator.validateTransition(dateProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
    }
 
@@ -92,7 +100,8 @@ public class AtsXDateValidatorTest {
       MockDateValueProvider dateProvider = new MockDateValueProvider(Arrays.asList(pastDate, new Date()));
 
       // Not valid for pastDate
-      WidgetResult result = validator.validateTransition(dateProvider, widgetDef, fromStateDef, toStateDef);
+      WidgetResult result =
+         validator.validateTransition(dateProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
    }
 }

@@ -75,7 +75,7 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
          awa.getStateDefinition())) {
          ArtifactValueProvider provider = new ArtifactValueProvider(awa, widgetDef);
          AtsXWidgetValidateManager.instance.validateTransition(results, provider, widgetDef, awa.getStateDefinition(),
-            toStateDef);
+            toStateDef, AtsClientService.get().getServices());
       }
       return results;
    }

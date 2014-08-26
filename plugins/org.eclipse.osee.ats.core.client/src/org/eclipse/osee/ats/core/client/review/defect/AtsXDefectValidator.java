@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.review.defect;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -25,7 +26,7 @@ public class AtsXDefectValidator extends AtsXWidgetValidator {
    public static String WIDGET_NAME = "XDefectViewer";
 
    @Override
-   public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
+   public WidgetResult validateTransition(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) throws OseeCoreException {
       WidgetResult result = WidgetResult.Valid;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          ReviewDefectManager mgr = new ReviewDefectManager(provider);

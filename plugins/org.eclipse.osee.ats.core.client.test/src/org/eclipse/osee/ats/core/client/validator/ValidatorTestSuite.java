@@ -8,24 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client;
+package org.eclipse.osee.ats.core.client.validator;
 
-import org.eclipse.osee.ats.core.client.internal.config.InternalConfigTestSuite;
-import org.eclipse.osee.ats.core.client.internal.store.InternalStoreTestSuite;
-import org.eclipse.osee.ats.core.client.review.ReviewTestSuite;
-import org.eclipse.osee.ats.core.client.validator.ValidatorTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({AtsXCommitManagerValidatorTest.class})
 /**
+ *
  * @author Donald G. Dunne
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   InternalConfigTestSuite.class,
-   InternalStoreTestSuite.class,
-   ReviewTestSuite.class,
-   ValidatorTestSuite.class})
-public class AllAtsCoreClientTestSuite {
-   // Test Suite
+public class ValidatorTestSuite {
+   // TestSuite
 }

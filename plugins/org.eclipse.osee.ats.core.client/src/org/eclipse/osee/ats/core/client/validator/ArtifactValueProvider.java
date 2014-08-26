@@ -96,4 +96,8 @@ public class ArtifactValueProvider implements IValueProvider {
       return artifact;
    }
 
+   public Object getObject() {
+      return artifact;
+   }
+
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionFloatMinMaxConstraint;
@@ -38,7 +39,7 @@ public class AtsXWidgetValidatorTest {
    private static AtsXWidgetValidator validator = new AtsXWidgetValidator() {
 
       @Override
-      public WidgetResult validateTransition(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+      public WidgetResult validateTransition(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
          return null;
       }
    };

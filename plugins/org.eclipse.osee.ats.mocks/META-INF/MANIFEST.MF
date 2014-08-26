@@ -5,12 +5,24 @@ Bundle-SymbolicName: org.eclipse.osee.ats.mocks
 Bundle-Version: 0.19.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.core.runtime,
+Import-Package: org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.ai,
+ org.eclipse.osee.ats.api.commit,
+ org.eclipse.osee.ats.api.data,
+ org.eclipse.osee.ats.api.review,
+ org.eclipse.osee.ats.api.team,
+ org.eclipse.osee.ats.api.user,
+ org.eclipse.osee.ats.api.version,
  org.eclipse.osee.ats.api.workdef,
+ org.eclipse.osee.ats.api.workflow,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ org.junit
 Export-Package: org.eclipse.osee.ats.mocks
+Require-Bundle: org.mockito;bundle-version="1.9.0",
+ org.hamcrest.core,
+ org.objenesis

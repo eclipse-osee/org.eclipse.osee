@@ -42,7 +42,20 @@
 		<module>../../plugins/org.eclipse.osee.ats.p2</module>
 	</modules>
 
+
 	<profiles>
+      <profile>
+      <id>ats-client-mock</id>
+         <activation>
+            <property>
+                   <name>osee-build-stage</name>
+                   <value>osee-ats-client</value>
+            </property>
+         </activation>
+         <modules>
+            <module>../../plugins/org.eclipse.osee.ats.mocks</module>
+         </modules>
+      </profile>
 		<profile>
 			<id>ats-client-help-test</id>
 			<activation>

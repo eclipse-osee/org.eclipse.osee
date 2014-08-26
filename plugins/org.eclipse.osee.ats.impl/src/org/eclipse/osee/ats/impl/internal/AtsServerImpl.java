@@ -106,7 +106,6 @@ public class AtsServerImpl implements IAtsServer {
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
    private WorkItemNotificationProcessor workItemNotificationProcessor;
    private AtsNotificationEventProcessor notificationEventProcessor;
-
    private IAtsVersionService versionService;
 
    public void setLogger(Log logger) {
@@ -145,7 +144,7 @@ public class AtsServerImpl implements IAtsServer {
       configItemFactory = new ConfigItemFactory(logger, this);
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
-      branchService = new AtsBranchServiceImpl(this, orcsApi, dbService);
+      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, dbService);
       reviewService = new AtsReviewServiceImpl(this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 
@@ -320,7 +319,7 @@ public class AtsServerImpl implements IAtsServer {
    public QueryBuilder getQuery() {
       return getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch());
    }
-   
+
    @Override
    public String getConfigValue(String key) {
       String result = null;
@@ -365,6 +364,10 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public IAtsVersionService getVersionService() {
-      return null;
+      return versionService;
+   }
+
+   public AtsNotifierServiceImpl getNotifyService() {
+      return notifyService;
    }
 }

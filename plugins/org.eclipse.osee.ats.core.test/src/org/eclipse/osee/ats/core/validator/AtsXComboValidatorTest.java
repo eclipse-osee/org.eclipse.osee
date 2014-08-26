@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.validator;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -21,6 +22,7 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public class AtsXComboValidatorTest {
+   private IAtsServices atsServices;
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
@@ -36,18 +38,23 @@ public class AtsXComboValidatorTest {
 
       // Valid for anything not XIntegerDam
       WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XComboDam");
 
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
    }
 }

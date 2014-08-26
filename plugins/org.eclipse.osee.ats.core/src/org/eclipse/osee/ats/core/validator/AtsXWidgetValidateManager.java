@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -27,11 +28,12 @@ public class AtsXWidgetValidateManager {
    protected AtsXWidgetValidateManager() {
    }
 
-   public void validateTransition(List<WidgetResult> results, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
+   public void validateTransition(List<WidgetResult> results, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
       for (AtsXWidgetValidatorProvider provider : providers) {
          for (IAtsXWidgetValidator validator : provider.getValidators()) {
             try {
-               WidgetResult status = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef);
+               WidgetResult status =
+                  validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
                if (!status.isValid()) {
                   results.add(status);
                }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionListMinMaxSelectedConstraint;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -24,6 +25,7 @@ import org.junit.Assert;
  * @author Donald G. Dunne
  */
 public class AtsXListValidatorTest {
+   private IAtsServices atsServices;
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
@@ -39,18 +41,23 @@ public class AtsXListValidatorTest {
 
       // Valid for anything not XIntegerDam
       WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XListDam");
 
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+      result =
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
    }
 
@@ -72,25 +79,26 @@ public class AtsXListValidatorTest {
 
       // Valid is nothing entered
       WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef);
+         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+            atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       //Invalid_Range if select more than supposed to
       constraint.set(0, 2);
       MockValueProvider provider = new MockValueProvider(Arrays.asList("this", "is", "selected"));
-      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
+      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Invalid_Range if less than supposed to
       constraint.set(2, 2);
       provider = new MockValueProvider(Arrays.asList("this"));
-      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
+      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
 
       //Valid if less what supposed to
       constraint.set(2, 2);
       provider = new MockValueProvider(Arrays.asList("this", "is"));
-      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef);
+      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       // test nulls
