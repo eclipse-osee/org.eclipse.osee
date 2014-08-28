@@ -166,7 +166,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
-      for (ArtifactReadable art : ((ArtifactReadable) workItem).getRelated(AtsRelationTypes.SubscribedUser_User)) {
+      for (ArtifactReadable art : ((ArtifactReadable) workItem.getStoreObject()).getRelated(AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
       }
       return arts;
