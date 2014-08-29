@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.core.message.internal;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.internal.translation.ArtifactTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.AttributeTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCacheStoreRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchChangeArchivedStateRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchChangeStateRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchChangeTypeRequestTranslator;
@@ -32,12 +30,8 @@ import org.eclipse.osee.framework.core.message.internal.translation.OseeImportMo
 import org.eclipse.osee.framework.core.message.internal.translation.PurgeBranchRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.RelationTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -51,15 +45,12 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory, TempCachingService cachingService) throws OseeCoreException {
-      BranchCache branchCache = cachingService.getBranchCache();
-      service.addTranslator(new TransactionRecordTranslator(), CoreTranslatorId.TRANSACTION_RECORD);
-
+   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
       service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 
       service.addTranslator(new BranchCommitRequestTranslator(), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
-      service.addTranslator(new BranchCommitResponseTranslator(service), CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+      service.addTranslator(new BranchCommitResponseTranslator(), CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
       service.addTranslator(new BranchChangeTypeRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_TYPE);
       service.addTranslator(new BranchChangeStateRequestTranslator(), CoreTranslatorId.CHANGE_BRANCH_STATE);
@@ -71,11 +62,6 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new PurgeBranchRequestTranslator(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
 
       service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
-
-      service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
-      service.addTranslator(new BranchCacheStoreRequestTranslator(), CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
-      service.addTranslator(new TransactionCacheUpdateResponseTranslator(txRecordFactory, branchCache),
-         CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),
          CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);

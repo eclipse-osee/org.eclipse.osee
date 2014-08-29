@@ -10,18 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import java.util.Collection;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
@@ -39,7 +31,6 @@ import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
-import org.eclipse.osee.orcs.db.internal.types.TempCachingServiceFactory;
 import org.eclipse.osee.orcs.db.internal.types.TypesModule;
 import org.eclipse.osee.orcs.db.internal.util.IdentityManagerImpl;
 import org.osgi.framework.BundleContext;
@@ -47,7 +38,7 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
+public class OrcsDataStoreImpl implements OrcsDataStore {
 
    private Log logger;
    private IOseeDatabaseService dbService;
@@ -55,7 +46,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
    private DataProxyFactoryProvider proxyProvider;
-   private IOseeModelFactoryService modelFactory;
    private EventService eventService;
 
    private OrcsTypesDataStore typesDataStore;
@@ -63,8 +53,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    private QueryModule queryModule;
    private IdentityManager idManager;
    private SqlProvider sqlProvider;
-
-   private TempCachingService cacheService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -90,10 +78,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       this.proxyProvider = proxyProvider;
    }
 
-   public void setModelFactory(IOseeModelFactoryService modelFactory) {
-      this.modelFactory = modelFactory;
-   }
-
    public void setEventService(EventService eventService) {
       this.eventService = eventService;
    }
@@ -101,10 +85,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    public void start(BundleContext context) throws Exception {
       String id = String.format("orcs_datastore_system_%s", GUID.create());
       OrcsSession session = new DatastoreSession(id);
-
-      TempCachingServiceFactory modelingService =
-         new TempCachingServiceFactory(logger, dbService, executorAdmin, modelFactory, eventService);
-      cacheService = modelingService.createCachingService(session, true);
 
       sqlProvider = createSqlProvider();
 
@@ -119,10 +99,9 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
-         new BranchModule(logger, dbService, idManager, cacheService, preferences, executorAdmin, resourceManager,
-            modelFactory);
+         new BranchModule(logger, dbService, idManager, preferences, executorAdmin, resourceManager);
 
-      TxModule txModule = new TxModule(logger, dbService, cacheService, modelFactory, idManager);
+      TxModule txModule = new TxModule(logger, dbService, idManager);
 
       AdminModule adminModule = new AdminModule(logger, dbService, idManager, preferences);
 
@@ -154,40 +133,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore, TempCachingService {
    @Override
    public QueryEngineIndexer getQueryEngineIndexer() {
       return queryModule.getQueryIndexer();
-   }
-
-   private TempCachingService getProxied() {
-      return cacheService;
-   }
-
-   @Override
-   public BranchCache getBranchCache() {
-      return getProxied().getBranchCache();
-   }
-
-   @Override
-   public TransactionCache getTransactionCache() {
-      return getProxied().getTransactionCache();
-   }
-
-   @Override
-   public Collection<?> getCaches() {
-      return getProxied().getCaches();
-   }
-
-   @Override
-   public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
-      return getProxied().getCache(cacheId);
-   }
-
-   @Override
-   public void reloadAll() throws OseeCoreException {
-      getProxied().reloadAll();
-   }
-
-   @Override
-   public void clearAll() {
-      getProxied().clearAll();
    }
 
    private static final class DatastoreSession extends BaseIdentity<String> implements OrcsSession {

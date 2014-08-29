@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -36,6 +34,8 @@ import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
  * @author Roberto E. Escobar
@@ -51,13 +51,11 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    private static final String MAPPING_ART = "ABKY9QDQLSaHQBiRC7wA";
 
    private final IResourceManager resourceManager;
-   private final BranchCache branchCache;
    private final OrcsApi orcs;
 
-   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, BranchCache branchCache, OrcsApi orcs) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, OrcsApi orcs) {
       super(logger);
       this.resourceManager = resourceManager;
-      this.branchCache = branchCache;
       this.orcs = orcs;
    }
 
@@ -89,12 +87,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          }
 
          String uri = null;
-         Branch branch = null;
+         BranchQuery query = orcs.getQueryFactory(null).branchQuery();
          if (branchName != null) {
-            branch = branchCache.getBySoleName(branchName);
+            query.andNameEquals(branchName);
          } else if (branchUuid != null) {
-            branch = branchCache.getByGuid(branchUuid);
+            query.andUuids(branchUuid);
          }
+         BranchReadable branch = query.getResults().getExactlyOne();
          Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
          uri = ArtifactUtil.getUri(artifactGuid, branch);
          handleArtifactUri(resourceManager, request.getQueryString(), uri, response);

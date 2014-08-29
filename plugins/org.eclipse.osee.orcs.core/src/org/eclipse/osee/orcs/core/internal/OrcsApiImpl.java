@@ -18,7 +18,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -79,7 +78,6 @@ public class OrcsApiImpl implements OrcsApi {
    private Log logger;
    private OrcsDataStore dataStore;
    private AttributeClassRegistry registry;
-   private TempCachingService cacheService;
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
 
@@ -102,10 +100,6 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setAttributeClassRegistry(AttributeClassRegistry registry) {
       this.registry = registry;
-   }
-
-   public void setCacheService(TempCachingService cacheService) {
-      this.cacheService = cacheService;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {

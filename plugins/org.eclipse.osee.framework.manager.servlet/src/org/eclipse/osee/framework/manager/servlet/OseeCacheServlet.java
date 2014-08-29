@@ -34,21 +34,12 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
 import org.eclipse.osee.framework.core.message.AttributeTypeCacheUpdateResponse;
-import org.eclipse.osee.framework.core.message.BranchCacheStoreRequest;
-import org.eclipse.osee.framework.core.message.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.message.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.message.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse.RelationTypeRow;
-import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -75,17 +66,13 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
 
    private static final long serialVersionUID = 6693534844874109524L;
    private final IDataTranslationService translationService;
-   private final IOseeModelFactoryService factoryService;
-   private final BranchCache branchCache;
    private final OrcsApi orcsApi;
    private static final StorageState DEFAULT_STORAGE_STATE = StorageState.CREATED;
 
-   public OseeCacheServlet(Log logger, IDataTranslationService translationService, TempCachingService cachingService, OrcsApi orcsApi, IOseeModelFactoryService factoryService) {
+   public OseeCacheServlet(Log logger, IDataTranslationService translationService, OrcsApi orcsApi) {
       super(logger);
       this.translationService = translationService;
-      this.branchCache = cachingService.getBranchCache();
       this.orcsApi = orcsApi;
-      this.factoryService = factoryService;
    }
 
    public IDataTranslationService getTranslationService() {
@@ -121,9 +108,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
                OrcsTypes orcsTypes = orcsApi.getOrcsTypes(context);
                sendUpdates(req, resp, orcsTypes);
                break;
-            case STORE:
-               storeUpdates(req, resp);
-               break;
             default:
                throw new UnsupportedOperationException();
          }
@@ -144,45 +128,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       resp.getWriter().write(Lib.exceptionToString(th));
       resp.getWriter().flush();
       resp.getWriter().close();
-   }
-
-   private void storeUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
-      IDataTranslationService service = getTranslationService();
-
-      BranchCacheStoreRequest updateRequest = null;
-      InputStream inputStream = null;
-      try {
-         inputStream = req.getInputStream();
-         updateRequest = service.convert(inputStream, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         Lib.close(inputStream);
-      }
-      Collection<Branch> updated =
-         new BranchCacheUpdateUtil(factoryService.getBranchFactory(), branchCache).updateCache(updateRequest);
-
-      if (updateRequest.isServerUpdateMessage()) {
-         for (Branch branch : updated) {
-            if (branch.isCreated()) {
-               branch.setStorageState(StorageState.MODIFIED);
-            }
-            branch.clearDirty();
-            if (branch.isPurged()) {
-               branchCache.decache(branch);
-            }
-         }
-      } else {
-         branchCache.storeItems(updated);
-      }
-      try {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         resp.setCharacterEncoding("UTF-8");
-         resp.getWriter().write("Branch Store Successful");
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
    }
 
    private void sendUpdates(HttpServletRequest req, HttpServletResponse resp, OrcsTypes orcsTypes) throws OseeCoreException {
@@ -219,25 +164,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       Object response = null;
       ITranslatorId transalatorId = null;
       switch (updateRequest.getCacheId()) {
-         case BRANCH_CACHE:
-            response = BranchCacheUpdateResponse.fromCache(branchCache, branchCache.getAll());
-            transalatorId = CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE;
-            break;
-         case TRANSACTION_CACHE:
-            Collection<TransactionRecord> record;
-
-            if (updateRequest.getItemsIds().isEmpty()) {
-               record = branchCache.getAllTx();
-            } else {
-               record = new ArrayList<TransactionRecord>();
-               branchCache.loadTransactions(updateRequest.getItemsIds());
-               for (Integer item : updateRequest.getItemsIds()) {
-                  record.add(branchCache.getByTxId(item));
-               }
-            }
-            response = TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record);
-            transalatorId = CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE;
-            break;
          case ARTIFACT_TYPE_CACHE:
             response = createArtifactTypeCacheUpdateResponse(orcsTypes);
             transalatorId = CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE;

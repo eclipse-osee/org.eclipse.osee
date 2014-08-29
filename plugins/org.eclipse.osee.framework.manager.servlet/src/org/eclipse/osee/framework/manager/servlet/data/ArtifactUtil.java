@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.manager.servlet.data;
 
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -22,13 +22,13 @@ public class ArtifactUtil {
    private static final String URI_BY_GUID =
       "SELECT att.uri FROM osee_artifact art, osee_attribute att, %s txs where art.guid = ? and art.art_id = att.art_id and att.uri is not null and att.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
 
-   public static String getUri(String artifactGuid, Branch branch) throws OseeCoreException {
+   public static String getUri(String artifactGuid, BranchReadable branch) throws OseeCoreException {
       String sql = String.format(URI_BY_GUID, getTransactionTable(branch));
       return ConnectionHandler.runPreparedQueryFetchString("", sql, artifactGuid, branch.getUuid(),
          TxChange.CURRENT.getValue());
    }
 
-   private static String getTransactionTable(Branch branch) {
+   private static String getTransactionTable(BranchReadable branch) {
       return branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
    }
 }

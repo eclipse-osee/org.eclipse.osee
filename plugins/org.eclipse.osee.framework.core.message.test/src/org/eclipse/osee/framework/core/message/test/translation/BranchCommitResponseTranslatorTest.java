@@ -13,16 +13,10 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
-import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCommitResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.message.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.runner.RunWith;
@@ -50,18 +44,13 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
    public static Collection<Object[]> data() throws OseeCoreException {
 
       List<Object[]> data = new ArrayList<Object[]>();
-      IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new TransactionRecordTranslator(), CoreTranslatorId.TRANSACTION_RECORD);
 
-      ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator(service);
+      ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator();
       for (int index = 1; index <= 2; index++) {
-         TransactionRecord tx = MockDataFactory.createTransaction(index, index * 3);
-
          BranchCommitResponse response = new BranchCommitResponse();
-         response.setTransactionId(tx.getGuid());
+         response.setTransactionId(index);
          data.add(new Object[] {response, translator});
       }
-      data.add(new Object[] {new BranchCommitResponse(), translator});
       return data;
    }
 }

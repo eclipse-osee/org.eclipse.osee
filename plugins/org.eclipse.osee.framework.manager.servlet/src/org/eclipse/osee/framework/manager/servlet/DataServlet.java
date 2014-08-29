@@ -17,9 +17,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -27,25 +25,28 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.search.BranchQuery;
 
 public class DataServlet extends UnsecuredOseeHttpServlet {
 
    private static final long serialVersionUID = -1399699606153734250L;
 
    private final IResourceManager resourceManager;
-   private final BranchCache branchCache;
+   private final OrcsApi orcsApi;
 
-   public DataServlet(Log logger, IResourceManager resourceManager, TempCachingService cacheService) {
+   public DataServlet(Log logger, IResourceManager resourceManager, OrcsApi orcsApi) {
       super(logger);
       this.resourceManager = resourceManager;
-      branchCache = cacheService.getBranchCache();
+      this.orcsApi = orcsApi;
    }
 
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       String urlRequest = request.getRequestURI();
       try {
-         handleUriRequest(resourceManager, urlRequest, response, branchCache);
+         handleUriRequest(resourceManager, urlRequest, response, orcsApi);
       } catch (OseeCoreException ex) {
          handleError(response, HttpURLConnection.HTTP_INTERNAL_ERROR, "", ex);
       }
@@ -57,12 +58,15 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
       response.sendError(status, Lib.exceptionToString(ex));
    }
 
-   public static void handleUriRequest(IResourceManager resourceManager, String urlRequest, HttpServletResponse response, BranchCache branchCache) throws OseeCoreException {
+   public static void handleUriRequest(IResourceManager resourceManager, String urlRequest, HttpServletResponse response, OrcsApi orcsApi) throws OseeCoreException {
       UrlParser parser = new UrlParser();
       parser.parse(urlRequest);
       Long branchUuid = Long.valueOf(parser.getAttribute("branch"));
       String artifactGuid = parser.getAttribute("artifact");
-      String uri = ArtifactUtil.getUri(artifactGuid, branchCache.getByGuid(branchUuid));
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchReadable branch = query.andUuids(branchUuid).getResults().getExactlyOne();
+
+      String uri = ArtifactUtil.getUri(artifactGuid, branch);
       ArtifactFileServlet.handleArtifactUri(resourceManager, urlRequest, uri, response);
    }
 

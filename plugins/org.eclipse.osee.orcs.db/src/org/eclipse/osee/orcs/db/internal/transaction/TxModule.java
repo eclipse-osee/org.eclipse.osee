@@ -13,8 +13,6 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -34,18 +32,13 @@ public class TxModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final TempCachingService cachingService;
-
-   private final IOseeModelFactoryService modelFactory;
    private final IdentityManager idManager;
 
-   public TxModule(Log logger, IOseeDatabaseService dbService, TempCachingService cachingService, IOseeModelFactoryService modelFactory, IdentityManager identityService) {
+   public TxModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.idManager = identityService;
-      this.cachingService = cachingService;
-      this.modelFactory = modelFactory;
    }
 
    public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, AttributeTypes types) {

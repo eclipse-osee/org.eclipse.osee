@@ -13,13 +13,10 @@ package org.eclipse.osee.framework.manager.servlet.internal;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
@@ -51,9 +48,7 @@ public class ServletRegistrationHandler {
    private ISessionManager sessionManager;
    private IApplicationServerManager appServerManager;
    private IDataTranslationService translationService;
-   private TempCachingService caching;
    private IAuthenticationManager authenticationManager;
-   private IOseeModelFactoryService factoryService;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
 
@@ -71,16 +66,8 @@ public class ServletRegistrationHandler {
       this.translationService = translationService;
    }
 
-   public void setCaching(TempCachingService caching) {
-      this.caching = caching;
-   }
-
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
       this.authenticationManager = authenticationManager;
-   }
-
-   public void setFactoryService(IOseeModelFactoryService factoryService) {
-      this.factoryService = factoryService;
    }
 
    public void setResourceManager(IResourceManager resourceManager) {
@@ -115,14 +102,11 @@ public class ServletRegistrationHandler {
 
    private void registerServices(BundleContext context) {
       contexts.clear();
-      BranchCache branchCache = caching.getBranchCache();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ResourceManagerServlet(logger, sessionManager, resourceManager), OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi),
-         OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi),
-         OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, branchCache, orcsApi), "index");
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi), OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi), "index");
       register(new BranchExchangeServlet(logger, sessionManager, resourceManager, orcsApi),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
@@ -131,14 +115,13 @@ public class ServletRegistrationHandler {
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-      register(new OseeCacheServlet(logger, translationService, caching, orcsApi, factoryService),
-         OseeServerContext.CACHE_CONTEXT);
+      register(new OseeCacheServlet(logger, translationService, orcsApi), OseeServerContext.CACHE_CONTEXT);
       register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);
 
-      register(new AtsServlet(logger, resourceManager, caching), "osee/ats");
+      register(new AtsServlet(logger, resourceManager, orcsApi), "osee/ats");
       register(new ConfigurationServlet(logger, translationService, orcsApi), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-      register(new DataServlet(logger, resourceManager, caching), "osee/data");
+      register(new DataServlet(logger, resourceManager, orcsApi), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }
 

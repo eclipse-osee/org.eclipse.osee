@@ -27,8 +27,6 @@ import org.junit.runners.Suite;
    OseeImportModelRequestTranslatorTest.class,
    OseeImportModelResponseTranslatorTest.class,
    TableDataTranslatorTest.class,
-   TransactionCacheUpdateResponseTranslatorTest.class,
-   TransactionRecordTranslatorTest.class,
    PurgeBranchRequestTranslatorTest.class,
    BranchChangeTypeRequestTranslatorTest.class,
    BranchChangeStateRequestTranslatorTest.class,

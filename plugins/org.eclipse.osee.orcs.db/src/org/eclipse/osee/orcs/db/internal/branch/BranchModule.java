@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -60,23 +58,18 @@ public class BranchModule {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final IdentityLocator identityService;
-   private final TempCachingService cachingService;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
    private final IResourceManager resourceManager;
 
-   private final IOseeModelFactoryService modelFactory;
-
-   public BranchModule(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, TempCachingService cachingService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager, IOseeModelFactoryService modelFactory) {
+   public BranchModule(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.identityService = identityService;
-      this.cachingService = cachingService;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
       this.resourceManager = resourceManager;
-      this.modelFactory = modelFactory;
    }
 
    public BranchDataStore createBranchDataStore(final DataLoaderFactory dataLoaderFactory) {

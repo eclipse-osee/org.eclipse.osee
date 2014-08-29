@@ -13,13 +13,12 @@ package org.eclipse.osee.framework.manager.servlet.ats;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.w3c.dom.Node;
 
 /**
@@ -45,14 +44,14 @@ public class AtsService {
    private final AtsXmlSearch xmlSearch;
    private final AtsXmlMessages messages;
    private final IResourceManager resourceManager;
-   private final BranchCache branchCache;
+   private final OrcsApi orcsApi;
 
-   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, TempCachingService cacheService) {
+   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, OrcsApi orcsApi) {
       this.xmlSearch = xmlSearch;
       this.messages = messages;
       this.resourceProvider = resourceProvider;
       this.resourceManager = resourceManager;
-      branchCache = cacheService.getBranchCache();
+      this.orcsApi = orcsApi;
    }
 
    public void performOperation(IResource resource, HttpServletResponse response) {
@@ -135,7 +134,7 @@ public class AtsService {
             urlPath = request.getRequestURI().replace(servletPath, "");
 
             if (urlPath.contains("osee/data")) {
-               DataServlet.handleUriRequest(resourceManager, urlPath, response, branchCache);
+               DataServlet.handleUriRequest(resourceManager, urlPath, response, orcsApi);
                return;
             } else {
                resource = getResource(urlPath);
