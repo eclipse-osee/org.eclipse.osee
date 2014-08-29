@@ -151,7 +151,7 @@ public class TeamWorkFlowManager {
    }
 
    private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) throws OseeCoreException {
-      Result result = setAnalyzeData(popup, null, null, 1, 100, .2, currentStateUser, date);
+      Result result = setAnalyzeData(popup, null, null, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
       }
@@ -197,14 +197,13 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(boolean popup, String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
+   public Result setAnalyzeData(boolean popup, String problem, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
       if (!teamArt.isInState(TeamState.Analyze)) {
          Result result = new Result("Action not in Analyze state");
          if (result.isFalse() && popup) {
             return result;
          }
       }
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hourEstimate);
       teamArt.getStateMgr().setMetrics(TeamState.Analyze, stateHoursSpent, statePercentComplete, true, user, date);
       return Result.TrueResult;
    }

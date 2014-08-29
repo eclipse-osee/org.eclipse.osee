@@ -55,10 +55,13 @@ public class AtsLogWriter {
             rootElement.appendChild(element);
          }
          String documentXml = Jaxp.getDocumentXml(doc);
-         Result result = storageProvider.saveLogXml(documentXml, changes);
-         if (result.isFalse()) {
-            OseeLog.log(AtsLogWriter.class, OseeLevel.SEVERE_POPUP,
-               "Can't create ats log document: " + result.getText());
+         String currentXml = storageProvider.getLogXml();
+         if (!documentXml.equals(currentXml)) {
+            Result result = storageProvider.saveLogXml(documentXml, changes);
+            if (result.isFalse()) {
+               OseeLog.log(AtsLogWriter.class, OseeLevel.SEVERE_POPUP,
+                  "Can't create ats log document: " + result.getText());
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(AtsLogWriter.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
