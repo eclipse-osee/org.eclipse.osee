@@ -233,8 +233,9 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
                record = txCache.getAll();
             } else {
                record = new ArrayList<TransactionRecord>();
+               txCache.loadTransactions(updateRequest.getItemsIds());
                for (Integer item : updateRequest.getItemsIds()) {
-                  record.add(txCache.getOrLoad(item));
+                  record.add(txCache.getById(item));
                }
             }
             response = TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record);
