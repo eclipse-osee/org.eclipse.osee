@@ -94,11 +94,14 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       features.add(new GZIPFeature());
       this.features = features;
 
-      Map<Object, Object> extensionMappings = new HashMap<Object, Object>(4);
+      Map<Object, Object> extensionMappings = new HashMap<Object, Object>(6);
+      extensionMappings.put("html", MediaType.TEXT_HTML);
+      extensionMappings.put("txt", MediaType.TEXT_PLAIN);
       extensionMappings.put("xml", MediaType.APPLICATION_XML);
       extensionMappings.put("json", MediaType.APPLICATION_JSON);
       extensionMappings.put("gzip", "application/gzip");
       extensionMappings.put("zip", "application/zip");
+
       this.extensionMappings = extensionMappings;
       this.properties = props;
    }
