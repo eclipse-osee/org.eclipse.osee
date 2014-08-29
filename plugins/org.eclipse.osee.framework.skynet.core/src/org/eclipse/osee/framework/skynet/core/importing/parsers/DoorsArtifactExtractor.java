@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,36 +12,32 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.cyberneko.html.parsers.SAXParser;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
-import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.utility.NormalizeHtml;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 
 /**
  * @author Marc A. Potter
@@ -49,13 +45,8 @@ import org.xml.sax.SAXException;
 public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private final Vector<String> postProcessGuids = new Vector<String>();
-   private final Map<Integer, RowTypeEnum> rowIndexToRowTypeMap = new HashMap<Integer, RowTypeEnum>();
-   private String[] headerRow;
-   private RoughArtifactCollector collector;
-   private boolean inArtifact = false;
-   private final Vector<String> theArtifact = new Vector<String>();
-   private String paragraphNumber = "", paragraphName = "";
    private String uriDirectoryName = "";
+   private OperationLogger logger;
    private final static String NAME_TAG = "<a name=";
    private final static String CLOSING_A_TAG = "</a>";
    private final static String BR_TAG = "<br />";
@@ -91,109 +82,6 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       null,
       null,
       null}; // Last two is actually a string
-   private String guidString = "";
-   private boolean isRequirement;
-   private boolean publishInLine;
-   private boolean inHeaderRow;
-   private String subsystem;
-   private String effectivity;
-   private String documentApplicability = "";
-   private DataTypeEnum lastDataType = DataTypeEnum.OTHER;
-   private final static String REQUIREMENT_SUBSTRING = "Req";
-   private RoughArtifact headerArtifact;
-   private RoughArtifact firstRequirement;
-   private int numberRequirements;
-
-   private static final String[] ATTRIBUTES_TO_MERGE = {
-      CoreAttributeTypes.LegacyId.getName(),
-      CoreAttributeTypes.HTMLContent.getName(),
-      CoreAttributeTypes.QualificationMethod.getName(),
-      CoreAttributeTypes.VerificationEvent.getName(),
-      CoreAttributeTypes.VerificationLevel.getName(),
-      VERIFICATION_ACCEPTANCE_CRITERIA};
-
-   private static enum RowTypeEnum {
-      ID("ID"),
-      REQUIREMENTS("Requirements"),
-      OBJECT_NUMBER("Object Number"),
-      IS_REQ("Req?"),
-      PARENT_ID("Parent ID"),
-      EFFECTIVITY("Effectivity"),
-      PARAGRAPH_HEADING("Paragraph Heading"),
-      DOCUMENT_APPLICABILITY("Document Applicability"),
-      VERIFICATION_CRITERIA("Verification Criteria"),
-      CHANGE_STATUS("Change Status"),
-      OBJECT_HEADING("Proposed Object Heading"),
-      OBJECT_TEXT("Proposed Object Text"),
-      CHANGE_RATIONALE("Change Rationale"),
-      LINKS("Links"),
-      GUID("OSEE GUID"),
-      SUBSYSTEM("Subsystem"),
-      DATA_TYPE("Data Type"),
-      OTHER("");
-
-      private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
-
-      private final String _rowType;
-
-      RowTypeEnum(String rowType) {
-         _rowType = rowType;
-      }
-
-      public String getRowType() {
-         return _rowType;
-      }
-
-      public static synchronized RowTypeEnum fromString(String value) {
-         if (rawStringToRowType.isEmpty()) {
-            for (RowTypeEnum enumStatus : RowTypeEnum.values()) {
-               RowTypeEnum.rawStringToRowType.put(enumStatus._rowType, enumStatus);
-            }
-         }
-         RowTypeEnum returnVal = rawStringToRowType.get(value);
-         if (returnVal == null) {
-            if (value.indexOf("Requirements") != -1) {
-               returnVal = REQUIREMENTS;
-            }
-         }
-         return returnVal != null ? returnVal : OTHER;
-      }
-
-   }
-
-   private static enum DataTypeEnum {
-      HEADING("Heading"),
-      INFORMATION("Information"),
-      REQUIREMENT("Requirement"),
-      TABLE("Table"),
-      FIGURE("Figure"),
-      LIST("List"),
-      NOT_DEFINED("Not Defined"),
-      OTHER("");
-
-      public String _dataType;
-      private final static Map<String, DataTypeEnum> rawStringToDataType = new HashMap<String, DataTypeEnum>();
-
-      DataTypeEnum(String dataType) {
-         _dataType = dataType;
-      }
-
-      public static synchronized DataTypeEnum fromString(String value) {
-         if (rawStringToDataType.isEmpty()) {
-            for (DataTypeEnum enumStatus : DataTypeEnum.values()) {
-               DataTypeEnum.rawStringToDataType.put(enumStatus._dataType, enumStatus);
-            }
-         }
-         DataTypeEnum returnVal = rawStringToDataType.get(value);
-         if (returnVal == null) {
-            // special case the Requirement case can have several values depending on program
-            if (value.contains(REQUIREMENT_SUBSTRING)) {
-               returnVal = REQUIREMENT;
-            }
-         }
-         return returnVal != null ? returnVal : OTHER;
-      }
-   }
 
    @Override
    public String getDescription() {
@@ -220,207 +108,52 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return false;
    }
 
-   public class Handler extends AbstractSaxHandler {
-
-      private boolean isTitle = false;
-      private final Vector<String> currentRow = new Vector<String>();
-      private final StringBuilder cell = new StringBuilder("");
-      private boolean tableFound = false;
-      private int embededTableCount = 0;
-      private boolean inHeaderCell = false;
-
-      public Handler() {
-      }
-
-      private String elementToString(String qName, Attributes attributes, boolean isEndElement) {
-         StringBuilder returnValue = new StringBuilder("<");
-         if (isEndElement) {
-            returnValue.append('/');
-         }
-         returnValue.append(qName);
-         if (attributes != null) {
-            for (int i = 0; i < attributes.getLength(); i++) {
-               returnValue.append(" ");
-               returnValue.append(attributes.getQName(i));
-               String value = attributes.getValue(i);
-               if (Strings.isValid(value)) {
-                  returnValue.append("=\"");
-                  returnValue.append(value);
-                  returnValue.append('"');
-               }
-            }
-         }
-         returnValue.append(">");
-         return returnValue.toString();
-      }
-
-      @Override
-      public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
-         isTitle = false;
-         if (qName.equalsIgnoreCase("title")) {
-            cell.delete(0, cell.length());
-            isTitle = true;
-         } else if (qName.equalsIgnoreCase("table")) {
-            if (tableFound) {
-               // table within the table
-               cell.append(elementToString(qName, attributes, false));
-               embededTableCount++;
-            } else {
-               tableFound = true;
-            }
-         } else if (qName.equalsIgnoreCase("tr")) {
-            if (embededTableCount > 0) {
-               cell.append("<tr>");
-            }
-         } else if (qName.equalsIgnoreCase("th")) {
-            if (embededTableCount > 0) {
-               // table within the table
-               cell.append(elementToString(qName, attributes, false));
-            } else {
-               inHeaderCell = true;
-               cell.delete(0, cell.length());
-            }
-         } else if (qName.equalsIgnoreCase("td")) {
-            if (embededTableCount > 0) {
-               // table within the table
-               cell.append(elementToString(qName, attributes, false));
-            } else {
-               cell.delete(0, cell.length());
-            }
-         } else {
-            cell.append(elementToString(qName, attributes, false));
-         }
-      }
-
-      @Override
-      public void endElementFound(String uri, String localName, String qName) throws SAXException {
-         isTitle = false;
-         if (qName.equalsIgnoreCase("title")) {
-            foundStartOfWorksheet(cell.toString());
-            cell.delete(0, cell.length());
-         } else if (qName.equalsIgnoreCase("table")) {
-            if (embededTableCount > 0) {
-               // end of table within the table
-               cell.append(elementToString(qName, null, true));
-               embededTableCount--;
-            } else {
-               // we are done!
-               tableFound = false;
-            }
-         } else if (qName.equalsIgnoreCase("tr")) {
-            if (embededTableCount == 0) {
-               String[] row = new String[currentRow.size()];
-               row = currentRow.toArray(row);
-               currentRow.clear();
-               if (inHeaderCell) {
-                  processHeaderRow(row);
-                  inHeaderCell = false;
-               } else {
-                  try {
-                     processRow(row);
-                  } catch (OseeCoreException ex) {
-                     throw new SAXException(ex);
-                  }
-               }
-            } else {
-               cell.append("</tr>");
-            }
-         } else if (qName.equalsIgnoreCase("th")) {
-            if (embededTableCount > 0) {
-               // table within the table
-               cell.append(elementToString(qName, null, true));
-            } else {
-               currentRow.add(cell.toString());
-               cell.delete(0, cell.length());
-            }
-         } else if (qName.equalsIgnoreCase("td")) {
-            if (embededTableCount > 0) {
-               // table within the table
-               cell.append(elementToString(qName, null, true));
-            } else {
-               currentRow.add(cell.toString());
-               cell.delete(0, cell.length());
-            }
-         } else {
-            cell.append(elementToString(qName, null, true));
-         }
-      }
-
-      @Override
-      public void characters(char ch[], int start, int length) {
-         for (int i = 0; i < length; i++) {
-            cell.append(Character.toString(ch[i + start]));
-         }
-         String title = "";
-         if (isTitle) {
-            title = cell.toString();
-            title = title.replaceAll("/", "_");
-            title = title.replaceAll(" ", "_");
-            if (title.equals("")) {
-               title = "empty_title";
-            }
-            RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.CONTAINER, title.trim());
-            roughArtifact.setGuid(GUID.create());
-            roughArtifact.setSectionNumber("0");
-            collector.addRoughArtifact(roughArtifact);
-            isTitle = false;
-         }
-      }
-
-      @Override
-      public void endDocument() throws SAXException {
-         try {
-            processArtifact();
-            if (numberRequirements <= 1) {
-               mergeFirstRequirement();
-            }
-         } catch (OseeCoreException ex) {
-            throw new SAXException(ex);
-         }
-      }
-   }
-
    @Override
    public void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
       doExtraction(logger, source, collector, "");
    }
 
-   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) throws Exception {
-      /**************************************************************
-       * DOORS uses non standard HTML. Read in the file and standardize it
-       */
+   public void doExtraction(OperationLogger logger, URI source, RoughArtifactCollector collector, String documentApplicabilty) throws IOException {
 
-      this.documentApplicability = documentApplicabilty;
-      postProcessGuids.clear();
-      inArtifact = false;
-      theArtifact.clear();
-      paragraphNumber = "";
-      paragraphName = "";
-      isRequirement = false;
-      publishInLine = false;
-      inHeaderRow = false;
-      subsystem = "";
-      effectivity = "";
-      headerArtifact = null;
-      firstRequirement = null;
-      numberRequirements = 0;
-
-      this.collector = collector;
-      String fileName = source.getAuthority();
-      if (fileName == null) {
-         fileName = "";
-      }
-      fileName += source.getPath();
-      fileName = "file://" + fileName;
-      uriDirectoryName = fileName.substring(0, fileName.lastIndexOf('/') + 1);
-
-      SAXParser parser = new SAXParser();
-      Handler theHandler = new Handler();
-      parser.setContentHandler(theHandler);
+      InputStream htmlStream = null;
       try {
-         parser.parse(fileName);
-      } catch (Exception e) {
-         e.printStackTrace();
+         // this is used later with the images to set the image URI
+         String fileName = "file://" + source.getPath();
+         uriDirectoryName = fileName.substring(0, fileName.lastIndexOf('/') + 1);
+         // we only need to post process the images, so we will add the guid of each 
+         // rough artifact that has an image to the list for post processing
+         postProcessGuids.clear();
+         this.logger = logger;
+         htmlStream = source.toURL().openStream();
+         DoorsTableRowCollector rowCollector = new DoorsTableRowCollector(this);
+
+         Document doc = Jsoup.parse(htmlStream, "UTF-8", "");
+         Element body = doc.body();
+
+         for (Node cNodes : body.childNodes()) {
+
+            for (Node subNodes : cNodes.childNodes()) {
+
+               if (subNodes.nodeName().compareTo("tbody") == 0) {
+                  // for normalized doors input, there is a table that wraps all of the other content
+                  // the first row in the table will have all of the column names
+                  // the other rows will have the data elements that need to be analyzed and converted to artifacts
+
+                  for (Node tableRow : subNodes.childNodes()) {
+                     // jsoup parses the row ends as text nodes (not elements)
+                     // each element is one row of the doors output table
+                     if (tableRow instanceof Element) {
+                        rowCollector.addRawRow(tableRow);
+                     }
+                  }
+               }
+            }
+         }
+         rowCollector.createArtifacts(collector);
+      } catch (Exception ex) {
+         logger.log(ex);
+      } finally {
+         Lib.close(htmlStream);
       }
    }
 
@@ -448,7 +181,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                }
             }
          } catch (OseeCoreException e) {
-            // do nothing
+            if (logger != null) {
+               logger.log(e);
+            }
          }
       }
       return toReturn;
@@ -459,265 +194,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       // called at start)
    }
 
-   public void processHeaderRow(String[] headerRow) {
-      this.headerRow = headerRow.clone();
-      for (int i = 0; i < this.headerRow.length; i++) {
-         String value = headerRow[i];
-         if (value != null) {
-            value = value.trim();
-         }
-         if (!Strings.isValid(value)) {
-            this.headerRow[i] = null;
-         } else {
-            /**********************************************************************
-             * Special case Verification Method can vary depending on system that exports. However it always must
-             * contain the Verification string
-             */
-            if (value.contains(RowTypeEnum.VERIFICATION_CRITERIA.getRowType())) {
-               value = RowTypeEnum.VERIFICATION_CRITERIA.getRowType();
-            }
-            RowTypeEnum rowTypeEnum = RowTypeEnum.fromString(value);
-            rowIndexToRowTypeMap.put(i, rowTypeEnum);
-         }
-      }
-   }
-
-   public void processRow(String[] row) throws OseeCoreException {
-      /***************************************************************
-       * A note on what is happening here Different input types are supported. The major difference is single or
-       * multiple requirement format. In a single requirement format, all headings have only one requirement. In a
-       * multiple requirement format, a heading has more than one requirement. The OSEE presentation of these two cases
-       * is different. In the single case, only one artifact is created for each heading. In the multiple case, an
-       * artifact is created for the heading and artifacts are created for each REQUIREMENT. If there is a non
-       * requirement following the heading (e.g. Information), this will be merged with the heading artifact.
-       */
-      /**************************************************************
-       * At the start of this method, the previous information is stored and we are getting ready to process the current
-       * row. Before we start processing this row, it must be determined if this is a new heading or a new requirement.
-       * If this is either of those, create an artifact of the previous data. When a new heading is found, check the
-       * number of requirements in the previous heading. If there is 1 or 0 requirements (0 happens if there is only
-       * information types) merge the first requirement with the header artifact.
-       */
-      boolean isHeaderRow = false, foundDataType = false, isList, isNewRequirement = false;
-      int rowIndex, documentIndex = -1, isRequirementIndex = -1, dataTypeIndex = -1;
-      for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
-         RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
-         if (rowType == RowTypeEnum.DOCUMENT_APPLICABILITY) {
-            documentIndex = rowIndex;
-         } else if (rowType == RowTypeEnum.IS_REQ) {
-            isRequirementIndex = rowIndex;
-         } else if (rowType == RowTypeEnum.DATA_TYPE) {
-            dataTypeIndex = rowIndex;
-         }
-      }
-      if (isRequirementIndex > -1) {
-         String rowValue = row[isRequirementIndex].toLowerCase().trim();
-         isNewRequirement = (rowValue.equals("true"));
-      } else if (dataTypeIndex > -1) {
-         String rowValue = row[dataTypeIndex];
-         isNewRequirement = rowValue.contains(REQUIREMENT_SUBSTRING);
-      }
-      inHeaderRow = (inHeaderRow && !isNewRequirement);
-      if (documentIndex > -1) {
-         String rowValue = row[documentIndex].toLowerCase().trim();
-         boolean emptyValue =
-            (rowValue.equals("") || rowValue.equals("<br></br>") || rowValue.equals("<br>") || rowValue.equals("<br />"));
-         if (inHeaderRow || emptyValue || isNewRequirement) {
-            if (inArtifact || inHeaderRow) {
-               processArtifact();
-               publishInLine = !emptyValue;
-               if (isNewRequirement) {
-                  numberRequirements++;
-               }
-               if (inHeaderRow) {
-                  mergeFirstRequirement();
-               }
-               if (emptyValue) {
-                  if (numberRequirements <= 1) {
-                     mergeFirstRequirement();
-                  }
-                  numberRequirements = 0;
-                  headerArtifact = null;
-               }
-            }
-            inArtifact = false;
-            isHeaderRow = emptyValue;
-            inHeaderRow = isHeaderRow || (inHeaderRow && !isNewRequirement);
-            isRequirement = false;
-         } else {
-            if (Strings.isValid(documentApplicability)) {
-               if (rowValue.indexOf(documentApplicability.toLowerCase()) == -1) {
-                  return;
-               }
-            }
-            inHeaderRow = (inHeaderRow && !isNewRequirement);
-         }
-      }
-      if (!rowIndexToRowTypeMap.isEmpty()) {
-         isList = false;
-         int requirementIndex = -1;
-         String requirementColumn = "";
-         boolean isRequirementColumn = false;
-         for (rowIndex = 0; rowIndex < row.length; rowIndex++) {
-            isRequirementColumn = false;
-            RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
-
-            String rowValue = row[rowIndex];
-
-            switch (rowType) {
-
-               case REQUIREMENTS:
-
-                  if (isHeaderRow) {
-                     // parse the row
-                     String noHTML = clearHTML(rowValue);
-                     String[] parsed = noHTML.split("[\n ]");
-                     boolean foundNumber = false;
-                     paragraphName = "";
-                     for (int i = 0; i < parsed.length; i++) {
-                        if (!parsed[i].equals("")) {
-                           if (!foundNumber) {
-                              paragraphNumber = parsed[i].trim();
-                              foundNumber = true;
-                           } else {
-                              paragraphName += " " + parsed[i].trim();
-                           }
-                        }
-                     }
-                     rowValue = "";
-                  }
-                  requirementIndex = rowIndex;
-                  isRequirementColumn = true;
-                  requirementColumn = rowValue;
-
-                  break;
-
-               case ID:
-                  break;
-
-               case DOCUMENT_APPLICABILITY:
-                  break;
-
-               case VERIFICATION_CRITERIA:
-                  break;
-
-               case PARENT_ID:
-                  /**************
-                   * TODO: Requirements trace GUID<-->GUID pair. Need an example
-                   */
-                  break;
-
-               case EFFECTIVITY:
-                  effectivity = rowValue.trim();
-                  break;
-
-               case GUID:
-                  guidString = GUID.checkOrCreate(rowValue.trim());
-                  if (Strings.isValid(guidString)) {
-                     postProcessGuids.add(guidString);
-                  }
-                  break;
-
-               case IS_REQ:
-                  if (!foundDataType) {
-                     isRequirement = rowValue.trim().equals("True");
-                  }
-                  break;
-
-               case SUBSYSTEM:
-                  subsystem = rowValue.trim();
-                  break;
-
-               case DATA_TYPE:
-                  foundDataType = true;
-                  DataTypeEnum dataType = DataTypeEnum.fromString(rowValue.trim());
-                  switch (dataType) {
-                     case HEADING:
-                        isRequirement = false;
-                        lastDataType = DataTypeEnum.HEADING;
-                        break;
-
-                     case REQUIREMENT:
-                        isRequirement = true;
-                        lastDataType = DataTypeEnum.REQUIREMENT;
-                        break;
-
-                     case TABLE:
-                     case INFORMATION:
-                     case FIGURE:
-                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
-                        break;
-
-                     case NOT_DEFINED:
-                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
-                        break;
-
-                     case LIST:
-                        isRequirement = lastDataType.equals(DataTypeEnum.REQUIREMENT);
-                        isList = true;
-                        break;
-
-                     case OTHER:
-                        foundDataType = false;
-                        lastDataType = DataTypeEnum.OTHER;
-                        break;
-                  }
-
-                  break;
-
-               case OBJECT_NUMBER:
-                  if (!Strings.isValid(paragraphNumber)) {
-                     paragraphNumber = rowValue;
-                  }
-                  break;
-
-               case PARAGRAPH_HEADING:
-                  String rowLower = rowValue.trim().toLowerCase();
-                  boolean emptyValue =
-                     (rowLower.equals("") || rowLower.equals("<br></br>") || rowLower.equals("<br>") || rowValue.equals("<br />"));
-                  if (!inHeaderRow && !emptyValue) {
-                     paragraphName = rowValue.trim();
-                  }
-                  break;
-
-               case CHANGE_STATUS:
-               case OBJECT_HEADING:
-               case OBJECT_TEXT:
-               case CHANGE_RATIONALE:
-               case LINKS:
-               case OTHER:
-                  break;
-
-            }
-            if (!isRequirementColumn) {
-               if (inArtifact) {
-                  ListIterator<String> iter = theArtifact.listIterator(rowIndex);
-                  String theColumnValue = iter.next();
-                  theColumnValue += " " + rowValue.trim();
-                  iter.set(theColumnValue);
-               } else {
-                  theArtifact.add(rowValue.trim());
-               }
-            } else {
-               if (!inArtifact) {
-                  theArtifact.add("");
-               }
-            }
-
-         }
-         // process requirement column -- functionally always inArtifact because of the empty add above
-         ListIterator<String> iter = theArtifact.listIterator(requirementIndex);
-         String theColumnValue = iter.next();
-         if (isList) {
-            requirementColumn = processList(requirementColumn);
-         }
-         theColumnValue += " " + requirementColumn.trim();
-         iter.set(theColumnValue);
-      }
-      inArtifact = true;
-   }
-
-   private String processList(String inputValue) {
+   public String processList(String inputValue) {
       inputValue = normalizeHtml(inputValue);
       inputValue = inputValue.replaceAll("\\s+", " ");
       /**************************************************************************************
@@ -1113,120 +590,44 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return iReturn;
    }
 
-   private void processArtifact() throws OseeCoreException {
-      if (theArtifact.size() == 0) {
-         return;
-      }
-      RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, paragraphName.trim());
-      if (headerArtifact == null) {
-         headerArtifact = roughArtifact;
-         firstRequirement = null;
-      } else if (firstRequirement == null) {
-         firstRequirement = roughArtifact;
-      }
-      roughArtifact.setSectionNumber(paragraphNumber.trim());
-      roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, paragraphNumber);
-      if (!isRequirement) {
-         roughArtifact.setPrimaryArtifactType(CoreArtifactTypes.HeadingHTML);
-         roughArtifact.setRoughArtifactKind(RoughArtifactKind.SECONDARY);
-      }
-      if (publishInLine) {
-         roughArtifact.addAttribute(CoreAttributeTypes.PublishInline, "True");
-      }
-      if (!Strings.isValid(guidString)) {
-         guidString = GUID.create();
-      }
-      roughArtifact.setGuid(guidString);
-      guidString = "";
-      paragraphNumber = "";
-      for (int rowIndex = 0; rowIndex < theArtifact.size(); rowIndex++) {
-         RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
-
-         String rowValue = theArtifact.get(rowIndex);
-
-         switch (rowType) {
-
-            case REQUIREMENTS:
-               StringBuffer imageFileList = new StringBuffer("");
-               getImageList(rowValue, imageFileList);
-               rowValue = normalizeHtml(rowValue);
-               String imageFile = imageFileList.toString();
-               if (!imageFile.isEmpty()) {
-                  String theImage;
-                  int comma = 0;
-                  int imageNumber = 0;
-                  do {
-                     String replaceName = "";
-                     comma = imageFile.indexOf(',');
-                     if (comma == -1) {
-                        theImage = uriDirectoryName + imageFile;
-                        replaceName = imageFile;
-                        imageFile = " ";
-                     } else {
-                        theImage = uriDirectoryName + imageFile.substring(0, comma);
-                        replaceName = imageFile.substring(0, comma);
-                        imageFile = imageFile.substring(comma + 1);
-                     }
-                     try {
-                        URI imageURI = new URI(theImage);
-                        roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
-                        rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
-                        imageNumber++;
-                     } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                     }
-                  } while (comma != -1);
+   public void handleRequirement(String rowValue, RoughArtifact roughArtifact) {
+      StringBuffer imageFileList = new StringBuffer("");
+      appendToImageList(rowValue, imageFileList);
+      rowValue = normalizeHtml(rowValue);
+      String imageFile = imageFileList.toString();
+      if (!imageFile.isEmpty()) {
+         String theImage;
+         int comma = 0;
+         int imageNumber = 0;
+         do {
+            String replaceName = "";
+            comma = imageFile.indexOf(',');
+            if (comma == -1) {
+               theImage = uriDirectoryName + imageFile;
+               replaceName = imageFile;
+               imageFile = " ";
+            } else {
+               theImage = uriDirectoryName + imageFile.substring(0, comma);
+               replaceName = imageFile.substring(0, comma);
+               imageFile = imageFile.substring(comma + 1);
+            }
+            try {
+               URI imageURI = new URI(theImage);
+               roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
+               rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
+               imageNumber++;
+               // put it into the post processing list
+               postProcessGuids.add(roughArtifact.getGuid());
+            } catch (URISyntaxException e) {
+               if (logger != null) {
+                  logger.log(e);
                }
-               if (Strings.isValid(rowValue)) {
-                  roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
-               }
-               break;
-
-            case ID:
-               rowValue = rowValue.replaceAll("\n", ",");
-               roughArtifact.addAttribute(CoreAttributeTypes.LegacyId, rowValue);
-               break;
-
-            case SUBSYSTEM:
-               if (Strings.isValid(subsystem) && !subsystem.equalsIgnoreCase("<br></br>")) {
-                  roughArtifact.addAttribute(CoreAttributeTypes.Subsystem, subsystem);
-                  subsystem = "";
-               }
-               break;
-
-            case DOCUMENT_APPLICABILITY:
-               break;
-
-            case EFFECTIVITY:
-               if (Strings.isValid(effectivity) && !effectivity.equalsIgnoreCase("<br></br>")) {
-                  roughArtifact.addAttribute(CoreAttributeTypes.Effectivity, effectivity);
-               }
-               effectivity = "";
-               break;
-
-            case VERIFICATION_CRITERIA:
-               processVerification(rowValue, roughArtifact);
-               break;
-
-            case PARENT_ID:
-               /**************
-                * TODO: Requirements trace GUID<-->GUID pair. Need an example
-                */
-               break;
-
-            case CHANGE_STATUS:
-            case OBJECT_HEADING:
-            case OBJECT_TEXT:
-            case CHANGE_RATIONALE:
-            case OTHER:
-            case LINKS:
-            default:
-               break;
-         }
+            }
+         } while (comma != -1);
       }
-      collector.addRoughArtifact(roughArtifact);
-      inArtifact = false;
-      theArtifact.clear();
+      if (Strings.isValid(rowValue)) {
+         roughArtifact.addAttribute(CoreAttributeTypes.HTMLContent, rowValue);
+      }
    }
 
    /**********************************************************************
@@ -1342,16 +743,12 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   public void reachedEndOfWorksheet() {
-      // do nothing
-   }
-
    /*************************************************************
     * @param inputHTML Input value of the requirements field (as exported from DOORS)
     * @param imageFileList is a comma separated list of image file names in the HTML If there is an <img tag, add the
     * file name of the image file in imageFile
     */
-   private void getImageList(String inputHTML, StringBuffer imageFileList) {
+   private void appendToImageList(String inputHTML, StringBuffer imageFileList) {
       String outputHtml = inputHTML;
       String Lower = outputHtml.toLowerCase();
       int img = Lower.indexOf("img ");
@@ -1513,59 +910,5 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
       }
       return adjust;
-   }
-
-   /**************************************************************************
-    * This is called if there is only one requirement under a header. Merge the requirement with the header in only one
-    * artifact.
-    */
-   private void mergeFirstRequirement() {
-
-      if ((headerArtifact == null) || (firstRequirement == null)) {
-         return;
-      }
-      // If merging a requirement to a header change to primary type
-
-      if (firstRequirement.getRoughArtifactKind().equals(RoughArtifactKind.PRIMARY)) {
-         headerArtifact.setPrimaryArtifactType(CoreArtifactTypes.HTMLArtifact);
-         headerArtifact.setRoughArtifactKind(RoughArtifactKind.PRIMARY);
-      }
-
-      Collection<URI> requirementUri = firstRequirement.getURIAttributes();
-      if (requirementUri.size() > 0) {
-         for (URI uri : requirementUri) {
-            headerArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), uri);
-         }
-      }
-      for (String type : ATTRIBUTES_TO_MERGE) {
-         // get values from header and requirement
-         String headerValue = null;
-         String requirementValue = null;
-         requirementValue = firstRequirement.getRoughAttribute(type);
-         if (requirementValue == null) {
-            // type not in requirement -- do nothing for this type
-            continue;
-         }
-         headerValue = headerArtifact.getRoughAttribute(type);
-         if (headerValue == null) {
-            // type is not in header or is binary
-            headerValue = "";
-         }
-
-         if (Strings.isValid(headerValue)) {
-            if (type.equals(CoreAttributeTypes.HTMLContent.getName())) {
-               headerValue += "<br>" + requirementValue;
-            } else {
-               if (!headerValue.contains(requirementValue)) {
-                  headerValue += "," + requirementValue;
-               }
-            }
-         } else {
-            headerValue = requirementValue;
-         }
-         headerArtifact.setAttribute(type, headerValue);
-      }
-      collector.removeArtifact(firstRequirement);
-      firstRequirement = null;
    }
 }

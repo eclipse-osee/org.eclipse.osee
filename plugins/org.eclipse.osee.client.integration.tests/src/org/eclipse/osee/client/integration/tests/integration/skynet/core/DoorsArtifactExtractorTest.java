@@ -52,7 +52,6 @@ public class DoorsArtifactExtractorTest {
    private static final String COMPANY_DOCUMENTS = "Company documents.";
    private static final String VOICE_STATUS = "Voice status.";
    private static final String[] ARTIFACT_NAMES = {
-      "Example_DOORS_File",
       "SCOPE",
       "APPLICABLE DOCUMENTS",
       "Government documents.",
@@ -75,12 +74,11 @@ public class DoorsArtifactExtractorTest {
       IMAGE_CONTENT};
 
    private static final RoughArtifactKind[] ARTIFACT_TYPES = {
-      RoughArtifactKind.CONTAINER,
+      RoughArtifactKind.PRIMARY,
+      RoughArtifactKind.PRIMARY,
       RoughArtifactKind.SECONDARY,
       RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.SECONDARY,
-      RoughArtifactKind.SECONDARY,
+      RoughArtifactKind.PRIMARY,
       RoughArtifactKind.SECONDARY,
       RoughArtifactKind.SECONDARY,
       RoughArtifactKind.PRIMARY,

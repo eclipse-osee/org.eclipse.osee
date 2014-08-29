@@ -47,7 +47,8 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.validation,
  org.eclipse.osee.framework.skynet.core.word
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.apache.commons.lang;version="2.4.0",
+Import-Package: com.google.common.collect;version="[11.0.0,15.0.0]",
+ org.apache.commons.lang;version="2.4.0",
  org.apache.xerces.parsers;version="2.9.0",
  org.apache.xerces.xni.parser;version="2.9.0",
  org.apache.xml.serialize;version="2.9.0",

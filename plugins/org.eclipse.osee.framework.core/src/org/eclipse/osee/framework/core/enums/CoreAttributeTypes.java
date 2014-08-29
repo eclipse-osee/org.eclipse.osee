@@ -92,6 +92,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType UserSettings = TokenFactory.createAttributeType(0x1000000000000064L, "User Settings");
    public static final IAttributeType VerificationEvent = TokenFactory.createAttributeType(0x1000000000000094L, "Verification Event");
    public static final IAttributeType VerificationLevel = TokenFactory.createAttributeType(0x100000000000008BL, "Verification Level");
+   public static final IAttributeType VerificationCriteria = TokenFactory.createAttributeType(0x100000000000008DL, "Verification Acceptance Criteria");
    public static final IAttributeType Website = TokenFactory.createAttributeType(0x100000000000006CL, "Website");
    public static final IAttributeType WholeWordContent = TokenFactory.createAttributeType(0x100000000000007BL, "Whole Word Content");
    public static final IAttributeType WordOleData = TokenFactory.createAttributeType(0x1000000000000074L, "Word Ole Data");

@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
+import org.eclipse.osee.framework.skynet.core.importing.resolvers.DoorsBestFitArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.GuidBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IRoughArtifactTranslator;
@@ -29,7 +30,8 @@ public final class ArtifactResolverFactory {
    public static enum ArtifactCreationStrategy {
       CREATE_NEW_ALWAYS,
       CREATE_ON_NEW_ART_GUID,
-      CREATE_ON_DIFFERENT_ATTRIBUTES
+      CREATE_ON_DIFFERENT_ATTRIBUTES,
+      CREATE_ON_DOORS_BEST_FIT
    }
 
    private ArtifactResolverFactory() {
@@ -61,6 +63,11 @@ public final class ArtifactResolverFactory {
             toReturn =
                new GuidBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
                   CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
+            break;
+         case CREATE_ON_DOORS_BEST_FIT:
+            toReturn =
+               new DoorsBestFitArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
+                  CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:

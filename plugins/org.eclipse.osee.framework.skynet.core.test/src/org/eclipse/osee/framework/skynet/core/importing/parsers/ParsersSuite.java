@@ -15,6 +15,10 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   DoorsColumnTypeTest.class,
+   DoorsDataTypeTest.class,
+   DoorsTableRowCollectorTest.class,
+   DoorsTableRowTest.class,
    OutlineResolutionAndNumberTest.class,
    RoughArtifactMetaDataTest.class,
    WordMLExtractorDelegateTableOfContentsTest.class})

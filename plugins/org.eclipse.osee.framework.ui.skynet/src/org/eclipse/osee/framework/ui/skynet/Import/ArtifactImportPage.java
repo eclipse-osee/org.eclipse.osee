@@ -287,7 +287,12 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public ArtifactCreationStrategy getArtifactCreationStrategy() {
       if (isUpdateExistingSelected() && isUpdateByGuidSelected()) {
-         return ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID;
+
+         if (parserSelectPanel.getArtifactExtractor().getName().contains("DOORS")) {
+            return ArtifactCreationStrategy.CREATE_ON_DOORS_BEST_FIT;
+         } else {
+            return ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID;
+         }
       } else if (isUpdateExistingSelected()) {
          return ArtifactCreationStrategy.CREATE_ON_DIFFERENT_ATTRIBUTES;
       } else {
