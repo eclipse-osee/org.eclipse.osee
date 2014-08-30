@@ -93,6 +93,7 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
          Class<?> resourceClass = resourceInfo.getResourceClass();
          Iterable<ViewResolver<?>> resolvers = getViewResolvers();
          List<MediaType> mediaTypes = getMediaTypesProduced(resourceInfo);
+         mediaTypes.add(0, mediaType);
          toReturn = resolve(model, resourceClass, mediaTypes, resolvers);
       }
       return toReturn;
