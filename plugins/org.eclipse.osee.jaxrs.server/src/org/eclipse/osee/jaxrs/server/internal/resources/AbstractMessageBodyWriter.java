@@ -29,7 +29,7 @@ public abstract class AbstractMessageBodyWriter<T> implements MessageBodyWriter<
 
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-      return type.isAssignableFrom(getSupportedClass()) && getSupportedMediaTypes().contains(mediaType);
+      return getSupportedClass().isAssignableFrom(type) && getSupportedMediaTypes().contains(mediaType);
    }
 
    @Override
