@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
-<setEntry value="com.google.guava:12.0.0.v201212092141:default:false"/>
+<setEntry value="com.google.guava:12.0.0.v201212092141:default:true"/>
 <setEntry value="org.eclipse.ui.views.log:1.0.400.v20130515-2009:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
@@ -35,6 +35,8 @@
 <setEntry value="org.eclipse.cvs.source:default"/>
 <setEntry value="org.eclipse.cvs:default"/>
 <setEntry value="org.eclipse.draw2d:default"/>
+<setEntry value="org.eclipse.e4.rcp.source:default"/>
+<setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore:default"/>
 <setEntry value="org.eclipse.emf.codegen.ui:default"/>
@@ -54,6 +56,7 @@
 <setEntry value="org.eclipse.emf.mapping.ecore:default"/>
 <setEntry value="org.eclipse.emf.mapping.ui:default"/>
 <setEntry value="org.eclipse.emf.mapping:default"/>
+<setEntry value="org.eclipse.emf.sdk:default"/>
 <setEntry value="org.eclipse.emf:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature.source:default"/>
 <setEntry value="org.eclipse.equinox.p2.core.feature:default"/>
@@ -67,8 +70,10 @@
 <setEntry value="org.eclipse.help.source:default"/>
 <setEntry value="org.eclipse.help:default"/>
 <setEntry value="org.eclipse.jdt.source:default"/>
+<setEntry value="org.eclipse.jdt:default"/>
 <setEntry value="org.eclipse.nebula.widgets.ganttchart.feature:default"/>
 <setEntry value="org.eclipse.nebula.widgets.xviewer.feature:default"/>
+<setEntry value="org.eclipse.osee.ats.client.demo.feature:default"/>
 <setEntry value="org.eclipse.osee.ats.feature:default"/>
 <setEntry value="org.eclipse.osee.client.all.feature:default"/>
 <setEntry value="org.eclipse.osee.client.feature:default"/>
@@ -82,11 +87,15 @@
 <setEntry value="org.eclipse.osee.external.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.ui.feature:default"/>
+<setEntry value="org.eclipse.pde.source:default"/>
+<setEntry value="org.eclipse.pde:default"/>
 <setEntry value="org.eclipse.platform.source:default"/>
 <setEntry value="org.eclipse.platform:default"/>
+<setEntry value="org.eclipse.rcp.source:default"/>
 <setEntry value="org.eclipse.rcp:default"/>
 <setEntry value="org.eclipse.sdk:default"/>
 <setEntry value="org.eclipse.team.svn:default"/>
+<setEntry value="org.eclipse.xtend.sdk:default"/>
 <setEntry value="org.eclipse.xtext.docs:default"/>
 <setEntry value="org.eclipse.xtext.examples.source:default"/>
 <setEntry value="org.eclipse.xtext.examples:default"/>
@@ -95,10 +104,14 @@
 <setEntry value="org.eclipse.xtext.sdk:default"/>
 <setEntry value="org.eclipse.xtext.ui.source:default"/>
 <setEntry value="org.eclipse.xtext.ui:default"/>
+<setEntry value="org.eclipse.xtext.xbase.lib.source:default"/>
+<setEntry value="org.eclipse.xtext.xbase.lib:default"/>
+<setEntry value="org.eclipse.xtext.xbase.source:default"/>
+<setEntry value="org.eclipse.xtext.xbase:default"/>
 <setEntry value="org.eclipse.xtext.xtext.ui.source:default"/>
 <setEntry value="org.eclipse.xtext.xtext.ui:default"/>
 </setAttribute>
-<booleanAttribute key="show_selected_only" value="false"/>
+<booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="templateConfig" value=""/>
 <stringAttribute key="timestamp" value="1349216380893"/>
 <booleanAttribute key="tracing" value="false"/>
