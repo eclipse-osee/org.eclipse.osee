@@ -89,8 +89,11 @@ public final class HyperSqlServerMgr {
       Pair<Server, Thread> entry = serverControls.remove(dbId);
       if (entry != null) {
          try {
-            entry.getFirst().shutdownWithCatalogs(Database.CLOSEMODE_COMPACT);
-            removeShutdownHook(entry.getSecond());
+            Thread second = entry.getSecond();
+            removeShutdownHook(second);
+
+            Server first = entry.getFirst();
+            first.shutdownWithCatalogs(Database.CLOSEMODE_NORMAL);
          } catch (Exception e) {
             OseeLog.log(HyperSqlDbServer.class, Level.SEVERE, e.getMessage(), e);
          }
