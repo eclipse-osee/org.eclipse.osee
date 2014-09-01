@@ -23,6 +23,7 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    private Log logger;
    private IdentityLocator idService;
+   private int level;
 
    public void setIdentityService(IdentityLocator idService) {
       this.idService = idService;
@@ -38,6 +39,14 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
 
    public Log getLogger() {
       return logger;
+   }
+
+   public int getLevel() {
+      return level;
+   }
+
+   public void setLevel(int level) {
+      this.level = level;
    }
 
    @Override

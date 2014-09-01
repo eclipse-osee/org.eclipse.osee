@@ -268,7 +268,7 @@ public class TransactionQueryImpl implements TransactionQuery {
 
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
       QueryData queryData = getQueryData().clone();
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
+      CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
       if (criteriaSet.getCriterias().isEmpty()) {
          addAndCheck(queryData, criteriaFactory.createAllTransactionsCriteria());
       }

@@ -33,18 +33,14 @@ public enum TableEnum implements AliasEntry {
       this.aliasPrefix = aliasPrefix;
    }
 
+   @Override
    public String getName() {
       return tableName;
    }
 
    @Override
-   public String getAliasPrefix() {
+   public String getPrefix() {
       return aliasPrefix;
-   }
-
-   @Override
-   public String getEntry() {
-      return tableName;
    }
 
 }

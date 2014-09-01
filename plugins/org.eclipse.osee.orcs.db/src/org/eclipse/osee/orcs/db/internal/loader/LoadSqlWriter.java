@@ -37,8 +37,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
-      String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
-      String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+      String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
 
       write("SELECT%s ", getSqlHint());
       write("%s.gamma_id, %s.mod_type, %s.branch_id, %s.transaction_id", txAlias, txAlias, txAlias, txAlias);
@@ -46,25 +46,24 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          write(", %s.transaction_id as stripe_transaction_id", txAlias);
       }
       write(",\n %s.art_id", artJoinAlias);
-      int size = handlers.size();
-      for (int index = 0; index < size; index++) {
+      for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
          write(", ");
-         SqlHandler<?> handler = handlers.get(index);
          handler.addSelect(this);
       }
    }
 
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
-      String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
-      String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
+      String artAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String txAlias = getLastAlias(TableEnum.TXS_TABLE);
 
       write("\n ORDER BY %s.branch_id, %s.art_id", txAlias, artAlias);
-      if (getAliasManager().hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
-         write(", %s.attr_id", getAliasManager().getFirstAlias(TableEnum.ATTRIBUTE_TABLE));
+      if (hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
+         write(", %s.attr_id", getLastAlias(TableEnum.ATTRIBUTE_TABLE));
       }
-      if (getAliasManager().hasAlias(TableEnum.RELATION_TABLE)) {
-         write(", %s.rel_link_id", getAliasManager().getFirstAlias(TableEnum.RELATION_TABLE));
+      if (hasAlias(TableEnum.RELATION_TABLE)) {
+         write(", %s.rel_link_id", getLastAlias(TableEnum.RELATION_TABLE));
       }
       write(", %s.transaction_id desc", txAlias);
    }
@@ -81,7 +80,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    @Override
    public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       StringBuilder sb = new StringBuilder();
-      String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
       writeTxFilter(txsAlias, artJoinAlias, sb, allowDeleted);
       sb.append(" AND ");
       sb.append(txsAlias);
@@ -103,10 +102,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
        */
       //@formatter:on
       boolean hasTable[] =
-         {
-            getAliasManager().hasAlias(TableEnum.ARTIFACT_TABLE),
-            getAliasManager().hasAlias(TableEnum.ATTRIBUTE_TABLE),
-            getAliasManager().hasAlias(TableEnum.RELATION_TABLE)};
+         {hasAlias(TableEnum.ARTIFACT_TABLE), hasAlias(TableEnum.ATTRIBUTE_TABLE), hasAlias(TableEnum.RELATION_TABLE)};
 
       /**********************************************************************
        * Allow deleted artifacts applies even if the artifact table is not in the query. The other two only make sense
@@ -181,8 +177,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
        * not made
        */
       int count = 0;
-      if (getAliasManager().hasAlias(TableEnum.ARTIFACT_TABLE)) {
-         List<String> artTables = getAliasManager().getAliases(TableEnum.ARTIFACT_TABLE);
+      if (hasAlias(TableEnum.ARTIFACT_TABLE)) {
+         List<String> artTables = getAliases(TableEnum.ARTIFACT_TABLE);
          if (OptionsUtil.areDeletedArtifactsIncluded(getOptions())) {
             sb.append("(");
             buildTableGamma(sb, artTables, txsAlias);
@@ -192,8 +188,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             count++;
          }
       }
-      if (getAliasManager().hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
-         List<String> attrTables = getAliasManager().getAliases(TableEnum.ATTRIBUTE_TABLE);
+      if (hasAlias(TableEnum.ATTRIBUTE_TABLE)) {
+         List<String> attrTables = getAliases(TableEnum.ATTRIBUTE_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
                sb.append(" AND ");
@@ -206,8 +202,8 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             count++;
          }
       }
-      if (getAliasManager().hasAlias(TableEnum.RELATION_TABLE)) {
-         List<String> relationTables = getAliasManager().getAliases(TableEnum.RELATION_TABLE);
+      if (hasAlias(TableEnum.RELATION_TABLE)) {
+         List<String> relationTables = getAliases(TableEnum.RELATION_TABLE);
          if (OptionsUtil.areDeletedAttributesIncluded(getOptions())) {
             if (count > 1) {
                sb.append(" AND ");
@@ -265,7 +261,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          sb.append(".transaction_id <= ?");
          addParameter(OptionsUtil.getFromTransaction(getOptions()));
       }
-      String artJoinAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_JOIN_TABLE);
+      String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
       sb.append(" AND ");
       sb.append(txsAlias);
       sb.append(".branch_id = ");

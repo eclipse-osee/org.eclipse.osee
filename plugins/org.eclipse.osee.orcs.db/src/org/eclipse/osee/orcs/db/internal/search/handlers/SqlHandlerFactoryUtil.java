@@ -27,13 +27,14 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeNotExists;
@@ -78,6 +79,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeOther.class, AttributeOtherSqlHandler.class);
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
       handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
+      handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
 
       return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
    }

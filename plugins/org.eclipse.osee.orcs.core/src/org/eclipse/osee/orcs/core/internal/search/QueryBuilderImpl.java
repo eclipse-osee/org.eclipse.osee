@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -318,6 +317,14 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public QueryBuilder followRelation(IRelationTypeSide relationTypeSide) {
+      Criteria criteria = criteriaFactory.createFollowRelationType(relationTypeSide);
+      addAndCheck(getQueryData(), criteria);
+      queryData.newCriteriaSet();
+      return this;
+   }
+
+   @Override
    public ResultSet<ArtifactReadable> getResults() throws OseeCoreException {
       ResultSet<ArtifactReadable> result = null;
       try {
@@ -378,12 +385,15 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
       QueryData queryData = getQueryData().clone();
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
-      Collection<Criteria> criterias = criteriaSet.getCriterias();
-      if (criterias.isEmpty() || (criterias.size() == 1 && criteriaSet.hasCriteriaType(CriteriaBranch.class))) {
+      Collection<Criteria> criterias = queryData.getAllCriteria();
+      if (criterias.isEmpty() || hasOneBranchCriteria(criterias)) {
          addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
       }
       return queryData;
+   }
+
+   private boolean hasOneBranchCriteria(Collection<Criteria> criterias) {
+      return criterias.size() == 1 && criterias.iterator().next() instanceof CriteriaBranch;
    }
 
    @Override

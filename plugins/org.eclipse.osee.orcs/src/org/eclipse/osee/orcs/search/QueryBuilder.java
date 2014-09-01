@@ -204,6 +204,13 @@ public interface QueryBuilder {
    QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException;
 
    /**
+    * Search related artifacts with specific criteria. Will only follow first level of relations
+    * 
+    * @param relationTypeSide the type-side to search on
+    */
+   QueryBuilder followRelation(IRelationTypeSide relationTypeSide);
+
+   /**
     * Executes query
     * 
     * @return artifact search results

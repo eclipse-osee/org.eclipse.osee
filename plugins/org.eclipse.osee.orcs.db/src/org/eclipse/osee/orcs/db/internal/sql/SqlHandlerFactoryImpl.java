@@ -11,12 +11,13 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.PriorityComparator;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
@@ -29,7 +30,7 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
  */
 public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
-   private static final PriorityComparator comparator = new PriorityComparator();
+   private static final SqlHandlerComparator HANDLER_COMPARATOR = new SqlHandlerComparator();
 
    private final Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap;
 
@@ -49,16 +50,30 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    }
 
    @Override
-   public List<SqlHandler<?>> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException {
+   public List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet) throws OseeCoreException {
+      return createHandlers(Arrays.asList(criteriaSet));
+   }
+
+   @Override
+   public List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) throws OseeCoreException {
       List<SqlHandler<?>> handlers = new ArrayList<SqlHandler<?>>();
+      int level = 0;
+      for (CriteriaSet criteriaSet : criteriaSets) {
+         addHandlers(handlers, level, criteriaSet);
+         level++;
+      }
+      Collections.sort(handlers, HANDLER_COMPARATOR);
+      return handlers;
+   }
+
+   private void addHandlers(List<SqlHandler<?>> handlers, int index, CriteriaSet criteriaSet) {
       for (Criteria criteria : criteriaSet) {
          SqlHandler<?> handler = createHandler(criteria);
          if (handler != null) {
+            handler.setLevel(index);
             handlers.add(handler);
          }
       }
-      Collections.sort(handlers, comparator);
-      return handlers;
    }
 
    @Override
@@ -91,4 +106,16 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       return handler;
    }
 
+   private static final class SqlHandlerComparator implements Comparator<SqlHandler<?>> {
+
+      @Override
+      public int compare(SqlHandler<?> left, SqlHandler<?> right) {
+         int result = left.getLevel() - right.getLevel();
+         if (result == 0) {
+            result = left.getPriority() - right.getPriority();
+         }
+         return result;
+      }
+
+   }
 }

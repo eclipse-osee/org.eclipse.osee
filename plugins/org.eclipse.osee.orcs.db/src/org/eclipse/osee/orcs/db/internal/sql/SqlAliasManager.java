@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,44 +22,91 @@ import java.util.Map;
  */
 public class SqlAliasManager {
 
-   private final HashMap<String, Alias> aliases = new HashMap<String, Alias>();
-   private final Map<AliasEntry, List<String>> usedAliases = new HashMap<AliasEntry, List<String>>();
+   private final HashMap<String, Alias> aliasCounter = new HashMap<String, Alias>();
+   private final List<Map<String, LinkedList<String>>> usedAliases = new ArrayList<Map<String, LinkedList<String>>>();
+
+   private int level = 0;
+
+   private int getLevel() {
+      return level;
+   }
+
+   private Map<String, LinkedList<String>> getAliasByLevel(int level) {
+      if (level < usedAliases.size()) {
+         return usedAliases.get(level);
+      } else {
+         return Collections.emptyMap();
+      }
+   }
 
    public boolean hasAlias(AliasEntry table) {
-      return usedAliases.get(table) != null;
+      int level = getLevel();
+      return hasAlias(table, level);
    }
 
-   public String getFirstAlias(AliasEntry table) {
-      return getAliases(table).get(0);
+   public boolean hasAlias(AliasEntry table, int level) {
+      return !getAliases(table, level).isEmpty();
    }
 
-   public List<String> getAliases(AliasEntry table) {
-      List<String> values = usedAliases.get(table);
-      return values != null ? values : Collections.<String> emptyList();
+   public List<String> getAliases(AliasEntry table, int level) {
+      List<String> linkedList = getAliasByLevel(level).get(table.getPrefix());
+      return linkedList != null ? linkedList : Collections.<String> emptyList();
    }
 
-   public String getNextAlias(AliasEntry table) {
-      Alias alias = aliases.get(table.getAliasPrefix());
-      if (alias == null) {
-         alias = new Alias(table.getAliasPrefix());
-         aliases.put(table.getAliasPrefix(), alias);
+   public String getFirstAlias(TableEnum table, int level) {
+      return getAliases(table, level).get(0);
+   }
+
+   public String getLastAlias(AliasEntry table) {
+      int currentLevel = getLevel();
+      LinkedList<String> values = getAliasByLevel(currentLevel).get(table.getPrefix());
+      String toReturn = null;
+      if (values != null) {
+         toReturn = values.getLast();
       }
-      String toReturn = alias.next();
-      putUsedAlias(table, toReturn);
       return toReturn;
    }
 
-   private void putUsedAlias(AliasEntry table, String alias) {
-      List<String> values = usedAliases.get(table);
+   public String getNextAlias(AliasEntry table) {
+      String prefix = table.getPrefix();
+
+      Alias alias = aliasCounter.get(prefix);
+      if (alias == null) {
+         alias = new Alias(prefix);
+         aliasCounter.put(prefix, alias);
+      }
+      String aliasValue = alias.next();
+
+      int level = getLevel();
+      putAlias(level, prefix, aliasValue);
+      return aliasValue;
+   }
+
+   private void putAlias(int level, String prefix, String alias) {
+      Map<String, LinkedList<String>> map = null;
+      if (level < usedAliases.size()) {
+         map = usedAliases.get(level);
+      }
+      if (map == null) {
+         map = new HashMap<String, LinkedList<String>>();
+         usedAliases.add(level, map);
+      }
+
+      LinkedList<String> values = map.get(prefix);
       if (values == null) {
          values = new LinkedList<String>();
-         usedAliases.put(table, values);
+         map.put(prefix, values);
       }
       values.add(alias);
    }
 
+   public void nextLevel() {
+      level++;
+   }
+
    public void reset() {
-      for (Alias alias : aliases.values()) {
+      level = 0;
+      for (Alias alias : aliasCounter.values()) {
          alias.reset();
       }
       usedAliases.clear();
@@ -85,4 +133,5 @@ public class SqlAliasManager {
          aliasSuffix = 1;
       }
    }
+
 }

@@ -24,12 +24,12 @@ public final class SqlUtil {
    public static AliasEntry newAlias(final String name, final String prefix) {
       return new AliasEntry() {
          @Override
-         public String getAliasPrefix() {
+         public String getPrefix() {
             return prefix;
          }
 
          @Override
-         public String getEntry() {
+         public String getName() {
             return name;
          }
       };

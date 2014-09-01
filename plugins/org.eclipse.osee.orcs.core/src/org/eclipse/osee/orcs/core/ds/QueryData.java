@@ -10,17 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * @author Roberto E. Escobar
+ */
 public class QueryData implements HasOptions, Cloneable {
-   private final CriteriaSet criteriaSet;
+
+   private final List<CriteriaSet> criterias;
    private final Options options;
 
    public QueryData(CriteriaSet criteriaSet, Options options) {
-      this.criteriaSet = criteriaSet;
-      this.options = options;
+      this(options, new ArrayList<CriteriaSet>());
+      criterias.add(criteriaSet);
    }
 
-   public CriteriaSet getCriteriaSet() {
-      return criteriaSet;
+   public QueryData(Options options, List<CriteriaSet> criterias) {
+      this.criterias = criterias;
+      this.options = options;
    }
 
    @Override
@@ -28,28 +37,81 @@ public class QueryData implements HasOptions, Cloneable {
       return options;
    }
 
+   public List<Criteria> getAllCriteria() {
+      List<Criteria> allCriterias = new ArrayList<Criteria>();
+      for (CriteriaSet set : criterias) {
+         allCriterias.addAll(set.getCriterias());
+      }
+      return allCriterias;
+   }
+
+   public List<CriteriaSet> getCriteriaSets() {
+      return Collections.unmodifiableList(criterias);
+   }
+
+   public CriteriaSet getLastCriteriaSet() {
+      return !criterias.isEmpty() ? criterias.get(criterias.size() - 1) : null;
+   }
+
+   public CriteriaSet getFirstCriteriaSet() {
+      return !criterias.isEmpty() ? criterias.get(0) : null;
+   }
+
+   public int size() {
+      return criterias.size();
+   }
+
+   public CriteriaSet newCriteriaSet() {
+      CriteriaSet criteriaSet = new CriteriaSet();
+      criterias.add(criteriaSet);
+      return criteriaSet;
+   }
+
    public void addCriteria(Criteria... criterias) {
+      CriteriaSet criteriaSet = getLastCriteriaSet();
       for (Criteria criteria : criterias) {
          criteriaSet.add(criteria);
       }
    }
 
    public boolean hasCriteriaType(Class<? extends Criteria> type) {
-      return criteriaSet.hasCriteriaType(type);
+      boolean result = false;
+      for (CriteriaSet criteriaSet : criterias) {
+         if (criteriaSet.hasCriteriaType(type)) {
+            result = true;
+            break;
+         }
+      }
+      return result;
    }
 
    public void reset() {
       options.reset();
-      criteriaSet.reset();
+
+      CriteriaSet criteriaSet = null;
+      if (!criterias.isEmpty()) {
+         criteriaSet = criterias.get(0);
+         criteriaSet.reset();
+      }
+      criterias.clear();
+
+      if (criteriaSet != null) {
+         criterias.add(criteriaSet);
+      }
    }
 
    @Override
    public QueryData clone() {
-      return new QueryData(criteriaSet.clone(), options.clone());
+      List<CriteriaSet> cloned = new ArrayList<CriteriaSet>(criterias.size());
+      for (CriteriaSet criteriaSet : criterias) {
+         cloned.add(criteriaSet.clone());
+      }
+      return new QueryData(options.clone(), cloned);
    }
 
    @Override
    public String toString() {
-      return "QueryData [criteriaSet=" + criteriaSet + ", options=" + options + "]";
+      return "QueryData [criteriaSet(s)=" + criterias + ", options=" + options + "]";
    }
+
 }

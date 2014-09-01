@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
@@ -66,6 +67,7 @@ public class SqlHandlerFactoryUtilTest {
       List<Criteria> criteria = new ArrayList<Criteria>();
       criteria.add(new CriteriaArtifactGuids(null));
       criteria.add(new CriteriaArtifactIds(null));
+      criteria.add(new CriteriaRelationTypeFollow(null));
       criteria.add(new CriteriaArtifactType(null, null, true));
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
@@ -79,7 +81,7 @@ public class SqlHandlerFactoryUtilTest {
       CriteriaSet criteriaSet = createCriteria(criteria);
       List<SqlHandler<?>> handlers = factory.createHandlers(criteriaSet);
 
-      Assert.assertEquals(9, handlers.size());
+      Assert.assertEquals(10, handlers.size());
 
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
       assertHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
@@ -93,6 +95,7 @@ public class SqlHandlerFactoryUtilTest {
       assertHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
       assertHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
       assertHandler(iterator.next(), AllArtifactsSqlHandler.class, SqlHandlerPriority.ALL_ARTIFACTS);
+      assertHandler(iterator.next(), RelationTypeFollowSqlHandler.class, SqlHandlerPriority.FOLLOW_RELATION_TYPES);
    }
 
    private void assertHandler(SqlHandler<?> actual, Class<?> type, SqlHandlerPriority priority) {

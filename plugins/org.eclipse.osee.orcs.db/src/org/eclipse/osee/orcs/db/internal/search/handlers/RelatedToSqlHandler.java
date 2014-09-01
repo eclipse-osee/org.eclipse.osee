@@ -51,13 +51,10 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
             sb.append(TableEnum.ID_JOIN_TABLE.getName());
             sb.append(" ");
             sb.append(jIdAlias);
-         } else {
-            sb.append("\n");
          }
          List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
          if (!aliases.isEmpty()) {
             int aSize = aliases.size();
-            sb.append("                ");
             for (int index = 0; index < aSize; index++) {
                String artAlias = aliases.get(index);
                sb.append(", ");
@@ -65,9 +62,8 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
                sb.append(" ");
                sb.append(artAlias);
             }
-            sb.append("\n");
          }
-         sb.append("    WHERE  txs.gamma_id = rel.gamma_id AND \n");
+         sb.append("\n    WHERE  txs.gamma_id = rel.gamma_id AND \n");
          sb.append(getPredicate(writer, "txs", "rel"));
          sb.append(" AND ");
          sb.append(writer.getAllChangesTxBranchFilter("txs"));

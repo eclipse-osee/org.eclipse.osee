@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -34,10 +36,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -318,6 +322,102 @@ public class OrcsQueryTest {
       } finally {
          branchApi.purgeBranch(branch, true).call();
       }
+   }
+
+   @Test
+   public void testFollowRelationType1() throws Exception {
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
+      .andIsOfType(CoreArtifactTypes.RootArtifact)//
+      .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
+
+      ResultSet<ArtifactReadable> results = builder.getResults();
+      assertEquals(8, results.size());
+
+      Iterator<String> iterator = getNames(results).iterator();
+      assertEquals("Hardware Requirements", iterator.next());
+      assertEquals("Integration Tests", iterator.next());
+      assertEquals("SAW Product Decomposition", iterator.next());
+      assertEquals("Software Requirements", iterator.next());
+      assertEquals("Subsystem Requirements", iterator.next());
+      assertEquals("System Requirements", iterator.next());
+      assertEquals("Validation Tests", iterator.next());
+      assertEquals("Verification Tests", iterator.next());
+   }
+
+   @Test
+   public void testFollowRelationType2() throws Exception {
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
+      .andIsOfType(CoreArtifactTypes.RootArtifact)//
+      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+      .andIsOfType(CoreArtifactTypes.Component);
+
+      ResultSet<ArtifactReadable> results = builder.getResults();
+      assertEquals(1, results.size());
+
+      assertEquals("SAW Product Decomposition", results.getExactlyOne().getName());
+   }
+
+   @Test
+   public void testFollowRelationType3() throws Exception {
+      QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
+      .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
+      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+      .and(CoreAttributeTypes.Name, "object", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE);
+
+      ResultSet<ArtifactReadable> results = builder.getResults();
+      assertEquals(1, results.size());
+
+      assertEquals("Robot Object", results.getExactlyOne().getName());
+   }
+
+   @Test
+   public void testFollowRelationTypeHistorical() throws Exception {
+      QueryBuilder query = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andNameEquals("Robot API") //
+      .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
+      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+      .and(CoreAttributeTypes.Name, "Robot", QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+
+      ResultSet<ArtifactReadable> results = query.getResults();
+      assertEquals(2, results.size());
+
+      Iterator<String> iterator = getNames(results).iterator();
+      assertEquals("Robot Interfaces", iterator.next());
+      assertEquals("Robot collaboration", iterator.next());
+
+      // Add a child
+      ArtifactReadable parent = results.iterator().next().getParent();
+      author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory(null).createTransaction(TestBranches.SAW_Bld_2, author, "FollowTest");
+      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
+      tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
+      TransactionReadable commitTx = tx.commit();
+      int headTx = commitTx.getLocalId();
+
+      results = query.getResults();
+      assertEquals(3, results.size());
+
+      iterator = getNames(results).iterator();
+      assertEquals("Dummy Robot", iterator.next());
+      assertEquals("Robot Interfaces", iterator.next());
+      assertEquals("Robot collaboration", iterator.next());
+
+      query.fromTransaction(headTx - 1);
+      results = query.getResults();
+      assertEquals(2, results.size());
+
+      iterator = getNames(results).iterator();
+      assertEquals("Robot Interfaces", iterator.next());
+      assertEquals("Robot collaboration", iterator.next());
+   }
+
+   private Set<String> getNames(ResultSet<ArtifactReadable> results) {
+      Set<String> names = new TreeSet<String>();
+      for (ArtifactReadable art : results) {
+         names.add(art.getName());
+      }
+      return names;
    }
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {

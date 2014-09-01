@@ -20,7 +20,9 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
  */
 public interface SqlHandlerFactory {
 
-   List<SqlHandler<?>> createHandlers(CriteriaSet criteriaSet) throws OseeCoreException;
+   List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet) throws OseeCoreException;
+
+   List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) throws OseeCoreException;
 
    SqlHandler<?> createHandler(Criteria criteria) throws OseeCoreException;
 }

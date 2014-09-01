@@ -38,7 +38,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
-      String tableAlias = getAliasManager().getFirstAlias(table);
+      String tableAlias = getLastAlias(table);
       if (isCountQueryType()) {
          write("SELECT%s count(%s.%s)", getSqlHint(), tableAlias, idColumn);
       } else {
@@ -67,7 +67,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
       if (!isCountQueryType()) {
-         String tableAlias = getAliasManager().getFirstAlias(table);
+         String tableAlias = getLastAlias(table);
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
       }
    }

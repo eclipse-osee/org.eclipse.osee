@@ -145,18 +145,30 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      boolean artTableAdded = false;
+      boolean txsTableAdded = false;
+
       if (!Strings.isValid(artAlias)) {
          artAlias = writer.getAliases(TableEnum.ARTIFACT_TABLE).iterator().next();
+      } else {
+         artTableAdded = true;
       }
       if (!Strings.isValid(txsAlias)) {
          txsAlias = writer.getAliases(TableEnum.TXS_TABLE).iterator().next();
+      } else {
+         txsTableAdded = true;
       }
 
       writer.write("%s.art_id = %s.art_id", artAlias, attrAlias);
-      writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
-      writer.writeAndLn();
-      writer.write("%s.gamma_id = %s.gamma_id", txsAlias, artAlias);
+
+      if (artTableAdded) {
+         writer.writeAndLn();
+         writer.write("%s.gamma_id = %s.gamma_id", txsAlias, artAlias);
+      }
+      if (txsTableAdded) {
+         writer.writeAndLn();
+         writer.write(writer.getTxBranchFilter(txsAlias));
+      }
       return true;
    }
 

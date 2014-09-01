@@ -84,7 +84,7 @@ public class QueryStatisticsImpl implements Cloneable, QueryStatistics {
       builder.append("\tDetails:\n\t\t");
       builder.append(data.getOptions());
       builder.append("\n\t\t");
-      builder.append(data.getCriteriaSet());
+      builder.append(data.getCriteriaSets());
       builder.append("\n");
       return builder.toString();
    }

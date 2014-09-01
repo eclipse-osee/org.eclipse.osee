@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -63,10 +62,10 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
 
    private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
       QuerySqlContext context = createContext(session, queryData);
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
 
       AbstractSqlWriter writer = createQueryWriter(context, queryData, queryType);
-      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(criteriaSet);
+
+      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
       writer.build(handlers);
       return context;
    }
@@ -86,7 +85,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    private IOseeBranch getBranchToSearch(QueryData queryData) throws OseeCoreException {
       IOseeBranch branch = null;
 
-      Iterable<? extends Criteria> criterias = queryData.getCriteriaSet();
+      Iterable<? extends Criteria> criterias = queryData.getAllCriteria();
       Optional<? extends Criteria> item = Iterables.tryFind(criterias, new Predicate<Criteria>() {
 
          @Override

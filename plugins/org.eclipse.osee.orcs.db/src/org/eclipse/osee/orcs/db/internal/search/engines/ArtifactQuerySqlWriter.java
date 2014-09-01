@@ -38,8 +38,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    private void writeSelectHelper() throws OseeCoreException {
-      String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
-      String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
+      String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+      String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
 
       write("SELECT%s ", getSqlHint());
       if (OptionsUtil.isHistorical(getOptions())) {
@@ -56,7 +56,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
             write("SELECT count(xTable.art_id) FROM (\n ");
             writeSelectHelper();
          } else {
-            String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
+            String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
             write("SELECT%s count(%s.art_id)", getSqlHint(), artAlias);
          }
       } else {
@@ -67,13 +67,13 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
       if (OptionsUtil.isHistorical(getOptions())) {
-         String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
-         String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
+         String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
          write("\n GROUP BY %s.art_id, %s.branch_id", artAlias, txAlias);
       }
       if (!isCountQueryType()) {
-         String txAlias = getAliasManager().getFirstAlias(TableEnum.TXS_TABLE);
-         String artAlias = getAliasManager().getFirstAlias(TableEnum.ARTIFACT_TABLE);
+         String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
          write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
       } else {
          if (OptionsUtil.isHistorical(getOptions())) {

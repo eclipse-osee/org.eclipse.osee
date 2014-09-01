@@ -226,7 +226,7 @@ public class BranchQueryImpl implements BranchQuery {
 
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
       QueryData queryData = getQueryData().clone();
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
+      CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
       if (criteriaSet.getCriterias().isEmpty()) {
          addAndCheck(queryData, criteriaFactory.createAllBranchesCriteria());
       }

@@ -68,7 +68,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
    @Override
    public ArtifactDataCountHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception {
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
+      CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
       Set<CriteriaAttributeKeywords> criterias = criteriaSet.getCriteriaByType(CriteriaAttributeKeywords.class);
       ArtifactDataCountHandler countingHandler;
       if (criterias.isEmpty()) {

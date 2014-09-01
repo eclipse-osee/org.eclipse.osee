@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -59,10 +58,9 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
 
    private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions());
-      CriteriaSet criteriaSet = queryData.getCriteriaSet();
       AbstractSqlWriter writer =
          new QuerySqlWriter(logger, dbService, sqlProvider, context, queryType, table, idColumn);
-      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(criteriaSet);
+      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
       writer.build(handlers);
       return context;
    }

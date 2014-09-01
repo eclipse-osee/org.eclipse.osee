@@ -46,6 +46,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final SqlProvider sqlProvider;
    private final SqlContext context;
    private final QueryType queryType;
+   private int level = 0;
 
    public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType) {
       this.logger = logger;
@@ -61,15 +62,24 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public void build(List<SqlHandler<?>> handlers) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
-      output.delete(0, output.length());
+      reset();
 
       write(handlers);
 
-      context.setSql(toString());
+      String sql = toString();
+      context.setSql(sql);
 
       if (logger.isTraceEnabled()) {
          logger.trace("Sql Writer - [%s]", context);
       }
+   }
+
+   private void reset() {
+      output.delete(0, output.length());
+      tableEntries.clear();
+      withClauses.clear();
+      aliasManager.reset();
+      level = 0;
    }
 
    public boolean isCountQueryType() {
@@ -129,16 +139,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void computeWithClause(List<SqlHandler<?>> handlers) throws OseeCoreException {
       for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
          handler.addWithTables(this);
       }
-   }
-
-   public String getNextAlias(AliasEntry table) {
-      return getAliasManager().getNextAlias(table);
-   }
-
-   protected SqlAliasManager getAliasManager() {
-      return aliasManager;
    }
 
    public SqlContext getContext() {
@@ -167,14 +170,20 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected void computeTables(List<SqlHandler<?>> handlers) throws OseeCoreException {
       for (SqlHandler<?> handler : handlers) {
+         setHandlerLevel(handler);
          handler.addTables(this);
       }
+   }
+
+   protected void setHandlerLevel(SqlHandler<?> handler) {
+      level = handler.getLevel();
    }
 
    protected void writePredicates(List<SqlHandler<?>> handlers) throws OseeCoreException {
       int size = handlers.size();
       for (int index = 0; index < size; index++) {
          SqlHandler<?> handler = handlers.get(index);
+         setHandlerLevel(handler);
          boolean modified = handler.addPredicates(this);
          if (modified && index + 1 < size) {
             writeAndLn();
@@ -195,8 +204,32 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
+   protected boolean hasAlias(TableEnum table) {
+      return getAliasManager().hasAlias(table, level);
+   }
+
    public List<String> getAliases(TableEnum table) {
-      return getAliasManager().getAliases(table);
+      return getAliasManager().getAliases(table, level);
+   }
+
+   public String getFirstAlias(TableEnum table) {
+      return getAliasManager().getFirstAlias(table, level);
+   }
+
+   public String getLastAlias(TableEnum table) {
+      return getAliasManager().getLastAlias(table);
+   }
+
+   public String getNextAlias(AliasEntry table) {
+      return getAliasManager().getNextAlias(table);
+   }
+
+   public void nextAliasLevel() {
+      getAliasManager().nextLevel();
+   }
+
+   private SqlAliasManager getAliasManager() {
+      return aliasManager;
    }
 
    public void addTable(String table) {
@@ -204,8 +237,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String addTable(AliasEntry table) {
-      String alias = getAliasManager().getNextAlias(table);
-      tableEntries.add(String.format("%s %s", table.getEntry(), alias));
+      String alias = getNextAlias(table);
+      tableEntries.add(String.format("%s %s", table.getName(), alias));
       return alias;
    }
 
