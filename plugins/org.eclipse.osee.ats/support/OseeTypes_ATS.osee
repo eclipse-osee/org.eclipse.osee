@@ -75,7 +75,6 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Action Details Format"
 	attribute "ats.Allow Create Branch"
 	attribute "ats.Allow Commit Branch"
-	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Related Peer Workflow Definition"
 	attribute "ats.Workflow Definition"
@@ -171,7 +170,6 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Description"
 	attribute "ats.Operational Impact Workaround"
 	attribute "ats.Operational Impact Workaround Description"
-	attribute "ats.Related Task Workflow Definition Old"
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Program Uuid"
 	attribute "ats.Applicability Workflow"
@@ -427,14 +425,6 @@ attributeType "ats.Rule Definition" extends StringAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max unlimited
-	mediaType "text/plain"
-}
-
-attributeType "ats.Related Task Workflow Definition Old" extends StringAttribute {
-	uuid 0x10000000000000AF
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max 1
 	mediaType "text/plain"
 }
 
