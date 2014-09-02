@@ -25,7 +25,7 @@ public class GetAvailableServers implements Callable<OTEMasterServerAvailableNod
          WebTarget resource = webClientProvider.target(uri);
          OTEServer[] servers =
             resource.path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).request(
-               MediaType.APPLICATION_JSON).get(OTEServer[].class);
+               MediaType.APPLICATION_XML).get(OTEServer[].class);
          result.setServers(servers);
          result.setSuccess(true);
       } catch (Throwable th) {

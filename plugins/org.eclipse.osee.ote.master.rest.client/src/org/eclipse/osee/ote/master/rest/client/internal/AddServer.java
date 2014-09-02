@@ -27,7 +27,7 @@ public class AddServer implements Callable<OTEMasterServerResult> {
       try {
          WebTarget resource = webClientProvider.target(uri);
          resource.path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).request(
-            MediaType.APPLICATION_JSON).post(Entity.json(server));
+            MediaType.APPLICATION_XML).post(Entity.json(server));
       } catch (Throwable th) {
          result.setSuccess(false);
          result.setThrowable(th);
