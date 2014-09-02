@@ -103,9 +103,16 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
                   installedBundle = context.installBundle("reference:" + bundleData.toURI().toURL().toExternalForm());
                   bundleNameToMd5Map.put(bundleName, bundleDescription.getMd5Digest());
                   installedBundles.add(installedBundle);
-               }
+               } 
             }
             statusCallback.log("installed " + bundleName);
+         } catch (BundleException ex){
+            if(ex.getType() == BundleException.DUPLICATE_BUNDLE_ERROR){
+               statusCallback.log(String.format("Duplicate bundle [%s].", bundleName));
+            } else {
+               statusCallback.error(String.format("Unable to load [%s].", bundleName), ex);
+               pass = false;
+            }
          } catch (Throwable th) {
             statusCallback.error(String.format("Unable to load [%s].", bundleName), th);
             pass = false;

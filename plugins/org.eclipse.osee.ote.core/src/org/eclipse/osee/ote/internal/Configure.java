@@ -36,11 +36,9 @@ public class Configure implements Callable<ConfigurationStatus> {
             if(bundleLoader.install(configuration, callable)){
                if(!bundleLoader.start(callable)){
                   status.setFail("Bundle start failed.");
-                  bundleLoader.uninstall(callable);
                }
             } else {
                status.setFail("Bundle install failed.");
-               bundleLoader.uninstall(callable);
             }
          } else {
             status.setFail("Failed to uninstall bundles.");
