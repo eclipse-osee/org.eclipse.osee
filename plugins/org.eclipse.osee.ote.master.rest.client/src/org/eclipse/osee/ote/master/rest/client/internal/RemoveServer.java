@@ -28,7 +28,7 @@ public class RemoveServer implements Callable<OTEMasterServerResult> {
       try {
          WebTarget resource = webClientProvider.target(uri);
          resource.path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).request(
-            MediaType.APPLICATION_XML).method(HttpMethod.DELETE, Entity.json(server));
+            MediaType.APPLICATION_XML).method(HttpMethod.DELETE, Entity.xml(server));
       } catch (Throwable th) {
          result.setSuccess(false);
          result.setThrowable(th);
