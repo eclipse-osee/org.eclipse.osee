@@ -18,7 +18,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.TempCachingService;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -203,11 +202,6 @@ public class OrcsApiImpl implements OrcsApi {
    public QueryFactory getQueryFactory(ApplicationContext context) {
       OrcsSession session = getSession(context);
       return queryModule.createQueryFactory(session);
-   }
-
-   @Override
-   public TransactionCache getTxsCache() {
-      return cacheService.getTransactionCache();
    }
 
    @Override
