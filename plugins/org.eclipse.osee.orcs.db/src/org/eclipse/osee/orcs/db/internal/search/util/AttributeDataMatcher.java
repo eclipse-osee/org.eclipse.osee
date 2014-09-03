@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -32,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -58,12 +60,10 @@ public class AttributeDataMatcher {
 
    public void process(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, Collection<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) throws Exception {
       logger.debug("Attribute Data match for attr[%s] - [%s]", data.getLocalId(), valuesToMatch);
-      int valueCount = valuesToMatch.size();
-      if (valueCount > 1) {
+      if (Conditions.hasValues(options)) {
+         matchTokenizedValue(cancellation, handler, data, valuesToMatch, typesFilter, options);
+      } else {
          matchValuesExactly(cancellation, handler, data, valuesToMatch);
-      } else if (valueCount == 1) {
-         String toMatch = valuesToMatch.iterator().next();
-         matchTokenizedValue(cancellation, handler, data, toMatch, typesFilter, options);
       }
    }
 
@@ -84,7 +84,7 @@ public class AttributeDataMatcher {
       }
    }
 
-   private void matchTokenizedValue(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, String toMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
+   private void matchTokenizedValue(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, Iterable<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       IAttributeType attrType = attrTypes.getByUuid(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
@@ -94,7 +94,10 @@ public class AttributeDataMatcher {
          if (tagger != null) {
             checkCancelled(cancellation);
             try {
-               List<MatchLocation> matched = tagger.find(source, toMatch, true, options);
+               List<MatchLocation> matched = Lists.newLinkedList();
+               for (String toMatch : valuesToMatch) {
+                  matched.addAll(tagger.find(source, toMatch, true, options));
+               }
                for (MatchLocation matchLocation : matched) {
                   checkCancelled(cancellation);
                   handler.onData(data, matchLocation);

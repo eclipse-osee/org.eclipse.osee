@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -205,7 +204,7 @@ public class ArtifactQueryTest {
       Thread.sleep(1000);
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromName("Wikipedia", branch, DeletionFlag.EXCLUDE_DELETED,
-            QueryOptions.CONTAINS_MATCH_OPTIONS);
+            QueryOption.CONTAINS_MATCH_OPTIONS);
       Job job = BranchManager.deleteBranch(branch);
       job.join();
       Assert.assertEquals(1, artifacts.size());

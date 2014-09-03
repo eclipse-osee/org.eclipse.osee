@@ -258,7 +258,7 @@ public class OrcsQueryTest {
    @Test
    public void testQueryAttributeKeyword() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1);
-      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.TOKEN_DELIMITER__ANY);
+      builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       assertEquals(7, builder.getCount());
       ResultSet<ArtifactReadable> requirements = builder.getResults();
@@ -362,7 +362,7 @@ public class OrcsQueryTest {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
       .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
       .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "object", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE);
+      .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -376,7 +376,7 @@ public class OrcsQueryTest {
       .andNameEquals("Robot API") //
       .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
       .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "Robot", QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = query.getResults();
       assertEquals(2, results.size());

@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
@@ -72,7 +71,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
       for (IAtsWorkPackage workPkg : workPackages) {
          checkForCancelledStatus(monitor);
          for (Artifact art : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.WorkPackageGuid,
-            workPkg.getGuid(), AtsUtilCore.getAtsBranch(), QueryOptions.EXACT_MATCH_OPTIONS)) {
+            workPkg.getGuid(), AtsUtilCore.getAtsBranch())) {
             checkForCancelledStatus(monitor);
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             EarnedValueReportResult result = new EarnedValueReportResult(workPkg, art);

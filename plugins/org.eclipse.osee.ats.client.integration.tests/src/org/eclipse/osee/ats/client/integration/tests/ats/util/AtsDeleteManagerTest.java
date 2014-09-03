@@ -38,12 +38,12 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -179,7 +179,7 @@ public class AtsDeleteManagerTest {
    private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) throws OseeCoreException {
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromName(testName.toString(), AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
-            QueryOptions.CONTAINS_MATCH_OPTIONS);
+            QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<IArtifactType>();
       for (Artifact artifact : artifacts) {
          countMap.put(artifact.getArtifactType());

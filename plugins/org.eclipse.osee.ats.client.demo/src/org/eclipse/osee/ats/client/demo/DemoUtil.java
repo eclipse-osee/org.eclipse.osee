@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 public class DemoUtil {
 
@@ -72,7 +71,7 @@ public class DemoUtil {
    public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
       TeamWorkFlowArtifact result = null;
       for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtilCore.getAtsBranch(),
-         DeletionFlag.EXCLUDE_DELETED, QueryOptions.EXACT_MATCH_OPTIONS)) {
+         DeletionFlag.EXCLUDE_DELETED)) {
          if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
             result = (TeamWorkFlowArtifact) art;
             break;

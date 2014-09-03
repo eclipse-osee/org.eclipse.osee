@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -122,7 +122,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
             userTaskArts.addAll(Collections.castMatching(TaskArtifact.class,
                ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.Task, AtsAttributeTypes.State,
-                  "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOptions.CONTAINS_MATCH_OPTIONS)));
+                  "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)));
          }
          Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
          for (TaskArtifact taskArt : userTaskArts) {

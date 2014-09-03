@@ -47,7 +47,7 @@ public class AttributeCriteriaTest {
       reset(builder);
       criteria = new AttributeCriteria(CoreAttributeTypes.Active, "true");
       criteria.addToQueryBuilder(builder);
-      verify(builder).and(CoreAttributeTypes.Active, "true", QueryOptions.EXACT_MATCH_OPTIONS);
+      verify(builder).and(CoreAttributeTypes.Active, "true");
 
    }
 }

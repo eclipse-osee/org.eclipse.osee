@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
@@ -65,7 +65,7 @@ public class DemoTestUtil {
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Collection<Artifact> robotArtifacts =
          ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot",
-            DemoSawBuilds.SAW_Bld_1, QueryOptions.CONTAINS_MATCH_OPTIONS);
+            DemoSawBuilds.SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
       if (robotArtifacts.size() < 6) {
          return new Result(
             String.format(

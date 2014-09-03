@@ -27,11 +27,11 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 
 /**
  * @author Donald G. Dunne
@@ -80,7 +80,7 @@ public class UserWorldSearchItem {
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
             searchArts.addAll(WorkflowManager.getAwas(ArtifactQuery.getArtifactListFromAttribute(
                AtsAttributeTypes.State, "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(),
-               QueryOptions.CONTAINS_MATCH_OPTIONS)));
+               QueryOption.CONTAINS_MATCH_OPTIONS)));
          }
       }
 
@@ -131,13 +131,13 @@ public class UserWorldSearchItem {
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
-         AbstractWorkflowArtifact.class);
+      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(
+         AtsRelationTypes.SubscribedUser_Artifact, AbstractWorkflowArtifact.class);
    }
 
    private Collection<AbstractWorkflowArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact,
-         AbstractWorkflowArtifact.class);
+      return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifactsOfType(
+         AtsRelationTypes.FavoriteUser_Artifact, AbstractWorkflowArtifact.class);
    }
 
 }

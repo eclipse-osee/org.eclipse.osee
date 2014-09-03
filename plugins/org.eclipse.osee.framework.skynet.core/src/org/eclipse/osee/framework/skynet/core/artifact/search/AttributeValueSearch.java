@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
@@ -51,7 +52,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
 
    @Override
    public void addToQuery(QueryBuilderArtifact builder) {
-      builder.and(attributeType, attributeValue, QueryOptions.CONTAINS_MATCH_OPTIONS);
+      builder.and(attributeType, attributeValue, QueryOption.CONTAINS_MATCH_OPTIONS);
    }
 
 }

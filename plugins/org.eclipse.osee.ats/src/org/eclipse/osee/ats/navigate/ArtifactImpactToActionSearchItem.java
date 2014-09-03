@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.QueryOptions;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -96,7 +96,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       private void getMatrixItems() throws OseeCoreException {
          final Collection<Artifact> srchArts =
             ArtifactQuery.getArtifactListFromName(artifactName, branch, INCLUDE_DELETED,
-               QueryOptions.CONTAINS_MATCH_OPTIONS);
+               QueryOption.CONTAINS_MATCH_OPTIONS);
          final Set<Artifact> processArts = new HashSet<Artifact>();
          if (srchArts.isEmpty()) {
             return;

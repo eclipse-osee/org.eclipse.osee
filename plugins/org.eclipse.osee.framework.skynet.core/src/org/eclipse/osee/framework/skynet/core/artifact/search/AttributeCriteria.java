@@ -92,11 +92,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
             this.values = values;
          }
       }
-      if (this.value != null && options.length == 0) {
-         this.options = QueryOptions.EXACT_MATCH_OPTIONS;
-      } else {
-         this.options = options;
-      }
+      this.options = options;
    }
 
    @Override

@@ -37,16 +37,14 @@ public enum QueryOption {
       return matchOrder ? TOKEN_MATCH_ORDER__MATCH : TOKEN_MATCH_ORDER__ANY;
    }
 
-   public static boolean isMatchTokenCount(QueryOption... options) {
-      for (QueryOption option : options) {
-         if (option == TOKEN_COUNT__MATCH) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    public static QueryOption getCaseType(boolean isCaseSensitive) {
       return isCaseSensitive ? CASE__MATCH : CASE__IGNORE;
    }
+
+   public static final QueryOption[] CONTAINS_MATCH_OPTIONS = {
+      QueryOption.CASE__IGNORE,
+      QueryOption.TOKEN_MATCH_ORDER__MATCH,
+      QueryOption.TOKEN_DELIMITER__ANY,
+      QueryOption.TOKEN_COUNT__IGNORE};
+
 }
