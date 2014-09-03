@@ -604,7 +604,7 @@
       <key
             commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
             contextId="org.eclipse.ui.contexts.window"
-            sequence="M1+A"
+            sequence=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
    </extension>   

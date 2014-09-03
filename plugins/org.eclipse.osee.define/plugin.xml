@@ -229,7 +229,7 @@
       <key
             commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
             contextId="org.eclipse.ui.contexts.window"
-            sequence="M1+D"
+            sequence=""
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
    </extension>   
