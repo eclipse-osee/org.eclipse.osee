@@ -37,6 +37,7 @@
 								<plugin id="jms.libraries" />
 								<plugin id="net.jini" />
 								<plugin id="org.json" />
+								<plugin id="org.apache.cxf.core.config" />
 							</excludes>
 						</configuration>
 					</execution>

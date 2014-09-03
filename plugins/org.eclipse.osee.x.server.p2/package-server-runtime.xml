@@ -133,7 +133,7 @@
 							</then>
 						</elseif>
 						<elseif>
-							<equals arg1="${projectName}" arg2="org.eclipse.osee.vaadin.themes" />
+							<equals arg1="${projectName}" arg2="org.apache.cxf.core.config" />
 							<then>
 								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>

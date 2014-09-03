@@ -53,9 +53,6 @@ import org.osgi.service.http.HttpService;
  */
 public final class CxfJaxRsFactory implements JaxRsFactory {
 
-   private static final String APACHE_CXF_LOGGER = "org.apache.cxf.Logger";
-   private static final String DEFAULT_CXF_LOGGING_IMPL = "org.apache.cxf.common.logging.Slf4jLogger";
-
    private Log logger;
    private HttpService httpService;
 
@@ -74,8 +71,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    public void start(Map<String, Object> props) {
       logger.debug("Starting [%s]...", getClass().getSimpleName());
-
-      System.setProperty(APACHE_CXF_LOGGER, DEFAULT_CXF_LOGGING_IMPL);
 
       // Ensure CXF JAX-RS implementation is loaded 
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();

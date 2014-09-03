@@ -51,11 +51,9 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    }
 
-   private static final String APACHE_CXF_LOGGER = "org.apache.cxf.Logger";
    private static final String JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY = "javax.ws.rs.client.ClientBuilder";
 
    private static final String DEFAULT_JAXRS_CLIENT_BUILDER_IMPL = "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl";
-   private static final String DEFAULT_CXF_LOGGING_IMPL = "org.apache.cxf.common.logging.Slf4jLogger";
 
    private final OAuthFactory oauthFactory;
 
@@ -82,8 +80,6 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    @Override
    public void configureJaxRsRuntime() {
-      System.setProperty(APACHE_CXF_LOGGER, DEFAULT_CXF_LOGGING_IMPL);
-
       // Ensure CXF JAX-RS implementation is loaded 
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
