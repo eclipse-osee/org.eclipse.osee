@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.rest.internal.resources.TeamResource;
 import org.eclipse.osee.ats.rest.internal.resources.UserResource;
 import org.eclipse.osee.ats.rest.internal.resources.VersionResource;
 import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -44,7 +43,6 @@ public class AtsApplication extends Application {
    private IAtsServer atsServer;
    private OrcsApi orcsApi;
    private Log logger;
-   private IApplicationServerManager appServerMgr;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -56,10 +54,6 @@ public class AtsApplication extends Application {
 
    public void setAtsServer(IAtsServer atsServer) {
       this.atsServer = atsServer;
-   }
-
-   public void setAppServerMgr(IApplicationServerManager appServerMgr) {
-      this.appServerMgr = appServerMgr;
    }
 
    public void start() {
@@ -77,11 +71,11 @@ public class AtsApplication extends Application {
       singletons.add(new TeamResource(orcsApi));
       singletons.add(new VersionResource(orcsApi));
       singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
-      singletons.add(new CpaResource(orcsApi, atsServer, appServerMgr));
+      singletons.add(new CpaResource(orcsApi, atsServer));
       singletons.add(new UserResource(atsServer.getUserService()));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
-      System.out.println("ATS - Application started - " + appServerMgr.getServerUri());
+      System.out.println("ATS - Application started - " + System.getProperty("OseeApplicationServer"));
    }
 
    public void stop() {

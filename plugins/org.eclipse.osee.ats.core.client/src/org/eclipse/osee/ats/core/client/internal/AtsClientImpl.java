@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.notify.IAtsNotificationService;
@@ -75,10 +76,12 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -86,6 +89,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -485,6 +489,22 @@ public class AtsClientImpl implements IAtsClient {
          utilService = AtsCoreFactory.getUtilService(getAttributeResolver());
       }
       return utilService;
+   }
+
+   @Override
+   public String getConfigValue(String key) {
+      String result = null;
+      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());
+      if (atsConfig != null) {
+         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
+            String str = (String) obj;
+            if (str.startsWith(key)) {
+               result = str.replaceFirst(key + "=", "");
+               break;
+            }
+         }
+      }
+      return result;
    }
 
 }

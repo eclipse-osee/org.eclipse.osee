@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -61,14 +60,24 @@ public class BuildTraceReport {
 
    private static final Pair<String, String> EMPTY_PAIR = new Pair<String, String>("", "");
 
+   private int getPort(UriInfo uriInfo) {
+      URI baseUri = uriInfo.getAbsolutePath();
+      return baseUri.getPort();
+   }
+
    public void getBuildArchive(OutputStream output, OrcsApi orcsApi, Log logger, String fileName, String programId, String buildId, String programName, String buildName, UriInfo uriInfo) {
       ByteArrayOutputStream tableStream = new ByteArrayOutputStream();
       final ZipOutputStream zout = new ZipOutputStream(output);
-      int serverPort = OseeServerProperties.getOseeApplicationServerPort();
 
-      String supportFilesUrl =
-         uriInfo.getBaseUriBuilder().path(BuildTraceReportResource.RESOURCE_BASE).host("localhost").port(serverPort).build().toString();
+      UriBuilder uriBuilder =
+         uriInfo.getBaseUriBuilder().path(BuildTraceReportResource.RESOURCE_BASE).host("localhost");
 
+      int port = getPort(uriInfo);
+      if (port > -1) {
+         uriBuilder.port(port);
+      }
+
+      String supportFilesUrl = uriBuilder.build().toString();
       ArchiveCollector dataCollector = new ArchiveCollector(supportFilesUrl, logger);
       createTraceReport(buildId, programName, buildName, AtsElementData.ARCHIVE_REPORT_TEMPLATE, tableStream,
          dataCollector, orcsApi, logger);

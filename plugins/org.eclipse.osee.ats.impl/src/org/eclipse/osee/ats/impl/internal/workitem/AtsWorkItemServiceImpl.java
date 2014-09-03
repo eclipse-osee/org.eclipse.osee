@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -41,13 +40,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
-   private final IAtsWorkItemFactory workItemFactory;
    private final IArtifactProvider artifactProvider;
    private final IAtsServer atsServer;
 
-   public AtsWorkItemServiceImpl(IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IArtifactProvider artifactProvider) {
+   public AtsWorkItemServiceImpl(IAtsServer atsServer, IArtifactProvider artifactProvider) {
       this.atsServer = atsServer;
-      this.workItemFactory = workItemFactory;
       this.artifactProvider = artifactProvider;
    }
 

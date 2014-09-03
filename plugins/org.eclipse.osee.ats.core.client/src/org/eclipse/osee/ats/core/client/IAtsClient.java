@@ -116,4 +116,6 @@ public interface IAtsClient extends IAttributeResolverProvider, IAtsReviewServic
 
    IAtsUtilService getUtilService();
 
+   String getConfigValue(String key);
+
 }

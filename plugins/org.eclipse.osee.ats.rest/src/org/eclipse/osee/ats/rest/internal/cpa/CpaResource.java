@@ -49,8 +49,6 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.enums.Operator;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -72,12 +70,11 @@ public final class CpaResource {
 
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
-   private final IApplicationServerManager appServerMgr;
+   private static String cpaBasepath;
 
-   public CpaResource(OrcsApi orcsApi, IAtsServer atsServer, IApplicationServerManager appServerMgr) {
+   public CpaResource(OrcsApi orcsApi, IAtsServer atsServer) {
       this.orcsApi = orcsApi;
       this.atsServer = atsServer;
-      this.appServerMgr = appServerMgr;
    }
 
    @GET
@@ -154,7 +151,10 @@ public final class CpaResource {
    }
 
    public String getCpaBasePath() {
-      return OseeInfo.getCachedValue(CpaFactory.CPA_BASEPATH_KEY);
+      if (cpaBasepath == null) {
+         cpaBasepath = atsServer.getConfigValue(CpaFactory.CPA_BASEPATH_KEY);
+      }
+      return cpaBasepath;
    }
 
    @GET
@@ -163,11 +163,12 @@ public final class CpaResource {
    public Response getDecision(@PathParam("uuid") String uuid, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
-         uri =
-            UriBuilder.fromUri(appServerMgr.getServerUri()).path("ats").path("action").path(uuid).path("state").build();
+         String actionUrl = atsServer.getConfigValue("ActionUrl");
+         actionUrl = actionUrl.replaceFirst("UUID", uuid);
+         uri = UriBuilder.fromUri(actionUrl).build();
       } else {
          IAtsCpaService service = AtsCpaServices.getService(pcrSystem);
-         uri = service.getLocation(appServerMgr.getServerUri(), uuid);
+         uri = service.getLocation(UriBuilder.fromUri(getCpaBasePath()).build(), uuid);
       }
       return Response.seeOther(uri).build();
    }

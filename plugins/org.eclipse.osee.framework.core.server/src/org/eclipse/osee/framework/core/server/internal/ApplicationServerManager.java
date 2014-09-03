@@ -92,6 +92,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
       dataStore = new ApplicationServerDataStore(getLogger(), getDatabaseService());
       serverInfo = createOseeServerInfo(getLogger(), dataStore, defaultVersions);
+      System.setProperty("OseeApplicationServer", serverInfo.getUri().toString());
 
       timer = new Timer();
       timer.schedule(new TimerTask() {
