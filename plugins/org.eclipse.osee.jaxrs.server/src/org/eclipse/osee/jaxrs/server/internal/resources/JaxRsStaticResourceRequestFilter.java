@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Priority;
@@ -34,6 +35,7 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
 
@@ -62,19 +64,74 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
       Request request = requestContext.getRequest();
       String method = request.getMethod();
       if (GET_METHOD.equals(method) || HEAD_METHOD.equals(method)) {
-         UriInfo uriInfo = requestContext.getUriInfo();
-         String path = uriInfo.getAbsolutePath().getPath();
-         Resource resource = manager.getResource(path);
+         Resource resource = findResource(requestContext);
          if (resource != null) {
             MultivaluedMap<String, String> headers = requestContext.getHeaders();
-            List<MediaType> acceptableMediaTypes = requestContext.getAcceptableMediaTypes();
-            Response response = newResponse(servletContext, headers, acceptableMediaTypes, path, resource);
+            List<MediaType> mediaTypes = requestContext.getAcceptableMediaTypes();
+            Response response = newResponse(servletContext, headers, mediaTypes, resource);
             requestContext.abortWith(response);
          }
       }
    }
 
-   private Response newResponse(ServletContext servletContext, MultivaluedMap<String, String> headers, List<MediaType> acceptableMediaTypes, String toMatch, Resource resource) throws IOException {
+   private Resource findResource(ContainerRequestContext requestContext) {
+      UriInfo uriInfo = requestContext.getUriInfo();
+      String path = uriInfo.getAbsolutePath().getPath();
+
+      Resource resource = manager.getResource(path);
+      if (resource == null) {
+         if (!hasExtension(path)) {
+            List<MediaType> mediaTypes = getMediaTypesToSearch(requestContext);
+            for (MediaType mediaType : mediaTypes) {
+               String resourcePath = addExtension(path, mediaType);
+               if (Strings.isValid(resourcePath)) {
+                  resource = manager.getResource(resourcePath);
+                  if (resource != null) {
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return resource;
+   }
+
+   private List<MediaType> getMediaTypesToSearch(ContainerRequestContext requestContext) {
+      List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+      MediaType mediaType = requestContext.getMediaType();
+      if (mediaType != null) {
+         acceptableMediaTypes.add(mediaType);
+      }
+      acceptableMediaTypes.addAll(requestContext.getAcceptableMediaTypes());
+      return acceptableMediaTypes;
+   }
+
+   private boolean hasExtension(String path) {
+      String extension = Lib.getExtension(path);
+      return Strings.isValid(extension);
+   }
+
+   private String addExtension(String path, MediaType mediaType) {
+      String extension = mediaType.getSubtype();
+      if (extension.contains("+")) {
+         int index = extension.lastIndexOf("+");
+         if (index > 0 && index + 1 < extension.length()) {
+            extension = extension.substring(index + 1);
+         }
+      } else if (extension.contains(".")) {
+         extension = Lib.getExtension(extension);
+      }
+      String toReturn = null;
+      if (Strings.isValid(extension)) {
+         StringBuilder builder = new StringBuilder(path);
+         builder.append(".");
+         builder.append(extension);
+         toReturn = builder.toString();
+      }
+      return toReturn;
+   }
+
+   private Response newResponse(ServletContext servletContext, MultivaluedMap<String, String> headers, List<MediaType> acceptableMediaTypes, Resource resource) throws IOException {
       final URLConnection connection = resource.getUrl().openConnection();
 
       long lastModified = connection.getLastModified();
@@ -97,7 +154,8 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
 
       String contentType = null;
       if (servletContext != null) {
-         contentType = servletContext.getMimeType(toMatch);
+         String externalForm = resource.getUrl().toExternalForm();
+         contentType = servletContext.getMimeType(externalForm);
       }
 
       if (contentType != null) {
