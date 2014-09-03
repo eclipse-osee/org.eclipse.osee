@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,7 +62,7 @@ public final class StateResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getTransition() throws Exception {
-      ArtifactReadable action = AtsServerService.get().getActionById(guid);
+      ArtifactReadable action = atsServer.getActionById(guid);
       return atsServer.getWorkItemPage().getHtmlWithTransition(action, "Action - " + guid, resourceRegistry, false);
    }
 

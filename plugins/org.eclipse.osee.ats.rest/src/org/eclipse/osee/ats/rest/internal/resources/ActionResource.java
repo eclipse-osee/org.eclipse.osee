@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -77,7 +76,7 @@ public final class ActionResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAction(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      ArtifactReadable action = atsServer.getActionById(id);
       if (action == null) {
          return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
       }
@@ -92,7 +91,7 @@ public final class ActionResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getActionWithDetails(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = AtsServerService.get().getActionById(id);
+      ArtifactReadable action = atsServer.getActionById(id);
       if (action == null) {
          return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
       }

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.ats.rest.internal.cpa.AtsCpaServices"/>
-   <reference bind="addCpaServiceProvider" cardinality="0..n" interface="org.eclipse.osee.ats.api.cpa.IAtsCpaServiceProvider" name="IAtsCpaServiceProvider" policy="dynamic"/>
-</scr:component>

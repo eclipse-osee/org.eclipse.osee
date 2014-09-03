@@ -22,8 +22,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.AtsRestTemplateTokens;
-import org.eclipse.osee.ats.rest.internal.AtsServerService;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,9 +38,11 @@ import org.eclipse.osee.template.engine.PageFactory;
 @Path("convert")
 public final class ConvertResource {
 
+   private final IAtsServer atsServer;
    private final IResourceRegistry registry;
 
-   public ConvertResource(IResourceRegistry registry) {
+   public ConvertResource(IAtsServer atsServer, IResourceRegistry registry) {
+      this.atsServer = atsServer;
       this.registry = registry;
    }
 
@@ -53,7 +55,7 @@ public final class ConvertResource {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.beginMultiColumnTable(98, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Name", "Report", "Run", "Description")));
-      for (IAtsDatabaseConversion convert : AtsServerService.get().getDatabaseConversions()) {
+      for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
          sb.append(AHTML.addRowMultiColumnTable(convert.getName(), getForm(convert.getName(), "report", "REPORT-ONLY"),
             getForm(convert.getName(), "run", "RUN"), AHTML.textToHtml(convert.getDescription())));
       }
@@ -85,7 +87,7 @@ public final class ConvertResource {
       boolean reportOnly = !operation.equals("run");
       XResultData results = new XResultData(false);
       results.logWithFormat("Converting %s ...\n", convertName);
-      for (IAtsDatabaseConversion convert : AtsServerService.get().getDatabaseConversions()) {
+      for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
          if (convert.getName().equals(convertName)) {
             convert.run(results, reportOnly);
          }

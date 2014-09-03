@@ -69,12 +69,14 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public final class CpaResource {
 
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
-   private static String cpaBasepath;
+   private final IAtsServer atsServer;  
+   private final CpaServiceRegistry cpaRegistry;
+   private String cpaBasepath;
 
-   public CpaResource(OrcsApi orcsApi, IAtsServer atsServer) {
+   public CpaResource(OrcsApi orcsApi, IAtsServer atsServer, CpaServiceRegistry cpaRegistry) {
       this.orcsApi = orcsApi;
       this.atsServer = atsServer;
+      this.cpaRegistry = cpaRegistry;
    }
 
    @GET
@@ -88,7 +90,7 @@ public final class CpaResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsCpaProgram> getPrograms() throws Exception {
       List<IAtsCpaProgram> programs = new ArrayList<IAtsCpaProgram>();
-      for (IAtsCpaService service : AtsCpaServices.getServices()) {
+      for (IAtsCpaService service : cpaRegistry.getServices()) {
          programs.addAll(service.getPrograms());
       }
       return programs;
@@ -137,7 +139,7 @@ public final class CpaResource {
             decision.setDuplicatedPcrId(duplicatedPcrId);
          }
 
-         IAtsCpaService service = AtsCpaServices.getService(decision.getPcrSystem());
+         IAtsCpaService service = cpaRegistry.getServiceById(decision.getPcrSystem());
          ICpaPcr origPcr = service.getPcr(origPcrId);
          decision.setOriginatingPcr(origPcr);
 
@@ -167,7 +169,7 @@ public final class CpaResource {
          actionUrl = actionUrl.replaceFirst("UUID", uuid);
          uri = UriBuilder.fromUri(actionUrl).build();
       } else {
-         IAtsCpaService service = AtsCpaServices.getService(pcrSystem);
+         IAtsCpaService service = cpaRegistry.getServiceById(pcrSystem);
          uri = service.getLocation(UriBuilder.fromUri(getCpaBasePath()).build(), uuid);
       }
       return Response.seeOther(uri).build();
@@ -285,7 +287,7 @@ public final class CpaResource {
       CpaConfig config = new CpaConfig();
       config.getApplicabilityOptions().add("Yes");
       config.getApplicabilityOptions().add("No");
-      for (IAtsCpaService service : AtsCpaServices.getServices()) {
+      for (IAtsCpaService service : cpaRegistry.getServices()) {
          config.getTools().add(new CpaConfigTool(service.getId()));
       }
       return config;
@@ -295,7 +297,7 @@ public final class CpaResource {
    @Path("config/tool/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    public String getConfig(@PathParam("id") String id) throws Exception {
-      for (IAtsCpaService service : AtsCpaServices.getServices()) {
+      for (IAtsCpaService service : cpaRegistry.getServices()) {
          if (service.getId().equals(id)) {
             return service.getConfigJson();
          }

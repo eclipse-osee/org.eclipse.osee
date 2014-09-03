@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
+import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
 import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConfigResource;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.resources.TeamResource;
 import org.eclipse.osee.ats.rest.internal.resources.UserResource;
 import org.eclipse.osee.ats.rest.internal.resources.VersionResource;
-import org.eclipse.osee.ats.rest.internal.util.JaxRsExceptionMapper;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -40,9 +40,10 @@ public class AtsApplication extends Application {
 
    private final Set<Object> singletons = new HashSet<Object>();
 
-   private IAtsServer atsServer;
-   private OrcsApi orcsApi;
    private Log logger;
+   private OrcsApi orcsApi;
+   private IAtsServer atsServer;
+   private CpaServiceRegistry cpaRegistry;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -56,22 +57,23 @@ public class AtsApplication extends Application {
       this.atsServer = atsServer;
    }
 
+   public void setCpaServiceRegistry(CpaServiceRegistry cpaRegistry) {
+      this.cpaRegistry = cpaRegistry;
+   }
+
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
       AtsResourceTokens.register(registry);
       AtsRestTemplateTokens.register(registry);
       OseeTemplateTokens.register(registry);
 
-      singletons.add(new JaxRsExceptionMapper(registry));
-
       singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
-
       singletons.add(new ActionResource(atsServer, orcsApi, registry));
-      singletons.add(new ConvertResource(registry));
+      singletons.add(new ConvertResource(atsServer, registry));
       singletons.add(new TeamResource(orcsApi));
       singletons.add(new VersionResource(orcsApi));
       singletons.add(new ConfigResource(atsServer, orcsApi, logger, registry));
-      singletons.add(new CpaResource(orcsApi, atsServer));
+      singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
 
       singletons.add(new AtsUiResource(registry, orcsApi));
