@@ -5,10 +5,11 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.ote.core.BundleInfo;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.client.internal.jarserver.HeadlessClassServer;
@@ -65,7 +66,7 @@ public class ConfigureOteServer extends BaseClientCallable<Progress> {
    private void waitForJobComplete() throws Exception {
 
       URI jobUri = status.getUpdatedJobStatus().toURI();
-      final WebTarget service = factory.target(jobUri);
+      final JaxRsWebTarget service = factory.target(jobUri);
 
       while (!status.isJobComplete()) {
          Thread.sleep(POLLING_RATE);
@@ -76,7 +77,8 @@ public class ConfigureOteServer extends BaseClientCallable<Progress> {
    }
 
    private OTEJobStatus sendBundleConfiguration() throws Exception {
-      WebTarget baseService = factory.target(uri);
+      URI targetUri = UriBuilder.fromUri(uri).path("ote").path("config").build();
+
       if (configuration == null) {
          OTEConfiguration localConfiguration = new OTEConfiguration();
          OTEConfigurationIdentity identity = new OTEConfigurationIdentity();
@@ -92,19 +94,19 @@ public class ConfigureOteServer extends BaseClientCallable<Progress> {
             localConfiguration.addItem(item);
          }
          OTEConfiguration currentConfig =
-            baseService.path("ote").path("config").request(MediaType.APPLICATION_JSON).get(OTEConfiguration.class);
+            factory.target(targetUri).request(MediaType.APPLICATION_JSON).get(OTEConfiguration.class);
          if (currentConfig.equals(localConfiguration)) {
             OTEJobStatus status = new OTEJobStatus();
             status.setSuccess(true);
             status.setJobComplete(true);
             return status;
          } else {
-            return baseService.path("ote").path("config").request(MediaType.APPLICATION_JSON).post(
-               Entity.xml(localConfiguration), OTEJobStatus.class);
+            return factory.target(targetUri).request(MediaType.APPLICATION_JSON).post(Entity.xml(localConfiguration),
+               OTEJobStatus.class);
          }
       } else {
-         return baseService.path("ote").path("config").request(MediaType.APPLICATION_JSON).post(
-            Entity.xml(configuration), OTEJobStatus.class);
+         return factory.target(targetUri).request(MediaType.APPLICATION_JSON).post(Entity.xml(configuration),
+            OTEJobStatus.class);
       }
    }
 }

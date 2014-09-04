@@ -12,7 +12,6 @@ package org.eclipse.osee.jaxrs.client;
 
 import java.net.URI;
 import java.util.Map;
-import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientRuntime;
@@ -26,7 +25,7 @@ public final class JaxRsClient {
 
       <T> T newClient(JaxRsClientConfig config, String serverAddress, Class<T> clazz);
 
-      WebTarget newTarget(JaxRsClientConfig config, String serverAddress);
+      JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress);
    }
 
    public static JaxRsClientBuilder newBuilder() {
@@ -68,7 +67,7 @@ public final class JaxRsClient {
     * 
     * @return target
     */
-   public WebTarget target() {
+   public JaxRsWebTarget target() {
       return target((String) null);
    }
 
@@ -78,7 +77,7 @@ public final class JaxRsClient {
     * @param baseAddress
     * @return target
     */
-   public WebTarget target(URI address) {
+   public JaxRsWebTarget target(URI address) {
       return target(address != null ? address.toString() : null);
    }
 
@@ -88,7 +87,7 @@ public final class JaxRsClient {
     * @param baseAddress
     * @return target
     */
-   public WebTarget target(String address) {
+   public JaxRsWebTarget target(String address) {
       return factory.newTarget(config, address);
    }
 

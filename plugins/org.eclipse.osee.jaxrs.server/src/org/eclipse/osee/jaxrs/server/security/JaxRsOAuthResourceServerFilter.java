@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Form;
@@ -32,6 +31,7 @@ import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -213,7 +213,7 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
             Form form = new Form();
             form.param(OAuthConstants.AUTHORIZATION_SCHEME_TYPE, authScheme);
             form.param(OAuthConstants.AUTHORIZATION_SCHEME_DATA, accessToken);
-            WebTarget target = client.target(validationServerUri);
+            JaxRsWebTarget target = client.target(validationServerUri);
             return target.request().post(Entity.form(form), AccessTokenValidation.class);
          }
       }

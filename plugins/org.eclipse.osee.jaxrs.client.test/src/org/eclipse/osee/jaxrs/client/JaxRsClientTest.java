@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.ws.rs.client.WebTarget;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class JaxRsClientTest {
    //@formatter:off
    @Mock private JaxRsClientFactory factory;
    @Mock private JaxRsClientConfig config;
-   @Mock private WebTarget target;
+   @Mock private JaxRsWebTarget target;
    //@formatter:on
 
    private JaxRsClient client;
@@ -53,7 +52,7 @@ public class JaxRsClientTest {
    public void testTargetEmpty() {
       when(factory.newTarget(config, null)).thenReturn(target);
 
-      WebTarget actual = client.target();
+      JaxRsWebTarget actual = client.target();
       assertEquals(target, actual);
       verify(factory).newTarget(config, null);
    }
@@ -62,7 +61,7 @@ public class JaxRsClientTest {
    public void testTargetString() {
       when(factory.newTarget(config, URI_STRING)).thenReturn(target);
 
-      WebTarget actual = client.target(URI_STRING);
+      JaxRsWebTarget actual = client.target(URI_STRING);
       assertEquals(target, actual);
       verify(factory).newTarget(config, URI_STRING);
    }
@@ -73,7 +72,7 @@ public class JaxRsClientTest {
 
       when(factory.newTarget(config, URI)).thenReturn(target);
 
-      WebTarget actual = client.target(expectedUri);
+      JaxRsWebTarget actual = client.target(expectedUri);
       assertEquals(target, actual);
       verify(factory).newTarget(config, URI);
    }

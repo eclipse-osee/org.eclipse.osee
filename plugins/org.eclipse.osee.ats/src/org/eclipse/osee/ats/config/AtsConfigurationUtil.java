@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.config;
 
 import java.net.URI;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -27,9 +26,8 @@ public class AtsConfigurationUtil {
    public static AtsConfigurations getConfigurations() {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri = UriBuilder.fromUri(appServer).path("ats").path("config").build();
-      WebTarget resource = JaxRsClient.newClient().target(uri);
       try {
-         return resource.request(MediaType.APPLICATION_JSON).get(AtsConfigurations.class);
+         return JaxRsClient.newClient().target(uri).request(MediaType.APPLICATION_JSON).get(AtsConfigurations.class);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
       }

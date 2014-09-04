@@ -3,9 +3,10 @@ package org.eclipse.osee.ote.rest.client.internal;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.ote.rest.client.OTECacheItem;
 import org.eclipse.osee.ote.rest.client.Progress;
 import org.eclipse.osee.ote.rest.model.OTEConfiguration;
@@ -47,7 +48,7 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
    private void waitForJobComplete() throws Exception {
 
       URI jobUri = status.getUpdatedJobStatus().toURI();
-      final WebTarget service = factory.target(jobUri);
+      JaxRsWebTarget service = factory.target(jobUri);
 
       while (!status.isJobComplete()) {
          Thread.sleep(POLLING_RATE);
@@ -70,9 +71,8 @@ public class PrepareOteServerFile extends BaseClientCallable<Progress> {
          item.setMd5Digest(bundleInfo.getMd5());
          configuration.addItem(item);
       }
-      WebTarget baseService = factory.target(uri);
-
-      return baseService.path("ote").path("cache").request(MediaType.APPLICATION_JSON).post(Entity.json(configuration),
+      URI targetUri = UriBuilder.fromUri(uri).path("ote").path("cache").build();
+      return factory.target(targetUri).request(MediaType.APPLICATION_JSON).post(Entity.json(configuration),
          OTEJobStatus.class);
    }
 

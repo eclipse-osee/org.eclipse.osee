@@ -1,0 +1,79 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.jaxrs.client;
+
+import java.net.URI;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+
+/**
+ * Facade over WebTarget
+ * 
+ * @author Roberto E. Escobar
+ */
+public interface JaxRsWebTarget extends Configurable<JaxRsWebTarget> {
+
+   /**
+    * Get the URI identifying the resource.
+    * 
+    * @return the resource URI.
+    */
+   public URI getUri();
+
+   /**
+    * Get the URI builder initialized with the {@link URI} of the current resource target. The returned URI builder is
+    * detached from the target, i.e. any updates in the URI builder MUST NOT have any effects on the URI of the
+    * originating target.
+    * 
+    * @return the initialized URI builder.
+    */
+   public UriBuilder getUriBuilder();
+
+   /**
+    * Start building a request to the targeted web resource.
+    * 
+    * @return builder for a request targeted at the URI referenced by this target instance.
+    */
+   public Invocation.Builder request();
+
+   /**
+    * Start building a request to the targeted web resource and define the accepted response media types.
+    * <p>
+    * Invoking this method is identical to:
+    * </p>
+    * 
+    * <pre>
+    * webTarget.request().accept(types);
+    * </pre>
+    * 
+    * @param acceptedResponseTypes accepted response media types.
+    * @return builder for a request targeted at the URI referenced by this target instance.
+    */
+   public Invocation.Builder request(String... acceptedResponseTypes);
+
+   /**
+    * Start building a request to the targeted web resource and define the accepted response media types.
+    * <p>
+    * Invoking this method is identical to:
+    * </p>
+    * 
+    * <pre>
+    * webTarget.request().accept(types);
+    * </pre>
+    * 
+    * @param acceptedResponseTypes accepted response media types.
+    * @return builder for a request targeted at the URI referenced by this target instance.
+    */
+   public Invocation.Builder request(MediaType... acceptedResponseTypes);
+
+}

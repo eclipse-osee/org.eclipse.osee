@@ -18,8 +18,9 @@ import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientFactory;
-import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +42,7 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
     * @return target
     */
    @Override
-   public WebTarget newTarget(JaxRsClientConfig config, String serverAddress) {
+   public JaxRsWebTarget newTarget(JaxRsClientConfig config, String serverAddress) {
       ClientBuilder builder = ClientBuilder.newBuilder();
       configurator.configureClientBuilder(config, builder);
 
@@ -53,7 +54,7 @@ public class CxfJaxRsClientFactory implements JaxRsClientFactory {
       target.request();
 
       configureConnection(config, target);
-      return target;
+      return new JaxRsWebTargetImpl(target);
    }
 
    /**

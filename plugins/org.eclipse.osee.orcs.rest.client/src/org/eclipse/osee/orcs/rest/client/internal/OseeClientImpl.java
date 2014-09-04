@@ -14,34 +14,41 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactory;
 import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
-import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutorV1;
+import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.Client;
+import org.eclipse.osee.orcs.rest.model.search.artifact.OutputFormat;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
+import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
+import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 
 /**
  * @author John Misinco
  * @author Roberto E. Escobar
  */
-public class OseeClientImpl implements OseeClient {
+public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
 
-   private volatile PredicateFactory predicateFactory;
-   private volatile QueryExecutorV1 executor;
-   private volatile WebTarget baseTarget;
+   private PredicateFactory predicateFactory;
+   private volatile JaxRsClient client;
+   private volatile URI baseUri;
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
@@ -50,38 +57,38 @@ public class OseeClientImpl implements OseeClient {
    }
 
    public void stop() {
-      executor = null;
-      baseTarget = null;
+      client = null;
+      baseUri = null;
       predicateFactory = null;
    }
 
    public void update(Map<String, Object> properties) {
-      JaxRsClient client = JaxRsClient.newBuilder().properties(properties).build();
-
+      client = JaxRsClient.newBuilder().properties(properties).build();
       String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
       if (address == null) {
          address = System.getProperty(OSEE_APPLICATION_SERVER, "");
       }
+      baseUri = UriBuilder.fromUri(address).path("orcs").build();
+   }
 
-      URI uri = UriBuilder.fromUri(address).path("orcs").build();
-      baseTarget = client.target(uri);
-      executor = new QueryExecutorV1(baseTarget);
+   private JaxRsWebTarget newTarget(String path, Object... values) {
+      URI uri = UriBuilder.fromUri(baseUri).path(path).build(values);
+      return client.target(uri);
    }
 
    @Override
    public QueryBuilder createQueryBuilder(IOseeBranch branch) {
       QueryOptions options = new QueryOptions();
       List<Predicate> predicates = new ArrayList<Predicate>();
-      return new QueryBuilderImpl(branch, predicates, options, predicateFactory, executor);
+      return new QueryBuilderImpl(branch, predicates, options, predicateFactory, this);
    }
 
    @Override
    public boolean isClientVersionSupportedByApplicationServer() {
       boolean result = false;
-      WebTarget resource = baseTarget.path("client");
       Client clientResult = null;
       try {
-         clientResult = resource.request(MediaType.APPLICATION_JSON).get(Client.class);
+         clientResult = newTarget("client").request(MediaType.APPLICATION_JSON).get(Client.class);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
       }
@@ -102,4 +109,40 @@ public class OseeClientImpl implements OseeClient {
       }
       return alive;
    }
+
+   @Override
+   public int getCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      SearchResponse result = performSearch(RequestType.COUNT, OutputFormat.XML, branch, predicates, options);
+      return result.getTotal();
+   }
+
+   @Override
+   public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      SearchResponse result = performSearch(request, OutputFormat.XML, branch, predicates, options);
+      return result;
+   }
+
+   private SearchResponse performSearch(RequestType requestType, OutputFormat outputFormat, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      int fromTx = 0;
+      if (options.isHistorical()) {
+         fromTx = options.getFromTransaction();
+      }
+
+      boolean includeDeleted = false;
+      if (options.areDeletedIncluded()) {
+         includeDeleted = true;
+      }
+
+      SearchRequest params =
+         new SearchRequest(branch.getUuid(), predicates, outputFormat.name().toLowerCase(),
+            requestType.name().toLowerCase(), fromTx, includeDeleted);
+
+      JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getUuid());
+      try {
+         return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
+   }
+
 }

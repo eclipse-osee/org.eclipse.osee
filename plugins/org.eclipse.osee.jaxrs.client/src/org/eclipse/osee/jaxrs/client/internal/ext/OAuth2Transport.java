@@ -15,13 +15,11 @@ import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils;
 import org.apache.cxf.rs.security.oauth2.client.OAuthClientUtils.Consumer;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsClient.JaxRsClientBuilder;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
 
 /**
@@ -92,7 +91,7 @@ public class OAuth2Transport {
    }
 
    private WebClient newWebClient(OwnerCredentials credentials, String uri, String sessionCookie) {
-      WebTarget target;
+      JaxRsWebTarget target;
       if (Strings.isValid(sessionCookie)) {
          target = JaxRsClient.newClient().target(uri);
       } else {
@@ -103,10 +102,10 @@ public class OAuth2Transport {
       }
 
       WebClient webClient = null;
-      if (target instanceof WebTargetImpl) {
-         webClient = ((WebTargetImpl) target).getWebClient();
+      if (target instanceof JaxRsWebTargetImpl) {
+         webClient = ((JaxRsWebTargetImpl) target).getWebClient();
       }
-      if (Strings.isValid(sessionCookie)) {
+      if (webClient != null && Strings.isValid(sessionCookie)) {
          webClient.header(HttpHeaders.COOKIE, sessionCookie);
       }
       return webClient;
