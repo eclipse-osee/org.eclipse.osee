@@ -44,4 +44,9 @@ public class DemoTraceParser implements ITraceParser {
       return false;
    }
 
+   @Override
+   public boolean addIfEmpty() {
+      return false;
+   }
+
 }

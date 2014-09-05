@@ -668,6 +668,16 @@ attributeType "Data Rights Basis" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "Subject Matter Expert" extends StringAttribute {
+	uuid 0x100000000000153
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Name of the Subject Matter Expert"
+	mediaType "text/plain"
+}
+
 oseeEnumType "enum.data.rights.classification" {
 	uuid 0x3000000000000205
 	entry "Restricted Rights"

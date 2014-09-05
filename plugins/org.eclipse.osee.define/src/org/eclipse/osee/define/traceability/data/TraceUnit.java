@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -48,7 +49,9 @@ public class TraceUnit {
    }
 
    public void addAllTraceMarks(Collection<TraceMark> traceItems) {
-      traceMarks.addAll(traceItems);
+      if (Conditions.hasValues(traceItems)) {
+         traceMarks.addAll(traceItems);
+      }
    }
 
    public void addTraceMark(TraceMark traceMark) {

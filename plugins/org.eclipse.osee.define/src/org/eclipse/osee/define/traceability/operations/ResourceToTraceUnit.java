@@ -31,6 +31,7 @@ import org.eclipse.osee.define.utility.UriResourceContentFinder;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -188,7 +189,7 @@ public class ResourceToTraceUnit {
          IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);
-            if (traceMarks != null && !traceMarks.isEmpty()) {
+            if (traceParser.addIfEmpty() || Conditions.hasValues(traceMarks)) {
                Map<String, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
                if (traceUnits == null) {
                   traceUnits = new HashMap<String, TraceUnit>();
