@@ -33,7 +33,8 @@ public class OseeDatabase implements TestRule {
          @Override
          public void evaluate() throws Throwable {
             Assert.assertNotNull("Connection Id cannot be null", connectionId);
-            TestDatabase db = new TestDatabase(connectionId, description.getTestClass().getSimpleName(), description.getMethodName());
+            TestDatabase db =
+               new TestDatabase(connectionId, description.getTestClass().getSimpleName(), description.getMethodName());
             try {
                db.initialize();
                base.evaluate();

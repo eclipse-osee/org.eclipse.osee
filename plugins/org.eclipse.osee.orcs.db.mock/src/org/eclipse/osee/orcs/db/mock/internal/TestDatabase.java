@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
-import org.eclipse.osee.hsqldb.HyperSqlDbServer;
+import org.eclipse.osee.hsqldb.HsqlServerManager;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
@@ -41,6 +41,7 @@ public class TestDatabase {
    private File tempFolder;
    private final String connectionId;
    private String dbId = "";
+   private HsqlServerManager hsqlServer;
 
    public TestDatabase(String connectionId, String className, String methodName) {
       this.connectionId = connectionId;
@@ -87,7 +88,10 @@ public class TestDatabase {
       IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
       Assert.assertNotNull(dbService);
 
-      dbId = HyperSqlDbServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
+      hsqlServer = OsgiUtil.getService(HsqlServerManager.class);
+      Assert.assertNotNull(hsqlServer);
+
+      dbId = hsqlServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
 
       OseeConnection connection = dbService.getConnection();
       try {
@@ -129,7 +133,7 @@ public class TestDatabase {
 
       System.setProperty("osee.application.server.data", "");
       System.setProperty("osee.db.embedded.server", "");
-      boolean isDead = HyperSqlDbServer.stopServerWithWait(dbId);
+      boolean isDead = hsqlServer.stopServerWithWait(dbId);
 
       if (isDead) {
          if (tempFolder != null) {
