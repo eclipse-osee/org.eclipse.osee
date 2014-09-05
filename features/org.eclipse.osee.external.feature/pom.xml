@@ -31,8 +31,7 @@
 								<plugin id="org.apache.xerces" />
 								<plugin id="javax.xml" />
 								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />
-								<plugin id="org.eclipse.osee.logback.config" />
+								<plugin id="org.apache.xml.serializer" />								
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
 								<plugin id="net.jini" />
