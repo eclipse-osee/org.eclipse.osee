@@ -72,7 +72,10 @@ app.provider('Set', function() {
         function($resource) {
             var Set = $resource('/dispo/program/:programId/set/:setId', {}, {
                 update: {
-                    method: 'PUT'
+                    method: 'PUT',
+                    headers: {
+                        "Accept": "application/json"
+                    }
                 }
             });
             return Set;
@@ -87,7 +90,10 @@ app.provider('Item', function() {
             var Item = $resource(
                 '/dispo/program/:programId/set/:setId/item/:itemId', {}, {
                     update: {
-                        method: 'PUT'
+                        method: 'PUT',
+                        headers: {
+                            "Accept": "application/json"
+                        }
                     }
                 });
             return Item;
@@ -102,7 +108,10 @@ app.provider('Annotation', function() {
             var Annotation = $resource(
                 '/dispo/program/:programId/set/:setId/item/:itemId/annotation/:annotationId', {}, {
                     update: {
-                        method: 'PUT'
+                        method: 'PUT',
+                        headers: {
+                            "Accept": "application/json"
+                        }
                     }
                 });
             return Annotation;

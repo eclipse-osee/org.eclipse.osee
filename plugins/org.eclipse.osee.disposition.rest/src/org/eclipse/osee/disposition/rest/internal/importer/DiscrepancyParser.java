@@ -79,6 +79,8 @@ public class DiscrepancyParser {
       final MutableString totalPoints = new MutableString();
       final MutableBoolean firstTestPointResultFound = new MutableBoolean(false);
       final MutableString abortedFlag = new MutableString();
+      final MutableString machine = new MutableString();
+      final MutableString elapsedTime = new MutableString();
 
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       DispoSaxHandler handler = new DispoSaxHandler();
@@ -120,6 +122,7 @@ public class DiscrepancyParser {
                if (!isNewImport && !scriptRunDate.getValue().after(lastUpdate)) {
                   throw new BreakSaxException("Stopped Parsing");
                }
+               elapsedTime.setValue(data.getElapsed());
 
             } catch (ParseException ex) {
                throw ex;
@@ -222,6 +225,16 @@ public class DiscrepancyParser {
          }
       });
 
+      handler.getHandler("Config").addListener(new SaxElementAdapter() {
+         @Override
+         public void onStartElement(Object obj) {
+            if (obj instanceof ConfigData) {
+               ConfigData data = (ConfigData) obj;
+               machine.setValue(data.getMachineName());
+            }
+         }
+      });
+
       handler.getHandler("TestPointResults").addListener(new SaxElementAdapter() {
          @Override
          public void onStartElement(Object obj) {
@@ -272,6 +285,9 @@ public class DiscrepancyParser {
          } else if (abortedFlag.getValue().equalsIgnoreCase("TRUE")) {
             String id = String.valueOf(Lib.generateUuid());
             discrepancies.put(id, createAdditionalDiscrepancy(id, "Aborted"));
+            dispoItem.setAborted(true);
+         } else {
+            dispoItem.setAborted(false);
          }
 
          dispoItem.setTotalPoints(totalPoints.getValue());
@@ -281,6 +297,16 @@ public class DiscrepancyParser {
             version.setValue("No version control");
          }
          dispoItem.setVersion(version.getValue());
+
+         if (machine.getValue() == null) {
+            machine.setValue("n/a");
+         }
+         dispoItem.setMachine(machine.getValue());
+
+         if (elapsedTime.getValue() == null) {
+            elapsedTime.setValue("0.0");
+         }
+         dispoItem.setElapsedTime(elapsedTime.getValue());
 
          if (scriptRunDate.getValue() == null) {
             scriptRunDate.setValue(new Date(0));

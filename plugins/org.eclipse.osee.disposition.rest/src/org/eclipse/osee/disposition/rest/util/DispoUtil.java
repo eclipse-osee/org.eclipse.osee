@@ -114,6 +114,10 @@ public final class DispoUtil {
       dispoItemData.setStatus(dispoItemArt.getStatus());
       dispoItemData.setTotalPoints(dispoItemArt.getTotalPoints());
       dispoItemData.setNeedsRerun(dispoItemArt.getNeedsRerun());
+      dispoItemData.setCategory(dispoItemArt.getCategory());
+      dispoItemData.setMachine(dispoItemArt.getMachine());
+      dispoItemData.setAborted(dispoItemArt.getAborted());
+      dispoItemData.setElapsedTime(dispoItemArt.getElapsedTime());
       if (isIncludeDiscrepancies) {
          dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
       }
@@ -168,6 +172,18 @@ public final class DispoUtil {
          if (jsonObject.has("annotationsList")) {
             dispoItem.setAnnotationsList(jsonObject.getJSONArray("annotationsList"));
          }
+         if (jsonObject.has("category")) {
+            dispoItem.setCategory(jsonObject.getString("category"));
+         }
+         if (jsonObject.has("machine")) {
+            dispoItem.setMachine(jsonObject.getString("machine"));
+         }
+         if (jsonObject.has("elapsedTime")) {
+            dispoItem.setElapsedTime(jsonObject.getString("elapsedTime"));
+         }
+         if (jsonObject.has("aborted")) {
+            dispoItem.setAborted(jsonObject.getBoolean("aborted"));
+         }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }
@@ -207,6 +223,10 @@ public final class DispoUtil {
          jsonObject.put("assignee", dispoItem.getAssignee());
          jsonObject.put("needsRerun", dispoItem.getNeedsRerun());
          jsonObject.put("guid", dispoItem.getGuid());
+         jsonObject.put("category", dispoItem.getCategory());
+         jsonObject.put("machine", dispoItem.getMachine());
+         jsonObject.put("elapsedTime", dispoItem.getElapsedTime());
+         jsonObject.put("aborted", dispoItem.getAborted());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

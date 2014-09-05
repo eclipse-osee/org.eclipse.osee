@@ -1,5 +1,6 @@
 app.controller('userController', [
     '$scope',
+    '$modal',
     '$rootScope',
     '$cookieStore',
     'Program',
@@ -7,9 +8,13 @@ app.controller('userController', [
     'Item',
     'Annotation',
 
-    function($scope, $rootScope, $cookieStore, Program, Set, Item, Annotation) {
-
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation) {
+    	$scope.unselectingItem = false;
+    	$scope.editItems = false;
+    	$scope.selectedItems = [];
         $scope.programSelection = null;
+        $scope.setSelection = null; 	
+        $scope.lastFocused = null;
 
         // Get programs
         Program.query(function(data) {
@@ -23,7 +28,7 @@ app.controller('userController', [
                 $scope.sets = data;
             });
         };
-
+        
         $scope.updateSet = function updateSet() {
             Item.query({
                 programId: $scope.programSelection,
@@ -42,6 +47,9 @@ app.controller('userController', [
         };
 
         $scope.updateItem = function updateItem(item, row) {
+        	$scope.unselectingItem = true;
+        	$scope.gridOptions.selectAll(false);
+        	$scope.unselectingItem = false;
             $scope.selectedItem = item;
             Annotation.query({
                 programId: $scope.programSelection,
@@ -72,6 +80,23 @@ app.controller('userController', [
                 $scope.editItem(data.targetScope.row.entity);
             }
         });
+        
+        $scope.toggleEditItems = function toggleEditItems() {
+        	var size = $scope.selectedItems.length;
+        	$scope.gridOptions.selectAll(false);
+        	// Why do this last? Good question, checkSeletable gets called by selectAll and needs editItems to be true so ng-grid can properly unselect the selected items withouth breaking it's 'watch' function
+        	$scope.editItems = !$scope.editItems;
+        	$scope.annotations.length = 0;
+        }
+        
+        // Need this so that user clicks on grid rows doesn't automatically change the selected/highlighted row
+        var checkSelectable = function checkSelectable(data) {
+        	if($scope.editItems || $scope.unselectingItem){
+        		return true;
+        	} else {
+        		return false;
+        	}
+        };
 
         var checkboxSorting = function checkboxSorting(itemA, itemB) {
             if (itemA.needsRerun == itemA.needsRerun) {
@@ -85,24 +110,21 @@ app.controller('userController', [
             }
         };
 
-        // Need this so that user clicks on grid rows doesn't automatically change the selected/highlighted row
-        var checkSelectable = function checkSelectable(data) {
-            return false;
-        };
-
         var origCellTmpl = '<div ng-dblclick="updateItem(row.entity, row)">{{row.entity.name}}</div>';
         var dupCellTmpl = '<button class="btn btn-default btn-sm" ng-dblclick="updateItem(row.entity)">{{row.getProperty(col.field)}}</button>';
         var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)">hello world</input>';
         var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
+        var statusCellTem = '<div ng-class="{ItemStatus: true, pass: row.entity.status == \'PASS\', incomplete: row.entity.status == \'INCOMPLETE\', complete: row.entity.status == \'COMPLETE\'}">{{row.entity.status}}</div>';
 
         $scope.gridOptions = {
             data: 'items',
             enableHighlighting: true,
             enableColumnResize: true,
             enableRowReordering: true,
-            multiSelect: false,
+            multiSelect: true,
             showFilter: true,
             showColumnMenu: true,
+            selectedItems: $scope.selectedItems,
             beforeSelectionChange: checkSelectable,
             columnDefs: [{
                 field: 'name',
@@ -112,7 +134,7 @@ app.controller('userController', [
             }, {
                 field: 'status',
                 displayName: 'Status',
-                width: 150
+                width: 150,
             }, {
                 field: 'totalPoints',
                 displayName: 'Total',
@@ -142,10 +164,29 @@ app.controller('userController', [
                 displayName: 'Category',
                 enableCellEdit: true,
                 visible: false
+            }, {
+                field: 'machine',
+                displayName: 'Station',
+                enableCellEdit: true,
+                visible: false
+            }, {
+                field: 'elapsedTime',
+                displayName: 'Elapsed Time',
+                enableCellEdit: false,
+                visible: false
+            }, {
+                field: 'aborted',
+                displayName: 'Aborted',
+                enableCellEdit: false,
+                visible: false
             }]
 
         };
-
+        
+        $scope.saveLastFocused = function saveLastFocused(element) {
+            $scope.lastFocused = element;
+        }
+        
         $scope.stealItem = function stealItem(item) {
             if ($rootScope.cachedName != null) {
                 if ($rootScope.cachedName != item.assignee) {
@@ -220,7 +261,7 @@ app.controller('userController', [
         }
 
         $scope.editAnnotation = function editAnnotation(annotation) {
-            var annot = annotation;
+        	$scope.lastFocused;
             if (annotation.guid == null) {
                 $scope.createAnnotation(annotation);
             } else {
@@ -263,6 +304,10 @@ app.controller('userController', [
                 itemId: $scope.selectedItem.guid,
                 userName: $rootScope.cachedName,
             }, function() {
+            	var nextFocused = $scope.lastFocused.$$prevSibling;
+            	nextFocused.focus;
+            	nextFocused.focusMe;
+            	
                 Item.get({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
@@ -308,6 +353,111 @@ app.controller('userController', [
                 annotation.showDeets = true;
             }
         }
+        
+        
+        // MODALS -------------------------------------------------------------------------------------------------
+        $scope.showAssigneeModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'assigneeModal.html',
+                controller: AssigneeModalCtrl,
+                size: 'sm',
+                windowClass: 'assigneeModal'
+            });
+
+            modalInstance.result.then(function(inputs) {
+            	var size = $scope.selectedItems.length;
+            	for(var i = 0; i < size; i++) {
+            		if($scope.selectedItems[i].assignee != inputs.multiAssignee){
+	            		$scope.selectedItems[i].assignee = inputs.multiAssignee;
+	            		$scope.editItem($scope.selectedItems[i]);
+            		}
+            	}
+            });
+        }
+        
+        var AssigneeModalCtrl = function($scope, $modalInstance) {
+            $scope.multiAssignee = "";
+
+            $scope.ok = function() {
+                var inputs = {};
+                inputs.multiAssignee = this.multiAssignee;
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        
+        // Category Modal
+        $scope.showCategoryModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'categoryModal.html',
+                controller: CategoryModalCtrl,
+                size: 'sm',
+                windowClass: 'categoryModal'
+            });
+
+            modalInstance.result.then(function(inputs) {
+            	var size = $scope.selectedItems.length;
+            	for(var i = 0; i < size; i++) {
+            		if($scope.selectedItems[i].category != inputs.category){
+	            		$scope.selectedItems[i].category = inputs.category;
+	            		$scope.editItem($scope.selectedItems[i]);
+            		}
+            	}
+            });
+        }
+        
+        var CategoryModalCtrl = function($scope, $modalInstance) {
+            $scope.multiCategory = "";
+
+            $scope.ok = function() {
+                var inputs = {};
+                inputs.category = this.multiCategory;
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        
+        // Needs Rerun Modal
+        $scope.showNeedsRerunModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'needsRerunModal.html',
+                controller: NeedsRerunModalCtrl,
+                size: 'sm',
+                windowClass: 'needsRerunModal'
+            });
+
+            modalInstance.result.then(function(inputs) {
+            	var size = $scope.selectedItems.length;
+            	for(var i = 0; i < size; i++) {
+            		if($scope.selectedItems[i].needsRerun != inputs.needsRerun) {
+            			$scope.selectedItems[i].needsRerun = inputs.needsRerun;
+            			$scope.editItem($scope.selectedItems[i]);
+            		}
+            	}
+            });
+        }
+        
+        var NeedsRerunModalCtrl = function($scope, $modalInstance) {
+            $scope.ok = function() {
+                var inputs = {};
+                if(this.formData == undefined) {
+                	inputs.needsRerun = true;
+                } else {
+                	inputs.needsRerun = this.formData.multiNeedsRerun;
+                }
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
 
 
     }
@@ -331,3 +481,17 @@ app.directive('ngModelOnblur', function() {
         }
     };
 });
+
+// http://stackoverflow.com/questions/18398472/disabled-text-box-accessible-using-tab-key
+app.directive('focusMe', function($timeout) {
+	  return {
+	    scope: { trigger: '=focusMe' },
+	    link: function(scope, element) {
+	      scope.$watch('trigger', function(value) {
+	        if(value === true) { 
+	            element[0].focus();
+	        }
+	      });
+	    }
+	  };
+	});

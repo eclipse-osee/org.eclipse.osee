@@ -283,6 +283,10 @@ public class OrcsStorageImpl implements Storage {
             item.getAnnotationsList().toString());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, assignee);
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemCategory, item.getCategory());
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
 
          tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
       }
@@ -297,6 +301,10 @@ public class OrcsStorageImpl implements Storage {
       String status = newItemData.getStatus();
       String assignee = newItemData.getAssignee();
       String totalPoints = newItemData.getTotalPoints();
+      String machine = newItemData.getMachine();
+      String category = newItemData.getCategory();
+      String elapsedTime = newItemData.getElapsedTime();
+      Boolean aborted = newItemData.getAborted();
 
       Boolean needsRerun;
       if (resetRerunFlag) {
@@ -330,7 +338,19 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemNeedsRerun, needsRerun.booleanValue());
       }
       if (totalPoints != null && !totalPoints.equals(origItem.getTotalPoints())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemTotalPoints, totalPoints);
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemTotalPoints, totalPoints);
+      }
+      if (machine != null && !machine.equals(origItem.getMachine())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemMachine, machine);
+      }
+      if (category != null && !category.equals(origItem.getCategory())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemCategory, category);
+      }
+      if (elapsedTime != null && !elapsedTime.equals(origItem.getElapsedTime())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemElapsedTime, elapsedTime);
+      }
+      if (aborted != null && !aborted.equals(origItem.getAborted())) {
+         tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemAborted, aborted);
       }
 
    }

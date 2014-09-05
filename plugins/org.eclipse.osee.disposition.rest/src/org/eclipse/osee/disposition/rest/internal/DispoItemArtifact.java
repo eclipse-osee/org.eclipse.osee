@@ -98,4 +98,24 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
       return -1;
    }
 
+   @Override
+   public String getMachine() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemMachine, "n/a");
+   }
+
+   @Override
+   public String getCategory() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemCategory, "");
+   }
+
+   @Override
+   public String getElapsedTime() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemElapsedTime, "0.0");
+   }
+
+   @Override
+   public Boolean getAborted() {
+      return artifact.getSoleAttributeValue(DispoConstants.DispoItemAborted, false);
+   }
+
 }

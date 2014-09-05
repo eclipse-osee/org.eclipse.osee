@@ -176,8 +176,25 @@ textarea {
 	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
 
+.annotationDelete.details {
+   height: 200px;
+	overflow: visible;
+	white-space: pre-line;
+}
+
 .annotationDelete:disabled {
 	background-color: white;
 	color: white;
 	border: none;
+}
+
+.ItemStatus.incomplete {
+	background-color: yellow;
+}
+.ItemStatus.complete {
+	background-color: green;
+}
+
+#multItemEditDiv {
+	margin-top: 20px;
 }

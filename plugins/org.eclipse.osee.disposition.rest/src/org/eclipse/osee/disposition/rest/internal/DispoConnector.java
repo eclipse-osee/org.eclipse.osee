@@ -243,6 +243,7 @@ public class DispoConnector {
    }
 
    private List<LocationRange> sortList(String allLocationRefsString) {
+      allLocationRefsString = allLocationRefsString.replaceAll("\\s*", "");
       List<LocationRange> toReturn = new ArrayList<LocationRange>();
       StringTokenizer tokenizer = new StringTokenizer(allLocationRefsString, ",");
       while (tokenizer.hasMoreTokens()) {

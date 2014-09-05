@@ -34,6 +34,10 @@ public class DispoItemData implements DispoItem {
    private JSONArray annotationsList;
    private String totalPoints;
    private Boolean needsRerun;
+   private String machine;
+   private String category;
+   private String elapsedTime;
+   private Boolean aborted;
 
    public DispoItemData() {
 
@@ -94,6 +98,26 @@ public class DispoItemData implements DispoItem {
       return needsRerun;
    }
 
+   @Override
+   public String getMachine() {
+      return machine;
+   }
+
+   @Override
+   public String getCategory() {
+      return category;
+   }
+
+   @Override
+   public String getElapsedTime() {
+      return elapsedTime;
+   }
+
+   @Override
+   public Boolean getAborted() {
+      return aborted;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -138,6 +162,22 @@ public class DispoItemData implements DispoItem {
       this.needsRerun = needsRerun;
    }
 
+   public void setMachine(String machine) {
+      this.machine = machine;
+   }
+
+   public void setCategory(String category) {
+      this.category = category;
+   }
+
+   public void setElapsedTime(String elapsedTime) {
+      this.elapsedTime = elapsedTime;
+   }
+
+   public void setAborted(Boolean aborted) {
+      this.aborted = aborted;
+   }
+
    @Override
    public boolean matches(Identity<?>... identities) {
       for (Identity<?> identity : identities) {
@@ -147,5 +187,4 @@ public class DispoItemData implements DispoItem {
       }
       return false;
    }
-
 }

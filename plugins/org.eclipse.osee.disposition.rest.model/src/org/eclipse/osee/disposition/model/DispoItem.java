@@ -39,4 +39,12 @@ public interface DispoItem extends Identifiable<String> {
    JSONObject getDiscrepanciesList();
 
    JSONArray getAnnotationsList();
+
+   String getMachine();
+
+   String getCategory();
+
+   String getElapsedTime();
+
+   Boolean getAborted();
 }

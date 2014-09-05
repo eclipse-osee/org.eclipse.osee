@@ -96,7 +96,7 @@ public class DispoItemResource {
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
+         response = Response.status(Response.Status.NOT_MODIFIED).entity(DispoMessages.Item_NotFound).build();
       }
       return response;
    }

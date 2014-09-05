@@ -112,7 +112,7 @@ public class DispoItemResourceTest {
       when(dispositionApi.editDispoItem(program, id1.getGuid(), newItem)).thenReturn(false);
       response = resource.putDispoItem(id1.getGuid(), newItem);
       String returnedMessage = (String) response.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+      assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);
    }
 
