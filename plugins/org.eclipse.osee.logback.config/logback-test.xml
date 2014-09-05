@@ -5,11 +5,10 @@
 	<!-- Set attribute debug="true" to configuration xml element to trace logback configuration -->
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-			by default -->
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-			</pattern>
+			<pattern>%-40(%d{HH:mm:ss.SSS} [%-25.25logger{26}] %-5level) - %msg%n</pattern>
+			<outputPatternAsHeader>true</outputPatternAsHeader>
 		</encoder>
 	</appender>
 
@@ -20,6 +19,7 @@
 	<logger name="org.eclipse.osee.framework.core.server" level="INFO" />
 
 	<!-- <logger name="org.apache.cxf" level="INFO" /> -->
+	<!-- <logger name="org.eclipse.osee.hsqldb" level="DEBUG" /> -->
 
 	<root level="WARN">
 		<appender-ref ref="STDOUT" />
