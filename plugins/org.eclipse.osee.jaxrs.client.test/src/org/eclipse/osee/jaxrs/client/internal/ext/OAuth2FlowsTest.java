@@ -81,7 +81,7 @@ public class OAuth2FlowsTest {
    private static final String AUTH_CODE = "authorization_code_1";
    private static final String CONFIRM_URI = "confirm_uri";
 
-   private static final String APP_CERTIFICATE = "app_cert_1";
+   private static final List<String> APP_CERTIFICATE = Arrays.asList("app_cert_1");
    private static final String APP_DESCRIPTION = "app_description_1";
    private static final String APP_LOGO_URI = "app_logo_uri_1";
    private static final String APP_NAME = "app_name_1";
@@ -145,7 +145,7 @@ public class OAuth2FlowsTest {
       appProperties.put("prop1", "a");
       appProperties.put("prop2", "b");
 
-      when(authData.getApplicationCertificate()).thenReturn(APP_CERTIFICATE);
+      when(authData.getApplicationCertificates()).thenReturn(APP_CERTIFICATE);
       when(authData.getApplicationDescription()).thenReturn(APP_DESCRIPTION);
       when(authData.getApplicationLogoUri()).thenReturn(APP_LOGO_URI);
       when(authData.getApplicationName()).thenReturn(APP_NAME);

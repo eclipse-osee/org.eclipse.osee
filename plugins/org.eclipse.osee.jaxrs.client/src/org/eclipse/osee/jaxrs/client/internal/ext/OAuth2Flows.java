@@ -292,11 +292,7 @@ public class OAuth2Flows {
 
       @Override
       public String getApplicationName() {
-         String applicationName = data.getApplicationName();
-         if (!Strings.isValid(applicationName)) {
-            applicationName = data.getApplicationCertificate();
-         }
-         return applicationName;
+         return data.getApplicationName();
       }
 
       @Override
