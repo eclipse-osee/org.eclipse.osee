@@ -17,13 +17,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
@@ -39,21 +36,10 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestLogger;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestStation;
 import org.eclipse.osee.ote.core.environment.interfaces.ITimeout;
 import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
-import org.eclipse.osee.ote.core.framework.prompt.InformationalPrompt;
-import org.eclipse.osee.ote.core.framework.prompt.PassFailPromptImpl;
-import org.eclipse.osee.ote.core.framework.prompt.PassFailPromptResult;
-import org.eclipse.osee.ote.core.framework.prompt.ScriptPausePromptImpl;
-import org.eclipse.osee.ote.core.framework.prompt.UserInputPromptImpl;
-import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptImpl;
-import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptResult;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
-import org.eclipse.osee.ote.core.log.record.AttentionRecord;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
-import org.eclipse.osee.ote.core.log.record.TestPointRecord;
-import org.eclipse.osee.ote.core.log.record.TestRecord;
-import org.eclipse.osee.ote.core.testPoint.CheckPoint;
 
 /**
  * TestScript is the abstract base class for all test scripts. This class provides the interfaces necessary to allow a
@@ -189,7 +175,7 @@ public abstract class TestScript implements ITimeout {
    private int pass;
    private int fail;
    private ScriptLoggingListener loggingListener;
-   private final Executor promptInitWorker;
+   private final TestPromptImpl promptImpl;
    private ITestRunListenerProvider listenerProvider;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
@@ -198,7 +184,7 @@ public abstract class TestScript implements ITimeout {
       this.isBatchable = isBatchable;
       this.isMpLevel = false;
 
-      promptInitWorker = Executors.newSingleThreadExecutor();
+      promptImpl = new TestPromptImpl();
       sciprtResultRecord = new ScriptResultRecord(this);
       if (environment != null) {
          this.environment = environment;
@@ -285,123 +271,8 @@ public abstract class TestScript implements ITimeout {
       return isMpLevel;
    }
 
-   public synchronized String prompt(final TestPrompt prompt) throws InterruptedException {
-
-      if (environment.isInBatchMode()) {
-         promptInitWorker.execute(new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  getUserSession().initiateInformationalPrompt(prompt.toString());
-               } catch (Exception e) {
-                  System.out.println(prompt.toString());
-               }
-            }
-         });
-         if (prompt.getType() == PromptResponseType.PASS_FAIL) {
-            getLogger().log(
-               new TestPointRecord(environment, new CheckPoint(prompt.toString(), "PROMPT DURING BATCH", "N/A", false),
-                  true));
-         } else {
-            getLogger().log(new AttentionRecord(environment, prompt.getType().name() + " : " + prompt.toString(), true));
-         }
-         return "";
-      } else {
-
-         try {
-            final String returnValue;
-            String logOutput;
-            final TestRecord testRecord;
-            final IServiceConnector connector = environment.getConnector();
-            switch (prompt.getType()) {
-               case NONE:
-                  InformationalPrompt infoPrompt = new InformationalPrompt(connector, "", prompt.toString());
-                  infoPrompt.open(getUserSession(), promptInitWorker);
-                  infoPrompt.close();
-                  returnValue = "";
-                  testRecord = new AttentionRecord(getTestEnvironment(), String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.NONE.name(), prompt.toString()), true);
-                  break;
-               case PASS_FAIL:
-                  PassFailPromptImpl passFailPrompt = new PassFailPromptImpl(connector, this, "", prompt.toString());
-                  PassFailPromptResult result = passFailPrompt.open(promptInitWorker);
-                  returnValue = result.getText();
-                  passFailPrompt.close();
-                  testRecord =
-                     new TestPointRecord(getTestEnvironment(), new CheckPoint("Pass/Fail Prompt", prompt.toString(),
-                        returnValue, result.isPass()), true);
-                  break;
-               case YES_NO:
-                  YesNoPromptImpl yesNoPrompt = new YesNoPromptImpl(connector, this, "", prompt.toString());
-                  YesNoPromptResult yesNo = yesNoPrompt.open(promptInitWorker);
-                  if (yesNo.isYes()) {
-                     returnValue = "YES";
-                  } else {
-                     returnValue = "NO";
-                  }
-                  logOutput =
-                     String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
-                        prompt.toString(), returnValue);
-                  yesNoPrompt.close();
-                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
-                  break;
-               case SCRIPT_PAUSE:
-                  ScriptPausePromptImpl scriptPausePrompt =
-                     new ScriptPausePromptImpl(connector, this, "", prompt.toString());
-                  returnValue = scriptPausePrompt.open(promptInitWorker);
-                  scriptPausePrompt.close();
-                  if (returnValue != null && returnValue.length() > 0) {
-                     logOutput =
-                        String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.SCRIPT_PAUSE.name(),
-                           prompt.toString(), returnValue);
-                  } else {
-                     logOutput =
-                        String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.SCRIPT_PAUSE.name(), prompt.toString());
-                  }
-
-                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
-                  ;
-                  break;
-               case USER_INPUT:
-                  UserInputPromptImpl userInputPrompt = new UserInputPromptImpl(connector, this, "", prompt.toString());
-                  returnValue = userInputPrompt.open(promptInitWorker);
-                  userInputPrompt.close();
-                  if (returnValue != null && returnValue.length() > 0) {
-                     logOutput =
-                        String.format("PROMPT [%s]\n{\n%s\n}\n\tRETURN VALUE : %s", PromptResponseType.USER_INPUT.name(),
-                           prompt.toString(), returnValue);
-                  } else {
-                     logOutput =
-                        String.format("PROMPT [%s]\n{\n%s\n}\n", PromptResponseType.USER_INPUT.name(), prompt.toString());
-                  }
-                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
-                  break;
-               case SCRIPT_STEP:
-                  returnValue = "";
-                  testRecord =
-                     new AttentionRecord(getTestEnvironment(),
-                        PromptResponseType.SCRIPT_STEP.name() + " : " + prompt.toString(), true);
-                  break;
-               case OFP_DEBUG_RESPONSE:
-                  returnValue = "";
-                  testRecord = null;
-                  break;
-               default:
-                  returnValue = "";
-                  testRecord = null;
-            }
-            if (testRecord != null) {
-               testRecord.setStackTrace(new Throwable());
-               getLogger().log(testRecord);
-            }
-            return returnValue;
-         } catch (InterruptedException e) {
-            throw new InterruptedException();
-         } catch (Exception e) {
-            // what
-         }
-         return "";
-      }
-
+   public String prompt(final TestPrompt prompt) throws InterruptedException {
+      return promptImpl.prompt(prompt, environment, this);
    }
 
    /**

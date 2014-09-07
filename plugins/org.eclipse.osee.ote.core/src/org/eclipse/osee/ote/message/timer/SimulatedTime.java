@@ -55,6 +55,7 @@ public class SimulatedTime extends TimerControl {
       }
    }
    private final Collection<CycleCountDown> cycleCounters;
+   private final Collection<CycleCountDown> scriptCycleCounters;
    private final IScriptControl scriptControl;
    private int cycleCount;
    private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<Task>();
@@ -67,7 +68,8 @@ public class SimulatedTime extends TimerControl {
    public SimulatedTime(IScriptControl scriptControl) throws IOException {
       super(3);
       this.scriptControl = scriptControl;
-      this.cycleCounters = new HashSet<CycleCountDown>(32);
+      cycleCounters = new HashSet<CycleCountDown>(32);
+      scriptCycleCounters = new HashSet<CycleCountDown>(32);
       cycleCount = 0;
       sysTime = System.currentTimeMillis();
    }
@@ -82,7 +84,11 @@ public class SimulatedTime extends TimerControl {
       CycleCountDown cycleCountDown = new CycleCountDown(scriptControl, objToNotify,
             (int) Math.rint(milliseconds / (1000.0 / EnvironmentTask.cycleResolution)) - 1);
       synchronized (cycleCounters) {
-         cycleCounters.add(cycleCountDown);
+         if(getRunManager().isCurrentThreadScript()){
+            scriptCycleCounters.add(cycleCountDown);
+         } else {
+            cycleCounters.add(cycleCountDown);
+         }
       }
 
       unlockScriptControl();
@@ -139,7 +145,7 @@ public class SimulatedTime extends TimerControl {
    }
 
    public Collection<CycleCountDown> getCycleCounters() {
-      return cycleCounters;
+      return scriptCycleCounters;
    }
 
    @Override
@@ -169,12 +175,20 @@ public class SimulatedTime extends TimerControl {
                iter.remove();
             }
          }
+         iter = scriptCycleCounters.iterator();
+         while (iter.hasNext()) {
+            CycleCountDown counter = iter.next();
+            if (counter.cycleOccurred()) {
+               iter.remove();
+            }
+         }
       }
    }
 
    @Override
    public void dispose() {
       cycleCounters.clear();
+      scriptCycleCounters.clear();
       tasks.clear();
    }
 
