@@ -207,7 +207,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, ICommitConfigItem configArt) {
-      return getCommitStatus((IAtsTeamWorkflow) teamWf.getStoreObject(), configArt);
+      return getCommitStatus((IAtsTeamWorkflow) teamWf.getStoreObject(), getBranch(configArt), null);
    }
 
    @Override
