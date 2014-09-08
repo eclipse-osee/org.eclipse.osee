@@ -20,9 +20,11 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
 import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -67,6 +69,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private ExecutorAdmin executorAdmin;
    private ActivityStorage storage;
 
+   private final AtomicBoolean initialized = new AtomicBoolean(false);
    private ActivityMonitorImpl activityMonitor;
    private volatile long freshnessMillis;
    private volatile int exceptionLineCount;
@@ -253,6 +256,9 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    @Override
    public Void call() {
+      if (!initialized.getAndSet(true)) {
+         initialize();
+      }
       if (!newEntities.isEmpty()) {
          try {
             storage.addEntries(new DrainingIterator<Object[]>(newEntities.values().iterator()));
@@ -280,6 +286,23 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
          } finally {
             lastFlushTime = currentTime;
          }
+      }
+   }
+
+   private void initialize() {
+      final Map<Long, ActivityType> types = new HashMap<Long, ActivityType>(4);
+      for (Activity type : Activity.values()) {
+         types.put(type.getTypeId(), type);
+      }
+      storage.selectTypes(new ActivityTypeDataHandler() {
+
+         @Override
+         public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
+            types.remove(typeId);
+         }
+      });
+      if (!types.isEmpty()) {
+         storage.addActivityTypes(types.values());
       }
    }
 

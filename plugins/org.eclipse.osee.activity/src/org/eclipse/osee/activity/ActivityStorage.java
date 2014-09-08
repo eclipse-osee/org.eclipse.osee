@@ -27,6 +27,8 @@ public interface ActivityStorage {
 
    void addActivityTypes(ActivityType... types);
 
+   void addActivityTypes(Iterable<ActivityType> types);
+
    void selectTypes(ActivityTypeDataHandler handler);
 
    void selectType(Long typeId, ActivityTypeDataHandler handler);

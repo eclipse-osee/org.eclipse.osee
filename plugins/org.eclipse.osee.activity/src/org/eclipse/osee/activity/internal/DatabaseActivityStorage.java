@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal;
 
+import java.util.Arrays;
 import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityTypeDataHandler;
@@ -116,6 +117,11 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    @Override
    public void addActivityTypes(ActivityType... types) {
+      addActivityTypes(Arrays.asList(types));
+   }
+
+   @Override
+   public void addActivityTypes(Iterable<ActivityType> types) {
       for (ActivityType type : types) {
          addLogType(type);
       }
