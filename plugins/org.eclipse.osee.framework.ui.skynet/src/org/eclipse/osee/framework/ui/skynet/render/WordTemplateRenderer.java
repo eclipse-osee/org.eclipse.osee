@@ -38,11 +38,12 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
-import org.eclipse.osee.framework.ui.skynet.render.word.ArtifactDataRightsProvider;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
+import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor.DataRightProvider;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -66,13 +67,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    public static final String FIRST_TIME = "FirstTime";
    public static final String SECOND_TIME = "SecondTime";
 
-   private final WordTemplateProcessor templateProcessor = new WordTemplateProcessor(this,
-      new ArtifactDataRightsProvider());
+   private final WordTemplateProcessor templateProcessor;
 
    private final IComparator comparator;
 
    public WordTemplateRenderer() {
       this.comparator = new WordTemplateCompare(this);
+      DataRightProvider provider = new DataRightProviderImpl();
+      this.templateProcessor = new WordTemplateProcessor(this, provider);
    }
 
    @Override

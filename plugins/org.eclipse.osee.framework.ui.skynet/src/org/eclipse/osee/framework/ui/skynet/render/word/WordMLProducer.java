@@ -370,7 +370,12 @@ public class WordMLProducer extends Producer {
       setPageLayout(artifact, null);
    }
 
-   public void setPageLayout(Artifact artifact, String footerMl) throws OseeCoreException {
+   /**
+    * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
+    * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
+    * would be set back to portrait.
+    */
+   public void setPageLayout(Artifact artifact, String footer) throws OseeCoreException {
       String pageTypeValue = null;
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
          pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
@@ -382,8 +387,8 @@ public class WordMLProducer extends Producer {
          append("<w:p>");
          append("<w:pPr>");
          append("<w:sectPr>");
-         if (Strings.isValid(footerMl)) {
-            append(footerMl);
+         if (Strings.isValid(footer)) {
+            append(footer);
          }
          append("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />");
          append("</w:sectPr>");

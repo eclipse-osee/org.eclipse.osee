@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.app.OseeAppResourceTokens;
+import org.eclipse.osee.define.report.api.DefineApi;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -26,9 +27,10 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 @ApplicationPath("define")
 public final class OseeReportApplication extends Application {
-   private OrcsApi orcsApi;
    private final Set<Object> singletons = new HashSet<Object>();
+   private OrcsApi orcsApi;
    private Log logger;
+   private DefineApi defineApi;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -38,7 +40,12 @@ public final class OseeReportApplication extends Application {
       this.logger = logger;
    }
 
+   public void setDefineApi(DefineApi defineApi) {
+      this.defineApi = defineApi;
+   }
+
    public void start(Map<String, Object> properties) {
+
       IResourceRegistry resourceRegistry = new ResourceRegistry();
       OseeAppResourceTokens.register(resourceRegistry);
       logger.debug(">>>>> registered Requirement resource");
@@ -46,6 +53,8 @@ public final class OseeReportApplication extends Application {
       logger.debug(">>>>> registered Safety resource");
       singletons.add(new PublishLowHighReqTraceabilityResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered Low/High Trace resource");
+      singletons.add(new DataRightsResource(defineApi));
+      logger.debug(">>>>> registered Data Rights resource");
    }
 
    @Override
