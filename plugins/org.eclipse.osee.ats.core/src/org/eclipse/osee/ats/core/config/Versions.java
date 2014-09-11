@@ -12,22 +12,16 @@ package org.eclipse.osee.ats.core.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
  */
 public class Versions {
-
-   private static Set<String> targetErrorLoggedForId = new HashSet<String>(10);
 
    public static Collection<String> getNames(Collection<? extends IAtsVersion> versions) {
       ArrayList<String> names = new ArrayList<String>();
@@ -46,11 +40,6 @@ public class Versions {
                if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
                   String errStr =
                      "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
-                  // only log error once
-                  if (!targetErrorLoggedForId.contains(teamWf.getGuid())) {
-                     OseeLog.log(Versions.class, Level.SEVERE, errStr, null);
-                     targetErrorLoggedForId.add(teamWf.getGuid());
-                  }
                   return "!Error " + errStr;
                }
                return version.getName();
