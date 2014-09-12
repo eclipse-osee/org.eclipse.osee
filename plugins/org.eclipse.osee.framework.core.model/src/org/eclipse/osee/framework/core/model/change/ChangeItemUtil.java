@@ -137,7 +137,7 @@ public final class ChangeItemUtil {
 
    public static boolean isResurrected(ChangeItem changeItem) {
       // There's a change corresponding to a Deleted Item, item MUST have been resurrected
-      return changeItem.getBaselineVersion().getModType().isDeleted();
+      return changeItem.getBaselineVersion().isValid() && isDeleted(changeItem.getBaselineVersion());
    }
 
 }

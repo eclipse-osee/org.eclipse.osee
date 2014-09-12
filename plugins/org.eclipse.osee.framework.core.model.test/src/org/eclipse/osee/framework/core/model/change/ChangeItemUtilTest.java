@@ -328,6 +328,19 @@ public class ChangeItemUtilTest {
 
    }
 
+   @Test
+   public void testIsRessurectedOnNewItem() throws OseeCoreException {
+      ChangeVersion base = ChangeTestUtility.createChange(null, null);
+      ChangeVersion first = ChangeTestUtility.createChange(null, null);
+      ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
+      ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
+      ChangeVersion net = ChangeTestUtility.createChange(null, null);
+
+      ChangeItem item = ChangeTestUtility.createItem(500, base, first, current, destination, net);
+
+      Assert.assertFalse(ChangeItemUtil.isResurrected(item));
+   }
+
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
       return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
          ChangeTestUtility.createChange(long1, mod1), //
