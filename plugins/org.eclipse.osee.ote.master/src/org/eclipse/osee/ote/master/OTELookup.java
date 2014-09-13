@@ -1,6 +1,7 @@
 package org.eclipse.osee.ote.master;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface OTELookup {
    List<OTELookupServerEntry> getAvailableServers();
@@ -8,4 +9,6 @@ public interface OTELookup {
    void addServer(OTELookupServerEntry server);
 
    void removeServer(OTELookupServerEntry server);
+
+   void removeServer(UUID fromString);
 }

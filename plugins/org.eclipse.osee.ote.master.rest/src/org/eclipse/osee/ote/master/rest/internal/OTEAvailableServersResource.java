@@ -3,18 +3,22 @@ package org.eclipse.osee.ote.master.rest.internal;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.osee.ote.master.OTELookup;
 import org.eclipse.osee.ote.master.OTELookupServerEntry;
 import org.eclipse.osee.ote.master.rest.model.OTEServer;
@@ -100,6 +104,13 @@ public class OTEAvailableServersResource {
    public void removeServer(OTEServer server) throws Exception {
       OTELookup oteLookup = OTERestApplication.getOTELookup();
       oteLookup.removeServer(Util.convert(server));
+   }
+   
+   @DELETE
+   @Path("{uuid}")
+   public void removeServer(@PathParam("uuid") String uuid) throws Exception {
+      OTELookup oteLookup = OTERestApplication.getOTELookup();
+      oteLookup.removeServer(UUID.fromString(uuid));
    }
 
 }

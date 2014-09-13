@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.master.internal;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,6 +59,15 @@ public class OTELookupImpl implements OTELookup {
       return null;
    }
    
+   private OTELookupServerEntry find(UUID otherEntry) {
+      for (OTELookupServerEntry entry : servers) {
+         if (entry.getUUID().equals(otherEntry)) {
+            return entry;
+         }
+      }
+      return null;
+   }
+   
    public void start(){
       executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
          @Override
@@ -78,6 +88,14 @@ public class OTELookupImpl implements OTELookup {
    
    void setTimeoutSeconds(int timeoutSeconds){
       this.timeoutSeconds = timeoutSeconds;
+   }
+
+   @Override
+   public void removeServer(UUID serverid) {
+      OTELookupServerEntry oldone = find(serverid);
+      if (oldone != null) {
+         servers.remove(oldone);
+      }
    }
 
 }
