@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.client.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 
 /**
  * @author Donald G. Dunne
@@ -22,6 +22,6 @@ public class AtsProgramViewerSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      return getComparator().compare(((IAtsProgram) e1).getName(), ((IAtsProgram) e2).getName());
+      return getComparator().compare(((IAtsProgramClient) e1).getName(), ((IAtsProgramClient) e2).getName());
    }
 }

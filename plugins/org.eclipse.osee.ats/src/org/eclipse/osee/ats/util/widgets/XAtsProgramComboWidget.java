@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.client.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.config.IAtsProgramManager;
 import org.eclipse.osee.ats.core.client.config.ProgramManagers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XAtsProgramComboWidget extends XComboViewer {
 
-   private final Collection<? extends IAtsProgram> atsPrograms;
+   private final Collection<? extends IAtsProgramClient> atsPrograms;
 
-   public XAtsProgramComboWidget(String displayLabel, Collection<? extends IAtsProgram> atsPrograms) {
+   public XAtsProgramComboWidget(String displayLabel, Collection<? extends IAtsProgramClient> atsPrograms) {
       super(displayLabel, SWT.READ_ONLY);
       this.atsPrograms = atsPrograms;
       setLabelProvider(new AtsProgramLabelProvider());
@@ -46,8 +46,8 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this("ATS Program", getAllPrograms());
    }
 
-   private static Collection<? extends IAtsProgram> getAllPrograms() throws OseeCoreException {
-      List<IAtsProgram> programs = new ArrayList<IAtsProgram>();
+   private static Collection<? extends IAtsProgramClient> getAllPrograms() throws OseeCoreException {
+      List<IAtsProgramClient> programs = new ArrayList<IAtsProgramClient>();
       for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
          programs.addAll(manager.getPrograms());
       }
@@ -62,9 +62,9 @@ public class XAtsProgramComboWidget extends XComboViewer {
       reload(atsPrograms);
    }
 
-   public void reload(Collection<? extends IAtsProgram> lbaPrograms) {
+   public void reload(Collection<? extends IAtsProgramClient> lbaPrograms) {
       Collection<Object> objs = new ArrayList<Object>();
-      for (IAtsProgram proj : atsPrograms) {
+      for (IAtsProgramClient proj : atsPrograms) {
          objs.add(proj);
       }
       setInput(objs);

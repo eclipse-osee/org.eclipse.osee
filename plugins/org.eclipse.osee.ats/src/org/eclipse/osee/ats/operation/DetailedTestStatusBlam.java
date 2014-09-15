@@ -35,7 +35,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -102,7 +102,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private XVersionList versionsListViewer;
 
    private IOseeBranch selectedBranch;
-   private IAtsProgram selectedProgram;
+   private IAtsProgramClient selectedProgram;
 
    private enum Index {
       Category,
@@ -148,7 +148,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
          Iterator<?> iter = selection.iterator();
          if (iter.hasNext()) {
-            selectedProgram = (IAtsProgram) iter.next();
+            selectedProgram = (IAtsProgramClient) iter.next();
             selectedBranch = null;
 
             try {

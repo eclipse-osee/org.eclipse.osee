@@ -145,6 +145,9 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ProgramUuid = createType(0x10000089157000AAL, "Program Uuid");
    public static final IAttributeType Rationale = createType(0x10000089159900AAL, "Rationale");
 
+   // Program
+   public static final IAttributeType Namespace = createType(0x40E507303063999EL, "Namespace");
+
    // @formatter:on
 
    private static IAttributeType createType(Long guid, String name) {

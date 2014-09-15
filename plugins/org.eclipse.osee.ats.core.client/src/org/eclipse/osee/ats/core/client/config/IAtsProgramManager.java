@@ -29,13 +29,13 @@ public interface IAtsProgramManager {
 
    public String getName();
 
-   public Collection<? extends IAtsProgram> getPrograms() throws OseeCoreException;
+   public Collection<? extends IAtsProgramClient> getPrograms() throws OseeCoreException;
 
    public void reloadCache() throws OseeCoreException;
 
    public String getXProgramComboWidgetName();
 
-   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public IAtsProgramClient getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
    public IArtifactToken getWcafeReviewAssigneeUserGroup() throws OseeCoreException;
 

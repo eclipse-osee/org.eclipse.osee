@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -27,5 +28,7 @@ public interface IAtsConfigItemFactory {
    IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException;
 
    IAtsVersion getVersion(Object artifact) throws OseeCoreException;
+
+   IAtsProgram getProgram(Object artifact);
 
 }

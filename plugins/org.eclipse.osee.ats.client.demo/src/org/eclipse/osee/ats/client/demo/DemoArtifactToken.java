@@ -28,6 +28,8 @@ public final class DemoArtifactToken {
    public static IArtifactToken Tools_Team = TokenFactory.createArtifactToken("At2WHxCFyQPidx78iuAA", "Tools_Team",
       AtsArtifactTypes.TeamDefinition);
 
+   public static final IArtifactToken SAW_Program = TokenFactory.createArtifactToken("At2WHxCeMCHacr02EkAA",
+      "SAW Program", AtsArtifactTypes.Program);
    public static IArtifactToken SAW_HW = TokenFactory.createArtifactToken("At2WHxCeMCHfcr02EkAA", "SAW_HW",
       AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Code = TokenFactory.createArtifactToken("At2WHxC2lxLOGB0YiuQA", "SAW_Code",
@@ -51,6 +53,8 @@ public final class DemoArtifactToken {
    public static IArtifactToken SAW_Bld_3 = TokenFactory.createArtifactToken("A8msa8LrcxhyrUTsbuwA", "SAW_Bld_3",
       AtsArtifactTypes.Version);
 
+   public static final IArtifactToken CIS_Program = TokenFactory.createArtifactToken("At2WHxCeMCHbcr02EkAA",
+      "CIS Program", AtsArtifactTypes.Program);
    public static IArtifactToken CIS_SW = TokenFactory.createArtifactToken("At2WHxF7jmUa8jXR3iwA", "CIS_SW",
       AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken CIS_Code = TokenFactory.createArtifactToken("At2WHxGo4A1nnGWYjgwA", "CIS_Code",

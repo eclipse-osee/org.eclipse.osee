@@ -8,23 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.program;
+package org.eclipse.osee.ats.api.util;
 
-import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
+ * Annotation on resource methods used to indicate that the return type should include active flag
+ * 
  * @author Donald G. Dunne
  */
-public interface IAtsProgram extends IAtsConfigObject {
-
-   public boolean isActive() throws OseeCoreException;
-
-   public Long getUuid();
-
-   public IAtsTeamDefinition getTeamDefinition();
-
-   public String getNamespace();
-
+@Documented
+@Retention(RUNTIME)
+@Target({TYPE, METHOD})
+public @interface ActiveView {
+   //
 }

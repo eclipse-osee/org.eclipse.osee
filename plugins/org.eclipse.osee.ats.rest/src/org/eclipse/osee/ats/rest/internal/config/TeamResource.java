@@ -8,23 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.program;
+package org.eclipse.osee.ats.rest.internal.config;
 
-import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import javax.ws.rs.Path;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.config.AbstractConfigResource;
 
 /**
- * @author Donald G. Dunne
+ * Donald G. Dunne
  */
-public interface IAtsProgram extends IAtsConfigObject {
+@Path("team")
+public class TeamResource extends AbstractConfigResource {
 
-   public boolean isActive() throws OseeCoreException;
-
-   public Long getUuid();
-
-   public IAtsTeamDefinition getTeamDefinition();
-
-   public String getNamespace();
+   public TeamResource(IAtsServer atsServer) {
+      super(AtsArtifactTypes.TeamDefinition, atsServer);
+   }
 
 }

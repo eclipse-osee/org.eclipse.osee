@@ -37,7 +37,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.config.IAtsProgram;
+import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -114,7 +114,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private Collection<String> availableTraceHandlers;
 
    private IOseeBranch selectedBranch;
-   private IAtsProgram selectedProgram;
+   private IAtsProgramClient selectedProgram;
    private static final int MAX_EXCEL_COLUMNS = 256;
 
    private enum Index {
@@ -162,7 +162,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
          Iterator<?> iter = selection.iterator();
          if (iter.hasNext()) {
-            selectedProgram = (IAtsProgram) iter.next();
+            selectedProgram = (IAtsProgramClient) iter.next();
             selectedBranch = null;
 
             try {

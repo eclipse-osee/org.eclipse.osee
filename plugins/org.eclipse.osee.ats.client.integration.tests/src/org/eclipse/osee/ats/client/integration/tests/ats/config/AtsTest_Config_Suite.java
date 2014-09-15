@@ -19,7 +19,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsTest_Demo_Copy_Suite.class, AtsBranchConfigurationTest.class})
+@Suite.SuiteClasses({
+   TeamResourceTest.class,
+   VersionResourceTest.class,
+   ProgramResourceTest.class,
+   ActionableItemResourceTest.class,
+   AtsTest_Demo_Copy_Suite.class,
+   AtsBranchConfigurationTest.class})
 /**
  * This test suite contains test that can be run against any production db
  * 

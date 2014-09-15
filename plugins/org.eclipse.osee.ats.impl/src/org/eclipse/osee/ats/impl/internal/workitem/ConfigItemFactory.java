@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.impl.internal.workitem;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -46,6 +47,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
                configObject = getTeamDef(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
                configObject = getActionableItem(artRead);
+            } else if (artRead.isOfType(AtsArtifactTypes.Program)) {
+               configObject = getProgram(artRead);
             }
          }
       } catch (OseeCoreException ex) {
@@ -60,7 +63,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Version)) {
-            version = new Version(logger, atsServer, (ArtifactReadable) artifact);
+            version = new Version(logger, atsServer, artRead);
          }
       }
       return version;
@@ -72,7 +75,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            teamDef = new TeamDefinition(logger, atsServer, (ArtifactReadable) artifact);
+            teamDef = new TeamDefinition(logger, atsServer, artRead);
          }
       }
       return teamDef;
@@ -84,10 +87,22 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.ActionableItem)) {
-            ai = new ActionableItem(logger, atsServer, (ArtifactReadable) artifact);
+            ai = new ActionableItem(logger, atsServer, artRead);
          }
       }
       return ai;
+   }
+
+   @Override
+   public IAtsProgram getProgram(Object artifact) {
+      IAtsProgram program = null;
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable artRead = (ArtifactReadable) artifact;
+         if (artRead.isOfType(AtsArtifactTypes.Program)) {
+            program = new Program(logger, atsServer, artRead);
+         }
+      }
+      return program;
    }
 
 }

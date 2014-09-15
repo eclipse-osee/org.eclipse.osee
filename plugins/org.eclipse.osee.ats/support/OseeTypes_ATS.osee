@@ -19,6 +19,13 @@ abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Ar
 	uuid  0x0000000000000323
 }
 
+artifactType "Program" extends "ats.Ats Config Artifact" {
+	uuid  0x0000BA123443210004
+	attribute "ats.Team Definition"
+	attribute "ats.Namespace"
+	attribute "ats.Description"
+}
+
 artifactType "ats.Review" extends "ats.State Machine" {
 	uuid 0x0000000000000040
 	attribute "ats.Actionable Item"
@@ -1063,6 +1070,15 @@ attributeType "ats.Goal Order Vote" extends StringAttribute {
 
 attributeType "ats.Category" extends StringAttribute {
 	uuid 0x10000000000000EC
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Namespace" extends StringAttribute {
+	uuid 0x40E507303063999E 
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
