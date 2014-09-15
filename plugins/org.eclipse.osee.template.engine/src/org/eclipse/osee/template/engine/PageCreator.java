@@ -105,7 +105,6 @@ public final class PageCreator {
                substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
             } else if (token.startsWith("rule ")) {
                handleRule(substitution, token);
-               substitution = new StringBuilder(NumOfCharsInTypicalSmallPage);
             } else { // handle key
                if (isProcessingInstruction) {
                   // next instruction found, complete previous one

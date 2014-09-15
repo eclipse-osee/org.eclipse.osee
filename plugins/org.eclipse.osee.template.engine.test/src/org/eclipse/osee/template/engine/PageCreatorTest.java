@@ -188,6 +188,17 @@ public class PageCreatorTest {
       Assert.assertEquals(expected, actual);
    }
 
+   @Test
+   public void realizePage_WithRule() {
+      Set<String> types = new HashSet<String>();
+      types.add("Software Requirement");
+      ArtifactTypeOptionsRule rule = new ArtifactTypeOptionsRule("select", types, types);
+      PageCreator page = PageFactory.newPageCreatorWithRules(registry, ArtifactSelect, rule);
+      String actual = page.realizePage(ArtifactSelect);
+      String expected = page.realizePage(ArtifactSelectExpected);
+      Assert.assertEquals(expected, actual);
+   }
+
    private static <T> Answer<T> answer(final T value) {
       return new Answer<T>() {
 
