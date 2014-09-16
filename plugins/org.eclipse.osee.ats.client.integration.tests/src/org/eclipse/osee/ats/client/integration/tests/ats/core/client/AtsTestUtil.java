@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -74,6 +75,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -469,6 +472,17 @@ public class AtsTestUtil {
       deleteTeamWf(teamArt2);
       deleteTeamWf(teamArt3);
       deleteTeamWf(teamArt4);
+
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+            AtsTestUtil.class.getSimpleName() + " - cleanup config");
+      for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
+         if (config != null && config.getStoreObject() instanceof Artifact) {
+            Artifact art = (Artifact) config.getStoreObject();
+            art.deleteAndPersist(transaction);
+         }
+      }
+      transaction.execute();
 
       clearCaches();
 
