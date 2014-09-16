@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestUnitAnnotationUtilityTest.class})
+@Suite.SuiteClasses({TestUnitAnnotationUtilityTest.class, CodeUnitAnnotationUtilityTest.class})
 /**
  * @author John R. Misinco
  */

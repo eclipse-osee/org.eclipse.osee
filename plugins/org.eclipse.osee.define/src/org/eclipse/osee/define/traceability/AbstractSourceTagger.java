@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.CharBuffer;
+import java.util.regex.Matcher;
+import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -45,6 +47,17 @@ public abstract class AbstractSourceTagger {
       if (!result.equals(cb)) {
          Lib.writeCharBufferToFile(result, file);
       }
+   }
+
+   public CharBuffer removeMatches(CharBuffer buffer, Matcher matcher) {
+      CharBuffer copy = buffer.duplicate();
+      matcher.reset(copy);
+      if (matcher.find()) {
+         ChangeSet changeSet = new ChangeSet(copy);
+         changeSet.delete(matcher.start(), matcher.end() + 1);
+         copy = CharBuffer.wrap(changeSet.applyChangesToSelf().toString().toCharArray());
+      }
+      return copy;
    }
 
 }

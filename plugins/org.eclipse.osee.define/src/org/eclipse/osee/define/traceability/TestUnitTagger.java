@@ -90,17 +90,6 @@ public class TestUnitTagger extends AbstractSourceTagger {
       return buffer;
    }
 
-   private CharBuffer removeMatches(CharBuffer buffer, Matcher matcher) {
-      CharBuffer copy = buffer.duplicate();
-      matcher.reset(copy);
-      if (matcher.find()) {
-         ChangeSet changeSet = new ChangeSet(copy);
-         changeSet.delete(matcher.start(), matcher.end() + 1);
-         copy = CharBuffer.wrap(changeSet.applyChangesToSelf().toString().toCharArray());
-      }
-      return copy;
-   }
-
    @Override
    public CharBuffer removeSourceTag(CharBuffer buffer) {
       buffer = removeMatches(buffer, importMatcher);

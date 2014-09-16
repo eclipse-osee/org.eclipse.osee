@@ -24,6 +24,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.AbstractSourceTagger;
+import org.eclipse.osee.define.traceability.CodeUnitTagger;
 import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
@@ -133,6 +134,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private AbstractSourceTagger getGuidUtility(IArtifactType artifactType) {
       if (artifactType.equals(CoreArtifactTypes.TestCase)) {
          return TestUnitTagger.getInstance();
+      } else if (artifactType.equals(CoreArtifactTypes.CodeUnit)) {
+         return CodeUnitTagger.getInstance();
       }
       return null;
    }
