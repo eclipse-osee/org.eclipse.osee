@@ -1,11 +1,9 @@
 package org.eclipse.osee.ote.master.rest.client.internal;
 
 import java.net.URI;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
@@ -27,15 +25,14 @@ public class RemoveServer implements Callable<OTEMasterServerResult> {
 
    @Override
    public OTEMasterServerResult call() throws Exception {
-      URI targetUri =
-         UriBuilder.fromUri(uri).path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).path(server.getUUID().toString()).build();
-
       OTEMasterServerResult result = new OTEMasterServerResult();
       try {
+         URI targetUri = UriBuilder.fromUri(uri).path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).path(server.getUUID().toString()).build();
          webClientProvider.target(targetUri).request(MediaType.APPLICATION_XML).method(HttpMethod.DELETE);
       } catch (Throwable th) {
          result.setSuccess(false);
          result.setThrowable(th);
+         th.printStackTrace();
       }
       return result;
    }

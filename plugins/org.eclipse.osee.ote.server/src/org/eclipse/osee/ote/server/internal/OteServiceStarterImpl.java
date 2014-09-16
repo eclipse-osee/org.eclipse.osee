@@ -23,11 +23,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 
 import org.apache.activemq.broker.BrokerService;
@@ -51,6 +54,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentServiceConfig;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
+import org.eclipse.osee.ote.master.rest.client.OTEMasterServerResult;
 import org.eclipse.osee.ote.master.rest.model.OTEServer;
 import org.eclipse.osee.ote.server.OteServiceStarter;
 import org.eclipse.osee.ote.server.PropertyParamter;
@@ -315,7 +319,13 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		      lookupRegistration.stop();
 		      taskToCancel.cancel(true);
 		   } finally {
-		      masterServer.removeServer(masterURI, oteServerEntry);
+		      Future<OTEMasterServerResult> removeServer = masterServer.removeServer(masterURI, oteServerEntry);
+		      try {
+               removeServer.get(1000, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+            } catch (ExecutionException e) {
+            } catch (TimeoutException e) {
+            }
 		   }
 		}
 		brokerService = null;

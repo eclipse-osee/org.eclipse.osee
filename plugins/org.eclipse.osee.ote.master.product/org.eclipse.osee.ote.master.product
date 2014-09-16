@@ -17,9 +17,7 @@
    <windowImages/>
 
    <launcher>
-      <linux useIco="false"/>
-      <macosx useIco="false"/>
-      <solaris useIco="false"/>
+      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -43,7 +41,7 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.osee.rest.admin" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osee.jaxrs.server" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

@@ -104,7 +104,6 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
    }
 
    public void stop() {
-      RuntimeDelegate.setInstance(null);
       if (providers != null) {
          providers.clear();
          providers = null;
