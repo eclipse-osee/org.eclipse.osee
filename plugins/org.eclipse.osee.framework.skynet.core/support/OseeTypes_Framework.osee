@@ -1562,6 +1562,7 @@ artifactType "Component" extends "Artifact" {
 
 artifactType "Code Unit" extends "Artifact" {
 	uuid 0x000000000000003A
+	attribute "Subject Matter Expert"
 }
 
 artifactType "Safety Assessment" extends "Artifact" {
