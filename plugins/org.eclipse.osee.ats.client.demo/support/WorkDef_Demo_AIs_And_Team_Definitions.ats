@@ -301,4 +301,18 @@ actionableItem "Actionable Items" GetOrCreate {
 		}
 	}
 }
+	
+program "SAW Program" {
+	guid "At2WHxCeMCHacr02EkAA"
+	namespace "org.demo.saw"
+	teamDefinition "SAW SW"
+	attribute "ats.Description" value "Program object for SAW Program"
+}
+
+program "CIS Program" {
+	guid "At2WHxCeMCHbcr02EkAA"
+	namespace "org.demo.cis"
+	teamDefinition "CIS SW"
+	attribute "ats.Description" value "Program object for CIS Program"
+}
 

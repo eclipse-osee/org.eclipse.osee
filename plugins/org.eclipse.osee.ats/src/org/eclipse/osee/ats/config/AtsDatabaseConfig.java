@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -112,5 +113,18 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       } catch (Exception ex) {
          throw new OseeWrappedException("Error loading column views.json file", ex);
       }
+   }
+
+   public static void organizePrograms(IArtifactType programType, IArtifactToken programFolderToken) {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Organize Programs");
+      Artifact programFolder = OseeSystemArtifacts.getOrCreateArtifact(programFolderToken, AtsUtilCore.getAtsBranch());
+      programFolder.persist(transaction);
+      for (Artifact programArt : ArtifactQuery.getArtifactListFromType(programType, AtsUtilCore.getAtsBranch())) {
+         if (!programFolder.getChildren().contains(programArt)) {
+            programFolder.addChild(programArt);
+         }
+      }
+      transaction.execute();
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.client.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -60,28 +62,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       // Create Work Packages
       createWorkPackages();
-      createPrograms();
-   }
-
-   private void createPrograms() throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Programs");
-
-      Artifact sawSw = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_SW, AtsUtilCore.getAtsBranch());
-      Artifact sawProgram = ArtifactTypeManager.addArtifact(DemoArtifactToken.SAW_Program, AtsUtilCore.getAtsBranch());
-      sawProgram.setSoleAttributeValue(AtsAttributeTypes.Namespace, "org.demo.saw");
-      sawProgram.setSoleAttributeValue(AtsAttributeTypes.Description, "Program object for SAW Program");
-      sawProgram.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, sawSw.getGuid());
-      sawProgram.persist(transaction);
-
-      Artifact cisSw = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_SW, AtsUtilCore.getAtsBranch());
-      Artifact cisProgram = ArtifactTypeManager.addArtifact(DemoArtifactToken.CIS_Program, AtsUtilCore.getAtsBranch());
-      cisProgram.setSoleAttributeValue(AtsAttributeTypes.Namespace, "org.demo.cis");
-      cisProgram.setSoleAttributeValue(AtsAttributeTypes.Description, "Program object for CIS Program");
-      cisProgram.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, cisSw.getGuid());
-      cisProgram.persist(transaction);
-
-      transaction.execute();
+      AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
    }
 
    private void createWorkPackages() throws OseeCoreException {

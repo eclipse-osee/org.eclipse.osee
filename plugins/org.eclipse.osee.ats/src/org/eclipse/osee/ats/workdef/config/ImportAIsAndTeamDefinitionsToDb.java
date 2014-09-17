@@ -28,15 +28,22 @@ import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.UserRefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrDef;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef;
+import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -46,6 +53,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * @author Donald G. Dunne
@@ -58,6 +66,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    private final Map<String, Artifact> newAIs = new HashMap<String, Artifact>();
    private final Map<String, Artifact> newVersions = new HashMap<String, Artifact>();
    private final String modelName;
+   private final Map<String, Artifact> teamNameToTeamDefArt = new HashMap<String, Artifact>();
 
    public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, IAtsChangeSet changes) {
       this.modelName = modelName;
@@ -75,6 +84,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          atsDsl.getActionableItemDef(),
          AtsClientService.get().getConfigArtifact(
             ActionableItems.getTopActionableItem(AtsClientService.get().getConfig())));
+      importProgram(atsDsl.getProgram());
    }
 
    private void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
@@ -125,6 +135,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             parentArtifact.addChild(newTeam);
          }
          newTeams.put(newTeam.getName(), newTeam);
+         teamNameToTeamDefArt.put(newTeam.getName(), newTeam);
 
          newTeam.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslTeamDef.getActive(), true));
@@ -272,6 +283,73 @@ public class ImportAIsAndTeamDefinitionsToDb {
          importAccessContextIds(newAi, dslAIDef.getAccessContextId());
          importActionableItems(dslAIDef.getChildren(), newAi);
          changes.add(newAi);
+      }
+   }
+
+   @SuppressWarnings("deprecation")
+   private void importProgram(EList<ProgramDef> programDefs) throws OseeCoreException {
+      for (ProgramDef dslProgramDef : programDefs) {
+         String dslProgramName = Strings.unquote(dslProgramDef.getName());
+         Artifact newProgramArt = null;
+         IArtifactType programArtifactType = AtsArtifactTypes.Program;
+         String artifactTypeName = dslProgramDef.getArtifactTypeName();
+         if (Strings.isValid(artifactTypeName)) {
+            programArtifactType = ArtifactTypeManager.getType(artifactTypeName);
+         }
+         if (Strings.isValid(dslProgramDef.getGuid())) {
+            newProgramArt =
+               ArtifactTypeManager.addArtifact(programArtifactType, AtsUtilCore.getAtsBranch(), dslProgramName,
+                  dslProgramDef.getGuid());
+         } else {
+            newProgramArt =
+               ArtifactTypeManager.addArtifact(programArtifactType, AtsUtilCore.getAtsBranch(), dslProgramName);
+         }
+         changes.add(newProgramArt);
+         newProgramArt.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
+            BooleanDefUtil.get(dslProgramDef.getActive(), true));
+         importProgramTeamDef(dslProgramDef, newProgramArt);
+         if (Strings.isValid(dslProgramDef.getNamespace())) {
+            newProgramArt.setSoleAttributeValue(AtsAttributeTypes.Namespace, dslProgramDef.getNamespace());
+         }
+         importProgramAttributes(dslProgramDef, newProgramArt);
+      }
+   }
+
+   private void importProgramAttributes(ProgramDef dslProgramDef, Artifact newProgramArt) {
+      for (AttrDef attrDef : dslProgramDef.getAttributes()) {
+         String attrName = Strings.unquote(attrDef.getName());
+         AttrDefOptions attrDefOption = attrDef.getOption();
+         if (attrDefOption instanceof AttrValueDef) {
+            AttributeType attrType = AttributeTypeManager.getType(attrName);
+            newProgramArt.addAttributeFromString(attrType,
+               Strings.unquote(((AttrValueDef) attrDefOption).getValue()));
+         } else if (attrDefOption instanceof AttrFullDef) {
+            AttrFullDef attrFullDef = (AttrFullDef) attrDefOption;
+            if (Strings.isValid(attrFullDef.getUuid())) {
+               Long uuid = Long.valueOf(attrFullDef.getUuid());
+               AttributeType attrType = AttributeTypeManager.getTypeByGuid(uuid);
+               for (String value : attrFullDef.getValues()) {
+                  newProgramArt.addAttribute(attrType, Strings.unquote(value));
+               }
+            }
+
+         }
+      }
+   }
+
+   private void importProgramTeamDef(ProgramDef dslProgramDef, Artifact newProgramArt) {
+      if (Strings.isValid(dslProgramDef.getTeamDefinition())) {
+         String teamDefGuidOrName = Strings.unquote(dslProgramDef.getTeamDefinition());
+         if (GUID.isValid(teamDefGuidOrName)) {
+            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinition, teamDefGuidOrName);
+         } else {
+            Artifact teamDefArt = teamNameToTeamDefArt.get(teamDefGuidOrName);
+            if (teamDefArt == null) {
+               throw new OseeStateException("No Team Definition found with name [%s] from program definition [%s]",
+                  teamDefGuidOrName, dslProgramDef.getName());
+            }
+            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinition, teamDefArt.getGuid());
+         }
       }
    }
 

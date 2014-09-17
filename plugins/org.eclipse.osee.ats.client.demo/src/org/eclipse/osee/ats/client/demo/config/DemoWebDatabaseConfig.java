@@ -41,7 +41,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
       Artifact oseeWebArt = ArtifactTypeManager.addArtifact(AtsArtifactToken.WebPrograms, atsBranch);
       oseeWebArt.persist(transaction);
 
-      Artifact demoProgramsArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.DemoPrograms, atsBranch);
+      Artifact demoProgramsArt = OseeSystemArtifacts.getOrCreateArtifact(DemoArtifactToken.DemoPrograms, atsBranch);
       oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, demoProgramsArt);
       oseeWebArt.persist(transaction);
 
