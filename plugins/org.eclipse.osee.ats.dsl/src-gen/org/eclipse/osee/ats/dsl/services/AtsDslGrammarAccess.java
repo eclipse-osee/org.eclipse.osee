@@ -37,14 +37,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cWorkDefinitionKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cWorkDefAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
 		private final RuleCall cWorkDefWorkDefParserRuleCall_3_1_0 = (RuleCall)cWorkDefAssignment_3_1.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cProgramKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cProgramAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cProgramProgramDefParserRuleCall_4_1_0 = (RuleCall)cProgramAssignment_4_1.eContents().get(0);
 		
 		//AtsDsl:
 		//	("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
-		//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*;
+		//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)* ("program" program+=ProgramDef)*;
 		public ParserRule getRule() { return rule; }
 
 		//("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
-		//actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*
+		//actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)* ("program" program+=ProgramDef)*
 		public Group getGroup() { return cGroup; }
 
 		//("userDefinition" userDef+=UserDef)*
@@ -94,6 +98,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//WorkDef
 		public RuleCall getWorkDefWorkDefParserRuleCall_3_1_0() { return cWorkDefWorkDefParserRuleCall_3_1_0; }
+
+		//("program" program+=ProgramDef)*
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"program"
+		public Keyword getProgramKeyword_4_0() { return cProgramKeyword_4_0; }
+
+		//program+=ProgramDef
+		public Assignment getProgramAssignment_4_1() { return cProgramAssignment_4_1; }
+
+		//ProgramDef
+		public RuleCall getProgramProgramDefParserRuleCall_4_1_0() { return cProgramProgramDefParserRuleCall_4_1_0; }
 	}
 
 	public class USER_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
@@ -212,6 +228,290 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_2_5() { return cRightCurlyBracketKeyword_2_5; }
+	}
+
+	public class ATTR_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ATTR_DEF_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//ATTR_DEF_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
+	public class AttrDefElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttrDef");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cNameATTR_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final Assignment cOptionAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cOptionAttrDefOptionsParserRuleCall_1_0 = (RuleCall)cOptionAssignment_1.eContents().get(0);
+		
+		//AttrDef:
+		//	name=ATTR_DEF_REFERENCE option=AttrDefOptions;
+		public ParserRule getRule() { return rule; }
+
+		//name=ATTR_DEF_REFERENCE option=AttrDefOptions
+		public Group getGroup() { return cGroup; }
+
+		//name=ATTR_DEF_REFERENCE
+		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+
+		//ATTR_DEF_REFERENCE
+		public RuleCall getNameATTR_DEF_REFERENCEParserRuleCall_0_0() { return cNameATTR_DEF_REFERENCEParserRuleCall_0_0; }
+
+		//option=AttrDefOptions
+		public Assignment getOptionAssignment_1() { return cOptionAssignment_1; }
+
+		//AttrDefOptions
+		public RuleCall getOptionAttrDefOptionsParserRuleCall_1_0() { return cOptionAttrDefOptionsParserRuleCall_1_0; }
+	}
+
+	public class AttrDefOptionsElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttrDefOptions");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cAttrValueDefParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cAttrFullDefParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//AttrDefOptions:
+		//	AttrValueDef | AttrFullDef;
+		public ParserRule getRule() { return rule; }
+
+		//AttrValueDef | AttrFullDef
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//AttrValueDef
+		public RuleCall getAttrValueDefParserRuleCall_0() { return cAttrValueDefParserRuleCall_0; }
+
+		//AttrFullDef
+		public RuleCall getAttrFullDefParserRuleCall_1() { return cAttrFullDefParserRuleCall_1; }
+	}
+
+	public class AttrValueDefElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttrValueDef");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cValueKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cValueAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cValueSTRINGTerminalRuleCall_1_0 = (RuleCall)cValueAssignment_1.eContents().get(0);
+		
+		//AttrValueDef:
+		//	"value" value=STRING;
+		public ParserRule getRule() { return rule; }
+
+		//"value" value=STRING
+		public Group getGroup() { return cGroup; }
+
+		//"value"
+		public Keyword getValueKeyword_0() { return cValueKeyword_0; }
+
+		//value=STRING
+		public Assignment getValueAssignment_1() { return cValueAssignment_1; }
+
+		//STRING
+		public RuleCall getValueSTRINGTerminalRuleCall_1_0() { return cValueSTRINGTerminalRuleCall_1_0; }
+	}
+
+	public class AttrFullDefElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttrFullDef");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
+		private final Keyword cUuidKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
+		private final Assignment cUuidAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
+		private final RuleCall cUuidSTRINGTerminalRuleCall_1_1_0 = (RuleCall)cUuidAssignment_1_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cValueKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cValuesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cValuesSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cValuesAssignment_2_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		//AttrFullDef:
+		//	"{" ("uuid" uuid=STRING)? ("value" values+=STRING)+ "}";
+		public ParserRule getRule() { return rule; }
+
+		//"{" ("uuid" uuid=STRING)? ("value" values+=STRING)+ "}"
+		public Group getGroup() { return cGroup; }
+
+		//"{"
+		public Keyword getLeftCurlyBracketKeyword_0() { return cLeftCurlyBracketKeyword_0; }
+
+		//("uuid" uuid=STRING)?
+		public Group getGroup_1() { return cGroup_1; }
+
+		//"uuid"
+		public Keyword getUuidKeyword_1_0() { return cUuidKeyword_1_0; }
+
+		//uuid=STRING
+		public Assignment getUuidAssignment_1_1() { return cUuidAssignment_1_1; }
+
+		//STRING
+		public RuleCall getUuidSTRINGTerminalRuleCall_1_1_0() { return cUuidSTRINGTerminalRuleCall_1_1_0; }
+
+		//("value" values+=STRING)+
+		public Group getGroup_2() { return cGroup_2; }
+
+		//"value"
+		public Keyword getValueKeyword_2_0() { return cValueKeyword_2_0; }
+
+		//values+=STRING
+		public Assignment getValuesAssignment_2_1() { return cValuesAssignment_2_1; }
+
+		//STRING
+		public RuleCall getValuesSTRINGTerminalRuleCall_2_1_0() { return cValuesSTRINGTerminalRuleCall_2_1_0; }
+
+		//"}"
+		public Keyword getRightCurlyBracketKeyword_3() { return cRightCurlyBracketKeyword_3; }
+	}
+
+	public class PROGRAM_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "PROGRAM_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//PROGRAM_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
+	public class ProgramDefElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ProgramDef");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cNamePROGRAM_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final Assignment cProgramDefOptionAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cProgramDefOptionProgramDefOptionParserRuleCall_1_0 = (RuleCall)cProgramDefOptionAssignment_1.eContents().get(0);
+		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cGuidAssignment_3_1.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Keyword cArtifactTypeKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
+		private final Assignment cArtifactTypeNameAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cArtifactTypeNameSTRINGTerminalRuleCall_4_1_0 = (RuleCall)cArtifactTypeNameAssignment_4_1.eContents().get(0);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cActiveKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cActiveAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cActiveBooleanDefEnumRuleCall_5_1_0 = (RuleCall)cActiveAssignment_5_1.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cNamespaceKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cNamespaceAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cNamespaceSTRINGTerminalRuleCall_6_1_0 = (RuleCall)cNamespaceAssignment_6_1.eContents().get(0);
+		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
+		private final Keyword cTeamDefinitionKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cTeamDefinitionAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cTeamDefinitionTEAM_DEF_REFERENCEParserRuleCall_7_1_0 = (RuleCall)cTeamDefinitionAssignment_7_1.eContents().get(0);
+		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
+		private final Keyword cAttributeKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
+		private final Assignment cAttributesAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
+		private final RuleCall cAttributesAttrDefParserRuleCall_8_1_0 = (RuleCall)cAttributesAssignment_8_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		
+		//ProgramDef:
+		//	name=PROGRAM_REFERENCE programDefOption+=ProgramDefOption* "{" ("guid" guid=STRING)? ("artifactType"
+		//	artifactTypeName=STRING)? ("active" active=BooleanDef)? ("namespace" namespace=STRING)* ("teamDefinition"
+		//	teamDefinition=TEAM_DEF_REFERENCE)* ("attribute" attributes+=AttrDef)* "}";
+		public ParserRule getRule() { return rule; }
+
+		//name=PROGRAM_REFERENCE programDefOption+=ProgramDefOption* "{" ("guid" guid=STRING)? ("artifactType"
+		//artifactTypeName=STRING)? ("active" active=BooleanDef)? ("namespace" namespace=STRING)* ("teamDefinition"
+		//teamDefinition=TEAM_DEF_REFERENCE)* ("attribute" attributes+=AttrDef)* "}"
+		public Group getGroup() { return cGroup; }
+
+		//name=PROGRAM_REFERENCE
+		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+
+		//PROGRAM_REFERENCE
+		public RuleCall getNamePROGRAM_REFERENCEParserRuleCall_0_0() { return cNamePROGRAM_REFERENCEParserRuleCall_0_0; }
+
+		//programDefOption+=ProgramDefOption*
+		public Assignment getProgramDefOptionAssignment_1() { return cProgramDefOptionAssignment_1; }
+
+		//ProgramDefOption
+		public RuleCall getProgramDefOptionProgramDefOptionParserRuleCall_1_0() { return cProgramDefOptionProgramDefOptionParserRuleCall_1_0; }
+
+		//"{"
+		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
+
+		//("guid" guid=STRING)?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"guid"
+		public Keyword getGuidKeyword_3_0() { return cGuidKeyword_3_0; }
+
+		//guid=STRING
+		public Assignment getGuidAssignment_3_1() { return cGuidAssignment_3_1; }
+
+		//STRING
+		public RuleCall getGuidSTRINGTerminalRuleCall_3_1_0() { return cGuidSTRINGTerminalRuleCall_3_1_0; }
+
+		//("artifactType" artifactTypeName=STRING)?
+		public Group getGroup_4() { return cGroup_4; }
+
+		//"artifactType"
+		public Keyword getArtifactTypeKeyword_4_0() { return cArtifactTypeKeyword_4_0; }
+
+		//artifactTypeName=STRING
+		public Assignment getArtifactTypeNameAssignment_4_1() { return cArtifactTypeNameAssignment_4_1; }
+
+		//STRING
+		public RuleCall getArtifactTypeNameSTRINGTerminalRuleCall_4_1_0() { return cArtifactTypeNameSTRINGTerminalRuleCall_4_1_0; }
+
+		//("active" active=BooleanDef)?
+		public Group getGroup_5() { return cGroup_5; }
+
+		//"active"
+		public Keyword getActiveKeyword_5_0() { return cActiveKeyword_5_0; }
+
+		//active=BooleanDef
+		public Assignment getActiveAssignment_5_1() { return cActiveAssignment_5_1; }
+
+		//BooleanDef
+		public RuleCall getActiveBooleanDefEnumRuleCall_5_1_0() { return cActiveBooleanDefEnumRuleCall_5_1_0; }
+
+		//("namespace" namespace=STRING)*
+		public Group getGroup_6() { return cGroup_6; }
+
+		//"namespace"
+		public Keyword getNamespaceKeyword_6_0() { return cNamespaceKeyword_6_0; }
+
+		//namespace=STRING
+		public Assignment getNamespaceAssignment_6_1() { return cNamespaceAssignment_6_1; }
+
+		//STRING
+		public RuleCall getNamespaceSTRINGTerminalRuleCall_6_1_0() { return cNamespaceSTRINGTerminalRuleCall_6_1_0; }
+
+		//("teamDefinition" teamDefinition=TEAM_DEF_REFERENCE)*
+		public Group getGroup_7() { return cGroup_7; }
+
+		//"teamDefinition"
+		public Keyword getTeamDefinitionKeyword_7_0() { return cTeamDefinitionKeyword_7_0; }
+
+		//teamDefinition=TEAM_DEF_REFERENCE
+		public Assignment getTeamDefinitionAssignment_7_1() { return cTeamDefinitionAssignment_7_1; }
+
+		//TEAM_DEF_REFERENCE
+		public RuleCall getTeamDefinitionTEAM_DEF_REFERENCEParserRuleCall_7_1_0() { return cTeamDefinitionTEAM_DEF_REFERENCEParserRuleCall_7_1_0; }
+
+		//("attribute" attributes+=AttrDef)*
+		public Group getGroup_8() { return cGroup_8; }
+
+		//"attribute"
+		public Keyword getAttributeKeyword_8_0() { return cAttributeKeyword_8_0; }
+
+		//attributes+=AttrDef
+		public Assignment getAttributesAssignment_8_1() { return cAttributesAssignment_8_1; }
+
+		//AttrDef
+		public RuleCall getAttributesAttrDefParserRuleCall_8_1_0() { return cAttributesAttrDefParserRuleCall_8_1_0; }
+
+		//"}"
+		public Keyword getRightCurlyBracketKeyword_9() { return cRightCurlyBracketKeyword_9; }
 	}
 
 	public class TEAM_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
@@ -2155,6 +2455,38 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getUSER_DEF_OPTION_NAMEParserRuleCall_1() { return cUSER_DEF_OPTION_NAMEParserRuleCall_1; }
 	}
 
+	public class PROGRAM_DEF_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "PROGRAM_DEF_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//PROGRAM_DEF_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
+	public class ProgramDefOptionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ProgramDefOption");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cGetOrCreateKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final RuleCall cPROGRAM_DEF_OPTION_NAMEParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//ProgramDefOption:
+		//	"GetOrCreate" | PROGRAM_DEF_OPTION_NAME;
+		public ParserRule getRule() { return rule; }
+
+		//"GetOrCreate" | PROGRAM_DEF_OPTION_NAME
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//"GetOrCreate"
+		public Keyword getGetOrCreateKeyword_0() { return cGetOrCreateKeyword_0; }
+
+		//PROGRAM_DEF_OPTION_NAME
+		public RuleCall getPROGRAM_DEF_OPTION_NAMEParserRuleCall_1() { return cPROGRAM_DEF_OPTION_NAMEParserRuleCall_1; }
+	}
+
 	public class TEAM_DEF_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TEAM_DEF_OPTION_NAME");
 		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
@@ -2792,6 +3124,13 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	private AtsDslElements pAtsDsl;
 	private USER_DEF_REFERENCEElements pUSER_DEF_REFERENCE;
 	private UserDefElements pUserDef;
+	private ATTR_DEF_REFERENCEElements pATTR_DEF_REFERENCE;
+	private AttrDefElements pAttrDef;
+	private AttrDefOptionsElements pAttrDefOptions;
+	private AttrValueDefElements pAttrValueDef;
+	private AttrFullDefElements pAttrFullDef;
+	private PROGRAM_REFERENCEElements pPROGRAM_REFERENCE;
+	private ProgramDefElements pProgramDef;
 	private TEAM_DEF_REFERENCEElements pTEAM_DEF_REFERENCE;
 	private TeamDefElements pTeamDef;
 	private AI_DEF_REFERENCEElements pAI_DEF_REFERENCE;
@@ -2829,6 +3168,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	private CompositeElements pComposite;
 	private USER_DEF_OPTION_NAMEElements pUSER_DEF_OPTION_NAME;
 	private UserDefOptionElements pUserDefOption;
+	private PROGRAM_DEF_OPTION_NAMEElements pPROGRAM_DEF_OPTION_NAME;
+	private ProgramDefOptionElements pProgramDefOption;
 	private TEAM_DEF_OPTION_NAMEElements pTEAM_DEF_OPTION_NAME;
 	private TeamDefOptionElements pTeamDefOption;
 	private AI_DEF_OPTION_NAMEElements pAI_DEF_OPTION_NAME;
@@ -2886,7 +3227,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//AtsDsl:
 	//	("userDefinition" userDef+=UserDef)* ("teamDefinition" teamDef+=TeamDef)* ("actionableItem"
-	//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)*;
+	//	actionableItemDef+=ActionableItemDef)* ("workDefinition" workDef+=WorkDef)* ("program" program+=ProgramDef)*;
 	public AtsDslElements getAtsDslAccess() {
 		return (pAtsDsl != null) ? pAtsDsl : (pAtsDsl = new AtsDslElements());
 	}
@@ -2914,6 +3255,78 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getUserDefRule() {
 		return getUserDefAccess().getRule();
+	}
+
+	//ATTR_DEF_REFERENCE:
+	//	STRING;
+	public ATTR_DEF_REFERENCEElements getATTR_DEF_REFERENCEAccess() {
+		return (pATTR_DEF_REFERENCE != null) ? pATTR_DEF_REFERENCE : (pATTR_DEF_REFERENCE = new ATTR_DEF_REFERENCEElements());
+	}
+	
+	public ParserRule getATTR_DEF_REFERENCERule() {
+		return getATTR_DEF_REFERENCEAccess().getRule();
+	}
+
+	//AttrDef:
+	//	name=ATTR_DEF_REFERENCE option=AttrDefOptions;
+	public AttrDefElements getAttrDefAccess() {
+		return (pAttrDef != null) ? pAttrDef : (pAttrDef = new AttrDefElements());
+	}
+	
+	public ParserRule getAttrDefRule() {
+		return getAttrDefAccess().getRule();
+	}
+
+	//AttrDefOptions:
+	//	AttrValueDef | AttrFullDef;
+	public AttrDefOptionsElements getAttrDefOptionsAccess() {
+		return (pAttrDefOptions != null) ? pAttrDefOptions : (pAttrDefOptions = new AttrDefOptionsElements());
+	}
+	
+	public ParserRule getAttrDefOptionsRule() {
+		return getAttrDefOptionsAccess().getRule();
+	}
+
+	//AttrValueDef:
+	//	"value" value=STRING;
+	public AttrValueDefElements getAttrValueDefAccess() {
+		return (pAttrValueDef != null) ? pAttrValueDef : (pAttrValueDef = new AttrValueDefElements());
+	}
+	
+	public ParserRule getAttrValueDefRule() {
+		return getAttrValueDefAccess().getRule();
+	}
+
+	//AttrFullDef:
+	//	"{" ("uuid" uuid=STRING)? ("value" values+=STRING)+ "}";
+	public AttrFullDefElements getAttrFullDefAccess() {
+		return (pAttrFullDef != null) ? pAttrFullDef : (pAttrFullDef = new AttrFullDefElements());
+	}
+	
+	public ParserRule getAttrFullDefRule() {
+		return getAttrFullDefAccess().getRule();
+	}
+
+	//PROGRAM_REFERENCE:
+	//	STRING;
+	public PROGRAM_REFERENCEElements getPROGRAM_REFERENCEAccess() {
+		return (pPROGRAM_REFERENCE != null) ? pPROGRAM_REFERENCE : (pPROGRAM_REFERENCE = new PROGRAM_REFERENCEElements());
+	}
+	
+	public ParserRule getPROGRAM_REFERENCERule() {
+		return getPROGRAM_REFERENCEAccess().getRule();
+	}
+
+	//ProgramDef:
+	//	name=PROGRAM_REFERENCE programDefOption+=ProgramDefOption* "{" ("guid" guid=STRING)? ("artifactType"
+	//	artifactTypeName=STRING)? ("active" active=BooleanDef)? ("namespace" namespace=STRING)* ("teamDefinition"
+	//	teamDefinition=TEAM_DEF_REFERENCE)* ("attribute" attributes+=AttrDef)* "}";
+	public ProgramDefElements getProgramDefAccess() {
+		return (pProgramDef != null) ? pProgramDef : (pProgramDef = new ProgramDefElements());
+	}
+	
+	public ParserRule getProgramDefRule() {
+		return getProgramDefAccess().getRule();
 	}
 
 	//TEAM_DEF_REFERENCE:
@@ -3306,6 +3719,26 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getUserDefOptionRule() {
 		return getUserDefOptionAccess().getRule();
+	}
+
+	//PROGRAM_DEF_OPTION_NAME:
+	//	STRING;
+	public PROGRAM_DEF_OPTION_NAMEElements getPROGRAM_DEF_OPTION_NAMEAccess() {
+		return (pPROGRAM_DEF_OPTION_NAME != null) ? pPROGRAM_DEF_OPTION_NAME : (pPROGRAM_DEF_OPTION_NAME = new PROGRAM_DEF_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getPROGRAM_DEF_OPTION_NAMERule() {
+		return getPROGRAM_DEF_OPTION_NAMEAccess().getRule();
+	}
+
+	//ProgramDefOption:
+	//	"GetOrCreate" | PROGRAM_DEF_OPTION_NAME;
+	public ProgramDefOptionElements getProgramDefOptionAccess() {
+		return (pProgramDefOption != null) ? pProgramDefOption : (pProgramDefOption = new ProgramDefOptionElements());
+	}
+	
+	public ParserRule getProgramDefOptionRule() {
+		return getProgramDefOptionAccess().getRule();
 	}
 
 	//TEAM_DEF_OPTION_NAME:

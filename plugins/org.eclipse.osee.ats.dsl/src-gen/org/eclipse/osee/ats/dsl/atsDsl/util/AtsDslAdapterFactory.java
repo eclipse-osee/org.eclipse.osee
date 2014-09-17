@@ -85,6 +85,31 @@ public class AtsDslAdapterFactory extends AdapterFactoryImpl
         return createUserDefAdapter();
       }
       @Override
+      public Adapter caseAttrDef(AttrDef object)
+      {
+        return createAttrDefAdapter();
+      }
+      @Override
+      public Adapter caseAttrDefOptions(AttrDefOptions object)
+      {
+        return createAttrDefOptionsAdapter();
+      }
+      @Override
+      public Adapter caseAttrValueDef(AttrValueDef object)
+      {
+        return createAttrValueDefAdapter();
+      }
+      @Override
+      public Adapter caseAttrFullDef(AttrFullDef object)
+      {
+        return createAttrFullDefAdapter();
+      }
+      @Override
+      public Adapter caseProgramDef(ProgramDef object)
+      {
+        return createProgramDefAdapter();
+      }
+      @Override
       public Adapter caseTeamDef(TeamDef object)
       {
         return createTeamDefAdapter();
@@ -247,6 +272,81 @@ public class AtsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createUserDefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDef <em>Attr Def</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDef
+   * @generated
+   */
+  public Adapter createAttrDefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions <em>Attr Def Options</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions
+   * @generated
+   */
+  public Adapter createAttrDefOptionsAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef <em>Attr Value Def</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef
+   * @generated
+   */
+  public Adapter createAttrValueDefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef <em>Attr Full Def</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef
+   * @generated
+   */
+  public Adapter createAttrFullDefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef <em>Program Def</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef
+   * @generated
+   */
+  public Adapter createProgramDefAdapter()
   {
     return null;
   }

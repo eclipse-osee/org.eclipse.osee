@@ -6,7 +6,8 @@ AtsDsl:
 	('userDefinition' userDef+=UserDef)*
 	('teamDefinition' teamDef+=TeamDef)*
 	('actionableItem' actionableItemDef+=ActionableItemDef)*
-	('workDefinition' workDef+=WorkDef)*;
+	('workDefinition' workDef+=WorkDef)*
+	('program' program+=ProgramDef)*;
 
 USER_DEF_REFERENCE:
 	STRING;
@@ -19,6 +20,38 @@ UserDef:
 		('email' email=STRING)?
 		('isAdmin' admin=BooleanDef)?
 	'}')?;
+
+ATTR_DEF_REFERENCE:
+	STRING;
+	
+AttrDef:
+	name=ATTR_DEF_REFERENCE option=AttrDefOptions;
+
+AttrDefOptions:
+	AttrValueDef | AttrFullDef;
+	
+AttrValueDef:
+   'value' value=STRING;
+   
+AttrFullDef:
+	'{'
+		('uuid' uuid=STRING)?
+		('value' values+=STRING)+
+	'}';
+
+PROGRAM_REFERENCE:
+	STRING;
+	
+ProgramDef:
+	name=PROGRAM_REFERENCE (programDefOption+=ProgramDefOption)*
+	'{'
+		('guid' guid=STRING)?
+		('artifactType' artifactTypeName=STRING)?
+		('active' active=BooleanDef)?
+		('namespace' namespace=STRING)*
+		('teamDefinition' teamDefinition=TEAM_DEF_REFERENCE)*
+		('attribute' attributes+=AttrDef)*
+	'}';
 
 TEAM_DEF_REFERENCE:
 	STRING;
@@ -226,6 +259,12 @@ USER_DEF_OPTION_NAME:
 UserDefOption:
 	'GetOrCreate' | USER_DEF_OPTION_NAME;
 	
+PROGRAM_DEF_OPTION_NAME:
+	STRING;
+	
+ProgramDefOption:
+	'GetOrCreate' | PROGRAM_DEF_OPTION_NAME;
+	
 TEAM_DEF_OPTION_NAME:
 	STRING;
 	
@@ -317,7 +356,6 @@ COLOR_NAME:
 StateColor:
 	'BLACK' | 'WHITE' | 'RED' | 'DARK_RED' | 'GREEN' | 'DARK_GREEN' | 'YELLOW' | 'DARK_YELLOW' | 'BLUE' | 'DARK_BLUE' | 'MAGENTA'
 	 | 'DARK_MAGENTA' | 'CYAN' | 'DARK_CYAN' | 'GRAY' | 'DARK_GRAY' | COLOR_NAME ;
-	 
-	
+
 	 
 	 

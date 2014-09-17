@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
+import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getActionableItemDef <em>Actionable Item Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getWorkDef <em>Work Def</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getProgram <em>Program</em>}</li>
  * </ul>
  * </p>
  *
@@ -80,6 +82,16 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
    * @ordered
    */
   protected EList<WorkDef> workDef;
+
+  /**
+   * The cached value of the '{@link #getProgram() <em>Program</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getProgram()
+   * @generated
+   * @ordered
+   */
+  protected EList<ProgramDef> program;
 
   /**
    * <!-- begin-user-doc -->
@@ -163,6 +175,20 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<ProgramDef> getProgram()
+  {
+    if (program == null)
+    {
+      program = new EObjectContainmentEList<ProgramDef>(ProgramDef.class, this, AtsDslPackage.ATS_DSL__PROGRAM);
+    }
+    return program;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -176,6 +202,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return ((InternalEList<?>)getActionableItemDef()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.ATS_DSL__WORK_DEF:
         return ((InternalEList<?>)getWorkDef()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.ATS_DSL__PROGRAM:
+        return ((InternalEList<?>)getProgram()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -198,6 +226,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return getActionableItemDef();
       case AtsDslPackage.ATS_DSL__WORK_DEF:
         return getWorkDef();
+      case AtsDslPackage.ATS_DSL__PROGRAM:
+        return getProgram();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -229,6 +259,10 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         getWorkDef().clear();
         getWorkDef().addAll((Collection<? extends WorkDef>)newValue);
         return;
+      case AtsDslPackage.ATS_DSL__PROGRAM:
+        getProgram().clear();
+        getProgram().addAll((Collection<? extends ProgramDef>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -255,6 +289,9 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
       case AtsDslPackage.ATS_DSL__WORK_DEF:
         getWorkDef().clear();
         return;
+      case AtsDslPackage.ATS_DSL__PROGRAM:
+        getProgram().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -277,6 +314,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return actionableItemDef != null && !actionableItemDef.isEmpty();
       case AtsDslPackage.ATS_DSL__WORK_DEF:
         return workDef != null && !workDef.isEmpty();
+      case AtsDslPackage.ATS_DSL__PROGRAM:
+        return program != null && !program.isEmpty();
     }
     return super.eIsSet(featureID);
   }

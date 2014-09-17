@@ -14,6 +14,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslFactory;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrDef;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
@@ -27,6 +31,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutItem;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
 import org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef;
 import org.eclipse.osee.ats.dsl.atsDsl.PeerReviewRef;
+import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ReviewBlockingType;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
@@ -62,6 +67,41 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * @generated
    */
   private EClass userDefEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attrDefEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attrDefOptionsEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attrValueDefEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass attrFullDefEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass programDefEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -363,6 +403,16 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EReference getAtsDsl_Program()
+  {
+    return (EReference)atsDslEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getUserDef()
   {
     return userDefEClass;
@@ -426,6 +476,186 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
   public EAttribute getUserDef_Admin()
   {
     return (EAttribute)userDefEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAttrDef()
+  {
+    return attrDefEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttrDef_Name()
+  {
+    return (EAttribute)attrDefEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getAttrDef_Option()
+  {
+    return (EReference)attrDefEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAttrDefOptions()
+  {
+    return attrDefOptionsEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAttrValueDef()
+  {
+    return attrValueDefEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttrValueDef_Value()
+  {
+    return (EAttribute)attrValueDefEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getAttrFullDef()
+  {
+    return attrFullDefEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttrFullDef_Uuid()
+  {
+    return (EAttribute)attrFullDefEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getAttrFullDef_Values()
+  {
+    return (EAttribute)attrFullDefEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getProgramDef()
+  {
+    return programDefEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_Name()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_ProgramDefOption()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_Guid()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_ArtifactTypeName()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_Active()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_Namespace()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getProgramDef_TeamDefinition()
+  {
+    return (EAttribute)programDefEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getProgramDef_Attributes()
+  {
+    return (EReference)programDefEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -1683,6 +1913,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEReference(atsDslEClass, ATS_DSL__TEAM_DEF);
     createEReference(atsDslEClass, ATS_DSL__ACTIONABLE_ITEM_DEF);
     createEReference(atsDslEClass, ATS_DSL__WORK_DEF);
+    createEReference(atsDslEClass, ATS_DSL__PROGRAM);
 
     userDefEClass = createEClass(USER_DEF);
     createEAttribute(userDefEClass, USER_DEF__NAME);
@@ -1691,6 +1922,29 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(userDefEClass, USER_DEF__USER_ID);
     createEAttribute(userDefEClass, USER_DEF__EMAIL);
     createEAttribute(userDefEClass, USER_DEF__ADMIN);
+
+    attrDefEClass = createEClass(ATTR_DEF);
+    createEAttribute(attrDefEClass, ATTR_DEF__NAME);
+    createEReference(attrDefEClass, ATTR_DEF__OPTION);
+
+    attrDefOptionsEClass = createEClass(ATTR_DEF_OPTIONS);
+
+    attrValueDefEClass = createEClass(ATTR_VALUE_DEF);
+    createEAttribute(attrValueDefEClass, ATTR_VALUE_DEF__VALUE);
+
+    attrFullDefEClass = createEClass(ATTR_FULL_DEF);
+    createEAttribute(attrFullDefEClass, ATTR_FULL_DEF__UUID);
+    createEAttribute(attrFullDefEClass, ATTR_FULL_DEF__VALUES);
+
+    programDefEClass = createEClass(PROGRAM_DEF);
+    createEAttribute(programDefEClass, PROGRAM_DEF__NAME);
+    createEAttribute(programDefEClass, PROGRAM_DEF__PROGRAM_DEF_OPTION);
+    createEAttribute(programDefEClass, PROGRAM_DEF__GUID);
+    createEAttribute(programDefEClass, PROGRAM_DEF__ARTIFACT_TYPE_NAME);
+    createEAttribute(programDefEClass, PROGRAM_DEF__ACTIVE);
+    createEAttribute(programDefEClass, PROGRAM_DEF__NAMESPACE);
+    createEAttribute(programDefEClass, PROGRAM_DEF__TEAM_DEFINITION);
+    createEReference(programDefEClass, PROGRAM_DEF__ATTRIBUTES);
 
     teamDefEClass = createEClass(TEAM_DEF);
     createEAttribute(teamDefEClass, TEAM_DEF__NAME);
@@ -1869,6 +2123,8 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
+    attrValueDefEClass.getESuperTypes().add(this.getAttrDefOptions());
+    attrFullDefEClass.getESuperTypes().add(this.getAttrDefOptions());
     widgetRefEClass.getESuperTypes().add(this.getLayoutItem());
     attrWidgetEClass.getESuperTypes().add(this.getLayoutItem());
     userByUserIdEClass.getESuperTypes().add(this.getUserRef());
@@ -1883,6 +2139,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEReference(getAtsDsl_TeamDef(), this.getTeamDef(), null, "teamDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_ActionableItemDef(), this.getActionableItemDef(), null, "actionableItemDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_WorkDef(), this.getWorkDef(), null, "workDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAtsDsl_Program(), this.getProgramDef(), null, "program", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(userDefEClass, UserDef.class, "UserDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUserDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1891,6 +2148,29 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getUserDef_UserId(), ecorePackage.getEString(), "userId", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getUserDef_Email(), ecorePackage.getEString(), "email", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getUserDef_Admin(), this.getBooleanDef(), "admin", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(attrDefEClass, AttrDef.class, "AttrDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAttrDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, AttrDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAttrDef_Option(), this.getAttrDefOptions(), null, "option", null, 0, 1, AttrDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(attrDefOptionsEClass, AttrDefOptions.class, "AttrDefOptions", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(attrValueDefEClass, AttrValueDef.class, "AttrValueDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAttrValueDef_Value(), ecorePackage.getEString(), "value", null, 0, 1, AttrValueDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(attrFullDefEClass, AttrFullDef.class, "AttrFullDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getAttrFullDef_Uuid(), ecorePackage.getEString(), "uuid", null, 0, 1, AttrFullDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAttrFullDef_Values(), ecorePackage.getEString(), "values", null, 0, -1, AttrFullDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(programDefEClass, ProgramDef.class, "ProgramDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getProgramDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_ProgramDefOption(), ecorePackage.getEString(), "programDefOption", null, 0, -1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_ArtifactTypeName(), ecorePackage.getEString(), "artifactTypeName", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_Active(), this.getBooleanDef(), "active", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getProgramDef_TeamDefinition(), ecorePackage.getEString(), "teamDefinition", null, 0, 1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getProgramDef_Attributes(), this.getAttrDef(), null, "attributes", null, 0, -1, ProgramDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(teamDefEClass, TeamDef.class, "TeamDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTeamDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

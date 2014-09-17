@@ -41,6 +41,51 @@ public interface AtsDslFactory extends EFactory
   UserDef createUserDef();
 
   /**
+   * Returns a new object of class '<em>Attr Def</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attr Def</em>'.
+   * @generated
+   */
+  AttrDef createAttrDef();
+
+  /**
+   * Returns a new object of class '<em>Attr Def Options</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attr Def Options</em>'.
+   * @generated
+   */
+  AttrDefOptions createAttrDefOptions();
+
+  /**
+   * Returns a new object of class '<em>Attr Value Def</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attr Value Def</em>'.
+   * @generated
+   */
+  AttrValueDef createAttrValueDef();
+
+  /**
+   * Returns a new object of class '<em>Attr Full Def</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Attr Full Def</em>'.
+   * @generated
+   */
+  AttrFullDef createAttrFullDef();
+
+  /**
+   * Returns a new object of class '<em>Program Def</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Program Def</em>'.
+   * @generated
+   */
+  ProgramDef createProgramDef();
+
+  /**
    * Returns a new object of class '<em>Team Def</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

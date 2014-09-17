@@ -67,6 +67,11 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
     {
       case AtsDslPackage.ATS_DSL: return createAtsDsl();
       case AtsDslPackage.USER_DEF: return createUserDef();
+      case AtsDslPackage.ATTR_DEF: return createAttrDef();
+      case AtsDslPackage.ATTR_DEF_OPTIONS: return createAttrDefOptions();
+      case AtsDslPackage.ATTR_VALUE_DEF: return createAttrValueDef();
+      case AtsDslPackage.ATTR_FULL_DEF: return createAttrFullDef();
+      case AtsDslPackage.PROGRAM_DEF: return createProgramDef();
       case AtsDslPackage.TEAM_DEF: return createTeamDef();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF: return createActionableItemDef();
       case AtsDslPackage.VERSION_DEF: return createVersionDef();
@@ -157,6 +162,61 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
   {
     UserDefImpl userDef = new UserDefImpl();
     return userDef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttrDef createAttrDef()
+  {
+    AttrDefImpl attrDef = new AttrDefImpl();
+    return attrDef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttrDefOptions createAttrDefOptions()
+  {
+    AttrDefOptionsImpl attrDefOptions = new AttrDefOptionsImpl();
+    return attrDefOptions;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttrValueDef createAttrValueDef()
+  {
+    AttrValueDefImpl attrValueDef = new AttrValueDefImpl();
+    return attrValueDef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttrFullDef createAttrFullDef()
+  {
+    AttrFullDefImpl attrFullDef = new AttrFullDefImpl();
+    return attrFullDef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ProgramDef createProgramDef()
+  {
+    ProgramDefImpl programDef = new ProgramDefImpl();
+    return programDef;
   }
 
   /**

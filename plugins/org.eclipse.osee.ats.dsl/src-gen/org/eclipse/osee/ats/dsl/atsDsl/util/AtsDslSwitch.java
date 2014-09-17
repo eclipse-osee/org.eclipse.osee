@@ -86,6 +86,43 @@ public class AtsDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case AtsDslPackage.ATTR_DEF:
+      {
+        AttrDef attrDef = (AttrDef)theEObject;
+        T result = caseAttrDef(attrDef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.ATTR_DEF_OPTIONS:
+      {
+        AttrDefOptions attrDefOptions = (AttrDefOptions)theEObject;
+        T result = caseAttrDefOptions(attrDefOptions);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.ATTR_VALUE_DEF:
+      {
+        AttrValueDef attrValueDef = (AttrValueDef)theEObject;
+        T result = caseAttrValueDef(attrValueDef);
+        if (result == null) result = caseAttrDefOptions(attrValueDef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.ATTR_FULL_DEF:
+      {
+        AttrFullDef attrFullDef = (AttrFullDef)theEObject;
+        T result = caseAttrFullDef(attrFullDef);
+        if (result == null) result = caseAttrDefOptions(attrFullDef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.PROGRAM_DEF:
+      {
+        ProgramDef programDef = (ProgramDef)theEObject;
+        T result = caseProgramDef(programDef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case AtsDslPackage.TEAM_DEF:
       {
         TeamDef teamDef = (TeamDef)theEObject;
@@ -286,6 +323,86 @@ public class AtsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseUserDef(UserDef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attr Def</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attr Def</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttrDef(AttrDef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attr Def Options</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attr Def Options</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttrDefOptions(AttrDefOptions object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attr Value Def</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attr Value Def</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttrValueDef(AttrValueDef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Attr Full Def</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Attr Full Def</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseAttrFullDef(AttrFullDef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Program Def</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Program Def</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseProgramDef(ProgramDef object)
   {
     return null;
   }

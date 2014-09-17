@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getActionableItemDef <em>Actionable Item Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getProgram <em>Program</em>}</li>
  * </ul>
  * </p>
  *
@@ -90,5 +91,21 @@ public interface AtsDsl extends EObject
    * @generated
    */
   EList<WorkDef> getWorkDef();
+
+  /**
+   * Returns the value of the '<em><b>Program</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Program</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Program</em>' containment reference list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAtsDsl_Program()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ProgramDef> getProgram();
 
 } // AtsDsl

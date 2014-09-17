@@ -26,6 +26,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/teamDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/actionableItemDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/workDef"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/program"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//UserDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/name"/>
@@ -34,6 +35,28 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/userId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/email"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/admin"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//AttrDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrDef/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AttrDef/option"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//AttrDefOptions"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//AttrValueDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrValueDef/value"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//AttrFullDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrFullDef/uuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//AttrFullDef/values"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//ProgramDef">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/programDefOption"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/artifactTypeName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/active"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/namespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/teamDefinition"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ProgramDef/attributes"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//TeamDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/name"/>

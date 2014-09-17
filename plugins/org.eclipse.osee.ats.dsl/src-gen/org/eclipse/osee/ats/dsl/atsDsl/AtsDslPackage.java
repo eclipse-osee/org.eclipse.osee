@@ -104,13 +104,22 @@ public interface AtsDslPackage extends EPackage
   int ATS_DSL__WORK_DEF = 3;
 
   /**
+   * The feature id for the '<em><b>Program</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATS_DSL__PROGRAM = 4;
+
+  /**
    * The number of structural features of the '<em>Ats Dsl</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATS_DSL_FEATURE_COUNT = 4;
+  int ATS_DSL_FEATURE_COUNT = 5;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl <em>User Def</em>}' class.
@@ -186,6 +195,218 @@ public interface AtsDslPackage extends EPackage
   int USER_DEF_FEATURE_COUNT = 6;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefImpl <em>Attr Def</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrDef()
+   * @generated
+   */
+  int ATTR_DEF = 2;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_DEF__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Option</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_DEF__OPTION = 1;
+
+  /**
+   * The number of structural features of the '<em>Attr Def</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_DEF_FEATURE_COUNT = 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefOptionsImpl <em>Attr Def Options</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefOptionsImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrDefOptions()
+   * @generated
+   */
+  int ATTR_DEF_OPTIONS = 3;
+
+  /**
+   * The number of structural features of the '<em>Attr Def Options</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_DEF_OPTIONS_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrValueDefImpl <em>Attr Value Def</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrValueDefImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrValueDef()
+   * @generated
+   */
+  int ATTR_VALUE_DEF = 4;
+
+  /**
+   * The feature id for the '<em><b>Value</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_VALUE_DEF__VALUE = ATTR_DEF_OPTIONS_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Attr Value Def</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_VALUE_DEF_FEATURE_COUNT = ATTR_DEF_OPTIONS_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl <em>Attr Full Def</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrFullDef()
+   * @generated
+   */
+  int ATTR_FULL_DEF = 5;
+
+  /**
+   * The feature id for the '<em><b>Uuid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_FULL_DEF__UUID = ATTR_DEF_OPTIONS_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Values</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_FULL_DEF__VALUES = ATTR_DEF_OPTIONS_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Attr Full Def</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTR_FULL_DEF_FEATURE_COUNT = ATTR_DEF_OPTIONS_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl <em>Program Def</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getProgramDef()
+   * @generated
+   */
+  int PROGRAM_DEF = 6;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Program Def Option</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__PROGRAM_DEF_OPTION = 1;
+
+  /**
+   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__GUID = 2;
+
+  /**
+   * The feature id for the '<em><b>Artifact Type Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__ARTIFACT_TYPE_NAME = 3;
+
+  /**
+   * The feature id for the '<em><b>Active</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__ACTIVE = 4;
+
+  /**
+   * The feature id for the '<em><b>Namespace</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__NAMESPACE = 5;
+
+  /**
+   * The feature id for the '<em><b>Team Definition</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__TEAM_DEFINITION = 6;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF__ATTRIBUTES = 7;
+
+  /**
+   * The number of structural features of the '<em>Program Def</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int PROGRAM_DEF_FEATURE_COUNT = 8;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl <em>Team Def</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -193,7 +414,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getTeamDef()
    * @generated
    */
-  int TEAM_DEF = 2;
+  int TEAM_DEF = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -338,7 +559,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getActionableItemDef()
    * @generated
    */
-  int ACTIONABLE_ITEM_DEF = 3;
+  int ACTIONABLE_ITEM_DEF = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -456,7 +677,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getVersionDef()
    * @generated
    */
-  int VERSION_DEF = 4;
+  int VERSION_DEF = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -556,7 +777,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getWorkDef()
    * @generated
    */
-  int WORK_DEF = 5;
+  int WORK_DEF = 10;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -638,7 +859,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getWidgetDef()
    * @generated
    */
-  int WIDGET_DEF = 6;
+  int WIDGET_DEF = 11;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -738,7 +959,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getLayoutItem()
    * @generated
    */
-  int LAYOUT_ITEM = 23;
+  int LAYOUT_ITEM = 28;
 
   /**
    * The number of structural features of the '<em>Layout Item</em>' class.
@@ -757,7 +978,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getWidgetRef()
    * @generated
    */
-  int WIDGET_REF = 7;
+  int WIDGET_REF = 12;
 
   /**
    * The feature id for the '<em><b>Widget</b></em>' reference.
@@ -785,7 +1006,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrWidget()
    * @generated
    */
-  int ATTR_WIDGET = 8;
+  int ATTR_WIDGET = 13;
 
   /**
    * The feature id for the '<em><b>Attribute Name</b></em>' attribute.
@@ -822,7 +1043,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getStateDef()
    * @generated
    */
-  int STATE_DEF = 9;
+  int STATE_DEF = 14;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -949,7 +1170,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getDecisionReviewRef()
    * @generated
    */
-  int DECISION_REVIEW_REF = 10;
+  int DECISION_REVIEW_REF = 15;
 
   /**
    * The feature id for the '<em><b>Decision Review</b></em>' reference.
@@ -977,7 +1198,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getDecisionReviewDef()
    * @generated
    */
-  int DECISION_REVIEW_DEF = 11;
+  int DECISION_REVIEW_DEF = 16;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1077,7 +1298,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getDecisionReviewOpt()
    * @generated
    */
-  int DECISION_REVIEW_OPT = 12;
+  int DECISION_REVIEW_OPT = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1114,7 +1335,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getPeerReviewRef()
    * @generated
    */
-  int PEER_REVIEW_REF = 13;
+  int PEER_REVIEW_REF = 18;
 
   /**
    * The feature id for the '<em><b>Peer Review</b></em>' reference.
@@ -1142,7 +1363,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getPeerReviewDef()
    * @generated
    */
-  int PEER_REVIEW_DEF = 14;
+  int PEER_REVIEW_DEF = 19;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1233,7 +1454,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getFollowupRef()
    * @generated
    */
-  int FOLLOWUP_REF = 15;
+  int FOLLOWUP_REF = 20;
 
   /**
    * The feature id for the '<em><b>Assignee Refs</b></em>' containment reference list.
@@ -1261,7 +1482,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getUserRef()
    * @generated
    */
-  int USER_REF = 16;
+  int USER_REF = 21;
 
   /**
    * The number of structural features of the '<em>User Ref</em>' class.
@@ -1280,7 +1501,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getUserByUserId()
    * @generated
    */
-  int USER_BY_USER_ID = 17;
+  int USER_BY_USER_ID = 22;
 
   /**
    * The feature id for the '<em><b>User Id</b></em>' attribute.
@@ -1308,7 +1529,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getUserByName()
    * @generated
    */
-  int USER_BY_NAME = 18;
+  int USER_BY_NAME = 23;
 
   /**
    * The feature id for the '<em><b>User Name</b></em>' attribute.
@@ -1336,7 +1557,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getToState()
    * @generated
    */
-  int TO_STATE = 19;
+  int TO_STATE = 24;
 
   /**
    * The feature id for the '<em><b>State</b></em>' reference.
@@ -1373,7 +1594,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getLayoutType()
    * @generated
    */
-  int LAYOUT_TYPE = 20;
+  int LAYOUT_TYPE = 25;
 
   /**
    * The number of structural features of the '<em>Layout Type</em>' class.
@@ -1392,7 +1613,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getLayoutDef()
    * @generated
    */
-  int LAYOUT_DEF = 21;
+  int LAYOUT_DEF = 26;
 
   /**
    * The feature id for the '<em><b>Layout Items</b></em>' containment reference list.
@@ -1420,7 +1641,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getLayoutCopy()
    * @generated
    */
-  int LAYOUT_COPY = 22;
+  int LAYOUT_COPY = 27;
 
   /**
    * The feature id for the '<em><b>State</b></em>' reference.
@@ -1448,7 +1669,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getComposite()
    * @generated
    */
-  int COMPOSITE = 24;
+  int COMPOSITE = 29;
 
   /**
    * The feature id for the '<em><b>Num Columns</b></em>' attribute.
@@ -1494,7 +1715,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getBooleanDef()
    * @generated
    */
-  int BOOLEAN_DEF = 25;
+  int BOOLEAN_DEF = 30;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType <em>Workflow Event Type</em>}' enum.
@@ -1504,7 +1725,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getWorkflowEventType()
    * @generated
    */
-  int WORKFLOW_EVENT_TYPE = 26;
+  int WORKFLOW_EVENT_TYPE = 31;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewBlockingType <em>Review Blocking Type</em>}' enum.
@@ -1514,7 +1735,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getReviewBlockingType()
    * @generated
    */
-  int REVIEW_BLOCKING_TYPE = 27;
+  int REVIEW_BLOCKING_TYPE = 32;
 
 
   /**
@@ -1570,6 +1791,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EReference getAtsDsl_WorkDef();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getProgram <em>Program</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Program</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getProgram()
+   * @see #getAtsDsl()
+   * @generated
+   */
+  EReference getAtsDsl_Program();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef <em>User Def</em>}'.
@@ -1646,6 +1878,199 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getUserDef_Admin();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDef <em>Attr Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Attr Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDef
+   * @generated
+   */
+  EClass getAttrDef();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDef#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDef#getName()
+   * @see #getAttrDef()
+   * @generated
+   */
+  EAttribute getAttrDef_Name();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDef#getOption <em>Option</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Option</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDef#getOption()
+   * @see #getAttrDef()
+   * @generated
+   */
+  EReference getAttrDef_Option();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions <em>Attr Def Options</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Attr Def Options</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions
+   * @generated
+   */
+  EClass getAttrDefOptions();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef <em>Attr Value Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Attr Value Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef
+   * @generated
+   */
+  EClass getAttrValueDef();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef#getValue <em>Value</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Value</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef#getValue()
+   * @see #getAttrValueDef()
+   * @generated
+   */
+  EAttribute getAttrValueDef_Value();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef <em>Attr Full Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Attr Full Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef
+   * @generated
+   */
+  EClass getAttrFullDef();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef#getUuid <em>Uuid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Uuid</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef#getUuid()
+   * @see #getAttrFullDef()
+   * @generated
+   */
+  EAttribute getAttrFullDef_Uuid();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef#getValues <em>Values</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Values</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef#getValues()
+   * @see #getAttrFullDef()
+   * @generated
+   */
+  EAttribute getAttrFullDef_Values();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef <em>Program Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Program Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef
+   * @generated
+   */
+  EClass getProgramDef();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getName()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_Name();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getProgramDefOption <em>Program Def Option</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Program Def Option</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getProgramDefOption()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_ProgramDefOption();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getGuid <em>Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Guid</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getGuid()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_Guid();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getArtifactTypeName <em>Artifact Type Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Artifact Type Name</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getArtifactTypeName()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_ArtifactTypeName();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getActive <em>Active</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Active</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getActive()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_Active();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getNamespace <em>Namespace</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Namespace</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getNamespace()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_Namespace();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getTeamDefinition <em>Team Definition</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Team Definition</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getTeamDefinition()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EAttribute getProgramDef_TeamDefinition();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getAttributes <em>Attributes</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Attributes</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getAttributes()
+   * @see #getProgramDef()
+   * @generated
+   */
+  EReference getProgramDef_Attributes();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef <em>Team Def</em>}'.
@@ -3029,6 +3454,14 @@ public interface AtsDslPackage extends EPackage
     EReference ATS_DSL__WORK_DEF = eINSTANCE.getAtsDsl_WorkDef();
 
     /**
+     * The meta object literal for the '<em><b>Program</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATS_DSL__PROGRAM = eINSTANCE.getAtsDsl_Program();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl <em>User Def</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3085,6 +3518,160 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute USER_DEF__ADMIN = eINSTANCE.getUserDef_Admin();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefImpl <em>Attr Def</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrDef()
+     * @generated
+     */
+    EClass ATTR_DEF = eINSTANCE.getAttrDef();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTR_DEF__NAME = eINSTANCE.getAttrDef_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Option</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATTR_DEF__OPTION = eINSTANCE.getAttrDef_Option();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefOptionsImpl <em>Attr Def Options</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrDefOptionsImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrDefOptions()
+     * @generated
+     */
+    EClass ATTR_DEF_OPTIONS = eINSTANCE.getAttrDefOptions();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrValueDefImpl <em>Attr Value Def</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrValueDefImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrValueDef()
+     * @generated
+     */
+    EClass ATTR_VALUE_DEF = eINSTANCE.getAttrValueDef();
+
+    /**
+     * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTR_VALUE_DEF__VALUE = eINSTANCE.getAttrValueDef_Value();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl <em>Attr Full Def</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getAttrFullDef()
+     * @generated
+     */
+    EClass ATTR_FULL_DEF = eINSTANCE.getAttrFullDef();
+
+    /**
+     * The meta object literal for the '<em><b>Uuid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTR_FULL_DEF__UUID = eINSTANCE.getAttrFullDef_Uuid();
+
+    /**
+     * The meta object literal for the '<em><b>Values</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ATTR_FULL_DEF__VALUES = eINSTANCE.getAttrFullDef_Values();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl <em>Program Def</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getProgramDef()
+     * @generated
+     */
+    EClass PROGRAM_DEF = eINSTANCE.getProgramDef();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__NAME = eINSTANCE.getProgramDef_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Program Def Option</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__PROGRAM_DEF_OPTION = eINSTANCE.getProgramDef_ProgramDefOption();
+
+    /**
+     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__GUID = eINSTANCE.getProgramDef_Guid();
+
+    /**
+     * The meta object literal for the '<em><b>Artifact Type Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__ARTIFACT_TYPE_NAME = eINSTANCE.getProgramDef_ArtifactTypeName();
+
+    /**
+     * The meta object literal for the '<em><b>Active</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__ACTIVE = eINSTANCE.getProgramDef_Active();
+
+    /**
+     * The meta object literal for the '<em><b>Namespace</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__NAMESPACE = eINSTANCE.getProgramDef_Namespace();
+
+    /**
+     * The meta object literal for the '<em><b>Team Definition</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute PROGRAM_DEF__TEAM_DEFINITION = eINSTANCE.getProgramDef_TeamDefinition();
+
+    /**
+     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference PROGRAM_DEF__ATTRIBUTES = eINSTANCE.getProgramDef_Attributes();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl <em>Team Def</em>}' class.
