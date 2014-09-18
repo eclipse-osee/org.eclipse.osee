@@ -281,7 +281,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          }
          xWidget = xLabel;
       } else if (DslGrammarManager.isDslAttributeType(attributeType)) {
-         XDslEditorWidget xEditor = new XDslEditorWidget("");
+         XDslEditorWidgetDam xEditor = new XDslEditorWidgetDam("");
          xEditor.setFillHorizontally(true);
          xEditor.setFillVertically(true);
          xEditor.createWidgets(getManagedForm(), parent, 2);

@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -425,8 +426,15 @@ public final class FrameworkXWidgetProvider {
          } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
             XTextFlatDam widget = new XTextFlatDam();
             xWidget = widget;
+         } else if (xWidgetName.equals(XDslEditorWidgetDam.WIDGET_ID)) {
+            XDslEditorWidgetDam widget = new XDslEditorWidgetDam(name);
+            xWidget = widget;
          } else if (xWidgetName.equals(XDslEditorWidget.WIDGET_ID)) {
             XDslEditorWidget widget = new XDslEditorWidget(name);
+            String defaultType = xWidgetLayoutData.getDefaultValue();
+            if (Strings.isValid(defaultType)) {
+               widget.setExtension(defaultType);
+            }
             xWidget = widget;
          } else if (xWidgetName.equals("XHyperlinkLabel")) {
             xWidget = new XHyperlinkLabel(name);

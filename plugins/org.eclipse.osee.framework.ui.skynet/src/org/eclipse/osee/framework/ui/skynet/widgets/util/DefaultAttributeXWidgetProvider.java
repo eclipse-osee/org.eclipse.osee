@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.BranchReferenceAttribute
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName;
 import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidgetDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 /**
@@ -59,7 +59,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
          if (DslGrammarManager.isDslAttributeType(attributeType)) {
-            xWidgetName = XDslEditorWidget.WIDGET_ID;
+            xWidgetName = XDslEditorWidgetDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
             xWidgetName = "XStackedDam";
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);

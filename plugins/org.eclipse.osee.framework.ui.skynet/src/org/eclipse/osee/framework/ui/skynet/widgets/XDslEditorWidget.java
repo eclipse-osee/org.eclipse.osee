@@ -10,26 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.net.URLEncoder;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
-import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.DslGrammar;
-import org.eclipse.osee.framework.ui.skynet.DslGrammarStorageAdapter;
 import org.eclipse.osee.framework.ui.skynet.internal.DslGrammarManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -54,25 +43,78 @@ import org.eclipse.xtext.ui.editor.outline.impl.OutlinePage;
  * @author Roberto E. Escobar
  */
 @SuppressWarnings("restriction")
-public class XDslEditorWidget extends XLabel implements IAttributeWidget {
+public class XDslEditorWidget extends XText {
 
    public static final String WIDGET_ID = XDslEditorWidget.class.getSimpleName();
 
-   private Artifact artifact;
-   private IAttributeType attributeType;
    private DslGrammar grammar;
    private EmbeddedEditorModelAccess model;
    private EmbeddedEditor editor;
    private URI uri;
 
+   private String extension;
+
    public XDslEditorWidget(String displayLabel) {
       super(displayLabel);
+   }
+
+   public void setExtension(String extension) {
+      this.extension = extension;
+   }
+
+   protected String getExtension() {
+      return extension;
+   }
+
+   protected DslGrammar getGrammar() {
+      if (grammar == null && Strings.isValid(extension)) {
+         DslGrammar grammar = DslGrammarManager.getDslByExtension(extension);
+         setGrammar(grammar);
+      }
+      return grammar;
+   }
+
+   protected void setGrammar(DslGrammar grammar) {
+      this.grammar = grammar;
+   }
+
+   protected URI getUri() {
+      if (uri == null && Strings.isValid(extension)) {
+         String uriString = String.format("dslEditor.%s.%s", Lib.generateUuid(), getExtension());
+         uri = URI.createURI(uriString);
+      }
+      return uri;
+   }
+
+   protected void setUri(URI uri) {
+      this.uri = uri;
+   }
+
+   protected EmbeddedEditorModelAccess getModel() {
+      return model;
+   }
+
+   protected EmbeddedEditor getEditor() {
+      return editor;
    }
 
    @Override
    protected void createControls(final Composite parent, int horizontalSpan) {
       setNotificationsAllowed(false);
       try {
+         if (!verticalLabel && horizontalSpan < 2) {
+            horizontalSpan = 2;
+         }
+
+         // Create Text Widgets
+         if (isDisplayLabel() && Strings.isValid(getLabel())) {
+            labelWidget = new Label(parent, SWT.NONE);
+            labelWidget.setText(getLabel() + ":");
+            if (getToolTip() != null) {
+               labelWidget.setToolTipText(getToolTip());
+            }
+         }
+
          Composite composite = new Composite(parent, SWT.BORDER);
 
          if (fillVertically) {
@@ -88,17 +130,7 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
             gd.horizontalSpan = horizontalSpan;
             composite.setLayoutData(gd);
          }
-
-         // Create Text Widgets
-         if (isDisplayLabel() && Strings.isValid(getLabel())) {
-            labelWidget = new Label(composite, SWT.NONE);
-            labelWidget.setText(getLabel() + ":");
-            if (getToolTip() != null) {
-               labelWidget.setToolTipText(getToolTip());
-            }
-         }
-
-         createEditor(composite);
+         createEditor(composite, horizontalSpan);
 
          addToolTip(composite, getToolTip());
       } finally {
@@ -107,14 +139,15 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
       refresh();
    }
 
-   private void createEditor(Composite composite) {
+   private void createEditor(Composite composite, int horizontalSpan) {
+      final DslGrammar grammar = getGrammar();
       IEditedResourceProvider resourceProvider = new IEditedResourceProvider() {
 
          @Override
          public XtextResource createResource() {
             try {
                ResourceSet resourceSet = new ResourceSetImpl();
-               Resource resource = resourceSet.createResource(uri, grammar.getExtension());
+               Resource resource = resourceSet.createResource(getUri(), grammar.getExtension());
                return (XtextResource) resource;
             } catch (Exception e) {
                return null;
@@ -127,11 +160,16 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
          builder.readOnly();
       }
       editor = builder.withParent(composite);
-      model = editor.createPartialEditor();
+      try {
+         model = editor.createPartialEditor();
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
 
-      GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-      gridData.heightHint = 500;
-      editor.getViewer().getControl().setLayoutData(gridData);
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 200;
+
+      editor.getViewer().getControl().setLayoutData(gd);
       editor.getViewer().addTextListener(new ITextListener() {
 
          @Override
@@ -182,107 +220,46 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
-      String value = get();
-      if (!Strings.isValid(value)) {
-         getArtifact().deleteSoleAttribute(getAttributeType());
-      } else if (!value.equals(getArtifact().getSoleAttributeValue(getAttributeType(), ""))) {
-         getArtifact().setSoleAttributeValue(getAttributeType(), value);
-      }
-   }
-
-   @Override
-   public Result isDirty() throws OseeCoreException {
-      Result toReturn = Result.FalseResult;
-      if (isEditable()) {
-         String enteredValue = get();
-         String storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
-         if (!enteredValue.equals(storedValue)) {
-            return new Result(true, attributeType + " is dirty");
-         }
-      }
-      return toReturn;
-   }
-
    public void setText(String text) {
       if (model != null) {
          model.updateModel("", text, "");
       }
    }
 
-   public String get() {
-      return model != null ? getStorageAdapter().postProcess(getArtifact(), model.getSerializedModel()) : "";
+   @Override
+   public String getText() {
+      return get();
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
-      this.artifact = artifact;
-      this.attributeType = attributeType;
-      this.grammar = DslGrammarManager.getGrammar(attributeType);
-      if (grammar == null) {
-         OseeLog.log(getClass(), Level.SEVERE, "Could not find a grammar for attribute type " + attributeType);
-      } else {
-         this.uri = createURI(artifact, grammar.getExtension());
+   public void setFocus() {
+      Control control = getControl();
+      if (control != null) {
+         control.setFocus();
       }
-
-      updateTextWidget();
    }
 
-   private URI createURI(Artifact artifact, String extension) throws OseeCoreException {
-      String encodedName = "";
-      try {
-         encodedName = URLEncoder.encode(artifact.getSafeName(), "UTF-8");
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-      String uriString =
-         String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchUuid(), artifact.getGuid(), encodedName,
-            extension);
-      return URI.createURI(uriString);
-   }
-
+   @Override
    protected void updateTextWidget() {
+      EmbeddedEditor editor = getEditor();
       if (editor != null) {
          XtextSourceViewer viewer = editor.getViewer();
          if (viewer != null) {
             if (Widgets.isAccessible(viewer.getTextWidget())) {
-               String storedValue;
-               try {
-                  storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
-                  model.updateModel("", getStorageAdapter().preProcess(getArtifact(), storedValue), "");
-                  // Re-enable Listeners
-                  validate();
-               } catch (OseeCoreException ex) {
-                  //
-               }
+               validate();
             }
          }
       }
    }
 
-   private DslGrammarStorageAdapter getStorageAdapter() {
-      DslGrammarStorageAdapter storageAdapter = grammar.getStorageAdapter();
-      if (storageAdapter == null) {
-         storageAdapter = new DslGrammarStorageAdapter() {
-
-            @Override
-            public String preProcess(Artifact artifact, String storedValue) {
-               return storedValue;
-            }
-
-            @Override
-            public String postProcess(Artifact artifact, String serializedModel) {
-               return serializedModel;
-            }
-         };
-      }
-      return storageAdapter;
+   @Override
+   public String get() {
+      return model != null ? model.getSerializedModel() : "";
    }
 
    @Override
-   public void refresh() {
-      updateTextWidget();
-      super.refresh();
+   public Object getData() {
+      return get();
    }
 
    @Override
@@ -299,36 +276,16 @@ public class XDslEditorWidget extends XLabel implements IAttributeWidget {
       super.dispose();
    }
 
-   @Override
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
-   @Override
-   public IAttributeType getAttributeType() {
-      return attributeType;
-   }
-
-   @Override
-   public void revert() throws OseeCoreException {
-      setAttributeType(getArtifact(), getAttributeType());
-   }
-
-   @Override
-   public IStatus isValid() {
-      IStatus status = super.isValid();
-      if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
-      }
-      return status;
-   }
-
    public ContentOutlinePage getOutlinePage() {
       OutlinePage page = null;
       if (editor != null) {
-         page = grammar.getObject(OutlinePage.class);
-         page.setSourceViewer(editor.getViewer());
+         DslGrammar grammar = getGrammar();
+         if (grammar != null) {
+            page = grammar.getObject(OutlinePage.class);
+            page.setSourceViewer(editor.getViewer());
+         }
       }
       return page;
    }
+
 }
