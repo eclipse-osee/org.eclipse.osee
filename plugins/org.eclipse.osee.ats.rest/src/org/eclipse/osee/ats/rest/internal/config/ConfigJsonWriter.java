@@ -16,6 +16,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -42,7 +43,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public void start() {
-      jsonFactory = new JsonFactory();
+      jsonFactory = org.eclipse.osee.ats.rest.internal.util.JsonFactory.create();
    }
 
    public void stop() {
@@ -89,14 +90,14 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   public static void addProgramObject(IAtsServer atsServer, IAtsConfigObject config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
-      ArtifactReadable artifact = (ArtifactReadable) config.getStoreObject();
+   public static void addProgramObject(IAtsServer atsServer, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
+      ArtifactReadable artifact = (ArtifactReadable) atsObject.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("uuid", getUuid(config));
-      writer.writeStringField("Name", config.getName());
-      writer.writeStringField("Description", config.getDescription());
+      writer.writeNumberField("uuid", getUuid(atsObject));
+      writer.writeStringField("Name", atsObject.getName());
+      writer.writeStringField("Description", atsObject.getDescription());
 
-      if (config instanceof IAtsTeamDefinition) {
+      if (atsObject instanceof IAtsTeamDefinition) {
          if (!identityView) {
             writer.writeArrayFieldStart("version");
             for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
@@ -106,7 +107,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeEndArray();
          }
       }
-      if (config instanceof IAtsVersion) {
+      if (atsObject instanceof IAtsVersion) {
          if (!identityView) {
             writer.writeArrayFieldStart("workflow");
             for (ArtifactReadable workArt : artifact.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -114,37 +115,41 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             }
             writer.writeEndArray();
          }
-      } else if (config instanceof IAtsProgram) {
-         IAtsProgram program = (IAtsProgram) config;
+      } else if (atsObject instanceof IAtsProgram) {
+         IAtsProgram program = (IAtsProgram) atsObject;
          writer.writeStringField("Namespace", program.getNamespace());
          writer.writeBooleanField("Active", program.isActive());
       }
       if (!identityView) {
-         Collection<? extends IAttributeType> attrTypes = attributeTypes.getAll();
-         ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
-         if (!attributes.isEmpty()) {
-            for (IAttributeType attrType : attrTypes) {
-               if (artifact.isAttributeTypeValid(attrType)) {
-                  List<Object> attributeValues = artifact.getAttributeValues(attrType);
-                  if (!attributeValues.isEmpty()) {
+         addAttributeData(writer, attributeTypes, artifact);
+      }
+      writer.writeEndObject();
+   }
 
-                     if (attributeValues.size() > 1) {
-                        writer.writeArrayFieldStart(attrType.getName());
-                        for (Object value : attributeValues) {
-                           writer.writeObject(value);
-                        }
-                        writer.writeEndArray();
-                     } else if (attributeValues.size() == 1) {
-                        Object value = attributeValues.iterator().next();
-                        writer.writeObjectField(attrType.getName(), value);
+   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact) throws IOException, JsonGenerationException, JsonProcessingException {
+      Collection<? extends IAttributeType> attrTypes = attributeTypes.getAll();
+      ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
+      if (!attributes.isEmpty()) {
+         for (IAttributeType attrType : attrTypes) {
+            if (artifact.isAttributeTypeValid(attrType)) {
+               List<Object> attributeValues = artifact.getAttributeValues(attrType);
+               if (!attributeValues.isEmpty()) {
+
+                  if (attributeValues.size() > 1) {
+                     writer.writeArrayFieldStart(attrType.getName());
+                     for (Object value : attributeValues) {
+                        writer.writeObject(value);
                      }
-
+                     writer.writeEndArray();
+                  } else if (attributeValues.size() == 1) {
+                     Object value = attributeValues.iterator().next();
+                     writer.writeObjectField(attrType.getName(), value);
                   }
+
                }
             }
          }
       }
-      writer.writeEndObject();
    }
 
    private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt) throws IOException, JsonGenerationException, JsonProcessingException {
@@ -154,7 +159,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       writer.writeEndObject();
    }
 
-   private static Long getUuid(IAtsConfigObject config) {
-      return ((ArtifactReadable) config.getStoreObject()).getLocalId().longValue();
+   public static Long getUuid(IAtsObject atsObject) {
+      return ((ArtifactReadable) atsObject.getStoreObject()).getLocalId().longValue();
    }
 }

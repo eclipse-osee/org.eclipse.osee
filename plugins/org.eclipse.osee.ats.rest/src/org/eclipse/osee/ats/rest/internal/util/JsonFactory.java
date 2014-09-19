@@ -8,18 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.action;
+package org.eclipse.osee.ats.rest.internal.util;
 
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IWorkItemPage {
+public class JsonFactory {
 
-   String getHtml(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception;
-
-   String getHtmlWithTransition(ArtifactReadable action, String title, IResourceRegistry registry, boolean details) throws Exception;
-
+   public static org.codehaus.jackson.JsonFactory create() {
+      ObjectMapper mapper = new ObjectMapper();
+      DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm a z");
+      mapper.setDateFormat(df);
+      org.codehaus.jackson.JsonFactory jsonFactory = mapper.getJsonFactory();
+      return jsonFactory;
+   }
 }

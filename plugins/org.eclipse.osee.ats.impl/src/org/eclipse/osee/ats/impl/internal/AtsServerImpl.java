@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -40,7 +42,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.ats.impl.internal.action.ActionFactory;
 import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
@@ -59,7 +60,6 @@ import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
-import org.eclipse.osee.ats.impl.internal.workitem.WorkItemPage;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -97,7 +97,6 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsLogFactory atsLogFactory;
    private IAtsStateFactory atsStateFactory;
    private IAtsStoreFactory atsStoreFactory;
-   private IWorkItemPage workItemPage;
    private IAtsUtilService utilService;
    private AtsSequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
@@ -165,7 +164,6 @@ public class AtsServerImpl implements IAtsServer {
       sequenceProvider = new AtsSequenceProvider(dbService);
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
       actionableItemManager = new ActionableItemManager(config);
-      workItemPage = new WorkItemPage(logger, this);
       actionFactory =
          new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
             actionableItemManager, userService, attributeResolverService, atsStateFactory, config);
@@ -275,11 +273,6 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public IWorkItemPage getWorkItemPage() {
-      return workItemPage;
-   }
-
-   @Override
    public List<IAtsDatabaseConversion> getDatabaseConversions() {
       return AtsDatabaseConversions.getConversions(getOrcsApi(), getDatabaseService());
    }
@@ -304,7 +297,7 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getActionById(String id) {
+   public ArtifactReadable getArtifactById(String id) {
       ArtifactReadable action = null;
       if (GUID.isValid(id)) {
          action = getArtifactByGuid(id);
@@ -313,6 +306,20 @@ public class AtsServerImpl implements IAtsServer {
          action = getArtifactByAtsId(id);
       }
       return action;
+   }
+
+   @Override
+   public List<ArtifactReadable> getArtifactListByIds(String ids) {
+      List<ArtifactReadable> actions = new ArrayList<ArtifactReadable>();
+      for (String id : ids.split(",")) {
+         id = id.replaceAll("^ +", "");
+         id = id.replaceAll(" +$", "");
+         ArtifactReadable action = getArtifactById(id);
+         if (action != null) {
+            actions.add(action);
+         }
+      }
+      return actions;
    }
 
    @Override
@@ -369,5 +376,17 @@ public class AtsServerImpl implements IAtsServer {
 
    public AtsNotifierServiceImpl getNotifyService() {
       return notifyService;
+   }
+
+   @Override
+   public List<IAtsWorkItem> getWorkItemListByIds(String ids) {
+      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>();
+      for (ArtifactReadable art : getArtifactListByIds(ids)) {
+         IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
+         if (workItem != null) {
+            workItems.add(workItem);
+         }
+      }
+      return workItems;
    }
 }

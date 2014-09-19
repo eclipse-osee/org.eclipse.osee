@@ -30,11 +30,15 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.util.ActionPage;
+import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -45,13 +49,14 @@ public final class StateResource {
 
    private final IAtsServer atsServer;
    private IAtsWorkItem workItem;
-   private final String guid;
-   private final IResourceRegistry resourceRegistry;
+   private final String id;
+   private final Log logger;
+   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
-   public StateResource(IAtsServer atsServer, String guid, IResourceRegistry resourceRegistry) {
+   public StateResource(IAtsServer atsServer, String id, IResourceRegistry registry, Log logger) {
       this.atsServer = atsServer;
-      this.guid = guid;
-      this.resourceRegistry = resourceRegistry;
+      this.id = id;
+      this.logger = logger;
    }
 
    /**
@@ -61,9 +66,14 @@ public final class StateResource {
    @Path("trans")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getTransition() throws Exception {
-      ArtifactReadable action = atsServer.getActionById(guid);
-      return atsServer.getWorkItemPage().getHtmlWithTransition(action, "Action - " + guid, resourceRegistry, false);
+   public ViewModel getTransition() throws Exception {
+      ArtifactReadable action = atsServer.getArtifactById(id);
+      if (action == null) {
+         throw new OseeStateException("Invalid id [%s]", id);
+      }
+      ActionPage page = new ActionPage(logger, atsServer, action, "Action - " + id, false);
+      page.setAddTransition(true);
+      return page.generate();
    }
 
    /**
@@ -79,7 +89,6 @@ public final class StateResource {
    @POST
    @Consumes("application/x-www-form-urlencoded")
    public Response addOrUpdateAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
-      String htmlStr;
 
       // get parameters
       String query = uriInfo.getPath();
@@ -95,7 +104,7 @@ public final class StateResource {
       Conditions.checkNotNullOrEmpty(asUserId, "UserId");
       IAtsUser transitionUser = atsServer.getUserService().getUserById(asUserId);
       if (transitionUser == null) {
-         throw new OseeStateException("User by id [%s] does not exist", asUserId);
+         return RestUtil.simplePageResponse(String.format("User by id [%s] does not exist", asUserId));
       }
 
       if (operation.equals("transition")) {
@@ -117,15 +126,11 @@ public final class StateResource {
             changes.execute();
          }
 
-         // reload before display
-         action = atsServer.getArtifactByGuid(guid);
-         htmlStr =
-            atsServer.getWorkItemPage().getHtml(action, "Action Transitioned - " + action.getGuid(), resourceRegistry,
-               false);
+         return RestUtil.redirect(workItem, ATS_UI_ACTION_PREFIX, atsServer);
+
       } else {
          throw new OseeCoreException("Unhandled operation [%s]", operation);
       }
-      return Response.status(200).entity(htmlStr).build();
 
    }
 }

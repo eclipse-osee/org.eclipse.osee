@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
+   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+   <meta charset="UTF-8">
+   <meta name="author" content="Donald G. Dunne" />
+   <title>ATS - Search</title>
+</head>
+
+<body>
+
+<div class="container">
+	<div><h2>ATS - Search by Id</h2><div>
+	
+   <form id="oseeAppForm" class="well">      
+      <input type="button" id="searchButton" value="Search" class="btn btn-primary" required/>
+      <input type="text" id="searchId" style="width:800px;" placeholder="enter id" onkeypress="return checkForReturn(event)"/>
+   </form>
+</div>
+
+<script src="/ats/lib/search.js"></script>
+	
+</body>
+</html>

@@ -19,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
 /**
  * @author Donald G. Dunne
@@ -32,11 +33,12 @@ public interface AtsConfigEndpointApi {
 
    /**
     * @return html5 action entry page
+    * @throws Exception
     */
    @Path("ui/NewAtsBranchConfig")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getNewSource();
+   public ViewModel getNewSource() throws Exception;
 
    /**
     * Create new ATS configuration branch and ATS config object on Common branch

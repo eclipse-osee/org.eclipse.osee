@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -41,8 +41,6 @@ import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.template.engine.PageCreator;
-import org.eclipse.osee.template.engine.PageFactory;
 import com.google.gson.Gson;
 
 /**
@@ -54,14 +52,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
    private final Log logger;
-   private final IResourceRegistry registry;
    private final Gson gson = new Gson();
 
    public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger, IResourceRegistry registry) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
       this.logger = logger;
-      this.registry = registry;
    }
 
    @Override
@@ -86,9 +82,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public String getNewSource() {
-      PageCreator page = PageFactory.newPageCreator(registry);
-      return page.realizePage(AtsResourceTokens.AtsNewAtsConfigBranchHtml);
+   public ViewModel getNewSource() throws Exception {
+      return new ViewModel("templates/newConfigBranch.html");
    }
 
    @Override

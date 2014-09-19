@@ -1,4 +1,14 @@
-package org.eclipse.osee.ats.rest.internal.config;
+/*******************************************************************************
+ * Copyright (c) 2014 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +23,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -22,7 +32,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  * @author Donald G. Dunne
  */
 @Provider
-public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfigObject>> {
+public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWorkItem>> {
 
    private JsonFactory jsonFactory;
 
@@ -41,7 +51,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    @Override
-   public long getSize(Collection<IAtsConfigObject> data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(Collection<IAtsWorkItem> data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
       return -1;
    }
 
@@ -55,7 +65,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
             Type t = actualTypeArgs[0];
             if (t instanceof Class) {
                Class<?> clazz = (Class<?>) t;
-               isWriteable = IAtsConfigObject.class.isAssignableFrom(clazz);
+               isWriteable = IAtsWorkItem.class.isAssignableFrom(clazz);
             }
          }
       }
@@ -76,13 +86,13 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    @Override
-   public void writeTo(Collection<IAtsConfigObject> programs, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(Collection<IAtsWorkItem> workItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
-         for (IAtsConfigObject program : programs) {
-            ConfigJsonWriter.addProgramObject(atsServer, program, annotations, writer,
+         for (IAtsWorkItem workItem : workItems) {
+            WorkItemJsonWriter.addProgramObject(atsServer, workItem, annotations, writer,
                matches(IdentityView.class, annotations), getAttributeTypes());
          }
          writer.writeEndArray();

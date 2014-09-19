@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.resources;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -28,21 +27,15 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -54,10 +47,9 @@ public final class ActionResource {
 
    private final IAtsServer atsServer;
    private final OrcsApi orcsApi;
-   private final IResourceRegistry resourceRegistry;
+   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
-   public ActionResource(IAtsServer atsServer, OrcsApi orcsApi, IResourceRegistry resourceRegistry) {
-      this.resourceRegistry = resourceRegistry;
+   public ActionResource(IAtsServer atsServer, OrcsApi orcsApi) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
    }
@@ -65,145 +57,112 @@ public final class ActionResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() throws Exception {
-      return AHTML.simplePage("Action Resource");
+      return RestUtil.simplePageHtml("Action Resource");
    }
 
    /**
-    * @param id (guid, atsId) of action to display
+    * @param ids (guid, atsId) of action to display
     * @return html representation of the action
     */
-   @Path("{id}")
+   @Path("{ids}")
+   @IdentityView
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getAction(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = atsServer.getActionById(id);
-      if (action == null) {
-         return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
-      }
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry, false);
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
+      List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      return workItems;
    }
 
    /**
-    * @param id (guid, atsId) of action to display
+    * @param ids (guid, atsId) of action to display
     * @return html representation of the action
     */
-   @Path("{id}/details")
+   @Path("{ids}/details")
    @GET
-   @Produces(MediaType.TEXT_HTML)
-   public String getActionWithDetails(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = atsServer.getActionById(id);
-      if (action == null) {
-         return AHTML.simplePage(String.format("Action with id [%s] can not be found", id));
-      }
-      return atsServer.getWorkItemPage().getHtml(action, "Action - " + id, resourceRegistry, true);
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
+      List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      return workItems;
    }
 
    /**
     * @param form containing information to create a new action
-    * @param form.ats_title - title of new action
+    * @param form.ats_title - (required) title of new action
     * @param form.desc - description of the action
-    * @param form.actionableItems - actionable item name
-    * @param form.changeType - Improvement, Refinement, Problem, Support
-    * @param form.priority - 1-5
-    * @param uriInfo
+    * @param form.actionableItems - (required) actionable item name
+    * @param form.changeType - (required) Improvement, Refinement, Problem, Support
+    * @param form.priority - (required) 1-5
+    * @param form.userId - (required)
     * @return html representation of action created
-    * @throws Exception
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
    public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
-      // get parameters
-      String htmlStr = "";
-      String query = uriInfo.getPath();
-      System.out.println("query [" + query + "]");
-      String searchId = form.getFirst("searchId");
-
-      if (Strings.isValid(searchId)) {
-         htmlStr = getSearchResults(searchId);
-      } else {
-         String title = form.getFirst("ats_title");
-         String description = form.getFirst("desc");
-         String actionableItemName = form.getFirst("actionableItems");
-         String changeTypeStr = form.getFirst("changeType");
-         String priority = form.getFirst("priority");
-         String userId = form.getFirst("userId");
-
-         Conditions.checkNotNullOrEmpty(userId, "userId");
-         IAtsUser atsUser = atsServer.getUserService().getUserById(userId);
-         if (atsUser == null) {
-            throw new OseeStateException("User by id [%s] does not exist", userId);
-         }
-
-         IAtsChangeSet changes = atsServer.getStoreFactory().createAtsChangeSet("Create Action - Server", atsUser);
-         orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(),
-            ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
-
-         List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
-
-         ArtifactReadable aiArt =
-            atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(actionableItemName).getResults().getExactlyOne();
-         IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByGuid(aiArt.getGuid());
-         aias.add(aia);
-
-         ChangeType changeType = ChangeType.valueOf(changeTypeStr);
-
-         IAtsAction action =
-            atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority, false, null,
-               aias, new Date(), atsUser, null, changes).getFirst();
-         changes.execute();
-
-         htmlStr =
-            atsServer.getWorkItemPage().getHtml(
-               ((ArtifactReadable) action.getTeamWorkflows().iterator().next().getStoreObject()),
-               "Action Created - " + action.getGuid(), resourceRegistry, false);
+      // validate title
+      String title = form.getFirst("ats_title");
+      if (!Strings.isValid(title)) {
+         return RestUtil.returnBadRequest("title is not valid");
       }
 
-      return Response.status(200).entity(htmlStr).build();
+      // description is optional
+      String description = form.getFirst("desc");
+
+      // validate actionableItemName
+      String actionableItems = form.getFirst("actionableItems");
+      if (!Strings.isValid(actionableItems)) {
+         return RestUtil.returnBadRequest("actionableItems is not valid");
+      }
+      List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+      ArtifactReadable aiArt =
+         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(actionableItems).getResults().getOneOrNull();
+      if (aiArt == null) {
+         return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
+      }
+      IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByGuid(aiArt.getGuid());
+      aias.add(aia);
+
+      // validate userId
+      String userId = form.getFirst("userId");
+      if (!Strings.isValid(userId)) {
+         return RestUtil.returnBadRequest("userId is not valid");
+      }
+      IAtsUser atsUser = atsServer.getUserService().getUserById(userId);
+      if (atsUser == null) {
+         return RestUtil.returnBadRequest(String.format("userId [%s] is not valid", userId));
+      }
+
+      // validate changeType
+      String changeTypeStr = form.getFirst("changeType");
+      if (!Strings.isValid(changeTypeStr)) {
+         return RestUtil.returnBadRequest("changeType is not valid");
+      }
+      IAtsChangeSet changes = atsServer.getStoreFactory().createAtsChangeSet("Create Action - Server", atsUser);
+      orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(),
+         ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
+
+      ChangeType changeType = null;
+      try {
+         changeType = ChangeType.valueOf(changeTypeStr);
+      } catch (Exception ex) {
+         return RestUtil.returnBadRequest(String.format("changeType [%s] is not valid", changeTypeStr));
+      }
+
+      // validate priority
+      String priority = form.getFirst("priority");
+      if (!Strings.isValid(priority)) {
+         return RestUtil.returnBadRequest("priority is not valid");
+      } else if (!priority.matches("[0-5]{1}")) {
+         return RestUtil.returnBadRequest(String.format("priority [%s] is not valid", priority));
+      }
+
+      // create action
+      IAtsAction action =
+         atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority, false, null,
+            aias, new Date(), atsUser, null, changes).getFirst();
+      changes.execute();
+
+      // Redirect to action ui
+      return RestUtil.redirect(action.getTeamWorkflows(), ATS_UI_ACTION_PREFIX, atsServer);
    }
 
-   private String getSearchResults(String searchId) throws Exception {
-      String results = null;
-      ArtifactReadable action = null;
-      if (GUID.isValid(searchId)) {
-         action = atsServer.getArtifactByGuid(searchId);
-      }
-      if (action != null) {
-         IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
-         if (workItem != null) {
-            results = atsServer.getWorkItemPage().getHtml(action, "Action - " + searchId, resourceRegistry, false);
-         } else {
-            results = AHTML.simplePage(String.format("Undisplayable %s", action));
-         }
-      }
-      if (!Strings.isValid(results)) {
-         for (IAttributeType attrType : Arrays.asList(AtsAttributeTypes.AtsId, AtsAttributeTypes.LegacyPcrId)) {
-            ResultSet<ArtifactReadable> legacyQueryResults = atsServer.getQuery().and(attrType, searchId).getResults();
-            if (legacyQueryResults.size() == 1) {
-               results =
-                  atsServer.getWorkItemPage().getHtml(legacyQueryResults.getExactlyOne(), "Action - " + searchId,
-                     resourceRegistry, false);
-               break;
-            } else if (legacyQueryResults.size() > 1) {
-               results = getGuidListHtml(legacyQueryResults);
-               break;
-            }
-         }
-      }
-      if (!Strings.isValid(results)) {
-         results = AHTML.simplePage(String.format("Unknown Id [%s]", searchId));
-      }
-      return results;
-   }
-
-   private String getGuidListHtml(ResultSet<ArtifactReadable> results2) {
-      StringBuilder sb = new StringBuilder("Returned ");
-      sb.append(results2.size());
-      sb.append(" results.");
-      sb.append(AHTML.newline(2));
-      for (ArtifactReadable art : results2) {
-         sb.append(AHTML.getHyperlink("/ats/action/" + art.getGuid(), art.toString()));
-         sb.append(AHTML.newline());
-      }
-      return AHTML.simplePage(sb.toString());
-   }
 }

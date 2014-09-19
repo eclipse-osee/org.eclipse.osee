@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.impl;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.action.IWorkItemPage;
 import org.eclipse.osee.ats.impl.internal.workitem.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -62,8 +62,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    IAtsLogFactory getLogFactory();
 
-   IWorkItemPage getWorkItemPage();
-
    List<IAtsDatabaseConversion> getDatabaseConversions();
 
    IAtsUtilService getUtilService();
@@ -74,7 +72,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    ArtifactReadable getArtifactByAtsId(String id);
 
-   ArtifactReadable getActionById(String id);
+   ArtifactReadable getArtifactById(String id);
 
    QueryBuilder getQuery();
 
@@ -83,5 +81,9 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    String getConfigValue(String key);
 
    IAtsServices getServices();
+
+   List<ArtifactReadable> getArtifactListByIds(String id);
+
+   List<IAtsWorkItem> getWorkItemListByIds(String id);
 
 }

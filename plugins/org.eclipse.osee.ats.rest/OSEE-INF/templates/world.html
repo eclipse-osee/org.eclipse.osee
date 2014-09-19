@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+   <meta charset="UTF-8">
+   <meta name="author" content="Donald G. Dunne" />
+   <title>ATS Actions</title>
+   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css" />
+   <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css" />
+   <link rel="stylesheet" type="text/css" href="/ats/lib/world.css" />
+	<script src="/lib/js/jquery-2.0.3.min.js"></script>
+   <script src="/lib/js/angular.min.js"></script>
+   <script src="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+	<script src="/lib/js/bootstrap.min.js"></script>
+	<script src="/ats/lib/world.js"></script>
+</head>
+
+<body ng-app="WorldApp" ng-controller="WorldCtrl">
+
+	<script>$url='<?PUT_ACTION_JSON_URL_HERE?>';</script>
+	
+   <div class="container">
+      <div><h2>ATS Actions</h2><div>
+	   	<div ng-show="items" style="height: 600px" class="gridStyle" ng-grid="gridOptions"></div>
+   </div>	
+	
+</body>
+</html>

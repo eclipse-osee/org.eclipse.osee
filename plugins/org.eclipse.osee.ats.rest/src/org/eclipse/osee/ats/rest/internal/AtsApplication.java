@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
@@ -24,7 +23,7 @@ import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
-import org.eclipse.osee.ats.rest.internal.resources.AtsUiResource;
+import org.eclipse.osee.ats.rest.internal.resources.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.resources.UserResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -64,8 +63,6 @@ public class AtsApplication extends Application {
 
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
-      AtsResourceTokens.register(registry);
-      AtsRestTemplateTokens.register(registry);
       OseeTemplateTokens.register(registry);
 
       // Config resources
@@ -75,14 +72,14 @@ public class AtsApplication extends Application {
       singletons.add(new ActionableItemResource(atsServer));
 
       singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
-      singletons.add(new ActionResource(atsServer, orcsApi, registry));
-      singletons.add(new ConvertResource(atsServer, registry));
+      singletons.add(new ActionResource(atsServer, orcsApi));
+      singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
 
       singletons.add(new AtsEndpointImpl(atsServer, logger, registry));
 
-      singletons.add(new AtsUiResource(registry, atsServer));
+      singletons.add(new ActionUiResource(atsServer, logger));
       System.out.println("ATS - Application started - " + System.getProperty("OseeApplicationServer"));
    }
 

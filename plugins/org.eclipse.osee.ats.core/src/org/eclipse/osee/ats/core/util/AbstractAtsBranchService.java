@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -86,11 +87,16 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) == null;
       if (AtsUtilCore.isInTest() || notSet || force || (now - idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) > 1000)) {
-         idToWorkingBranchCache.put(
-            teamWf.getAtsId(),
-            getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,
-               BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
-               BranchState.PURGE_IN_PROGRESS));
+         IOseeBranch branch = null;
+         try {
+            branch =
+               getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,
+                  BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
+                  BranchState.PURGE_IN_PROGRESS);
+         } catch (ItemDoesNotExist ex) {
+            // do nothing
+         }
+         idToWorkingBranchCache.put(teamWf.getAtsId(), branch);
          idToWorkingBranchCacheUpdated.put(teamWf.getAtsId(), now);
       }
       return idToWorkingBranchCache.get(teamWf.getAtsId());

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.export.AtsTest_Export_S
 import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AtsTest_Resource_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
@@ -46,6 +47,7 @@ import org.junit.runners.Suite;
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,
    AtsTest_Renderer_Suite.class,
+   AtsTest_Resource_Suite.class,
    AtsTest_Review_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,

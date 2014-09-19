@@ -6,7 +6,9 @@ Bundle-Version: 0.20.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
-Osee-JaxRs-Resource: /web/*;path=/ats/cpa/ui
+Osee-JaxRs-Resource: /web/*;path=/ats/cpa/ui,
+ OSEE-INF/web/*;path=/ats
+Osee-Template: OSEE-INF/templates/*.html
 Import-Package: com.google.gson;version="2.1.0",
  com.lowagie.text,
  com.lowagie.text.html,
@@ -16,6 +18,7 @@ Import-Package: com.google.gson;version="2.1.0",
  javax.ws.rs.ext,
  org.apache.commons.lang,
  org.codehaus.jackson;version="1.9.13",
+ org.codehaus.jackson.map;version="1.9.13",
  org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.config,
@@ -40,7 +43,6 @@ Import-Package: com.google.gson;version="2.1.0",
  org.eclipse.osee.ats.impl,
  org.eclipse.osee.ats.impl.action,
  org.eclipse.osee.ats.impl.config,
- org.eclipse.osee.ats.impl.resource,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
@@ -58,4 +60,5 @@ Import-Package: com.google.gson;version="2.1.0",
  org.eclipse.osee.orcs.transaction,
  org.eclipse.osee.orcs.utility,
  org.eclipse.osee.template.engine,
- org.json
+ org.json,
+ org.osgi.framework;version="1.7.0"

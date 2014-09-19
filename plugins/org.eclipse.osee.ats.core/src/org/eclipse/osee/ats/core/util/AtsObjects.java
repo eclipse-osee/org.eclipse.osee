@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 
 /**
  * @author Donald G. Dunne
@@ -24,6 +25,14 @@ public class AtsObjects {
       List<String> guids = new ArrayList<String>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
          guids.add(atsObject.getGuid());
+      }
+      return guids;
+   }
+
+   public static List<String> toAtsIds(Collection<? extends IAtsWorkItem> workItem) {
+      List<String> guids = new ArrayList<String>(workItem.size());
+      for (IAtsWorkItem atsObject : workItem) {
+         guids.add(atsObject.getAtsId());
       }
       return guids;
    }

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -20,6 +24,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 public class DemoUtil {
+
+   public static final String SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (committed) Reqt Changes for Diagram View";
 
    private DemoUtil() {
       // Utility class
@@ -57,7 +64,7 @@ public class DemoUtil {
    }
 
    public static TeamWorkFlowArtifact getSawCodeCommittedWf() throws OseeCoreException {
-      return getCodeTeamWorkflowNamed("SAW (committed) Reqt Changes for Diagram View");
+      return getCodeTeamWorkflowNamed(SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW);
    }
 
    public static TeamWorkFlowArtifact getSawCodeUnCommittedWf() throws OseeCoreException {
@@ -68,16 +75,30 @@ public class DemoUtil {
       return getCodeTeamWorkflowNamed("SAW (no-branch) Even More Requirement Changes for Diagram View");
    }
 
-   public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
-      TeamWorkFlowArtifact result = null;
+   public static Collection<TeamWorkFlowArtifact> getSawWfs(String name) {
+      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<TeamWorkFlowArtifact>();
       for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtilCore.getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED)) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            teamWfs.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      return teamWfs;
+   }
+
+   public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
+      TeamWorkFlowArtifact result = null;
+      for (Artifact art : getSawWfs(name)) {
          if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
             result = (TeamWorkFlowArtifact) art;
             break;
          }
       }
       return result;
+   }
+
+   public static Collection<TeamWorkFlowArtifact> getSawCommittedWfs() {
+      return getSawWfs(SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW);
    }
 
 }

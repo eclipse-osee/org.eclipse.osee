@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.rest.internal.util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,23 +26,19 @@ import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.resource.AtsResourceTokens;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.template.engine.PageCreator;
-import org.eclipse.osee.template.engine.PageFactory;
-import org.eclipse.osee.template.engine.StringOptionsRule;
 
 /**
  * @author Donald G Dunne
@@ -58,9 +53,7 @@ public class ActionPage {
    private static final String REVIEW_DEFECT_WIDGET_NAME = "Review Defect";
    private static final String ROLE_WIDGET_NAME = "Role";
    private String pageTemplate;
-   private PageCreator page;
    private IAtsWorkItem workItem;
-   private final IResourceRegistry registry;
    private final String title;
    private final ArtifactReadable action;
    private final IAtsServer atsServer;
@@ -72,10 +65,9 @@ public class ActionPage {
    private static List<String> ignoredWidgets;
    private final boolean details;
 
-   public ActionPage(Log logger, IAtsServer atsServer, IResourceRegistry registry, ArtifactReadable action, String title, boolean details) {
+   public ActionPage(Log logger, IAtsServer atsServer, ArtifactReadable action, String title, boolean details) {
       this.logger = logger;
       this.atsServer = atsServer;
-      this.registry = registry;
       this.action = action;
       this.title = title;
       this.details = details;
@@ -88,68 +80,66 @@ public class ActionPage {
       return workItem;
    }
 
-   public PageCreator getPage() {
-      if (page == null) {
-         page = PageFactory.newPageCreator(registry, "pageTitle", title);
-      }
-      return page;
-   }
-
-   public String generate() throws Exception {
+   public ViewModel generate() throws Exception {
       IAtsWorkItem workItem = getWorkItem();
       Conditions.checkNotNull(workItem, "workItem");
-      PageCreator page = getPage();
 
-      page.readKeyValuePairs(AtsResourceTokens.AtsValuesHtml);
-      page.addKeyValuePair("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
-      page.addKeyValuePair("description", action.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
-      page.addKeyValuePair("team", getTeamStr(action));
-      page.addKeyValuePair("ais", getAIStr(action));
-      page.addKeyValuePair("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
-      page.addKeyValuePair("assignees", getAssigneesStr(workItem, action));
-      page.addKeyValuePair("id", workItem.getGuid());
-      page.addKeyValuePair("atsId", workItem.getAtsId());
-      page.addKeyValuePair("originator", getCreatedByStr(workItem, action));
-      page.addKeyValuePair("priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
-      page.addKeyValuePair("changeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
-      page.addKeyValuePair("needBy", action.getSoleAttributeAsString(AtsAttributeTypes.NeedBy, ""));
-      page.addKeyValuePair("workflow", action.getArtifactType().toString());
-      page.addKeyValuePair("createdDate", workItem.getCreatedDate().toString());
-      page.addKeyValuePair("version", getVersion(workItem));
-      page.addKeyValuePair("workDef", getWorkDefStr(workItem));
-      page.addKeyValuePair("guid", workItem.getGuid());
-      if (page.getValue("transition") == null) {
-         page.addKeyValuePair("transition", "");
+      ViewModel page = new ViewModel("action.html");
+      if (Strings.isValid(title)) {
+         page.param("title", title);
+      } else {
+         page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
+      }
+      page.param("description", action.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
+      page.param("team", getTeamStr(atsServer, action));
+      page.param("ais", getAIStr(action));
+      page.param("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
+      page.param("assignees", getAssigneesStr(workItem, action));
+      page.param("id", workItem.getGuid());
+      page.param("atsId", workItem.getAtsId());
+      page.param("originator", getCreatedByStr(workItem, action));
+      page.param("priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
+      page.param("changeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
+      page.param("needBy", action.getSoleAttributeAsString(AtsAttributeTypes.NeedBy, ""));
+      page.param("workflow", action.getArtifactType().toString());
+      page.param("createdDate", workItem.getCreatedDate().toString());
+      page.param("version", getVersion(workItem));
+      page.param("workDef", getWorkDefStr(workItem));
+      page.param("guid", workItem.getGuid());
+      if (!addTransition) {
+         page.param("transition", "");
+      } else {
+         addTransitionStates(page);
       }
 
       addStates(page, workItem, action);
       addDetails(page, workItem, action);
 
-      return page.realizePage(AtsResourceTokens.AtsActionHtml);
+      return page;
    }
 
    private String getWorkDefStr(IAtsWorkItem workItem) {
       return workItem.getWorkDefinition().getName();
    }
 
-   private String getAssigneesStr(IAtsWorkItem workItem, ArtifactReadable action) {
+   public static String getAssigneesStr(IAtsWorkItem workItem, ArtifactReadable action) {
       return workItem.getStateMgr().getAssigneesStr();
    }
 
-   private String getTeamStr(ArtifactReadable action) {
+   public static String getTeamStr(IAtsServer atsServer, ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(results)) {
          results = atsServer.getArtifactByGuid(results).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
          if (teamWf != null) {
-            results = getTeamStr(teamWf);
+            results = getTeamStr(atsServer, teamWf);
          }
       }
       return results;
    }
 
-   private ArtifactReadable getParentTeamWf(ArtifactReadable action2) {
+   private static ArtifactReadable getParentTeamWf(ArtifactReadable action) {
       ArtifactReadable teamWf = null;
       if (action.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamWf = action;
@@ -173,30 +163,41 @@ public class ActionPage {
       return sb.toString().replaceFirst(", $", "");
    }
 
-   private String getCreatedByStr(IAtsWorkItem workItem, ArtifactReadable action) {
+   public static String getCreatedByStr(IAtsWorkItem workItem, ArtifactReadable action) {
       String results = action.getSoleAttributeAsString(AtsAttributeTypes.CreatedBy);
       results = workItem.getCreatedBy().getName();
       return results;
    }
 
-   public void addTransitionStates() throws OseeCoreException {
-      IAtsWorkItem workItem = getWorkItem();
-      PageCreator transPage = new PageCreator(registry);
-      transPage.addKeyValuePair("guid", workItem.getGuid());
-      StringOptionsRule rule = new StringOptionsRule("ToStateList", "ToStateList");
-      for (IAtsStateDefinition state : workItem.getStateDefinition().getToStates()) {
-         rule.getOptions().add(state.getName());
+   public void addTransitionStates(ViewModel page) throws OseeCoreException {
+      try {
+         IAtsWorkItem workItem = getWorkItem();
+         String html = RestUtil.getResource("templates/transition.html");
+         html.replaceAll("guid", workItem.getGuid());
+         html.replaceFirst("ToStateList", getToStateList());
+         String defaultToStateValue = "";
+         IAtsStateDefinition defaultToState = workItem.getStateDefinition().getDefaultToState();
+         if (defaultToState != null) {
+            defaultToStateValue = "value=\"" + defaultToState.getName() + "\"";
+         }
+         html.replaceAll("defaultToStateValue", defaultToStateValue);
+         page.param("transition", html);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
       }
-      transPage.addSubstitution(rule);
-      String defaultToStateValue = "";
-      IAtsStateDefinition defaultToState = workItem.getStateDefinition().getDefaultToState();
-      if (defaultToState != null) {
-         defaultToStateValue = "value=\"" + defaultToState.getName() + "\"";
-      }
-      transPage.addKeyValuePair("defaultToStateValue", defaultToStateValue);
+   }
 
-      PageCreator page = getPage();
-      page.addKeyValuePair("transition", transPage.realizePage(AtsResourceTokens.TransitionHtml));
+   private String getToStateList() {
+      StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">");
+      for (IAtsStateDefinition state : workItem.getStateDefinition().getToStates()) {
+         sb.append("<option value=\"");
+         sb.append(state.getName());
+         sb.append("\" guid=\"");
+         sb.append(state.getName());
+         sb.append("\">");
+      }
+      sb.append("</datalist>");
+      return sb.toString();
    }
 
    private String getVersion(IAtsWorkItem workItem) {
@@ -214,7 +215,7 @@ public class ActionPage {
       return version;
    }
 
-   private void addStates(PageCreator page, IAtsWorkItem workItem, ArtifactReadable action) throws Exception {
+   private void addStates(ViewModel page, IAtsWorkItem workItem, ArtifactReadable action) throws Exception {
       StringBuilder statesSb = new StringBuilder();
       IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
       Collection<String> visitedStates = workItem.getStateMgr().getVisitedStateNames();
@@ -238,7 +239,7 @@ public class ActionPage {
             statesSb.append(stateHtmlTemplate);
          }
       }
-      page.addKeyValuePair("states", statesSb.toString());
+      page.param("states", statesSb.toString());
    }
 
    private void addWidgets(StringBuilder sb, IAtsWorkItem workItem, Collection<IAtsLayoutItem> items) {
@@ -297,8 +298,11 @@ public class ActionPage {
    private List<String> getIgnoreWidgetNames() {
       if (ignoredWidgets == null) {
          ignoredWidgets = new ArrayList<String>();
-         for (String widgetName : atsServer.getConfigValue("IgnoredWidgetNames").split(";")) {
-            ignoredWidgets.add(widgetName);
+         String configValue = atsServer.getConfigValue("IgnoredWidgetNames");
+         if (Strings.isValid(configValue)) {
+            for (String widgetName : configValue.split(";")) {
+               ignoredWidgets.add(widgetName);
+            }
          }
       }
       return ignoredWidgets;
@@ -370,14 +374,14 @@ public class ActionPage {
       sb.append("</b>");
    }
 
-   private String getStateHtmlTemplate() throws IOException {
+   private String getStateHtmlTemplate() throws Exception {
       if (pageTemplate == null) {
-         pageTemplate = Lib.inputStreamToString(AtsResourceTokens.class.getResource("html/atsState.html").openStream());
+         pageTemplate = RestUtil.getResource("templates/state.html");
       }
       return pageTemplate;
    }
 
-   private void addDetails(PageCreator page, IAtsWorkItem workItem, ArtifactReadable artifact) {
+   private void addDetails(ViewModel page, IAtsWorkItem workItem, ArtifactReadable artifact) {
       StringBuilder sb = new StringBuilder();
       if (details) {
          try {
@@ -391,7 +395,7 @@ public class ActionPage {
             sb.append("exception: " + ex.getLocalizedMessage());
          }
       }
-      page.addKeyValuePair("details", sb.toString());
+      page.param("details", sb.toString());
    }
 
    private static void addDetail(StringBuilder sb, String key, String value) {

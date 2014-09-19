@@ -19,16 +19,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.AtsRestTemplateTokens;
+import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.template.engine.PageFactory;
 
 /**
  * Allows for the conversion of ATS database from Build to Build
@@ -39,11 +37,9 @@ import org.eclipse.osee.template.engine.PageFactory;
 public final class ConvertResource {
 
    private final IAtsServer atsServer;
-   private final IResourceRegistry registry;
 
-   public ConvertResource(IAtsServer atsServer, IResourceRegistry registry) {
+   public ConvertResource(IAtsServer atsServer) {
       this.atsServer = atsServer;
-      this.registry = registry;
    }
 
    /**
@@ -51,17 +47,18 @@ public final class ConvertResource {
     */
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getStates() throws Exception {
+   public ViewModel getStates() throws Exception {
       StringBuffer sb = new StringBuffer();
-      sb.append(AHTML.beginMultiColumnTable(98, 1));
+      sb.append(AHTML.beginMultiColumnTable(95, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Name", "Report", "Run", "Description")));
       for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
          sb.append(AHTML.addRowMultiColumnTable(convert.getName(), getForm(convert.getName(), "report", "REPORT-ONLY"),
             getForm(convert.getName(), "run", "RUN"), AHTML.textToHtml(convert.getDescription())));
       }
       sb.append(AHTML.endMultiColumnTable());
-      return PageFactory.realizePage(registry, AtsRestTemplateTokens.AtsConvertHtml,
-         AtsRestTemplateTokens.AtsValuesHtml, "title", "OSEE ATS Convert", "conversionTable", sb.toString());
+
+      return new ViewModel("convert.html") //
+      .param("conversionTable", sb.toString());
    }
 
    private String getForm(String convertName, String operation, String buttonLabel) {
@@ -80,7 +77,7 @@ public final class ConvertResource {
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+   public ViewModel createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
 
       String convertName = form.getFirst("convertName");
       String operation = form.getFirst("operation");
@@ -96,10 +93,6 @@ public final class ConvertResource {
          throw new OseeCoreException(results.toString());
       }
 
-      String htmlStr =
-         PageFactory.realizePage(registry, AtsRestTemplateTokens.SimplePageHtml, AtsRestTemplateTokens.AtsValuesHtml,
-            "title", convertName, "message", results.toString());
-
-      return Response.status(200).entity(htmlStr).build();
+      return RestUtil.simplePage(convertName, results.toString());
    }
 }
