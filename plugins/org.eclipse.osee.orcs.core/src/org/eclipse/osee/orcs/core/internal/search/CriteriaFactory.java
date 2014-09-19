@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -35,7 +34,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeSideNotExists;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -52,7 +51,7 @@ public class CriteriaFactory {
 
    private Collection<? extends IAttributeType> checkForAnyType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn;
-      if (attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE)) {
+      if (attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE)) {
          Collection<IAttributeType> temp = new LinkedList<IAttributeType>();
          temp.addAll(attributeTypeCache.getAll());
          toReturn = temp;
@@ -82,13 +81,9 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
-   public Criteria createAttributeCriteria(IAttributeType attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException {
-      return createAttributeCriteria(Collections.singleton(attributeType), values, options);
-   }
-
    public Criteria createAttributeCriteria(Collection<IAttributeType> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
       Collection<? extends IAttributeType> types = checkForAnyType(attributeTypes);
-      boolean isIncludeAllTypes = attributeTypes.contains(QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      boolean isIncludeAllTypes = attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE);
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
    }
 

@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import java.util.Collection;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -23,50 +20,16 @@ import org.eclipse.osee.orcs.data.BranchReadable;
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
-public interface BranchQuery {
-
-   BranchQuery includeDeleted();
-
-   BranchQuery excludeDeleted();
-
-   BranchQuery includeDeleted(boolean enabled);
-
-   boolean areDeletedIncluded();
-
-   BranchQuery includeArchived();
-
-   BranchQuery includeArchived(boolean enabled);
-
-   BranchQuery excludeArchived();
-
-   boolean areArchivedIncluded();
-
-   BranchQuery andUuids(long... uuids) throws OseeCoreException;
-
-   BranchQuery andUuids(Collection<Long> uuids) throws OseeCoreException;
-
-   BranchQuery andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
-
-   BranchQuery andIds(IOseeBranch... ids) throws OseeCoreException;
-
-   BranchQuery andIsOfType(BranchType... branchType) throws OseeCoreException;
-
-   BranchQuery andStateIs(BranchState... branchState) throws OseeCoreException;
-
-   BranchQuery andNameEquals(String value) throws OseeCoreException;
-
-   BranchQuery andNamePattern(String pattern) throws OseeCoreException;
-
-   BranchQuery andIsChildOf(IOseeBranch branch) throws OseeCoreException;
-
-   BranchQuery andIsAncestorOf(IOseeBranch branch) throws OseeCoreException;
+public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    ResultSet<BranchReadable> getResults() throws OseeCoreException;
 
    ResultSet<IOseeBranch> getResultsAsId() throws OseeCoreException;
 
+   @Override
    int getCount() throws OseeCoreException;
 
+   @Override
    CancellableCallable<Integer> createCount() throws OseeCoreException;
 
    CancellableCallable<ResultSet<BranchReadable>> createSearch() throws OseeCoreException;
