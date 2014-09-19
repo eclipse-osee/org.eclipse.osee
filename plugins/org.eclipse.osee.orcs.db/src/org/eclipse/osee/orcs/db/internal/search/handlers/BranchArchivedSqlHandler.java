@@ -76,6 +76,6 @@ public class BranchArchivedSqlHandler extends SqlHandler<CriteriaBranchArchived>
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.BRANCH_ARCHIVED.ordinal();
+      return SqlHandlerPriority.BRANCH_ARCHIVED.ordinal();
    }
 }

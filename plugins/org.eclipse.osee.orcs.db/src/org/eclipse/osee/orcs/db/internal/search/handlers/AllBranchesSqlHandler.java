@@ -49,6 +49,6 @@ public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.ALL_BRANCHES.ordinal();
+      return SqlHandlerPriority.ALL_BRANCHES.ordinal();
    }
 }

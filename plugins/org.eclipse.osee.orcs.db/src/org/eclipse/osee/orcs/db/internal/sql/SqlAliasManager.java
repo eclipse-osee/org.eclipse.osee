@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class SqlAliasManager {
          map = usedAliases.get(level);
       }
       if (map == null) {
-         map = new HashMap<String, LinkedList<String>>();
+         map = new LinkedHashMap<String, LinkedList<String>>();
          usedAliases.add(level, map);
       }
 

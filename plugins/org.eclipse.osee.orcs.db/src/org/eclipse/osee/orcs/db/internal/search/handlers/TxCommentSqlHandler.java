@@ -56,6 +56,6 @@ public class TxCommentSqlHandler extends SqlHandler<CriteriaTxComment> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.TX_COMMENT.ordinal();
+      return SqlHandlerPriority.TX_COMMENT.ordinal();
    }
 }

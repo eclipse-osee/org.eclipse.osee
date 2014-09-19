@@ -70,6 +70,6 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.BRANCH_ANCESTOR_OF.ordinal();
+      return SqlHandlerPriority.BRANCH_ANCESTOR_OF.ordinal();
    }
 }

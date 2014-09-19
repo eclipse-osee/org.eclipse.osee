@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -225,33 +224,26 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testSixItemQuery() throws Exception {
-      /*********************************************************************
-       * The nature of this query is that the order of the various portions may show up in different positions and the
-       * join table number may change. Verify they are all there by checking each snippet
-       */
-
-      String[] expected =
-         {
-            "SELECT/*+ ordered */ txd1.*\n",
-            "osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2, osee_join_id jid3",
-            "txd1.commit_art_id = jid",
-            ".query_id = ?",
-            "txd1.author = jid",
-            ".query_id = ?",
-            "txd1.branch_id = jid",
-            ".query_id = ?",
-            "txd1.time < ?",
-            "txd1.transaction_id < ?",
-            " ORDER BY txd1.transaction_id"};
+      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      " FROM \n" + //
+      "osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
+      " WHERE \n" + //
+      "txd1.transaction_id < ?\n" + //
+      " AND \n" + //
+      "txd1.author = jid1.id AND jid1.query_id = ?\n" + //
+      " AND \n" + //
+      "txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
+      " AND \n" + //
+      "txd1.time < ?\n" + //
+      " AND \n" + //
+      "txd1.branch_id = jid3.id AND jid3.query_id = ?\n" + //
+      " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(BRANCHIDS, IDS_WITH_OPERATOR, DATE_WITH_OPERATOR, AUTHORS, COMMITS);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
 
-      String actual = context.getSql();
-      for (int i = 0; i < expected.length; i++) {
-         assertTrue(expected[i] + " not found", actual.indexOf(expected[i]) > -1);
-      }
+      assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
       assertEquals(5, parameters.size());
@@ -260,11 +252,15 @@ public class TxQuerySqlContextFactoryImplTest {
       assertEquals(3, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
+      assertEquals(iterator.next(), 1);
       assertEquals(iterator.next(), joins.get(0).getQueryId());
-      assertEquals(2, joins.get(0).size());
       assertEquals(iterator.next(), joins.get(1).getQueryId());
-      assertEquals(2, joins.get(1).size());
+      assertEquals(iterator.next(), Timestamp.valueOf("2013-05-06 12:34:56"));
+      assertEquals(iterator.next(), joins.get(2).getQueryId());
+
       assertEquals(2, joins.get(0).size());
+      assertEquals(2, joins.get(1).size());
+      assertEquals(5, joins.get(2).size());
 
    }
 

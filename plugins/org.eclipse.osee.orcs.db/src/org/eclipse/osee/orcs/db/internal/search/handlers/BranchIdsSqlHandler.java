@@ -69,6 +69,6 @@ public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchUuids> {
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.BRANCH_ID.ordinal();
+      return SqlHandlerPriority.BRANCH_ID.ordinal();
    }
 }

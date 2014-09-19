@@ -58,6 +58,6 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.TX_ID.ordinal();
+      return SqlHandlerPriority.TX_ID.ordinal();
    }
 }

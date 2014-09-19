@@ -56,6 +56,6 @@ public class BranchNameSqlHandler extends SqlHandler<CriteriaBranchName> {
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.BRANCH_NAME.ordinal();
+      return SqlHandlerPriority.BRANCH_NAME.ordinal();
    }
 }

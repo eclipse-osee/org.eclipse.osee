@@ -57,6 +57,6 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.BRANCH_ID.ordinal();
+      return SqlHandlerPriority.TX_DATE.ordinal();
    }
 }

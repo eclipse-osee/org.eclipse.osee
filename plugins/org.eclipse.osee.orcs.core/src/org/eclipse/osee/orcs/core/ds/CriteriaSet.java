@@ -13,14 +13,15 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaSet implements Cloneable, Iterable<Criteria> {
 
-   private final HashMultimap<Class<? extends Criteria>, Criteria> criterias = HashMultimap.create();
+   private final SetMultimap<Class<? extends Criteria>, Criteria> criterias = LinkedHashMultimap.create();
 
    public void add(Criteria criteria) {
       criterias.put(criteria.getClass(), criteria);

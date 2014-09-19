@@ -56,6 +56,6 @@ public class TxIdWithOperatorSqlHandler extends SqlHandler<CriteriaTxIdWithOpera
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.BRANCH_ID.ordinal();
+      return SqlHandlerPriority.TX_ID.ordinal();
    }
 }

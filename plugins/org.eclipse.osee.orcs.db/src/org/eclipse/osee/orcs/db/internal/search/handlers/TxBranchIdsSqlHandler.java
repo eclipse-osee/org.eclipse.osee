@@ -69,6 +69,6 @@ public class TxBranchIdsSqlHandler extends SqlHandler<CriteriaTxBranchIds> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.BRANCH_ID.ordinal();
+      return SqlHandlerPriority.TX_BRANCH_ID.ordinal();
    }
 }

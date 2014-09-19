@@ -78,6 +78,6 @@ public class TxCommitIdsSqlHandler extends SqlHandler<CriteriaCommitIds> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.TX_ID.ordinal();
+      return SqlHandlerPriority.TX_ID.ordinal();
    }
 }

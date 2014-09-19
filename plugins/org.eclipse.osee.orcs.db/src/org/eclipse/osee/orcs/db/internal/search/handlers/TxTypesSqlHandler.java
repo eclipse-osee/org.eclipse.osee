@@ -76,6 +76,6 @@ public class TxTypesSqlHandler extends SqlHandler<CriteriaTxType> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.TX_TYPE.ordinal();
+      return SqlHandlerPriority.TX_TYPE.ordinal();
    }
 }

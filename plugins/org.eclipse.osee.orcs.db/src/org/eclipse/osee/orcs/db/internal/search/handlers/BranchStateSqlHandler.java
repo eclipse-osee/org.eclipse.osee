@@ -76,6 +76,6 @@ public class BranchStateSqlHandler extends SqlHandler<CriteriaBranchState> {
 
    @Override
    public int getPriority() {
-      return BranchSqlHandlerPriority.BRANCH_STATE.ordinal();
+      return SqlHandlerPriority.BRANCH_STATE.ordinal();
    }
 }

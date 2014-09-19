@@ -49,6 +49,6 @@ public class AllTxsSqlHandler extends SqlHandler<CriteriaAllTxs> {
 
    @Override
    public int getPriority() {
-      return TxSqlHandlerPriority.ALL_TXS.ordinal();
+      return SqlHandlerPriority.ALL_TXS.ordinal();
    }
 }
