@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchName extends Criteria {
+public class CriteriaBranchName extends Criteria implements BranchCriteria {
 
    private final boolean isPattern;
    private final String value;

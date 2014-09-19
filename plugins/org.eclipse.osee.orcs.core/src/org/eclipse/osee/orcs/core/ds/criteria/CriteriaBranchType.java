@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchType extends Criteria {
+public class CriteriaBranchType extends Criteria implements BranchCriteria {
 
    private final Collection<BranchType> types;
 

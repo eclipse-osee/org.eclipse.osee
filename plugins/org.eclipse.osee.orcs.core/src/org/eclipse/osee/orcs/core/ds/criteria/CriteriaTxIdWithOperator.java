@@ -16,7 +16,7 @@ import org.eclipse.osee.orcs.search.Operator;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxIdWithOperator extends Criteria {
+public class CriteriaTxIdWithOperator extends Criteria implements TxCriteria {
 
    private final Operator op;
    private final int id;

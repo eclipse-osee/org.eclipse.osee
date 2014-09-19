@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxArtifactGuids extends Criteria {
+public class CriteriaTxArtifactGuids extends Criteria implements TxCriteria {
 
    private final Collection<String> artifactGuids;
 

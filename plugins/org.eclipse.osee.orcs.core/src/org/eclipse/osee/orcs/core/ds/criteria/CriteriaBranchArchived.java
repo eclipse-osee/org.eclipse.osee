@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchArchived extends Criteria {
+public class CriteriaBranchArchived extends Criteria implements BranchCriteria {
 
    private final Collection<BranchArchivedState> state;
 

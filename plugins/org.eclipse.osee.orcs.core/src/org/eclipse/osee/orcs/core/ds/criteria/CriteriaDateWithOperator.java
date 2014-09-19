@@ -17,7 +17,7 @@ import org.eclipse.osee.orcs.search.Operator;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaDateWithOperator extends Criteria {
+public class CriteriaDateWithOperator extends Criteria implements TxCriteria {
 
    private final Operator op;
    private final Timestamp date;

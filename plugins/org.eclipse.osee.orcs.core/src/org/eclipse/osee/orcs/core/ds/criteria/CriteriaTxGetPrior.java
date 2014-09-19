@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxGetPrior extends Criteria {
+public class CriteriaTxGetPrior extends Criteria implements TxCriteria {
 
    private final int txId;
 

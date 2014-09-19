@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchUuids extends Criteria {
+public class CriteriaBranchUuids extends Criteria implements BranchCriteria {
 
    private final Collection<Long> uuids;
 

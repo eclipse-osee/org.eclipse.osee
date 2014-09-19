@@ -15,7 +15,7 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxGetHead extends Criteria {
+public class CriteriaTxGetHead extends Criteria implements TxCriteria {
 
    private final long branchUuid;
 

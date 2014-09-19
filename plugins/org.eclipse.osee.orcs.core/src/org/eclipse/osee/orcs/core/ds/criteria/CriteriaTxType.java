@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxType extends Criteria {
+public class CriteriaTxType extends Criteria implements TxCriteria {
 
    private final Collection<TransactionDetailsType> types;
 

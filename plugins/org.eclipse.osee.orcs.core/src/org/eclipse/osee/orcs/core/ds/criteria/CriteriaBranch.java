@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.data.HasBranch;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranch extends Criteria implements HasBranch {
+public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteria {
 
    private final IOseeBranch branch;
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaDateRange extends Criteria {
+public class CriteriaDateRange extends Criteria implements TxCriteria {
 
    private final Timestamp from, to;
 

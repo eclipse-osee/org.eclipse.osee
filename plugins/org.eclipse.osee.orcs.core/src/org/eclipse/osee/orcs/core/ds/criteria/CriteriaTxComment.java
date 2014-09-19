@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxComment extends Criteria {
+public class CriteriaTxComment extends Criteria implements TxCriteria {
 
    private final boolean isPattern;
    private final String value;

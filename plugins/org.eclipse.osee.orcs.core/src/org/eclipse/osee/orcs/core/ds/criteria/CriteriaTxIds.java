@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaTxIds extends Criteria {
+public class CriteriaTxIds extends Criteria implements TxCriteria {
 
    private final Collection<Integer> ids;
 

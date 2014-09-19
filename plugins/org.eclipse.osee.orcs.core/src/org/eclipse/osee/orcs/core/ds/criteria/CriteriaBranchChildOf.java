@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 /**
  * @author Roberto E. Escobar
  */
-public class CriteriaBranchChildOf extends Criteria {
+public class CriteriaBranchChildOf extends Criteria implements BranchCriteria {
 
    private final IOseeBranch parent;
 
