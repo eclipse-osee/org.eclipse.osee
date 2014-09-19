@@ -39,6 +39,8 @@ public class OrcsApplication extends Application {
    }
 
    public void start() {
+      resources.add(new OrcsScriptResource());
+
       classes.add(BranchesResource.class);
       resources.add(new TypesQueryResource(orcsApi));
       resources.add(new BranchQueryResource(orcsApi));

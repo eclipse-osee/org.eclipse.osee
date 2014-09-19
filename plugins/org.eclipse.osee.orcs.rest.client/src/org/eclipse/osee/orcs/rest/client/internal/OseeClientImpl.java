@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -141,6 +145,28 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
+      }
+   }
+
+   @Override
+   public void executeScript(String script, Properties properties, boolean debug, Writer writer) {
+      StringWriter strWriter = new StringWriter();
+      try {
+         if (properties != null && !properties.isEmpty()) {
+            properties.store(strWriter, "");
+         }
+         Form form = new Form();
+         form.param("script", script);
+         form.param("debug", Boolean.toString(debug));
+         form.param("parameters", strWriter.toString());
+
+         URI uri = UriBuilder.fromUri(baseUri).path("script").build();
+         String result =
+            JaxRsClient.newClient().target(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form),
+               String.class);
+         writer.write(result);
+      } catch (Exception ex) {
+         JaxRsExceptions.asOseeException(ex);
       }
    }
 
