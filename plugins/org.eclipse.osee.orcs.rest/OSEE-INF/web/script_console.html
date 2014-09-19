@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta charset="UTF-8">
+
+<title>OSEE - Script Console</title>
+
+<script src="/lib/js/jquery-2.0.3.min.js"></script>
+<script src="/lib/js/angular.min.js"></script>
+<script src="/lib/js/angular-resource.min.js"></script>
+<script>
+	var formApp = angular.module('formApp', []);
+
+	function formController($scope, $http) {
+		$scope.formData = {};
+		$scope.message = '';
+		$scope.processForm = function() {
+			$http({
+				method : 'POST',
+				url : '../',
+				data : $.param($scope.formData),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded',
+					'Accept' : 'application/json'
+				}
+			}).success(function(data, status, headers, config) {
+				console.log(data);
+				$scope.message = angular.toJson(data, true);
+			}).error(function(data, status, headers, config) {
+				console.log(data);
+				$scope.message = 'error -  status: ' + status + ' ' + data;
+			});
+		};
+	}
+</script>
+
+</head>
+<body ng-app="formApp" ng-controller="formController">
+
+   <div class="container">
+      <div class="page-header">
+         <table>
+            <tr>
+               <td>
+                  <h1>
+                     <span class="pull-left glyphicon glyphicon-flash"></span> OSEE - Script Console
+                  </h1>
+               </td>
+               <td>&nbsp;&nbsp;&nbsp;</td>
+               <td><span class="label label-danger">Beta</span></td>
+            </tr>
+         </table>
+      </div>
+
+      <form class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded" ng-submit="processForm()">
+         <div class="form-group">
+            <label for="script">Console</label>
+            <textarea class="form-control" rows="6" placeholder="start from ...;" ng-model="formData.script"
+               title="Type ORCS Script in text area. Click button to execute."></textarea>
+         </div>
+         <div class="form-group">
+            <label for="parameters">Parameters</label>
+            <textarea class="form-control" rows="2" placeholder="key1=value1" ng-model="formData.parameters"
+               title="Type ORCS Script parameters in the text area. Click button to execute."></textarea>
+         </div>
+         <div class="form-group">
+            <div class="col-sm-offset-0 col-sm-10">
+               <div class="checkbox">
+                  <label><input type="checkbox" ng-model="formData.debug">Debug</label>
+               </div>
+            </div>
+         </div>
+         <div class="container">
+            <div class="form-group">
+               <button type="submit" class="btn btn-primary" ng-model="formData.orcsScriptExecutionType" value="execute">Execute</button>
+            </div>
+         </div>
+      </form>
+
+      <div class="container-fluid well" ng-show="message">
+         <textarea rows="30" class="form-control" disabled="disabled">{{ message }}</textarea>
+      </div>
+   </div>
+</body>
+</html>

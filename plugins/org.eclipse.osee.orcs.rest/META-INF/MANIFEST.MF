@@ -28,3 +28,4 @@ Import-Package: com.google.common.base;version="[11.0.0,15.0.0)",
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.orcs.rest.model.search.branch,
  org.eclipse.osee.orcs.search
+Osee-JaxRs-Resource: OSEE-INF/web/*;path=/orcs/script/ui
