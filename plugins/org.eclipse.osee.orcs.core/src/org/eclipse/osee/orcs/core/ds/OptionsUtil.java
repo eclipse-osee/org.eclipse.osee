@@ -28,6 +28,7 @@ public final class OptionsUtil {
    private static final String INCLUDE_DELETED_RELATIONS = "include.deleted.relations";
    private static final String INCLUDE_CACHE = "include.cache";
    private static final String LOAD_LEVEL = "load.level";
+   private static final String SHOW_HIDDEN_FIELDS = "show.hidden.fields";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -159,4 +160,11 @@ public final class OptionsUtil {
       return !isHeadTransaction(options);
    }
 
+   public static boolean showHiddenFields(Options options) {
+      return options.getBoolean(SHOW_HIDDEN_FIELDS);
+   }
+
+   public static void setShowHiddenFields(Options options, boolean enabled) {
+      options.put(SHOW_HIDDEN_FIELDS, enabled);
+   }
 }

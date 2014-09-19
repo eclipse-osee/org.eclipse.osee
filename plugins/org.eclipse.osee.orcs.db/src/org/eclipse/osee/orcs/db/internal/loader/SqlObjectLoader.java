@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
@@ -287,6 +288,11 @@ public class SqlObjectLoader {
          @Override
          public boolean isMultiBranch() {
             return getBranch() == null;
+         }
+
+         @Override
+         public ResultObjectDescription getObjectDescription() {
+            return null;
          }
       };
    }

@@ -10,21 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.orcs.data.HasBranch;
-import org.eclipse.osee.orcs.data.HasSession;
-import org.eclipse.osee.orcs.data.HasTransaction;
-
 /**
  * @author Roberto E. Escobar
  */
-public interface LoadDescription extends HasOptions, HasSession, HasBranch, HasTransaction {
+public interface ResultObjectDescription {
 
-   @Override
-   IOseeBranch getBranch();
-
-   boolean isMultiBranch();
-
-   ResultObjectDescription getObjectDescription();
+   Iterable<? extends DynamicData> getDynamicData();
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -55,7 +56,7 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
 
    @Override
    public void onData(BranchData data) throws OseeCoreException {
-         if (handler != null) {
+      if (handler != null) {
          handler.onData(data);
       }
    }
@@ -85,6 +86,13 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    public void onData(RelationData data) throws OseeCoreException {
       if (handler != null) {
          handler.onData(data);
+      }
+   }
+
+   @Override
+   public void onDynamicData(Map<String, Object> data) throws OseeCoreException {
+      if (handler != null) {
+         handler.onDynamicData(data);
       }
    }
 

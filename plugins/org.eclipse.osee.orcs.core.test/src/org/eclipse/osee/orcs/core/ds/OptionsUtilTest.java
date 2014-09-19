@@ -95,6 +95,15 @@ public class OptionsUtilTest {
    }
 
    @Test
+   public void testSetGetShowHiddenFields() {
+      assertEquals(false, OptionsUtil.showHiddenFields(options));
+
+      OptionsUtil.setShowHiddenFields(options, true);
+
+      assertEquals(true, OptionsUtil.showHiddenFields(options));
+   }
+
+   @Test
    public void testReset() {
       OptionsUtil.setFromTransaction(options, 1231);
       OptionsUtil.setLoadLevel(options, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);

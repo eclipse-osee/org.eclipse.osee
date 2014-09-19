@@ -11,21 +11,32 @@
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
 import static org.eclipse.osee.orcs.core.internal.script.OrcsScriptException.newException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataModule;
+import org.eclipse.osee.orcs.core.internal.script.OrcsScriptAssembler;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptCompiler;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptException;
+import org.eclipse.osee.orcs.core.internal.script.OrcsScriptExecutor;
+import org.eclipse.osee.orcs.core.internal.script.OrcsScriptInterpreter;
+import org.eclipse.osee.orcs.core.internal.script.OrcsScriptOutputHandler;
+import org.eclipse.osee.orcs.script.dsl.IExpressionResolver;
+import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
+import org.eclipse.osee.orcs.script.dsl.OrcsScriptDslResource;
+import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
+import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import com.google.common.io.CharStreams;
 
 /**
@@ -33,9 +44,13 @@ import com.google.common.io.CharStreams;
  */
 public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
 
+   private static Charset UTF_8_CHARSET = Charset.forName("UTF-8");
+
    private final OrcsSession session;
    private final DataModule dataModule;
    private final OrcsTypes orcsTypes;
+
+   private OrcsScriptInterpreter interpreter;
 
    public OrcsScriptCompilerImpl(OrcsSession session, DataModule dataModule, OrcsTypes orcsTypes) {
       super();
@@ -44,76 +59,109 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
       this.orcsTypes = orcsTypes;
    }
 
-   @Override
-   public OrcsCompiledScript compileReader(Reader reader, String filename) throws OrcsScriptException {
-      String script = parse(reader, filename);
-      return new OrcsCompiledScriptImpl(script);
+   private OrcsScriptInterpreter getInterpreter() {
+      if (interpreter == null) {
+         IExpressionResolver resolver = OrcsScriptUtil.getExpressionResolver();
+         IFieldResolver fieldResolver = OrcsScriptUtil.getFieldResolver();
+         interpreter = new OrcsScriptInterpreterImpl(orcsTypes, resolver, fieldResolver);
+      }
+      return interpreter;
    }
 
-   private String parse(Reader reader, String filename) throws OrcsScriptException {
-      String script = "";
+   private OrcsScriptOutputHandler getOutputHandler(ScriptContext context) {
+      return new JsonOutputHandler(context);
+   }
+
+   private OrcsScriptAssembler getAssembler(OrcsScriptOutputHandler output) {
+      return new OrcsScriptAssemblerImpl(dataModule, orcsTypes, output);
+   }
+
+   private OrcsScriptExecutor getExecutor(OrcsScriptAssembler assembler) {
+      return (OrcsScriptExecutor) assembler;
+   }
+
+   @Override
+   public OrcsCompiledScript compileReader(Reader reader, String filename) throws OrcsScriptException {
+      OrcsScript model = parse(reader, filename);
+      return new OrcsCompiledScriptImpl(model);
+   }
+
+   private OrcsScript parse(Reader reader, String filename) throws OrcsScriptException {
+      OrcsScriptDslResource resource = null;
+      InputStream inputStream = null;
       try {
-         script = CharStreams.toString(reader);
+         String uri = "orcs:/dummy.orcs";
+         inputStream = new ByteArrayInputStream(read(reader).getBytes(UTF_8_CHARSET));
+         resource = OrcsScriptUtil.loadModelSafely(inputStream, uri);
       } catch (IOException ex) {
          throw newException(ex);
+      } finally {
+         Lib.close(inputStream);
+      }
+      if (resource.hasErrors()) {
+         throw newException(filename, resource.getErrors());
+      }
+      return resource.getModel();
+   }
+
+   private String read(Reader reader) throws IOException {
+      String script = CharStreams.toString(reader);
+      if (Strings.isValid(script)) {
+         script = script.trim();
+         if (!script.endsWith(";")) {
+            script = script + ';';
+         }
       }
       return script;
    }
 
-   private class OrcsCompiledScriptImpl implements OrcsCompiledScript {
+   private final class OrcsCompiledScriptImpl implements OrcsCompiledScript {
 
-      private final String script;
+      private final OrcsScript model;
 
-      public OrcsCompiledScriptImpl(String script) {
+      public OrcsCompiledScriptImpl(OrcsScript model) {
          super();
-         this.script = script;
+         this.model = model;
       }
 
       @Override
       public Object eval(ScriptContext context) throws OrcsScriptException {
-         Map<String, Object> binding = new LinkedHashMap<String, Object>();
-         List<Integer> scopes = context.getScopes();
-         for (Integer scope : scopes) {
-            Bindings bindings = context.getBindings(scope);
-            if (bindings != null) {
-               for (Entry<String, Object> entry : bindings.entrySet()) {
-                  binding.put(entry.getKey(), entry.getValue());
+         OrcsScriptOutputHandler output = getOutputHandler(context);
+         try {
+            output.onEvalStart();
+            Map<String, Object> parameters = asMap(context);
+
+            OrcsScriptAssembler assembler = getAssembler(output);
+            synchronized (model) {
+               try {
+                  OrcsScriptUtil.bind(model, parameters);
+                  OrcsScriptInterpreter interpreter = getInterpreter();
+                  interpreter.interpret(model, assembler);
+               } finally {
+                  OrcsScriptUtil.unbind(model);
                }
             }
-         }
 
-         JsonGenerator writer = null;
-         try {
-            JsonFactory jsonFactory = new JsonFactory();
-            writer = jsonFactory.createJsonGenerator(context.getWriter());
-            writer.writeStartObject();
-            writeScriptData(writer, binding);
-            writer.writeStringField("results", "Not Yet Implemented");
-            writer.writeEndObject();
-            return Boolean.TRUE;
-         } catch (IOException ex) {
+            OrcsScriptExecutor executor = getExecutor(assembler);
+            return executor.execute(session, parameters);
+         } catch (Exception ex) {
             throw newException(ex);
          } finally {
-            try {
-               if (writer != null) {
-                  writer.flush();
-               }
-            } catch (IOException ex) {
-               throw newException(ex);
-            }
+            output.onEvalEnd();
          }
       }
 
-      private void writeScriptData(JsonGenerator writer, Map<String, Object> binding) throws IOException {
-         if (binding != null && !binding.isEmpty()) {
-            writer.writeFieldName("parameters");
-            writer.writeStartObject();
-            for (Entry<String, Object> entry : binding.entrySet()) {
-               writer.writeStringField(entry.getKey(), String.valueOf(entry.getValue()));
+      private Map<String, Object> asMap(ScriptContext context) {
+         Map<String, Object> data = new LinkedHashMap<String, Object>();
+         for (Integer scope : context.getScopes()) {
+            Bindings bindings = context.getBindings(scope);
+            if (bindings != null) {
+               for (Entry<String, Object> entry : bindings.entrySet()) {
+                  data.put(entry.getKey(), entry.getValue());
+               }
             }
-            writer.writeEndObject();
          }
-         writer.writeStringField("script", script);
+         return data;
       }
    }
 

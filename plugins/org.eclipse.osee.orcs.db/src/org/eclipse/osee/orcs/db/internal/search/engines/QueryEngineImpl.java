@@ -63,4 +63,14 @@ public class QueryEngineImpl implements QueryEngine {
       return txQueryEngineFactory.createQuery(session, queryData, handler);
    }
 
+   @Override
+   public CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
+      return null;
+   }
+
+   @Override
+   public CancellableCallable<Integer> createQueryCount(OrcsSession session, QueryData queryData) {
+      return null;
+   }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.script;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.orcs.data.HasBranch;
-import org.eclipse.osee.orcs.data.HasSession;
-import org.eclipse.osee.orcs.data.HasTransaction;
+import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface LoadDescription extends HasOptions, HasSession, HasBranch, HasTransaction {
+public interface OrcsScriptInterpreter {
 
-   @Override
-   IOseeBranch getBranch();
-
-   boolean isMultiBranch();
-
-   ResultObjectDescription getObjectDescription();
+   void interpret(OrcsScript model, OrcsScriptAssembler assembler);
 
 }

@@ -20,16 +20,18 @@ import java.util.List;
 public class QueryData implements HasOptions, Cloneable {
 
    private final List<CriteriaSet> criterias;
+   private final SelectData selectData;
    private final Options options;
 
-   public QueryData(CriteriaSet criteriaSet, Options options) {
-      this(options, new ArrayList<CriteriaSet>());
-      criterias.add(criteriaSet);
+   public QueryData(Options options, List<CriteriaSet> criterias, SelectData selectData) {
+      this.criterias = criterias;
+      this.selectData = selectData;
+      this.options = options;
    }
 
-   public QueryData(Options options, List<CriteriaSet> criterias) {
-      this.criterias = criterias;
-      this.options = options;
+   public QueryData(CriteriaSet criteriaSet, Options options) {
+      this(options, new ArrayList<CriteriaSet>(), new SelectData());
+      criterias.add(criteriaSet);
    }
 
    @Override
@@ -53,18 +55,23 @@ public class QueryData implements HasOptions, Cloneable {
       return !criterias.isEmpty() ? criterias.get(criterias.size() - 1) : null;
    }
 
-   public CriteriaSet getFirstCriteriaSet() {
-      return !criterias.isEmpty() ? criterias.get(0) : null;
-   }
-
-   public int size() {
-      return criterias.size();
-   }
-
    public CriteriaSet newCriteriaSet() {
       CriteriaSet criteriaSet = new CriteriaSet();
       criterias.add(criteriaSet);
+      selectData.newSelectSet();
       return criteriaSet;
+   }
+
+   public SelectSet getSelectSet() {
+      SelectSet data = selectData.getLast();
+      if (data == null) {
+         data = selectData.newSelectSet();
+      }
+      return data;
+   }
+
+   public List<SelectSet> getSelectSets() {
+      return selectData.getAll();
    }
 
    public void addCriteria(Criteria... criterias) {
@@ -94,7 +101,6 @@ public class QueryData implements HasOptions, Cloneable {
          criteriaSet.reset();
       }
       criterias.clear();
-
       if (criteriaSet != null) {
          criterias.add(criteriaSet);
       }
@@ -102,16 +108,17 @@ public class QueryData implements HasOptions, Cloneable {
 
    @Override
    public QueryData clone() {
-      List<CriteriaSet> cloned = new ArrayList<CriteriaSet>(criterias.size());
+      List<CriteriaSet> newCriterias = new ArrayList<CriteriaSet>(criterias.size());
       for (CriteriaSet criteriaSet : criterias) {
-         cloned.add(criteriaSet.clone());
+         newCriterias.add(criteriaSet.clone());
       }
-      return new QueryData(options.clone(), cloned);
+      SelectData newSelectData = selectData.clone();
+      return new QueryData(options.clone(), newCriterias, newSelectData);
    }
 
    @Override
    public String toString() {
-      return "QueryData [criteriaSet(s)=" + criterias + ", options=" + options + "]";
+      return "QueryData [criterias=" + criterias + ", selects=" + selectData + ", options=" + options + "]";
    }
 
 }

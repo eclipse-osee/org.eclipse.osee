@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -182,8 +181,8 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
 
    private QueryData build(boolean clone) {
       QueryData queryData = clone ? getQueryData().clone() : getQueryData();
-      CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
-      if (criteriaSet.getCriterias().isEmpty()) {
+      Collection<Criteria> criterias = queryData.getAllCriteria();
+      if (criterias.isEmpty()) {
          addAndCheck(queryData, criteriaFactory.createAllBranchesCriteria());
       }
       if (!areArchivedIncluded()) {
