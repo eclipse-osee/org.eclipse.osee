@@ -424,6 +424,16 @@ public final class OseeStatementImpl implements IOseeStatement {
       }
    }
 
+   @Override
+   public Object getObject(String columnName) throws OseeCoreException {
+      try {
+         return rSet.getObject(columnName);
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
+      }
+   }
+
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
     * row

@@ -86,6 +86,8 @@ public interface IOseeStatement extends Closeable {
 
    Object getObject(int columnIndex) throws OseeCoreException;
 
+   Object getObject(String columnName) throws OseeCoreException;
+
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
     * row
