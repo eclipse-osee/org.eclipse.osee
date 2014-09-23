@@ -18,8 +18,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TreeItem;
@@ -47,13 +45,6 @@ public class OSEECheckedFilteredTree extends OSEEFilteredTree {
       getFilterControl().addModifyListener(new ModifyListener() {
          @Override
          public void modifyText(ModifyEvent e) {
-            restoreChecked(treeViewer.getTree().getItems());
-         }
-      });
-      getViewer().getTree().addPaintListener(new PaintListener() {
-
-         @Override
-         public void paintControl(PaintEvent e) {
             restoreChecked(treeViewer.getTree().getItems());
          }
       });
