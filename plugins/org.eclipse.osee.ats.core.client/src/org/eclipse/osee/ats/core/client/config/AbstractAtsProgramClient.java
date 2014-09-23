@@ -60,8 +60,9 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       if (teamDefinition == null) {
-         AtsClientService.get().getConfig().getSoleByGuid(
-            artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""), IAtsTeamDefinition.class);
+         teamDefinition =
+            AtsClientService.get().getConfig().getSoleByGuid(
+               artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""), IAtsTeamDefinition.class);
       }
       return teamDefinition;
    }

@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectMultiChoiceSelect;
+import org.eclipse.osee.ats.util.widgets.dialog.ClosureStateMultiChoiceSelect;
+import org.eclipse.osee.ats.util.widgets.dialog.VersionMultiChoiceSelect;
 import org.eclipse.osee.ats.util.widgets.role.XUserRoleViewer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -107,6 +109,10 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new XCpaOpenOriginatingPcrWidget();
       } else if (widgetName.equals(XCpaOpenDuplicatedPcrWidget.WIDGET_ID)) {
          return new XCpaOpenDuplicatedPcrWidget();
+      } else if (widgetName.equals(VersionMultiChoiceSelect.WIDGET_ID)) {
+         return new VersionMultiChoiceSelect();
+      } else if (widgetName.equals(ClosureStateMultiChoiceSelect.WIDGET_ID)) {
+         return new ClosureStateMultiChoiceSelect();
       }
       return toReturn;
    }
