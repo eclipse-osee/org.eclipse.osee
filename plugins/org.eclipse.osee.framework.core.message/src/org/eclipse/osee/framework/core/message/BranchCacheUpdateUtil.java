@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -45,15 +44,15 @@ public final class BranchCacheUpdateUtil {
    }
 
    private final BranchFactory factory;
-   private final TransactionCache txCache;
    public static final Long DEFAULT_UUID = -1L;
+   private final BranchCache branchCache;
 
-   public BranchCacheUpdateUtil(BranchFactory factory, TransactionCache txCache) {
+   public BranchCacheUpdateUtil(BranchFactory factory, BranchCache branchCache) {
       this.factory = factory;
-      this.txCache = txCache;
+      this.branchCache = branchCache;
    }
 
-   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage, IOseeCache<Long, Branch> cache) throws OseeCoreException {
+   public Collection<Branch> updateCache(AbstractBranchCacheMessage cacheMessage) throws OseeCoreException {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
       Map<Long, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
@@ -63,7 +62,7 @@ public final class BranchCacheUpdateUtil {
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
          long branchUuid = srcItem.getBranchId();
          Branch updated =
-            factory.createOrUpdate(cache, branchUuid, srcItem.getBranchName(), srcItem.getBranchType(),
+            factory.createOrUpdate(branchCache, branchUuid, srcItem.getBranchName(), srcItem.getBranchType(),
                srcItem.getBranchState(), srcItem.getBranchArchived().isArchived(), srcItem.getStorageState(),
                srcItem.isInheritAccessControl());
          updatedItems.add(updated);
@@ -78,19 +77,19 @@ public final class BranchCacheUpdateUtil {
       }
 
       for (Entry<Long, Long> entry : cacheMessage.getChildToParent().entrySet()) {
-         Branch parent = cache.getById(entry.getValue());
+         Branch parent = branchCache.getById(entry.getValue());
          if (parent != null) {
-            Branch child = cache.getById(entry.getKey());
+            Branch child = branchCache.getById(entry.getKey());
             if (child != null) {
                child.setParentBranch(parent);
             }
          }
       }
       for (Triplet<Long, Long, Long> entry : cacheMessage.getMergeBranches()) {
-         IOseeBranch sourceBranch = entry.getFirst() > 0 ? cache.getByGuid(entry.getFirst()) : null;
-         IOseeBranch destinationBranch = entry.getSecond() > 0 ? cache.getByGuid(entry.getSecond()) : null;
+         IOseeBranch sourceBranch = entry.getFirst() > 0 ? branchCache.getByGuid(entry.getFirst()) : null;
+         IOseeBranch destinationBranch = entry.getSecond() > 0 ? branchCache.getByGuid(entry.getSecond()) : null;
 
-         Branch branch = cache.getByGuid(entry.getThird());
+         Branch branch = branchCache.getByGuid(entry.getThird());
          MergeBranch mergeBranch = null;
          try {
             mergeBranch = (MergeBranch) branch;
@@ -108,7 +107,7 @@ public final class BranchCacheUpdateUtil {
       Set<Integer> txIdsToLoad = new HashSet<Integer>();
       addValidTxIds(cacheMessage.getBranchToBaseTx().values(), txIdsToLoad);
       addValidTxIds(cacheMessage.getBranchToSourceTx().values(), txIdsToLoad);
-      txCache.loadTransactions(txIdsToLoad);
+      branchCache.loadTransactions(txIdsToLoad);
    }
 
    private void addValidTxIds(Collection<Integer> source, Collection<Integer> destination) {
@@ -123,7 +122,7 @@ public final class BranchCacheUpdateUtil {
       TransactionRecord tx = null;
       Integer txId = branchToTx.get(branchUuid);
       if (txId != null && txId > 0) {
-         tx = txCache.getOrLoad(txId);
+         tx = branchCache.getOrLoad(txId);
       }
       return tx;
    }

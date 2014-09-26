@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -63,7 +63,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
    private final List<Integer> txIdsToDelete;
    private boolean success;
-   private final TransactionCache transactionCache;
+   private final BranchCache branchCache;
    public static interface PurgeTransactionListener {
       void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions);
    }
@@ -71,15 +71,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
    private Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, TransactionCache transactionCache, OperationLogger logger, List<Integer> txIdsToDelete) {
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, BranchCache branchCache, OperationLogger logger, List<Integer> txIdsToDelete) {
       super(databaseService, "Purge transactions " + txIdsToDelete, ServiceUtil.PLUGIN_ID, logger);
       this.success = false;
-      this.transactionCache = transactionCache;
+      this.branchCache = branchCache;
       this.txIdsToDelete = txIdsToDelete;
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, TransactionCache transactionCache, List<Integer> txIdsToDelete) {
-      this(databaseService, transactionCache, NullOperationLogger.getSingleton(), txIdsToDelete);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, BranchCache branchCache, List<Integer> txIdsToDelete) {
+      this(databaseService, branchCache, NullOperationLogger.getSingleton(), txIdsToDelete);
    }
 
    public void addListener(PurgeTransactionListener listener) {
@@ -115,7 +115,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
          List<Object[]> txsToDelete = new ArrayList<Object[]>();
          logf("Adding tx to list: %d", txIdToDelete);
-         TransactionRecord toDeleteTransaction = transactionCache.getOrLoad(txIdToDelete);
+         TransactionRecord toDeleteTransaction = branchCache.getOrLoad(txIdToDelete);
          changedTransactions.add(toDeleteTransaction);
          Conditions.checkNotNull(toDeleteTransaction, "transaction", " record [%s]", txIdToDelete);
          txsToDelete.add(new Object[] {toDeleteTransaction.getBranch().getUuid(), txIdToDelete});
@@ -217,10 +217,10 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    }
 
    private TransactionRecord findPriorTransactions(Integer txIdToDelete) throws OseeCoreException {
-      TransactionRecord fromTransaction = transactionCache.getOrLoad(txIdToDelete);
+      TransactionRecord fromTransaction = branchCache.getOrLoad(txIdToDelete);
       TransactionRecord previousTransaction;
       try {
-         previousTransaction = transactionCache.getPriorTransaction(fromTransaction);
+         previousTransaction = branchCache.getPriorTransaction(fromTransaction);
       } catch (TransactionDoesNotExist ex) {
          throw new OseeArgumentException(
             "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",

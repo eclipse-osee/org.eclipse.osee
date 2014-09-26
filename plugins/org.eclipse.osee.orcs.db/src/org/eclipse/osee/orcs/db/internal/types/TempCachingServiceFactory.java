@@ -55,22 +55,17 @@ public class TempCachingServiceFactory implements CacheServiceFactory {
       final TransactionCache txCache = new TransactionCache();
       final BranchCache branchCache =
          new BranchCache(new DatabaseBranchAccessor(logger, session, executorAdmin, eventService, dbService, txCache,
-            modelFactoryService.getBranchFactory()));
+            modelFactoryService.getBranchFactory()), txCache);
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(dbService, branchCache,
          modelFactoryService.getTransactionFactory()));
 
-      final List<IOseeCache<?, ?>> caches = Arrays.<IOseeCache<?, ?>> asList(txCache, branchCache);
+      final List<IOseeCache<?, ?>> caches = Arrays.<IOseeCache<?, ?>> asList(branchCache);
 
       return new TempCachingService() {
 
          @Override
          public BranchCache getBranchCache() {
             return branchCache;
-         }
-
-         @Override
-         public TransactionCache getTransactionCache() {
-            return txCache;
          }
 
          @Override
@@ -93,15 +88,18 @@ public class TempCachingServiceFactory implements CacheServiceFactory {
          }
 
          @Override
-         public void reloadAll() throws OseeCoreException {
+         public synchronized void reloadAll() throws OseeCoreException {
             getBranchCache().reloadCache();
-            getTransactionCache().reloadCache();
          }
 
          @Override
-         public void clearAll() {
+         public synchronized void clearAll() {
             getBranchCache().decacheAll();
-            getTransactionCache().decacheAll();
+         }
+
+         @Override
+         public TransactionCache getTransactionCache() {
+            throw new UnsupportedOperationException("Server should not call this");
          }
 
       };

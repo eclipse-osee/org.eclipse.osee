@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
@@ -38,7 +39,7 @@ public final class DeletedBranchProviderTest {
 
    @Test
    public void testGetBranches() throws OseeCoreException {
-      BranchCache mockCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
+      BranchCache mockCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
 
       Collection<Branch> branches = MockBranchProvider.createTestBranches();
       mockCache.cache(branches.toArray(new Branch[branches.size()]));

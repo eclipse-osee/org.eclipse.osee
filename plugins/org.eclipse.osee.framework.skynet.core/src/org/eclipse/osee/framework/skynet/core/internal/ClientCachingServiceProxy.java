@@ -112,7 +112,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       TransactionCache transactionCache = new TransactionCache();
       ClientBranchAccessor clientBranchAccessor =
          new ClientBranchAccessor(factory.getBranchFactory(), transactionCache);
-      BranchCache branchCache = new BranchCache(clientBranchAccessor);
+      BranchCache branchCache = new BranchCache(clientBranchAccessor, transactionCache);
       clientBranchAccessor.setBranchCache(branchCache);
 
       TransactionRecordFactory txFactory = factory.getTransactionFactory();

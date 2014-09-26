@@ -58,7 +58,7 @@ public class BranchDataFactoryTest {
 
       when(author.getLocalId()).thenReturn(55);
       when(associatedArtifact.getLocalId()).thenReturn(66);
-      factory = new BranchDataFactory(branchCache, txCache);
+      factory = new BranchDataFactory(branchCache);
    }
 
    @Test
@@ -69,12 +69,12 @@ public class BranchDataFactoryTest {
       when(branch.getUuid()).thenReturn(branchUuid);
 
       when(branchCache.getSystemRootBranch()).thenReturn(parent);
-      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
 
       CreateBranchData result = factory.createTopLevelBranchData(branch, author);
 
       verify(branchCache).getSystemRootBranch();
-      verify(txCache).getHeadTransaction(parent);
+      verify(branchCache).getHeadTransaction(parent);
 
       String comment = "Branch Creation for " + branchName;
       assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, null, false);
@@ -88,12 +88,12 @@ public class BranchDataFactoryTest {
       when(branch.getUuid()).thenReturn(branchUuid);
 
       when(branchCache.get(parentToken)).thenReturn(parent);
-      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
 
       CreateBranchData result = factory.createBaselineBranchData(branch, author, parentToken, associatedArtifact);
 
       verify(branchCache).get(parentToken);
-      verify(txCache).getHeadTransaction(parent);
+      verify(branchCache).getHeadTransaction(parent);
 
       String comment = "Branch Creation for " + branchName;
       assertData(result, branchName, branchUuid, BranchType.BASELINE, comment, txRecord, author, associatedArtifact,
@@ -111,12 +111,12 @@ public class BranchDataFactoryTest {
       when(parent.getName()).thenReturn(parentName);
 
       when(branchCache.get(parentToken)).thenReturn(parent);
-      when(txCache.getHeadTransaction(parent)).thenReturn(txRecord);
+      when(branchCache.getHeadTransaction(parent)).thenReturn(txRecord);
 
       CreateBranchData result = factory.createWorkingBranchData(branch, author, parentToken, associatedArtifact);
 
       verify(branchCache).get(parentToken);
-      verify(txCache).getHeadTransaction(parent);
+      verify(branchCache).getHeadTransaction(parent);
 
       String comment = String.format("New Branch from %s (%s)", parentName, txRecord.getId());
       assertData(result, branchName, branchUuid, BranchType.WORKING, comment, txRecord, author, associatedArtifact,
@@ -133,14 +133,14 @@ public class BranchDataFactoryTest {
 
       when(parent.getName()).thenReturn(parentName);
 
-      when(txCache.getOrLoad(99)).thenReturn(txRecord);
+      when(branchCache.getOrLoad(99)).thenReturn(txRecord);
       when(txRecord.getBranch()).thenReturn(parent);
 
       ITransaction tx = TokenFactory.createTransaction(99);
 
       CreateBranchData result = factory.createCopyTxBranchData(branch, author, tx, null);
 
-      verify(txCache).getOrLoad(99);
+      verify(branchCache).getOrLoad(99);
       verify(txRecord).getBranch();
 
       String comment = String.format("Transaction %d copied from %s to create Branch %s", 99, parentName, branchName);
@@ -157,14 +157,14 @@ public class BranchDataFactoryTest {
 
       when(parent.getName()).thenReturn(parentName);
 
-      when(txCache.getOrLoad(99)).thenReturn(txRecord);
+      when(branchCache.getOrLoad(99)).thenReturn(txRecord);
       when(txRecord.getBranch()).thenReturn(parent);
 
       ITransaction tx = TokenFactory.createTransaction(99);
 
       CreateBranchData result = factory.createPortBranchData(branch, author, tx, null);
 
-      verify(txCache).getOrLoad(99);
+      verify(branchCache).getOrLoad(99);
       verify(txRecord).getBranch();
 
       String comment = String.format("Transaction %d ported from %s to create Branch %s", 99, parentName, branchName);

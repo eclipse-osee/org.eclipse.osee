@@ -78,22 +78,19 @@ public class BranchModule {
          @Override
          public Callable<Branch> createBranch(OrcsSession session, CreateBranchData branchData) {
             return new CreateBranchDatabaseTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               cachingService.getTransactionCache(), modelFactory.getBranchFactory(),
-               modelFactory.getTransactionFactory(), branchData);
+               modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(), branchData);
          }
 
          @Override
          public Callable<Branch> createBranchCopyTx(OrcsSession session, CreateBranchData branchData) {
             return new BranchCopyTxCallable(logger, session, dbService, cachingService.getBranchCache(),
-               cachingService.getTransactionCache(), modelFactory.getBranchFactory(),
-               modelFactory.getTransactionFactory(), branchData);
+               modelFactory.getBranchFactory(), modelFactory.getTransactionFactory(), branchData);
          }
 
          @Override
          public Callable<TransactionRecord> commitBranch(OrcsSession session, ArtifactReadable committer, Branch source, Branch destination) {
             return new CommitBranchDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(),
-               cachingService.getTransactionCache(), modelFactory.getTransactionFactory(), committer, source,
-               destination, missingChangeItemFactory);
+               modelFactory.getTransactionFactory(), committer, source, destination, missingChangeItemFactory);
          }
 
          @Override
@@ -103,8 +100,8 @@ public class BranchModule {
 
          @Override
          public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionRecord sourceTx, TransactionRecord destinationTx) {
-            return new CompareDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(),
-               cachingService.getTransactionCache(), sourceTx, destinationTx, missingChangeItemFactory);
+            return new CompareDatabaseCallable(logger, session, dbService, cachingService.getBranchCache(), sourceTx,
+               destinationTx, missingChangeItemFactory);
          }
 
          @Override

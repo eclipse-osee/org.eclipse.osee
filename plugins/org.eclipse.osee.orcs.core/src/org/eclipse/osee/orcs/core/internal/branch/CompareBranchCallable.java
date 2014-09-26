@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -23,15 +23,15 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 
 public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeItem>> {
 
-   private final TransactionCache txCache;
    private final ITransaction sourceTx;
    private final ITransaction destinationTx;
+   private final BranchCache branchCache;
 
-   public CompareBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, TransactionCache txCache, ITransaction sourceTx, ITransaction destinationTx) {
+   public CompareBranchCallable(Log logger, OrcsSession session, BranchCache branchCache, BranchDataStore branchStore, ITransaction sourceTx, ITransaction destinationTx) {
       super(logger, session, branchStore);
-      this.txCache = txCache;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
+      this.branchCache = branchCache;
    }
 
    @Override
@@ -39,8 +39,8 @@ public class CompareBranchCallable extends AbstractBranchCallable<List<ChangeIte
       Conditions.checkNotNull(sourceTx, "sourceTx");
       Conditions.checkNotNull(destinationTx, "destinationTx");
 
-      TransactionRecord source = txCache.getOrLoad(sourceTx.getGuid());
-      TransactionRecord destination = txCache.getOrLoad(destinationTx.getGuid());
+      TransactionRecord source = branchCache.getOrLoad(sourceTx.getGuid());
+      TransactionRecord destination = branchCache.getOrLoad(destinationTx.getGuid());
 
       Conditions.checkNotNull(source, "sourceTx");
       Conditions.checkNotNull(destination, "destinationTx");

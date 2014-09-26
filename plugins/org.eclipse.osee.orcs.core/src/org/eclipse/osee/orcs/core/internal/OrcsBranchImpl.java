@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,17 +53,15 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final OrcsSession session;
    private final BranchDataStore branchStore;
    private final BranchCache branchCache;
-   private final TransactionCache txCache;
    private final BranchDataFactory branchDataFactory;
    private final OrcsTypes orcsTypes;
 
-   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, TransactionCache txCache, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
+   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, BranchCache branchCache, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;
       this.branchCache = branchCache;
-      this.txCache = txCache;
-      branchDataFactory = new BranchDataFactory(branchCache, txCache);
+      branchDataFactory = new BranchDataFactory(branchCache);
       this.orcsTypes = orcsTypes;
    }
 
@@ -95,14 +92,14 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(ITransaction sourceTx, ITransaction destinationTx) {
-      return new CompareBranchCallable(logger, session, branchStore, txCache, sourceTx, destinationTx);
+      return new CompareBranchCallable(logger, session, branchCache, branchStore, sourceTx, destinationTx);
    }
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException {
       Branch fullBranch = branchCache.get(branch);
       TransactionRecord fromTx = fullBranch.getBaseTransaction();
-      TransactionRecord toTx = txCache.getHeadTransaction(fullBranch);
+      TransactionRecord toTx = branchCache.getHeadTransaction(fullBranch);
       return branchStore.compareBranch(session, fromTx, toTx);
    }
 

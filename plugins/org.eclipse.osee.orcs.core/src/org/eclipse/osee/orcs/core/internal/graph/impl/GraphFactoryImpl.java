@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
@@ -25,12 +24,10 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
 public class GraphFactoryImpl implements GraphFactory {
 
    private final BranchCache branchCache;
-   private final TransactionCache txCache;
 
-   public GraphFactoryImpl(BranchCache branchCache, TransactionCache txCache) {
+   public GraphFactoryImpl(BranchCache branchCache) {
       super();
       this.branchCache = branchCache;
-      this.txCache = txCache;
    }
 
    @Override
@@ -41,7 +38,7 @@ public class GraphFactoryImpl implements GraphFactory {
    @Override
    public GraphData createGraphSetToHeadTx(IOseeBranch branch) throws OseeCoreException {
       Branch fullBranch = branchCache.get(branch);
-      TransactionRecord headTransaction = txCache.getHeadTransaction(fullBranch);
+      TransactionRecord headTransaction = branchCache.getHeadTransaction(fullBranch);
       return createGraph(branch, headTransaction.getId());
    }
 

@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
@@ -100,9 +101,9 @@ public final class MockDataFactory {
          value++;
       }
       MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<Long, Branch>();
-      BranchCache cache = new BranchCache(accessor);
-      return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42, type,
-         cache);
+      BranchCache cache = new BranchCache(accessor, new TransactionCache());
+      return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42,
+         type, cache);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ public class RenderingUtilTest {
 
    @BeforeClass
    public static void setUpOnce() throws OseeCoreException {
-      cache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
+      cache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
       branch = createBranch(cache, "Test 1", 1);
    }
 

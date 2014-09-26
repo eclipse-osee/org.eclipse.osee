@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -46,7 +45,6 @@ import org.eclipse.osee.orcs.db.internal.util.IdUtil;
 public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Branch> {
 
    private final BranchCache branchCache;
-   private final TransactionCache txCache;
    private final BranchFactory branchFactory;
    private final TransactionRecordFactory txFactory;
    private final CreateBranchData branchData;
@@ -61,18 +59,13 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
-   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, TransactionCache txCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
+   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchCache branchCache, BranchFactory branchFactory, TransactionRecordFactory txFactory, CreateBranchData branchData) {
       super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
       this.branchCache = branchCache;
-      this.txCache = txCache;
       this.branchFactory = branchFactory;
       this.txFactory = txFactory;
       this.branchData = branchData;
       //this.systemUserId = -1;
-   }
-
-   private TransactionCache getTxCache() {
-      return txCache;
    }
 
    private BranchCache getBranchCache() {
@@ -83,10 +76,10 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
    @Override
    public Branch handleTxWork(OseeConnection connection) throws OseeCoreException {
       // get the previous transaction, if there is one
-      int sourceTx = IdUtil.getSourceTxId(branchData, txCache);
-      TransactionRecord savedTx = txCache.getOrLoad(sourceTx);
+      int sourceTx = IdUtil.getSourceTxId(branchData, branchCache);
+      TransactionRecord savedTx = branchCache.getOrLoad(sourceTx);
 
-      TransactionRecord priorTx = txCache.getPriorTransaction(savedTx);
+      TransactionRecord priorTx = branchCache.getPriorTransaction(savedTx);
       // copy the branch up to the prior transaction - the goal is to have the provided
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
@@ -95,7 +88,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
 
       Callable<Branch> callable =
          new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getBranchCache(),
-            getTxCache(), branchFactory, txFactory, branchData);
+            branchFactory, txFactory, branchData);
 
       try {
          internalBranch = callable.call();
@@ -115,7 +108,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Bran
             txFactory.create(nextTransactionId, internalBranch, creationComment, timestamp,
                branchData.getUserArtifactId(), RelationalConstants.ART_ID_SENTINEL, TransactionDetailsType.Baselined);
 
-         txCache.cache(record);
+         branchCache.cache(record);
 
          populateTransaction(0.30, connection, record.getId(), internalBranch, savedTx);
 

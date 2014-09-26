@@ -45,7 +45,7 @@ public class PurgeTransactionOperationWithListener {
 
       final PurgeTransactionOperation op =
          new PurgeTransactionOperation(ServiceUtil.getOseeDatabaseService(),
-            ServiceUtil.getOseeCacheService().getTransactionCache(), txIdsToDelete);
+            ServiceUtil.getOseeCacheService().getBranchCache(), txIdsToDelete);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 

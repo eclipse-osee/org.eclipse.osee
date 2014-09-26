@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,7 +55,7 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
 
       List<Object[]> data = new ArrayList<Object[]>();
       IDataTranslationService service = new DataTranslationService();
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
       service.addTranslator(new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache),
          CoreTranslatorId.TRANSACTION_RECORD);
 

@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -78,7 +77,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
    private final IDataTranslationService translationService;
    private final IOseeModelFactoryService factoryService;
    private final BranchCache branchCache;
-   private final TransactionCache txCache;
    private final OrcsApi orcsApi;
    private static final StorageState DEFAULT_STORAGE_STATE = StorageState.CREATED;
 
@@ -86,7 +84,6 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
       super(logger);
       this.translationService = translationService;
       this.branchCache = cachingService.getBranchCache();
-      this.txCache = cachingService.getTransactionCache();
       this.orcsApi = orcsApi;
       this.factoryService = factoryService;
    }
@@ -163,7 +160,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
          Lib.close(inputStream);
       }
       Collection<Branch> updated =
-         new BranchCacheUpdateUtil(factoryService.getBranchFactory(), txCache).updateCache(updateRequest, branchCache);
+         new BranchCacheUpdateUtil(factoryService.getBranchFactory(), branchCache).updateCache(updateRequest);
 
       if (updateRequest.isServerUpdateMessage()) {
          for (Branch branch : updated) {
@@ -230,12 +227,12 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             Collection<TransactionRecord> record;
 
             if (updateRequest.getItemsIds().isEmpty()) {
-               record = txCache.getAll();
+               record = branchCache.getAllTx();
             } else {
                record = new ArrayList<TransactionRecord>();
-               txCache.loadTransactions(updateRequest.getItemsIds());
+               branchCache.loadTransactions(updateRequest.getItemsIds());
                for (Integer item : updateRequest.getItemsIds()) {
-                  record.add(txCache.getById(item));
+                  record.add(branchCache.getByTxId(item));
                }
             }
             response = TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record);

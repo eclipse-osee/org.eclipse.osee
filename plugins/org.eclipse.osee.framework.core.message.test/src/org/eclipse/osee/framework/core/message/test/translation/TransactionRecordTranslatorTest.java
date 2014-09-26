@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() {
-      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>());
+      BranchCache branchCache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
       ITranslator<TransactionRecord> translator =
          new TransactionRecordTranslator(new TransactionRecordFactory(), branchCache);
       List<Object[]> data = new ArrayList<Object[]>();

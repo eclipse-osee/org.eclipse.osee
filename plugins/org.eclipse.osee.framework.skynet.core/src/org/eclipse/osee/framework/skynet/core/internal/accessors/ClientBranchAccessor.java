@@ -66,7 +66,7 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Long, Branc
    @Override
    protected Collection<Branch> updateCache(IOseeCache<Long, Branch> cache) throws OseeCoreException {
       BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
-      return new BranchCacheUpdateUtil(getFactory(), transactionCache).updateCache(response, cache);
+      return new BranchCacheUpdateUtil(getFactory(), branchCache).updateCache(response);
    }
 
    @Override

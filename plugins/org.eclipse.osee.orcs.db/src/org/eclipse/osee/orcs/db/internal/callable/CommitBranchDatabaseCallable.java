@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,26 +34,20 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<TransactionRecord> {
 
    private final TransactionRecordFactory txFactory;
-   private final TransactionCache txCache;
    private final BranchCache branchCache;
    private final ArtifactReadable committer;
    private final Branch source;
    private final Branch destination;
    private final MissingChangeItemFactory missingChangeItemFactory;
 
-   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination, MissingChangeItemFactory missingChangeItemFactory) {
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionRecordFactory txFactory, ArtifactReadable committer, Branch source, Branch destination, MissingChangeItemFactory missingChangeItemFactory) {
       super(logger, session, service);
       this.branchCache = branchCache;
-      this.txCache = txCache;
       this.txFactory = txFactory;
       this.committer = committer;
       this.source = source;
       this.destination = destination;
       this.missingChangeItemFactory = missingChangeItemFactory;
-   }
-
-   private TransactionCache getTxCache() {
-      return txCache;
    }
 
    private BranchCache getBranchCache() {
@@ -66,7 +59,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    }
 
    private TransactionRecord getHeadTx(Branch branch) throws OseeCoreException {
-      return getTxCache().getTransaction(branch, TransactionVersion.HEAD);
+      return getBranchCache().getTransaction(branch, TransactionVersion.HEAD);
    }
 
    private Branch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
@@ -74,7 +67,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    }
 
    private TransactionRecord getMergeTx(Branch mergeBranch) throws OseeCoreException {
-      return mergeBranch != null ? getTxCache().getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
+      return mergeBranch != null ? getBranchCache().getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
    }
 
    private int getUserArtId() {
@@ -115,7 +108,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
             getUserArtId(), source, destination, mergeBranch, changes, getTxFactory());
       TransactionRecord commitTransaction = callAndCheckForCancel(commitCallable);
 
-      getTxCache().cache(commitTransaction);
+      getBranchCache().cache(commitTransaction);
 
       return commitTransaction;
    }

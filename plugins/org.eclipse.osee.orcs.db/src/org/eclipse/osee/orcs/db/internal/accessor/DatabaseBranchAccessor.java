@@ -224,4 +224,5 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
          OseeExceptions.wrapAndThrow(ex);
       }
    }
+
 }

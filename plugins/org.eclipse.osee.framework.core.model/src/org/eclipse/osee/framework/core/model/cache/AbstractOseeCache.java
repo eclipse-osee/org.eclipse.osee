@@ -61,7 +61,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public final synchronized void decacheAll() {
+   public synchronized void decacheAll() {
       clearAdditionalData();
       nameToTypeMap.clear();
       idToTypeMap.clear();

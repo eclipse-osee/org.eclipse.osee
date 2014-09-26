@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +30,6 @@ import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 
 public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<ChangeItem>> {
 
-   private final TransactionCache txCache;
    private final BranchCache branchCache;
    private final TransactionRecord sourceTx;
    private final TransactionRecord destinationTx;
@@ -40,17 +38,12 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
    private static final String SELECT_BASE_TRANSACTION =
       "select baseline_transaction_id from osee_branch where branch_id = ?";
 
-   public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionCache txCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
+   public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, BranchCache branchCache, TransactionRecord sourceTx, TransactionRecord destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
       super(logger, session, service);
       this.branchCache = branchCache;
-      this.txCache = txCache;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
       this.missingChangeItemFactory = missingChangeItemFactory;
-   }
-
-   private TransactionCache getTxCache() {
-      return txCache;
    }
 
    private BranchCache getBranchCache() {
@@ -88,7 +81,7 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
 
    private TransactionRecord getMergeTransaction(TransactionRecord sourceTx, TransactionRecord destinationTx) throws OseeCoreException {
       Branch mergeBranch = getBranchCache().findMergeBranch(sourceTx.getBranch(), destinationTx.getBranch());
-      return mergeBranch != null ? getTxCache().getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
+      return mergeBranch != null ? getBranchCache().getTransaction(mergeBranch, TransactionVersion.HEAD) : null;
    }
 
 }

@@ -152,8 +152,7 @@ public class OrcsApiImpl implements OrcsApi {
       RelationFactory relationFactory =
          new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory(), providerFactory);
 
-      final GraphFactory graphFactory =
-         new GraphFactoryImpl(cacheService.getBranchCache(), cacheService.getTransactionCache());
+      final GraphFactory graphFactory = new GraphFactoryImpl(cacheService.getBranchCache());
       GraphBuilderFactory graphBuilderFactory =
          new GraphBuilderFactory(logger, artifactFactory, attributeFactory, relationFactory);
 
@@ -222,7 +221,7 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
       return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), cacheService.getBranchCache(),
-         cacheService.getTransactionCache(), systemUser, getOrcsTypes(context));
+         systemUser, getOrcsTypes(context));
    }
 
    @Override

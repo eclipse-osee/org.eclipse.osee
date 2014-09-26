@@ -198,7 +198,12 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
 
    @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
-      getDataAccessor().load(this);
+      ITransactionDataAccessor dataAccessor = getDataAccessor();
+      if (dataAccessor != null) {
+         dataAccessor.load(this);
+      } else {
+         OseeLog.log(this.getClass(), Level.WARNING, "Transaction Data Accessor was null");
+      }
       OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
       return true;

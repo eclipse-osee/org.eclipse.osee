@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,18 +41,16 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
 
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
-   private final TransactionCache transactionCache;
    private final TransactionData transactionData;
 
    private final TransactionProcessorProvider provider;
    private final TransactionWriter writer;
 
-   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionCache transactionCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, BranchCache branchCache, TransactionRecordFactory factory, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
       super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
          transactionData.getComment(), transactionData.getBranch()));
       this.branchCache = branchCache;
       this.factory = factory;
-      this.transactionCache = transactionCache;
       this.provider = provider;
 
       this.writer = writer;
@@ -95,7 +92,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
          branch.setBranchState(BranchState.MODIFIED);
          branchCache.storeItems(branch);
       }
-      transactionCache.cache(txRecord);
+      branchCache.cache(txRecord);
       return new TransactionResultImpl(txRecord, changeSet);
    }
 

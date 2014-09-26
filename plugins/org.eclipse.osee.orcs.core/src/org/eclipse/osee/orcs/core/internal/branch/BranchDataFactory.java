@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -27,17 +26,15 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 public class BranchDataFactory {
 
    private final BranchCache branchCache;
-   private final TransactionCache txCache;
 
-   public BranchDataFactory(BranchCache branchCache, TransactionCache txCache) {
+   public BranchDataFactory(BranchCache branchCache) {
       super();
       this.branchCache = branchCache;
-      this.txCache = txCache;
    }
 
    public CreateBranchData createTopLevelBranchData(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException {
       Branch parentBranch = branchCache.getSystemRootBranch();
-      TransactionRecord fromTx = txCache.getHeadTransaction(parentBranch);
+      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
 
       String creationComment = String.format("Branch Creation for %s", branch.getName());
       return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, null, false);
@@ -45,7 +42,7 @@ public class BranchDataFactory {
 
    public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       Branch parentBranch = branchCache.get(parent);
-      TransactionRecord fromTx = txCache.getHeadTransaction(parentBranch);
+      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
 
       String creationComment = String.format("Branch Creation for %s", branch.getName());
       return createBranchData(branch, BranchType.BASELINE, creationComment, fromTx, author, associatedArtifact, false);
@@ -53,7 +50,7 @@ public class BranchDataFactory {
 
    public CreateBranchData createWorkingBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       Branch parentBranch = branchCache.get(parent);
-      TransactionRecord fromTx = txCache.getHeadTransaction(parentBranch);
+      TransactionRecord fromTx = branchCache.getHeadTransaction(parentBranch);
 
       String creationComment = String.format("New Branch from %s (%s)", parentBranch.getName(), fromTx.getId());
       return createBranchData(branch, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact, false);
@@ -61,7 +58,7 @@ public class BranchDataFactory {
 
    public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       int value = fromTransaction.getGuid();
-      TransactionRecord fromTx = txCache.getOrLoad(value);
+      TransactionRecord fromTx = branchCache.getOrLoad(value);
       IOseeBranch parent = fromTx.getBranch();
 
       String creationComment =
@@ -72,7 +69,7 @@ public class BranchDataFactory {
 
    public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactReadable author, ITransaction fromTransaction, ArtifactReadable associatedArtifact) throws OseeCoreException {
       int value = fromTransaction.getGuid();
-      TransactionRecord fromTx = txCache.getOrLoad(value);
+      TransactionRecord fromTx = branchCache.getOrLoad(value);
       IOseeBranch parent = fromTx.getBranch();
 
       String creationComment =
