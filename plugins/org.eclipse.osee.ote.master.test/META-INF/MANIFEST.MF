@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE Master Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.master.test
-Bundle-Version: 0.18.0.qualifier
+Bundle-Version: 0.18.1.qualifier
 Fragment-Host: org.eclipse.osee.ote.master;bundle-version="0.11.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit;bundle-version="4.10.0"
