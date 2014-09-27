@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -176,7 +178,17 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
 
    public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
       ensurePopulated();
-      getDataAccessor().loadTransactionRecord(this, transactionIds);
+
+      List<Integer> toLoad = new LinkedList<Integer>();
+      for (Integer txId : transactionIds) {
+         if (getById(txId) == null) {
+            toLoad.add(txId);
+         }
+      }
+
+      if (!toLoad.isEmpty()) {
+         getDataAccessor().loadTransactionRecord(this, toLoad);
+      }
    }
 
    @Override
