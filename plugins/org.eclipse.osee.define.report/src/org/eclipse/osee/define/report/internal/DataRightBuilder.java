@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,20 +114,23 @@ public class DataRightBuilder {
       Map<String, DataRight> toReturn = new HashMap<String, DataRight>();
 
       @SuppressWarnings("unchecked")
-      ArtifactReadable footerMappingArt = query.andIds(MAPPING_ARTIFACT).getResults().getExactlyOne();
+      ArtifactReadable footerMappingArt = query.andIds(MAPPING_ARTIFACT).getResults().getOneOrNull();
 
-      List<String> footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
-      for (String footer : footers) {
-         String[] enumToFooter = footer.split("\\n", 2);
-         if (enumToFooter.length == 2) {
-            DataRightId id = new DataRightId();
-            id.setId(GUID.create());
+      if (footerMappingArt != null) {
+         List<String> footers = new ArrayList<String>();
+         footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
+         for (String footer : footers) {
+            String[] enumToFooter = footer.split("\\n", 2);
+            if (enumToFooter.length == 2) {
+               DataRightId id = new DataRightId();
+               id.setId(GUID.create());
 
-            DataRight dataRight = new DataRight();
-            dataRight.setId(id);
-            dataRight.setContent(enumToFooter[1].trim());
+               DataRight dataRight = new DataRight();
+               dataRight.setId(id);
+               dataRight.setContent(enumToFooter[1].trim());
 
-            toReturn.put(enumToFooter[0].trim(), dataRight);
+               toReturn.put(enumToFooter[0].trim(), dataRight);
+            }
          }
       }
 
