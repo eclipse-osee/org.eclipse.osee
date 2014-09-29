@@ -28,6 +28,7 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -60,6 +61,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Matcher embeddedVolumeMatcher = Pattern.compile("\\{\\d+ (.*)\\}[ .]*").matcher("");
    private static final Matcher stripTrailingReqNameMatcher = Pattern.compile("(\\}|\\])(.*)").matcher("");
    private static final Matcher nonWordMatcher = Pattern.compile("[^A-Z_0-9]").matcher("");
+   private static final Matcher subsystemMatcher = Pattern.compile("\\w*\\.ss").matcher("");
 
    private final Collection<TraceHandler> traceHandlers;
    private final File file;
@@ -99,7 +101,8 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       requirementData.initialize(monitor);
       if (writeOutResults) {
          excelWriter.startSheet("srs <--> code units", 6);
-         excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
+         excelWriter.writeRow("Req in DB", "Subsystem", "Code Unit", "Requirement Name",
+            "Requirement Trace Mark in Code");
       }
 
       if (file.isFile()) {
@@ -147,7 +150,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          String relativePath = sourceFile.getPath().substring(pathPrefixLength);
          codeUnits.add(relativePath);
          for (TraceMark traceMark : tracemarks) {
-            handelReqTrace(relativePath, traceMark);
+            handelReqTrace(relativePath, traceMark, sourceFile);
             matchCount++;
          }
          if (matchCount == 0) {
@@ -217,7 +220,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       return canonicalReqReference;
    }
 
-   private void handelReqTrace(String path, TraceMark traceMark) throws OseeCoreException, IOException {
+   private void handelReqTrace(String path, TraceMark traceMark, File sourceFile) throws OseeCoreException, IOException {
       String foundStr;
       Artifact reqArtifact = null;
 
@@ -251,6 +254,15 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          }
       }
 
+      String subsystem = null;
+      subsystemMatcher.reset(sourceFile.getPath());
+      if (subsystemMatcher.find()) {
+         subsystem = subsystemMatcher.group();
+         subsystem = subsystem.replace(".ss", "");
+      } else {
+         subsystem = "no valid subsystem found";
+      }
+
       String name = null;
       if (reqArtifact != null) {
          name = reqArtifact.getName();
@@ -263,7 +275,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       }
 
       if (writeOutResults) {
-         excelWriter.writeRow(foundStr, path, name, traceMark);
+         excelWriter.writeRow(foundStr, subsystem, path, name, traceMark);
       }
    }
 
