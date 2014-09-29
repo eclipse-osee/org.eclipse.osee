@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +29,6 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -102,7 +102,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       if (writeOutResults) {
          excelWriter.startSheet("srs <--> code units", 6);
          excelWriter.writeRow("Req in DB", "Subsystem", "Code Unit", "Requirement Name",
-            "Requirement Trace Mark in Code");
+            "Requirement Trace Mark in Code", "Trace Mark Match");
       }
 
       if (file.isFile()) {
@@ -224,6 +224,18 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       String foundStr;
       Artifact reqArtifact = null;
 
+      boolean traceMatch = false;
+      String subSystem = null;
+
+      subsystemMatcher.reset(sourceFile.getPath());
+      if (subsystemMatcher.find()) {
+         subSystem = subsystemMatcher.group();
+         subSystem = subSystem.replace(".ss", "");
+         subSystem = subSystem.toUpperCase();
+      } else {
+         subSystem = "no valid subsystem found";
+      }
+
       if (traceMark.getTraceType().equals("Uses")) {
          foundStr = "invalid trace mark";
       } else {
@@ -251,16 +263,12 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
             }
          } else {
             foundStr = fullMatch(reqArtifact);
-         }
-      }
 
-      String subsystem = null;
-      subsystemMatcher.reset(sourceFile.getPath());
-      if (subsystemMatcher.find()) {
-         subsystem = subsystemMatcher.group();
-         subsystem = subsystem.replace(".ss", "");
-      } else {
-         subsystem = "no valid subsystem found";
+            List<String> partitions = reqArtifact.getAttributesToStringList(CoreAttributeTypes.Partition);
+            if (partitions.contains(subSystem)) {
+               traceMatch = true;
+            }
+         }
       }
 
       String name = null;
@@ -275,7 +283,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       }
 
       if (writeOutResults) {
-         excelWriter.writeRow(foundStr, subsystem, path, name, traceMark);
+         excelWriter.writeRow(foundStr, subSystem, path, name, traceMark, traceMatch);
       }
    }
 
