@@ -68,8 +68,6 @@ public class ServerShutdownCommand implements ConsoleCommand {
 
       @Override
       public Boolean call() throws Exception {
-         manager.setServletRequestsAllowed(false);
-
          while (!manager.isSystemIdle()) {
             try {
                Thread.sleep(1000);

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.core.server.internal.ApplicationServerLookup">
-	<implementation class="org.eclipse.osee.framework.core.server.internal.ApplicationServerLookup"/>
-	<service>
-		<provide interface="org.eclipse.osee.framework.core.server.IApplicationServerLookup"/>
-	</service>
- <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
- <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
-</scr:component>

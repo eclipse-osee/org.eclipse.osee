@@ -32,8 +32,6 @@ public interface IApplicationServerManager {
 
    List<String> getCurrentProcesses();
 
-   void setServletRequestsAllowed(boolean value) throws OseeCoreException;
-
    boolean executeLookupRegistration();
 
    String getId();
@@ -42,13 +40,7 @@ public interface IApplicationServerManager {
 
    Date getDateStarted();
 
-   boolean isAcceptingRequests();
-
-   String[] getSupportedVersions();
-
-   void addSupportedVersion(String version) throws OseeCoreException;
-
-   void removeSupportedVersion(String version) throws OseeCoreException;
+   String[] getVersions();
 
    void register(String context, OseeHttpServlet servlets) throws OseeCoreException;
 

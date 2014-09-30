@@ -129,8 +129,7 @@ public class ServerStatsCommand implements ConsoleCommand {
          console.writeln("Supported Authentication Schemes: %s", Arrays.deepToString(authManager.getProtocols()));
          console.writeln();
 
-         console.writeln("Supported Versions: %s", Arrays.deepToString(manager.getSupportedVersions()));
-         console.writeln("Accepting Requests: [%s]", manager.isAcceptingRequests());
+         console.writeln("Supported Versions: %s", Arrays.deepToString(manager.getVersions()));
          console.writeln(Lib.getMemoryInfo());
 
          logServlets(manager);

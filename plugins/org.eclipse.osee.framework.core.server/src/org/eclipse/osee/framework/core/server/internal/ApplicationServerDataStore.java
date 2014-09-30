@@ -13,42 +13,23 @@ package org.eclipse.osee.framework.core.server.internal;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IDbTransactionWork;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.logger.Log;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationServerDataStore {
 
-   private static final String SELECT_FROM_LOOKUP_TABLE =
-      "SELECT * FROM osee_server_lookup ORDER BY server_uri desc, version_id desc";
-
-   private static final String SELECT_FROM_LOOKUP_TABLE_BY_SERVER_ID =
-      "SELECT * FROM osee_server_lookup where server_id = ? ORDER BY version_id desc";
-
-   private final Log logger;
    private final IOseeDatabaseService dbService;
 
-   public ApplicationServerDataStore(Log logger, IOseeDatabaseService dbService) {
-      this.logger = logger;
+   public ApplicationServerDataStore(IOseeDatabaseService dbService) {
       this.dbService = dbService;
-   }
-
-   private Log getLogger() {
-      return logger;
    }
 
    private IOseeDatabaseService getDbService() {
@@ -70,62 +51,6 @@ public class ApplicationServerDataStore {
    private void executeTx(TxType op, OseeServerInfo info) throws OseeCoreException {
       IDbTransactionWork tx = new ServerLookupTx(getDbService(), op, info);
       DatabaseTransactions.execute(getDbService(), getDbService().getConnection(), tx);
-   }
-
-   public Collection<? extends OseeServerInfo> getAll() throws OseeCoreException {
-      Map<String, OseeServerInfoMutable> infos = new HashMap<String, OseeServerInfoMutable>();
-      IOseeStatement chStmt = getDbService().getStatement();
-      try {
-         chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
-         while (chStmt.next()) {
-            String serverId = chStmt.getString("server_id");
-            String serverVersion = chStmt.getString("version_id");
-            boolean isAcceptingRequests = chStmt.getInt("accepts_requests") != 0 ? true : false;
-
-            OseeServerInfoMutable info = infos.get(serverId);
-            if (info == null) {
-               String uri = chStmt.getString("server_uri");
-               Timestamp timestamp = chStmt.getTimestamp("start_time");
-               info =
-                  new OseeServerInfoMutable(serverId, uri, new String[] {serverVersion}, timestamp, isAcceptingRequests);
-               infos.put(serverId, info);
-            } else {
-               boolean acceptingRequests = info.isAcceptingRequests() && isAcceptingRequests;
-               info.addVersion(serverVersion);
-               info.setAcceptingRequests(acceptingRequests);
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
-      return infos.values();
-   }
-
-   public void refresh(OseeServerInfoMutable info) {
-      Set<String> original = info.getVersionSet();
-      boolean origAcceptingRequests = info.isAcceptingRequests();
-      IOseeStatement chStmt = null;
-      try {
-         chStmt = getDbService().getStatement();
-         chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE_BY_SERVER_ID, info.getServerId());
-         info.setVersions(Collections.<String> emptySet());
-         while (chStmt.next()) {
-            String serverVersion = chStmt.getString("version_id");
-            boolean isAcceptingRequests = chStmt.getInt("accepts_requests") != 0 ? true : false;
-
-            boolean acceptingRequests = info.isAcceptingRequests() && isAcceptingRequests;
-            info.addVersion(serverVersion);
-            info.setAcceptingRequests(acceptingRequests);
-         }
-      } catch (Exception ex) {
-         getLogger().info("Server lookup table is not initialized");
-         info.setVersions(original);
-         info.setAcceptingRequests(origAcceptingRequests);
-      } finally {
-         if (chStmt != null) {
-            chStmt.close();
-         }
-      }
    }
 
    private static enum TxType {

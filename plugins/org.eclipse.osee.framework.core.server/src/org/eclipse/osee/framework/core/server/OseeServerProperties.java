@@ -22,7 +22,6 @@ public class OseeServerProperties {
    private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String OSGI_SECURE_PORT_PROPERTY = "org.osgi.service.http.port.secure";
-   private static final String OSEE_VERSION = "osee.version";
 
    private static final String OSEE_AUTHENTICATION_PROTOCOL = "osee.authentication.protocol";
 
@@ -30,20 +29,6 @@ public class OseeServerProperties {
 
    private OseeServerProperties() {
       super();
-   }
-
-   /**
-    * Get OSEE application server version settings
-    * 
-    * @return OSEE application server versions
-    */
-   public static String[] getOseeVersion() {
-      String[] toReturn = new String[0];
-      String versionString = System.getProperty(OSEE_VERSION, "");
-      if (Strings.isValid(versionString)) {
-         toReturn = versionString.split(";");
-      }
-      return toReturn;
    }
 
    private static String internalGetOseeApplicationServerData() {

@@ -19,10 +19,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,9 +34,7 @@ import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
@@ -54,9 +50,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private IOseeDatabaseService dbService;
 
    private ApplicationServerDataStore dataStore;
-   private OseeServerInfoMutable serverInfo;
+   private OseeServerInfo serverInfo;
    private Timer timer;
-   private final Set<String> defaultVersions = new HashSet<String>();
 
    public ApplicationServerManager() {
       this.oseeHttpServlets = new ConcurrentHashMap<String, InternalOseeHttpServlet>();
@@ -80,18 +75,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    public void start() throws Exception {
-      defaultVersions.clear();
-      String[] userSpecifiedVersion = OseeServerProperties.getOseeVersion();
-      if (Conditions.hasValues(userSpecifiedVersion)) {
-         for (String version : userSpecifiedVersion) {
-            defaultVersions.add(version);
-         }
-      } else {
-         defaultVersions.add(OseeCodeVersion.getVersion());
-      }
-
-      dataStore = new ApplicationServerDataStore(getLogger(), getDatabaseService());
-      serverInfo = createOseeServerInfo(getLogger(), dataStore, defaultVersions);
+      dataStore = new ApplicationServerDataStore(getDatabaseService());
+      serverInfo = createOseeServerInfo(getLogger(), dataStore, OseeCodeVersion.getVersion());
       System.setProperty("OseeApplicationServer", serverInfo.getUri().toString());
 
       timer = new Timer();
@@ -100,15 +85,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
          public void run() {
             if (isDbInitialized()) {
                try {
-                  boolean wasRegistered = executeLookupRegistration();
-                  setServletRequestsAllowed(wasRegistered);
+                  executeLookupRegistration();
                } catch (Exception ex) {
                   getLogger().error(ex, "Error during lookup registration");
                } finally {
                   timer.cancel();
                }
-            } else {
-               setServletRequestsAllowedNoDbUpdate(true);
             }
          }
 
@@ -129,10 +111,9 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
    public void stop() {
       shutdown();
-      defaultVersions.clear();
    }
 
-   private static OseeServerInfoMutable createOseeServerInfo(Log logger, ApplicationServerDataStore dataStore, Set<String> defaultVersions) {
+   private static OseeServerInfo createOseeServerInfo(Log logger, ApplicationServerDataStore dataStore, String... defaultVersions) {
       String serverAddress = "127.0.0.1";
       try {
          serverAddress = InetAddress.getLocalHost().getCanonicalHostName();
@@ -156,26 +137,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
       } catch (Exception ex) {
          logger.error(ex, "Error generating application server id");
       }
-      OseeServerInfoMutable toReturn =
-         new OseeServerInfoMutable(checkSum, uri.toString(), new String[0], GlobalTime.GreenwichMeanTimestamp(), false);
-      toReturn.setVersions(defaultVersions);
-      return toReturn;
-   }
-
-   private void refreshData(OseeServerInfoMutable info) {
-      dataStore.refresh(info);
-
-      Set<String> supportedVersions = info.getVersionSet();
-      if (!supportedVersions.containsAll(defaultVersions)) {
-         supportedVersions.addAll(defaultVersions);
-         info.setVersions(supportedVersions);
-      }
+      return new OseeServerInfo(checkSum, uri.toString(), defaultVersions, GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
    @Override
    public boolean executeLookupRegistration() {
-      OseeServerInfoMutable info = getApplicationServerInfo();
-      refreshData(info);
+      OseeServerInfo info = getApplicationServerInfo();
       deregisterWithDb(info);
       boolean isRegistered = registerWithDb(info);
       if (isRegistered) {
@@ -187,7 +154,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
    @Override
    public void register(String context, OseeHttpServlet servlet) {
       InternalOseeHttpServlet internalServlet = servlet;
-      internalServlet.setRequestsAllowed(getApplicationServerInfo().isAcceptingRequests());
       this.oseeHttpServlets.put(context, internalServlet);
    }
 
@@ -202,7 +168,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return oseeHttpServlets.keySet();
    }
 
-   private OseeServerInfoMutable getApplicationServerInfo() {
+   private OseeServerInfo getApplicationServerInfo() {
       return serverInfo;
    }
 
@@ -227,43 +193,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return !Operations.areOperationsScheduled();
    }
 
-   private static enum PersistType {
-      ALLOW_DB_PERSIST,
-      DONT_DB_PERSIST;
-   }
-
-   private synchronized void setServletRequestsAllowed(final boolean value, PersistType persistType) throws OseeCoreException {
-      OseeServerInfoMutable info = getApplicationServerInfo();
-      info.setAcceptingRequests(value);
-      if (PersistType.ALLOW_DB_PERSIST == persistType) {
-         dataStore.update(info);
-      }
-      for (String contexts : oseeHttpServlets.keySet()) {
-         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-         servlets.setRequestsAllowed(value);
-      }
-   }
-
-   private void setServletRequestsAllowedNoDbUpdate(final boolean value) {
-      try {
-         setServletRequestsAllowed(value, PersistType.DONT_DB_PERSIST);
-      } catch (OseeCoreException ex) {
-         logger.warn(ex, "Error updating servlet requests allowed to [%s]- current setting is [%s]", value,
-            getApplicationServerInfo().isAcceptingRequests());
-      }
-   }
-
-   @Override
-   public synchronized void setServletRequestsAllowed(final boolean value) throws OseeCoreException {
-      setServletRequestsAllowed(value, PersistType.ALLOW_DB_PERSIST);
-   }
-
    @Override
    public void shutdown() {
       if (timer != null) {
          timer.cancel();
       }
-      OseeServerInfoMutable info = getApplicationServerInfo();
+      OseeServerInfo info = getApplicationServerInfo();
       deregisterWithDb(info);
    }
 
@@ -324,42 +259,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    @Override
-   public boolean isAcceptingRequests() {
-      return getApplicationServerInfo().isAcceptingRequests();
-   }
-
-   @Override
-   public String[] getSupportedVersions() {
-      OseeServerInfoMutable info = getApplicationServerInfo();
-      refreshData(info);
+   public String[] getVersions() {
       return getApplicationServerInfo().getVersion();
-   }
-
-   @Override
-   public void addSupportedVersion(String version) throws OseeCoreException {
-      Conditions.checkNotNull(version, "Osee Version");
-      OseeServerInfoMutable info = getApplicationServerInfo();
-      refreshData(info);
-      info.addVersion(version);
-      dataStore.update(info);
-   }
-
-   @Override
-   public void removeSupportedVersion(String version) throws OseeCoreException {
-      Conditions.checkNotNull(version, "Osee Version");
-      Conditions.checkExpressionFailOnTrue(defaultVersions.contains(version),
-         "Unable to remove default Osee version [%s]", version);
-
-      OseeServerInfoMutable info = getApplicationServerInfo();
-      refreshData(info);
-      Set<String> versions = info.getVersionSet();
-      boolean wasRemoved = versions.remove(version);
-      if (wasRemoved) {
-         info.setVersions(versions);
-         dataStore.update(info);
-      } else {
-         throw new OseeStateException("Not part of the supported version [%s]", version);
-      }
    }
 
    private boolean deregisterWithDb(OseeServerInfo info) {

@@ -24,7 +24,6 @@ import org.eclipse.osee.logger.Log;
  */
 public abstract class InternalOseeHttpServlet extends HttpServlet {
    private static final long serialVersionUID = -4965613535312739355L;
-   private boolean areRequestsAllowed;
    private boolean areLogsAllowed;
    private ProcessingStateEnum processingState;
    private HttpServletRequest request;
@@ -32,7 +31,6 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
 
    public InternalOseeHttpServlet(Log logger) {
       this.logger = logger;
-      this.areRequestsAllowed = true;
       this.areLogsAllowed = false;
       this.processingState = ProcessingStateEnum.IDLE;
       this.request = null;
@@ -42,16 +40,8 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
       return logger;
    }
 
-   protected boolean areRequestsAllowed() {
-      return areRequestsAllowed;
-   }
-
    protected boolean areLogsAllowed() {
       return areLogsAllowed;
-   }
-
-   void setRequestsAllowed(boolean value) {
-      areRequestsAllowed = value;
    }
 
    void setLogsAllowed(boolean value) {
@@ -76,20 +66,15 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
          start = System.currentTimeMillis();
       }
       try {
-         if (areRequestsAllowed()) {
-            this.processingState = ProcessingStateEnum.BUSY;
-            this.request = request;
-            try {
-               checkAccessControl(request);
-               super.service(request, response);
-            } catch (OseeCoreException ex) {
-               response.setStatus(HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED);
-               response.getWriter().write(Lib.exceptionToString(ex));
-               throw new ServletException(ex);
-            }
-         } else {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("All requests are currently blocked.");
+         this.processingState = ProcessingStateEnum.BUSY;
+         this.request = request;
+         try {
+            checkAccessControl(request);
+            super.service(request, response);
+         } catch (OseeCoreException ex) {
+            response.setStatus(HttpServletResponse.SC_PROXY_AUTHENTICATION_REQUIRED);
+            response.getWriter().write(Lib.exceptionToString(ex));
+            throw new ServletException(ex);
          }
       } finally {
          if (areLogsAllowed()) {

@@ -43,7 +43,7 @@ public class ClientResource {
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public Client get() throws OseeCoreException {
       Client client = new Client();
-      String[] supportedVersions = serverManager.getSupportedVersions();
+      String[] supportedVersions = serverManager.getVersions();
       for (String ver : supportedVersions) {
          client.addSupportedVersion(ver);
       }
