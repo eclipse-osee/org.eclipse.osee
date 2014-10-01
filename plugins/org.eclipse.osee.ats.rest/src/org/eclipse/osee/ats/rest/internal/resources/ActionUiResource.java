@@ -151,4 +151,22 @@ public final class ActionUiResource {
       return new ViewModel("search.html");
    }
 
+   /**
+    * @param id
+    * @return html representation w/ transition ui
+    */
+   @Path("{id}/Transition")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public ViewModel getTransition(@PathParam("id") String id) throws Exception {
+      ArtifactReadable action = atsServer.getArtifactById(id);
+      if (action == null) {
+         return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
+      }
+      IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
+      ActionPage page = new ActionPage(logger, atsServer, workItem, "Action - " + workItem.getAtsId(), false);
+      page.setAddTransition(true);
+      return page.generate();
+   }
+
 }

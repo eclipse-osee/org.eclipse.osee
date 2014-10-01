@@ -22,7 +22,8 @@ import org.junit.runners.Suite;
    ActionResourceTest.class,
    ActionUiResourceTest.class,
    ConvertResourceTest.class,
-   UserResourceTest.class})
+   UserResourceTest.class,
+   StateResourceTest.class})
 /**
  * This test suite contains test that can be run against any production db
  * 

@@ -106,10 +106,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchState getBranchState(IOseeBranch branch) {
       String branchState = dbService.runPreparedQueryFetchObject("", SELECT_BRANCH_STATE, branch.getUuid());
-      if (!Strings.isValid(branchState)) {
+      if (!Strings.isNumeric(branchState)) {
          return null;
       }
-      return BranchState.valueOf(branchState);
+      return BranchState.getBranchState(Integer.valueOf(branchState));
    }
 
    /**

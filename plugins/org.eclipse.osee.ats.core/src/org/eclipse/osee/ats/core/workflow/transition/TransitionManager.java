@@ -136,7 +136,7 @@ public class TransitionManager implements IAtsTransitionManager {
                if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                   String errStr =
                      String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
-                        toStateDef.getName(), fromStateDef.getName(), toStateDef.getName());
+                        fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
                   OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
                   results.addResult(workItem, new TransitionResult(errStr));
                   continue;

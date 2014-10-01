@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -80,6 +83,19 @@ public class ActionUiResourceTest extends AbstractRestTest {
    public void getSearch() throws Exception {
       String html = getAndCheck("/ats/ui/action/Search", MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("ATS - Search by Id"));
+   }
+
+   @Test
+   public void getTransition() throws Exception {
+      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
+      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
+      String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId() + "/Transition", MediaType.TEXT_HTML_TYPE);
+      Assert.assertTrue(html.contains("<input type=\"hidden\" name=\"atsId\" value=\"" + teamWf.getAtsId() + "\">"));
+      Matcher m = Pattern.compile(".*form action=\"\\/ats\\/action\\/state\" method=\"post\">").matcher(html);
+      Assert.assertTrue(m.find());
+      for (String stateName : Arrays.asList("Cancelled", "Completed", "Analyze", "Authorize")) {
+         Assert.assertTrue(html.contains("<option value=\"" + stateName + "\" guid=\"" + stateName + "\">"));
+      }
    }
 
 }

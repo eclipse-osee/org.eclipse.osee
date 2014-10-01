@@ -1,13 +1,13 @@
 	</br>
-   <form action="/ats/action/<?guid?>/state" method="post">
+   <form action="PUT_POST_URL_HERE" method="post">
 		<input type="hidden" name="operation" value="transition">
-		<input type="hidden" name="guid" value="<?guid?>">
+		<input type="hidden" name="atsId" value="PUT_ATS_ID_HERE">
 	   <button name="transitionButton">Transition</button>
-	   <label>To State</label> <input placeholder="type to filter" type="text" name="toState" <?defaultToStateValue?> id="toState" list="ToStateList" />
-	   <label>As User Id: </label><input type="text" name="asUserId" value="Joe Smith">
-	   <label>Cancel Reason: </label> <input type="text" name="reason" value="because">
+	   <label>To State</label> <input placeholder="type to filter" type="text" name="toState" PUT_DEFAULT_TO_STATE_VALUE_HERE id="toState" list="ToStateList" />
+	   <label>As User Id: </label><input type="text" name="asUserId" placeholder="123456">
+	   <label>Cancel Reason: </label> <input type="text" name="reason" placeholder="Enter if Cancelling">
 	</form>
 	</br>	
 	
-	<?ToStateList?>
+	PUT_TO_STATE_LIST_HERE
 	

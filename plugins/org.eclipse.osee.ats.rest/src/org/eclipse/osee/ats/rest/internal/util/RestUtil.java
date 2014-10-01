@@ -107,4 +107,8 @@ public class RestUtil {
       return Response.status(Status.BAD_REQUEST).entity(message).build();
    }
 
+   public static Response returnInternalServerError(String message) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).build();
+   }
+
 }

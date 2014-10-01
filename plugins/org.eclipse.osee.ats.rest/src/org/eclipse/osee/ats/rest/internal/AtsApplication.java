@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
 import org.eclipse.osee.ats.rest.internal.resources.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.resources.ConvertResource;
+import org.eclipse.osee.ats.rest.internal.resources.StateResource;
 import org.eclipse.osee.ats.rest.internal.resources.UserResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -73,6 +74,7 @@ public class AtsApplication extends Application {
 
       singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
       singletons.add(new ActionResource(atsServer, orcsApi));
+      singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));

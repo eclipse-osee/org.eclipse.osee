@@ -65,6 +65,11 @@ public class ActionPage {
    private static List<String> ignoredWidgets;
    private final boolean details;
 
+   public ActionPage(Log logger, IAtsServer atsServer, IAtsWorkItem workItem, String title, boolean details) {
+      this(logger, atsServer, (ArtifactReadable) workItem.getStoreObject(), title, details);
+      this.workItem = workItem;
+   }
+
    public ActionPage(Log logger, IAtsServer atsServer, ArtifactReadable action, String title, boolean details) {
       this.logger = logger;
       this.atsServer = atsServer;
@@ -173,14 +178,15 @@ public class ActionPage {
       try {
          IAtsWorkItem workItem = getWorkItem();
          String html = RestUtil.getResource("templates/transition.html");
-         html.replaceAll("guid", workItem.getGuid());
-         html.replaceFirst("ToStateList", getToStateList());
+         html = html.replaceAll("PUT_POST_URL_HERE", "/ats/action/state");
+         html = html.replaceAll("PUT_ATS_ID_HERE", workItem.getAtsId());
+         html = html.replaceFirst("PUT_TO_STATE_LIST_HERE", getToStateList());
          String defaultToStateValue = "";
          IAtsStateDefinition defaultToState = workItem.getStateDefinition().getDefaultToState();
          if (defaultToState != null) {
             defaultToStateValue = "value=\"" + defaultToState.getName() + "\"";
          }
-         html.replaceAll("defaultToStateValue", defaultToStateValue);
+         html = html.replaceAll("PUT_DEFAULT_TO_STATE_VALUE_HERE", defaultToStateValue);
          page.param("transition", html);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
@@ -188,13 +194,13 @@ public class ActionPage {
    }
 
    private String getToStateList() {
-      StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">");
+      StringBuilder sb = new StringBuilder("<datalist id=\"ToStateList\">\n");
       for (IAtsStateDefinition state : workItem.getStateDefinition().getToStates()) {
          sb.append("<option value=\"");
          sb.append(state.getName());
          sb.append("\" guid=\"");
          sb.append(state.getName());
-         sb.append("\">");
+         sb.append("\">\n");
       }
       sb.append("</datalist>");
       return sb.toString();
