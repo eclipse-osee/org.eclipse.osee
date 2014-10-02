@@ -41,7 +41,9 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
          }
       } else {
          Branch sourceBranch = txDelta.getStartTx().getFullBranch();
-         associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+         if (!sourceBranch.isDeleted()) {
+            associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+         }
       }
       monitor.worked(calculateWork(0.80));
       changeData.setAssociatedArtifact(associatedArtifact);

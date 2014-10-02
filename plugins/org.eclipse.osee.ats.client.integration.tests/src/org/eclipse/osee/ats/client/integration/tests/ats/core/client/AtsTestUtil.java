@@ -65,6 +65,7 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -454,6 +455,13 @@ public class AtsTestUtil {
       WorldEditor.closeAll();
       SMAEditor.closeAll();
       TaskEditor.closeAll();
+
+      if (teamArt != null) {
+         Branch workingBranch = teamArt.getWorkingBranch();
+         if (workingBranch != null) {
+            BranchManager.deleteBranchAndPend(workingBranch);
+         }
+      }
 
       AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup 1");
       delete(changes, peerRevArt);

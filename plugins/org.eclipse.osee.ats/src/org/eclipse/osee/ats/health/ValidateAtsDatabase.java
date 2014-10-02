@@ -833,9 +833,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          xResultData = new XResultData();
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
-      List<Integer> artIds = getCommonArtifactIds();
-      // ArtifactQuery.selectArtifactListFromBranch(AtsUtilCore.getAtsBranchToken(), EXCLUDE_DELETED);
-
+      List<Integer> artIds = getCommonArtifactIds(xResultData);
       if (artIds.isEmpty()) {
          xResultData.logError("Error: Artifact load returned 0 artifacts to check");
       }
@@ -843,11 +841,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return Collections.subDivide(artIds, 4000);
    }
 
-   private static List<Integer> getCommonArtifactIds() throws OseeCoreException {
+   private static List<Integer> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
       OseeConnection connection = ConnectionHandler.getConnection();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Integer> artIds = new ArrayList<Integer>();
-      ElapsedTime time = new ElapsedTime("getCommonArtifactIds");
+      xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
+
       try {
          chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtilCore.getAtsBranch().getUuid()});
          while (chStmt.next()) {
@@ -856,8 +855,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       } finally {
          chStmt.close();
          connection.close();
+         xResultData.log(null, "getCommonArtifactIds - Completed " + DateUtil.getMMDDYYHHMM());
       }
-      time.end();
       return artIds;
    }
 

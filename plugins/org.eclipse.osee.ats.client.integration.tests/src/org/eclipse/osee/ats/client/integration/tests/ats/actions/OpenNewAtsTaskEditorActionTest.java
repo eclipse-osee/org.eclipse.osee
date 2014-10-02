@@ -51,7 +51,7 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
 
                @Override
                public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-                  AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+                  AtsChangeSet changes = new AtsChangeSet(OpenNewAtsTaskEditorActionTest.class.getName());
                   Set<TaskArtifact> arts = Collections.singleton(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes));
                   changes.execute();
                   return arts;
