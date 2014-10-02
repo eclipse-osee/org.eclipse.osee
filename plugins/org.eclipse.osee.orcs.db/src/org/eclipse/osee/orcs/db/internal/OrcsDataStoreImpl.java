@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
@@ -46,7 +42,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
    private DataProxyFactoryProvider proxyProvider;
-   private EventService eventService;
 
    private OrcsTypesDataStore typesDataStore;
    private DataModuleFactory dataModuleFactory;
@@ -78,14 +73,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.proxyProvider = proxyProvider;
    }
 
-   public void setEventService(EventService eventService) {
-      this.eventService = eventService;
-   }
-
    public void start(BundleContext context) throws Exception {
-      String id = String.format("orcs_datastore_system_%s", GUID.create());
-      OrcsSession session = new DatastoreSession(id);
-
       sqlProvider = createSqlProvider();
 
       idManager = new IdentityManagerImpl(dbService);
@@ -135,9 +123,4 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       return queryModule.getQueryIndexer();
    }
 
-   private static final class DatastoreSession extends BaseIdentity<String> implements OrcsSession {
-      public DatastoreSession(String id) {
-         super(id);
-      }
-   }
 }

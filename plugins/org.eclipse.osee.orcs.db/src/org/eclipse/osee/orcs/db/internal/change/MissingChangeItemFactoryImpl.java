@@ -35,7 +35,6 @@ import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -45,11 +44,9 @@ import com.google.common.collect.Multimap;
 public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
    private final DataLoaderFactory dataLoaderFactory;
-   private final IdentityLocator identityService;
 
-   public MissingChangeItemFactoryImpl(IdentityLocator identityService, DataLoaderFactory dataModuleFactory) {
+   public MissingChangeItemFactoryImpl(DataLoaderFactory dataModuleFactory) {
       super();
-      this.identityService = identityService;
       this.dataLoaderFactory = dataModuleFactory;
    }
 

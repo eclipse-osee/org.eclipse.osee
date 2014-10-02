@@ -39,7 +39,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +58,6 @@ public class MissingChangeItemFactoryTest {
 
    // @formatter:off
    @Mock private DataLoaderFactory dataLoaderFactory;
-   @Mock private IdentityLocator identityService;
    @Mock private DataLoader sourceDataLoader;
    @Mock private DataLoader destDataLoader;
    @Mock private Branch sourceBranch;
@@ -110,7 +108,7 @@ public class MissingChangeItemFactoryTest {
          destDataLoader);
       when(sourceTx.getBranchId()).thenReturn(sourceBranch.getGuid());
       when(destTx.getBranchId()).thenReturn(destBranch.getGuid());
-      changeItemFactory = new MissingChangeItemFactoryImpl(identityService, dataLoaderFactory);
+      changeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
    }
 
    @Test

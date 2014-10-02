@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
@@ -48,18 +47,16 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
-   private final IdentityLocator idLocator;
    private final List<IOseeBranch> branches;
    private final PropertyStore options;
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, IdentityLocator idLocator, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<IOseeBranch> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), session, factory.getDbService());
       this.factory = factory;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
-      this.idLocator = idLocator;
       this.branches = branches;
       this.options = options;
       this.exportName = exportName;

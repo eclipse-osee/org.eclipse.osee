@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
@@ -70,14 +69,12 @@ public class ExportItemFactory {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityLocator identityService;
    private final IResourceManager resourceManager;
    private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.dbService = dbService;
-      this.identityService = identityService;
       this.resourceManager = resourceManager;
       this.orcsTypes = orcsTypes;
    }
@@ -92,10 +89,6 @@ public class ExportItemFactory {
 
    public IResourceManager getResourceManager() {
       return resourceManager;
-   }
-
-   public IdentityLocator getIdentityService() {
-      return identityService;
    }
 
    private OrcsTypes getOrcsTypes() {
@@ -130,8 +123,8 @@ public class ExportItemFactory {
    private void addItem(List<AbstractExportItem> items, int exportJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) throws OseeCoreException {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, exportJoinId, gammaJoinId);
-      items.add(new DbTableExportItem(getLogger(), getDbService(), getIdentityService(), getResourceManager(),
-         exportItem, modifiedQuery.toString(), bindData));
+      items.add(new DbTableExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
+         modifiedQuery.toString(), bindData));
    }
 
    private void processTxOptions(PropertyStore options) throws OseeCoreException {

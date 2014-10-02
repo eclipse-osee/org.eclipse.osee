@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,7 +32,6 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
@@ -51,13 +49,11 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final Object[] bindData;
 
    private final IOseeDatabaseService dbService;
-   private final IdentityLocator identityService;
    private final IResourceManager resourceManager;
 
-   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
       this.dbService = dbService;
-      this.identityService = identityService;
       this.resourceManager = resourceManager;
       this.query = query;
       this.bindData = bindData;

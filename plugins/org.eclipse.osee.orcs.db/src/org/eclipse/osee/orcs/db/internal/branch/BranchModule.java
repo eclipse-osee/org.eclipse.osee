@@ -73,8 +73,7 @@ public class BranchModule {
    }
 
    public BranchDataStore createBranchDataStore(final DataLoaderFactory dataLoaderFactory) {
-      final MissingChangeItemFactory missingChangeItemFactory =
-         new MissingChangeItemFactoryImpl(identityService, dataLoaderFactory);
+      final MissingChangeItemFactory missingChangeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
       return new BranchDataStore() {
          @Override
          public Callable<Void> createBranch(OrcsSession session, CreateBranchData branchData) {
@@ -105,10 +104,9 @@ public class BranchModule {
 
          @Override
          public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
-            ExportItemFactory factory =
-               new ExportItemFactory(logger, dbService, identityService, resourceManager, orcsTypes);
-            return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin, identityService,
-               branches, options, exportName);
+            ExportItemFactory factory = new ExportItemFactory(logger, dbService, resourceManager, orcsTypes);
+            return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin, branches, options,
+               exportName);
          }
 
          @Override
