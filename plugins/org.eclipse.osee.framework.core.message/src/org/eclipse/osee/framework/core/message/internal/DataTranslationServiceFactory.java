@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.message.internal.translation.OseeImportMo
 import org.eclipse.osee.framework.core.message.internal.translation.PurgeBranchRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.RelationTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,7 +44,7 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public void configureService(IDataTranslationService service, TransactionRecordFactory txRecordFactory, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
+   public void configureService(IDataTranslationService service, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
       service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
       service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);
 

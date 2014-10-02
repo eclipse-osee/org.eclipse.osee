@@ -12,7 +12,6 @@ package org.eclipse.osee.disposition.rest.integration.util;
 
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -43,7 +42,6 @@ public final class DispositionIntegrationRule extends OsgiRule {
       @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
       @OsgiService public IOseeDatabaseService dbService;
-      @OsgiService public IOseeModelFactoryService modelFactory;
       @OsgiService public OrcsApi orcsApi;
       // @formatter:on
    }
