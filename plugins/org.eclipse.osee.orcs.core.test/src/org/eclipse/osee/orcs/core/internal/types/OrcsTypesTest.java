@@ -515,7 +515,7 @@ public class OrcsTypesTest {
       assertEquals(null, attrTypes.getDefaultValue(ANNOTATION));
       assertEquals("<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>", attrTypes.getDefaultValue(WORDML));
       assertEquals("this is a field", attrTypes.getDefaultValue(FIELD_1));
-      assertEquals(null, attrTypes.getDefaultValue(FIELD_2));
+      assertEquals("field2", attrTypes.getDefaultValue(FIELD_2));
       //@formatter:on
    }
 

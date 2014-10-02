@@ -74,6 +74,7 @@ attributeType "Field 2" extends DateAttribute {
 	description "field 2 description"
 	fileExtension "hello"
 	mediaType "**"
+	defaultValue "field2"
 }
 
 relationType "Requirement Relation" {
