@@ -17,8 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
-import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
@@ -31,7 +29,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -255,12 +252,7 @@ public final class FrameworkEventUtil {
    private static String getBranchGuidStringForRemoteEvent(long branchUuid) {
       String result = "";
       if (branchUuid > 0) {
-         // After 0.17.0, remove this if check and leave return below
-         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-            result = BranchManager.getBranchGuidLegacy(branchUuid);
-         } else {
-            result = String.valueOf(branchUuid);
-         }
+         result = String.valueOf(branchUuid);
       }
       return result;
    }
@@ -272,12 +264,7 @@ public final class FrameworkEventUtil {
    public static long getBranchUuidFromRemoteEvent(String remoteBranchGuid) {
       long result = 0;
       if (Strings.isValid(remoteBranchGuid)) {
-         // After 0.17.0, remove this if check and leave return below
-         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-            result = BranchManager.getBranchIdLegacy(remoteBranchGuid);
-         } else {
-            result = Long.valueOf(remoteBranchGuid);
-         }
+         result = Long.valueOf(remoteBranchGuid);
       }
       return result;
    }

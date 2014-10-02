@@ -27,10 +27,8 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
@@ -359,11 +357,7 @@ public class ArtifactEventTest {
    }
 
    private String getCommonBranchGuid() {
-      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-         return BranchManager.getBranchGuidLegacy(BranchManager.getCommonBranch().getGuid());
-      } else {
-         return String.valueOf(BranchManager.getCommonBranch().getGuid());
-      }
+      return String.valueOf(BranchManager.getCommonBranch().getUuid());
    }
 
    private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) throws OseeCoreException {
@@ -636,7 +630,7 @@ public class ArtifactEventTest {
       Assert.assertEquals(RelationOrderModType.Absolute, guidReorder.getModType());
       Assert.assertEquals(parentRemGuidArt.getArtGuid(), guidReorder.getParentArt().getGuid());
       Assert.assertEquals(parentRemGuidArt.getArtTypeGuid(), (long) guidReorder.getParentArt().getArtTypeGuid());
-      Assert.assertEquals((Long) BranchManager.getCommonBranch().getUuid(), guidReorder.getParentArt().getBranchUuid());
+      Assert.assertEquals(BranchManager.getCommonBranch().getUuid(), guidReorder.getParentArt().getBranchUuid());
       Assert.assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), guidReorder.getRelTypeGuid());
       Assert.assertEquals(injectArt.getBranchUuid(), guidReorder.getBranchUuid());
 

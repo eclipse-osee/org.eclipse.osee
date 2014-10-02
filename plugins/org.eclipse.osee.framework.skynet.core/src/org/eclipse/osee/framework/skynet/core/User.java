@@ -23,13 +23,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -95,10 +90,6 @@ public class User extends Artifact {
    }
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
-      if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-         OseeLog.log(this.getClass(), OseeLevel.SEVERE_POPUP,
-            "Toggle Favorite Branch is disabled for this version until OSEE database branches are converted to Uuid");
-      }
       HashSet<Long> branchUuids = new HashSet<Long>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
@@ -131,30 +122,15 @@ public class User extends Artifact {
    }
 
    public boolean isFavoriteBranch(IOseeBranch branch) throws OseeCoreException {
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
-      for (Attribute<String> attribute : attributes) {
-         String value = attribute.getValue();
-         if (OseeInfo.isBooleanUsingCache(OseeProperties.OSEE_USING_LEGACY_BRANCH_GUID_FOR_EVENTS)) {
-            if (branch.getGuid().equals(attribute.getValue())) {
+      Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
+      for (String value : attributes) {
+         try {
+            if (Long.valueOf(value).equals(branch.getUuid())) {
                return true;
             }
-         } else {
-            // Backward compatibility until db is converted
-            if (GUID.isValid(value)) {
-               if (branch.getGuid().equals(value)) {
-                  return true;
-               }
-            } else {
-               try {
-                  if (Long.valueOf(value).equals(branch.getUuid())) {
-                     return true;
-                  }
-               } catch (Exception ex) {
-                  // do nothing
-               }
-            }
+         } catch (Exception ex) {
+            // do nothing
          }
-
       }
       return false;
    }
