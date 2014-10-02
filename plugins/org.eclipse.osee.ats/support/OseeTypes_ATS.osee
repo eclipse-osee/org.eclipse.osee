@@ -56,7 +56,6 @@ artifactType "Decision Review" extends "ats.Review" {
 
 artifactType "Action" extends "ats.Ats Artifact" {
 	uuid 0x0000000000000043
-	attribute "ats.User Community"
 	attribute "ats.Actionable Item"
 	attribute "ats.Change Type"
 	attribute "ats.Need By"
@@ -172,7 +171,6 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Problem"
 	attribute "ats.Proposed Resolution"
 	attribute "ats.Team Definition"
-	attribute "ats.User Community"
 	attribute "ats.Operational Impact"
 	attribute "ats.Operational Impact Description"
 	attribute "ats.Operational Impact Workaround"
@@ -779,30 +777,6 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.change.type"
-	mediaType "text/plain"
-}
-
-oseeEnumType "enum.ats.user.community" {
-	uuid 0x300000000000018F
-	entry "Program_1"
-	entryGuid "AHcuApVCczNvC7AP52QA"
-	entry "Program_2"
-	entryGuid "AHcuBuS3JDdeZZ1mSxQA"
-	entry "Tools"
-	entryGuid "AHcuBuWaNFeVCgjNfwAA"
-	entry "Processes"
-	entryGuid "AHcuBuaJ0UGsRf0+WqAA"
-	entry "Other"
-	entryGuid "AHcuBud8JBLfUo3PK5AA"
-}
-
-attributeType "ats.User Community" extends EnumeratedAttribute {
-	uuid 0x10000000000000CD
-	dataProvider DefaultAttributeDataProvider
-	min 0
-	max unlimited
-	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.ats.user.community"	
 	mediaType "text/plain"
 }
 

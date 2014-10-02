@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.core.client.action;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -41,7 +39,6 @@ public class ActionArtifactRollup {
    public void resetAttributesOffChildren() throws OseeCoreException {
       resetChangeTypeOffChildren(action);
       resetPriorityOffChildren();
-      resetUserCommunityOffChildren();
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
@@ -140,16 +137,6 @@ public class ActionArtifactRollup {
       if (Strings.isValid(priorityType)) {
          action.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priorityType);
       }
-   }
-
-   private void resetUserCommunityOffChildren() throws OseeCoreException {
-      Set<String> userComs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : action.getTeams()) {
-         if (!team.isCancelled()) {
-            userComs.addAll(team.getAttributesToStringList(AtsAttributeTypes.UserCommunity));
-         }
-      }
-      action.setAttributeValues(AtsAttributeTypes.UserCommunity, userComs);
    }
 
 }

@@ -101,7 +101,6 @@ import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
-import org.eclipse.osee.ats.column.UserCommunityColumn;
 import org.eclipse.osee.ats.column.ValidationRequiredColumn;
 import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
@@ -150,7 +149,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       AssigneeColumnUI.getInstance(),
       TitleColumn.getInstance(),
       ActionableItemsColumnUI.getInstance(),
-      UserCommunityColumn.getInstance(),
       AtsIdColumn.getInstance(),
       CreatedDateColumn.getInstance(),
       TargetedVersionColumn.getInstance(),

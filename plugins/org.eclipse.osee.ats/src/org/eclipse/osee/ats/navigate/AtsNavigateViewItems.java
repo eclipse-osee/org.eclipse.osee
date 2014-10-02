@@ -75,7 +75,6 @@ import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
-import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -158,7 +157,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new TaskSearchWorldSearchItem()));
          items.add(new SearchNavigateItem(item, new GroupWorldSearchItem((Branch) null)));
          items.add(new SearchNavigateItem(item, new TeamWorkflowSearchWorkflowSearchItem()));
-         items.add(new SearchNavigateItem(item, new UserCommunitySearchItem()));
          items.add(new SearchNavigateItem(item, new ActionableItemWorldSearchItem("Actionable Item Search", null,
             false, false, false)));
 

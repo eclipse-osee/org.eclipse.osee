@@ -341,7 +341,6 @@ public class ExcelAtsActionArtifactExtractor {
          Assignees,
          Priority,
          ChangeType,
-         UserCommunity,
          Version,
          EstimatedHours,
          Goal
@@ -419,8 +418,6 @@ public class ExcelAtsActionArtifactExtractor {
                   aData.changeType = cols[i];
                } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
                   aData.desc = cols[i] == null ? "" : cols[i];
-               } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
-                  processUserCommunities(cols, aData, i);
                } else if (headerRow[i].equalsIgnoreCase(Columns.EstimatedHours.name())) {
                   if (Strings.isValid(cols[i])) {
                      aData.estimatedHours = new Double(cols[i]);
@@ -435,14 +432,6 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
          actionDatas.add(aData);
-      }
-
-      private void processUserCommunities(String[] cols, ActionData aData, int i) {
-         for (String str : cols[i].split(";")) {
-            if (!str.equals("")) {
-               aData.userComms.add(str);
-            }
-         }
       }
 
       private void processActionableItems(String[] cols, ActionData aData, int i) {

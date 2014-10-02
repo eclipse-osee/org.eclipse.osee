@@ -216,7 +216,6 @@ public class ActionManager {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""), ChangeTypeUtil.getChangeType(fromAction),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
-         //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
    }
@@ -230,7 +229,6 @@ public class ActionManager {
          art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
       ChangeTypeUtil.setChangeType(art, changeType);
-      //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (Strings.isValid(priority)) {
          art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority);
       }

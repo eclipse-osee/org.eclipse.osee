@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
-import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
@@ -73,20 +72,11 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.widgets.TreeItem;
-import org.junit.Ignore;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNavigateItemsToWorldViewTest {
-
-   private static enum AtsUserCommunity {
-      Program_1,
-      Program_2,
-      Tools,
-      Processes,
-      Other;
-   }
 
    @org.junit.Test
    public void testDemoDatabase() throws Exception {
@@ -490,19 +480,6 @@ public class AtsNavigateItemsToWorldViewTest {
       ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(selected);
       ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setIncludeCancelledCheckbox(selected);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
-   }
-
-   @Ignore
-   @org.junit.Test
-   public void testUserCommunitySearch() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
-      ((UserCommunitySearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedUserComm(AtsUserCommunity.Program_2.name());
-      // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 4, null, TableLoadOption.DontCopySearchItem);
-      TestUtil.severeLoggingEnd(monitor);
    }
 
    @org.junit.Test
