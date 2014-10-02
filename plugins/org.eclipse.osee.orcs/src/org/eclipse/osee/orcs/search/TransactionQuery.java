@@ -82,6 +82,8 @@ public interface TransactionQuery {
 
    TransactionQuery andIsHead(IOseeBranch branch) throws OseeCoreException;
 
+   TransactionQuery andIsPriorTx(int txId) throws OseeCoreException;
+
    ResultSet<TransactionReadable> getResults() throws OseeCoreException;
 
    ResultSet<Integer> getResultsAsIds() throws OseeCoreException;

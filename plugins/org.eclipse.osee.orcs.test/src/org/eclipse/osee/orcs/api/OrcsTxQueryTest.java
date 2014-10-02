@@ -636,6 +636,22 @@ public class OrcsTxQueryTest {
       //@formatter:on
    }
 
+   @Test
+   public void testGetPriorTx() throws OseeCoreException {
+      TransactionQuery query = factory.transactionQuery();
+      query.andIsPriorTx(24);
+
+      ResultSet<TransactionReadable> results = query.getResults();
+      assertEquals(1, results.size());
+      assertEquals(1, query.getCount());
+
+      Iterator<TransactionReadable> it = results.iterator();
+      assertTx(it.next(), 14, NonBaselined, "2013-05-06 14:18:07.204", "SimpleTemplateProviderTask", 570, 0, 0);
+
+      Iterator<Integer> ids = query.getResultsAsIds().iterator();
+      assertEquals(Integer.valueOf(14), ids.next());
+   }
+
    private static void assertTx(TransactionReadable actual, Integer localId, TransactionDetailsType type, String date, String comment, long branchUuid, int authorId, int commitId) {
       assertEquals(localId, actual.getLocalId());
       assertEquals(type, actual.getTxType());

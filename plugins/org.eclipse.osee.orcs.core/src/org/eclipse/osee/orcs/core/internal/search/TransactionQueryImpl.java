@@ -266,6 +266,13 @@ public class TransactionQueryImpl implements TransactionQuery {
       return this;
    }
 
+   @Override
+   public TransactionQuery andIsPriorTx(int txId) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.newGetPriorTx(txId);
+      addAndCheck(queryData, criteria);
+      return this;
+   }
+
    private QueryData checkAndCloneQueryData() throws OseeCoreException {
       QueryData queryData = getQueryData().clone();
       CriteriaSet criteriaSet = queryData.getLastCriteriaSet();

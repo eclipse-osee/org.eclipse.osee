@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxComment;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxGetPrior;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
@@ -267,6 +268,31 @@ public class TxQuerySqlContextFactoryImplTest {
 
    }
 
+   @Test
+   public void testQueryTxPrior() throws Exception {
+      String expected =
+         "SELECT/*+ ordered */ txd1.*\n" + //
+         " FROM \n" + //
+         "osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
+         " ORDER BY txd1.transaction_id";
+
+      queryData.addCriteria(prior(3));
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+
+      assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      assertEquals(1, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      assertEquals(3, iterator.next());
+   }
+
    private static Criteria id(Integer... values) {
       return new CriteriaTxIds(Arrays.asList(values));
    }
@@ -299,4 +325,7 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaCommitIds(ids);
    }
 
+   private static Criteria prior(Integer value) {
+      return new CriteriaTxGetPrior(value);
+   }
 }
