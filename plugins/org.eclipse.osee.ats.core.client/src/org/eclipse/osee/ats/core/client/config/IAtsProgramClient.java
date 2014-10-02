@@ -24,8 +24,6 @@ public interface IAtsProgramClient extends IAtsProgram {
 
    public void setArtifact(Artifact artifact) throws OseeCoreException;
 
-   public String getStaticIdPrefix() throws OseeCoreException;
-
    public String getProgramName() throws OseeCoreException;
 
    public IAtsTeamDefinition getTeamDefHoldingVersions() throws OseeCoreException;

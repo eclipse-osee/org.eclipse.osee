@@ -48,7 +48,7 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
       try {
          return getArtifact().getName();
       } catch (Exception ex) {
-         return this.getStaticIdPrefix();
+         return this.getNamespace();
       }
    }
 
@@ -68,7 +68,7 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    }
 
    @Override
-   public String getStaticIdPrefix() {
+   public String getNamespace() {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.Namespace, "");
    }
 
@@ -95,11 +95,6 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    @Override
    public String getDescription() {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
-   }
-
-   @Override
-   public String getNamespace() {
-      return getStaticIdPrefix();
    }
 
 }
