@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -367,15 +368,16 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          }
          if (getDefaultDestinationArtifact() == null) {
             String guid = settings.get("destination.artifact.guid");
-            String branch = settings.get("destination.branch.guid");
+            String branchUuidStr = settings.get("destination.branch.uuid");
 
-            if (Strings.isValid(guid, branch)) {
+            if (GUID.isValid(guid) && Strings.isNumeric(branchUuidStr)) {
                try {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByGuid(branch));
+                  Long bramchUuid = Long.valueOf(branchUuidStr);
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByUuid(bramchUuid));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE,
-                     "Unable to restore destination artifact- guid:[%s] branch guid:[%s]", guid, branch);
+                     "Unable to restore destination artifact- guid:[%s] branch uuid:[%d]", guid, branchUuidStr);
                }
             }
          }
@@ -417,7 +419,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          Artifact artifact = getDestinationArtifact();
          if (artifact != null) {
             settings.put("destination.artifact.guid", artifact.getGuid());
-            settings.put("destination.branch.guid", artifact.getBranch().getGuid());
+            settings.put("destination.branch.uuid", artifact.getBranch().getUuid());
          }
          settings.put("is.update.existing.selected", isUpdateExistingSelected());
       }

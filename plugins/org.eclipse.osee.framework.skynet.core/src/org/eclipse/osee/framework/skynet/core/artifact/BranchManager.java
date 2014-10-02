@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -662,43 +661,6 @@ public class BranchManager {
       return hasChanges((Branch) branch);
    }
 
-   private static final String SELECT_BRANCH_GUID_BY_ID = "select branch_guid from osee_branch where branch_id = ?";
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final ConcurrentHashMap<Long, String> longToGuidCache = new ConcurrentHashMap<Long, String>(50);
-
-   /**
-    * Temporary method till all code uses branch uuid. Remove after 0.17.0
-    */
-   public static String getBranchGuidLegacy(long branchUuid) {
-      String guid = longToGuidCache.get(branchUuid);
-      if (!Strings.isValid(guid)) {
-         guid =
-            ServiceUtil.getOseeDatabaseService().runPreparedQueryFetchObject("", SELECT_BRANCH_GUID_BY_ID, branchUuid);
-         Conditions.checkExpressionFailOnTrue(!Strings.isValid(guid), "Error getting branch_guid for branch: [%d]",
-            branchUuid);
-         longToGuidCache.putIfAbsent(branchUuid, guid);
-      }
-      return guid;
-   }
-
-   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final ConcurrentHashMap<String, Long> guidToLongCache = new ConcurrentHashMap<String, Long>(50);
-
-   /**
-    * Temporary method till all code uses branch uuid. Remove after 0.17.0
-    */
-   public static long getBranchIdLegacy(String branchGuid) {
-      Long longId = guidToLongCache.get(branchGuid);
-      if (longId == null) {
-         longId =
-            ServiceUtil.getOseeDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
-         Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
-         guidToLongCache.putIfAbsent(branchGuid, longId);
-      }
-      return longId;
-   }
-
    public static BranchType getBranchType(IOseeBranch branch) {
       return ((Branch) branch).getBranchType();
    }
@@ -712,10 +674,6 @@ public class BranchManager {
       return branch;
    }
 
-   public static Branch getBranchByGuid(String branchGuid) {
-      return getBranchByGuid(getBranchIdLegacy(branchGuid));
-   }
-
    public static void resetWasLoaded() {
       getCache().resetWasLoaded();
    }
@@ -723,5 +681,4 @@ public class BranchManager {
    public static boolean isLoaded() {
       return getCache().isLoaded();
    }
-
 }
