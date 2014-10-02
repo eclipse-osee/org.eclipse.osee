@@ -290,19 +290,24 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    private void initialize() {
-      final Map<Long, ActivityType> types = new HashMap<Long, ActivityType>(4);
-      for (Activity type : Activity.values()) {
-         types.put(type.getTypeId(), type);
-      }
-      storage.selectTypes(new ActivityTypeDataHandler() {
-
-         @Override
-         public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
-            types.remove(typeId);
+      try {
+         final Map<Long, ActivityType> types = new HashMap<Long, ActivityType>(4);
+         for (Activity type : Activity.values()) {
+            types.put(type.getTypeId(), type);
          }
-      });
-      if (!types.isEmpty()) {
-         storage.addActivityTypes(types.values());
+         storage.selectTypes(new ActivityTypeDataHandler() {
+
+            @Override
+            public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
+               types.remove(typeId);
+            }
+         });
+         if (!types.isEmpty()) {
+            storage.addActivityTypes(types.values());
+         }
+      } catch (Throwable ex) {
+         this.initialized.set(false);
+         logger.error(ex, "Exception while initializing activity types");
       }
    }
 
