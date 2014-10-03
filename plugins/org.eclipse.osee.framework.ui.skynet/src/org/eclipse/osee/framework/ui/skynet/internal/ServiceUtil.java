@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -47,6 +48,10 @@ public final class ServiceUtil {
 
    public static AccountClient getAccountClient() throws OseeCoreException {
       return getService(AccountClient.class);
+   }
+
+   public static OseeClient getOseeClient() throws OseeCoreException {
+      return getService(OseeClient.class);
    }
 
    public static IOseeCachingService getOseeCacheService() throws OseeCoreException {

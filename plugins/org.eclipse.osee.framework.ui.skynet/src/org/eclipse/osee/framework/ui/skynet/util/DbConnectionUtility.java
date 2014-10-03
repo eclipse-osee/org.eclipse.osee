@@ -12,14 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Donald G Dunne
@@ -58,7 +53,7 @@ public class DbConnectionUtility {
 
    public static boolean isApplicationServerAlive() {
       if (applicationServerAlive == null) {
-         OseeClient client = getOseeClient();
+         OseeClient client = ServiceUtil.getOseeClient();
          if (client != null) {
             applicationServerAlive = client.isApplicationServerAlive();
          } else {
@@ -70,7 +65,7 @@ public class DbConnectionUtility {
 
    public static boolean isVersionSupported() {
       if (supported == null) {
-         OseeClient client = getOseeClient();
+         OseeClient client = ServiceUtil.getOseeClient();
          if (client != null) {
             supported = client.isClientVersionSupportedByApplicationServer();
          } else {
@@ -78,22 +73,6 @@ public class DbConnectionUtility {
          }
       }
       return supported;
-   }
-
-   private static <T> T getService(Class<T> clazz) throws OseeCoreException {
-      Bundle bundle = FrameworkUtil.getBundle(OseeUiActivator.class);
-      Conditions.checkNotNull(bundle, "bundle");
-      BundleContext context = bundle.getBundleContext();
-      Conditions.checkNotNull(context, "bundleContext");
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Conditions.checkNotNull(reference, "serviceReference");
-      T service = context.getService(reference);
-      Conditions.checkNotNull(service, "service");
-      return service;
-   }
-
-   public static OseeClient getOseeClient() throws OseeCoreException {
-      return getService(OseeClient.class);
    }
 
 }
