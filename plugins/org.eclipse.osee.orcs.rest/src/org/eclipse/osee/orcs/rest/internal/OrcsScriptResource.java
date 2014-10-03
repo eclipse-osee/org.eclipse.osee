@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.Properties;
 import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 import javax.ws.rs.Consumes;
@@ -30,8 +31,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -40,6 +39,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 @Path("script")
 public class OrcsScriptResource {
+
+   private final ScriptEngine engine;
+
+   public OrcsScriptResource(ScriptEngine engine) {
+      this.engine = engine;
+   }
 
    @POST
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -61,7 +66,7 @@ public class OrcsScriptResource {
                for (String key : properties.stringPropertyNames()) {
                   context.setAttribute(key, properties.getProperty(key), ScriptContext.ENGINE_SCOPE);
                }
-               evaluate(script, context);
+               engine.eval(script, context);
             } catch (ScriptException ex) {
                throw new WebApplicationException(ex);
             }
@@ -86,25 +91,4 @@ public class OrcsScriptResource {
       return properties;
    }
 
-   private void evaluate(String script, ScriptContext context) throws ScriptException {
-      JsonGenerator writer = null;
-      try {
-         JsonFactory jsonFactory = new JsonFactory();
-         writer = jsonFactory.createJsonGenerator(context.getWriter());
-         writer.writeStartObject();
-         writer.writeStringField("script", script);
-         writer.writeStringField("results", "Not Yet Implemented");
-         writer.writeEndObject();
-      } catch (IOException ex) {
-         throw new ScriptException(ex);
-      } finally {
-         try {
-            if (writer != null) {
-               writer.flush();
-            }
-         } catch (IOException ex) {
-            throw new ScriptException(ex);
-         }
-      }
-   }
 }

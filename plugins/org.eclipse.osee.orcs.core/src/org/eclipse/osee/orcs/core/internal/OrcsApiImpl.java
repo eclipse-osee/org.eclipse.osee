@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -52,6 +54,9 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManagerFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNodeLoader;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeLoaderImpl;
+import org.eclipse.osee.orcs.core.internal.script.OrcsScriptCompiler;
+import org.eclipse.osee.orcs.core.internal.script.ScriptEngines;
+import org.eclipse.osee.orcs.core.internal.script.impl.OrcsScriptCompilerImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.core.internal.session.OrcsSessionImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
@@ -89,6 +94,7 @@ public class OrcsApiImpl implements OrcsApi {
 
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
+   private ScriptEngineManager manager;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -196,6 +202,9 @@ public class OrcsApiImpl implements OrcsApi {
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
+
+      OrcsScriptCompiler compiler = new OrcsScriptCompilerImpl(getSystemSession(), module, orcsTypes);
+      manager = ScriptEngines.newScriptEngineManager(compiler);
    }
 
    public void stop() {
@@ -312,6 +321,11 @@ public class OrcsApiImpl implements OrcsApi {
          return provider;
       }
 
+   }
+
+   @Override
+   public ScriptEngine getScriptEngine() {
+      return manager.getEngineByName(ScriptEngines.ORCS_SCRIPT_ENGINE_ID);
    }
 
 }
