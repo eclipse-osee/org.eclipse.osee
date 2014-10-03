@@ -22,6 +22,7 @@ public final class OptionsUtil {
    private static final int TRANSACTION_SENTINEL = -1;
 
    private static final String FROM_TRANSACTION = "from.transaction";
+   private static final String INCLUDE_DELETED_BRANCHES = "include.deleted.branches";
    private static final String INCLUDE_DELETED_ARTIFACTS = "include.deleted.artifacts";
    private static final String INCLUDE_DELETED_ATTRIBUTES = "include.deleted.attributes";
    private static final String INCLUDE_DELETED_RELATIONS = "include.deleted.relations";
@@ -51,6 +52,7 @@ public final class OptionsUtil {
 
    public static void reset(Options options) {
       setIncludeCache(options, false);
+      setIncludeDeletedBranches(options, false);
       setIncludeDeletedArtifacts(options, false);
       setIncludeDeletedAttributes(options, false);
       setIncludeDeletedRelations(options, false);
@@ -64,6 +66,14 @@ public final class OptionsUtil {
 
    public static void setIncludeCache(Options options, boolean enabled) {
       options.put(INCLUDE_CACHE, enabled);
+   }
+
+   public static boolean areDeletedBranchesIncluded(Options options) {
+      return options.getBoolean(INCLUDE_DELETED_BRANCHES);
+   }
+
+   public static void setIncludeDeletedBranches(Options options, boolean enabled) {
+      options.put(INCLUDE_DELETED_BRANCHES, enabled);
    }
 
    public static boolean areDeletedArtifactsIncluded(Options options) {

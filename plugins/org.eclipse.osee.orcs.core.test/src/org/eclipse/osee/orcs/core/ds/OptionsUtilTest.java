@@ -42,6 +42,8 @@ public class OptionsUtilTest {
       assertEquals(false, OptionsUtil.isCacheIncluded(defaults));
       assertEquals(true, OptionsUtil.isHeadTransaction(defaults));
       assertEquals(false, OptionsUtil.isHistorical(defaults));
+
+      assertEquals(false, OptionsUtil.areDeletedBranchesIncluded(defaults));
    }
 
    @Test
@@ -97,12 +99,14 @@ public class OptionsUtilTest {
       OptionsUtil.setFromTransaction(options, 1231);
       OptionsUtil.setLoadLevel(options, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
       OptionsUtil.setIncludeDeletedArtifacts(options, true);
+      OptionsUtil.setIncludeDeletedBranches(options, true);
       OptionsUtil.setIncludeCache(options, true);
 
       assertEquals(1231, OptionsUtil.getFromTransaction(options));
       assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
       assertEquals(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, OptionsUtil.getLoadLevel(options));
       assertEquals(true, OptionsUtil.areDeletedArtifactsIncluded(options));
+      assertEquals(true, OptionsUtil.areDeletedBranchesIncluded(options));
       assertEquals(true, OptionsUtil.isCacheIncluded(options));
       assertEquals(false, OptionsUtil.isHeadTransaction(options));
       assertEquals(true, OptionsUtil.isHistorical(options));
@@ -113,6 +117,7 @@ public class OptionsUtilTest {
       assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
       assertEquals(LoadLevel.ALL, OptionsUtil.getLoadLevel(options));
       assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(options));
+      assertEquals(false, OptionsUtil.areDeletedBranchesIncluded(options));
       assertEquals(false, OptionsUtil.isCacheIncluded(options));
       assertEquals(true, OptionsUtil.isHeadTransaction(options));
       assertEquals(false, OptionsUtil.isHistorical(options));

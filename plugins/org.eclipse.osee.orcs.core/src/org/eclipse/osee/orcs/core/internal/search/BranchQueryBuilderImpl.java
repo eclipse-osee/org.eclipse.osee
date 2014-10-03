@@ -69,13 +69,13 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    @SuppressWarnings("unchecked")
    @Override
    public T includeDeleted(boolean enabled) {
-      OptionsUtil.setIncludeDeletedArtifacts(getOptions(), enabled);
+      OptionsUtil.setIncludeDeletedBranches(getOptions(), enabled);
       return (T) this;
    }
 
    @Override
    public boolean areDeletedIncluded() {
-      return OptionsUtil.areDeletedArtifactsIncluded(getOptions());
+      return OptionsUtil.areDeletedBranchesIncluded(getOptions());
    }
 
    @Override
