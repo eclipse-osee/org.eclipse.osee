@@ -122,9 +122,9 @@ public abstract class AbstractSqlWriter implements HasOptions {
                write(" ");
                write(clause.getParameters());
             }
-            write(" AS (");
+            write(" AS ( \n");
             write(clause.getBody());
-            write(")");
+            write("\n )");
             if (i + 1 < size) {
                write(", \n");
             }

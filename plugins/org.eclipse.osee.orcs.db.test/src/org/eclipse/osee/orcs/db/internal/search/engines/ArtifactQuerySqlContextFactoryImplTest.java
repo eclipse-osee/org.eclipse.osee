@@ -296,11 +296,13 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryHistorical() throws OseeCoreException {
       String expected =
-         "WITH artUuid1 AS (SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+         "WITH artUuid1 AS ( \n" + //
+         "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
          "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
          "    WHERE txs.gamma_id = art.gamma_id\n" + //
          "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY art.art_id)\n" + //
+         "    GROUP BY art.art_id\n" + //
+         " )\n" + //
          "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, artUuid1\n" + //
@@ -353,16 +355,20 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryHistoricalMultipleItems() throws OseeCoreException {
       String expected =
-         "WITH artUuid1 AS (SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+         "WITH artUuid1 AS ( \n" + //
+         "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
          "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
          "    WHERE txs.gamma_id = art.gamma_id\n" + //
          "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY art.art_id), \n" + //
-         " attrExt1 AS (SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n" + //
+         "    GROUP BY art.art_id\n" + //
+         " ), \n" + //
+         " attrExt1 AS ( \n" + // 
+         "SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n" + //
          "    FROM osee_txs txs, osee_attribute attr\n" + //
          "    WHERE txs.gamma_id = attr.gamma_id\n" + //
          "    AND att.attr_type_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY attr.art_id)\n" + //
+         "    GROUP BY attr.art_id\n" + //
+         " )\n" + //
          "SELECT max(txs4.transaction_id) as transaction_id, art2.art_id, txs4.branch_id\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_txs txs4, osee_relation_link rel1, artUuid1, attrExt1\n" + //
@@ -527,14 +533,22 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAtttributeKeyword() throws OseeCoreException {
-      String expected = "WITH gamma1 AS ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      String expected = "WITH gamma1 AS ( \n" + // 
+      "  ( \n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
-      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
-      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
-      " att1 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
-      "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
-      "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      "  ) \n" + //
+      " ), \n" + // 
+      " att1 AS ( \n" + //
+      "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
+      " WHERE \n" + //
+      "   att.gamma_id = gamma1.gamma_id AND att.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+      " AND \n" + //
+      "   att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ?\n" + //
+      " )\n" + //
       "SELECT art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1, att1\n" + //
@@ -561,21 +575,29 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(CODED_WORD_1, iterator.next()); // Coded Hello
       Assert.assertEquals(CODED_WORD_2, iterator.next()); // Coded two
       Assert.assertEquals(CODED_WORD_3, iterator.next()); // Coded three
-      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
    }
 
    @Test
    public void testQueryAtttributeCombined() throws OseeCoreException {
-      String expected = "WITH gamma1 AS ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      String expected = "WITH gamma1 AS ( \n" + //
+      "  ( \n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
-      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
-      "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + //
-      " att2 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, " + //
-      "gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND " + //
-      "txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      "  ) \n" + //
+      " ), \n" + //
+      " att2 AS ( \n" + //
+      "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
+      " WHERE \n" + //
+      "   att.gamma_id = gamma1.gamma_id AND att.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+      " AND \n" + //
+      "   att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ?\n" + //
+      " )\n" + //
       "SELECT art1.art_id, txs2.branch_id\n" + //
       " FROM \n" + //
       "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2, att2\n" + //
@@ -606,8 +628,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(CODED_WORD_1, iterator.next()); // Coded Hello
       Assert.assertEquals(CODED_WORD_2, iterator.next()); // Coded two
       Assert.assertEquals(CODED_WORD_3, iterator.next()); // Coded three
-      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(joins.get(0).getQueryId(), iterator.next());
+      Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       Assert.assertEquals(CoreAttributeTypes.Name.getGuid(), iterator.next());
       Assert.assertEquals("Hello", iterator.next());
       Assert.assertEquals(EXPECTED_BRANCH_ID, iterator.next());
@@ -1040,12 +1062,22 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testRelationTypeFollowCombined() throws OseeCoreException {
       String expected =
-         "WITH gamma1 AS ((SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+         "WITH gamma1 AS ( \n" + //
+         "  ( \n" + //
+         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
          " INTERSECT \n" + //
-         "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
          " INTERSECT \n" + // 
-         "SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?) ), \n" + // 
-         " att1 AS (SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1 WHERE att.gamma_id = gamma1.gamma_id AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ? AND att.attr_type_id = jid1.id AND jid1.query_id = ?)\n" + //
+         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+         "  ) \n" + //
+         " ), \n" + // 
+         " att1 AS ( \n" + //
+         "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
+         " WHERE \n" + //
+         "   att.gamma_id = gamma1.gamma_id AND att.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+         " AND \n" + //
+         "   att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ?\n" + //
+         " )\n" + //
          "SELECT art2.art_id, txs3.branch_id\n" + //
          " FROM \n" + //
          "osee_join_char_id jch1, osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2, osee_artifact art2, osee_txs txs3, att1\n" + //
@@ -1075,8 +1107,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       assertEquals(CODED_WORD_1, iterator.next()); // Coded Hello
       assertEquals(CODED_WORD_2, iterator.next()); // Coded two
       assertEquals(CODED_WORD_3, iterator.next()); // Coded three
-      assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       assertEquals(joins.get(0).getQueryId(), iterator.next());
+      assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       assertEquals(joins.get(1).getQueryId(), iterator.next());
       assertEquals(EXPECTED_BRANCH_ID, iterator.next());
       assertEquals(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), iterator.next());

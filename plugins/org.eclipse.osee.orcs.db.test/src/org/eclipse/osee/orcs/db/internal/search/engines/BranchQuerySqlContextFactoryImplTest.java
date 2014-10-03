@@ -41,10 +41,10 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
@@ -311,11 +311,12 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryChildOf() throws OseeCoreException {
       String expected =
-         "WITH chof1 (child_id, branch_level) AS ( SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
+         "WITH chof1 (child_id, branch_level) AS ( \n" + //
+         "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
          "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
-         ")\n" + //
+         " )\n" + //
          "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1, chof1\n" + //
@@ -341,11 +342,12 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryAncestorOf() throws OseeCoreException {
       String expected =
-         "WITH anstrof1 (parent_id, branch_level) AS ( SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
+         "WITH anstrof1 (parent_id, branch_level) AS ( \n" + //
+         "  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
          "   WHERE anch_br1.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
-         ")\n" + //
+         " )\n" + //
          "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1, anstrof1\n" + //
@@ -371,11 +373,12 @@ public class BranchQuerySqlContextFactoryImplTest {
    @Test
    public void testMultiples() throws OseeCoreException {
       String expected =
-         "WITH chof1 (child_id, branch_level) AS ( SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
+         "WITH chof1 (child_id, branch_level) AS ( \n" + //
+         "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
          "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
          "  UNION ALL \n" + //
          "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
-         ")\n" + //
+         " )\n" + //
          "SELECT br1.*\n" + //
          " FROM \n" + //
          "osee_branch br1, osee_join_id jid1, chof1\n" + //

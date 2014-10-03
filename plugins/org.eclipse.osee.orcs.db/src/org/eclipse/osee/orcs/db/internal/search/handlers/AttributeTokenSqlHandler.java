@@ -73,16 +73,16 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          List<Long> tags = new ArrayList<Long>();
          tokenize(value, tags);
          int tagsSize = tags.size();
-         gammaSb.append("(");
+         gammaSb.append("  ( \n");
          for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
             Long tag = tags.get(tagIdx);
-            gammaSb.append("SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
+            gammaSb.append("    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
             writer.addParameter(tag);
             if (tagIdx + 1 < tagsSize) {
                gammaSb.append("\n INTERSECT \n");
             }
          }
-         gammaSb.append(") ");
+         gammaSb.append("\n  ) ");
          if (valueIdx + 1 < valueCount) {
             gammaSb.append("\n UNION ALL \n");
          }
@@ -93,7 +93,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       attrAlias = writer.getNextAlias(ATTRIBUTE_WITH);
       Collection<? extends IAttributeType> types = criteria.getTypes();
       StringBuilder attrSb = new StringBuilder();
-      attrSb.append("SELECT art_id FROM osee_attribute att, osee_txs txs, ");
+      attrSb.append("   SELECT art_id FROM osee_attribute att, osee_txs txs, ");
       String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
          jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
@@ -102,10 +102,10 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          attrSb.append(", ");
       }
       attrSb.append(gammaAlias);
-      attrSb.append(" WHERE att.gamma_id = ");
+      attrSb.append("\n WHERE \n");
+      attrSb.append("   att.gamma_id = ");
       attrSb.append(gammaAlias);
-      attrSb.append(".gamma_id AND att.gamma_id = txs.gamma_id AND ");
-      attrSb.append(writer.getTxBranchFilter("txs"));
+      attrSb.append(".gamma_id");
       if (!criteria.isIncludeAllTypes()) {
          attrSb.append(" AND att.attr_type_id = ");
          if (types.size() == 1) {
@@ -126,6 +126,9 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             writer.addParameter(joinQuery.getQueryId());
          }
       }
+      attrSb.append("\n AND \n");
+      attrSb.append("   att.gamma_id = txs.gamma_id AND ");
+      attrSb.append(writer.getTxBranchFilter("txs"));
       writer.addWithClause(newSimpleWithClause(attrAlias, attrSb.toString()));
       writer.addTable(attrAlias);
    }
