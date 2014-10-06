@@ -41,7 +41,7 @@ public class OteFilesResource {
    Request request;
 
    @GET
-   @Produces(MediaType.APPLICATION_XML)
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public StreamingOutput getFile(@QueryParam("path") String path ) throws OseeCoreException {
       final String myPath = path;
       return new StreamingOutput() {

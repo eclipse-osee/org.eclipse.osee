@@ -34,7 +34,7 @@ public class GetOteServerFile extends BaseClientCallable<Progress> {
    public void doWork() throws Exception {
       URI targetUri = UriBuilder.fromUri(uri).path("ote").path("file").queryParam("path", filePath).build();
 
-      Response response = factory.target(targetUri).request(MediaType.APPLICATION_JSON).get();
+      Response response = factory.target(targetUri).request(MediaType.APPLICATION_XML).get();
       if (response.getStatus() == Status.OK.getStatusCode()) {
          InputStream is = (InputStream) response.getEntity();
          FileOutputStream fos = new FileOutputStream(destination);
