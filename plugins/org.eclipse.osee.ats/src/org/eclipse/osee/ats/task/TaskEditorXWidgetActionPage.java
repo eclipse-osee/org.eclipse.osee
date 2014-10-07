@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
@@ -180,7 +180,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
          addActionToMenu(fMenu, exportMetricsReportAction);
-         addActionToMenu(fMenu, new AtsExportManager(taskComposite.getTaskXViewer()));
+         addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -150,5 +154,29 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    public String getButtonText() {
       return getEditorInput().getBlamOperation().getRunText();
+   }
+
+   public static Collection<BlamEditor> getEditors() {
+      final List<BlamEditor> editors = new ArrayList<BlamEditor>();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((BlamEditor) editor.getEditor(false));
+            }
+         }
+      });
+      return editors;
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+            }
+         }
+      });
    }
 }

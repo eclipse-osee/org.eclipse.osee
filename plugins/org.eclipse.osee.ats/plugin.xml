@@ -180,9 +180,6 @@
             classname="org.eclipse.osee.ats.world.AtsWorldEditorRenderer">
       </Renderer>
       <Renderer
-            classname="org.eclipse.osee.ats.export.AtsExportRenderer">
-      </Renderer>
-      <Renderer
             classname="org.eclipse.osee.ats.workdef.viewer.AtsWorkDefConfigRenderer">
       </Renderer>
    </extension>
@@ -241,10 +238,6 @@
       <command
             id="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command"
             name="ATS World Editor">
-      </command>
-      <command
-            id="org.eclipse.osee.framework.ui.skynet.atsexport.command"
-            name="ATS Artifact Export">
       </command>
       <command
             id="org.eclipse.osee.ats.atsworkdefviewer.command"
@@ -369,32 +362,6 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.eclipse.osee.ats.export.AtsExportHandler"
-            commandId="org.eclipse.osee.framework.ui.skynet.atsexport.command">
-         <activeWhen>
-            <or>
-               <with
-                     variable="activePartId">
-                  <equals
-                        value="org.eclipse.osee.ats.world.WorldEditor">
-                  </equals>
-               </with>
-               <with
-                     variable="activePartId">
-                  <equals
-                        value="org.eclipse.osee.ats.editor.TaskEditor">
-                  </equals>
-               </with>
-               <with
-                     variable="activePartId">
-                  <equals
-                        value="org.eclipse.osee.ats.editor.SMAEditor">
-                  </equals>
-               </with>
-            </or>
-         </activeWhen>
-      </handler>
-      <handler
             class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
          <activeWhen>
@@ -488,23 +455,9 @@
             icon="images/globe.gif">
       </image>
       <image
-            commandId="org.eclipse.osee.framework.ui.skynet.atsexport.command"
-            icon="images/export.gif">
-      </image>
-      <image
             commandId="org.eclipse.osee.ats.atsworkdefviewer.command"
             icon="images/workDef.gif">
       </image>
-   </extension>
-   <extension
-         point="org.eclipse.ui.exportWizards">
-      <wizard
-            category="org.eclipse.osee.framework.ui.skynet.export"
-            class="org.eclipse.osee.ats.export.AtsExportWizard"
-            icon="images/export.gif"
-            id="org.eclipse.osee.ats.exportWizard"
-            name="OSEE ATS Export">
-      </wizard>
    </extension>
    <extension
          point="org.eclipse.osee.framework.skynet.core.ClientLoopbackCmd">

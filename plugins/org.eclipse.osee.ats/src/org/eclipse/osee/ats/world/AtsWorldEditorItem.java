@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowViaWorldEditorAction;
-import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.export.AtsExportAction;
 
 /**
  * @author Donald G. Dunne
@@ -23,8 +23,8 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
 
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
-      return Arrays.asList(new AtsExportManager(worldEditor), new DuplicateWorkflowViaWorldEditorAction(
-         worldEditor.getWorldComposite().getWorldXViewer()));
+      return Arrays.asList(new AtsExportAction(worldEditor.getWorldComposite().getWorldXViewer()),
+         new DuplicateWorkflowViaWorldEditorAction(worldEditor.getWorldComposite().getWorldXViewer()));
    }
 
 }

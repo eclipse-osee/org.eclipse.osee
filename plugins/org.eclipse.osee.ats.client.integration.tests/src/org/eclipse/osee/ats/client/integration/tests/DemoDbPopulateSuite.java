@@ -22,11 +22,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite.SuiteClasses({//
    PopulateDemoDatabaseTest.class,
    DemoDbGroupsTest.class,
    PopulateDemoActionsTest.class,
-   DemoDbPopulateValidateAtsDatabaseTest.class})
+   DemoDbPopulateValidateAtsDatabaseTest.class //
+})
 /**
  * @author Donald G. Dunne
  */

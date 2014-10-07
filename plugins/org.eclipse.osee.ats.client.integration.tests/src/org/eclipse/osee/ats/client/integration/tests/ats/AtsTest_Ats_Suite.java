@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.column.AtsTest_Column_S
 import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.editor.AtsTest_Editor_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.ev.AtsTest_EV_TestSuite;
+import org.eclipse.osee.ats.client.integration.tests.ats.export.AtsTest_Export_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer_Suite;
@@ -41,13 +42,15 @@ import org.junit.runners.Suite;
    AtsTest_Config_Suite.class,
    AtsTest_Editor_Suite.class,
    AtsTest_EV_TestSuite.class,
+   AtsTest_Export_Suite.class,
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Review_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,
-   AtsTest_World_Search_Suite.class})
+   AtsTest_World_Search_Suite.class //
+})
 public class AtsTest_Ats_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

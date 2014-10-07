@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.ev.EvNavigateItems;
+import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.ATSPerspective;
@@ -245,6 +246,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new ToggleAtsAdmin(utilItems);
       new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
+      new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
       new GenerateGuid(utilItems);
       new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
          new MassEditDirtyArtifactOperation());

@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
@@ -195,7 +195,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
-         addActionToMenu(fMenu, new AtsExportManager(taskComposite.getTaskXViewer()));
+         addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
