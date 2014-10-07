@@ -459,7 +459,7 @@ public class BranchManager {
     */
    public static Branch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment =
-         String.format("New Branch created by copying prior tx and %s (%s)", parentTransactionId.getBranch().getName(),
+         String.format("New branch, copy of %s from transaction %s", parentTransactionId.getBranch().getName(),
             parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
@@ -474,8 +474,8 @@ public class BranchManager {
 
    public static Branch createPortBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment =
-         String.format("New Port Branch created by copying prior tx and %s (%s)",
-            parentTransactionId.getBranch().getName(), parentTransactionId.getId());
+         String.format("New port branch, copy of %s from transaction %s", parentTransactionId.getBranch().getName(),
+            parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 

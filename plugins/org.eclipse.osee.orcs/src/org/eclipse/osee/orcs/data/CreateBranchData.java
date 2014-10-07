@@ -31,6 +31,7 @@ public class CreateBranchData implements Identifiable<Long> {
    private BranchType branchType;
    private String creationComment;
    private ITransaction fromTransaction;
+   private ITransaction savedTransaction;
    private ArtifactReadable associatedArtifact;
    private ArtifactReadable userArtifact;
 
@@ -101,6 +102,14 @@ public class CreateBranchData implements Identifiable<Long> {
 
    public void setFromTransaction(ITransaction fromTransaction) {
       this.fromTransaction = fromTransaction;
+   }
+
+   public ITransaction getSavedTransaction() {
+      return savedTransaction;
+   }
+
+   public void setSavedTransaction(ITransaction priorTransaction) {
+      this.savedTransaction = priorTransaction;
    }
 
    public ArtifactReadable getUserArtifact() {

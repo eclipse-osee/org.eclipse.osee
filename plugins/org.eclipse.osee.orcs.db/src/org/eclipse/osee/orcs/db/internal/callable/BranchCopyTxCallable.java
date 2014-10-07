@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -51,9 +49,6 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
-   private static final String GET_PRIOR_TRANSACTION =
-      "select max(transaction_id) FROM osee_tx_details where branch_id = ? and transaction_id < ?";
-
    public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, CreateBranchData branchData) {
       super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
       this.branchData = branchData;
@@ -63,36 +58,27 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
    @SuppressWarnings("unchecked")
    @Override
    public Void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      // get the previous transaction, if there is one
-      int sourceTx = branchData.getFromTransaction().getGuid();
-
-      int priorTransactionId =
-         getDatabaseService().runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchData.getUuid(), sourceTx);
 
       // copy the branch up to the prior transaction - the goal is to have the provided
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
-
-      ITransaction priorTx = TokenFactory.createTransaction(priorTransactionId);
-      branchData.setFromTransaction(priorTx);
 
       Callable<Void> callable =
          new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), branchData);
 
       try {
          callable.call();
-         // TODO figure out if this call is "stackable", is the data passed in above
-         // still valid after the branch creation, or do I need to get it all from the new branch???
 
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
 
-         String creationComment = branchData.getCreationComment() + " and copied transaction " + sourceTx;
+         String creationComment = branchData.getCreationComment();
 
          getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
             creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
 
-         populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranchUuid(), sourceTx);
+         populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranchUuid(),
+            branchData.getSavedTransaction().getGuid());
 
          UpdatePreviousTxCurrent updater =
             new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchData.getUuid());
