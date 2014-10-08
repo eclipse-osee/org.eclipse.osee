@@ -702,6 +702,7 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 	attribute "System Security Requirement"
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
+	attribute "Subject Matter Expert"
 }
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
@@ -837,6 +838,7 @@ artifactType "Design" extends "MS Word Template" {
 	attribute "Severity Category"
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
+	attribute "Subject Matter Expert"
 }
 
 artifactType "Subsystem Design" extends "Design" {
@@ -1566,6 +1568,8 @@ artifactType "Component" extends "Artifact" {
 
 artifactType "Code Unit" extends "Artifact" {
 	uuid 0x000000000000003A
+	attribute "Data Rights Classification"
+	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"
 }
 
