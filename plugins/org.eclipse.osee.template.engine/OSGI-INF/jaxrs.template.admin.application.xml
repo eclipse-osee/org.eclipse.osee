@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
+	<implementation class="org.eclipse.osee.template.engine.internal.JaxRsTemplateApplication" />
+   <service>
+      <provide interface="javax.ws.rs.core.Application"/>
+   </service>
+  	<reference bind="setTemplateRegistry" cardinality="1..1" interface="org.eclipse.osee.template.engine.internal.TemplateRegistry" name="TemplateRegistry" policy="static"/>
+</scr:component>

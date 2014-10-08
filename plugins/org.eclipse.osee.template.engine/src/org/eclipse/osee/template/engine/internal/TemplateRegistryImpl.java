@@ -13,6 +13,7 @@ package org.eclipse.osee.template.engine.internal;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.template.engine.OseeTemplateTokens;
+import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osgi.util.ManifestElement;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -99,6 +101,22 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    private boolean hasTemplateHeader(Bundle bundle) {
       String headerValue = getTemplateHeader(bundle);
       return Strings.isValid(headerValue);
+   }
+
+   @Override
+   public void accept(TemplateVisitor visitor) {
+      for (TemplateResources resource : templates.values()) {
+         for (TemplateToken template : resource.getTokens()) {
+            visitor.onTemplate(template.getBundle(), template);
+         }
+      }
+   }
+
+   @Override
+   public Set<String> getAttributes(ResourceToken template) {
+      PageCreator pageCreator = new PageCreator(this);
+      pageCreator.readKeyValuePairs(template.getInputStream());
+      return pageCreator.getAttributes();
    }
 
    @Override
@@ -181,8 +199,8 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       String bundleName = bundle.getSymbolicName();
       TemplateResources removed = templates.remove(bundleName);
       if (removed != null) {
-         Iterable<ResourceToken> tokens = removed.getTokens();
-         for (ResourceToken token : tokens) {
+         Iterable<TemplateToken> tokens = removed.getTokens();
+         for (TemplateToken token : tokens) {
             decache(token);
          }
       }
@@ -211,14 +229,14 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
                   if (isValidUuid(uuidAttribute)) {
                      URL url = resourceUrls.iterator().next();
                      Long uuid = HexUtil.toLong(uuidAttribute);
-                     addEntry(bundleName, headerValue, tokens, url, uuid);
+                     addEntry(bundle, headerValue, tokens, url, uuid);
                   } else {
                      logger.error("Invalid uuidAttribute [%s] for manifest element [%s] in bundle [%s]", uuidAttribute,
                         element, bundleName);
                   }
                } else {
                   for (URL url : resourceUrls) {
-                     addEntry(bundleName, headerValue, tokens, url, null);
+                     addEntry(bundle, headerValue, tokens, url, null);
                   }
                }
             }
@@ -233,11 +251,12 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       return HexUtil.isHexString(value);
    }
 
-   private void addEntry(String bundleName, String headerValue, TemplateResources tokens, URL url, Long uuidSpecified) {
+   private void addEntry(Bundle bundle, String headerValue, TemplateResources tokens, URL url, Long uuidSpecified) {
+      String bundleName = bundle.getSymbolicName();
       try {
          String name = urlAsName(url);
          Long uuid = uuidSpecified != null ? uuidSpecified : nameToUuid(name);
-         ResourceToken token = newToken(bundleName, uuid, name, url);
+         TemplateToken token = newToken(bundle, uuid, name, url);
          boolean wasAdded = tokens.addToken(token);
          if (!wasAdded) {
             logger.error("Invalid template uuid conflicts with previous definition - bundle [%s] header [%s]",
@@ -251,12 +270,8 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
 
    private Long nameToUuid(String name) throws Exception {
       ByteArrayInputStream inputStream = new ByteArrayInputStream(name.getBytes("UTF-8"));
-      byte[] checksum = ChecksumUtil.createChecksum(inputStream, ChecksumUtil.SHA);
-      long value = 0;
-      for (int i = 0; i < 8; i++) {
-         value += (checksum[i] & 0xffL) << (8 * i);
-      }
-      return value;
+      byte[] checksum = ChecksumUtil.createChecksum(inputStream, ChecksumUtil.MD5);
+      return ByteBuffer.wrap(checksum).getLong();
    }
 
    private String urlAsName(URL url) {
@@ -288,18 +303,18 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       return resourceUrls;
    }
 
-   private static ResourceToken newToken(String bundleName, Long uuid, String name, URL url) {
-      return new TemplateToken(bundleName, uuid, name, url);
+   private static TemplateToken newToken(Bundle bundle, Long uuid, String name, URL url) {
+      return new TemplateToken(bundle, uuid, name, url);
    }
 
    private static class TemplateResources {
-      private final Set<ResourceToken> tokens = new HashSet<ResourceToken>();
+      private final Set<TemplateToken> tokens = new HashSet<TemplateToken>();
 
-      public boolean addToken(ResourceToken token) {
+      public boolean addToken(TemplateToken token) {
          return tokens.add(token);
       }
 
-      public Iterable<ResourceToken> getTokens() {
+      public Iterable<TemplateToken> getTokens() {
          return tokens;
       }
 
@@ -309,15 +324,13 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    private static class TemplateToken extends ResourceToken {
-      private final String bundleName;
-      private final Long uuid;
+      private final Bundle bundle;
       private final String name;
       private final URL url;
 
-      public TemplateToken(String bundleName, Long uuid, String name, URL url) {
+      public TemplateToken(Bundle bundle, Long uuid, String name, URL url) {
          super(uuid, name);
-         this.bundleName = bundleName;
-         this.uuid = uuid;
+         this.bundle = bundle;
          this.name = name;
          this.url = url;
       }
@@ -325,6 +338,10 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       @Override
       public URL getUrl() {
          return url;
+      }
+
+      public Bundle getBundle() {
+         return bundle;
       }
 
       @Override
@@ -359,7 +376,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
 
       @Override
       public String toString() {
-         return String.format("%s::%s::%s - [%s]", bundleName, uuid, name, url);
+         return String.format("%s::%s::%s - [%s]", bundle, getGuid(), name, url);
       }
    }
 

@@ -13,10 +13,12 @@ package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,6 +53,10 @@ public final class PageCreator {
 
    public PageCreator(IResourceRegistry registry) {
       this.registry = registry;
+   }
+
+   public Set<String> getAttributes() {
+      return Collections.unmodifiableSet(substitutions.keySet());
    }
 
    public void addSubstitution(AppendableRule<?> rule) {

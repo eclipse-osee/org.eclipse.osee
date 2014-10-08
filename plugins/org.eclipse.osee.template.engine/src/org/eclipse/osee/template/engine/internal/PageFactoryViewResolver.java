@@ -29,9 +29,9 @@ import org.eclipse.osee.template.engine.PageFactory;
  */
 public class PageFactoryViewResolver extends AbstractViewResolver<ResourceToken> {
 
-   private TemplateRegistryImpl registry;
+   private TemplateRegistry registry;
 
-   public void setTemplateRegistry(TemplateRegistryImpl registry) {
+   public void setTemplateRegistry(TemplateRegistry registry) {
       this.registry = registry;
    }
 

@@ -10,17 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine.internal;
 
+import java.util.Set;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface TemplateRegistry {
 
+   public interface TemplateVisitor {
+      void onTemplate(Bundle bundle, ResourceToken template);
+   }
+
    ResourceToken resolveTemplate(String viewId, MediaType mediaType);
 
    IResourceRegistry getResourceRegistry();
+
+   void accept(TemplateVisitor visitor);
+
+   Set<String> getAttributes(ResourceToken template);
 
 }
