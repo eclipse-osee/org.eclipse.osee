@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import com.google.common.io.Files;
 
 /**
  * @author Donald G. Dunne
@@ -202,10 +203,8 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          getArtifact(false).persist(transaction);
       }
 
-      String home = System.getProperty("user.home");
-
-      File tempFolder = new File(home, "coverage_temp_" + Lib.getDateTimeString());
-      tempFolder.mkdirs();
+      File tempFolder = Files.createTempDir();
+      tempFolder.deleteOnExit();
 
       File zipFile = new File(tempFolder, "coverage.zip");
 
