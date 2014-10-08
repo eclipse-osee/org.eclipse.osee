@@ -24,6 +24,7 @@ artifactType "Program" extends "ats.Ats Config Artifact" {
 	attribute "ats.Team Definition"
 	attribute "ats.Namespace"
 	attribute "ats.Description"
+   attribute "ats.closure.Closure State"
 }
 
 artifactType "ats.Review" extends "ats.State Machine" {

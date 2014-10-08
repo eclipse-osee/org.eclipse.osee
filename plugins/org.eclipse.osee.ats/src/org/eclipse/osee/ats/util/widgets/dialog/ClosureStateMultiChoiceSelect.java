@@ -17,6 +17,9 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author Angel Avila
@@ -28,6 +31,14 @@ public class ClosureStateMultiChoiceSelect extends XSelectFromDialog<String> {
    public ClosureStateMultiChoiceSelect() {
       super("Select Version(s)");
       setSelectableItems(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ClosureState));
+   }
+
+   @Override
+   public void createControls(Composite parent, int horizontalSpan, boolean fillText) {
+      super.createControls(parent, horizontalSpan, fillText);
+      GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
+      layoutData.heightHint = 80;
+      getStyledText().setLayoutData(layoutData);
    }
 
    @Override
