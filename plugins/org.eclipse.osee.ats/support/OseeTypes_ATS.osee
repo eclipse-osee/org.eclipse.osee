@@ -677,6 +677,7 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.review.blocks"
 	mediaType "text/plain"
 }
@@ -686,6 +687,7 @@ attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.review.formalType"
 	mediaType "text/plain"
 }
@@ -775,6 +777,7 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.change.type"
 	mediaType "text/plain"
 }
@@ -1468,6 +1471,7 @@ attributeType "ats.closure.Closure State" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "ats.closure.states"
 	mediaType "text/plain"
 }

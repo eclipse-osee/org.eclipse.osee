@@ -990,6 +990,7 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.subsystem"
 	defaultValue "Unspecified"
 	mediaType "text/plain"
@@ -1021,6 +1022,7 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max unlimited
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.qualification.method"
 	description
 	"Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
@@ -1047,6 +1049,7 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.safety.criticality"
 	description "Criticality Classification"
 	defaultValue "V"
@@ -1224,6 +1227,7 @@ attributeType "Component" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.req.component"
 	defaultValue "Unspecified"
 	mediaType "text/plain"
