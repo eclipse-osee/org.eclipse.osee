@@ -28,8 +28,7 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  */
 public class OrcsScriptBlam extends AbstractBlam {
 
-   //TODO switch to orcs when implemented
-   private static final String SCRIPT_DSL_ID = "osee";
+   private static final String SCRIPT_DSL_ID = "orcs";
 
    @Override
    public String getName() {
