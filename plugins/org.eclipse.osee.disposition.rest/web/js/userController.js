@@ -15,35 +15,49 @@ app.controller('userController', [
         $scope.programSelection = null;
         $scope.setSelection = null; 	
         $scope.lastFocused = null;
-
+        $scope.isMulitEditRequest = false;
+        $scope.loading = false;
+        $scope.spinneractive = false;
+        
         // Get programs
         Program.query(function(data) {
             $scope.programs = data;
         });
 
         $scope.updateProgram = function updateProgram() {
+        	var loadingModal = $scope.showLoadingModal();
+        	$scope.items = {};
+        	$scope.sets = {};
             Set.query({
                 programId: $scope.programSelection
             }, function(data) {
+            	loadingModal.close();
                 $scope.sets = data;
             });
         };
         
         $scope.updateSet = function updateSet() {
+        	var loadingModal = $scope.showLoadingModal();
+        	$scope.items = {};
             Item.query({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection
             }, function(data) {
+            	loadingModal.close();
                 $scope.items = data;
+            }, function(data) {
+            	loadingModal.close();
+            	alert("Ooops...Something went wrong");
             });
 
-            Set.get({
-                programId: $scope.programSelection,
-                setId: $scope.setSelection
-            }, function(data) {
-                $scope.set = data;
-                $scope.dispoConfig = $scope.set.dispoConfig;
-            });
+// Uncomment once Coverage gets included
+//            Set.get({
+//                programId: $scope.programSelection,
+//                setId: $scope.setSelection
+//            }, function(data) {
+//                $scope.set = data;
+//                $scope.dispoConfig = $scope.set.dispoConfig;
+//            });
         };
 
         $scope.updateItem = function updateItem(item, row) {
@@ -84,6 +98,7 @@ app.controller('userController', [
         $scope.toggleEditItems = function toggleEditItems() {
         	var size = $scope.selectedItems.length;
         	$scope.gridOptions.selectAll(false);
+        	
         	// Why do this last? Good question, checkSeletable gets called by selectAll and needs editItems to be true so ng-grid can properly unselect the selected items withouth breaking it's 'watch' function
         	$scope.editItems = !$scope.editItems;
         	$scope.annotations.length = 0;
@@ -122,10 +137,11 @@ app.controller('userController', [
             enableColumnResize: true,
             enableRowReordering: true,
             multiSelect: true,
-            showFilter: true,
             showColumnMenu: true,
             selectedItems: $scope.selectedItems,
             beforeSelectionChange: checkSelectable,
+            showGroupPanel: true,
+            showFilter: true,
             columnDefs: [{
                 field: 'name',
                 displayName: 'Name',
@@ -174,7 +190,17 @@ app.controller('userController', [
                 displayName: 'Elapsed Time',
                 enableCellEdit: false,
                 visible: false
-            }, {
+            },{
+                field: 'lastUpdated',
+                displayName: 'Last Updated',
+                enableCellEdit: false,
+                visible: false
+            },{
+                field: 'creationDate',
+                displayName: 'Creation Date',
+                enableCellEdit: false,
+                visible: false
+            },{
                 field: 'aborted',
                 displayName: 'Aborted',
                 enableCellEdit: false,
@@ -190,7 +216,12 @@ app.controller('userController', [
         $scope.stealItem = function stealItem(item) {
             if ($rootScope.cachedName != null) {
                 if ($rootScope.cachedName != item.assignee) {
-                    var confirmed = window.confirm("Are you sure you want to steal this Item from " + item.assignee);
+                	var confirmed = false;
+                	if(item.assignee.toUpperCase() == 'UNASSIGNED'){
+                		confirmed = true;
+                	} else {
+                		confirmed = window.confirm("Are you sure you want to steal this Item from " + item.assignee);
+                	}
                     if (confirmed) {
                         item.assignee = $rootScope.cachedName;
                         $scope.editItem(item);
@@ -246,7 +277,12 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid,
-            }, item, function() {}, function(data) {
+            }, item, function() {
+            	if($scope.isMulitEditRequest) {
+                	$scope.gridOptions.selectAll(false);
+            		$scope.isMulitEditRequest=false;
+            	}
+            }, function(data) {
                 alert("Could not make change, please try refreshing");
             });
 
@@ -357,6 +393,7 @@ app.controller('userController', [
         
         // MODALS -------------------------------------------------------------------------------------------------
         $scope.showAssigneeModal = function() {
+        	$scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'assigneeModal.html',
                 controller: AssigneeModalCtrl,
@@ -391,6 +428,7 @@ app.controller('userController', [
         
         // Category Modal
         $scope.showCategoryModal = function() {
+        	$scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'categoryModal.html',
                 controller: CategoryModalCtrl,
@@ -425,6 +463,7 @@ app.controller('userController', [
         
         // Needs Rerun Modal
         $scope.showNeedsRerunModal = function() {
+        	$scope.isMulitEditRequest = true;
             var modalInstance = $modal.open({
                 templateUrl: 'needsRerunModal.html',
                 controller: NeedsRerunModalCtrl,
@@ -458,6 +497,18 @@ app.controller('userController', [
                 $modalInstance.dismiss('cancel');
             };
         };
+        
+        // Loading Modal
+        $scope.showLoadingModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'loadingModal.html',
+                size: 'sm',
+                windowClass: 'needsRerunModal',
+                backdrop: 'static'
+            });
+            
+            return modalInstance;
+        }
 
 
     }

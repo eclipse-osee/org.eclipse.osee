@@ -9,7 +9,6 @@
 </head>
 
 <body>
-
     <div class="container-fluid" id="content">
         <div>
             <div class="row">
@@ -18,19 +17,22 @@
                     <select class="form-control" ng-show="programs" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs">
                     </select>
                 </div>
-                <div ng-show="programSelection != null" class="span3 offset2">
+                <div ng-show="programSelection != null" class="span3 offset1">
                     Set:
                     <select class="form-control" ng-show="sets" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
                     </select>
                 </div>
-                <div id="multItemEditDiv" ng-show="setSelection !=null" class="span5 offset1">
+                <div id="multItemEditDiv" ng-show="items.length>0" class="span5 offset1">
                     <div class="btn-group">
                     <button class="btn btn-primary active" ng-click="toggleEditItems()">Edit Multiple Items</button>
 							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showAssigneeModal()">Assignee</button>
 							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showCategoryModal()">Category</button>
 							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
 							</div>
-                </div>                
+                </div>  
+                <div id="refresh" ng-show="items.length>0" class="span1">
+                   <button class="btn btn-primary active" ng-click="updateSet()">Refresh</button>
+                </div>              
             </div>
             <div id="top-content" class="row">
                 <div style="height: 600px;" id="itemsGrid" class="gridStyle" ng-grid="gridOptions"></div>
@@ -66,7 +68,7 @@
                             <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.customerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></textarea>
                         </td>
                         <td>
-                            <button ng-class="{annotationDelete: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-click="deleteAnnotation(annotation)"></button>
+                            <button ng-class="{annotationDelete: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-click="deleteAnnotation(annotation)">X</button>
                         </td>
                     </tr>
                 </table>
@@ -83,7 +85,7 @@
         </div>
         <div class="modal-body" style="height: 300px; overflow: auto;">
             <div class="form-group">
-                <label for="setAssignee">Path</label>
+                <label for="setAssignee">Assignee</label>
                 <input ng-model="multiAssignee" class="form-control" name="setMultiAssignee" placeholder="Enter Assignee" required>
             </div>
         </div>
@@ -141,6 +143,13 @@
         </div>
 
     </script>
+    
+    
+    <script type="text/ng-template" id="loadingModal.html">
+        <div id="loadingModal" class="alert alert-info">
+				Loading...
+        </div>
+    </script>   
 
 </body>
 

@@ -1,14 +1,11 @@
 
 #top-content {
-    position: absolute;
-    top: 130px;
-    bottom: 240px; /* 130 + 6 */
-    left: 40px;
-    right: 0;
+    margin-left: 5px;
+    margin-right: 5px;
     overflow: auto;
 }
 #bottom-content {
-    position: absolute;
+    position: fixed;
     height: 300px;
     bottom: 0;
     left: 0;
@@ -18,7 +15,7 @@
 }
 
 #content-resizer {
-    position: absolute;
+    position: fixed;
     height: 6px;
     bottom: 300px;
     left: 0;
@@ -198,3 +195,11 @@ textarea {
 #multItemEditDiv {
 	margin-top: 20px;
 }
+
+#refresh {
+	margin-top: 20px;
+ }
+ 
+ #loadingModal {
+ 	margin-bottom: 0px;
+ }

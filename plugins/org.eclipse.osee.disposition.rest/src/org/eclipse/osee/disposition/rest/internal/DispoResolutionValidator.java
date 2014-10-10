@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -38,7 +39,7 @@ public class DispoResolutionValidator {
    public boolean validate(DispoAnnotationData annotation) {
       String pcr = annotation.getResolution().toUpperCase().trim();
       boolean isValid = false;
-      if (pcr.matches(resolutionRegex)) {
+      if (Strings.isValid(pcr)) {
          isValid = true;
       }
 

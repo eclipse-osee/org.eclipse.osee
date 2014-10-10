@@ -35,7 +35,7 @@ angular.module('mc.resizer', []).directive('resizer', function($document) {
 				var y = innerHeight - event.pageY;
 				
 				console.log(window.innerHeight);
-				if(y < innerHeight - 200) {
+				if(y < innerHeight - 200 && y > 100) {
 					
 					// Handle horizontal resizer
 	

@@ -37,7 +37,7 @@
 
 		        var editCellTmpl = '<input editable="true" >'
 		        var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
-		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-click="importSet(row.entity)">Import</button>';
+		        var importCellTmpl = '<button width="50px" class="btn btn-primary ladda-button" data-style="expand-left" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
 
 		        $scope.columnDefs1 = [{
 		            field: "",
@@ -106,13 +106,16 @@
 		                secondarySet: $scope.secondarySet,
 		            });
 		        }
-
+		        
 		        $scope.updateProgram = function updateProgram() {
+		            $scope.loading = true;
+		        	$scope.items = {};
+		        	$scope.sets = {};
 		            Set.query({
 		                programId: $scope.programSelection
 		            }, function(data) {
+		                $scope.loading = false;
 		                $scope.sets = data;
-		                $scope.$setsLoaded = true;
 		            });
 		        };
 
@@ -140,10 +143,16 @@
 		        $scope.importSet = function importSet(set) {
 		            var newSet = new Set;
 		            newSet.operation = "Import";
+		            set.processingImport = true;
 		            Set.update({
 		                programId: $scope.programSelection,
 		                setId: set.guid
-		            }, newSet);
+		            }, newSet, function(){
+		            	set.processingImport = false;
+		            }, function() {
+		            	set.processingImport = false;
+		            	alert("Could not Import");
+		            });
 		        };
 
 		        $scope.createNewSet = function createNewSet(name, path, type) {
