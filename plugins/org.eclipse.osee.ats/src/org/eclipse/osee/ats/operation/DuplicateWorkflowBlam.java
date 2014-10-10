@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
@@ -107,7 +109,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                   return;
                }
                try {
-                  AtsUtilClient.setEmailEnabled(false);
                   Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
                   if (createNewWorkflow) {
                      handleCreateNewWorkflow(teamArts, title);
@@ -133,15 +134,21 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
+         // assignees == add in existing assignees, leads and originator (current user)
          List<IAtsUser> assignees = new LinkedList<IAtsUser>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
-         if (!assignees.contains(AtsClientService.get().getUserService().getCurrentUser())) {
-            assignees.add(AtsClientService.get().getUserService().getCurrentUser());
+         IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
+         assignees.addAll(teamDef.getLeads());
+         IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+         if (!assignees.contains(user)) {
+            assignees.add(user);
          }
+         
          TeamWorkFlowArtifact newTeamArt =
-            ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),
+            ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamDef,
                teamArt.getActionableItemsDam().getActionableItems(), assignees, changes, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
+         
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);
          }
@@ -157,6 +164,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
+
+      IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt =
             (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
@@ -166,15 +175,33 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.setSoleAttributeFromString(AtsAttributeTypes.AtsId, getNexAtsId(teamArt));
 
          dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
-         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(),
-            AtsClientService.get().getUserService().getCurrentUser().getUserId());
+         dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(), user.getUserId());
+
+         // assignees == add in existing assignees, leads and originator (current user)
+         List<IAtsUser> assignees = new LinkedList<IAtsUser>();
+         assignees.addAll(teamArt.getStateMgr().getAssignees());
+         assignees.addAll(teamArt.getTeamDefinition().getLeads());
+         if (!assignees.contains(user)) {
+            assignees.add(AtsClientService.get().getUserService().getCurrentUser());
+         }
+         dupArt.initializeNewStateMachine(assignees, new Date(), user, changes);
+
          changes.add(dupArt);
+         // add notification for originator, assigned and subscribed
+         changes.getNotifications().addWorkItemNotificationEvent(
+            AtsNotificationEventFactory.getWorkItemNotificationEvent(user, dupArt, AtsNotifyType.Originator,
+               AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
+
          if (duplicateTasks) {
             for (TaskArtifact taskArt : teamArt.getTaskArtifacts()) {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtilCore.getAtsBranch());
                dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + taskArt.getAtsId(),
                   AtsClientService.get().getUserService().getCurrentUser().getUserId());
                dupArt.addRelation(AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
+               // for tasks, add notification for subscribed only
+               changes.getNotifications().addWorkItemNotificationEvent(
+                  AtsNotificationEventFactory.getWorkItemNotificationEvent(user, dupTaskArt,
+                     AtsNotifyType.SubscribedTeamOrAi));
                changes.add(dupTaskArt);
             }
          }
@@ -189,7 +216,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          for (ITeamWorkflowProvider teamExtension : TeamWorkFlowManager.getTeamWorkflowProviders()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
+
       }
+
       changes.execute();
       for (TeamWorkFlowArtifact newTeamArt : newTeamArts) {
          SMAEditor.editArtifact(newTeamArt);

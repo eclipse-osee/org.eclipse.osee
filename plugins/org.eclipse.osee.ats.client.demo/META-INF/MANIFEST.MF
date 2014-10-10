@@ -88,7 +88,8 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.support.test.util
 Export-Package: 
- org.eclipse.osee.ats.client.demo
+ org.eclipse.osee.ats.client.demo,
+ org.eclipse.osee.ats.client.demo.config
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ats.client.demo.internal.Activator
 Service-Component: OSGI-INF/*.xml
