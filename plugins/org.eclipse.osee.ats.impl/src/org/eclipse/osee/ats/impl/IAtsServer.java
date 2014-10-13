@@ -86,4 +86,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    List<IAtsWorkItem> getWorkItemListByIds(String id);
 
+   String getAtsId(Object obj);
+
 }

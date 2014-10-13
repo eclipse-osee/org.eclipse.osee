@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    @Override
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
-      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.WorkDefinition).getResults()) {
          nameToWorkDefStr.add(new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
@@ -62,7 +62,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       ArtifactReadable artifact =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andTypeEquals(
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
             AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.TOKEN_DELIMITER__EXACT).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }

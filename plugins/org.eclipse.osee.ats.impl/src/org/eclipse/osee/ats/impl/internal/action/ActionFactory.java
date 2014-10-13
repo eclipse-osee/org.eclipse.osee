@@ -43,8 +43,9 @@ import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItem;
@@ -76,8 +77,9 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsConfig config;
+   private final IAtsServer atsServer;
 
-   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config) {
+   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServer atsServer) {
       this.orcsApi = orcsApi;
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
@@ -88,6 +90,7 @@ public class ActionFactory implements IAtsActionFactory {
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
       this.config = config;
+      this.atsServer = atsServer;
    }
 
    @Override
@@ -96,7 +99,7 @@ public class ActionFactory implements IAtsActionFactory {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
-      ArtifactReadable userArt = AtsUtilServer.getArtifact(orcsApi, user);
+      ArtifactReadable userArt = AtsServerService.get().getArtifact(user);
       Conditions.checkNotNull(userArt, "user");
 
       ArtifactReadable actionArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Action, title);
@@ -180,7 +183,7 @@ public class ActionFactory implements IAtsActionFactory {
          for (IAtsTeamWorkflow teamArt : workItemService.getTeams(action)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  AtsUtilServer.getAtsId(action));
+                  atsServer.getAtsId(action));
             }
          }
       }
@@ -305,7 +308,7 @@ public class ActionFactory implements IAtsActionFactory {
    public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       ArtifactReadable teamWfArt = ((ArtifactReadable) teamWf.getStoreObject());
       // Auto-add this team artifact to configured goals
-      ArtifactReadable teamDefArt = AtsUtilServer.getArtifact(orcsApi, teamDef);
+      ArtifactReadable teamDefArt = AtsServerService.get().getArtifact(teamDef);
       if (teamDefArt != null) {
          for (ArtifactReadable goalArt : teamDefArt.getRelated(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
             if (!goalArt.areRelated(AtsRelationTypes.Goal_Member, teamWfArt)) {
@@ -317,7 +320,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       // Auto-add this actionable item to configured goals
       for (IAtsActionableItem aia : actionableItems) {
-         ArtifactReadable aiDefArt = AtsUtilServer.getArtifact(orcsApi, aia);
+         ArtifactReadable aiDefArt = AtsServerService.get().getArtifact(aia);
          if (aiDefArt != null) {
             for (ArtifactReadable goalArt : aiDefArt.getRelated(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
                if (!goalArt.areRelated(AtsRelationTypes.Goal_Member, teamWfArt)) {

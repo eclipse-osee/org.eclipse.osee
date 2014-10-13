@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.impl.internal.util;
+package org.eclipse.osee.ats.impl.internal;
 
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -16,7 +16,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class AtsUtilServerTest {
+/**
+ * @author Donald G. Dunne
+ */
+public class AtsServerImplTest {
 
    // @formatter:off
    @Mock private IAtsTeamWorkflow teamWf;
@@ -34,6 +37,7 @@ public class AtsUtilServerTest {
       when(teamArt.getSoleAttributeAsString(AtsAttributeTypes.AtsId, AtsUtilCore.DEFAULT_ATS_ID_VALUE)).thenReturn(
          "ATS123");
 
-      Assert.assertEquals("ATS123", AtsUtilServer.getAtsId(teamWf));
+      AtsServerImpl serverImpl = new AtsServerImpl();
+      Assert.assertEquals("ATS123", serverImpl.getAtsId(teamWf));
    }
 }

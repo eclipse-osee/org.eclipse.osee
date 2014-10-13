@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.impl.internal.convert;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -50,7 +50,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
       }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
-      for (ArtifactReadable art : getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable art : getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {

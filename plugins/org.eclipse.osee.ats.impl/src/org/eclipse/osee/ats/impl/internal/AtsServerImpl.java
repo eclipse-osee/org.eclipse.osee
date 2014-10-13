@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.logger.Log;
@@ -166,7 +167,7 @@ public class AtsServerImpl implements IAtsServer {
       actionableItemManager = new ActionableItemManager(config);
       actionFactory =
          new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
-            actionableItemManager, userService, attributeResolverService, atsStateFactory, config);
+            actionableItemManager, userService, attributeResolverService, atsStateFactory, config, this);
 
       System.out.println("ATS - AtsServerImpl started");
       started = true;
@@ -388,5 +389,21 @@ public class AtsServerImpl implements IAtsServer {
          }
       }
       return workItems;
+   }
+
+   @Override
+   public String getAtsId(Object obj) {
+      ArtifactReadable art = null;
+      if (obj instanceof ArtifactReadable) {
+         art = (ArtifactReadable) obj;
+      } else if (obj instanceof IAtsObject) {
+         art = (ArtifactReadable) ((IAtsObject) obj).getStoreObject();
+      }
+      Conditions.checkNotNull(art, "artifact");
+      String toReturn = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId, AtsUtilCore.DEFAULT_ATS_ID_VALUE);
+      if (AtsUtilCore.DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
+         toReturn = art.getGuid();
+      }
+      return toReturn;
    }
 }

@@ -45,7 +45,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
-      return AtsUtilServer.getArtifact(orcsApi, atsObject);
+      return (ArtifactReadable) atsObject.getStoreObject();
    }
 
    public void start() throws OseeCoreException {

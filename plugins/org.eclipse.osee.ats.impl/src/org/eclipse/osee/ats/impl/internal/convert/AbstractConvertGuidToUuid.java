@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.impl.internal.convert;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
       TransactionFactory txFactory = getOrcsApi().getTransactionFactory(null);
       Conditions.checkNotNull(txFactory, "transaction factory");
       return txFactory.createTransaction(COMMON,
-         AtsUtilServer.getArtifactByGuid(getOrcsApi(), SystemUser.OseeSystem.getGuid()), getName());
+         AtsServerService.get().getArtifactByGuid(SystemUser.OseeSystem.getGuid()), getName());
    }
 
    private final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";

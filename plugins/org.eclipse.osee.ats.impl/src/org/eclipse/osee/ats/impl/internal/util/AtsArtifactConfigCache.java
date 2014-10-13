@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.core.config.AtsConfigCache;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -57,7 +58,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       A result = cache.getSoleByGuid(guid, clazz);
       if (result == null) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
             result = (A) configItemFactory.getConfigObject(artifact);
             if (result != null) {
@@ -73,7 +74,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       IAtsConfigObject result = cache.getSoleByGuid(guid);
       if (result == null) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
             result = configItemFactory.getConfigObject(artifact);
             if (result != null) {

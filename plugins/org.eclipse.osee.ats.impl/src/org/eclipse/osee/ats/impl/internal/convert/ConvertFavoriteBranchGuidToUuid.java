@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.convert;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -135,7 +135,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
    }
 
    private ResultSet<ArtifactReadable> getUsersFavoriteBranch(QueryFactory queryFactory) throws OseeCoreException {
-      return queryFactory.fromBranch(AtsUtilServer.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
+      return queryFactory.fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
          CoreAttributeTypes.FavoriteBranch).getResults();
    }
 

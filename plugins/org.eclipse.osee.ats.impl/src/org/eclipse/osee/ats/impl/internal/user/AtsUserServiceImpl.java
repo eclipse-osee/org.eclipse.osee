@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.impl.internal.util.AtsUtilServer;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -72,8 +71,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    protected IAtsUser loadUserByUserIdFromDb(String userId) {
       IAtsUser atsUser = null;
       ResultSet<ArtifactReadable> results =
-         orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-            CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, userId).getResults();
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+            CoreAttributeTypes.UserId, userId).getResults();
       if (!results.isEmpty()) {
          ArtifactReadable userArt = results.getExactlyOne();
          atsUser = new AtsUser(userArt);
@@ -85,8 +84,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    protected IAtsUser loadUserByUserNameFromDb(String name) {
       IAtsUser atsUser = null;
       ArtifactReadable userArt =
-         orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-            CoreArtifactTypes.User).and(CoreAttributeTypes.Name, name).getResults().getExactlyOne();
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+            CoreAttributeTypes.Name, name).getResults().getExactlyOne();
       if (userArt != null) {
          atsUser = new AtsUser(userArt);
       }
@@ -99,7 +98,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       Boolean admin = userIdToAdmin.get(user.getUserId());
       if (admin == null) {
          admin =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(
                AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
          userIdToAdmin.put(user.getUserId(), admin);
       }
@@ -111,21 +110,21 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    public static ArtifactReadable getCurrentUserArt() throws OseeCoreException {
       // TODO Switch to real user
-      return orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-         CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+         CoreAttributeTypes.UserId, SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
    }
 
    @Override
    public List<IAtsUser> getUsers(Active active) {
       ensureLoaded();
       List<IAtsUser> users = new ArrayList<IAtsUser>();
-      for (ArtifactReadable userArt : orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(
-         AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).getResults()) {
+      for (ArtifactReadable userArt : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+         CoreArtifactTypes.User).getResults()) {
          Boolean activeFlag = userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true);
          if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
             users.add(new AtsUser(userArt));
@@ -155,8 +154,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
          String userId = getCurrentUserId();
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Guest.getUserId())) {
             ResultSet<ArtifactReadable> results =
-               orcsApi.getQueryFactory(AtsUtilServer.getApplicationContext()).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
-                  CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, userId).getResults();
+               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+                  CoreAttributeTypes.UserId, userId).getResults();
             hasPermission = (results.size() == 1);
          }
       }

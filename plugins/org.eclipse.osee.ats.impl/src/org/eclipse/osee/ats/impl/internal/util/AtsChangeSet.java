@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.AttributeIdWrapper;
 import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -54,7 +56,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory(null).createTransaction(AtsUtilServer.getAtsBranch(), getUser(user), comment);
+            orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), getUser(user), comment);
       }
       return transaction;
    }
@@ -63,7 +65,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilServer.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    @Override
@@ -126,13 +128,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException {
       ArtifactId artifactId = getArtifact(workItem);
-      getTransaction().setAttributeById(artifactId, AtsUtilServer.toAttributeId(attr), value);
+      getTransaction().setAttributeById(artifactId, new AttributeIdWrapper(attr), value);
       add(workItem);
    }
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
-      getTransaction().deleteByAttributeId(getArtifact(workItem), AtsUtilServer.toAttributeId(attr));
+      getTransaction().deleteByAttributeId(getArtifact(workItem), new AttributeIdWrapper(attr));
       add(workItem);
    }
 
