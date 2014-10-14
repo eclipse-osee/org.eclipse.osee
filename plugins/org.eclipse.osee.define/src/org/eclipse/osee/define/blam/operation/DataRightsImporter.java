@@ -14,18 +14,22 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DataRightsBasis;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.DataRightsClassification;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.SubjectMatterExpert;
-import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -38,9 +42,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan Rader
  */
 public class DataRightsImporter extends AbstractBlam {
-
-   public Branch branch;
-   public SkynetTransaction transaction;
+   private Map<String, Artifact> nameToArtifact;
 
    @Override
    public Collection<String> getCategories() {
@@ -49,32 +51,48 @@ public class DataRightsImporter extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<XWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" horizontalLabel=\"true\" displayName=\"Branch\" /><XWidget xwidgetType=\"XText\" displayName=\"Path to DataRights XML\" /></XWidgets>";
+      StringBuffer buffer = new StringBuffer("<xWidgets>");
+      buffer.append("<XWidget xwidgetType=\"XBranchSelectWidget\" horizontalLabel=\"true\" displayName=\"Branch\" />");
+      buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Path to DataRights XML\" />");
+      buffer.append("</xWidgets>");
+      return buffer.toString();
    }
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      // Get branch by name from blam
-      branch = variableMap.getBranch("Branch");
+      IOseeBranch branch = variableMap.getBranch("Branch");
       String xmlPath = variableMap.getString("Path to DataRights XML");
+
       if (branch == null) {
          log(String.format("A branch needs to be defined."));
-         return;
-      }
-
-      if (!Strings.isValid(xmlPath)) {
+      } else if (!Strings.isValid(xmlPath)) {
          log(String.format("A path needs to be defined."));
-         return;
+      } else {
+         log("path [" + xmlPath + "]");
+
+         if (nameToArtifact == null) {
+            QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(branch);
+            builder.andIsOfType(CodeUnit);
+            ResultSet<Artifact> results = builder.getResults();
+            nameToArtifact = new HashMap<String, Artifact>();
+            for (Artifact artifact : results) {
+               nameToArtifact.put(artifact.getName(), artifact);
+            }
+         }
+
+         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+         DataRightsProcessor processor = null;
+         InputStream inputStream = null;
+         try {
+            inputStream = new FileInputStream(xmlPath);
+            processor = new DataRightsProcessor(branch);
+            xmlReader.setContentHandler(new ExcelSaxHandler(processor, true));
+            xmlReader.parse(new InputSource(inputStream));
+         } finally {
+            Lib.close(inputStream);
+         }
+         processor.persist();
       }
-
-      transaction = TransactionManager.createTransaction(branch, "Data Rights Importer");
-
-      File path = new File(xmlPath);
-      XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-      xmlReader.setContentHandler(new ExcelSaxHandler(new DataRightsProcessor(), true));
-      xmlReader.parse(new InputSource(new FileInputStream(path)));
-
-      transaction.execute();
    }
 
    @Override
@@ -82,13 +100,35 @@ public class DataRightsImporter extends AbstractBlam {
       return "Data Rights Importer";
    }
 
-   public class DataRightsProcessor implements RowProcessor {
+   @Override
+   public String getDescriptionUsage() {
+      return "This BLAM imports data rights attributes (SME, Classification and Basis) from a XML spreadsheet into existing Artifacts in ATS";
+   }
 
-      private boolean ignore = false;
+   private final class DataRightsProcessor implements RowProcessor {
+
+      private final IOseeBranch branch;
+
+      private boolean ignore;
       private int smeIndex;
       private int dataRightsIndex;
       private int fileNameIndex;
       private int dataRightsBasisIndex;
+      private boolean changesAvailable;
+      private SkynetTransaction transaction;
+
+      public DataRightsProcessor(IOseeBranch branch) {
+         super();
+         this.branch = branch;
+      }
+
+      private SkynetTransaction getTransaction() {
+         if (transaction == null) {
+            transaction = TransactionManager.createTransaction(branch, "Data Rights Importer");
+            changesAvailable = true;
+         }
+         return transaction;
+      }
 
       @Override
       public void processRow(String[] row) throws Exception {
@@ -97,36 +137,54 @@ public class DataRightsImporter extends AbstractBlam {
             String dataRightsClassification = row[dataRightsIndex];
             String fileName = row[fileNameIndex];
             String dataRightsBasis = row[dataRightsBasisIndex];
-
-            Artifact artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(CodeUnit, fileName, branch, QueryOption.CONTAINS_MATCH_OPTIONS);
-
-            if (artifact == null) {
-               log("artifact [" + fileName + "] does not exist");
-
-            } else {
-               artifact.setSoleAttributeValue(DataRightsClassification, dataRightsClassification);
-               artifact.setSoleAttributeValue(DataRightsBasis, dataRightsBasis);
-               artifact.setSoleAttributeValue(SubjectMatterExpert, SME);
-
-               artifact.persist(transaction);
+            if (Strings.isValid(SME)) {
+               SME = "Unspecified";
             }
+            if (Strings.isValid(dataRightsClassification)) {
+               dataRightsClassification = "Unspecified";
+            }
+            if (Strings.isValid(dataRightsBasis)) {
+               dataRightsBasis = "Unspecified";
+            }
+            try {
+               Artifact artifact = getArtifactByName(fileName);
+               if (artifact == null) {
+                  log("artifact [" + fileName + "] does not exist");
+               } else {
+                  artifact.setSoleAttributeValue(DataRightsClassification, dataRightsClassification);
+                  artifact.setSoleAttributeValue(DataRightsBasis, dataRightsBasis);
+                  artifact.setSoleAttributeValue(SubjectMatterExpert, SME);
+
+                  SkynetTransaction transaction = getTransaction();
+                  artifact.persist(transaction);
+               }
+            } catch (Exception ex) {
+               log("dataRightsClassification [" + dataRightsClassification + "] does not exist");
+               log("dataRightsBasis [" + dataRightsBasis + "] does not exist");
+               log("SME [" + SME + "] does not exist");
+               log("artifact [" + fileName + "] does not exist");
+               log(ex);
+            }
+
          }
+      }
+
+      public Artifact getArtifactByName(String name) {
+         return nameToArtifact.get(name);
       }
 
       @Override
       public void processHeaderRow(String[] row) {
-         for (int i = 0; i < row.length; i++) {
-            if (row[i] != null) {
-               if (row[i].equals("SME")) {
-                  smeIndex = i;
-               } else if (row[i].equals("Classification")) {
-                  dataRightsIndex = i;
-               } else if (row[i].equals("Code Unit")) {
-                  fileNameIndex = i;
-               } else if (row[i].equals("Basis")) {
-                  dataRightsBasisIndex = i;
-               }
+         for (int index = 0; index < row.length; index++) {
+            String header = row[index];
+            if ("SME".equals(header)) {
+               smeIndex = index;
+            } else if ("Classification".equals(header)) {
+               dataRightsIndex = index;
+            } else if ("Virtual Path (formula)".equals(header)) {
+               fileNameIndex = index;
+            } else if ("Basis".equals(header)) {
+               dataRightsBasisIndex = index;
             }
          }
       }
@@ -134,11 +192,12 @@ public class DataRightsImporter extends AbstractBlam {
       @Override
       public void reachedEndOfWorksheet() {
          ignore = true;
+
       }
 
       @Override
       public void processEmptyRow() {
-         // do nothing
+         ignore = true;
       }
 
       @Override
@@ -154,6 +213,12 @@ public class DataRightsImporter extends AbstractBlam {
       @Override
       public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
          // do nothing
+      }
+
+      public void persist() {
+         if (changesAvailable) {
+            getTransaction().execute();
+         }
       }
 
    }

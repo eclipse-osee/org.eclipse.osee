@@ -60,7 +60,7 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
          }
       } else if (localName.equalsIgnoreCase("Cell")) {
          String indexStr = attributes.getValue("ss:Index");
-         cellData = new StringBuilder();
+         cellData = null;
          inCellData = true;
          if (indexStr != null) {
             cellIndex = Integer.parseInt(indexStr) - 1; // translate from Excel's 1-based index to
@@ -90,9 +90,12 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
    @Override
    public void endElementFound(String uri, String localName, String qName) throws Exception {
       if (inCellData) {
+         if (cellData == null) {
+            cellData = new StringBuilder();
+         }
          cellData.append(getContents());
       }
-      if (localName.equalsIgnoreCase("Data")) {
+      if (localName.equalsIgnoreCase("Data") && cellData != null) {
          inCellData = false;
          String contentStr = cellData.toString();
          cellData = null;
