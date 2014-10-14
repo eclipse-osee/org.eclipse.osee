@@ -70,6 +70,7 @@ import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverSe
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
@@ -492,10 +493,12 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public void sendNotifications(AtsNotificationCollector notifications) {
-      AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+      if (AtsUtilClient.isEmailEnabled()) {
+         AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+      }
    }
-      
-   @Override 
+
+   @Override
    public String getConfigValue(String key) {
       String result = null;
       Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());
