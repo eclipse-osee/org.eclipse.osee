@@ -40,6 +40,7 @@ public class VersionMultiChoiceSelect extends XSelectFromDialog<IAtsVersion> {
       GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
       layoutData.heightHint = 80;
       getStyledText().setLayoutData(layoutData);
+
    }
 
    @Override
@@ -47,6 +48,7 @@ public class VersionMultiChoiceSelect extends XSelectFromDialog<IAtsVersion> {
       SimpleCheckFilteredTreeDialog dialog =
          new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the versions below",
             new ArrayTreeContentProvider(), getLabelProvider(), new AtsObjectNameSorter(), 1, 1000);
+      dialog.setShowSelectButtons(true);
       return dialog;
    }
 
