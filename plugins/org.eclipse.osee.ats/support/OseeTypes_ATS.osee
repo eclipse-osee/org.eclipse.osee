@@ -349,6 +349,36 @@ attributeType "ats.Work Package Type" extends EnumeratedAttribute {
 	mediaType "text/plain"
 }
 
+oseeEnumType "enum.ats.ipt" {
+	uuid 0x256826B10EBAC1FE 
+	entry "Comm/Nav/Ase"
+	entryGuid "ABWZunRwEF66p88MC1QA"
+	entry "Crew Systems"
+	entryGuid "ABWZunnoXUr06VeWlzgA"
+	entry "Integration"
+	entryGuid "ABWZunrQUQnztgs2HAgA"
+	entry "Software"
+	entryGuid "ABWZunrs9AqlPuBkQqwA"
+	entry "CEE"
+	entryGuid "ABWZunsh7lR0XJkpSgAA"
+	entry "Weapons/Sights"
+	entryGuid "ABWZuns7tDXtJXC5U5AA"
+	entry "Processors/Displays"
+	entryGuid "ABWZuntUC0uBwnMoegAA"
+	entry "AH-6"
+	entryGuid "ABWZuntsYj07sqnVyUQA"
+}
+
+attributeType "ats.IPT" extends EnumeratedAttribute {
+	uuid 0x53A0A42E822D3393
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.ats.ipt"
+	mediaType "text/plain"
+}
+
 attributeType "ats.Activity Id" extends StringAttribute {
 	uuid 0x1000000000000382
 	dataProvider DefaultAttributeDataProvider

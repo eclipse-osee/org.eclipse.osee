@@ -70,6 +70,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType FullName = createType(0x10000000000000DEL, "Full Name", "Expanded and descriptive name.");
    public static final IAttributeType GoalOrderVote = createType(0x10000000000000EBL, "Goal Order Vote", "Vote for order item belongs to within goal.");
    public static final IAttributeType HoursPerWorkDay = createType(0x10000000000000D3L, "Hours Per Work Day");
+   public static final IAttributeType IPT = createType(0x53A0A42E822D3393L, "IPT", "Integrated Product Team");
    public static final IAttributeType LegacyPcrId = createType(0x10000000000000F3L, "Legacy PCR Id", "Field to register problem change report id from legacy items imported into ATS.");
    public static final IAttributeType Location = createType(0x10000000000000F7L, "Location", "Enter location of materials to review.");
    public static final IAttributeType LocChanged= createType(0x10000000000000E7L, "LOC Changed", "Total Lines of Code Changed");
