@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.template.engine;
 
+import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 
@@ -36,9 +37,7 @@ public final class PageFactory {
 
    public static PageCreator newPageCreatorWithRules(IResourceRegistry registry, ResourceToken valuesResource, AppendableRule<?>... rules) {
       PageCreator page = newPageCreator(registry);
-      for (AppendableRule<?> rule : rules) {
-         page.addSubstitution(rule);
-      }
+      page.addSubstitution(rules);
       page.readKeyValuePairs(valuesResource);
       return page;
    }
@@ -55,8 +54,18 @@ public final class PageFactory {
       return page;
    }
 
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource) {
+      return realizePage(registry, templateResource, new String[0]);
+   }
+
    public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, String... keyValues) {
       PageCreator page = newPageCreator(registry, keyValues);
+      return page.realizePage(templateResource);
+   }
+
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, AppendableRule<?>... rules) {
+      PageCreator page = newPageCreator(registry);
+      page.addSubstitution(rules);
       return page.realizePage(templateResource);
    }
 
@@ -78,5 +87,27 @@ public final class PageFactory {
    public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, Iterable<String> keyValues) {
       PageCreator page = newPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);
+   }
+
+   public static String realizePage(String name, Class<?> clazz, String... keyValues) {
+      return realizePage(null, name, clazz, keyValues);
+   }
+
+   public static String realizePage(IResourceRegistry registry, String name, Class<?> clazz, String... keyValues) {
+      ResourceToken templateResource = new ClassBasedResourceToken(name, clazz);
+      return realizePage(registry, templateResource, keyValues);
+   }
+
+   public static String realizePage(String name, Class<?> clazz) {
+      return realizePage(null, name, clazz, new String[0]);
+   }
+
+   public static String realizePage(String name, Class<?> clazz, AppendableRule<?>... rules) {
+      return realizePage(null, name, clazz, rules);
+   }
+
+   public static String realizePage(IResourceRegistry registry, String name, Class<?> clazz, AppendableRule<?>... rules) {
+      ResourceToken templateResource = new ClassBasedResourceToken(name, clazz);
+      return realizePage(registry, templateResource, rules);
    }
 }

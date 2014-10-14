@@ -59,8 +59,10 @@ public final class PageCreator {
       return Collections.unmodifiableSet(substitutions.keySet());
    }
 
-   public void addSubstitution(AppendableRule<?> rule) {
-      substitutions.put(rule.getName(), rule);
+   public void addSubstitution(AppendableRule<?>... rules) {
+      for (AppendableRule<?> rule : rules) {
+         substitutions.put(rule.getName(), rule);
+      }
    }
 
    public void addKeyValuePair(String ruleName, CharSequence substitution) {
