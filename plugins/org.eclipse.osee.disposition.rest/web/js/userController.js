@@ -112,7 +112,18 @@ app.controller('userController', [
         		return false;
         	}
         };
-
+        
+        $scope.$on('ngGridEventStartCellEdit', function (event) {
+        	$scope.previousCellData = event.targetScope.row.entity[event.targetScope.col.field];
+        });
+        
+        $scope.$on('ngGridEventEndCellEdit', function (event) {
+            cellData = event.targetScope.row.entity[event.targetScope.col.field];
+            if(cellData != $scope.previousCellData) {
+//            	$scope.editItem(event.targetScope.row.entity);
+            }
+        });
+        
         var checkboxSorting = function checkboxSorting(itemA, itemB) {
             if (itemA.needsRerun == itemA.needsRerun) {
                 return itemA;
@@ -124,12 +135,16 @@ app.controller('userController', [
                 return itemA;
             }
         };
+        
+        $scope.checkEditable = function checkEditable(item) {
+        	return  item.assignee != $rootScope.cachedName;
+        }
 
         var origCellTmpl = '<div ng-dblclick="updateItem(row.entity, row)">{{row.entity.name}}</div>';
-        var dupCellTmpl = '<button class="btn btn-default btn-sm" ng-dblclick="updateItem(row.entity)">{{row.getProperty(col.field)}}</button>';
-        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)">hello world</input>';
+        var editCellTmpl = '<input ng-model="row.getProperty(col.field)" ng-model-onblur ng-change="editItem(row.entity);" value="row.getProperty(col.field);></input>';
+        var cellEditableTemplate = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editItem(row.entity)"/>'
+        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)"></input>';
         var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
-        var statusCellTem = '<div ng-class="{ItemStatus: true, pass: row.entity.status == \'PASS\', incomplete: row.entity.status == \'INCOMPLETE\', complete: row.entity.status == \'COMPLETE\'}">{{row.entity.status}}</div>';
 
         $scope.gridOptions = {
             data: 'items',
@@ -142,6 +157,8 @@ app.controller('userController', [
             beforeSelectionChange: checkSelectable,
             showGroupPanel: true,
             showFilter: true,
+            noTabInterference: true,
+            tabIndex: 0,
             columnDefs: [{
                 field: 'name',
                 displayName: 'Name',
@@ -170,6 +187,10 @@ app.controller('userController', [
                 enableCellEdit: false,
                 cellTemplate: assigneeCellTmpl
             }, {
+                field: 'itemNotes',
+                displayName: 'Script Notes',
+                cellTemplate: cellEditableTemplate
+            },{
                 field: 'needsRerun',
                 displayName: 'Rerun?',
                 enableCellEdit: false,
@@ -289,17 +310,23 @@ app.controller('userController', [
         }
 
         $scope.getInvalidLocRefs = function getInvalidLocRefs(annotation) {
-            return !annotation.isConnected && annotation.locationRefs != null;
+        	if(annotation.isConnected != null) {
+        		return !annotation.isConnected && annotation.locationRefs != null;
+        	} else {
+        		return false;
+        	}
         }
 
         $scope.getInvalidRes = function getInvalidRes(annotation) {
             return annotation.resolution != null && annotation.resolution != "" && !annotation.isResolutionValid;
         }
-
+        
         $scope.editAnnotation = function editAnnotation(annotation) {
         	$scope.lastFocused;
             if (annotation.guid == null) {
-                $scope.createAnnotation(annotation);
+            	if(/[^\s]+/.test(annotation.locationRefs)) {
+            		$scope.createAnnotation(annotation);
+            	}
             } else {
                 Annotation.update({
                     programId: $scope.programSelection,

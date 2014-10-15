@@ -61,11 +61,20 @@ app.provider('Program', function() {
 app.provider('Report', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Program = $resource('/dispo/program/:programId/report', {}, {});
+            var Program = $resource('/dispo/program/:programId/admin/report', {}, {});
             return Program;
         }
     ];
 });
+
+app.provider('ExportSet', function() {
+	    this.$get = ['$resource',
+	        function($resource) {
+	            var CopySet = $resource('/dispo/program/:programId/admin/export', {}, {});
+	            return CopySet;
+	        }
+	    ];
+	});
 
 app.provider('Set', function() {
     this.$get = ['$resource',

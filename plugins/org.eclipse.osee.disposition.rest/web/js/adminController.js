@@ -37,7 +37,8 @@
 
 		        var editCellTmpl = '<input editable="true" >'
 		        var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
-		        var importCellTmpl = '<button width="50px" class="btn btn-primary ladda-button" data-style="expand-left" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
+		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
+		        var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
 
 		        $scope.columnDefs1 = [{
 		            field: "",
@@ -46,14 +47,19 @@
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
+		        	field: "",
+		        	displayName: "Export",
+		        	width: 70,
+		        	cellTemplate: exportCellTmpl
+		        }, {
 		            field: "name",
 		            displayName: "Name",
-		            width: 250,
+		            width: 200,
 		            enableCellEdit: false
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 330,
+		            width: 460,
 		            enableCellEdit: false
 		        }];
 
@@ -64,14 +70,19 @@
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
+		        	field: "",
+		        	displayName: "Export",
+		        	width: 70,
+		        	cellTemplate: exportCellTmpl
+		        },{
 		            field: "name",
 		            displayName: "Name",
-		            width: 250,
+		            width: 200,
 		            enableCellEdit: true
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 330,
+		            width: 413,
 		            enableCellEdit: true
 		        }, {
 		            field: "delete",
@@ -100,12 +111,21 @@
 		        };
 
 		        $scope.generateReport = function() {
-		            Report.get({
-		                programId: $scope.programSelection,
-		                primarySet: $scope.primarySet,
-		                secondarySet: $scope.secondarySet,
-		            });
+		        	var requst = [];
+		        	requst.push(
+		        	  "program/",
+		        	  $scope.programSelection,
+		        	  "/admin/report?primarySet=",
+		        	  $scope.primarySet,
+		        	  "&secondarySet=",
+		        	  $scope.secondarySet
+		        	  );
+		        	var url = requst.join("");
+		            
+		            window.open(url);
 		        }
+		        
+		        
 		        
 		        $scope.updateProgram = function updateProgram() {
 		            $scope.loading = true;
@@ -153,6 +173,20 @@
 		            	set.processingImport = false;
 		            	alert("Could not Import");
 		            });
+		        };
+		        
+		        $scope.exportSet = function importSet(set) {
+		        	var requst = [];
+		        	requst.push(
+		        	  "program/",
+		        	  $scope.programSelection,
+		        	  "/admin/export?primarySet=",
+		        	  set.guid,
+		        	  "&option=detailed"
+		        	  );
+		        	var url = requst.join("");
+		            
+		            window.open(url);
 		        };
 
 		        $scope.createNewSet = function createNewSet(name, path, type) {

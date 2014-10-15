@@ -38,6 +38,7 @@ public class DispoItemData implements DispoItem {
    private String category;
    private String elapsedTime;
    private Boolean aborted;
+   private String itemNotes;
 
    public DispoItemData() {
 
@@ -118,6 +119,11 @@ public class DispoItemData implements DispoItem {
       return aborted;
    }
 
+   @Override
+   public String getItemNotes() {
+      return itemNotes;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -176,6 +182,10 @@ public class DispoItemData implements DispoItem {
 
    public void setAborted(Boolean aborted) {
       this.aborted = aborted;
+   }
+
+   public void setItemNotes(String itemNotes) {
+      this.itemNotes = itemNotes;
    }
 
    @Override

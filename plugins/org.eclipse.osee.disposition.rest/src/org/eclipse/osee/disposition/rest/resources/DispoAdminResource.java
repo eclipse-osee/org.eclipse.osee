@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -24,21 +26,23 @@ import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 
 /**
  * @author Angel Avila
  */
 
-public class DispoReportResource {
+public class DispoAdminResource {
    private final DispoApi dispoApi;
    private final DispoProgram program;
 
-   public DispoReportResource(DispoApi dispoApi, DispoProgram program) {
+   public DispoAdminResource(DispoApi dispoApi, DispoProgram program) {
       this.dispoApi = dispoApi;
       this.program = program;
    }
 
+   @Path("/report")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response postDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
@@ -53,6 +57,28 @@ public class DispoReportResource {
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
             writer.runReport(program, dispoSet, dispoSet2, outputStream);
+            outputStream.flush();
+         }
+      };
+      String contentDisposition =
+         String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
+   }
+
+   @Path("/export")
+   @GET
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) throws FileNotFoundException {
+      final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
+      final ExportSet writer = new ExportSet(dispoApi);
+      final String options = option;
+      final String fileName = String.format("STRS_Report_%s", System.currentTimeMillis());
+
+      StreamingOutput streamingOutput = new StreamingOutput() {
+
+         @Override
+         public void write(OutputStream outputStream) throws WebApplicationException, IOException {
+            writer.runReport(program, dispoSet, options, outputStream);
             outputStream.flush();
          }
       };

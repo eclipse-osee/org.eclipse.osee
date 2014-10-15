@@ -47,13 +47,13 @@
                 <table class="table subTable">
                     <th>Locations</th>
                     <th>Type</th>
-                    <th>Resolution</th>
+                    <th>Resolution (PCR)</th>
                     <th>Developer Notes</th>
                     <th>Customer Notes</th>
                     <th width="50px;">Delete</th>
                     <tr ng-repeat="annotation in annotations">
                         <td>
-                            <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-invalid="true" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
+                            <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
                         </td>
                         <td>
                             <select ng-class="{annotationInput: true, details: annotation.showDeets}" focus-me="annotation.guid !=null" ng-options="obj.value as obj.text for obj in resolutionTypes" ng-disabled="annotation.guid == null" ng-model="annotation.resolutionType" ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></select>

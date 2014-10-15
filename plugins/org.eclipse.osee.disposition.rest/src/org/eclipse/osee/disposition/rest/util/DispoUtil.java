@@ -118,6 +118,7 @@ public final class DispoUtil {
       dispoItemData.setMachine(dispoItemArt.getMachine());
       dispoItemData.setAborted(dispoItemArt.getAborted());
       dispoItemData.setElapsedTime(dispoItemArt.getElapsedTime());
+      dispoItemData.setItemNotes(dispoItemArt.getItemNotes());
       if (isIncludeDiscrepancies) {
          dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
       }
@@ -125,7 +126,7 @@ public final class DispoUtil {
    }
 
    @SuppressWarnings("unchecked")
-   private static String discrepanciesToString(JSONObject discrepanciesList) {
+   public static String discrepanciesToString(JSONObject discrepanciesList) {
       List<Integer> discrepanciesPoints = new ArrayList<Integer>();
       Iterator<String> iterator = discrepanciesList.keys();
       while (iterator.hasNext()) {
@@ -184,6 +185,9 @@ public final class DispoUtil {
          if (jsonObject.has("aborted")) {
             dispoItem.setAborted(jsonObject.getBoolean("aborted"));
          }
+         if (jsonObject.has("itemNotes")) {
+            dispoItem.setItemNotes(jsonObject.getString("itemNotes"));
+         }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }
@@ -229,6 +233,7 @@ public final class DispoUtil {
          jsonObject.put("aborted", dispoItem.getAborted());
          jsonObject.put("lastUpdated", dispoItem.getLastUpdate());
          jsonObject.put("creationDate", dispoItem.getCreationDate());
+         jsonObject.put("itemNotes", dispoItem.getItemNotes());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

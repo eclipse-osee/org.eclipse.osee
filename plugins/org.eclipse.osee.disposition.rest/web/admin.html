@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div class="span7 offset1">
+        <div class="span8 offset1">
             <div class="row">
                 <button ng-disabled="programSelection == null" ng-click="createNewSetModal()" class="btn pull-left">New</button>
                 <button ng-disabled="programSelection == null" ng-click="toggleReadOnly()" class="btn pull-right">Edit</button>
@@ -52,13 +52,7 @@
                 <label for="setPathInput">Path</label>
                 <input ng-model="importPath" class="form-control" name="setPath" placeholder="Enter Import Path" required>
             </div>
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary active">
-                    <input ng-model="dispoType" type="radio" name="Test Scripts" id="option1" value="testScripts" checked>Test Scripts Dispo
-                </label>
-            </div>
         </div>
-
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

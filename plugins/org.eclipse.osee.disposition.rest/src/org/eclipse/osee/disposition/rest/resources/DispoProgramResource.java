@@ -73,8 +73,8 @@ public class DispoProgramResource {
       return new DispoSetResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
 
-   @Path("{programId}/report")
-   public DispoReportResource getDispoSetReport(@PathParam("programId") String programId) {
-      return new DispoReportResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   @Path("{programId}/admin")
+   public DispoAdminResource getDispoSetReport(@PathParam("programId") String programId) {
+      return new DispoAdminResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
 }

@@ -47,4 +47,6 @@ public interface DispoItem extends Identifiable<String> {
    String getElapsedTime();
 
    Boolean getAborted();
+
+   String getItemNotes();
 }

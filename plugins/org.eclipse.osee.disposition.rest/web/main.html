@@ -23,9 +23,10 @@
                 </button>
                 <a class="navbar-brand" href="#/user">Disposition</a>
             </div>
-            <p class="navbar-text">Signed in as {{ cachedName }}</p>
+            <p ng-dblclick="resetUserName()" class="navbar-text">Signed in as {{ cachedName }}</p>
             <div class="collapse navbar-collapse" ng-controller="HeaderController">
                 <ul class="nav navbar-nav navbar-right">
+                	  <button id="helpButton" class="btn btn-info" ng-click="showHelpModal()">Help</button>
                     <li ng-class="{ active: isActive('/user')}"><a href="#/user">User</a>
                     </li>
                 </ul>
@@ -43,6 +44,24 @@
         }
     </script>
 
+    <script type="text/ng-template" id="helpModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Help</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <ul class="list-group">
+                <li>You can only modifiy a script's dispositions or notes if you are assigned to that script. To assign yourself, double click on the assignee field of the script you want</li>
+				    <li>To create or edit a note for the script, click in the 'Script Notes' field of the script, the save happens automatically upon leaving the cell</li>
+                <li>To view and edit dispositions for a script, double click on the name field of script. This will populate the lower panel with all the current dispositions for that script</li>
+ 					 <li>To create a new disposition, click on the 'Locations' cell of the first empty row in the lower, Dispositions Table. Enter a test point failure number(or a comma seperated set of numbers and/or ranges) that the new disposition applies to</li>
+ 					 <li>When you leave a cell, the data will automatically be saved to the server (unless you get an error dialogue box)</li>
+					 <li>A script is considered "Complete" when all of its Test Point Failures are referenced by the set of dispositions and all the dispositions are valid</li>
+            </div>
+        </div>
+
+    </script>
+    
     <script src="/lib/js/jquery-2.0.3.min.js"></script>
     <script src="/lib/js/angular.min.js"></script>
     <script src="/lib/js/angular-route.min.js"></script>

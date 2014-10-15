@@ -305,6 +305,7 @@ public class OrcsStorageImpl implements Storage {
       String category = newItemData.getCategory();
       String elapsedTime = newItemData.getElapsedTime();
       Boolean aborted = newItemData.getAborted();
+      String itemNotes = newItemData.getItemNotes();
 
       Boolean needsRerun;
       if (resetRerunFlag) {
@@ -351,6 +352,9 @@ public class OrcsStorageImpl implements Storage {
       }
       if (aborted != null && !aborted.equals(origItem.getAborted())) {
          tx.setSoleAttributeValue(currentItemArt, DispoConstants.DispoItemAborted, aborted);
+      }
+      if (itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemItemNotes, itemNotes);
       }
 
    }

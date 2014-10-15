@@ -203,3 +203,23 @@ textarea {
  #loadingModal {
  	margin-bottom: 0px;
  }
+ 
+ #helpButton {
+ 	height: 50px;
+ }
+ 
+input.cellInput{
+	background-color: inherit;
+	border: none;
+	width: 100%;
+	height: 30px;	
+}
+ 
+input.cellInput:disabled {
+	background-color: inherit;
+}
+
+input.cellInput:focus{
+	background-color: inherit;
+	border: solid cyan;
+}
