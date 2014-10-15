@@ -34,7 +34,7 @@ public class MockWorkItem implements IAtsWorkItem {
 
    private final String name;
    private String atsId;
-   private final IAtsStateManager stateMgr;
+   private IAtsStateManager stateMgr;
    private final AtsUserGroup implementers = new AtsUserGroup();
    private IAtsUser completedBy;
    private IAtsUser cancelledBy;
@@ -222,6 +222,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public String getCancelledReason() {
       return null;
+   }
+
+   @Override
+   public void setStateManager(IAtsStateManager stateManager) {
+      this.stateMgr = stateManager;
    }
 
 }

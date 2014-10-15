@@ -96,14 +96,14 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException {
-      return getArtifact(workItem).getSoleAttributeValue(attributeType, defaultReturnValue);
+   public <T> T getSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException {
+      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      return getArtifact(workItem).getAttributeValues(attributeType);
+   public Collection<String> getAttributesToStringList(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException {
+      return getArtifact(atsObject).getAttributeValues(attributeType);
    }
 
    @Override

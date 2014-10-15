@@ -8,17 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.core.ai;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -33,9 +33,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class ActionableItemManager {
 
    private final IAtsConfig atsConfig;
+   private final IAttributeResolver attrResolver;
 
-   public ActionableItemManager(IAtsConfig atsConfig) {
+   public ActionableItemManager(IAtsConfig atsConfig, IAttributeResolver attrResolver) {
       this.atsConfig = atsConfig;
+      this.attrResolver = attrResolver;
    }
 
    public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
@@ -59,8 +61,8 @@ public class ActionableItemManager {
       return AtsObjects.toString("; ", getActionableItems(atsObject));
    }
 
-   public List<String> getActionableItemGuids(IAtsObject atsObject) throws OseeCoreException {
-      return ((ArtifactReadable) atsObject.getStoreObject()).getAttributeValues(AtsAttributeTypes.ActionableItem);
+   public Collection<String> getActionableItemGuids(IAtsObject atsObject) throws OseeCoreException {
+      return attrResolver.getAttributesToStringList(atsObject, AtsAttributeTypes.ActionableItem);
    }
 
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {

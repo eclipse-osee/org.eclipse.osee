@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +40,7 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
-   
+
    private TeamWorkFlowArtifact newTeamArt;
    private TeamWorkFlowArtifact dupArt;
 
@@ -54,41 +55,43 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsUser> assignees = setupAssignees(teamWf);
-      
-      IAtsUser originator = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-         DemoDbUtil.getDemoUser(DemoUsers.Jason_Michael));
+
+      IAtsUser originator =
+         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
+            DemoDbUtil.getDemoUser(DemoUsers.Jason_Michael));
 
       // new workflow
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       newTeamArt =
          ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), teamWf.getTeamDefinition(),
-            teamWf.getActionableItemsDam().getActionableItems(), assignees, changes, new Date(),
-            originator, null, CreateTeamOption.Duplicate_If_Exists);
+            teamWf.getActionableItemsDam().getActionableItems(), assignees, changes, new Date(), originator, null,
+            CreateTeamOption.Duplicate_If_Exists);
 
-      assertTrue(newTeamArt.getAssignees().size() == 2);
-      assertTrue(changes.getNotifications().getWorkItemNotificationEvents().size() == 2);
+      assertEquals("invalid number of assignees", 2, newTeamArt.getAssignees().size());
+      assertEquals("invalid number of notifications", 2,
+         changes.getNotifications().getWorkItemNotificationEvents().size());
 
       // duplicate workflow
       dupArt =
-              (TeamWorkFlowArtifact) teamWf.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
+         (TeamWorkFlowArtifact) teamWf.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
       dupArt.initializeNewStateMachine(assignees, new Date(), AtsCoreUsers.SYSTEM_USER, changes);
-   
-       changes.add(dupArt);
-       changes.getNotifications().addWorkItemNotificationEvent(
-            AtsNotificationEventFactory.getWorkItemNotificationEvent(teamWf.getAssignees().iterator().next(), dupArt, AtsNotifyType.Originator,
-               AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
-      
-       assertTrue(changes.getNotifications().getWorkItemNotificationEvents().size() == 4);
-       assertTrue(dupArt.getAssignees().size() == 2);
-       
-       changes.execute();   
+
+      changes.add(dupArt);
+      changes.getNotifications().addWorkItemNotificationEvent(
+         AtsNotificationEventFactory.getWorkItemNotificationEvent(teamWf.getAssignees().iterator().next(), dupArt,
+            AtsNotifyType.Originator, AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
+
+      assertTrue(changes.getNotifications().getWorkItemNotificationEvents().size() == 4);
+      assertTrue(dupArt.getAssignees().size() == 2);
+
+      changes.execute();
    }
 
    private List<IAtsUser> setupAssignees(TeamWorkFlowArtifact teamWf) {
       List<IAtsUser> assignees = new LinkedList<IAtsUser>();
       assignees.addAll(teamWf.getAssignees());
-      IAtsUser lead = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-         DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones));
+      IAtsUser lead =
+         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones));
       assignees.add(lead);
       return assignees;
    }
@@ -96,13 +99,12 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    @After
    public void tearDown() throws Exception {
       if (newTeamArt != null) {
-        newTeamArt.deleteAndPersist();
+         newTeamArt.deleteAndPersist();
       }
-      
+
       if (dupArt != null) {
-        dupArt.deleteAndPersist();
+         dupArt.deleteAndPersist();
       }
    }
-   
-  
+
 }

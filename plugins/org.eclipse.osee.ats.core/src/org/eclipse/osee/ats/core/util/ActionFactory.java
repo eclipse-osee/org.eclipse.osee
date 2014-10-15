@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.action;
+package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,11 +16,14 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
+import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -32,6 +35,7 @@ import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -39,19 +43,14 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
+import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
-import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
-import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
-import org.eclipse.osee.ats.impl.internal.workitem.WorkItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -59,15 +58,12 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
 public class ActionFactory implements IAtsActionFactory {
 
-   private final OrcsApi orcsApi;
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUtilService utilService;
    private final ISequenceProvider sequenceProvider;
@@ -77,10 +73,9 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsConfig config;
-   private final IAtsServer atsServer;
+   private final IAtsServices atsServices;
 
-   public ActionFactory(OrcsApi orcsApi, IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServer atsServer) {
-      this.orcsApi = orcsApi;
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
@@ -90,7 +85,7 @@ public class ActionFactory implements IAtsActionFactory {
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
       this.config = config;
-      this.atsServer = atsServer;
+      this.atsServices = atsServices;
    }
 
    @Override
@@ -99,14 +94,12 @@ public class ActionFactory implements IAtsActionFactory {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
-      ArtifactReadable userArt = AtsServerService.get().getArtifact(user);
-      Conditions.checkNotNull(userArt, "user");
-
-      ArtifactReadable actionArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Action, title);
+      Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = workItemFactory.getAction(actionArt);
-      utilService.setAtsId(sequenceProvider, action, TeamDefinitions.getTopTeamDefinition(config), changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
+      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(config);
+      utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
@@ -154,11 +147,10 @@ public class ActionFactory implements IAtsActionFactory {
       IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       if (teamDef.getStoreObject() != null) {
          String artifactTypeName =
-            ((ArtifactReadable) teamDef.getStoreObject()).getSoleAttributeValue(
-               AtsAttributeTypes.TeamWorkflowArtifactType, null);
+            attrResolver.getSoleAttributeValue(teamDef, AtsAttributeTypes.TeamWorkflowArtifactType, null);
          if (Strings.isValid(artifactTypeName)) {
             boolean found = false;
-            for (IArtifactType type : orcsApi.getOrcsTypes(null).getArtifactTypes().getAll()) {
+            for (IArtifactType type : atsServices.getArtifactTypes()) {
                if (type.getName().equals(artifactTypeName)) {
                   teamWorkflowArtifactType = type;
                   found = true;
@@ -183,7 +175,7 @@ public class ActionFactory implements IAtsActionFactory {
          for (IAtsTeamWorkflow teamArt : workItemService.getTeams(action)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  atsServer.getAtsId(action));
+                  atsServices.getAtsId(action));
             }
          }
       }
@@ -239,24 +231,21 @@ public class ActionFactory implements IAtsActionFactory {
 
       changes.add(teamWf);
 
-      // TODO Add notification back in
-      //      AtsNotificationManager.notifySubscribedByTeamOrActionableItem(teamWf);
+      changes.getNotifications().addWorkItemNotificationEvent(
+         AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, teamWf,
+            AtsNotifyType.SubscribedTeamOrAi));
 
       return teamWf;
    }
 
    public String getWorkDefinitionName(IAtsTeamDefinition teamDef) throws OseeCoreException {
-      return getWorkDefinitionName((ArtifactReadable) teamDef.getStoreObject());
-   }
-
-   private String getWorkDefinitionName(ArtifactReadable teamDefArt) throws OseeCoreException {
-      String workDefName = teamDefArt.getSoleAttributeAsString(AtsAttributeTypes.WorkflowDefinition, null);
+      String workDefName =
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workDefName)) {
          return workDefName;
       }
 
-      ArtifactReadable parentTeamDef =
-         teamDefArt.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).getExactlyOne();
+      IAtsTeamDefinition parentTeamDef = teamDef.getParentTeamDef();
       if (parentTeamDef == null) {
          return "WorkDef_Team_Default";
       }
@@ -269,7 +258,7 @@ public class ActionFactory implements IAtsActionFactory {
       Conditions.checkNotNull(changes, "changes");
       IAtsStateDefinition startState = workItem.getWorkDefinition().getStartState();
       IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
-      ((WorkItem) workItem).setStateManager(stateManager);
+      workItem.setStateManager(stateManager);
       StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,
          (createdBy == null ? userService.getCurrentUser() : createdBy), changes);
       IAtsUser user = createdBy == null ? userService.getCurrentUser() : createdBy;
@@ -298,7 +287,9 @@ public class ActionFactory implements IAtsActionFactory {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
-      //      AtsNotificationManager.notify(this, AtsNotifyType.Originator);
+      changes.getNotifications().addWorkItemNotificationEvent(
+         AtsNotificationEventFactory.getWorkItemNotificationEvent(userService.getCurrentUser(), workItem,
+            AtsNotifyType.Originator));
    }
 
    /**
@@ -306,31 +297,24 @@ public class ActionFactory implements IAtsActionFactory {
     */
    @Override
    public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
-      ArtifactReadable teamWfArt = ((ArtifactReadable) teamWf.getStoreObject());
       // Auto-add this team artifact to configured goals
-      ArtifactReadable teamDefArt = AtsServerService.get().getArtifact(teamDef);
-      if (teamDefArt != null) {
-         for (ArtifactReadable goalArt : teamDefArt.getRelated(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
-            if (!goalArt.areRelated(AtsRelationTypes.Goal_Member, teamWfArt)) {
-               changes.relate(goalArt, AtsRelationTypes.Goal_Member, teamWfArt);
-               changes.add(goalArt);
-            }
+      IRelationResolver relationResolver = atsServices.getRelationResolver();
+      for (Object goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+         if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
+            changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
+            changes.add(goal);
          }
       }
 
       // Auto-add this actionable item to configured goals
       for (IAtsActionableItem aia : actionableItems) {
-         ArtifactReadable aiDefArt = AtsServerService.get().getArtifact(aia);
-         if (aiDefArt != null) {
-            for (ArtifactReadable goalArt : aiDefArt.getRelated(AtsRelationTypes.AutoAddActionToGoal_Goal)) {
-               if (!goalArt.areRelated(AtsRelationTypes.Goal_Member, teamWfArt)) {
-                  changes.relate(goalArt, AtsRelationTypes.Goal_Member, teamWfArt);
-                  changes.add(goalArt);
-               }
+         for (Object goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+            if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
+               changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
+               changes.add(goal);
             }
          }
       }
-
    }
 
    /**
@@ -340,13 +324,12 @@ public class ActionFactory implements IAtsActionFactory {
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
-      ArtifactReadable fromActionArt = (ArtifactReadable) fromAction.getStoreObject();
       setArtifactIdentifyData(toTeam, fromAction.getName(),
-         fromActionArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeTypeUtil.getChangeType(fromAction),
-         fromActionArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
-         fromActionArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
-         fromActionArt.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null), changes);
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""),
+         atsServices.getChangeType(fromAction),
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.PriorityType, ""),
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
+         attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null), changes);
    }
 
    /**
@@ -357,7 +340,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (!Strings.emptyString().equals(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      ChangeTypeUtil.setChangeType(atsObject, changeType, changes);
+      atsServices.setChangeType(atsObject, changeType, changes);
       if (Strings.isValid(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.PriorityType, priority);
       }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.action;
+package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
 import java.util.Date;

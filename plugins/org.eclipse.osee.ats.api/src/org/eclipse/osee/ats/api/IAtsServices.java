@@ -10,18 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsServices {
+
+   public IRelationResolver getRelationResolver();
 
    public IAttributeResolver getAttributeResolver();
 
@@ -36,4 +45,15 @@ public interface IAtsServices {
    public IAtsWorkDefinitionService getWorkDefService();
 
    public IAtsVersionService getVersionService();
+
+   Object getArtifact(IAtsObject atsObject) throws OseeCoreException;
+
+   void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
+
+   ChangeType getChangeType(IAtsAction fromAction);
+
+   String getAtsId(IAtsAction action);
+
+   Collection<IArtifactType> getArtifactTypes();
+
 }

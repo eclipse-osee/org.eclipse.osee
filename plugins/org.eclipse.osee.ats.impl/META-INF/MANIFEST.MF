@@ -24,6 +24,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.api.workflow.log,
  org.eclipse.osee.ats.api.workflow.state,
  org.eclipse.osee.ats.api.workflow.transition,
+ org.eclipse.osee.ats.core.ai,
  org.eclipse.osee.ats.core.config,
  org.eclipse.osee.ats.core.model.impl,
  org.eclipse.osee.ats.core.review,
@@ -54,5 +55,4 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime
 Export-Package: org.eclipse.osee.ats.impl,
- org.eclipse.osee.ats.impl.action,
  org.eclipse.osee.ats.impl.config

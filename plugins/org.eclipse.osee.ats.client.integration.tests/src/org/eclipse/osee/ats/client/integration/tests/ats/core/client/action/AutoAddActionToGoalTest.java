@@ -120,8 +120,8 @@ public class AutoAddActionToGoalTest {
       changes.execute();
 
       Artifact teamDefArtifact = AtsClientService.get().getArtifact(AtsTestUtil.getTestTeamDef());
-
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
+      goalArt.persist(getClass().getSimpleName() + " - testAutoAddActionToGoal_TeamWF");
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);

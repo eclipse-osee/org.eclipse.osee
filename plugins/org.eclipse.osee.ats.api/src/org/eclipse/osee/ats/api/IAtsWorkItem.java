@@ -64,4 +64,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    String getCancelledReason();
 
+   void setStateManager(IAtsStateManager stateManager);
+
 }

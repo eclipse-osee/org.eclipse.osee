@@ -31,7 +31,10 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -41,11 +44,14 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
@@ -71,20 +77,24 @@ import org.eclipse.osee.ats.core.client.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProviderImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
+import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -97,6 +107,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -125,11 +136,18 @@ public class AtsClientImpl implements IAtsClient {
    private IAttributeResolver attributeResolverService;
    private ITeamWorkflowProviders teamWorkflowProvider;
    private ISequenceProvider sequenceProvider;
+   private IAtsActionFactory actionFactory;
+   private IAtsLogFactory atsLogFactory;
+   private IAtsStateFactory atsStateFactory;
    private IAtsWorkStateFactory workStateFactory;
    private IAtsLogFactory logFactory;
    private IAtsColumnUtilities columnUtilities;
    private IAtsUtilService utilService;
    private IOseeDatabaseService dbService;
+   private IAtsWorkItemFactory workItemFactory;
+   private IAtsConfigItemFactory configItemFactory;
+   private ActionableItemManager actionableItemManager;
+   private IRelationResolver relationResolver;
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
@@ -178,12 +196,27 @@ public class AtsClientImpl implements IAtsClient {
       workItemArtifactProvider = new AtsWorkItemArtifactProviderImpl();
       workItemService = new AtsWorkItemServiceImpl(workItemArtifactProvider);
       attributeResolverService = new AtsAttributeResolverServiceImpl();
+      relationResolver = new AtsRelationResolverServiceImpl();
 
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
       branchService = new AtsBranchServiceImpl(this);
       reviewService = new AtsReviewServiceImpl(this);
+
+      atsLogFactory = AtsCoreFactory.newLogFactory();
+      atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
+      workItemFactory = new WorkItemFactory();
+
+      configItemFactory = new ConfigItemFactory();
+      actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService);
+      sequenceProvider = new AtsSequenceProvider(dbService);
+      utilService = AtsCoreFactory.getUtilService(attributeResolverService);
+
+      actionFactory =
+         new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
+            userService, attributeResolverService, atsStateFactory, configProxy, getServices());
+
    }
 
    public void stop() {
@@ -441,9 +474,6 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public ISequenceProvider getSequenceProvider() {
-      if (sequenceProvider == null) {
-         sequenceProvider = new AtsSequenceProvider(dbService);
-      }
       return sequenceProvider;
    }
 
@@ -490,9 +520,6 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public IAtsUtilService getUtilService() {
-      if (utilService == null) {
-         utilService = AtsCoreFactory.getUtilService(getAttributeResolver());
-      }
       return utilService;
    }
 
@@ -534,6 +561,42 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsWorkDefinitionService getWorkDefService() {
       return workDefService;
+   }
+
+   @Override
+   public ChangeType getChangeType(IAtsAction fromAction) {
+      return ChangeTypeUtil.getChangeType((Artifact) fromAction.getStoreObject());
+   }
+
+   @Override
+   public String getAtsId(IAtsAction action) {
+      return getAtsId(action);
+   }
+
+   @Override
+   public Collection<IArtifactType> getArtifactTypes() {
+      List<IArtifactType> types = new ArrayList<IArtifactType>();
+      types.addAll(ArtifactTypeManager.getAllTypes());
+      return types;
+   }
+
+   @Override
+   public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
+      ChangeTypeUtil.setChangeType((Artifact) atsObject.getStoreObject(), changeType);
+   }
+
+   @Override
+   public IAtsActionFactory getActionFactory() {
+      return actionFactory;
+   }
+
+   public IAtsConfigItemFactory getConfigItemFactory() {
+      return configItemFactory;
+   }
+
+   @Override
+   public IRelationResolver getRelationResolver() {
+      return relationResolver;
    }
 
 }

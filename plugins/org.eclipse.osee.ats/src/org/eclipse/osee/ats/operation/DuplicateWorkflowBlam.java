@@ -143,12 +143,12 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          if (!assignees.contains(user)) {
             assignees.add(user);
          }
-         
+
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamDef,
                teamArt.getActionableItemsDam().getActionableItems(), assignees, changes, createdDate, createdBy, null,
                CreateTeamOption.Duplicate_If_Exists);
-         
+
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);
          }
@@ -207,8 +207,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          }
 
          // Auto-add actions to configured goals
-         ActionManager.addActionToConfiguredGoal(dupArt.getTeamDefinition(), dupArt, dupArt.getActionableItems(),
-            changes);
+         AtsClientService.get().getActionFactory().addActionToConfiguredGoal(dupArt.getTeamDefinition(), dupArt,
+            dupArt.getActionableItems(), changes);
 
          newTeamArts.add(dupArt);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove

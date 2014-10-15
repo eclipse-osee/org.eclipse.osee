@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.impl.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -21,9 +22,11 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
@@ -31,18 +34,21 @@ import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.action.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.internal.action.ActionFactory;
 import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotifierServiceImpl;
@@ -52,14 +58,16 @@ import org.eclipse.osee.ats.impl.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
+import org.eclipse.osee.ats.impl.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
-import org.eclipse.osee.ats.impl.internal.workitem.ActionableItemManager;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
+import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -107,6 +115,7 @@ public class AtsServerImpl implements IAtsServer {
    private WorkItemNotificationProcessor workItemNotificationProcessor;
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAtsVersionService versionService;
+   private IRelationResolver relationResolver;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -150,6 +159,7 @@ public class AtsServerImpl implements IAtsServer {
 
       teamWorkflowProvider = new TeamWorkflowProvider();
       attributeResolverService = new AtsAttributeResolverServiceImpl();
+      relationResolver = new AtsRelationResolverServiceImpl();
       attributeResolverService.setOrcsApi(orcsApi);
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
@@ -164,10 +174,10 @@ public class AtsServerImpl implements IAtsServer {
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
       sequenceProvider = new AtsSequenceProvider(dbService);
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
-      actionableItemManager = new ActionableItemManager(config);
+      actionableItemManager = new ActionableItemManager(config, attributeResolverService);
       actionFactory =
-         new ActionFactory(orcsApi, workItemFactory, utilService, sequenceProvider, workItemService,
-            actionableItemManager, userService, attributeResolverService, atsStateFactory, config, this);
+         new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
+            userService, attributeResolverService, atsStateFactory, config, getServices());
 
       System.out.println("ATS - AtsServerImpl started");
       started = true;
@@ -405,5 +415,32 @@ public class AtsServerImpl implements IAtsServer {
          toReturn = art.getGuid();
       }
       return toReturn;
+   }
+
+   @Override
+   public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
+      ChangeTypeUtil.setChangeType(atsObject, changeType, changes);
+   }
+
+   @Override
+   public ChangeType getChangeType(IAtsAction fromAction) {
+      return ChangeTypeUtil.getChangeType(fromAction);
+   }
+
+   @Override
+   public String getAtsId(IAtsAction action) {
+      return getAtsId(action);
+   }
+
+   @Override
+   public Collection<IArtifactType> getArtifactTypes() {
+      List<IArtifactType> types = new ArrayList<IArtifactType>();
+      types.addAll(orcsApi.getOrcsTypes(null).getArtifactTypes().getAll());
+      return types;
+   }
+
+   @Override
+   public IRelationResolver getRelationResolver() {
+      return relationResolver;
    }
 }

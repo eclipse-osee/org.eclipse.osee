@@ -770,4 +770,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       changes.setSoleAttributeValue(this, AtsAttributeTypes.AtsId, atsId);
    }
 
+   @Override
+   public void setStateManager(IAtsStateManager stateManager) {
+      this.stateMgr = stateManager;
+   }
+
 }

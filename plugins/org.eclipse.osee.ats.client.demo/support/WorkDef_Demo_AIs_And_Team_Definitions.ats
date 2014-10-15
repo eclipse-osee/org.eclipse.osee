@@ -54,6 +54,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Demo_Code"
+					teamWorkflowArtifactType "Demo Code Team Workflow"
 				}
 
 				teamDefinition "CIS Requirements" {
@@ -61,6 +62,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Joe Smith"
 					member named "Joe Smith"
 					workDefinition "WorkDef_Team_Demo_Req"
+					teamWorkflowArtifactType "Demo Req Team Workflow"
 				}
 
 				teamDefinition "CIS SW Design" {
@@ -76,6 +78,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Kay Jones"
 					member named "Kay Jones"
 					workDefinition "WorkDef_Team_Demo_Test"
+					teamWorkflowArtifactType "Demo Test Team Workflow"
 				}
 			}
 		}
@@ -143,6 +146,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Joe Smith"
 					member named "Joe Smith"
 					workDefinition "WorkDef_Team_Demo_Code"
+					teamWorkflowArtifactType "Demo Code Team Workflow"
 				}
 
 				teamDefinition "SAW HW" {
@@ -150,6 +154,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Default"
+					teamWorkflowArtifactType "Demo Req Team Workflow"
 				}
 
 				teamDefinition "SAW Requirements" {
@@ -158,6 +163,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Joe Smith"
 					member named "Joe Smith"
 					workDefinition "WorkDef_Team_Demo_Req"
+					teamWorkflowArtifactType "Demo Req Team Workflow"
 				}
 
 				teamDefinition "SAW SW Design" {
@@ -174,6 +180,7 @@ teamDefinition "Teams" GetOrCreate {
 					lead named "Kay Jones"
 					member named "Kay Jones" privileged named "Joe Smith"
 					workDefinition "WorkDef_Team_Demo_Test"
+					teamWorkflowArtifactType "Demo Test Team Workflow"
 				}
 			}
 		}
