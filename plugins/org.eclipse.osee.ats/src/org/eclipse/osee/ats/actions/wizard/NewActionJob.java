@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.action.INewActionListener;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -73,8 +73,8 @@ public class NewActionJob extends Job {
          AtsChangeSet changes = new AtsChangeSet("Create New Action");
          actionArt =
             ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-               actionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), newActionListener,
-               changes);
+               actionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
+               newActionListener, changes);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, changes);
