@@ -40,6 +40,11 @@ public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteri
    }
 
    @Override
+   public long getBranchUuid() {
+      return branch.getUuid();
+   }
+
+   @Override
    public String toString() {
       return "CriteriaBranch [branch=" + branch + "]";
    }

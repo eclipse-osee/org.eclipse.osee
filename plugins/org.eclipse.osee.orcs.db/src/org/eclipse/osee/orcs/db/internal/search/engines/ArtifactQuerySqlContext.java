@@ -34,6 +34,11 @@ public class ArtifactQuerySqlContext extends QuerySqlContext implements HasBranc
    }
 
    @Override
+   public long getBranchUuid() {
+      return branch.getUuid();
+   }
+
+   @Override
    public String toString() {
       return "ArtifactQuerySqlContext [branch=" + branch + "(" + super.toString() + ")]";
    }

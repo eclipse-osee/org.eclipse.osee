@@ -63,7 +63,7 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public void addNode(GraphNode node) throws OseeCoreException {
-      boolean sameBranches = getBranch().equals(node.getBranch());
+      boolean sameBranches = getBranchUuid() == node.getBranchUuid();
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
             node.getExceptionString());
@@ -172,4 +172,8 @@ public class GraphDataImpl implements GraphData {
       return orcsSession;
    }
 
+   @Override
+   public long getBranchUuid() {
+      return branch.getUuid();
+   }
 }

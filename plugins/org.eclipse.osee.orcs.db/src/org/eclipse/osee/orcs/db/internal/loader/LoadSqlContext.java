@@ -34,4 +34,9 @@ public class LoadSqlContext extends SqlContextImpl implements LoadContext, HasBr
       return branch;
    }
 
+   @Override
+   public long getBranchUuid() {
+      return branch.getUuid();
+   }
+
 }

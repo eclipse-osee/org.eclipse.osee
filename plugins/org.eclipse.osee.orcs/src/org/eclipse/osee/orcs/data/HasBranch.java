@@ -19,4 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface HasBranch {
 
    IOseeBranch getBranch() throws OseeCoreException;
+
+   long getBranchUuid();
 }

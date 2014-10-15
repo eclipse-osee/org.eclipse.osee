@@ -277,6 +277,11 @@ public class SqlObjectLoader {
          }
 
          @Override
+         public long getBranchUuid() {
+            return branch.getUuid();
+         }
+
+         @Override
          public int getTransaction() {
             return transactionLoaded;
          }

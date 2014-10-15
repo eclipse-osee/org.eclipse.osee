@@ -95,7 +95,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public IOseeBranch getBranch() throws OseeCoreException {
-      return branchProvider.getBranch(artifactData.getVersion().getBranchId());
+      return branchProvider.getBranch(getBranchUuid());
+   }
+
+   @Override
+   public long getBranchUuid() {
+      return artifactData.getVersion().getBranchId();
    }
 
    @Override
@@ -162,7 +167,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranchUuid());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
