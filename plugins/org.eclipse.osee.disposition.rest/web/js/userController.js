@@ -60,7 +60,7 @@ app.controller('userController', [
 //            });
         };
 
-        $scope.updateItem = function updateItem(item, row) {
+        $scope.getItemDetails = function getItemDetails(item, row) {
         	$scope.unselectingItem = true;
         	$scope.gridOptions.selectAll(false);
         	$scope.unselectingItem = false;
@@ -140,7 +140,7 @@ app.controller('userController', [
         	return  item.assignee != $rootScope.cachedName;
         }
 
-        var origCellTmpl = '<div ng-dblclick="updateItem(row.entity, row)">{{row.entity.name}}</div>';
+        var origCellTmpl = '<div ng-dblclick="getItemDetails(row.entity, row)">{{row.entity.name}}</div>';
         var editCellTmpl = '<input ng-model="row.getProperty(col.field)" ng-model-onblur ng-change="editItem(row.entity);" value="row.getProperty(col.field);></input>';
         var cellEditableTemplate = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editItem(row.entity)"/>'
         var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)"></input>';
@@ -189,13 +189,20 @@ app.controller('userController', [
             }, {
                 field: 'itemNotes',
                 displayName: 'Script Notes',
+                widht: 319,
                 cellTemplate: cellEditableTemplate
             },{
                 field: 'needsRerun',
                 displayName: 'Rerun?',
                 enableCellEdit: false,
+                width:70,
                 cellTemplate: chkBoxTemplate,
                 sortFn: checkboxSorting
+            },{
+                field: 'lastUpdated',
+                displayName: 'Last Ran',
+                enableCellEdit: false,
+                visible: false
             }, {
                 field: 'category',
                 displayName: 'Category',
@@ -209,11 +216,6 @@ app.controller('userController', [
             }, {
                 field: 'elapsedTime',
                 displayName: 'Elapsed Time',
-                enableCellEdit: false,
-                visible: false
-            },{
-                field: 'lastUpdated',
-                displayName: 'Last Updated',
                 enableCellEdit: false,
                 visible: false
             },{
@@ -234,7 +236,18 @@ app.controller('userController', [
             $scope.lastFocused = element;
         }
         
-        $scope.stealItem = function stealItem(item) {
+        $scope.stealItem = function(item) {
+            Item.get({
+                programId: $scope.programSelection,
+                setId: $scope.setSelection,
+                itemId: item.guid
+            }, function(data) {
+            	$scope.updateItemFromServer(item, data);
+            	$scope.askToSteal(item);
+            });
+        }
+        
+        $scope.askToSteal = function askToSteal(item) {
             if ($rootScope.cachedName != null) {
                 if ($rootScope.cachedName != item.assignee) {
                 	var confirmed = false;
@@ -285,7 +298,7 @@ app.controller('userController', [
                     setId: $scope.setSelection,
                     itemId: $scope.selectedItem.guid
                 }, function(data) {
-                    $scope.selectedItem.status = data.status;
+                    $scope.updateItemFromServer($scope.selectedItem, data);
                 });
             }, function(data) {
                 alert("Could not make change, please try refreshing");
@@ -352,7 +365,7 @@ app.controller('userController', [
                         setId: $scope.setSelection,
                         itemId: $scope.selectedItem.guid
                     }, function(data) {
-                        $scope.selectedItem.status = data.status;
+                        $scope.updateItemFromServer($scope.selectedItem, data);
                     });
                 }, function(data) {
                     alert("Could not make change, please try refreshing");
@@ -376,7 +389,7 @@ app.controller('userController', [
                     setId: $scope.setSelection,
                     itemId: $scope.selectedItem.guid
                 }, function(data) {
-                    $scope.selectedItem.status = data.status;
+                    $scope.updateItemFromServer($scope.selectedItem, data);
                 });
 
                 var blankAnnotation = new Annotation();
@@ -415,6 +428,12 @@ app.controller('userController', [
             } else {
                 annotation.showDeets = true;
             }
+        }
+        
+        $scope.updateItemFromServer = function(oldItem, newItem) {
+        	oldItem.assignee = newItem.assignee;
+        	oldItem.scriptNotes = newItem.scriptNotes;
+        	oldItem.status = newItem.status;
         }
         
         
