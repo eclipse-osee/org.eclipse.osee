@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactFilteredCheckTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -109,12 +109,12 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtilCore.getAtsBranch());
-      UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(allGroups);
-      dialog.setTitle("Select Groups");
-      dialog.setInitialSelections(selected.toArray());
+      ArtifactFilteredCheckTreeDialog dialog =
+         new ArtifactFilteredCheckTreeDialog("Select Groups", "Select Groups", allGroups);
+      dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {
          for (AbstractWorkflowArtifact awa : awas) {
-            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
+            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getChecked());
          }
          Artifacts.persistInTransaction("Set Groups", awas);
          return true;

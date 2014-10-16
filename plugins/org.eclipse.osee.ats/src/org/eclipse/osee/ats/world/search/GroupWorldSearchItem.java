@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -18,16 +22,15 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactFilteredCheckTreeDialog;
 
 /**
  * @author Donald G. Dunne
  */
 public class GroupWorldSearchItem extends WorldUISearchItem {
 
-   private Artifact group;
-   private Artifact selectedGroup;
+   private Collection<Artifact> groups;
+   private Collection<Artifact> selectedGroups;
    private String groupName;
    private final IOseeBranch branch;
 
@@ -39,7 +42,8 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public GroupWorldSearchItem(Artifact group) {
       super("Group Search", FrameworkImage.GROUP);
-      this.group = group;
+      this.groups = new ArrayList<Artifact>();
+      this.groups.add(group);
       this.branch = group.getBranch();
    }
 
@@ -49,17 +53,17 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
       super(groupWorldSearchItem, FrameworkImage.GROUP);
-      this.group = groupWorldSearchItem.group;
+      this.groups = groupWorldSearchItem.groups;
       this.groupName = groupWorldSearchItem.groupName;
-      this.selectedGroup = groupWorldSearchItem.selectedGroup;
+      this.selectedGroups = groupWorldSearchItem.selectedGroups;
       this.branch = groupWorldSearchItem.branch;
    }
 
    public String getGroupSearchName() {
-      if (group != null) {
-         return group.getName();
-      } else if (selectedGroup != null) {
-         return selectedGroup.getName();
+      if (groups != null && groups.size() == 1) {
+         return groups.iterator().next().getName();
+      } else if (selectedGroups != null && selectedGroups.size() == 1) {
+         return selectedGroups.iterator().next().getName();
       } else if (groupName != null) {
          return groupName;
       }
@@ -75,10 +79,10 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (groupName == null) {
          return;
       }
-      if (group == null && branch != null) {
-         group = UniversalGroup.getGroups(groupName, branch).iterator().next();
+      if (groups == null && branch != null) {
+         groups.add(UniversalGroup.getGroups(groupName, branch).iterator().next());
       }
-      if (group == null) {
+      if (groups == null) {
          throw new OseeArgumentException("Can't Find Universal Group for [%s]", getName());
       }
    }
@@ -86,22 +90,25 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getProduct();
-      if (getSearchGroup() == null) {
+      if (getSearchGroups() == null) {
          return EMPTY_SET;
       }
-      Collection<Artifact> arts = getSearchGroup().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
+      Set<Artifact> arts = new HashSet<Artifact>(100);
+      for (Artifact group : getSearchGroups()) {
+         arts.addAll(group.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members));
+      }
       if (cancelled) {
          return EMPTY_SET;
       }
       return arts;
    }
 
-   private Artifact getSearchGroup() {
-      if (group != null) {
-         return group;
+   private Collection<Artifact> getSearchGroups() {
+      if (groups != null) {
+         return groups;
       }
-      if (selectedGroup != null) {
-         return selectedGroup;
+      if (selectedGroups != null) {
+         return selectedGroups;
       }
       return null;
    }
@@ -112,19 +119,22 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (groupName != null) {
          return;
       }
-      if (group != null) {
+      if (groups != null) {
          return;
       }
-      if (searchType == SearchType.ReSearch && selectedGroup != null) {
+      if (searchType == SearchType.ReSearch && selectedGroups != null) {
          return;
       }
-      GroupListDialog gld = new GroupListDialog(Displays.getActiveShell());
+      Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtilCore.getAtsBranch());
+
+      ArtifactFilteredCheckTreeDialog gld =
+         new ArtifactFilteredCheckTreeDialog("Select Groups", "Select Groups", allGroups);
       int result = gld.open();
       if (result == 0) {
-         selectedGroup = gld.getSelection();
+         selectedGroups = gld.getChecked();
          return;
       } else {
-         selectedGroup = null;
+         selectedGroups = null;
          cancelled = true;
       }
    }
@@ -133,7 +143,8 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
     * @param selectedGroup the selectedGroup to set
     */
    public void setSelectedGroup(Artifact selectedGroup) {
-      this.selectedGroup = selectedGroup;
+      this.selectedGroups = new ArrayList<Artifact>();
+      this.selectedGroups.add(selectedGroup);
    }
 
    @Override

@@ -56,12 +56,20 @@ public class OSEEFilteredTree extends FilteredTree {
       filterText.addKeyListener(new KeyListener() {
          @Override
          public void keyPressed(KeyEvent e) {
-            filterText.setFocus();
+            if (e.keyCode == SWT.ARROW_DOWN) {
+               treeViewer.getTree().setFocus();
+            } else {
+               filterText.setFocus();
+            }
          }
 
          @Override
          public void keyReleased(KeyEvent e) {
-            filterText.setFocus();
+            if (e.keyCode == SWT.ARROW_DOWN) {
+               treeViewer.getTree().setFocus();
+            } else {
+               filterText.setFocus();
+            }
          }
       });
    }
