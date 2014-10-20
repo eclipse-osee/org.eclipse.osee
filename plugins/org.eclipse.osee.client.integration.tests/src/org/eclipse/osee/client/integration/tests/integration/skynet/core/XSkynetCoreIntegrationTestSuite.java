@@ -32,6 +32,7 @@ import org.junit.runners.Suite;
    BranchPurgeTest.class,
    BranchStateTest.class,
    ChangeManagerTest.class,
+   ClientResourceTest.class,
    ConflictDeletionTest.class,
    ConflictIntroduceTest.class,
    ConflictTest.class,

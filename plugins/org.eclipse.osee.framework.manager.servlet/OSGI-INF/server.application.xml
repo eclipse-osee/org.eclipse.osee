@@ -5,4 +5,5 @@
       <provide interface="javax.ws.rs.core.Application"/>
    </service>
    <reference bind="setServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
+   <reference bind="setSessionManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.ISessionManager" name="ISessionManager" policy="static"/>
 </scr:component>

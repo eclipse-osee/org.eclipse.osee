@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.ISessionManager;
 
 /**
  * @author Donald G. Dunne
@@ -25,13 +26,14 @@ public class ServerApplication extends Application {
    private final Set<Object> resources = new HashSet<Object>();
 
    private IApplicationServerManager serverManager;
+   private ISessionManager sessionManager;
 
    public void setServerManager(IApplicationServerManager serverManager) {
       this.serverManager = serverManager;
    }
 
    public void start() {
-      resources.add(new ClientResource(serverManager));
+      resources.add(new ClientResource(serverManager, sessionManager));
    }
 
    public void stop() {
@@ -41,6 +43,10 @@ public class ServerApplication extends Application {
    @Override
    public Set<Object> getSingletons() {
       return resources;
+   }
+
+   public void setSessionManager(ISessionManager sessionManager) {
+      this.sessionManager = sessionManager;
    }
 
 }
