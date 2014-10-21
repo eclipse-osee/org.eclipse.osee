@@ -24,10 +24,12 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 public class EmailGroupsData {
 
+   private String replyToAddress, fromAddress;
    private String subject;
    private String body;
    private boolean bodyIsHtml;
@@ -74,6 +76,13 @@ public class EmailGroupsData {
    }
 
    public Result isValid() throws OseeCoreException {
+      String replyToAddress = getReplyToAddress();
+      if (fromAddress == null || !EmailUtil.isEmailValid(fromAddress)) {
+         return new Result("Must enter valid from address");
+      }
+      if (replyToAddress == null || !EmailUtil.isEmailValid(replyToAddress)) {
+         return new Result("Must enter valid reply to address");
+      }
       if (!Strings.isValid(getSubject())) {
          return new Result("Must enter subject");
       }
@@ -131,4 +140,21 @@ public class EmailGroupsData {
       String firstName = fullName.replaceAll("[^,]+, ([^ ]+).*", "$1");
       return bodyTemplate.replace("<firstName/>", firstName);
    }
+
+   public String getReplyToAddress() {
+      return replyToAddress;
+   }
+
+   public void setReplyToAddress(String replyToAddress) {
+      this.replyToAddress = replyToAddress;
+   }
+
+   public String getFromAddress() {
+      return fromAddress;
+   }
+
+   public void setFromAddress(String fromAddress) {
+      this.fromAddress = fromAddress;
+   }
+
 }

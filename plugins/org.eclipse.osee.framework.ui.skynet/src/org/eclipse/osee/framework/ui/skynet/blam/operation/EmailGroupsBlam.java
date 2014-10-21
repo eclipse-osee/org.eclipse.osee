@@ -56,7 +56,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class EmailGroupsBlam extends AbstractBlam {
    private XArtifactList templateList, groupsList;
    private XText bodyTextBox;
-   private XText subjectTextBox;
+   private XText subjectTextBox, replyToAddressTextBox;
    private XCheckBox isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
@@ -73,6 +73,8 @@ public class EmailGroupsBlam extends AbstractBlam {
          @Override
          public void run() {
             data.setSubject(subjectTextBox.get());
+            data.setReplyToAddress(replyToAddressTextBox.get());
+            data.setFromAddress(UserManager.getUser().getEmail());
             data.setBody(bodyTextBox.get());
             data.setBodyIsHtml(isBodyHtmlCheckbox.isChecked());
             Collection<Artifact> groups = groupsList.getSelectedArtifacts();
@@ -121,7 +123,9 @@ public class EmailGroupsBlam extends AbstractBlam {
          logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
-      final OseeEmail emailMessage = new OseeEmail(emailAddress, data.getSubject(), "", BodyType.Html);
+      final OseeEmail emailMessage =
+         new OseeEmail(Arrays.asList(emailAddress), data.getFromAddress(), data.getReplyToAddress(), data.getSubject(),
+            "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
       String description = String.format("[%s] for [%s]", emailAddress, user);
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
@@ -148,6 +152,9 @@ public class EmailGroupsBlam extends AbstractBlam {
          isBodyHtmlCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Subject")) {
          subjectTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals("Reply-To Address")) {
+         replyToAddressTextBox = (XText) xWidget;
+         replyToAddressTextBox.set(UserManager.getUser().getEmail());
       } else if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
          button.setDisplayLabel(false);
@@ -201,7 +208,8 @@ public class EmailGroupsBlam extends AbstractBlam {
       return "<xWidgets>" +
       		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" />" +
       		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" />" +
-      		"<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+            "<XWidget xwidgetType=\"XText\" displayName=\"Reply-To Address\" />" +
+            "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
       		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
       		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
             "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Preview Message\" />" +

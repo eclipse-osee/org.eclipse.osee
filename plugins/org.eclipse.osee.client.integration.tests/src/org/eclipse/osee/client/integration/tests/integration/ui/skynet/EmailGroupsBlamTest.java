@@ -85,6 +85,14 @@ public class EmailGroupsBlamTest {
 
       EmailGroupsData data = new EmailGroupsData();
       Result result = data.isValid();
+      Assert.assertTrue("Should error with no from address", result.getText().contains("from address"));
+      data.setFromAddress("d@d.com");
+
+      result = data.isValid();
+      Assert.assertTrue("Should error with no reply to address", result.getText().contains("reply to address"));
+      data.setReplyToAddress("k@k.com");
+
+      result = data.isValid();
       Assert.assertTrue("Should error with no subject", result.getText().contains("subject"));
 
       data.setSubject("This is the subject");
