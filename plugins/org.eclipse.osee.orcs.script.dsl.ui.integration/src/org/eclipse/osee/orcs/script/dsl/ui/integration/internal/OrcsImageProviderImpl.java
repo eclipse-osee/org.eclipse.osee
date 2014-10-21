@@ -46,7 +46,8 @@ public class OrcsImageProviderImpl implements IOrcsImageProvider {
 
    @Override
    public Image getArtifactImage() {
-      return ArtifactImageManager.getImage(CoreArtifactTypes.Artifact);
+      IArtifactType artType = CoreArtifactTypes.Artifact;
+      return ArtifactImageManager.getImage(artType);
    }
 
    @Override
