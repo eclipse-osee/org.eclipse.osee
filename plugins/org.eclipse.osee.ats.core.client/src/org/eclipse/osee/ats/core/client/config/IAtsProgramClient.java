@@ -27,4 +27,6 @@ public interface IAtsProgramClient extends IAtsProgram {
    public String getProgramName() throws OseeCoreException;
 
    public IAtsTeamDefinition getTeamDefHoldingVersions() throws OseeCoreException;
+
+   public String getOseeProgramName();
 }
