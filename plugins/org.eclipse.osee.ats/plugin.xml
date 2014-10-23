@@ -553,14 +553,6 @@
             class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveHandler">  
       </handler>
    </extension>
-   <extension point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
-            contextId="org.eclipse.ui.contexts.window"
-            sequence=""
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-   </extension>   
    <extension point="org.eclipse.ui.commandImages">
      <image commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective" icon="images/action.gif"> </image>
      <image commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective" icon="images/review.gif"> </image>
