@@ -14,11 +14,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.activity.api.Activity;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -50,11 +54,13 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
 
    private final IAuthenticationManager authenticationManager;
    private final ISessionManager sessionManager;
+   private final ActivityLog activityLog;
 
-   public SessionManagementServlet(Log logger, ISessionManager sessionManager, IAuthenticationManager authenticationManager) {
+   public SessionManagementServlet(Log logger, ISessionManager sessionManager, IAuthenticationManager authenticationManager, ActivityLog activityLog) {
       super(logger);
       this.sessionManager = sessionManager;
       this.authenticationManager = authenticationManager;
+      this.activityLog = activityLog;
    }
 
    @Override
@@ -108,7 +114,9 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
       // TODO Decrypt credential info
       OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
       OseeSessionGrant oseeSessionGrant = sessionManager.createSession(credential);
+
       if (oseeSessionGrant != null) {
+         logSessionCreation(credential, oseeSessionGrant);
          response.setStatus(HttpServletResponse.SC_ACCEPTED);
          ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
          oseeSessionGrant.write(byteOutputStream);
@@ -125,8 +133,59 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
+   private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
+      try {
+         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS, String.format(
+            "IDE Client Session Created " // 
+               + "{" // 
+               + "\"version\":\"%s\", " // 
+               + "\"clientAddress\":\"%s\", " // 
+               + "\"clientMachineName\":\"%s\", " // 
+               + "\"port\":\"%s\", " // 
+               + "\"userName\":\"%s\", " // 
+               + "\"userId\":\"%s\", " // 
+               + "\"sessionId\":\"%s\"" //
+               + "}", //
+            credential.getVersion(), credential.getClientAddress(), credential.getClientMachineName(),
+            credential.getPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
+            oseeSessionGrant.getSessionId()));
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   private void logSessionReleased(String sessionId) {
+      try {
+         ISession session = sessionManager.getSessionById(sessionId);
+         String duration = getDuration(session);
+         String userId = session != null ? session.getUserId() : "unknown";
+         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS, String.format(
+            "IDE Client Session Released " // 
+               + "{" // 
+               + "\"sessionId\":\"%s\"" // 
+               + "\"duration\":\"%s\"" //
+               + "\"userId\":\"%s\", " //  
+               + "}", //
+            sessionId, duration, userId));
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   /**
+    * @return duration in H:M:S
+    */
+   private String getDuration(ISession session) {
+      String duration = "0";
+      if (session != null) {
+         duration = String.valueOf(new Date().getTime() - session.getCreationDate().getTime());
+      }
+      return duration;
+   }
+
    private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws Exception {
       String sessionId = request.getParameter("sessionId");
+      logSessionReleased(sessionId);
       sessionManager.releaseSession(sessionId);
       response.setStatus(HttpServletResponse.SC_ACCEPTED);
       response.setContentType("text/plain");

@@ -21,7 +21,8 @@ public enum Activity implements ActivityType {
    JAXRS_METHOD_CALL(880479734L, INFO, "org.eclipse.osee.activity.jaxrs"),
    JAXRS_METHOD_CALL_FILTER_ERROR(23133964208285L, SEVERE, "org.eclipse.osee.activity.jaxrs"),
    SRS_TRACE(80349535402L, INFO, "org.eclipse.osee.define.report.SrsTraceReport"),
-   MSG_CONTINUATION(29566294587L, INFO, "org.eclipse.osee.activity");
+   MSG_CONTINUATION(29566294587L, INFO, "org.eclipse.osee.activity"),
+   IDE(88L, INFO, "osee.ide.client");
 
    private final Long typeId;
    private final Long logLevel;

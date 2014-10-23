@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.manager.servlet.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -51,6 +52,7 @@ public class ServletRegistrationHandler {
    private IAuthenticationManager authenticationManager;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
+   private ActivityLog activityLog;
 
    private final Set<String> contexts = new HashSet<String>();
 
@@ -112,7 +114,7 @@ public class ServletRegistrationHandler {
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.BRANCH_CONTEXT);
       register(new SearchEngineTaggerServlet(logger, sessionManager, orcsApi), OseeServerContext.SEARCH_TAGGING_CONTEXT);
-      register(new SessionManagementServlet(logger, sessionManager, authenticationManager),
+      register(new SessionManagementServlet(logger, sessionManager, authenticationManager, activityLog),
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
       register(new OseeCacheServlet(logger, translationService, orcsApi), OseeServerContext.CACHE_CONTEXT);
@@ -128,5 +130,9 @@ public class ServletRegistrationHandler {
    private void register(OseeHttpServlet servlet, String contexts) {
       this.contexts.add(contexts);
       ServletUtil.register(httpService, appServerManager, servlet, contexts);
+   }
+
+   public void setActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
    }
 }
