@@ -44,21 +44,23 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
       BranchEventType eventType = branchEvent.getEventType();
       Long branchUuid = branchEvent.getBranchUuid();
       try {
-         if (BranchManager.branchExists(branchUuid)) {
-            Branch branch = BranchManager.getBranchByUuid(branchUuid);
-            if (eventType == Committed) {
-               Artifact artifact = BranchManager.getAssociatedArtifact(branch);
-               TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
-               updateBranchState(BranchState.COMMITTED, branch);
-            } else if (eventType == Purged) {
-               updateBranchState(BranchState.PURGED, branch);
-            } else if (eventType == Deleted) {
-               updateBranchState(BranchState.DELETED, branch);
+         if (BranchManager.isLoaded()) {
+            if (BranchManager.branchExists(branchUuid)) {
+               Branch branch = BranchManager.getBranchByUuid(branchUuid);
+               if (eventType == Committed) {
+                  Artifact artifact = BranchManager.getAssociatedArtifact(branch);
+                  TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);
+                  updateBranchState(BranchState.COMMITTED, branch);
+               } else if (eventType == Purged) {
+                  updateBranchState(BranchState.PURGED, branch);
+               } else if (eventType == Deleted) {
+                  updateBranchState(BranchState.DELETED, branch);
+               }
             }
-         }
 
-         if (eventType.justifiesCacheRefresh()) {
-            BranchManager.refreshBranches();
+            if (eventType.justifiesCacheRefresh()) {
+               BranchManager.resetWasLoaded();
+            }
          }
       } catch (Exception ex) {
          EventUtil.eventLog("REM: updateBranches", ex);

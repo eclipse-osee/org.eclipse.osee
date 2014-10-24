@@ -83,6 +83,7 @@ public class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranchUuid";
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final BranchFactory branchFactory = new BranchFactory();
+   private static final String SELECT_BRANCH = "select * from osee_branch where branch_id = ?";
 
    private Branch lastBranch;
 
@@ -176,17 +177,12 @@ public class BranchManager {
       }
    }
 
-   private static void loadBranchToCache(long uuid) {
-      loadBranchToCache("select * from osee_branch where branch_id = ?", uuid);
-   }
-
-   private static void loadBranchToCache(String sql, Object uuid) {
+   private static void loadBranchToCache(Object uuid) {
       IOseeDatabaseService databaseService = ServiceUtil.getOseeDatabaseService();
-
       IOseeStatement chStmt = null;
       try {
          chStmt = databaseService.getStatement();
-         chStmt.runPreparedQuery(1, sql, uuid);
+         chStmt.runPreparedQuery(1, SELECT_BRANCH, uuid);
          if (chStmt.next()) {
             long branchUuid = chStmt.getLong("branch_id");
             String branchName = chStmt.getString("branch_name");
@@ -285,8 +281,8 @@ public class BranchManager {
       return branch;
    }
 
-   public static void reloadBranch(Branch toReload) {
-      loadBranchToCache(toReload.getUuid());
+   public static void reloadBranch(long uuid) {
+      loadBranchToCache(uuid);
    }
 
    public static Collection<Branch> getAll() {
@@ -718,6 +714,14 @@ public class BranchManager {
 
    public static Branch getBranchByGuid(String branchGuid) {
       return getBranchByGuid(getBranchIdLegacy(branchGuid));
+   }
+
+   public static void resetWasLoaded() {
+      getCache().resetWasLoaded();
+   }
+
+   public static boolean isLoaded() {
+      return getCache().isLoaded();
    }
 
 }

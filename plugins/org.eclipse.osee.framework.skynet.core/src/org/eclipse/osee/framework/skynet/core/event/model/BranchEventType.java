@@ -16,18 +16,20 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 public enum BranchEventType {
 
    // Local and Remote events
+   // justify branch refresh
+   Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA", true),
+   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA", true),
+   Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA", true),
+   StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA", true),
+   TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA", true),
+   // no need to refresh branch
    Purging(EventType.LocalAndRemote, "ATPHeMoAFyL543vrAyQA", false),
    Purged(EventType.LocalAndRemote, "AAn_QG7jRGZAqPE0UewA", false),
    Deleting(EventType.LocalAndRemote, "ATPHeNujxAkPZEkWUtQA", false),
    Deleted(EventType.LocalAndRemote, "AAn_QHBDvwtT5jjKaHgA", false),
-   Added(EventType.LocalAndRemote, "AAn_QHDohywDoSTxwcQA", true),
-   Renamed(EventType.LocalAndRemote, "AAn_QHGLIUsH2BdX2gwA", true),
    Committing(EventType.LocalAndRemote, "ATPHeN1du2GAbS3SQsAA", false),
    CommitFailed(EventType.LocalAndRemote, "ATPHeN3RaBnDmpoYXkQA", false),
    Committed(EventType.LocalAndRemote, "AAn_QHIu0mGZytQ11QwA", false),
-   TypeUpdated(EventType.LocalAndRemote, "AAn_QHLW4DKKbUkEZggA", true),
-   StateUpdated(EventType.LocalAndRemote, "AAn_QHQdKhxNLtWPchAA", true),
-   ArchiveStateUpdated(EventType.LocalAndRemote, "AAn_QHS7Zhr6OLhKl3gA", true),
    MergeConflictResolved(EventType.LocalAndRemote, "AAn_QHiJ53W5W_k8W7AA", false),
    FavoritesUpdated(EventType.LocalOnly, "AFRkIheIUn3Jpz4kNBgA", false);
 

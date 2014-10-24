@@ -297,6 +297,14 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       return true;
    }
 
+   public void resetWasLoaded() {
+      wasLoaded.set(false);
+   }
+
+   public boolean isLoaded() {
+      return wasLoaded.get();
+   }
+
    @Override
    public void storeItems(T... items) throws OseeCoreException {
       storeItems(Arrays.asList(items));

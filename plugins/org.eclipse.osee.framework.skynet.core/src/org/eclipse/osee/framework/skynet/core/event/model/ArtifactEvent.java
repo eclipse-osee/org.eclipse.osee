@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
@@ -131,11 +130,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
 
    public Collection<Artifact> getRelCacheArtifacts() {
       try {
-         if (isOnCachedBranch()) {
-            return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale,
-               RelationEventType.Added, RelationEventType.Deleted, RelationEventType.Purged,
-               RelationEventType.Undeleted));
-         }
+         return ArtifactCache.getActive(getRelationsArts(RelationEventType.ModifiedRationale, RelationEventType.Added,
+            RelationEventType.Deleted, RelationEventType.Purged, RelationEventType.Undeleted));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -144,9 +140,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
 
    public Collection<Artifact> getCacheArtifacts(EventModType... eventModTypes) {
       try {
-         if (isOnCachedBranch()) {
-            return ArtifactCache.getActive(get(eventModTypes));
-         }
+         return ArtifactCache.getActive(get(eventModTypes));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -284,10 +278,6 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       } else {
          return String.format(" %d Relations (data hidden)", relations.size());
       }
-   }
-
-   private boolean isOnCachedBranch() {
-      return BranchManager.branchExists(getBranchUuid());
    }
 
 }

@@ -121,7 +121,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
             newTransaction);
       }
 
-      BranchManager.reloadBranch(sourceBranch);
+      BranchManager.reloadBranch(sourceBranch.getUuid());
 
       if (!skipChecksAndEvents) {
          Collection<Change> changes = new ArrayList<Change>();

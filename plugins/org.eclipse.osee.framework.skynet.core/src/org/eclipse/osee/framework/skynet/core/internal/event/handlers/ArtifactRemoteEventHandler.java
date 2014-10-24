@@ -11,8 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
@@ -62,29 +62,26 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
          EventModType eventModType = guidArt.getModType();
-         if (BranchManager.branchExists(guidArt.getBranchUuid())) {
-            switch (eventModType) {
-               case Added:
-                  // Handle Added Artifacts
-                  // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
-                  // do nothing cause not in cache
-                  break;
-               case Modified:
-                  updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
-                  break;
-               case ChangeType:
-                  ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
-                  break;
-               case Deleted:
-               case Purged:
-                  updateDeletedArtifact(guidArt);
-                  break;
-               default:
-                  // Unknown mod type
-                  EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]",
-                     guidArt.getModType()));
-                  break;
-            }
+         switch (eventModType) {
+            case Added:
+               // Handle Added Artifacts
+               // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
+               // do nothing cause not in cache
+               break;
+            case Modified:
+               updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
+               break;
+            case ChangeType:
+               ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
+               break;
+            case Deleted:
+            case Purged:
+               updateDeletedArtifact(guidArt);
+               break;
+            default:
+               // Unknown mod type
+               EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
+               break;
          }
       }
    }
@@ -175,7 +172,6 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
          try {
             EventUtil.eventLog(String.format("REM: updateRelation -> [%s]", guidArt));
 
-            Branch branch = BranchManager.getBranch(guidArt.getArtA());
             RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
             Artifact aArtifact = ArtifactCache.getActive(guidArt.getArtA());
             Artifact bArtifact = ArtifactCache.getActive(guidArt.getArtB());
@@ -187,6 +183,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
             boolean bArtifactLoaded = bArtifact != null;
 
             if (aArtifactLoaded || bArtifactLoaded) {
+               IOseeBranch branch =
+                  TokenFactory.createBranch(guidArt.getArtA().getBranchUuid(), "ArtifactRemoteEventHandler - Branch");
                RelationLink relation =
                   RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
                      guidArt.getArtBId(), branch);
