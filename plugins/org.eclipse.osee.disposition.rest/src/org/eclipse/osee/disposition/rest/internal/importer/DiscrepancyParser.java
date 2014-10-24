@@ -309,13 +309,14 @@ public class DiscrepancyParser {
          dispoItem.setElapsedTime(elapsedTime.getValue());
 
          if (scriptRunDate.getValue() == null) {
-            scriptRunDate.setValue(new Date(0));
+            scriptRunDate.setValue(new Date());
          }
          if (isNewImport) {
             dispoItem.setCreationDate(scriptRunDate.getValue());
          }
          dispoItem.setLastUpdate(scriptRunDate.getValue());
       }
+
       return stoppedParsing.getValue();
    }
 
