@@ -48,6 +48,14 @@ public class Xml {
    public final static String wordTrailer = "</w:wordDocument> ";
    public final SimpleNamespaceContext mySimpleNamespaceContext = new SimpleNamespaceContext();
    public final static Matcher theFunnyQuoteMatcher = Pattern.compile("�").matcher("");
+   // XML 1.0
+   // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+   private final static String INVALID_XML_CHARS =
+      "[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]";
+
+   public static String removeInvalidChars(String input) {
+      return input.replaceAll(INVALID_XML_CHARS, "");
+   }
 
    /**
     * TODO Optimize algorithm

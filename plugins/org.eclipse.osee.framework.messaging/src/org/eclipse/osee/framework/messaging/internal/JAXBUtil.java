@@ -16,6 +16,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import javax.xml.bind.JAXB;
 import javax.xml.transform.stream.StreamSource;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.messaging.OseeMessagingListener;
 
 /**
@@ -34,7 +35,8 @@ public class JAXBUtil {
    }
 
    public static Object unmarshal(String str, Class<?> clazz) throws UnsupportedEncodingException {
-      ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes("UTF-8"));
+      String sanitized = Xml.removeInvalidChars(str);
+      ByteArrayInputStream is = new ByteArrayInputStream(sanitized.getBytes("UTF-8"));
       return JAXB.unmarshal(new StreamSource(is), clazz);
    }
 
