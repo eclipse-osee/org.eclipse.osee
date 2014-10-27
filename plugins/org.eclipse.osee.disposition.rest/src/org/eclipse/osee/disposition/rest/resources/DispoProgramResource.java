@@ -55,7 +55,8 @@ public class DispoProgramResource {
 
       for (IOseeBranch branch : allPrograms) {
          JSONObject jobject = new JSONObject();
-         jobject.put("value", branch.getGuid());
+         String uuid = String.valueOf(branch.getUuid());
+         jobject.put("value", uuid);
          jobject.put("text", branch.getName());
          jarray.put(jobject);
       }
