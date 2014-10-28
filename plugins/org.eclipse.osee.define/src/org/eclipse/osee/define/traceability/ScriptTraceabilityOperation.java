@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.swt.program.Program;
@@ -55,7 +56,6 @@ import org.eclipse.swt.program.Program;
  */
 public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
-   //   private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
    private static final Matcher structuredRequirementMatcher = Pattern.compile("\\[?(\\{[^\\}]+\\})(.*)").matcher("");
    private static final Matcher embeddedVolumeMatcher = Pattern.compile("\\{\\d+ (.*)\\}[ .]*").matcher("");
@@ -177,7 +177,6 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
             Collections.toString(",", artifact.getAttributesToStringList(CoreAttributeTypes.Partition)),
             artifact.getArtifactType());
       }
-
       excelWriter.endSheet();
    }
 
@@ -187,6 +186,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       if (structuredRequirementMatcher.matches() != false) {
          String primary = structuredRequirementMatcher.group(1);
          String secondary = structuredRequirementMatcher.group(2);
+
          if (Strings.isValid(primary) != false) {
             toReturn = new Pair<String, String>(primary, secondary);
          }
@@ -221,11 +221,11 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    }
 
    private void handelReqTrace(String path, TraceMark traceMark, File sourceFile) throws OseeCoreException, IOException {
-      String foundStr;
       Artifact reqArtifact = null;
-
-      boolean traceMatch = false;
+      String foundStr;
       String subSystem = null;
+      String textContent = null;
+      boolean traceMatch = false;
 
       subsystemMatcher.reset(sourceFile.getPath());
       if (subsystemMatcher.find()) {
@@ -248,15 +248,27 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                if (reqArtifact == null) {
                   foundStr = "no match in DB";
                } else {
+
                   // for local data and procedures search requirement text for traceMark
                   // example local data [{SUBSCRIBER}.ID] and example procedure {CURSOR_ACKNOWLEDGE}.NORMAL
-                  String textContent =
-                     WordUtil.textOnly(reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
-                  if (textContent.contains(getCanonicalRequirementName(structuredRequirement.getSecond()))) {
+
+                  //There is no WordTemplateContent in a button requirement so we need to verify it exists
+                  //If its not there we need to render the button requirement in Word and pull out the body.
+                  if (reqArtifact.getAttributeCount(CoreAttributeTypes.WordTemplateContent) > 0) {
+                     textContent =
+                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
+                  } else {
+                     List<Attribute<?>> attributes = reqArtifact.getAttributes();
+                     for (Attribute<?> attribute : attributes) {
+                        textContent = textContent + attribute.toString();
+                     }
+                  }
+                  if (textContent.contains(structuredRequirement.getSecond()) || textContent.contains(getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "req name match/element missing in body";
                   }
+
                }
             } else {
                foundStr = "no match in DB";
