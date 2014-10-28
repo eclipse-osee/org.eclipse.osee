@@ -66,12 +66,11 @@ public class EmailUserGroups extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       try {
          Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser());
-         UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(groupOptions);
-         dialog.setTitle("Select Groups to Email");
+         UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == 0) {
 
             Set<String> emails = new HashSet<String>();
-            for (Artifact artifact : dialog.getSelection()) {
+            for (Artifact artifact : dialog.getChecked()) {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                      if (userArt instanceof User) {

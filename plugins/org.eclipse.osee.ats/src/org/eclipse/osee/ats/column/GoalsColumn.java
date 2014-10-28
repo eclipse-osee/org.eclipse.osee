@@ -111,10 +111,10 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       Collection<Artifact> allGoals =
          new GoalSearchItem("", new ArrayList<IAtsTeamDefinition>(), false, null).performSearchGetResults();
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
-      dialog.setInitialSelections(selected.toArray());
+      dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {
          for (Artifact awa : awas) {
-            awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
+            awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getChecked());
          }
          Artifacts.persistInTransaction("Set Goals", awas);
          return true;

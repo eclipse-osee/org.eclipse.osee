@@ -34,6 +34,10 @@ public class FilteredCheckboxTreeArtifactDialog extends FilteredCheckboxTreeDial
 
    private Collection<? extends Artifact> selectable;
 
+   public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable) {
+      this(title, message, selectable, new ArrayTreeContentProvider(), new ArtifactLabelProvider());
+   }
+
    public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }

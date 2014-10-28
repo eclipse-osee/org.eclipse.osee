@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeAndDescriptiveLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -74,14 +74,14 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                }
 
                // Show in list dialog and allow select for ones to change
-               ArtifactCheckTreeDialog dialog =
-                  new ArtifactCheckTreeDialog(atsArts, new ArtifactTypeAndDescriptiveLabelProvider());
-               dialog.setTitle("ReAssign ATS Object to User");
-               dialog.setMessage("Select to re-assign to user \"" + toUser);
+               FilteredCheckboxTreeArtifactDialog dialog =
+                  new FilteredCheckboxTreeArtifactDialog("ReAssign ATS Object to User",
+                     "Select to re-assign to user \"" + toUser, atsArts, new ArtifactTypeAndDescriptiveLabelProvider());
+               dialog.setShowSelectButtons(true);
                if (dialog.open() != 0) {
                   return;
                }
-               final Collection<Artifact> artsToReAssign = dialog.getSelection();
+               final Collection<Artifact> artsToReAssign = dialog.getChecked();
 
                AtsChangeSet changes = new AtsChangeSet("ReAssign ATS Object to User");
                // Make the changes and persist
@@ -90,7 +90,8 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
                      awa.getStateMgr().removeAssignee(
                         AtsClientService.get().getUserServiceClient().getUserFromOseeUser(fromUser));
-                     awa.getStateMgr().addAssignee(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(toUser));
+                     awa.getStateMgr().addAssignee(
+                        AtsClientService.get().getUserServiceClient().getUserFromOseeUser(toUser));
                      changes.add(awa);
                   }
                }

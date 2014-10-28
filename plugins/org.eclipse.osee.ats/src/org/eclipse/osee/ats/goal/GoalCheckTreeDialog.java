@@ -12,19 +12,18 @@ package org.eclipse.osee.ats.goal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Donald G. Dunne
  */
-public class GoalCheckTreeDialog extends ArtifactCheckTreeDialog {
+public class GoalCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
 
    public GoalCheckTreeDialog(Collection<? extends Artifact> artifacts) {
-      super(artifacts, new GoalLabelProvider());
-      setTitle("Select Goals");
-
+      super("Select Goals", "Select Goals", artifacts, new ArrayTreeContentProvider(), new GoalLabelProvider());
    }
 
    @Override

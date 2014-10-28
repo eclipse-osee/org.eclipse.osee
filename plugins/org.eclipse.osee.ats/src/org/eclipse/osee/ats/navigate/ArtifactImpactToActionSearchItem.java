@@ -41,8 +41,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialogWithBranchSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -105,11 +105,10 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             Displays.pendInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  ArtifactCheckTreeDialog dialog = new ArtifactCheckTreeDialog(srchArts);
-                  dialog.setTitle(TITLE);
-                  dialog.setMessage("Select Artifacts to Search");
+                  FilteredCheckboxTreeArtifactDialog dialog =
+                     new FilteredCheckboxTreeArtifactDialog(TITLE, "Select Artifacts to Search", srchArts);
                   if (dialog.open() == 0) {
-                     processArts.addAll(dialog.getSelection());
+                     processArts.addAll(dialog.getChecked());
                   }
                }
             });

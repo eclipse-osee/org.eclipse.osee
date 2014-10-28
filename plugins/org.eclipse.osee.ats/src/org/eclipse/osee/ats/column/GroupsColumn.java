@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -109,8 +109,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtilCore.getAtsBranch());
-      ArtifactFilteredCheckTreeDialog dialog =
-         new ArtifactFilteredCheckTreeDialog("Select Groups", "Select Groups", allGroups);
+      FilteredCheckboxTreeArtifactDialog dialog =
+         new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);
       dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {
          for (AbstractWorkflowArtifact awa : awas) {

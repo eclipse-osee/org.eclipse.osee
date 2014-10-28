@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 
 /**
  * @author Donald G. Dunne
@@ -127,8 +127,8 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtilCore.getAtsBranch());
 
-      ArtifactFilteredCheckTreeDialog gld =
-         new ArtifactFilteredCheckTreeDialog("Select Groups", "Select Groups", allGroups);
+      FilteredCheckboxTreeArtifactDialog gld =
+         new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", allGroups);
       int result = gld.open();
       if (result == 0) {
          selectedGroups = gld.getChecked();

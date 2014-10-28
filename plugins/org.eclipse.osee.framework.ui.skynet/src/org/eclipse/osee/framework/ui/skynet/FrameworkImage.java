@@ -55,6 +55,7 @@ public enum FrameworkImage implements KeyedImage {
    BRANCH_SYNCH("branchSynch.gif"),
    CALENDAR("calendar.png"),
    CHANGE_LOG("changelog_obj.gif"),
+   CLEAR_CO("clear_co.gif"),
    CLOCK("clock.gif"),
    COLLAPSE_ALL("collapseAll.gif"),
    COMPARE_DOCUMENTS("compareDocs.gif"),
