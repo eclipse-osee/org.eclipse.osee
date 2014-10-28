@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -50,6 +49,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.FilteredTree;
+import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
@@ -57,7 +58,7 @@ import org.eclipse.swt.widgets.Text;
 public class EmailWizardPage extends WizardPage {
    private Text text;
    private final List<Object> initialAddress;
-   private OSEEFilteredTree namesList;
+   private FilteredTree namesList;
    private ListViewer toList;
    private ListViewer ccList;
    private ListViewer bccList;
@@ -110,7 +111,7 @@ public class EmailWizardPage extends WizardPage {
          names.add(ex.getLocalizedMessage());
       }
 
-      namesList = new OSEEFilteredTree(namesComp);
+      namesList = new FilteredTree(namesComp, SWT.NONE, new PatternFilter(), true);
       namesList.getViewer().setContentProvider(new ArrayTreeContentProvider());
       namesList.getViewer().setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
@@ -394,6 +395,10 @@ public class EmailWizardPage extends WizardPage {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   public FilteredTree getNamesList() {
+      return namesList;
    }
 
 }

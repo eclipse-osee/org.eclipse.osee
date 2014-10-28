@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -47,7 +48,6 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    private final ViewerSorter viewerSorter;
    private boolean showSelectButtons = false;
    private boolean expandChecked = false;
-   private boolean checkTree = true;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
 
@@ -125,7 +125,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       treeViewer =
          new FilteredCheckboxTree(
             aiComp,
-            (checkTree ? SWT.CHECK : SWT.NONE) | (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
+            SWT.CHECK | (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
             patternFilter);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
@@ -184,6 +184,10 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       return parent;
    }
 
+   public void addCheckStateListener(ICheckStateListener listener) {
+      getCheckboxTreeViewer().addCheckStateListener(listener);
+   }
+
    protected void updateStatusLabel() {
       Result result = isComplete();
       if (result.isFalse()) {
@@ -222,10 +226,6 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
 
    public void setExpandChecked(boolean expandChecked) {
       this.expandChecked = expandChecked;
-   }
-
-   public void setCheckTree(boolean checkTree) {
-      this.checkTree = checkTree;
    }
 
    public void setMultiSelect(boolean multiSelect) {

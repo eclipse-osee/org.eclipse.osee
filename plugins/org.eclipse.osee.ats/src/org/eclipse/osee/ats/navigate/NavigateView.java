@@ -127,7 +127,9 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
                      if (Widgets.isAccessible(parent)) {
 
-                        xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+                        xNavComp =
+                           new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE,
+                              savedFilterStr);
 
                         XNavigateEventManager.register(navView);
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
@@ -148,11 +150,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
                         gridData.heightHint = 15;
                         userLabel.setLayoutData(gridData);
 
-                        if (savedFilterStr != null) {
-                           xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                        }
                         xNavComp.refresh();
-                        xNavComp.getFilteredTree().getFilterControl().setFocus();
 
                         parent.getParent().layout(true);
                         parent.layout(true);

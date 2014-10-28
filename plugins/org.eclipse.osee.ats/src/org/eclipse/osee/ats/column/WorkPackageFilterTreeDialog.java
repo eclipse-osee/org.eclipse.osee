@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,7 +36,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * Allows the selection of active work packages with the option to toggle on inActive.
@@ -44,15 +43,14 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * @param workPackages contains the valid list of active and inactive Work Packages
  * @author Donald G. Dunne
  */
-public class WorkPackageFilterTreeDialog extends OSEEFilteredTreeDialog<Collection<? extends IAtsWorkPackage>> {
+public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
    private IAtsWorkPackage selection;
    XCheckBox showAll = new XCheckBox("Show All Work Packages");
    private final Collection<IAtsWorkPackage> allValidWorkPackages;
 
    public WorkPackageFilterTreeDialog(String title, String message, Collection<IAtsWorkPackage> allValidWorkPackages) {
-      super(title, message, new StringLabelProvider(), new ArrayTreeContentProvider(), new PatternFilter());
+      super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
       this.allValidWorkPackages = allValidWorkPackages;
-      setCheckTree(false);
       setMultiSelect(false);
    }
 

@@ -117,7 +117,9 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
                   if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
                      if (Widgets.isAccessible(parent)) {
-                        xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE);
+                        xNavComp =
+                           new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE,
+                              savedFilterStr);
 
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                         createToolBar();
@@ -141,9 +143,6 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
                         gridData.heightHint = 15;
                         label.setLayoutData(gridData);
 
-                        if (savedFilterStr != null) {
-                           xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                        }
                         xNavComp.refresh();
                         xNavComp.getFilteredTree().getFilterControl().setFocus();
 

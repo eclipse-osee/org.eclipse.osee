@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -110,7 +110,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       return force || isShutdownAllowed;
    }
 
-   private SimpleCheckFilteredTreeDialog createDialog(Collection<Artifact> dirtyArts) {
+   public SimpleCheckFilteredTreeDialog createDialog(Collection<Artifact> dirtyArts) {
       ArtifactDecoratorPreferences preferences = new ArtifactDecoratorPreferences();
       preferences.setShowArtBranch(true);
       preferences.setShowArtType(true);
@@ -167,7 +167,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       }
 
       private void setChecked(boolean isChecked) {
-         OSEECheckedFilteredTree viewer = getTreeViewer();
+         FilteredCheckboxTree viewer = getTreeViewer();
 
          viewer.getFilterControl().setText("");
          viewer.getPatternFilter().setPattern("");

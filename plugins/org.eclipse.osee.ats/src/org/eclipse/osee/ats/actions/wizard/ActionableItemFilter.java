@@ -14,16 +14,16 @@ import java.util.Locale;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 
 /**
  * @author Donald G. Dunne
  */
 public class ActionableItemFilter extends ViewerFilter {
    private String contains = null;
-   private final OSEEFilteredTree treeViewer;
+   private final FilteredCheckboxTree treeViewer;
 
-   public ActionableItemFilter(OSEEFilteredTree treeViewer) {
+   public ActionableItemFilter(FilteredCheckboxTree treeViewer) {
       super();
       this.treeViewer = treeViewer;
    }

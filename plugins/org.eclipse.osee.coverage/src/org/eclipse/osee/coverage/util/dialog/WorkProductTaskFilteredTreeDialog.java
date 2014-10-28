@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.coverage.util.dialog;
 
-import java.util.Collection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -23,23 +22,21 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkProductTaskFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<WorkProductTask>> {
+public class WorkProductTaskFilteredTreeDialog extends FilteredCheckboxTreeDialog {
    private WorkProductTask selection;
 
    public WorkProductTaskFilteredTreeDialog(String title, String message) {
-      super(title, message, new WorkProductActionLabelProvider(), new ArrayTreeContentProvider(), new PatternFilter());
-      setCheckTree(false);
+      super(title, message, new ArrayTreeContentProvider(), new WorkProductActionLabelProvider());
       setMultiSelect(false);
    }
 

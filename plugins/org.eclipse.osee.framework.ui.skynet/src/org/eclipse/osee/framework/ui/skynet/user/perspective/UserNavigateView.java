@@ -110,7 +110,8 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
 
                   if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-                     xNavComp = new XNavigateComposite(UserNavigateViewItems.getInstance(), parent, SWT.NONE);
+                     xNavComp =
+                        new XNavigateComposite(UserNavigateViewItems.getInstance(), parent, SWT.NONE, savedFilterStr);
 
                      createToolBar();
 
@@ -133,9 +134,6 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
                      gridData.heightHint = 15;
                      label.setLayoutData(gridData);
 
-                     if (savedFilterStr != null) {
-                        xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                     }
                      xNavComp.refresh();
                      xNavComp.getFilteredTree().getFilterControl().setFocus();
 

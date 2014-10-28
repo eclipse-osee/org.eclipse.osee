@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -62,18 +61,27 @@ public class XNavigateComposite extends Composite {
    private final ToolTipDisplayListener tableListener = new ToolTipDisplayListener();
    protected final XNavigateViewItems navigateViewItems;
    protected Browser browser;
-   protected OSEEFilteredTree filteredTree;
+   protected FilteredTreePlus filteredTree;
+   private final String filterText;
 
    public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
+      this(navigateViewItems, parent, style, null);
+   }
+
+   public XNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style, String filterText) {
       super(parent, style);
       this.navigateViewItems = navigateViewItems;
+      this.filterText = filterText;
 
       setLayout(new GridLayout());
       createControl();
    }
 
    private void createControl() {
-      filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER);
+      filteredTree = new FilteredTreePlus(this, SWT.SINGLE | SWT.BORDER, new XNavigateViewFilter(filterText), true);
+      if (Strings.isValid(filterText)) {
+         filteredTree.setFilterTextPlus(filterText);
+      }
       filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
       filteredTree.getViewer().setLabelProvider(new XNavigateLabelProvider());
       filteredTree.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

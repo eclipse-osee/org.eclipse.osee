@@ -12,9 +12,6 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -28,14 +25,14 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Donald G. Dunne
  */
-public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
+public class AICheckTreeDialog extends FilteredCheckboxTreeDialog {
 
    private final Active active;
    private Collection<IAtsActionableItem> initialAias;
@@ -45,15 +42,10 @@ public class AICheckTreeDialog extends OSEECheckedFilteredTreeDialog {
       this.active = active;
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
    public Collection<IAtsActionableItem> getChecked() {
-      if (super.getTreeViewer() == null) {
-         return Collections.emptyList();
-      }
-      Set<IAtsActionableItem> checked = new HashSet<IAtsActionableItem>();
-      for (Object obj : super.getTreeViewer().getChecked()) {
-         checked.add((IAtsActionableItem) obj);
-      }
-      return checked;
+      return super.getTreeViewer().getChecked();
    }
 
    @Override

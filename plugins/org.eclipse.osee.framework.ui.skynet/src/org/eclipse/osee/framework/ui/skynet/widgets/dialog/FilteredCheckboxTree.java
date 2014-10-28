@@ -108,7 +108,7 @@ public class FilteredCheckboxTree extends FilteredTree {
       return comp;
    }
 
-   private FilterableCheckboxTreeViewer getCheckboxTreeViewer() {
+   public FilterableCheckboxTreeViewer getCheckboxTreeViewer() {
       return (FilterableCheckboxTreeViewer) getViewer();
    }
 

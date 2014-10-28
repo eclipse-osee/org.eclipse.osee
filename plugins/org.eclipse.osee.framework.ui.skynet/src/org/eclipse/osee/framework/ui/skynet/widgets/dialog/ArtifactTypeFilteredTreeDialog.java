@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.util.Collection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -23,23 +22,20 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEEFilteredTreeDialog;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<? extends IArtifactType>> {
+public class ArtifactTypeFilteredTreeDialog extends FilteredCheckboxTreeDialog {
    private IArtifactType selection;
 
    public ArtifactTypeFilteredTreeDialog(String title, String message) {
-      super(title, message, new ArtifactTypeLabelProvider(), new ArrayTreeContentProvider(), new PatternFilter());
-      setCheckTree(false);
+      super(title, message, new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());
       setMultiSelect(false);
    }
 

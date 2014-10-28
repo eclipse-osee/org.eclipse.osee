@@ -18,13 +18,10 @@ public class XNavigateViewFilter extends PatternFilter {
 
    private String text;
 
-   public XNavigateViewFilter() {
-      // do nothing
-   }
-
-   public void setFilterText(String text) {
-      this.text = text;
-
+   public XNavigateViewFilter(String filterText) {
+      if (Strings.isValid(filterText)) {
+         setPattern(filterText);
+      }
    }
 
    @Override

@@ -58,6 +58,9 @@ public class AtsObjectLabelProvider extends LabelProvider { //StyledCellLabelPro
     */
    @Override
    public String getText(Object element) {
+      if (element == null) {
+         return "";
+      }
       if (element instanceof Match) {
          element = ((Match) element).getElement();
       }

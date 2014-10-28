@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Label;
  */
 public class AtsNavigateComposite extends XNavigateComposite {
 
-   public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
-      super(navigateViewItems, parent, style);
+   public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style, String filterText) {
+      super(navigateViewItems, parent, style, filterText);
       Result result = DbConnectionUtility.areOSEEServicesAvailable();
       if (result.isFalse()) {
          new Label(parent, SWT.NONE).setText(result.getText());

@@ -14,11 +14,13 @@ import org.eclipse.osee.ats.client.integration.tests.ats.access.AtsTest_Access_S
 import org.eclipse.osee.ats.client.integration.tests.ats.actions.AtsTest_Action_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.column.AtsTest_Column_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsTest_Config_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.dialog.AtsTest_Dialog_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.editor.AtsTest_Editor_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.ev.AtsTest_EV_TestSuite;
 import org.eclipse.osee.ats.client.integration.tests.ats.export.AtsTest_Export_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.operation.AtsTest_Operation_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.resource.AtsTest_Resource_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
@@ -41,11 +43,13 @@ import org.junit.runners.Suite;
    AtsTest_Action_Suite.class,
    AtsTest_Column_Suite.class,
    AtsTest_Config_Suite.class,
+   AtsTest_Dialog_Suite.class,
    AtsTest_Editor_Suite.class,
    AtsTest_EV_TestSuite.class,
    AtsTest_Export_Suite.class,
    AtsTest_Health_Suite.class,
    AtsTest_Navigate_Suite.class,
+   AtsTest_Operation_Suite.class,
    AtsTest_Renderer_Suite.class,
    AtsTest_Resource_Suite.class,
    AtsTest_Review_Suite.class,

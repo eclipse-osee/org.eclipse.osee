@@ -11,18 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.AttributeContentProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -30,23 +25,12 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTreeDialog {
+public class AttributeTypeFilteredCheckTreeDialog extends FilteredCheckboxTreeDialog {
 
    private Collection<IAttributeType> selectableTypes;
 
    public AttributeTypeFilteredCheckTreeDialog(String title, String message) {
       super(title, message, new AttributeContentProvider(), new AttributeTypeLabelProvider(), new ArtifactNameSorter());
-   }
-
-   public Collection<AttributeType> getChecked() {
-      if (super.getTreeViewer() == null) {
-         return Collections.emptyList();
-      }
-      Set<AttributeType> checked = new HashSet<AttributeType>();
-      for (Object obj : super.getTreeViewer().getChecked()) {
-         checked.add((AttributeType) obj);
-      }
-      return checked;
    }
 
    @Override

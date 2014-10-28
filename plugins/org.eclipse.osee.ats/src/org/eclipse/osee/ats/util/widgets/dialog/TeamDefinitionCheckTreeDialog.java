@@ -12,10 +12,7 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -26,14 +23,14 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog {
+public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
 
    private final Active active;
    private List<IAtsTeamDefinition> initialTeamDefs;
@@ -46,15 +43,10 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
       this.requiredSelection = requiredSelection;
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
    public Collection<IAtsTeamDefinition> getChecked() {
-      if (super.getTreeViewer() == null) {
-         return Collections.emptyList();
-      }
-      Set<IAtsTeamDefinition> checked = new HashSet<IAtsTeamDefinition>();
-      for (Object obj : super.getTreeViewer().getChecked()) {
-         checked.add((IAtsTeamDefinition) obj);
-      }
-      return checked;
+      return super.getTreeViewer().getChecked();
    }
 
    @Override

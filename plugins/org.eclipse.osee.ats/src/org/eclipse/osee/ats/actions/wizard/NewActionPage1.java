@@ -14,11 +14,12 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -40,10 +41,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -63,7 +64,7 @@ import org.eclipse.swt.widgets.Text;
 public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
    private XWidgetPage page;
-   protected OSEECheckedFilteredTree treeViewer;
+   protected FilteredCheckboxTree treeViewer;
    private Text descriptionLabel;
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
@@ -115,21 +116,23 @@ public class NewActionPage1 extends WizardPage {
 
          new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
          treeViewer =
-            new OSEECheckedFilteredTree(aiComp,
+            new FilteredCheckboxTree(aiComp,
                SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
          try {
-            treeViewer.getViewer().setInput(
-               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getConfig()));
+            List<IAtsActionableItem> topLevelActionableItems =
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getConfig());
+            treeViewer.getViewer().setInput(topLevelActionableItems);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          treeViewer.getViewer().setSorter(new AtsObjectNameSorter());
-         treeViewer.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+         treeViewer.getCheckboxTreeViewer().addCheckStateListener(new ICheckStateListener() {
+
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void checkStateChanged(CheckStateChangedEvent event) {
                getContainer().updateButtons();
             }
          });
@@ -144,7 +147,7 @@ public class NewActionPage1 extends WizardPage {
          descriptionLabel.setLayoutData(gridData1);
          descriptionLabel.setEnabled(false);
 
-         treeViewer.getViewer().addSelectionChangedListener(new SelectionChangedListener());
+         treeViewer.getCheckboxTreeViewer().addCheckStateListener(new CheckStateListener());
 
          Button deselectAll = new Button(aiComp, SWT.PUSH);
          deselectAll.setText("De-Select All");
@@ -193,9 +196,9 @@ public class NewActionPage1 extends WizardPage {
       }
    }
 
-   private class SelectionChangedListener implements ISelectionChangedListener {
+   private class CheckStateListener implements ICheckStateListener {
       @Override
-      public void selectionChanged(SelectionChangedEvent event) {
+      public void checkStateChanged(CheckStateChangedEvent event) {
          IStructuredSelection sel = (IStructuredSelection) treeViewer.getViewer().getSelection();
          if (sel.isEmpty()) {
             return;
@@ -248,6 +251,10 @@ public class NewActionPage1 extends WizardPage {
          return false;
       }
       return true;
+   }
+
+   public FilteredCheckboxTree getTreeViewer() {
+      return treeViewer;
    }
 
 }

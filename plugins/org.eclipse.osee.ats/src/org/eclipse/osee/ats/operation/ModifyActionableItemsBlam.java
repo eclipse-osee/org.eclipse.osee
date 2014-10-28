@@ -60,11 +60,11 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -87,9 +87,9 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
    private final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private TeamWorkFlowArtifact defaultTeamWorkflow;
-   private OSEECheckedFilteredTree wfTree;
-   private OSEECheckedFilteredTree otherTree;
-   private OSEECheckedFilteredTree newTree;
+   private FilteredCheckboxTree wfTree;
+   private FilteredCheckboxTree otherTree;
+   private FilteredCheckboxTree newTree;
    private XListDropViewer dropViewer;
    private XText resultsText;
    private Set<IAtsActionableItem> currAIsForAllWfs;
@@ -136,20 +136,20 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       Label newLabel = new Label(treeComp, SWT.BOLD | SWT.CENTER);
       newLabel.setText("New Workflows\n(select to create new workflows)");
 
-      wfTree = new OSEECheckedFilteredTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      wfTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       wfTree.getViewer().setContentProvider(new WorkflowsActiveAisContentProvider(defaultTeamWorkflow, Active.Active));
       wfTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       wfTree.getViewer().setSorter(new AtsObjectNameSorter());
       wfTree.setLayoutData(data);
       wfTree.getViewer().addSelectionChangedListener(new ModificationListener());
 
-      otherTree = new OSEECheckedFilteredTree(treeComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      otherTree = new FilteredCheckboxTree(treeComp, SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       otherTree.getViewer().setContentProvider(new ArrayTreeContentProvider());
       otherTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       otherTree.getViewer().setSorter(new AtsObjectNameSorter());
       otherTree.setLayoutData(data);
 
-      newTree = new OSEECheckedFilteredTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+      newTree = new FilteredCheckboxTree(treeComp, SWT.CHECK | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
       newTree.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
       newTree.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       newTree.getViewer().setSorter(new AtsObjectNameSorter());
@@ -466,4 +466,15 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
       return ImageManager.getImageDescriptor(AtsImage.ACTIONABLE_ITEM);
    }
 
+   public int getWorkflowTreeItemCount() {
+      return wfTree.getViewer().getTree().getItemCount();
+   }
+
+   public int getOtherTreeItemCount() {
+      return otherTree.getViewer().getTree().getItemCount();
+   }
+
+   public int getNewTreeItemCount() {
+      return newTree.getViewer().getTree().getItemCount();
+   }
 }

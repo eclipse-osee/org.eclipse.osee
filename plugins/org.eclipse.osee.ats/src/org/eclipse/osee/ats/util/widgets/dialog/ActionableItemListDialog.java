@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemListDialog extends OSEECheckedFilteredTreeDialog {
+public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
 
    public ActionableItemListDialog(Active active, String message) {
       super("Select Actionable Item(s)", "Select Actionable Item(s)", new AITreeContentProvider(active),

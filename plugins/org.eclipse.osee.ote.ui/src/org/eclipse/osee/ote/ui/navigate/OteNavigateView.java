@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.ui.navigate;
 
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -68,38 +67,38 @@ public class OteNavigateView extends ViewPart {
       extensionRegistry.addListener(new IRegistryEventListener() {
          @Override
          public void added(IExtension[] extensions) {
-        	try{
-        		refresh();
-        	} catch (Exception ex){
-        		OseeLog.log(getClass(), Level.SEVERE, ex);
-        	}
+            try {
+               refresh();
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
          }
 
          @Override
          public void added(IExtensionPoint[] extensionPoints) {
-        	 try{
-         		refresh();
-         	} catch (Exception ex){
-         		OseeLog.log(getClass(), Level.SEVERE, ex);
-         	}
+            try {
+               refresh();
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
          }
 
          @Override
          public void removed(IExtension[] extensions) {
-        	 try{
-         		refresh();
-         	} catch (Exception ex){
-         		OseeLog.log(getClass(), Level.SEVERE, ex);
-         	}
+            try {
+               refresh();
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
          }
 
          @Override
          public void removed(IExtensionPoint[] extensionPoints) {
-        	 try{
-         		refresh();
-         	} catch (Exception ex){
-         		OseeLog.log(getClass(), Level.SEVERE, ex);
-         	}
+            try {
+               refresh();
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), Level.SEVERE, ex);
+            }
          }
       }, "org.eclipse.osee.framework.ui.plugin.XNavigateItem");
    }
@@ -109,9 +108,9 @@ public class OteNavigateView extends ViewPart {
 
          @Override
          public void run() {
-        	 if(!xNavComp.isDisposed()){ 
-        		 xNavComp.refresh();
-        	 }
+            if (!xNavComp.isDisposed()) {
+               xNavComp.refresh();
+            }
          }
       };
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
@@ -120,8 +119,8 @@ public class OteNavigateView extends ViewPart {
    }
 
    public void refresh() {
-	  if(!xNavComp.isDisposed()){
-		  xNavComp.refresh();
-	  }
+      if (!xNavComp.isDisposed()) {
+         xNavComp.refresh();
+      }
    }
 }

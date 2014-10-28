@@ -17,13 +17,14 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Donald G. Dunne
  */
-public class MinMaxOSEECheckedFilteredTreeDialog extends OSEECheckedFilteredTreeDialog {
+public class MinMaxOSEECheckedFilteredTreeDialog extends FilteredCheckboxTreeDialog {
 
    private final int maxSelectionRequired;
    private final int minSelectionRequired;
