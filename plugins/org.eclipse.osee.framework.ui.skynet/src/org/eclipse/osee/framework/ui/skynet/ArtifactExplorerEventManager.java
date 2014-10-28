@@ -129,20 +129,8 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
                         handler.getArtifactExplorer().getTreeViewer().update(artifact, null);
                      }
 
-                     for (Artifact art : relModifiedArts) {
-                        try {
-                           // Don't refresh deleted artifacts
-                           if (art.isDeleted()) {
-                              continue;
-                           }
-                           handler.getArtifactExplorer().getTreeViewer().refresh(art);
-                           if (art.getParent() != null) {
-                              handler.getArtifactExplorer().getTreeViewer().refresh(art.getParent());
-                           }
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
+                     // We do not need to refresh each artifact for each handler, just the handler itself
+                     handler.getArtifactExplorer().getTreeViewer().refresh();
 
                      for (DefaultBasicGuidArtifact guidArt : relOrderChangedArtifacts) {
                         try {
