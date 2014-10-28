@@ -184,6 +184,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          createReportItems(item, items);
 
+         createExampleItems(item, items);
+
          createUtilItems(item, items);
 
          createAdminItems(item, items);
@@ -271,13 +273,24 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createReportItems(XNavigateItem parent, List<XNavigateItem> items) {
       XNavigateItem reportItems = new XNavigateItem(parent, "Reports", AtsImage.REPORT);
       new FirstTimeQualityMetricReportItem(reportItems);
-      new BarChartExample(reportItems);
-      new ResultsEditorExample(reportItems);
-      new CompareEditorExample(reportItems);
-      new XViewerExample(reportItems);
-      new XResultDataExample(reportItems);
+   }
+
+   private void createExampleItems(XNavigateItem parent, List<XNavigateItem> items) {
+      XNavigateItem exampleItems = new XNavigateItem(parent, "Examples", AtsImage.REPORT);
+
+      new BarChartExample(exampleItems);
+      new ResultsEditorExample(exampleItems);
+      new CompareEditorExample(exampleItems);
+      new XViewerExample(exampleItems);
+      new XResultDataExample(exampleItems);
+      new FilteredTreeDialogExample(exampleItems);
+      new FilteredTreeDialogSingleExample(exampleItems);
+      new FilteredTreeArtifactDialogExample(exampleItems);
+      new FilteredCheckboxTreeDialogExample(exampleItems);
+      new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
+      new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
       //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
-      items.add(reportItems);
+      items.add(exampleItems);
 
    }
 

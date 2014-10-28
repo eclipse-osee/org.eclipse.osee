@@ -78,7 +78,7 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
       }
       if (parentElement.getClass().equals(clazz)) {
          try {
-            return Artifacts.getChildrenOfTypeSet((Artifact) parentElement, clazz, true).toArray();
+            return Artifacts.getChildrenOfTypeSet((Artifact) parentElement, clazz, false).toArray();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

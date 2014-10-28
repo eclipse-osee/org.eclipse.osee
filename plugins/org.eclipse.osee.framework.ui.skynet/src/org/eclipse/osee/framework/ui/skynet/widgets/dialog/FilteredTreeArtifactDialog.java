@@ -11,9 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,24 +27,21 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactFilteredCheckTreeDialog extends FilteredCheckboxTreeDialog {
+public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    private Collection<? extends Artifact> selectable;
 
-   public ArtifactFilteredCheckTreeDialog(String title, String message, Collection<? extends Artifact> selectable) {
-      super(title, message, new ArrayTreeContentProvider(), new ArtifactLabelProvider(), new ArtifactNameSorter());
+   public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ILabelProvider labelProvider) {
+      this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
+   }
+
+   public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+      super(title, message, contentProvider, labelProvider, new ArtifactNameSorter());
       this.selectable = selectable;
    }
 
-   public Collection<Artifact> getChecked() {
-      if (super.getTreeViewer() == null) {
-         return Collections.emptyList();
-      }
-      Set<Artifact> checked = new HashSet<Artifact>();
-      for (Object obj : getChecked()) {
-         checked.add((Artifact) obj);
-      }
-      return checked;
+   public FilteredTreeArtifactDialog(String title, Collection<? extends Artifact> selectable) {
+      this(title, title, selectable, new ArtifactLabelProvider());
    }
 
    @Override
@@ -62,10 +58,6 @@ public class ArtifactFilteredCheckTreeDialog extends FilteredCheckboxTreeDialog 
    @Override
    protected Result isComplete() {
       return super.isComplete();
-   }
-
-   public Collection<? extends Artifact> getSelectable() {
-      return selectable;
    }
 
    public void setSelectable(Collection<Artifact> selectable) {

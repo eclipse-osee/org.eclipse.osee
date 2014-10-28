@@ -96,8 +96,10 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
             }
          }
          return Collections.toString(" ", extraInfo);
-      } else {
+      } else if (element != null) {
          return element.toString();
+      } else {
+         return "";
       }
    }
 }

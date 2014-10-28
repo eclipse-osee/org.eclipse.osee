@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,21 +30,31 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactFilteredCheckTreeDialog extends FilteredCheckboxTreeDialog {
+public class FilteredCheckboxTreeArtifactDialog extends FilteredCheckboxTreeDialog {
 
    private Collection<? extends Artifact> selectable;
 
-   public ArtifactFilteredCheckTreeDialog(String title, String message, Collection<? extends Artifact> selectable) {
-      super(title, message, new ArrayTreeContentProvider(), new ArtifactLabelProvider(), new ArtifactNameSorter());
+   public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ILabelProvider labelProvider) {
+      this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
+   }
+
+   public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+      super(title, message, contentProvider, labelProvider, new ArtifactNameSorter());
       this.selectable = selectable;
    }
 
+   public FilteredCheckboxTreeArtifactDialog(String title, Collection<? extends Artifact> selectable) {
+      this(title, title, selectable, new ArtifactLabelProvider());
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
    public Collection<Artifact> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
       Set<Artifact> checked = new HashSet<Artifact>();
-      for (Object obj : getChecked()) {
+      for (Object obj : getResult()) {
          checked.add((Artifact) obj);
       }
       return checked;
