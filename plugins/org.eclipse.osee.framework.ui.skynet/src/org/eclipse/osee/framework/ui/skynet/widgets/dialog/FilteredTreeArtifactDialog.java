@@ -13,14 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -36,7 +37,11 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
    }
 
    public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
-      super(title, message, contentProvider, labelProvider, new ArtifactNameSorter());
+      this(title, message, selectable, contentProvider, labelProvider, new ArtifactViewerSorter());
+   }
+
+   public FilteredTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider, ViewerSorter sorter) {
+      super(title, message, contentProvider, labelProvider, sorter);
       this.selectable = selectable;
    }
 
@@ -62,6 +67,10 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
 
    public void setSelectable(Collection<Artifact> selectable) {
       this.selectable = selectable;
+   }
+
+   public void setSorter(ViewerSorter sorter) {
+      getTreeViewer().getViewer().setSorter(sorter);
    }
 
 }

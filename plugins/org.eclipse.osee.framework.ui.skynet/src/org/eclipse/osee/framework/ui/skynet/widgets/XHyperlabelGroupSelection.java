@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -56,11 +55,11 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    @Override
    public boolean handleSelection() {
       try {
-         GroupListDialog dialog = new GroupListDialog(Displays.getActiveShell());
+         GroupListDialog dialog = new GroupListDialog();
          int result = dialog.open();
          if (result == 0) {
             selectedGroups.clear();
-            for (Object obj : dialog.getResult()) {
+            for (Object obj : dialog.getSelected()) {
                selectedGroups.add((Artifact) obj);
             }
             notifyXModifiedListeners();

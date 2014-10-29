@@ -23,30 +23,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Donald G. Dunne
  */
-public class GroupListDialog extends ArtifactListDialog {
+public class GroupListDialog extends FilteredTreeArtifactDialog {
    BranchSelectComposite branchSelect;
 
-   public GroupListDialog(Shell parent) {
-      super(parent);
-      setTitle("Select group");
-      setMessage("Select group");
-      setLabelProvider(new GroupsDescriptiveLabelProvider());
-
-      setGroupsForSelection();
+   public GroupListDialog() {
+      super("Select group", "Select group", getGroupsForSelection(), new GroupsDescriptiveLabelProvider());
    }
 
-   private void setGroupsForSelection() {
+   private static ArrayList<Artifact> getGroupsForSelection() {
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       try {
          for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
@@ -54,26 +43,13 @@ public class GroupListDialog extends ArtifactListDialog {
                arts.add(art);
             }
          }
-         if (branchSelect != null && branchSelect.getSelectedBranch() != null && !branchSelect.getSelectedBranch().equals(
-            BranchManager.getCommonBranch())) {
-            for (Artifact art : UniversalGroup.getGroups(branchSelect.getSelectedBranch())) {
-               if (!art.getName().equals(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME)) {
-                  arts.add(art);
-               }
-            }
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      if (getTableViewer() == null) {
-         setArtifacts(arts);
-      } else {
-         updateArtifacts(arts);
-      }
-
+      return arts;
    }
 
-   public class GroupsDescriptiveLabelProvider implements ILabelProvider {
+   private static class GroupsDescriptiveLabelProvider implements ILabelProvider {
 
       @Override
       public Image getImage(Object arg0) {
@@ -116,20 +92,6 @@ public class GroupListDialog extends ArtifactListDialog {
          // do nothing
       }
 
-   }
-
-   @Override
-   protected Control createDialogArea(Composite container) {
-      Control c = super.createDialogArea(container);
-      branchSelect = new BranchSelectComposite(container, SWT.NONE, false);
-      branchSelect.setDefaultSelectedBranch(BranchManager.getLastBranch());
-      branchSelect.addListener(new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            setGroupsForSelection();
-         }
-      });
-      return c;
    }
 
 }

@@ -35,10 +35,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactDialog;
 
 /**
  * @author Donald G. Dunne
@@ -62,13 +62,11 @@ public final class GoalManager {
       if (goals.size() == 1) {
          goal = (GoalArtifact) goals.iterator().next();
       } else if (goals.size() > 1) {
-         ArtifactListDialog dialog =
-            new ArtifactListDialog(Displays.getActiveShell(), new GoalViewerSorter(), new GoalLabelProvider());
-         dialog.setTitle("Select Goal");
-         dialog.setMessage("Artifact has multiple Goals\n\nSelect Goal to change order");
-         dialog.setArtifacts(goals);
+         FilteredTreeArtifactDialog dialog =
+            new FilteredTreeArtifactDialog("Select Goal", "Artifact has multiple Goals\n\nSelect Goal to change order",
+               goals, new ArrayTreeContentProvider(), new GoalLabelProvider(), new GoalViewerSorter());
          if (dialog.open() == 0) {
-            goal = (GoalArtifact) dialog.getSelection();
+            goal = (GoalArtifact) dialog.getSelectedFirst();
          } else {
             return null;
          }

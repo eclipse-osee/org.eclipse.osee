@@ -114,7 +114,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {
          for (AbstractWorkflowArtifact awa : awas) {
-            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getChecked());
+            Collection<Artifact> checked = dialog.getChecked();
+            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, checked);
          }
          Artifacts.persistInTransaction("Set Groups", awas);
          return true;
