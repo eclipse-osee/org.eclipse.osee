@@ -94,11 +94,6 @@ public class MergeManagerTest {
 
    @After
    public void tearDown() throws OseeCoreException, InterruptedException {
-      List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
-      for (MergeBranch mergeBranch : mergeBranches) {
-         BranchManager.purgeBranch(mergeBranch);
-      }
-
       Artifact artOnWorking = ArtifactQuery.getArtifactFromToken(NewArtifactToken, workingBranch);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnWorking)));
 

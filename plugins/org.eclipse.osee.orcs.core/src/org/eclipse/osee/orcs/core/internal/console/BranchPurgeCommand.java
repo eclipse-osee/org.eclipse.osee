@@ -213,7 +213,6 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       @Override
       public List<IOseeBranch> call() throws Exception {
          Collection<BranchReadable> branchesToPurge = getBranchesToPurge();
-         branchesToPurge.addAll(getMergeBranches(branchesToPurge));
 
          Conditions.checkNotNull(branchesToPurge, "branchesToPurge");
          if (branchesToPurge.isEmpty()) {
@@ -240,14 +239,5 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return null;
       }
 
-      private List<BranchReadable> getMergeBranches(Collection<BranchReadable> branches) throws OseeCoreException {
-         List<BranchReadable> mergeBranches = new ArrayList<BranchReadable>();
-         for (BranchReadable branch : branches) {
-            for (BranchReadable child : queryFactory.branchQuery().andIsChildOf(branch).andIsOfType(BranchType.MERGE).getResults()) {
-               mergeBranches.add(child);
-            }
-         }
-         return mergeBranches;
-      }
    }
 }

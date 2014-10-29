@@ -11,9 +11,13 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -26,12 +30,12 @@ import org.eclipse.osee.orcs.data.BranchReadable;
  */
 public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Void> {
    private static final String DELETE_FROM_BRANCH_TABLE = "DELETE FROM osee_branch WHERE branch_id = ?";
-   private static final String DELETE_FROM_MERGE =
-      "DELETE FROM osee_merge WHERE merge_branch_id = ? AND source_branch_id = ?";
+   private static final String DELETE_FROM_MERGE = "DELETE FROM osee_merge WHERE merge_branch_id = ?";
    private static final String DELETE_FROM_CONFLICT = "DELETE FROM osee_conflict WHERE merge_branch_id = ?";
    private static final String DELETE_FROM_TX_DETAILS = "DELETE FROM osee_tx_details WHERE branch_id = ?";
    private final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
-   private final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
+   private final String SELECT_MERGE_BRANCHES =
+      "SELECT merge_branch_id, archived FROM osee_merge, osee_branch where merge_branch_id = branch_id and (source_branch_id = ? or dest_branch_id = ?)";
 
    private final BranchReadable toDelete;
 
@@ -43,28 +47,36 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
 
    @Override
    protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      String sourceTableName = toDelete.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
-      long branchUuid = toDelete.getUuid();
+      List<Pair<Long, Boolean>> branches = findMergeBranches(connection);
+      branches.add(new Pair<Long, Boolean>(toDelete.getUuid(), toDelete.getArchiveState().isArchived()));
+      for (Pair<Long, Boolean> toPurge : branches) {
+         purgeBranch(connection, toPurge.getFirst(), toPurge.getSecond());
+      }
+      return null;
+   }
+
+   private void purgeBranch(OseeConnection connection, Long branchUuid, boolean isArchived) {
+      String sourceTableName = isArchived ? "osee_txs_archived" : "osee_txs";
       String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
       purgeFromTable(connection, sql, 0.20, branchUuid);
 
       purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchUuid);
       purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchUuid);
-      Long parentUuid = toDelete.getParentBranch();
-      if (parentUuid != null) {
-         purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid, parentUuid);
-      }
+      purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid);
       purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchUuid);
-
-      purgeAccessControlTables(branchUuid);
-      return null;
+      purgeFromTable(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, 0.01, branchUuid);
    }
 
-   private void purgeAccessControlTables(long branchUuid) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branchUuid);
-      checkForCancelled();
-      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branchUuid);
-      checkForCancelled();
+   private List<Pair<Long, Boolean>> findMergeBranches(OseeConnection connection) {
+      List<Pair<Long, Boolean>> toReturn = new LinkedList<Pair<Long, Boolean>>();
+      IOseeStatement stmt = getDatabaseService().getStatement(connection);
+      stmt.runPreparedQuery(SELECT_MERGE_BRANCHES, toDelete.getUuid(), toDelete.getUuid());
+      while (stmt.next()) {
+         Pair<Long, Boolean> toAdd =
+            new Pair<Long, Boolean>(stmt.getLong("merge_branch_id"), stmt.getBoolean("archived"));
+         toReturn.add(toAdd);
+      }
+      return toReturn;
    }
 
    private void purgeFromTable(OseeConnection connection, String sql, double percentage, Object... data) throws OseeCoreException {

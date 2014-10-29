@@ -56,7 +56,6 @@ public class RebaselineInProgressHandler {
          MergeBranch mergeBranch = BranchManager.getFirstMergeBranch(branch);
          if (branch.getBranchState() == BranchState.REBASELINE_IN_PROGRESS) {
             BranchManager.purgeBranch(mergeBranch.getDestinationBranch());
-            BranchManager.purgeBranch(mergeBranch);
             branch.setBranchState(BranchState.MODIFIED);
             BranchManager.persist(branch);
          }

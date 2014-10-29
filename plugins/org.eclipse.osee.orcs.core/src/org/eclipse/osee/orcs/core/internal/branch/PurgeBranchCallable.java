@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -67,9 +68,12 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch
    private void checkForChildBranches(BranchReadable aBranch) {
       BranchQuery branchQuery = queryFactory.branchQuery();
       branchQuery.andIsChildOf(aBranch);
-      if (branchQuery.getCount() > 0) {
-         throw new OseeArgumentException("Unable to purge a branch containing children: branchUuid[%s] branchType[%s]",
-            aBranch.getUuid(), aBranch.getBranchType());
+      for (BranchReadable child : branchQuery.getResults()) {
+         if (child.getBranchType() != BranchType.MERGE) {
+            throw new OseeArgumentException(
+               "Unable to purge a branch containing children: branchUuid[%s] branchType[%s]", aBranch.getUuid(),
+               aBranch.getBranchType());
+         }
       }
    }
 }
