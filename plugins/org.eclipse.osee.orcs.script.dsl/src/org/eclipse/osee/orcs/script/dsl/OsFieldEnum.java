@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.script.dsl;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 import com.google.common.base.Supplier;
@@ -67,8 +69,9 @@ public enum OsFieldEnum implements OsField {
    attr_id("id"),
    attr_type("type"),
    attr_gamma_id("gamma-id"),
+   attr_ds_value("ds-value"),
+   attr_ds_uri("ds-uri"),
    attr_value("value"),
-   attr_uri("uri"),
    attr_mod_type("mod-type"),
 
    attr_txs("txs", Family.ATTRIBUTE, Family.ATTRIBUTE_TX),
@@ -130,7 +133,7 @@ public enum OsFieldEnum implements OsField {
    }
 
    @Override
-   public String getFieldName() {
+   public String getLiteral() {
       return fieldName;
    }
 
@@ -138,17 +141,24 @@ public enum OsFieldEnum implements OsField {
       return family;
    }
 
+   @Override
    public boolean hasChildren() {
       return childFamily != Family.UNDEFINED;
    }
 
-   public SortedSet<? extends OsField> getChildren() {
+   @Override
+   public Set<? extends OsField> getChildren() {
       return getFieldsFor(childFamily);
    }
 
    @Override
+   public String getId() {
+      return this.name();
+   }
+
+   @Override
    public String toString() {
-      return getFieldName();
+      return getLiteral();
    }
 
    public static Comparator<OsField> getComparator() {
@@ -170,7 +180,7 @@ public enum OsFieldEnum implements OsField {
       if (FAMILY_AND_NAME_TO_FIELDS == null) {
          Table<Family, String, OsField> table = HashBasedTable.create();
          for (OsFieldEnum field : OsFieldEnum.values()) {
-            table.put(field.getFamily(), field.getFieldName(), field);
+            table.put(field.getFamily(), field.getLiteral(), field);
          }
          OsFieldEnum.FAMILY_AND_NAME_TO_FIELDS = table;
       }
@@ -214,9 +224,22 @@ public enum OsFieldEnum implements OsField {
 
       @Override
       public int compare(OsField o1, OsField o2) {
-         return o1.getFieldName().compareTo(o2.getFieldName());
+         String literal1 = normalize(o1.getLiteral());
+         String literal2 = normalize(o2.getLiteral());
+         return literal1.compareTo(literal2);
       }
 
+      private String normalize(String value) {
+         String toReturn = value;
+         if (toReturn.equals("attributes")) {
+            toReturn = "z1" + toReturn;
+         } else if (toReturn.equals("relations")) {
+            toReturn = "z2" + toReturn;
+         } else if (toReturn.equals("txs")) {
+            toReturn = "z0" + toReturn;
+         }
+         return toReturn;
+      }
    }
 
    public static OsField newField(String value) {
@@ -233,8 +256,13 @@ public enum OsFieldEnum implements OsField {
       }
 
       @Override
+      public String getId() {
+         return fieldName;
+      }
+
+      @Override
       public int compareTo(OsField o) {
-         return this.fieldName.compareTo(o.getFieldName());
+         return this.fieldName.compareTo(o.getLiteral());
       }
 
       @Override
@@ -268,13 +296,23 @@ public enum OsFieldEnum implements OsField {
       }
 
       @Override
-      public String getFieldName() {
+      public String getLiteral() {
          return fieldName;
       }
 
       @Override
       public String toString() {
-         return getFieldName();
+         return getLiteral();
+      }
+
+      @Override
+      public boolean hasChildren() {
+         return false;
+      }
+
+      @Override
+      public Set<? extends OsField> getChildren() {
+         return Collections.emptySet();
       }
 
    }

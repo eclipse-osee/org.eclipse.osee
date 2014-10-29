@@ -20,7 +20,13 @@ public interface IFieldResolver {
 
    public static interface OsField {
 
-      String getFieldName();
+      String getId();
+
+      String getLiteral();
+
+      boolean hasChildren();
+
+      Set<? extends OsField> getChildren();
 
    }
 

@@ -252,12 +252,12 @@ public class OsFieldResolverTest {
       SortedSet<? extends OsField> expected = OsFieldEnum.getFieldsFor(Family.ATTRIBUTE);
 
       Set<? extends OsField> allowedFields = resolver.getAllowedFields(object);
-      assertEquals(7, allowedFields.size());
+      assertEquals(8, allowedFields.size());
       assertEquals(expected, allowedFields);
 
       // spot check
-      assertEquals(true, allowedFields.contains(OsFieldEnum.attr_uri));
-      assertEquals(true, allowedFields.contains(OsFieldEnum.attr_value));
+      assertEquals(true, allowedFields.contains(OsFieldEnum.attr_ds_uri));
+      assertEquals(true, allowedFields.contains(OsFieldEnum.attr_ds_value));
       assertEquals(true, allowedFields.contains(OsFieldEnum.attr_type));
       assertEquals(true, allowedFields.contains(OsFieldEnum.attr_txs));
 
@@ -271,13 +271,13 @@ public class OsFieldResolverTest {
       assertEquals(0, remaining.size());
 
       ///// Individual Fields
-      object = newCollectObject("attributes", "value", "uri", "id", "txs", "error");
+      object = newCollectObject("attributes", "ds-value", "ds-uri", "id", "txs", "error");
 
       declaredFields = resolver.getDeclaredFields(object);
       assertEquals(5, declaredFields.size());
       Iterator<? extends OsField> iterator = declaredFields.iterator();
-      assertEquals(OsFieldEnum.attr_value, iterator.next());
-      assertEquals(OsFieldEnum.attr_uri, iterator.next());
+      assertEquals(OsFieldEnum.attr_ds_value, iterator.next());
+      assertEquals(OsFieldEnum.attr_ds_uri, iterator.next());
       assertEquals(OsFieldEnum.attr_id, iterator.next());
       assertEquals(OsFieldEnum.attr_txs, iterator.next());
       assertEquals(ERROR_FIELD, iterator.next());
@@ -287,8 +287,8 @@ public class OsFieldResolverTest {
       assertEquals(true, notAllowed.contains(ERROR_FIELD));
 
       remaining = resolver.getRemainingAllowedFields(object);
-      assertEquals(3, remaining.size());
-      assertEquals(true, !remaining.contains(OsFieldEnum.attr_uri));
+      assertEquals(4, remaining.size());
+      assertEquals(true, !remaining.contains(OsFieldEnum.attr_ds_uri));
    }
 
    @Test

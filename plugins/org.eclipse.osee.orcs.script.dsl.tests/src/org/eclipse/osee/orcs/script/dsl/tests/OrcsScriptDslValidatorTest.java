@@ -129,7 +129,7 @@ public class OrcsScriptDslValidatorTest {
       AssertableDiagnostics diagnostics = validator.validate(data);
       String errorMsg =
          String.format(OrcsScriptDslConstants.VALIDATION_ERROR__INVALID_FIELD__MSG, "[uri]",
-            "[attributes, gamma-id, guid, id, mod-type, relations, txs, type]");
+            "[gamma-id, guid, id, mod-type, type, txs, attributes, relations]");
       diagnostics.assertError(OrcsScriptDslConstants.VALIDATION_ERROR__INVALID_FIELD__CODE, errorMsg);
    }
 

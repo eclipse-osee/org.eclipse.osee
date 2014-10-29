@@ -82,7 +82,7 @@ branch_field            : 'name' | 'branch-id' | 'type' | 'parent-id' | 'parent-
 tx_field                : 'tx-id' | 'type' | 'branch-id' | 'tx-comment' | 'time' | 'author-id' | 'commit-artifact-id' ;
 artifact_field          : 'art-id' | 'art-type' | 'art-version-id' | 'art-mod-type' | 'tx-id' | 'art-url' | 'art-count';
 attribute_spec          : 'attribute' type_list_wild ('.' attribute_field)? ;
-attribute_field         : 'id' | 'int-url' | 'ext-url' | 'version-id' | 'mod-type' | 'raw-value' | 'pretty-value' | 'count';   //  the raw value of a date attribute is a ms as a long but its pretty value is date formatted string
+attribute_field         : 'id' | 'version-id' | 'mod-type' | 'int-url' | 'ext-url' | 'raw-value' | 'pretty-value' | 'count';   //  the raw value of a date attribute is a ms as a long but its pretty value is date formatted string
 relation_spec           : 'relation' type_list_wild ('.' relation_field)? ;
 relation_field          : 'id' | side_id_label | 'rationale' | 'version-id' | 'mod-type' | 'count' ;
 function_call           : 'replace' '(' exp ',' exp')' | 'toLowerCase' '(' exp ')' | 'toUpperCase' '(' exp ')' | 'format' '(' exp (',' exp)+ ')' | 'average' '(' exp ')' | 'sum' '(' exp ')' | 'substring' '(' exp ',' exp')' | 'if' '(' exp ',' exp ',' exp')';
@@ -218,7 +218,8 @@ var int[] version-ids : value = art-id
 
 find artifacts where attribute{Team Definition} = team-def-id-list 
 	and relation{TeamWorkflowTargetedForVersion}.side-A-id = version-ids 
-	and attribute{ats.Current State} contains state-exp
+	and attribute{ats.Current State} contains state-exp and
+	//and attr-type in ("Name", "ats.Current State")
 	collect art-type, art-id, attribute{Name}, attribute{ats.Current State} as cur-state
 	follow relation {TeamWorkflowTargetedForVersion} to side-B
 	collect as version art-id, attribute{Name}

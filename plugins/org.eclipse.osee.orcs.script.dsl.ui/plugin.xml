@@ -394,9 +394,4 @@
             extensions="orcs">
     </provider>
   </extension>
-<!--   <extension
-         point="org.eclipse.osee.framework.ui.skynet.DslGrammar">
-      <DslGrammar
-            classname="org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslGrammar"></DslGrammar>
-   </extension> -->
 </plugin>

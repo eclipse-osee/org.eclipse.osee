@@ -128,7 +128,7 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
          Set<? extends OsField> remaining = fieldResolver.getRemainingAllowedFields(model);
          for (OsField field : remaining) {
             ICompletionProposal proposal =
-               createCompletionProposal(field.getFieldName(), field.getFieldName(), null, context);
+               createCompletionProposal(field.getLiteral(), field.getLiteral(), null, context);
             acceptor.accept(proposal);
          }
       }

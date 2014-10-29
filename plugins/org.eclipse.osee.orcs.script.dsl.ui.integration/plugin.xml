@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.osee.framework.ui.skynet.DslGrammar">
       <DslGrammar
-            classname="org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslGrammar"></DslGrammar>
+            classname="org.eclipse.osee.orcs.script.dsl.ui.integration.internal.OrcsScriptDslGrammar"></DslGrammar>
    </extension>
    <extension
          point="org.eclipse.osee.orcs.script.dsl.ui.OrcsObjectProvider">

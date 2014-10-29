@@ -184,20 +184,21 @@ public class OsFieldResolverImpl implements IFieldResolver {
       if (container != null) {
          String collectName = container.getName();
          OsCollectType type = OsCollectType.fromString(collectName);
-
-         Set<? extends OsField> allowed = getAllowedFieldsByType(type);
-         for (OsCollectExpression expression : container.getExpressions()) {
-            if (expression instanceof OsCollectAllFieldsExpression) {
-               toReturn.addAll(allowed);
-            } else if (expression instanceof OsCollectObjectExpression) {
-               String fieldName = ((OsCollectObjectExpression) expression).getName();
-               OsField field = getField(type, fieldName);
-               toReturn.add(field);
-            } else if (expression instanceof OsCollectFieldExpression) {
-               OsCollectFieldExpression fieldExp = (OsCollectFieldExpression) expression;
-               String fieldName = fieldExp.getName();
-               OsField field = getField(type, fieldName);
-               toReturn.add(field);
+         if (type != null) {
+            Set<? extends OsField> allowed = getAllowedFieldsByType(type);
+            for (OsCollectExpression expression : container.getExpressions()) {
+               if (expression instanceof OsCollectAllFieldsExpression) {
+                  toReturn.addAll(allowed);
+               } else if (expression instanceof OsCollectObjectExpression) {
+                  String fieldName = ((OsCollectObjectExpression) expression).getName();
+                  OsField field = getField(type, fieldName);
+                  toReturn.add(field);
+               } else if (expression instanceof OsCollectFieldExpression) {
+                  OsCollectFieldExpression fieldExp = (OsCollectFieldExpression) expression;
+                  String fieldName = fieldExp.getName();
+                  OsField field = getField(type, fieldName);
+                  toReturn.add(field);
+               }
             }
          }
       }

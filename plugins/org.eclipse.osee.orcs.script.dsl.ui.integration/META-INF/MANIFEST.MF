@@ -4,9 +4,9 @@ Bundle-Name: OSEE ORCS Script DSL UI Integration
 Bundle-SymbolicName: org.eclipse.osee.orcs.script.dsl.ui.integration;singleton:=true
 Bundle-Version: 0.20.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.ui
-Import-Package: com.google.inject,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.osee.orcs.script.dsl.ui
+Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model.cache,
@@ -15,7 +15,6 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.skynet.core.types,
  org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.swt,
- org.eclipse.osee.orcs.script.dsl.ui,
  org.osgi.framework
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
