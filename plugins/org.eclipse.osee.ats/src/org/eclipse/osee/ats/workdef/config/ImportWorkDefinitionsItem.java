@@ -45,9 +45,8 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
             importSheets.add(sheet);
          }
       }
-      WorkDefinitionCheckTreeDialog dialog = new WorkDefinitionCheckTreeDialog(importSheets);
-      dialog.setTitle(getName());
-      dialog.setMessage("Select Work Definition Sheet(s) to import");
+      WorkDefinitionCheckTreeDialog dialog =
+         new WorkDefinitionCheckTreeDialog(getName(), "Select Work Definition Sheet(s) to import", importSheets);
       if (dialog.open() == 0) {
          XResultData resultData = new XResultData(false);
          AtsChangeSet changes = new AtsChangeSet(getName());

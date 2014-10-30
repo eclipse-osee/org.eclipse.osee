@@ -12,23 +12,23 @@ package org.eclipse.osee.ats.workdef.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkDefinitionCheckTreeDialog extends CheckedTreeSelectionDialog {
+public class WorkDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
 
-   public WorkDefinitionCheckTreeDialog(Collection<? extends WorkDefinitionSheet> sheets) {
-      super(Displays.getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
+   public WorkDefinitionCheckTreeDialog(String title, String message, List<WorkDefinitionSheet> sheets) {
+      super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
       if (sheets != null) {
          setInput(sheets);
       }

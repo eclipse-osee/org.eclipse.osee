@@ -22,30 +22,27 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
+public class CoverageMethodListDialog extends FilteredCheckboxTreeDialog {
 
    public CoverageMethodListDialog(Collection<CoverageOption> values) {
       this(values, new ArrayList<CoverageOption>());
    }
 
    public CoverageMethodListDialog(Collection<CoverageOption> values, Collection<CoverageOption> selected) {
-      super(Displays.getActiveShell(), labelProvider, new ArrayTreeContentProvider());
-      setTitle("Select Coverage Method(s)");
-      setMessage("Select Coverage Method(s)");
-      setComparator(new ArtifactNameSorter());
+      super("Select Coverage Method(s)", "Select Coverage Method(s)", new ArrayTreeContentProvider(), labelProvider,
+         new ArtifactNameSorter());
       try {
          setInput(values.toArray(new CoverageOption[values.size()]));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      setInitialSelections(selected.toArray(new CoverageOption[selected.size()]));
+      setInitialSelections(selected);
    }
 
    public Set<CoverageOption> getSelected() {
