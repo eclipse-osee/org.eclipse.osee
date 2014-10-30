@@ -24,8 +24,7 @@ import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
 /**
  * @author Roberto E. Escobar
@@ -63,10 +62,10 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
-      SimpleCheckFilteredTreeDialog dialog =
-         new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
-            new LabelProvider(), new ArtifactNameSorter(), getMinSelectionRequired(), getMaxSelectionRequired());
+   public FilteredCheckboxTreeDialog createDialog() {
+      FilteredCheckboxTreeDialog dialog =
+         new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
+            new LabelProvider(), new ArtifactNameSorter());
       return dialog;
    }
 

@@ -45,8 +45,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.ui.PlatformUI;
@@ -223,13 +223,13 @@ public final class AtsBranchManager {
             return 0;
          }
       };
-      SimpleCheckFilteredTreeDialog ld =
-         new SimpleCheckFilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
-            new TransactionIdLabelProvider(), sorter, 0, Integer.MAX_VALUE);
-      ld.setInput(transactionIds);
+      FilteredTreeDialog dialog =
+         new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
+            new TransactionIdLabelProvider(), sorter);
 
-      if (ld.open() == 0) {
-         return (TransactionRecord) ld.getResult()[0];
+      dialog.setInput(transactionIds);
+      if (dialog.open() == 0) {
+         return (TransactionRecord) dialog.getSelectedFirst();
       }
       return null;
    }

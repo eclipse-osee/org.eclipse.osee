@@ -14,9 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -33,17 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
-import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 
@@ -68,7 +55,7 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       if (!dirtyArts.isEmpty()) {
 
          if (RenderingUtil.arePopupsAllowed()) {
-            SimpleCheckFilteredTreeDialog dialog = createDialog(dirtyArts);
+            FilteredCheckboxTreeDialog dialog = createDialog(dirtyArts);
             int result = dialog.open();
             if (result == Window.OK) {
                isShutdownAllowed = true;
@@ -110,81 +97,19 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
       return force || isShutdownAllowed;
    }
 
-   public SimpleCheckFilteredTreeDialog createDialog(Collection<Artifact> dirtyArts) {
+   public FilteredCheckboxTreeDialog createDialog(Collection<Artifact> dirtyArts) {
       ArtifactDecoratorPreferences preferences = new ArtifactDecoratorPreferences();
       preferences.setShowArtBranch(true);
       preferences.setShowArtType(true);
 
-      CheckFilteredTreeDialog dialog =
-         new CheckFilteredTreeDialog(
+      FilteredCheckboxTreeDialog dialog =
+         new FilteredCheckboxTreeDialog(
             "Unsaved Artifacts Detected",
             "Some artifacts have not been saved.\n\nCheck artifacts to save (if any) and select Ok to continue shutdown. Select Cancel to stop shutdown.",
-            new ArrayTreeContentProvider(), new ArtifactLabelProvider(preferences), new ArtifactViewerSorter(), 0,
-            Integer.MAX_VALUE);
+            new ArrayTreeContentProvider(), new ArtifactLabelProvider(preferences), new ArtifactViewerSorter());
       dialog.setInput(dirtyArts);
 
       return dialog;
-   }
-
-   private final static class CheckFilteredTreeDialog extends SimpleCheckFilteredTreeDialog {
-
-      public CheckFilteredTreeDialog(String title, String message, ITreeContentProvider contentProvider, LabelProvider labelProvider, ViewerSorter viewerSorter, int minSelectionRequired, int maxSelectionRequired) {
-         super(title, message, contentProvider, labelProvider, viewerSorter, minSelectionRequired, maxSelectionRequired);
-      }
-
-      @Override
-      protected Control createCustomArea(Composite parent) {
-         Composite control = (Composite) super.createCustomArea(parent);
-
-         Composite selectionComp = new Composite(control, SWT.NONE);
-         selectionComp.setLayout(ALayout.getZeroMarginLayout(2, true));
-         selectionComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-
-         Button selectAll = new Button(selectionComp, SWT.PUSH);
-         selectAll.setText("Select All");
-         selectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-         selectAll.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               setChecked(true);
-            }
-
-         });
-
-         Button deselectAll = new Button(selectionComp, SWT.PUSH);
-         deselectAll.setText("De-select All");
-         deselectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-         deselectAll.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               setChecked(false);
-            }
-
-         });
-         return control;
-      }
-
-      private void setChecked(boolean isChecked) {
-         FilteredCheckboxTree viewer = getTreeViewer();
-
-         viewer.getFilterControl().setText("");
-         viewer.getPatternFilter().setPattern("");
-         viewer.getViewer().refresh();
-
-         if (isChecked) {
-            Collection<Object> objects = viewer.getChecked();
-            TreeItem[] items = viewer.getViewer().getTree().getItems();
-            for (TreeItem item : items) {
-               item.setChecked(true);
-               objects.add(item.getData());
-            }
-         } else {
-            viewer.clearChecked();
-         }
-         viewer.getViewer().refresh();
-      }
    }
 
 }

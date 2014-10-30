@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class ArtifactSaveNotificationHandlerDialogTest {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(DemoUtil.getSawCodeCommittedWf());
       artifacts.add(DemoUtil.getSawCodeUnCommittedWf());
-      SimpleCheckFilteredTreeDialog dialog = handler.createDialog(artifacts);
+      FilteredCheckboxTreeDialog dialog = handler.createDialog(artifacts);
       try {
          dialog.setBlockOnOpen(false);
          dialog.open();

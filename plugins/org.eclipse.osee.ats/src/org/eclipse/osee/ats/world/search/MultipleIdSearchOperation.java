@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.dialogs.ListDialog;
 
@@ -146,10 +146,10 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                ArtifactDecoratorPreferences artDecorator = new ArtifactDecoratorPreferences();
                artDecorator.setShowArtBranch(true);
                artDecorator.setShowArtType(true);
-               SimpleCheckFilteredTreeDialog dialog =
-                  new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
+               FilteredCheckboxTreeDialog dialog =
+                  new FilteredCheckboxTreeDialog("Select Available Change Reports",
                      "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                     new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter(), 0, Integer.MAX_VALUE);
+                     new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
                dialog.setInput(addedArts);
                if (dialog.open() == 0) {
                   if (dialog.getResult().length == 0) {

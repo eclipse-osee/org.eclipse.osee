@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchCheckTreeDialog.BranchLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.branch.BranchLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchNameSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.widgets.Composite;

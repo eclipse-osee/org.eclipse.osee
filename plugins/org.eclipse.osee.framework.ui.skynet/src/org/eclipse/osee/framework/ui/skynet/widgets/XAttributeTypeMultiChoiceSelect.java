@@ -19,8 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
 /**
  * Multi selection of attribute types with checkbox dialog and filtering
@@ -41,10 +40,11 @@ public class XAttributeTypeMultiChoiceSelect extends XSelectFromDialog<Attribute
    }
 
    @Override
-   public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
-      SimpleCheckFilteredTreeDialog dialog =
-         new SimpleCheckFilteredTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
-            new LabelProvider(), new ArtifactNameSorter(), 1, 1000);
+   public FilteredCheckboxTreeDialog createDialog() {
+      FilteredCheckboxTreeDialog dialog =
+         new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
+            new LabelProvider(), new ArtifactNameSorter());
+      dialog.setInput(AttributeTypeManager.getAllTypes());
       return dialog;
    }
 

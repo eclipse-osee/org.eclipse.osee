@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collections;
+import java.util.List;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.ui.skynet.branch.BranchCheckTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxBranchDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -33,8 +38,11 @@ public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<Branch> {
    }
 
    @Override
-   public MinMaxOSEECheckedFilteredTreeDialog createDialog() {
-      return new BranchCheckTreeDialog(getLabel(), "Select from the items below", 1, Integer.MAX_VALUE);
+   public FilteredCheckboxTreeDialog createDialog() {
+      List<Branch> branches =
+         BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+      Collections.sort(branches);
+      return new FilteredCheckboxBranchDialog(getLabel(), "Select from the items below", branches);
    }
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.filteredTree.MinMaxOSEECheckedFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -154,7 +154,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       return new ArrayList<T>(selected);
    }
 
-   public abstract MinMaxOSEECheckedFilteredTreeDialog createDialog();
+   public abstract FilteredCheckboxTreeDialog createDialog();
 
    @SuppressWarnings("unchecked")
    protected boolean openSelectionDialog() {
@@ -164,7 +164,7 @@ public abstract class XSelectFromDialog<T> extends XText {
             "Could not find items available to select from.");
       } else {
          try {
-            MinMaxOSEECheckedFilteredTreeDialog dialog = createDialog();
+            FilteredCheckboxTreeDialog dialog = createDialog();
             Set<T> choices = new HashSet<T>(selected);
             choices.addAll(input);
             dialog.setInput(choices);
