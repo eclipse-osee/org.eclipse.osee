@@ -75,11 +75,11 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
          }
 
-         TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(teamDefinitions);
-         int result = ld.open();
+         TeamDefinitionDialog dialog = new TeamDefinitionDialog();
+         dialog.setInput(teamDefinitions);
+         int result = dialog.open();
          if (result == 0) {
-            useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
+            useTeamDef = dialog.getSelectedFirst();
          } else {
             return;
          }

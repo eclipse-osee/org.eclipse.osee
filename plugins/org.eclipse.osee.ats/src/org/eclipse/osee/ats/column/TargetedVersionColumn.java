@@ -153,19 +153,18 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       TeamWorkFlowArtifact teamArt = awas.iterator().next();
-      final VersionListDialog vld =
+      final VersionListDialog dialog =
          new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions(
             versionReleaseType, versionLockType));
       if (awas.size() == 1 && AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
-         Object[] objs = new Object[1];
-         objs[0] = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
-         vld.setInitialSelections(objs);
+         dialog.setInitialSelections(Arrays.asList(AtsClientService.get().getVersionService().getTargetedVersion(
+            teamArt)));
       }
-      int result = vld.open();
+      int result = dialog.open();
       if (result != 0) {
          return false;
       }
-      Object obj = vld.getResult()[0];
+      Object obj = dialog.getSelectedFirst();
       IAtsVersion newVersion = (IAtsVersion) obj;
       //now check selected version
       if (newVersion.isVersionLocked()) {

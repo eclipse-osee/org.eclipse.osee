@@ -61,8 +61,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       IAtsTeamDefinition useTeamDef = null;
-      TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setTitle(getName());
+      TeamDefinitionDialog dialog = new TeamDefinitionDialog(getName(), getName());
 
       Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
       try {
@@ -72,14 +71,14 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }
 
-      ld.setInput(teamReleaseableDefinitions);
-      int result = ld.open();
+      dialog.setInput(teamReleaseableDefinitions);
+      int result = dialog.open();
       if (result == 0) {
-         if (ld.getResult().length == 0) {
+         if (dialog.getSelectedFirst() == null) {
             AWorkbench.popup("ERROR", "You must select a team to operate against.");
             return;
          }
-         useTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
+         useTeamDef = dialog.getSelectedFirst();
       } else {
          return;
       }

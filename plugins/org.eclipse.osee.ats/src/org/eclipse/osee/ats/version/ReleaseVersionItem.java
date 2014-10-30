@@ -60,12 +60,12 @@ public class ReleaseVersionItem extends XNavigateItemAction {
          return;
       }
       try {
-         VersionListDialog ld =
+         VersionListDialog dialog =
             new VersionListDialog("Select Version", "Select Version to Release", teamDefHoldingVersions.getVersions(
                VersionReleaseType.UnReleased, VersionLockedType.Both));
-         int result = ld.open();
+         int result = dialog.open();
          if (result == 0) {
-            IAtsVersion verArt = (IAtsVersion) ld.getResult()[0];
+            IAtsVersion verArt = dialog.getSelectedFirst();
 
             // Validate team lead status
             if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(verArt).getLeads().contains(
@@ -101,12 +101,12 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
-               ld =
+               dialog =
                   new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
                      teamDefHoldingVersions.getVersions());
-               result = ld.open();
+               result = dialog.open();
                if (result == 0) {
-                  verArt = (IAtsVersion) ld.getResult()[0];
+                  verArt = dialog.getSelectedFirst();
                   verArt.setNextVersion(true);
                   changes.clear();
                   AtsClientService.get().storeConfigObject(verArt, changes);
@@ -123,11 +123,11 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }
-      TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
-      int result = ld.open();
+      TeamDefinitionDialog dialog = new TeamDefinitionDialog();
+      dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
+      int result = dialog.open();
       if (result == 0) {
-         return (IAtsTeamDefinition) ld.getResult()[0];
+         return dialog.getSelectedFirst();
       }
       return null;
    }

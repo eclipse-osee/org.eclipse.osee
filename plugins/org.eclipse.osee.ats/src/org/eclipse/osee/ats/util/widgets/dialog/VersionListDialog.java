@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -27,27 +27,22 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
+public class VersionListDialog extends FilteredTreeDialog {
 
    XCheckBox showReleased = new XCheckBox("Show Released Versions");
    VersionContentProvider versionContentProvider;
    private final Collection<IAtsVersion> verArts;
 
    public VersionListDialog(String title, String message, Collection<IAtsVersion> verArts) {
-      super(Displays.getActiveShell());
+      super(title, message, new VersionContentProvider(false), new VersionLabelProvider(),
+         new AtsObjectNameReverseSorter());
       this.verArts = verArts;
-      this.setTitle(title);
-      this.setMessage(message);
-      versionContentProvider = new VersionContentProvider(false);
-      this.setContentProvider(versionContentProvider);
-      setLabelProvider(new VersionLabelProvider());
       setInput(verArts);
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
       Control control = super.createDialogArea(container);
-      getTableViewer().setSorter(new AtsObjectNameReverseSorter());
 
       Composite comp = new Composite(control.getParent(), SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
@@ -60,14 +55,14 @@ public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
          public void widgetSelected(SelectionEvent e) {
             versionContentProvider.setShowReleased(!versionContentProvider.getShowReleased());
             setInput(verArts);
-            getTableViewer().refresh();
+            getTreeViewer().getViewer().refresh();
          };
       });
 
       return control;
    }
 
-   public class VersionContentProvider extends ArrayContentProvider {
+   public static class VersionContentProvider extends ArrayContentProvider {
 
       boolean showReleased = false;
 

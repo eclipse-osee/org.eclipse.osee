@@ -42,18 +42,12 @@ public class EfficiencyAtsReport implements AtsReport<IAtsTeamDefinition, Object
    @Override
    public IAtsTeamDefinition getInputParameters() throws OseeCoreException {
       IAtsTeamDefinition atsTeamDefinition = null;
-      TeamDefinitionDialog dlg =
+      TeamDefinitionDialog dialog =
          new TeamDefinitionDialog("Team Efficiency Report", "Please Select the Team Definition");
-      dlg.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
-      int open = dlg.open();
+      dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
+      int open = dialog.open();
       if (open == 0) {
-         Object[] result = dlg.getResult();
-         if (result != null && result.length > 0) {
-            Object res = result[0];
-            if (res instanceof IAtsTeamDefinition) {
-               atsTeamDefinition = (IAtsTeamDefinition) res;
-            }
-         }
+         atsTeamDefinition = dialog.getSelectedFirst();
       }
       return atsTeamDefinition;
    }

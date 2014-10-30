@@ -31,6 +31,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
  org.eclipse.osee.framework.ui.skynet.results,
+ org.eclipse.osee.framework.ui.skynet.widgets.dialog,
  org.eclipse.osee.framework.ui.swt,
  org.osgi.framework
 Service-Component: OSGI-INF/*.xml

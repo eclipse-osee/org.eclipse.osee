@@ -112,21 +112,22 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       try {
          IAtsTeamDefinition selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
-            TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-            ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
-            int result = ld.open();
+            TeamDefinitionDialog dialog = new TeamDefinitionDialog();
+            dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both,
+               AtsClientService.get().getConfig()));
+            int result = dialog.open();
             if (result == 0) {
-               selectedTeamDef = (IAtsTeamDefinition) ld.getResult()[0];
+               selectedTeamDef = dialog.getSelectedFirst();
             } else {
                cancelled = true;
             }
          }
          if (versionArt == null && selectedTeamDef != null) {
-            final VersionListDialog vld =
+            final VersionListDialog dialog =
                new VersionListDialog("Select Version", "Select Version", selectedTeamDef.getVersions(
                   VersionReleaseType.Both, VersionLockedType.Both));
-            if (vld.open() == 0) {
-               selectedVersionArt = (IAtsVersion) vld.getResult()[0];
+            if (dialog.open() == 0) {
+               selectedVersionArt = dialog.getSelectedFirst();
                return;
             }
          }

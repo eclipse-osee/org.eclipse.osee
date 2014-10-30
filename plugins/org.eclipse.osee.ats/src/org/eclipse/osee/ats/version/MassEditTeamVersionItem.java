@@ -56,11 +56,11 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       if (teamDef != null) {
          return teamDef;
       }
-      TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-      ld.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
-      int result = ld.open();
+      TeamDefinitionDialog dialog = new TeamDefinitionDialog();
+      dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
+      int result = dialog.open();
       if (result == 0) {
-         return (IAtsTeamDefinition) ld.getResult()[0];
+         return dialog.getSelectedFirst();
       }
       return null;
    }
