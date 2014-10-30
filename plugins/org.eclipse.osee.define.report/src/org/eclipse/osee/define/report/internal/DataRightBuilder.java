@@ -12,6 +12,8 @@ package org.eclipse.osee.define.report.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +58,22 @@ public class DataRightBuilder {
 
       Map<String, DataRight> classificationsToDataRights = getClassificationToDataRights(query);
       mapping.getDataRights().addAll(classificationsToDataRights.values());
-      findMatchForAll(request.iterator(), mapping.getDataRightAnchors(), classificationsToDataRights);
+      List<DataRightEntry> orderedData = getOrderedList(request);
+      findMatchForAll(orderedData.iterator(), mapping.getDataRightAnchors(), classificationsToDataRights);
       return mapping;
+   }
+
+   private List<DataRightEntry> getOrderedList(DataRightInput request) {
+      List<DataRightEntry> orderedData = new ArrayList<DataRightEntry>();
+      orderedData.addAll(request.getData());
+      Collections.sort(orderedData, new Comparator<DataRightEntry>() {
+
+         @Override
+         public int compare(DataRightEntry arg0, DataRightEntry arg1) {
+            return arg0.getIndex() - arg1.getIndex();
+         }
+      });
+      return orderedData;
    }
 
    private void findMatchForAll(Iterator<DataRightEntry> iterator, Collection<DataRightAnchor> anchors, Map<String, DataRight> classificationsToDataRight) {
@@ -97,6 +113,7 @@ public class DataRightBuilder {
          DataRight dataRight = classificationsToDataRight.get(classification);
          if (dataRight == null) {
             classification = "Unspecified";
+            dataRight = classificationsToDataRight.get(classification);
          }
 
          DataRightAnchor anchor = new DataRightAnchor();
@@ -132,6 +149,14 @@ public class DataRightBuilder {
                toReturn.put(enumToFooter[0].trim(), dataRight);
             }
          }
+      } else {
+         DataRightId id = new DataRightId();
+         id.setId(GUID.create());
+
+         DataRight dataRight = new DataRight();
+         dataRight.setId(id);
+         dataRight.setContent("NO DATA RIGHTS ARTIFACT FOUND");
+         toReturn.put("Unspecified", dataRight);
       }
 
       return toReturn;

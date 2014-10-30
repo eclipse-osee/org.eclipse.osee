@@ -21,6 +21,7 @@ public class DataRightEntry {
    private String guid;
    private String classification;
    private PageOrientation orientation;
+   private int index;
 
    public String getGuid() {
       return guid;
@@ -44,5 +45,13 @@ public class DataRightEntry {
 
    public void setOrientation(PageOrientation orientation) {
       this.orientation = orientation;
+   }
+
+   public int getIndex() {
+      return index;
+   }
+
+   public void setIndex(int index) {
+      this.index = index;
    }
 }

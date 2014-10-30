@@ -277,12 +277,14 @@ public class WordTemplateProcessor {
       } else {
          populateRequest(artifacts, request);
          DataRightResult response = provider.getDataRights(request);
+
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
          }
       }
       // maintain a list of artifacts that have been processed so we do not
       // have duplicates.
+      request.clear();
       processedArtifacts.clear();
    }
 
@@ -460,24 +462,37 @@ public class WordTemplateProcessor {
    }
 
    private void populateRequest(List<Artifact> artifacts, DataRightInput request) {
+      boolean isDataRightsPresent = false;
       if (request.isEmpty()) {
          List<Artifact> allArtifacts = new ArrayList<Artifact>();
          if (recurseChildren) {
             for (Artifact art : artifacts) {
                allArtifacts.add(art);
-               allArtifacts.addAll(art.getDescendants());
+               if (!art.isHistorical()) {
+                  allArtifacts.addAll(art.getDescendants());
+               }
             }
          } else {
             allArtifacts.addAll(artifacts);
          }
 
+         int index = 0;
          for (Artifact artifact : allArtifacts) {
             String classification =
                artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
 
             PageOrientation orientation = getPageOrientation(artifact);
-            request.addData(artifact.getGuid(), classification, orientation);
+            request.addData(artifact.getGuid(), classification, orientation, index);
+            index++;
+
+            if (Strings.isValid(classification)) {
+               isDataRightsPresent = true;
+            }
          }
+      }
+
+      if (!isDataRightsPresent) {
+         request.clear();
       }
    }
 

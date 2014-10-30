@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.api;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -23,16 +23,16 @@ import javax.xml.bind.annotation.XmlTransient;
 public class DataRightInput implements Iterable<DataRightEntry> {
 
    @XmlTransient
-   private List<DataRightEntry> data;
+   private Set<DataRightEntry> data;
 
-   public List<DataRightEntry> getData() {
+   public Set<DataRightEntry> getData() {
       if (data == null) {
-         data = new ArrayList<DataRightEntry>();
+         data = new HashSet<DataRightEntry>();
       }
       return data;
    }
 
-   public void setData(List<DataRightEntry> data) {
+   public void setData(Set<DataRightEntry> data) {
       this.data = data;
    }
 
@@ -40,11 +40,16 @@ public class DataRightInput implements Iterable<DataRightEntry> {
       return data == null || data.isEmpty();
    }
 
-   public void addData(String guid, String classification, PageOrientation orientation) {
+   public void clear() {
+      data = null;
+   }
+
+   public void addData(String guid, String classification, PageOrientation orientation, int index) {
       DataRightEntry toAdd = new DataRightEntry();
       toAdd.setClassification(classification);
       toAdd.setGuid(guid);
       toAdd.setOrientation(orientation);
+      toAdd.setIndex(index);
 
       getData().add(toAdd);
    }
