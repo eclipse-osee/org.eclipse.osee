@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -66,7 +66,8 @@ public class EmailUserGroups extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
       try {
          Set<Artifact> groupOptions = getEmailGroupsAndUserGroups(UserManager.getUser());
-         UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog("Select Groups to Email", groupOptions);
+         FilteredCheckboxTreeArtifactDialog dialog =
+            new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == 0) {
 
             Set<String> emails = new HashSet<String>();

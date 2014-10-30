@@ -17,16 +17,16 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.ListDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class UserListDialog extends ListDialog {
+public class UserListDialog extends FilteredTreeArtifactDialog {
 
    public UserListDialog(Shell parent, Active active) throws OseeCoreException {
       this(parent, "Select User", active);
@@ -54,26 +54,23 @@ public class UserListDialog extends ListDialog {
       return users;
    }
 
-   public UserListDialog(Shell parent, String title, Iterable<User> users) throws OseeCoreException {
-
-      super(parent);
-      setTitle(title);
-      setMessage(title);
-      setContentProvider(new ArtifactContentProvider());
-      setLabelProvider(new ArtifactLabelProvider() {
-         @Override
-         public String getText(Object element) {
-            if (element instanceof User) {
-               return ((User) element).getName();
-            }
-            return "Unknown Object";
-         }
-      });
-      setInput(users);
+   public UserListDialog(Shell parent, String title, Collection<? extends Artifact> users) throws OseeCoreException {
+      super(title, title, users, new ArtifactContentProvider(), new UserArtifactLabelProvider());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
+   public static class UserArtifactLabelProvider extends ArtifactLabelProvider {
+
+      @Override
+      public String getText(Object element) {
+         if (element instanceof User) {
+            return ((User) element).getName();
+         }
+         return "Unknown Object";
+      }
+   }
+
    public User getSelection() {
-      return (User) getResult()[0];
+      return getSelection();
    }
 }

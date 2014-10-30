@@ -42,7 +42,7 @@ public class FilteredTreeDialog extends MessageDialog {
    private final IContentProvider contentProvider;
    private final IBaseLabelProvider labelProvider;
    private Collection<? extends Object> initialSelections;
-   private final ViewerSorter viewerSorter;
+   private ViewerSorter viewerSorter;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    List<Object> selected = new ArrayList<Object>();
@@ -195,6 +195,10 @@ public class FilteredTreeDialog extends MessageDialog {
 
    public FilteredTree getTreeViewer() {
       return treeViewer;
+   }
+
+   public void setSorter(ViewerSorter viewerSorter) {
+      this.viewerSorter = viewerSorter;
    }
 
 }

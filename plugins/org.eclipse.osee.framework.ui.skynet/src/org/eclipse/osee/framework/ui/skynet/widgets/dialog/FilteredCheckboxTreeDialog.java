@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -21,6 +22,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -62,6 +67,10 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       this.viewerSorter = viewerSorter;
       this.patternFilter = new PatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
+   }
+
+   public FilteredCheckboxTreeDialog(String title, Set<Artifact> artifacts) {
+      this(title, title, new ArtifactContentProvider(), new ArtifactLabelProvider(), new ArtifactViewerSorter());
    }
 
    public void setShowSelectButtons(boolean showSelectButtons) {

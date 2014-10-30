@@ -10,14 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.GroupListDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 
 /**
  * @author Donald G. Dunne
@@ -55,11 +62,12 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    @Override
    public boolean handleSelection() {
       try {
-         GroupListDialog dialog = new GroupListDialog();
+         FilteredCheckboxTreeDialog dialog =
+            new FilteredCheckboxTreeArtifactDialog("Select Groups", "Select Groups", getGroups());
          int result = dialog.open();
          if (result == 0) {
             selectedGroups.clear();
-            for (Object obj : dialog.getSelected()) {
+            for (Object obj : dialog.getChecked()) {
                selectedGroups.add((Artifact) obj);
             }
             notifyXModifiedListeners();
@@ -69,6 +77,16 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   private Collection<Artifact> getGroups() {
+      List<Artifact> groups = new ArrayList<Artifact>();
+      for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
+         if (!art.getName().equals(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME)) {
+            groups.add(art);
+         }
+      }
+      return groups;
    }
 
    @Override

@@ -47,11 +47,9 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
 
    @Override
    protected Dialog createSelectDialog(Shell shell, Collection<IAttributeType> lastSelected) {
-      AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(attributeTypes);
-      dialog.setTitle(title);
-      dialog.setMessage(message);
+      AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(title, message, attributeTypes);
       if (lastSelected != null) {
-         dialog.setInitialSelections(lastSelected.toArray());
+         dialog.setInitialSelections(lastSelected);
       }
       return dialog;
    }

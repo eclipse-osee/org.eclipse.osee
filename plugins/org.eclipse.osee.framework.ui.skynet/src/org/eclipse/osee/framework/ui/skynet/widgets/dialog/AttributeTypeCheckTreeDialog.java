@@ -17,22 +17,21 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author Donald G. Dunne
  */
-public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
+public class AttributeTypeCheckTreeDialog extends FilteredCheckboxTreeDialog {
 
    public AttributeTypeCheckTreeDialog(Collection<IAttributeType> attributeTypes) {
-      this(attributeTypes, new AttributeTypeLabelProvider());
+      this("Select Attribyte Types", "Select Attribyte Types", attributeTypes, new AttributeTypeLabelProvider());
    }
 
-   public AttributeTypeCheckTreeDialog(Collection<IAttributeType> attributeTypes, ILabelProvider iLabelProvider) {
-      super(Displays.getActiveShell(), iLabelProvider, new ArrayTreeContentProvider());
+   public AttributeTypeCheckTreeDialog(String title, String message, Collection<IAttributeType> attributeTypes, ILabelProvider iLabelProvider) {
+      super(title, message, new ArrayTreeContentProvider(), iLabelProvider);
+      setInput(attributeTypes);
       if (attributeTypes != null) {
          setInput(attributeTypes);
       }
@@ -40,6 +39,10 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
 
    public AttributeTypeCheckTreeDialog() {
       this(null);
+   }
+
+   public AttributeTypeCheckTreeDialog(String title, String message, Collection<IAttributeType> attributeTypes) {
+      this(title, message, attributeTypes, new AttributeTypeLabelProvider());
    }
 
    public Collection<IAttributeType> getSelection() {

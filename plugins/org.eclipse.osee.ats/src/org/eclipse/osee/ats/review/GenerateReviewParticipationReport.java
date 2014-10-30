@@ -68,16 +68,17 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          useUser = selectedUser;
       } else {
          IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
-         UserListDialog ld =
+         UserListDialog dialog =
             new UserListDialog(Displays.getActiveShell(), "Select User",
                userServiceClient.getOseeUsersSorted(Active.Active));
-         int result = ld.open();
+         dialog.setMultiSelect(false);
+         int result = dialog.open();
          if (result == 0) {
-            if (ld.getResult().length == 0) {
+            if (dialog.getSelectedFirst() == null) {
                AWorkbench.popup("ERROR", "Must select user");
                return;
             }
-            useUser = userServiceClient.getUserFromOseeUser(ld.getSelection());
+            useUser = userServiceClient.getUserFromOseeUser(dialog.getSelection());
          }
       }
 
