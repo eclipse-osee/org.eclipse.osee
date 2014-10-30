@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -57,10 +58,11 @@ public class RelationTypeValidity {
 
       IArtifactType artifactType = node.getArtifactType();
       boolean isValid = isRelationTypeValid(type, artifactType, side);
-      Conditions.checkExpressionFailOnTrue(
-         !isValid,
-         "Relation validity error for [%s] - ArtifactType [%s] does not belong on side [%s] of relation [%s] - only items of type [%s] are allowed",
-         node.getExceptionString(), artifactType, side.name(), type, relationTypes.getArtifactType(type, side));
+      if (!isValid) {
+         throw new OseeArgumentException(
+            "Relation validity error for [%s] - ArtifactType [%s] does not belong on side [%s] of relation [%s] - only items of type [%s] are allowed",
+            node.getExceptionString(), artifactType, side.name(), type, relationTypes.getArtifactType(type, side));
+      }
    }
 
    public int getMaximumRelationsAllowed(IRelationType type, IArtifactType artifactType, RelationSide side) throws OseeCoreException {
@@ -76,7 +78,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public MultiplicityState getRelationMultiplicityState(IRelationType type, RelationSide side, int count) throws OseeCoreException {      
+   public MultiplicityState getRelationMultiplicityState(IRelationType type, RelationSide side, int count) throws OseeCoreException {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(side, "relationSide");
       checkTypeExists(type);

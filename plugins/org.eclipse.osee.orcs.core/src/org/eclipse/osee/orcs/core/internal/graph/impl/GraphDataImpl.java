@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -64,8 +64,10 @@ public class GraphDataImpl implements GraphData {
    @Override
    public void addNode(GraphNode node) throws OseeCoreException {
       boolean sameBranches = getBranch().equals(node.getBranch());
-      Conditions.checkExpressionFailOnTrue(!sameBranches, "Invalid node added to graph. Graph[%s] Node[%s]", this,
-         node.getExceptionString());
+      if (!sameBranches) {
+         throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
+            node.getExceptionString());
+      }
 
       GraphData oldGraph = node.getGraph();
       if (!this.equals(oldGraph)) {

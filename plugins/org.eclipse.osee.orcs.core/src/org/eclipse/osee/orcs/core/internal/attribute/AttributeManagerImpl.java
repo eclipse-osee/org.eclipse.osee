@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
@@ -447,8 +447,10 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
 
    private void checkTypeValid(IAttributeType attributeType) throws OseeCoreException {
       if (!CoreAttributeTypes.Name.equals(attributeType)) {
-         Conditions.checkExpressionFailOnTrue(!isAttributeTypeValid(attributeType),
-            "The attribute type [%s] is not valid for artifacts [%s]", attributeType, getExceptionString());
+         if (!isAttributeTypeValid(attributeType)) {
+            throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
+               getExceptionString());
+         }
       }
    }
 
