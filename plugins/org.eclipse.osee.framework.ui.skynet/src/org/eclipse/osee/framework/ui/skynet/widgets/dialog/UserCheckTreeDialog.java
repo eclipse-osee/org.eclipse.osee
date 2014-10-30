@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,21 +31,29 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
+public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
 
    private Collection<User> teamMembers;
 
    public UserCheckTreeDialog(Collection<? extends User> users) {
-      super(users);
+      this("Select Users", "Select Users", users);
    }
 
    public UserCheckTreeDialog() throws OseeCoreException {
-      this(UserManager.getUsers());
+      this("Select Users", "Select to assign.\nDeSelect to un-assign.", UserManager.getUsers());
+   }
+
+   public UserCheckTreeDialog(String title, String message, Collection<? extends User> users) {
+      super(title, message, toArtifacts(users), new UserCheckTreeLabelProvider());
+   }
+
+   private static Collection<? extends Artifact> toArtifacts(Collection<? extends User> users) {
+      return Collections.castAll(users);
    }
 
    public Collection<User> getUsersSelected() {
       Set<User> selected = new HashSet<User>();
-      for (FullyNamed art : getSelection()) {
+      for (FullyNamed art : getChecked()) {
          selected.add((User) art);
       }
       return selected;
@@ -53,7 +62,6 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
-      getTreeViewer().setLabelProvider(new UserCheckTreeLabelProvider());
       getTreeViewer().setSorter(new ViewerSorter() {
          @SuppressWarnings("unchecked")
          @Override
@@ -67,6 +75,7 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
                if (UserManager.getUser().equals(user2)) {
                   return 1;
                }
+               Collection<? extends Object> initialSel = getInitialSelections();
                if (initialSel != null) {
                   if (initialSel.contains(user1) && initialSel.contains(user2)) {
                      return getComparator().compare(user1.getName(), user2.getName());
@@ -110,9 +119,11 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
          this.teamMembers = new HashSet<User>();
       }
       this.teamMembers.addAll(teamMembers);
+      ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
    }
 
-   public class UserCheckTreeLabelProvider implements ILabelProvider {
+   public static class UserCheckTreeLabelProvider implements ILabelProvider {
+      private Collection<? extends User> teamMembers;
 
       @Override
       public Image getImage(Object arg0) {
@@ -145,6 +156,10 @@ public class UserCheckTreeDialog extends FullyNamedCheckTreeDialog {
       @Override
       public void removeListener(ILabelProviderListener arg0) {
          // do nothing
+      }
+
+      public void setTeamMembers(Collection<? extends User> teamMembers) {
+         this.teamMembers = teamMembers;
       }
 
    }

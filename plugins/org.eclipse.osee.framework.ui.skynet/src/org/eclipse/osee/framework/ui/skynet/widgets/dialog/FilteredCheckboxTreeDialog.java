@@ -254,4 +254,8 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       return checked;
    }
 
+   public Collection<? extends Object> getInitialSelections() {
+      return initialSelections;
+   }
+
 }

@@ -48,7 +48,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -432,10 +431,7 @@ public class WETransitionComposite extends Composite {
          return;
       }
       IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
-      UserCheckTreeDialog uld =
-         new UserCheckTreeDialog(userServiceClient.getOseeUsers(AtsClientService.get().getUserService().getUsers(
-            Active.Active)));
-      uld.setMessage("Select users to transition to.");
+      UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setInitialSelections(userServiceClient.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
          uld.setTeamMembers(userServiceClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));

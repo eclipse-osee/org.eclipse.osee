@@ -60,8 +60,8 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         UserCheckTreeDialog uld = new UserCheckTreeDialog(users);
-         uld.setMessage("Select to assign.\nDeSelect to un-assign.");
+         UserCheckTreeDialog uld =
+            new UserCheckTreeDialog("Select Users", "Select to assign.\nDeSelect to un-assign.", users);
          uld.setInitialSelections(selectedUsers);
          if (uld.open() != 0) {
             return false;

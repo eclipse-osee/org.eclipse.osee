@@ -83,7 +83,6 @@ public class EditAssigneesAction extends Action {
 
          UserCheckTreeDialog uld = new UserCheckTreeDialog();
          uld.setInitialSelections(initalUsers);
-         uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          if (uld.open() == 0) {
             Collection<User> users = uld.getUsersSelected();
             Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
