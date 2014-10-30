@@ -16,7 +16,6 @@ import java.net.URL;
 import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -32,9 +31,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.widgets.Shell;
@@ -194,13 +196,14 @@ public class ArtifactDragDropSupport {
          } catch (ArtifactDoesNotExist ex) {
             Collection<? extends IArtifactType> artifactTypes =
                ArtifactTypeManager.getArtifactTypesFromAttributeType(CoreAttributeTypes.ContentUrl, branch);
-            ArtifactTypeDialog dialog =
-               new ArtifactTypeDialog(shell, "Artifact Types", null,
+            FilteredTreeDialog dialog =
+               new FilteredTreeDialog("Artifact Types",
                   "No Artifact could be found for this file. To create one, please select an artfact type.",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
+                  new ArrayTreeContentProvider(), new ArtifactTypeLabelProvider());
+            dialog.setInput(artifactTypes);
 
             if (dialog.open() == Window.OK) {
-               artifact = ArtifactTypeManager.addArtifact(dialog.getArtifactType(), branch);
+               artifact = ArtifactTypeManager.addArtifact((IArtifactType) dialog.getSelectedFirst(), branch);
                artifact.setSoleAttributeValue(CoreAttributeTypes.ContentUrl, location);
                artifact.setName(new File(location).getName());
             }
