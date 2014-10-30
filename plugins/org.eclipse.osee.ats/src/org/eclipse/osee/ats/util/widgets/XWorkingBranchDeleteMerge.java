@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.widgets.dialog.MultipleBranchSelectionDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.MergeInProgressHandler;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxBranchDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -64,12 +64,14 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
                   }
 
                   if (destinationMinusAlreadyCommitted.size() > 1) {
-                     MultipleBranchSelectionDialog dialog =
-                        new MultipleBranchSelectionDialog(destinationMinusAlreadyCommitted,
-                           "Select Destination Branch(es)",
-                           "Select the Destination branch(es) for which you want to Delete the Merge Branch");
+                     FilteredCheckboxBranchDialog dialog =
+                        new FilteredCheckboxBranchDialog("Select Destination Branch(es)",
+                           "Select the Destination branch(es) for which you want to Delete the Merge Branch",
+                           destinationMinusAlreadyCommitted);
                      if (dialog.open() == 0) {
-                        selectedBranches.addAll(dialog.getSelectedBranches());
+                        for (IOseeBranch branchToken : dialog.getChecked()) {
+                           selectedBranches.add(BranchManager.getBranch(branchToken));
+                        }
                      }
                   } else if (destinationMinusAlreadyCommitted.size() == 1) {
                      MergeBranch mergeBranch = BranchManager.getFirstMergeBranch(workingBranch);

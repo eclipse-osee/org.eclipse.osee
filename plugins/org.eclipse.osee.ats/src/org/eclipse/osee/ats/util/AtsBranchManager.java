@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.widgets.dialog.SingleItemSelecitonDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -47,6 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeBranchDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.ui.PlatformUI;
@@ -77,14 +77,13 @@ public final class AtsBranchManager {
                      destinationBranches.add(mergeBranch.getDestinationBranch());
                   }
                   if (mergeBranches.size() > 1) {
-                     SingleItemSelecitonDialog listDialog =
-                        new SingleItemSelecitonDialog("Select Destination Branch",
-                           "Select The Destination Branch for which you want to open the Merge Manager");
-
-                     listDialog.setInput(destinationBranches);
-                     int result = listDialog.open();
+                     FilteredTreeBranchDialog dialog =
+                        new FilteredTreeBranchDialog("Select Destination Branch",
+                           "Select The Destination Branch for which you want to open the Merge Manager",
+                           destinationBranches);
+                     int result = dialog.open();
                      if (result == 0) {
-                        selectedBranch = (Branch) listDialog.getResult()[0];
+                        selectedBranch = (Branch) dialog.getSelectedFirst();
                      }
                   } else {
                      MergeBranch updateFromParentMergeBranch = BranchManager.getFirstMergeBranch(workingBranch);
