@@ -549,6 +549,10 @@ public class ArtifactQuery {
          Conditions.hasValues(options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
       queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
 
+      if (Conditions.hasValues(options.getArtifactTypeFilter())) {
+         queryBuilder.andIsOfType(options.getArtifactTypeFilter());
+      }
+
       return queryBuilder.getMatches();
    }
 

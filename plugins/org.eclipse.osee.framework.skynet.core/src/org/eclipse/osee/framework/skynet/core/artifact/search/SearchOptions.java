@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 public class SearchOptions {
 
    private final Collection<IAttributeType> attributeTypeGuids = new HashSet<IAttributeType>();
+   private final Collection<IArtifactType> artifactTypeGuids = new HashSet<IArtifactType>();
    private DeletionFlag deletionFlag;
    private boolean isMatchWordOrder;
    private boolean isCaseSensive;
@@ -91,7 +93,17 @@ public class SearchOptions {
 
    @Override
    public String toString() {
-      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
+      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", artifactTypeGuids=" + artifactTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isExactMatch=" + isExactMatch + "]";
+   }
+
+   public void setArtifactTypeFilter(IArtifactType[] artifactTypeFilter) {
+      for (IArtifactType type : artifactTypeFilter) {
+         artifactTypeGuids.add(type);
+      }
+   }
+
+   public Collection<IArtifactType> getArtifactTypeFilter() {
+      return artifactTypeGuids;
    }
 
 }

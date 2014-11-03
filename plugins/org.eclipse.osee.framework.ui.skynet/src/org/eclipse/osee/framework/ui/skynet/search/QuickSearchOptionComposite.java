@@ -24,17 +24,21 @@ import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.HelpContext;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -214,10 +218,20 @@ public class QuickSearchOptionComposite extends Composite {
       return isOptionSelected(SearchOption.Attribute_Types.asLabel());
    }
 
+   public boolean isArtifactTypeFilterEnabled() {
+      return isOptionSelected(SearchOption.Artifact_Types.asLabel());
+   }
+
    public IAttributeType[] getAttributeTypeFilter() {
       IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Attribute_Types.asLabel());
       IAttributeType[] types = (IAttributeType[]) handler.getConfigData();
       return isAttributeTypeFilterEnabled() ? types : new IAttributeType[0];
+   }
+
+   public IArtifactType[] getArtifactTypeFilter() {
+      IOptionConfigurationHandler<?> handler = getConfiguration(SearchOption.Artifact_Types.asLabel());
+      IArtifactType[] types = (IArtifactType[]) handler.getConfigData();
+      return isArtifactTypeFilterEnabled() ? types : new IArtifactType[0];
    }
 
    public void saveState(IMemento memento) {
@@ -300,6 +314,7 @@ public class QuickSearchOptionComposite extends Composite {
 
    private enum SearchOption {
       Attribute_Types(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "Searches only the selected attribute types.", new AttributeTypeFilterConfigHandler()),
+      Artifact_Types(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "Searches only the selected artifact types.", new ArtifactTypeFilterConfigHandler()),
       Match_Word_Order(OseeHelpContext.QUICK_SEARCH_WORD_ORDER, "Matches text containing search words in same order as input."),
       Case_Sensitive(OseeHelpContext.QUICK_SEARCH_CASE_SENSITIVE, "Matches text containing the same case as input."),
       Exact_Match(OseeHelpContext.QUICK_SEARCH_EXACT_MATCH, "Matches each input character exactly, including case and order.");
@@ -368,6 +383,14 @@ public class QuickSearchOptionComposite extends Composite {
 
       @Override
       public int compare(IAttributeType o1, IAttributeType o2) {
+         return o1.getName().compareTo(o2.getName());
+      }
+
+   }
+   private final static class ArtifactTypeComparator implements Comparator<IArtifactType> {
+
+      @Override
+      public int compare(IArtifactType o1, IArtifactType o2) {
          return o1.getName().compareTo(o2.getName());
       }
 
@@ -471,6 +494,96 @@ public class QuickSearchOptionComposite extends Composite {
          String[] guids = new String[configuration.size()];
          int index = 0;
          for (IAttributeType type : configuration) {
+            guids[index++] = String.valueOf(type.getGuid());
+         }
+         return guids;
+      }
+   }
+   private final static class ArtifactTypeFilterConfigHandler implements IOptionConfigurationHandler<IArtifactType> {
+      private final List<IArtifactType> configuration;
+      private final Comparator<IArtifactType> artTypeComparator;
+
+      public ArtifactTypeFilterConfigHandler() {
+         this.artTypeComparator = new ArtifactTypeComparator();
+         this.configuration = new ArrayList<IArtifactType>();
+      }
+
+      @Override
+      public void configure() {
+         try {
+            Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
+            ArtifactTypeFilteredTreeDialog dialog =
+               new ArtifactTypeFilteredTreeDialog("Artifact Type Filter Selection",
+                  "Select artifact types to search in.");
+            dialog.setInput(artifactTypes);
+
+            List<IArtifactType> selectedElements = new ArrayList<IArtifactType>();
+            for (ArtifactType type : artifactTypes) {
+               if (configuration.contains(type)) {
+                  selectedElements.add(type);
+               }
+            }
+            dialog.setInitialSelections(selectedElements);
+
+            int result = dialog.open();
+            if (result == Window.OK) {
+               configuration.clear();
+               Collection<ArtifactType> results = dialog.getChecked();
+               for (ArtifactType selected : results) {
+                  configuration.add(selected);
+               }
+            }
+            Collections.sort(configuration, artTypeComparator);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+
+      @Override
+      public String getConfigToolTip() {
+         return "Select to configure artifact type filter.";
+      }
+
+      @Override
+      public IArtifactType[] getConfigData() {
+         return configuration.toArray(new IArtifactType[configuration.size()]);
+      }
+
+      @Override
+      public void loadFrom(String[] items) {
+         if (items != null && items.length > 0) {
+            configuration.clear();
+            for (String entry : items) {
+               try {
+                  Long id = Long.parseLong(entry);
+                  ArtifactType type = ArtifactTypeManager.getTypeByGuid(id);
+                  configuration.add(type);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+         }
+      }
+
+      @Override
+      public String toString() {
+         Collection<IAttributeType> taggableItems;
+         try {
+            taggableItems = AttributeTypeManager.getTaggableTypes();
+            if (taggableItems.size() == configuration.size()) {
+               return "All";
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+         return StringUtils.join(configuration, ", ");
+      }
+
+      @Override
+      public String[] toStore() {
+         String[] guids = new String[configuration.size()];
+         int index = 0;
+         for (IArtifactType type : configuration) {
             guids[index++] = String.valueOf(type.getGuid());
          }
          return guids;

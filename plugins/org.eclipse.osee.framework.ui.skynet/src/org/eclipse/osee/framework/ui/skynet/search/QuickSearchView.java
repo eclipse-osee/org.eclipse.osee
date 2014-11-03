@@ -277,6 +277,7 @@ public class QuickSearchView extends GenericViewPart {
                SearchOptions options = new SearchOptions();
                options.setDeletedIncluded(allowDeleted);
                options.setAttributeTypeFilter(optionsComposite.getAttributeTypeFilter());
+               options.setArtifactTypeFilter(optionsComposite.getArtifactTypeFilter());
                options.setCaseSensive(optionsComposite.isCaseSensitiveEnabled());
                options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
                options.setExactMatch(optionsComposite.isExactMatchEnabled());
