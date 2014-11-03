@@ -40,7 +40,7 @@ public final class LoaderSqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttribute.class, AttributeSqlHandler.class);
       handleMap.put(CriteriaRelation.class, RelationSqlHandler.class);
 
-      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
 }

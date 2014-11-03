@@ -73,7 +73,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    }
 
    @Override
-   protected Object createPreConditions() {
+   protected Object createPreConditions(Options options) {
       return new CreateConditions();
    }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,28 +13,30 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class LoadProcessor<D, F extends OrcsDataFactory> extends AbstractLoadProcessor<OrcsDataHandler<D>> {
+public abstract class AbstractLoadProcessor<H> {
 
-   private final F factory;
-
-   public LoadProcessor(F factory) {
-      this.factory = factory;
-   }
-
-   @Override
-   protected final void onRow(OrcsDataHandler<D> handler, IOseeStatement chStmt, Options options, Object conditions) {
-      D data = createData(conditions, factory, chStmt, options);
-      if (data != null) {
-         handler.onData(data);
+   public final int processResultSet(H handler, IOseeStatement chStmt, Options options) throws OseeCoreException {
+      int rowCount = 0;
+      Object conditions = createPreConditions(options);
+      while (chStmt.next()) {
+         rowCount++;
+         onRow(handler, chStmt, options, conditions);
       }
+      onEnd(handler, options, conditions, rowCount);
+      return rowCount;
    }
 
-   protected abstract D createData(Object conditions, F factory, IOseeStatement chStmt, Options options) throws OseeCoreException;
+   protected Object createPreConditions(Options options) {
+      return null;
+   }
 
+   protected abstract void onRow(H handler, IOseeStatement chStmt, Options options, Object conditions);
+
+   protected void onEnd(H handler, Options options, Object conditions, int rowCount) {
+      // do nothing;
+   }
 }

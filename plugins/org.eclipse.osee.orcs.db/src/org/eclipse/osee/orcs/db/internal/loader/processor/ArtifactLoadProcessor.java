@@ -61,7 +61,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    @Override
-   protected Object createPreConditions() {
+   protected Object createPreConditions(Options options) {
       return new CreateConditions();
    }
 

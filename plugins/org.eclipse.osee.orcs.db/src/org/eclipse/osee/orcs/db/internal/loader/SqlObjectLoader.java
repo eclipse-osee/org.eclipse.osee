@@ -33,15 +33,13 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
-import org.eclipse.osee.orcs.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
+import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.BranchLoadProcessor;
-import org.eclipse.osee.orcs.db.internal.loader.processor.LoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -214,7 +212,7 @@ public class SqlObjectLoader {
          branch.getUuid());
    }
 
-   protected <D extends HasLocalId, F extends OrcsDataFactory> void load(LoadProcessor<D, F> processor, OrcsDataHandler<D> handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
       try {
          for (AbstractJoinQuery join : loadContext.getJoins()) {
             join.store();

@@ -14,13 +14,12 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.data.ArtifactTypes;
-import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
@@ -114,8 +113,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    }
 
    @Override
-   public DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
-      return dataModuleFactory.createDataModule(artifactTypes, attributeTypes);
+   public DataModule createDataModule(OrcsTypes orcsTypes) {
+      return dataModuleFactory.createDataModule(orcsTypes);
    }
 
    @Override

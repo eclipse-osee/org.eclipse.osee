@@ -81,7 +81,10 @@ public class LoaderTest {
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      loaderFactory = dataStore.createDataModule(artTypes, attrTypes).getDataLoaderFactory();
+      when(types.getArtifactTypes()).thenReturn(artTypes);
+      when(types.getAttributeTypes()).thenReturn(attrTypes);
+
+      loaderFactory = dataStore.createDataModule(types).getDataLoaderFactory();
 
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);

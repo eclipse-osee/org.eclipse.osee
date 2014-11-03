@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -23,6 +24,7 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
+import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
 
@@ -48,14 +50,18 @@ public class DataModuleFactory {
       this.adminModule = adminModule;
    }
 
-   public DataModule createDataModule(ArtifactTypes artifactTypes, AttributeTypes attributeTypes) {
+   public DataModule createDataModule(OrcsTypes orcsTypes) {
       logger.debug("Creating DataModule");
-      QueryEngineIndexer indexer = queryModule.getQueryIndexer();
-      OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(attributeTypes);
+
+      ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
+      AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
+
+      final QueryEngineIndexer indexer = queryModule.getQueryIndexer();
+      final ProxyDataFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes);
+      final OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(proxyFactory);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory);
-      final QueryEngine queryEngine =
-         queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);
       final DataStoreAdmin dataStoreAdmin = adminModule.createDataStoreAdmin(branchDataStore);

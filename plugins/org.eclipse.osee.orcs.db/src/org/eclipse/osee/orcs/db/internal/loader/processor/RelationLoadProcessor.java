@@ -73,7 +73,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    @Override
-   protected Object createPreConditions() {
+   protected Object createPreConditions(Options options) {
       return new CreateConditions();
    }
 

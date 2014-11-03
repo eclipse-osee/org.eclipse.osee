@@ -43,8 +43,11 @@ public class LoaderModule {
       this.proxyProvider = proxyProvider;
    }
 
-   public OrcsObjectFactory createOrcsObjectFactory(AttributeTypes attributeTypes) {
-      ProxyDataFactory proxyFactory = new AttributeDataProxyFactory(proxyProvider, attributeTypes);
+   public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
+      return new AttributeDataProxyFactory(proxyProvider, attributeTypes);
+   }
+
+   public OrcsObjectFactory createOrcsObjectFactory(ProxyDataFactory proxyFactory) {
       return new OrcsObjectFactoryImpl(proxyFactory);
    }
 
@@ -53,8 +56,8 @@ public class LoaderModule {
    }
 
    public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory) {
-      SqlObjectLoader createSqlObjectLoader = createSqlObjectLoader(objectFactory);
-      return createDataLoaderFactory(createSqlObjectLoader);
+      SqlObjectLoader sqlObjectLoader = createSqlObjectLoader(objectFactory);
+      return createDataLoaderFactory(sqlObjectLoader);
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {

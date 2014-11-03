@@ -151,7 +151,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       OrcsTypes orcsTypes = typesModule.createOrcsTypes(getSystemSession());
 
-      module = dataStore.createDataModule(orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes());
+      module = dataStore.createDataModule(orcsTypes);
 
       AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
       AttributeFactory attributeFactory =
