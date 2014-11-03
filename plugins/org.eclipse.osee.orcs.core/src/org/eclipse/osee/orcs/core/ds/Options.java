@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
@@ -20,7 +22,7 @@ import java.util.Map;
 public class Options implements Cloneable {
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
-   private final Map<String, String> data = new HashMap<String, String>();
+   private final Map<String, Object> data = new HashMap<String, Object>();
 
    protected Options() {
       super();
@@ -30,13 +32,27 @@ public class Options implements Cloneable {
       data.clear();
    }
 
+   public Set<String> getKeys() {
+      return Collections.unmodifiableSet(data.keySet());
+   }
+
    public boolean isEmpty(String key) {
       String value = get(key);
       return value == null || "".equals(value);
    }
 
-   public String get(String key) {
+   @SuppressWarnings("unchecked")
+   public <T> T getObject(Class<T> clazz, String key) {
+      return (T) getObject(key);
+   }
+
+   public Object getObject(String key) {
       return data.get(key);
+   }
+
+   public String get(String key) {
+      Object value = getObject(key);
+      return value != null ? String.valueOf(value) : null;
    }
 
    public boolean getBoolean(String key) {
@@ -99,6 +115,10 @@ public class Options implements Cloneable {
       put(key, String.valueOf(value));
    }
 
+   public void put(String key, Object value) {
+      data.put(key, value);
+   }
+
    public void put(String key, float value) {
       put(key, String.valueOf(value));
    }
@@ -123,6 +143,10 @@ public class Options implements Cloneable {
       if (date != null) {
          put(key, date.getTime());
       }
+   }
+
+   public void remove(String key) {
+      data.remove(key);
    }
 
    public void setFrom(Options source) {

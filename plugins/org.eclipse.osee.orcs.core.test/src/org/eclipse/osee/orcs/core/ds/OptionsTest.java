@@ -118,6 +118,26 @@ public class OptionsTest {
    }
 
    @Test
+   public void testGetSetObject() {
+      assertTrue(options.isEmpty(TEST_KEY));
+
+      assertNull(options.getObject(TEST_KEY));
+
+      Long object = new Long(12312L);
+      options.put(TEST_KEY, object);
+
+      assertEquals(object, options.getObject(TEST_KEY));
+
+      Long actual = options.getObject(Long.class, TEST_KEY);
+      assertEquals(object, actual);
+
+      assertFalse(options.isEmpty(TEST_KEY));
+
+      options.remove(TEST_KEY);
+      assertTrue(options.isEmpty(TEST_KEY));
+   }
+
+   @Test
    public void testSetFromSource() {
       Date date = new Date();
 
