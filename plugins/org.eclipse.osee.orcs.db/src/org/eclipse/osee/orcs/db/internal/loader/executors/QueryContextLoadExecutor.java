@@ -15,14 +15,13 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -39,7 +38,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
    @Override
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       int fetchSize = LoadUtil.computeFetchSize(MIN_FETCH_SIZE);
-      OrcsObjectTypes typeToLoad = getObjectToLoad();
+      ObjectQueryType typeToLoad = queryContext.getOrcsObjectType();
       switch (typeToLoad) {
          case TX:
             getLoader().loadTransactions(cancellation, handler, queryContext, fetchSize);
@@ -52,24 +51,4 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       }
    }
 
-   // This will be improved once we add the ability to specify what to load in the loader code.
-   private OrcsObjectTypes getObjectToLoad() {
-      OrcsObjectTypes type = OrcsObjectTypes.UNKNOWN;
-      String sql = queryContext.getSql();
-      if (Strings.isValid(sql)) {
-         if (sql.contains(TableEnum.TX_DETAILS_TABLE.getName())) {
-            type = OrcsObjectTypes.TX;
-         } else if (sql.contains(TableEnum.BRANCH_TABLE.getName())) {
-            type = OrcsObjectTypes.BRANCH;
-         }
-      }
-      return type;
-   }
-
-   private static enum OrcsObjectTypes {
-      ARTIFACT,
-      BRANCH,
-      TX,
-      UNKNOWN;
-   }
 }

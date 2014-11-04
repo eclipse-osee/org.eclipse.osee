@@ -20,8 +20,22 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
  */
 public class QuerySqlContext extends SqlContextImpl implements QueryContext {
 
-   public QuerySqlContext(OrcsSession session, Options options) {
-      super(session, options);
+   public static enum ObjectQueryType {
+      ARTIFACT,
+      BRANCH,
+      TX,
+      DYNAMIC_OBJECT,
+      UNKNOWN;
    }
 
+   private final ObjectQueryType objectType;
+
+   public QuerySqlContext(OrcsSession session, Options options, ObjectQueryType objectType) {
+      super(session, options);
+      this.objectType = objectType;
+   }
+
+   public ObjectQueryType getOrcsObjectType() {
+      return objectType;
+   }
 }

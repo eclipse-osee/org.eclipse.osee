@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
+import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -38,9 +39,7 @@ import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
-import org.eclipse.osee.orcs.db.internal.search.util.ArtifactDataCountHandler;
 import org.eclipse.osee.orcs.db.internal.search.util.AttributeDataMatcher;
-import org.eclipse.osee.orcs.db.internal.search.util.BufferedLoadDataHandler;
 import org.eclipse.osee.orcs.db.internal.search.util.LoadDataBuffer;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
@@ -67,23 +66,21 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
    }
 
    @Override
-   public ArtifactDataCountHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception {
+   public CountingLoadDataHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception {
       CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
       Set<CriteriaAttributeKeywords> criterias = criteriaSet.getCriteriaByType(CriteriaAttributeKeywords.class);
-      ArtifactDataCountHandler countingHandler;
+      CountingLoadDataHandler countingHandler;
       if (criterias.isEmpty()) {
-         countingHandler = new ArtifactDataCountHandler(handler);
+         // Nothing to Loading
+         countingHandler = new ObjectCountingHandler(handler);
       } else {
-         countingHandler = createFilteringHandler(cancellation, criterias, queryContext, handler);
+         int initialSize = computeFetchSize(queryContext);
+         LoadDataBuffer buffer = new LoadDataBuffer(initialSize);
+
+         Consumer consumer = new ConsumerImpl(cancellation, criterias);
+         countingHandler = new AttributeDataProducer(buffer, handler, consumer);
       }
       return countingHandler;
-   }
-
-   private ArtifactDataCountHandler createFilteringHandler(final HasCancellation cancellation, final Set<CriteriaAttributeKeywords> criterias, QuerySqlContext queryContext, final LoadDataHandler handler) throws Exception {
-      int initialSize = computeFetchSize(queryContext);
-      LoadDataBuffer buffer = new LoadDataBuffer(initialSize);
-      Consumer consumer = new ConsumerImpl(cancellation, criterias);
-      return new AttributeDataProducer(buffer, handler, consumer);
    }
 
    private int computeFetchSize(SqlContext sqlContext) {
@@ -317,4 +314,47 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
    }
 
+   private static class ObjectCountingHandler extends CountingLoadDataHandler {
+
+      public ObjectCountingHandler(LoadDataHandler handler) {
+         super(handler);
+      }
+
+      @Override
+      public void onData(ArtifactData data) throws OseeCoreException {
+         incrementCount();
+         super.onData(data);
+      }
+
+   }
+
+   private static class BufferedLoadDataHandler extends ObjectCountingHandler {
+
+      private final LoadDataBuffer buffer;
+
+      public BufferedLoadDataHandler(LoadDataHandler handler, LoadDataBuffer buffer) {
+         super(handler);
+         this.buffer = buffer;
+      }
+
+      protected LoadDataBuffer getBuffer() {
+         return buffer;
+      }
+
+      @Override
+      public void onData(ArtifactData data) throws OseeCoreException {
+         buffer.addData(data);
+      }
+
+      @Override
+      public void onData(AttributeData data) throws OseeCoreException {
+         buffer.addData(data);
+      }
+
+      @Override
+      public void onData(RelationData data) throws OseeCoreException {
+         buffer.addData(data);
+      }
+
+   }
 }

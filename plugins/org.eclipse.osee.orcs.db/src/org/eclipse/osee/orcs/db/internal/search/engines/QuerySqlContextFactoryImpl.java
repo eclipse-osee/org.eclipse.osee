@@ -18,6 +18,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
+import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
@@ -36,14 +37,16 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    private final IOseeDatabaseService dbService;
    private final TableEnum table;
    private final String idColumn;
+   private final ObjectQueryType type;
 
-   public QuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, TableEnum table, String idColumn) {
+   public QuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, TableEnum table, String idColumn, ObjectQueryType type) {
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
       this.table = table;
       this.idColumn = idColumn;
+      this.type = type;
    }
 
    @Override
@@ -57,7 +60,7 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    }
 
    private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions());
+      QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), type);
       AbstractSqlWriter writer =
          new QuerySqlWriter(logger, dbService, sqlProvider, context, queryType, table, idColumn);
       List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());

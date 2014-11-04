@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.search;
 
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.db.internal.search.util.ArtifactDataCountHandler;
 
 /**
  * @author Roberto E. Escobar
@@ -22,6 +22,6 @@ public interface QueryFilterFactory {
 
    boolean isFilterRequired(QueryData queryData);
 
-   ArtifactDataCountHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception;
+   CountingLoadDataHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception;
 
 }

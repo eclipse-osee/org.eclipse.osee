@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.util;
+package org.eclipse.osee.orcs.core.ds;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.ArtifactData;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactDataCountHandler extends LoadDataHandlerDecorator {
+public abstract class CountingLoadDataHandler extends LoadDataHandlerDecorator {
 
    private final AtomicInteger counter;
 
-   public ArtifactDataCountHandler(LoadDataHandler handler) {
+   public CountingLoadDataHandler(LoadDataHandler handler) {
       super(handler);
       this.counter = new AtomicInteger();
    }
@@ -32,7 +29,7 @@ public class ArtifactDataCountHandler extends LoadDataHandlerDecorator {
       return counter;
    }
 
-   public int getArtifactCount() {
+   public int getCount() {
       return getCounter().get();
    }
 
@@ -42,10 +39,8 @@ public class ArtifactDataCountHandler extends LoadDataHandlerDecorator {
       super.onLoadStart();
    }
 
-   @Override
-   public void onData(ArtifactData data) throws OseeCoreException {
+   protected void incrementCount() {
       getCounter().incrementAndGet();
-      super.onData(data);
    }
 
 }

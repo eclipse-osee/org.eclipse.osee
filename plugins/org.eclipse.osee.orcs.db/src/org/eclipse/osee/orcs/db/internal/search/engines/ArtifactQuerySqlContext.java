@@ -24,7 +24,7 @@ public class ArtifactQuerySqlContext extends QuerySqlContext implements HasBranc
    private final IOseeBranch branch;
 
    public ArtifactQuerySqlContext(OrcsSession session, IOseeBranch branch, Options options) {
-      super(session, options);
+      super(session, options, ObjectQueryType.ARTIFACT);
       this.branch = branch;
    }
 

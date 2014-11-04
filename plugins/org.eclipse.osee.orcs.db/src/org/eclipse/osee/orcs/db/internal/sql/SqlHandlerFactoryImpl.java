@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -37,10 +36,6 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    private final Log logger;
    private final IdentityLocator idService;
    private final TagProcessor tagProcessor;
-
-   public SqlHandlerFactoryImpl(Log logger, IdentityLocator idService, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
-      this(logger, idService, null, handleMap);
-   }
 
    public SqlHandlerFactoryImpl(Log logger, IdentityLocator idService, TagProcessor tagProcessor, Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       this.logger = logger;
@@ -106,16 +101,4 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       return handler;
    }
 
-   private static final class SqlHandlerComparator implements Comparator<SqlHandler<?>> {
-
-      @Override
-      public int compare(SqlHandler<?> left, SqlHandler<?> right) {
-         int result = left.getLevel() - right.getLevel();
-         if (result == 0) {
-            result = left.getPriority() - right.getPriority();
-         }
-         return result;
-      }
-
-   }
 }

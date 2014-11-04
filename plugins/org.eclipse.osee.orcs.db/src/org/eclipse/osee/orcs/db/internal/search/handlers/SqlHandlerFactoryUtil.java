@@ -98,7 +98,7 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchAncestorOf.class, BranchAncestorOfSqlHandler.class);
       handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
 
-      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
    public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
@@ -120,6 +120,6 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaTxGetHead.class, TxGetHeadSqlHandler.class);
       handleMap.put(CriteriaTxGetPrior.class, TxGetPriorSqlHandler.class);
 
-      return new SqlHandlerFactoryImpl(logger, identityService, handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 }

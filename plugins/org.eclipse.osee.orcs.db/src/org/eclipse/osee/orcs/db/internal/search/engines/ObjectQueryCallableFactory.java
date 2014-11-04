@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -23,19 +24,18 @@ import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
-import org.eclipse.osee.orcs.db.internal.search.util.ArtifactDataCountHandler;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactQueryCallableFactory implements QueryCallableFactory {
+public class ObjectQueryCallableFactory implements QueryCallableFactory {
 
    private final Log logger;
    private final DataLoaderFactory objectLoader;
    private final QuerySqlContextFactory queryContextFactory;
    private final QueryFilterFactory factory;
 
-   public ArtifactQueryCallableFactory(Log logger, DataLoaderFactory objectLoader, QuerySqlContextFactory queryEngine, QueryFilterFactoryImpl factory) {
+   public ObjectQueryCallableFactory(Log logger, DataLoaderFactory objectLoader, QuerySqlContextFactory queryEngine, QueryFilterFactoryImpl factory) {
       super();
       this.logger = logger;
       this.objectLoader = objectLoader;
@@ -45,13 +45,13 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
 
    @Override
    public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
-      return new AbstractArtifactSearchCallable(logger, session, queryData) {
+      return new AbstractObjectSearchCallable(logger, session, queryData) {
 
          @Override
          protected Integer innerCall() throws Exception {
             int count = -1;
             if (isPostProcessRequired()) {
-               count = loadAndGetArtifactCount(null, true);
+               count = loadAndGetCount(null, true);
             } else {
                count = getCount();
             }
@@ -70,19 +70,19 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
 
    @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData, final LoadDataHandler handler) {
-      return new AbstractArtifactSearchCallable(logger, session, queryData) {
+      return new AbstractObjectSearchCallable(logger, session, queryData) {
 
          @Override
          protected Integer innerCall() throws Exception {
             boolean enableFilter = isPostProcessRequired();
-            return loadAndGetArtifactCount(handler, enableFilter);
+            return loadAndGetCount(handler, enableFilter);
          }
       };
    }
 
-   private abstract class AbstractArtifactSearchCallable extends AbstractSearchCallable {
+   private abstract class AbstractObjectSearchCallable extends AbstractSearchCallable {
 
-      public AbstractArtifactSearchCallable(Log logger, OrcsSession session, QueryData queryData) {
+      public AbstractObjectSearchCallable(Log logger, OrcsSession session, QueryData queryData) {
          super(logger, session, queryData);
       }
 
@@ -94,7 +94,7 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
          return factory.isFilterRequired(getQueryData());
       }
 
-      protected int loadAndGetArtifactCount(LoadDataHandler handler, boolean enableFilter) throws Exception {
+      protected int loadAndGetCount(LoadDataHandler handler, boolean enableFilter) throws Exception {
          QuerySqlContext queryContext = queryContextFactory.createQueryContext(getSession(), getQueryData());
          checkForCancelled();
 
@@ -108,9 +108,9 @@ public class ArtifactQueryCallableFactory implements QueryCallableFactory {
                loader.withLoadLevel(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
             }
          }
-         ArtifactDataCountHandler countingHandler = factory.createHandler(this, getQueryData(), queryContext, handler);
+         CountingLoadDataHandler countingHandler = factory.createHandler(this, getQueryData(), queryContext, handler);
          loader.load(this, countingHandler);
-         return countingHandler.getArtifactCount();
+         return countingHandler.getCount();
       }
    }
 
