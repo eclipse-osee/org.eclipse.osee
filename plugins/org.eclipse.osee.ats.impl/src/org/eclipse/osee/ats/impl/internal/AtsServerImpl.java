@@ -116,6 +116,7 @@ public class AtsServerImpl implements IAtsServer {
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAtsVersionService versionService;
    private IRelationResolver relationResolver;
+   private boolean emailEnabled = true;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -368,15 +369,17 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public void sendNotifications(AtsNotificationCollector notifications) {
-      if (notifiers.isEmpty() || !isProduction()) {
-         OseeLog.log(AtsServerImpl.class, Level.INFO, "Osee Notification Disabled");
-      } else {
-         workItemNotificationProcessor =
-            new WorkItemNotificationProcessor(this, workItemFactory, userService, attributeResolverService);
-         notificationEventProcessor =
-            new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
-               getConfigValue("NoReplyEmail"));
-         notificationEventProcessor.sendNotifications(notifications, notifiers);
+      if (isEmailEnabled()) {
+         if (notifiers.isEmpty() || !isProduction()) {
+            OseeLog.log(AtsServerImpl.class, Level.INFO, "Osee Notification Disabled");
+         } else {
+            workItemNotificationProcessor =
+               new WorkItemNotificationProcessor(this, workItemFactory, userService, attributeResolverService);
+            notificationEventProcessor =
+               new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
+                  getConfigValue("NoReplyEmail"));
+            notificationEventProcessor.sendNotifications(notifications, notifiers);
+         }
       }
    }
 
@@ -442,5 +445,14 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IRelationResolver getRelationResolver() {
       return relationResolver;
+   }
+
+   public boolean isEmailEnabled() {
+      return emailEnabled;
+   }
+
+   @Override
+   public void setEmailEnabled(boolean emailEnabled) {
+      this.emailEnabled = emailEnabled;
    }
 }

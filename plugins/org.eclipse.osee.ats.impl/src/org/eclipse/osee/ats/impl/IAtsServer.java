@@ -88,4 +88,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    String getAtsId(Object obj);
 
+   void setEmailEnabled(boolean emailEnabled);
+
 }
