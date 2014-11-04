@@ -119,6 +119,11 @@ public interface ArtifactQueryBuilder<T> {
    T andExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
 
    /**
+    * Search criteria that checks for the non-existence of an attribute type(s).
+    */
+   T andNotExists(IAttributeType attributeType) throws OseeCoreException;
+
+   /**
     * Search criteria that follows the relation link ending on the given side
     * 
     * @param relationType the type to start following the link from

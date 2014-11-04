@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
@@ -63,6 +64,10 @@ public class CriteriaFactory {
 
    public Criteria createExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       return new CriteriaAttributeTypeExists(attributeTypes);
+   }
+
+   public Criteria createNotExistsCriteria(IAttributeType attributeType) throws OseeCoreException {
+      return new CriteriaAttributeTypeNotExists(attributeType);
    }
 
    public Criteria createExistsCriteria(IRelationType relationType) throws OseeCoreException {
