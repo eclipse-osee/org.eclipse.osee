@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.osee.client.demo.DemoTraceability;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -61,24 +61,43 @@ public final class ImportTraceUnitsOperationTest {
 
    @Rule
    public TemporaryFolder tempFolder = new TemporaryFolder();
+   private static final String topLevelFolderName = "topLevelFolder";
+
+   private static final String TEST_ONE_FOLDER_NAME = "abc.ss";
+   private static final String TEST_TWO_FOLDER_NAME = "def.ss";
+   private static final String TEST_THREE_FOLDER_NAME = "ryan.ss";
+   private static final String TEST_FOUR_FOLDER_NAME = "jason.ss";
+   private static final String TEST_FIVE_FOLDER_NAME = "megumi.ss";
 
    private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
    private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
    private static final String TEST_THREE_FILE = "ImportTraceUnitsTest3.txt";
    private static final String TEST_FOUR_FILE = "ImportTraceUnitsTest4.txt";
    private static final String TEST_FIVE_FILE = "ImportTraceUnitsTest5.txt";
+
    private static final int RUNS = 3;
+
+   private final String[] fileNames = {TEST_ONE_FILE, TEST_TWO_FILE, TEST_THREE_FILE, TEST_FOUR_FILE, TEST_FIVE_FILE};
+   private final String[] folderNames = {
+      TEST_ONE_FOLDER_NAME,
+      TEST_TWO_FOLDER_NAME,
+      TEST_THREE_FOLDER_NAME,
+      TEST_FOUR_FOLDER_NAME,
+      TEST_FIVE_FOLDER_NAME};
 
    private static final List<String> expectedReqs = Arrays.asList("Robot Object", "Haptic Constraints",
       "Robot Interfaces", "Individual robot events", "Collaborative Robot");
 
    private IOseeBranch branch;
    private Branch importToBranch;
+   private File testFile;
 
    @Before
    public void setup() throws Exception {
-      branch = TokenFactory.createBranch( testInfo.getQualifiedTestName());
+      branch = TokenFactory.createBranch(testInfo.getQualifiedTestName());
       importToBranch = BranchManager.createWorkingBranch(SAW_Bld_1, branch);
+
+      setupDirectoryStructure();
    }
 
    @After
@@ -90,81 +109,80 @@ public final class ImportTraceUnitsOperationTest {
 
    @Test
    public void testImportTraceUnitsJob() throws Exception {
-      URI mockURI1 = getMockFile(TEST_ONE_FILE, "some text");
-      URI mockURI2 = getMockFile(TEST_TWO_FILE, "some text");
 
       ArrayList<Integer> gammas = new ArrayList<Integer>(RUNS);
 
       for (int i = 0; i < RUNS; i++) {
-         runOperation(Arrays.asList(mockURI1));
+         runOperation(Arrays.asList(testFile.toURI()));
 
-         Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, TEST_ONE_FILE, importToBranch);
-         Assert.assertNotNull(artifact);
+         for (int j = 0; j < fileNames.length; j++) {
+            Artifact artifact =
+               ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, fileNames[j], importToBranch);
+            Assert.assertNotNull(artifact);
 
-         Integer gamma = artifact.getGammaId();
-         if (!gammas.contains(gamma)) {
-            gammas.add(gamma);
+            Integer gamma = artifact.getGammaId();
+            if (!gammas.contains(gamma)) {
+               gammas.add(gamma);
+            }
+
+            Assert.assertEquals("Code Units", artifact.getParent().getName());
+
+            List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
+            Assert.assertEquals(5, reqArtifacts.size());
+
+            Collection<String> actual = Artifacts.getNames(reqArtifacts);
+
+            Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
          }
-
-         Assert.assertEquals("Code Units", artifact.getParent().getName());
-
-         List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
-         Assert.assertEquals(5, reqArtifacts.size());
-
-         Collection<String> actual = Artifacts.getNames(reqArtifacts);
-
-         Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
       }
-      // make sure multiple artifacts were not created
-      Assert.assertEquals(1, gammas.size());
-
-      // create a 2nd artifact
-      runOperation(Arrays.asList(mockURI2));
-      Artifact artifact =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, TEST_TWO_FILE, importToBranch);
-      Assert.assertNotNull(artifact);
-      // make sure a new artifact was created
-      Assert.assertFalse(gammas.contains(artifact.getGammaId()));
    }
 
-   @Test
-   public void testMultipleUris() throws Exception {
-      URI mockURI3 = getMockFile(TEST_THREE_FILE, "some text");
-      URI mockURI4 = getMockFile(TEST_FOUR_FILE, "some text");
-      URI mockURI5 = getMockFile(TEST_FIVE_FILE, "some text");
-
-      Iterable<URI> uris = Arrays.asList(mockURI3, mockURI4, mockURI5);
-      runOperation(uris);
-
-      for (String fileName : Arrays.asList(TEST_THREE_FILE, TEST_FOUR_FILE, TEST_FIVE_FILE)) {
-         Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.CodeUnit, fileName, importToBranch);
-         Assert.assertNotNull(artifact);
-         List<Artifact> reqArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.CodeRequirement_Requirement);
-         Assert.assertEquals(5, reqArtifacts.size());
-
-         Collection<String> actual = Artifacts.getNames(reqArtifacts);
-
-         Assert.assertFalse(Compare.isDifferent(expectedReqs, actual));
+   private void setupDirectoryStructure() throws Exception {
+      File topLevelFolder = new File(tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName);
+      if (!topLevelFolder.exists()) {
+         tempFolder.newFolder(topLevelFolderName);
+      }
+      for (String folderName : folderNames) {
+         File tempFile =
+            new File(
+               tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderName);
+         if (!tempFile.exists()) {
+            tempFolder.newFolder(topLevelFolderName + IPath.SEPARATOR + folderName);
+         }
+      }
+      for (int i = 0; i < fileNames.length; i++) {
+         File codeUnitFile =
+            new File(
+               tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderNames[i] + IPath.SEPARATOR + fileNames[i]);
+         if (!codeUnitFile.exists()) {
+            codeUnitFile.createNewFile();
+            Lib.writeStringToFile("Dummy String", codeUnitFile);
+         }
       }
 
-   }
+      testFile = new File(tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + "testFile.txt");
+      if (!testFile.exists()) {
+         testFile.createNewFile();
+      }
 
-   private URI getMockFile(String fileName, String text) throws Exception {
-      File testFile = tempFolder.newFile(fileName);
-      Lib.writeStringToFile(text, testFile);
-      return testFile.toURI();
+      String pathNames = "";
+      for (String folderName : folderNames) {
+         Lib.writeStringToFile(
+            pathNames + tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderName + "\n",
+            testFile);
+         pathNames = Lib.fileToString(testFile);
+      }
    }
 
    private void runOperation(Iterable<URI> files) throws OseeCoreException {
       boolean isRecursive = false;
       boolean isPersistChanges = true;
-      boolean fileWithMultiPaths = false;
+      boolean fileWithMultiPaths = true;
+      boolean addGuidToSourceFile = false;
 
       IOperation op =
          new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive, isPersistChanges,
-            fileWithMultiPaths, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
+            fileWithMultiPaths, addGuidToSourceFile, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
       Operations.executeWorkAndCheckStatus(op);
    }
 }

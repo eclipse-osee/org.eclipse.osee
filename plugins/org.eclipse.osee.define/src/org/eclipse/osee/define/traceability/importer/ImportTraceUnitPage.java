@@ -80,6 +80,10 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String FILE_WITH_PATHS_TOOLTIP =
       "Select when using a source file with multiple paths separated with newlines.";
 
+   private static final String ADD_GUID_TO_SOURCE_FILE_BUTTON = "Add GUID to Source";
+   private static final String ADD_GUID_TO_SOURCE_FILE_TOOLTIP =
+      "When selected, the GUID will be added to the source file. Note: You will need write access to the files to use this selection.";
+
    private static final String SELECTED_TRACE_HANDLERS_KEY = "trace.handlers";
    private static final String BRANCH_KEY = "branch.selected";
    private static final String SOURCE_URI_KEY = "source.uri";
@@ -87,6 +91,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private static final String IS_ART_PERSIST_ALLOWED_KEY = "is.art.persist.allowed";
    private static final String IS_FOLDER_RECURSION_KEY = "is.folder.recurse.allowed";
    private static final String IS_FILE_WITH_MULTI_PATHS_KEY = "is.file.with.multi.paths";
+   private static final String IS_ADD_GUID_TO_SOURCE_KEY = "is.add.guid.to.source";
 
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
@@ -94,6 +99,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private final MutableBoolean isArtifactPersistanceAllowed;
    private List<IResource> currentResourceSelection;
    private final MutableBoolean isFileContainingMultiplePaths;
+   private final MutableBoolean isAddGuidToSourceFileAllowed;
    private final Map<Button, Boolean> traceUnitHandlers;
    private final Map<String, Button> optionButtons;
 
@@ -107,6 +113,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       this.isFolderRecursionAllowed = new MutableBoolean(false);
       this.isArtifactPersistanceAllowed = new MutableBoolean(false);
       this.isFileContainingMultiplePaths = new MutableBoolean(false);
+      this.isAddGuidToSourceFileAllowed = new MutableBoolean(true);
 
       if (selection != null && selection.size() >= 1) {
          currentResourceSelection = new LinkedList<IResource>();
@@ -265,6 +272,8 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          isFolderRecursionAllowed);
       createOptionButton(composite, IS_FILE_WITH_MULTI_PATHS_KEY, FILE_WITH_PATHS_BUTTON, FILE_WITH_PATHS_TOOLTIP,
          isFileContainingMultiplePaths);
+      createOptionButton(composite, IS_ADD_GUID_TO_SOURCE_KEY, ADD_GUID_TO_SOURCE_FILE_BUTTON,
+         ADD_GUID_TO_SOURCE_FILE_TOOLTIP, isAddGuidToSourceFileAllowed);
    }
 
    private void createOptionButton(Composite parent, String buttonId, String buttonText, String buttonToolTip, final MutableBoolean toModify) {
@@ -351,6 +360,10 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
 
    public boolean isFileContainingMultiplePaths() {
       return isWidgetAccessible(directoryFileSelector) ? !directoryFileSelector.isDirectorySelected() && isFileContainingMultiplePaths.getValue() : isFileContainingMultiplePaths.getValue();
+   }
+
+   public boolean isAddGuidToSourceFileAllowed() {
+      return isAddGuidToSourceFileAllowed.getValue();
    }
 
    public String[] getTraceUnitHandlerIds() {
@@ -443,6 +456,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          settings.put(IS_ART_PERSIST_ALLOWED_KEY, isArtifactPersistanceAllowed());
          settings.put(IS_FOLDER_RECURSION_KEY, isFolderRecursionAllowed());
          settings.put(IS_FILE_WITH_MULTI_PATHS_KEY, isFileContainingMultiplePaths());
+         settings.put(IS_ADD_GUID_TO_SOURCE_KEY, isAddGuidToSourceFileAllowed());
       }
    }
 

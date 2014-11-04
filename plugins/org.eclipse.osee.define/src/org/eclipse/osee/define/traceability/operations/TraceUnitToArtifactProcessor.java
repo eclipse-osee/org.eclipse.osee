@@ -69,24 +69,28 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    private CodeUnitData codeUnitData;
    private TestUnitData testUnitData;
+   private final boolean addGuidToSourceFile;
 
    private final IOseeBranch importIntoBranch;
    private SkynetTransaction transaction;
+   private HierarchyHandler handler;
 
    private final HashCollection<TraceUnit, TraceMark> reportTraceNotFound;
    private final HashCollection<String, String> unknownRelationError;
    private final Set<String> unRelatedUnits;
 
-   public TraceUnitToArtifactProcessor(IOseeBranch importIntoBranch) {
+   public TraceUnitToArtifactProcessor(IOseeBranch importIntoBranch, boolean addGuidToSourceFile) {
       this.importIntoBranch = importIntoBranch;
       this.reportTraceNotFound = new HashCollection<TraceUnit, TraceMark>(false, HashSet.class);
       this.unknownRelationError = new HashCollection<String, String>(false, HashSet.class);
       this.unRelatedUnits = new HashSet<String>();
+      this.addGuidToSourceFile = addGuidToSourceFile;
    }
 
    @Override
    public void clear() {
       transaction = null;
+      handler = null;
       if (requirementData != null) {
          requirementData.reset();
          requirementData = null;
@@ -104,6 +108,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    @Override
    public void initialize(IProgressMonitor monitor) {
       transaction = null;
+      handler = null;
       requirementData = new RequirementData(importIntoBranch);
       if (!monitor.isCanceled()) {
          requirementData.initialize(monitor);
@@ -144,6 +149,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(importIntoBranch, "Importing Trace Unit(s)");
+         handler = new HierarchyHandler(transaction);
       }
       boolean hasChange = false;
       boolean artifactWasCreated = false;
@@ -162,7 +168,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             }
          }
          if (guid != null) {
-            if (!GUID.isValid(guid)) {
+            if (!GUID.isValid(guid) && addGuidToSourceFile) {
                try {
                   guidUtility.removeSourceTag(uriPath);
                } catch (IOException ex) {
@@ -188,12 +194,13 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          artifactWasCreated = true;
       }
 
-      if (guidUtility != null && !traceUnitArtifact.getGuid().equals(guid)) {
+      if (guidUtility != null && !traceUnitArtifact.getGuid().equals(guid) && addGuidToSourceFile) {
          try {
             guidUtility.removeSourceTag(traceUnit.getUriPath());
             guidUtility.addSourceTag(traceUnit.getUriPath(), traceUnitArtifact.getGuid());
          } catch (IOException ex) {
             OseeExceptions.wrapAndThrow(ex);
+
          }
       }
 
@@ -231,7 +238,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       if (hasChange || artifactWasCreated) {
-         HierarchyHandler.addArtifact(transaction, traceUnitArtifact);
+         handler.addArtifact(traceUnitArtifact);
          if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
             TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
          }

@@ -28,16 +28,18 @@ public class ImportTraceUnitsOperation extends AbstractOperation {
    private final boolean isRecursive;
    private final boolean isPersistChanges;
    private final boolean fileWithMultiPaths;
+   private final boolean addGuidToSourceFile;
    private final Iterable<URI> sources;
    private final String[] traceTypeIds;
 
-   public ImportTraceUnitsOperation(String jobName, IOseeBranch importToBranch, Iterable<URI> sources, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, String... traceHandlerIds) {
+   public ImportTraceUnitsOperation(String jobName, IOseeBranch importToBranch, Iterable<URI> sources, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, boolean addGuidToSourceFile, String... traceHandlerIds) {
       super("ImportTraceUnitsOperation", Activator.PLUGIN_ID);
       this.importToBranch = importToBranch;
       this.sources = sources;
       this.isRecursive = isRecursive;
       this.isPersistChanges = isPersistChanges;
       this.fileWithMultiPaths = fileWithMultiPaths;
+      this.addGuidToSourceFile = addGuidToSourceFile;
       if (traceHandlerIds == null) {
          traceTypeIds = new String[0];
       } else {
@@ -50,10 +52,10 @@ public class ImportTraceUnitsOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
       if (isPersistChanges) {
          TraceUnitFromResourceOperation.importTraceFromTestUnits(monitor, sources, isRecursive, fileWithMultiPaths,
-            importToBranch, traceTypeIds);
+            importToBranch, addGuidToSourceFile, traceTypeIds);
       } else {
          TraceUnitFromResourceOperation.printTraceFromTestUnits(monitor, sources, isRecursive, fileWithMultiPaths,
-            traceTypeIds);
+            addGuidToSourceFile, traceTypeIds);
       }
    }
 

@@ -39,7 +39,7 @@ public class TraceUnitFromResourceOperation {
       return TraceUnitExtensionManager.getInstance().getTraceUnitHandlerIds();
    }
 
-   private static ResourceToTraceUnit getResourceToTestUnit(Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, String... testUnitTraceIds) throws OseeCoreException {
+   private static ResourceToTraceUnit getResourceToTestUnit(Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, String... testUnitTraceIds) throws OseeCoreException {
       checkSourceArgument(sources);
       checkTraceUnitHandlerIdsArgument(testUnitTraceIds);
 
@@ -55,9 +55,9 @@ public class TraceUnitFromResourceOperation {
       return operation;
    }
 
-   public static void printTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void printTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, boolean addGuidToSourceFile, String... traceUnitHandlerIds) throws OseeCoreException {
       ResourceToTraceUnit operation =
-         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, addGuidToSourceFile, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -65,15 +65,15 @@ public class TraceUnitFromResourceOperation {
       operation.execute(monitor);
    }
 
-   public static void importTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, IOseeBranch importToBranch, String... traceUnitHandlerIds) throws OseeCoreException {
+   public static void importTraceFromTestUnits(IProgressMonitor monitor, Iterable<URI> sources, boolean isRecursive, boolean isFileWithMultiplePaths, IOseeBranch importToBranch, boolean addGuidToSourceFile, String... traceUnitHandlerIds) throws OseeCoreException {
       checkBranchArguments(importToBranch);
 
       ResourceToTraceUnit operation =
-         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, traceUnitHandlerIds);
+         getResourceToTestUnit(sources, isRecursive, isFileWithMultiplePaths, addGuidToSourceFile, traceUnitHandlerIds);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
-      operation.addTraceProcessor(new TraceUnitToArtifactProcessor(importToBranch));
+      operation.addTraceProcessor(new TraceUnitToArtifactProcessor(importToBranch, addGuidToSourceFile));
       operation.execute(monitor);
    }
 

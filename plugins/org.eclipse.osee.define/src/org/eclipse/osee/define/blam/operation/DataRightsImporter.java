@@ -137,13 +137,13 @@ public class DataRightsImporter extends AbstractBlam {
             String dataRightsClassification = row[dataRightsIndex];
             String fileName = row[fileNameIndex];
             String dataRightsBasis = row[dataRightsBasisIndex];
-            if (Strings.isValid(SME)) {
+            if (!Strings.isValid(SME)) {
                SME = "Unspecified";
             }
-            if (Strings.isValid(dataRightsClassification)) {
+            if (!Strings.isValid(dataRightsClassification)) {
                dataRightsClassification = "Unspecified";
             }
-            if (Strings.isValid(dataRightsBasis)) {
+            if (!Strings.isValid(dataRightsBasis)) {
                dataRightsBasis = "Unspecified";
             }
             try {

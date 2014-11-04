@@ -78,13 +78,14 @@ public class TraceResourceDropOperation extends AbstractOperation {
          if (persistChanges) {
             transaction = TransactionManager.createTransaction(branch, "TraceResourceDrop");
          }
+         HierarchyHandler handler = new HierarchyHandler(transaction);
 
          Map<Artifact, String> nameUpdateRequired = new TreeMap<Artifact, String>();
 
          for (URI resource : resources) {
             File file = new File(resource);
             if (!file.isDirectory()) {
-               processFile(file, transaction, nameUpdateRequired);
+               processFile(file, handler, transaction, nameUpdateRequired);
             }
          }
 
@@ -108,7 +109,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       }
    }
 
-   private void processFile(File file, SkynetTransaction transaction, Map<Artifact, String> nameUpdateRequired) throws Exception {
+   private void processFile(File file, HierarchyHandler handler, SkynetTransaction transaction, Map<Artifact, String> nameUpdateRequired) throws Exception {
       CharBuffer fileBuffer = Lib.fileToCharBuffer(file);
       URI fileUri = file.toURI();
       IFileStore fileStore = EFS.getStore(fileUri);
@@ -133,7 +134,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       if (testUnitArtifact == null) {
          testUnitArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, null, tag);
          testUnitArtifact.setName(name);
-         HierarchyHandler.addArtifact(transaction, testUnitArtifact);
+         handler.addArtifact(testUnitArtifact);
          if (tagSource) {
             tagger.addSourceTag(fileUri, testUnitArtifact.getGuid());
             refreshFile(file.getAbsolutePath());

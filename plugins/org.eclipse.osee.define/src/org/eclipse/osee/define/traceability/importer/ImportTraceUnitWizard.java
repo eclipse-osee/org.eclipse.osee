@@ -44,10 +44,10 @@ public class ImportTraceUnitWizard extends Wizard implements IImportWizard {
          Iterable<URI> sources = page.getSourceURI();
          String[] traceUnitHandlerIds = page.getTraceUnitHandlerIds();
          boolean fileWithMultiPaths = page.isFileContainingMultiplePaths();
-
+         boolean addGuidToSourceFile = page.isAddGuidToSourceFileAllowed();
          IOperation op =
             new ImportTraceUnitsOperation("Import Trace Units", importToBranch, sources, isRecursive, isPersistChanges,
-               fileWithMultiPaths, traceUnitHandlerIds);
+               fileWithMultiPaths, addGuidToSourceFile, traceUnitHandlerIds);
          Operations.executeAsJob(op, true);
          page.saveWidgetValues();
       } catch (Exception ex) {
