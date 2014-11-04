@@ -369,9 +369,9 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "    AND att.attr_type_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
          "    GROUP BY attr.art_id\n" + //
          " )\n" + //
-         "SELECT max(txs4.transaction_id) as transaction_id, art2.art_id, txs4.branch_id\n" + //
+         "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
          " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_txs txs4, osee_relation_link rel1, artUuid1, attrExt1\n" + //
+         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_relation_link rel1, osee_txs txs4, artUuid1, attrExt1\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
          " AND \n" + //
@@ -406,8 +406,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "txs4.transaction_id <= ?\n" + //
          " AND \n" + //
          "txs4.mod_type <> 3 AND txs4.branch_id = ?\n" + //
-         " GROUP BY art2.art_id, txs4.branch_id\n" + //
-         " ORDER BY art2.art_id, txs4.branch_id";
+         " GROUP BY art2.art_id, txs2.branch_id\n" + //
+         " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES, ATTR_TYPE_EXITS, REL_TYPE_EXISTS);
       OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
@@ -642,12 +642,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    public void testQueryExistsNoBranch() throws OseeCoreException {
 
       String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs4.branch_id\n" + // 
+         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
          "osee_attribute att1, osee_txs txs3, " + //
-         "osee_txs txs4, osee_relation_link rel1\n" + //
+         "osee_relation_link rel1, osee_txs txs4\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
@@ -670,7 +670,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "rel1.gamma_id = txs4.gamma_id\n" + //
          " AND \n" + //
          "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs4.branch_id";
+         " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -697,12 +697,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryExistsWithBranch() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs4.branch_id\n" + // 
+         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
          "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
          "osee_attribute att1, osee_txs txs3, " + //
-         "osee_txs txs4, osee_relation_link rel1\n" + //
+         "osee_relation_link rel1, osee_txs txs4\n" + //
          " WHERE \n" + //
          "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
          " AND \n" + //
@@ -725,7 +725,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "rel1.gamma_id = txs4.gamma_id\n" + //
          " AND \n" + //
          "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs4.branch_id";
+         " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -756,7 +756,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testRelatedTo() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs3.branch_id\n" + //
+         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
          " FROM \n" + //
          "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
          " WHERE \n" + //
@@ -775,7 +775,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          "rel1.gamma_id = txs3.gamma_id\n" + //
          " AND \n" + //
          "txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs3.branch_id";
+         " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, IDS, RELATED_TO);
 
@@ -940,17 +940,15 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //      
       "NOT EXISTS (SELECT 1 FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_type_id = ?\n" + //
       " AND \n" + //
       "(rel.a_art_id = art1.art_id OR rel.b_art_id = art1.art_id)\n" + //
       " AND \n" + //
       "rel.gamma_id = txs.gamma_id\n" + //
       " AND \n" + //
-      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //
-      " AND \n" + //
-      "art1.gamma_id = txs1.gamma_id\n" + //
-      " AND \n" + //
-      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //     
       " ORDER BY art1.art_id, txs1.branch_id";
 
       Criteria relTypeNotExists = new CriteriaRelationTypeNotExists(CoreRelationTypes.Default_Hierarchical__Child);
@@ -972,6 +970,8 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
       "NOT EXISTS (SELECT 1 FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_type_id = ?\n" + //
       " AND \n" + //
       "rel.b_art_id = art1.art_id\n" + //
@@ -979,10 +979,6 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "rel.gamma_id = txs.gamma_id\n" + //
       " AND \n" + //
       "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //
-      " AND \n" + //
-      "art1.gamma_id = txs1.gamma_id\n" + //
-      " AND \n" + //
-      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
       Criteria relTypeSideNotExists =
@@ -1003,15 +999,17 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    public void testRelationTypeSideExists() throws OseeCoreException {
       String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
-      "osee_artifact art1, osee_txs txs1, osee_relation_link rel1\n" + //
+      "osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2\n" + //
       " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
       "rel1.rel_link_type_id = ?\n" + //
       " AND \n" + //
       "rel1.b_art_id = art1.art_id\n" + //
       " AND \n" + //
-      "rel1.gamma_id = txs1.gamma_id\n" + // 
+      "rel1.gamma_id = txs2.gamma_id\n" + // 
       " AND \n" + //
-      "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      "txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
       Criteria relTypeSideNotExists = new CriteriaRelationTypeSideExists(CoreRelationTypes.Default_Hierarchical__Child);
@@ -1021,7 +1019,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       Assert.assertEquals(expected, context.getSql());
 
       List<Object> parameters = context.getParameters();
-      Assert.assertEquals(2, parameters.size());
+      Assert.assertEquals(3, parameters.size());
 
       List<AbstractJoinQuery> joins = context.getJoins();
       Assert.assertEquals(0, joins.size());

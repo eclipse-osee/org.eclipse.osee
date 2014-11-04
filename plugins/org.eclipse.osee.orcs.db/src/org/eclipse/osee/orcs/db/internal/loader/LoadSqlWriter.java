@@ -36,7 +36,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
       String artJoinAlias = getLastAlias(TableEnum.ARTIFACT_JOIN_TABLE);
 

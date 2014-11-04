@@ -11,8 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -23,7 +25,8 @@ public abstract class AbstractRelationSqlHandler<T extends Criteria> extends Sql
 
    protected T criteria;
 
-   protected String txsAlias;
+   private String artAlias;
+   private String artTxsAlias;
 
    @Override
    public void setData(T criteria) {
@@ -34,9 +37,22 @@ public abstract class AbstractRelationSqlHandler<T extends Criteria> extends Sql
    public void addTables(AbstractSqlWriter writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
-         writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+   }
+
+   @Override
+   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      boolean modified = false;
+      if (artAlias != null && artTxsAlias != null) {
+         writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
+         writer.write(" AND ");
+         writer.write(writer.getTxBranchFilter(artTxsAlias));
+         writer.writeAndLn();
+         modified = true;
+      }
+      return modified;
    }
 
    @Override

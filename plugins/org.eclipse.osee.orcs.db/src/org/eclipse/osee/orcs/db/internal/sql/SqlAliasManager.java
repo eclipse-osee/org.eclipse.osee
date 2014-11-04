@@ -11,12 +11,18 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import com.google.common.base.Supplier;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 
 /**
  * @author Roberto E. Escobar
@@ -24,51 +30,51 @@ import java.util.Map;
 public class SqlAliasManager {
 
    private final HashMap<String, Alias> aliasCounter = new HashMap<String, Alias>();
-   private final List<Map<String, LinkedList<String>>> usedAliases = new ArrayList<Map<String, LinkedList<String>>>();
-
+   private final List<AliasSet> usedAliases = new ArrayList<AliasSet>();
    private int level = 0;
 
-   private int getLevel() {
+   public int getLevel() {
       return level;
    }
 
-   private Map<String, LinkedList<String>> getAliasByLevel(int level) {
+   private AliasSet getAliasByLevel(int level) {
+      AliasSet dataSet = null;
       if (level < usedAliases.size()) {
-         return usedAliases.get(level);
-      } else {
-         return Collections.emptyMap();
+         dataSet = usedAliases.get(level);
       }
+      return dataSet;
    }
 
-   public boolean hasAlias(AliasEntry table) {
-      int level = getLevel();
-      return hasAlias(table, level);
+   public boolean hasAlias(int level, AliasEntry table, ObjectType objectType) {
+      return !getAliases(level, table, objectType).isEmpty();
    }
 
-   public boolean hasAlias(AliasEntry table, int level) {
-      return !getAliases(table, level).isEmpty();
-   }
-
-   public List<String> getAliases(AliasEntry table, int level) {
-      List<String> linkedList = getAliasByLevel(level).get(table.getPrefix());
-      return linkedList != null ? linkedList : Collections.<String> emptyList();
-   }
-
-   public String getFirstAlias(TableEnum table, int level) {
-      return getAliases(table, level).get(0);
-   }
-
-   public String getLastAlias(AliasEntry table) {
-      int currentLevel = getLevel();
-      LinkedList<String> values = getAliasByLevel(currentLevel).get(table.getPrefix());
-      String toReturn = null;
-      if (values != null) {
-         toReturn = values.getLast();
+   public List<String> getAliases(int level, AliasEntry table, ObjectType objectType) {
+      List<String> toReturn;
+      AliasSet dataSet = getAliasByLevel(level);
+      if (dataSet != null) {
+         if (objectType == null || ObjectType.UNKNOWN == objectType) {
+            toReturn = dataSet.getAliases(table.getPrefix());
+         } else {
+            toReturn = dataSet.getAliases(table.getPrefix(), objectType);
+         }
+      } else {
+         toReturn = Collections.emptyList();
       }
       return toReturn;
    }
 
-   public String getNextAlias(AliasEntry table) {
+   public String getFirstAlias(int level, AliasEntry table, ObjectType objectType) {
+      Collection<String> aliases = getAliases(level, table, objectType);
+      return Iterables.getFirst(aliases, null);
+   }
+
+   public String getLastAlias(int level, AliasEntry table, ObjectType objectType) {
+      Collection<String> aliases = getAliases(level, table, objectType);
+      return Iterables.getLast(aliases, null);
+   }
+
+   public String getNextAlias(int level, AliasEntry table, ObjectType type) {
       String prefix = table.getPrefix();
 
       Alias alias = aliasCounter.get(prefix);
@@ -77,28 +83,20 @@ public class SqlAliasManager {
          aliasCounter.put(prefix, alias);
       }
       String aliasValue = alias.next();
-
-      int level = getLevel();
-      putAlias(level, prefix, aliasValue);
+      putAlias(level, prefix, type, aliasValue);
       return aliasValue;
    }
 
-   private void putAlias(int level, String prefix, String alias) {
-      Map<String, LinkedList<String>> map = null;
+   private void putAlias(int level, String key, ObjectType type, String alias) {
+      AliasSet dataSet = null;
       if (level < usedAliases.size()) {
-         map = usedAliases.get(level);
+         dataSet = usedAliases.get(level);
       }
-      if (map == null) {
-         map = new LinkedHashMap<String, LinkedList<String>>();
-         usedAliases.add(level, map);
+      if (dataSet == null) {
+         dataSet = new AliasSet();
+         usedAliases.add(level, dataSet);
       }
-
-      LinkedList<String> values = map.get(prefix);
-      if (values == null) {
-         values = new LinkedList<String>();
-         map.put(prefix, values);
-      }
-      values.add(alias);
+      dataSet.putAlias(key, type, alias);
    }
 
    public void nextLevel() {
@@ -113,7 +111,42 @@ public class SqlAliasManager {
       usedAliases.clear();
    }
 
-   private class Alias {
+   private static final class AliasSet {
+
+      private final Map<String, ListMultimap<ObjectType, String>> used =
+         new HashMap<String, ListMultimap<ObjectType, String>>();
+
+      public List<String> getAliases(String key, ObjectType type) {
+         ListMultimap<ObjectType, String> data = used.get(key);
+         return data != null ? data.get(type) : Collections.<String> emptyList();
+      }
+
+      public List<String> getAliases(String key) {
+         Multimap<ObjectType, String> data = used.get(key);
+         return data != null ? Lists.newArrayList(data.values()) : Collections.<String> emptyList();
+      }
+
+      public void putAlias(String key, ObjectType type, String alias) {
+         ListMultimap<ObjectType, String> multimap = used.get(key);
+         if (multimap == null) {
+            multimap = newListMultimap();
+            used.put(key, multimap);
+         }
+         multimap.put(type, alias);
+      }
+
+      private static <K, V> ListMultimap<K, V> newListMultimap() {
+         Map<K, Collection<V>> map = Maps.newLinkedHashMap();
+         return Multimaps.newListMultimap(map, new Supplier<List<V>>() {
+            @Override
+            public List<V> get() {
+               return Lists.newArrayList();
+            }
+         });
+      }
+   }
+
+   private final class Alias {
       private final String aliasPrefix;
       private int aliasSuffix;
 

@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -82,7 +83,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
          jguidAlias = writer.addTable(TableEnum.CHAR_JOIN_TABLE);
       }
       artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
    }
 
    @Override

@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -39,7 +40,7 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts> {
          artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txsAliases.isEmpty()) {
-         txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+         txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
    }
 

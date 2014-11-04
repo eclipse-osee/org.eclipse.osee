@@ -24,6 +24,8 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      super.addPredicates(writer);
+
       IRelationType type = criteria.getType();
 
       writer.write("NOT EXISTS (SELECT 1 FROM ");
@@ -58,21 +60,6 @@ public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<
       writer.writeAndLn();
       writer.write(writer.getTxBranchFilter("txs"));
       writer.write(")");
-      writer.writeAndLn();
-
-      for (int index = 0; index < aSize; index++) {
-         String artAlias = aliases.get(index);
-         writer.write(artAlias);
-         writer.write(".gamma_id = ");
-         writer.write(txsAlias);
-         writer.write(".gamma_id");
-         if (index + 1 < aSize) {
-            writer.writeAndLn();
-         }
-      }
-      writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
-
       return true;
    }
 

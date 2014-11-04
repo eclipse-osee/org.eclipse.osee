@@ -21,8 +21,6 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
  */
 public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
 
-   private String brAlias;
-
    @Override
    public void setData(CriteriaAllBranches criteria) {
       // Criteria not used
@@ -32,19 +30,13 @@ public class AllBranchesSqlHandler extends SqlHandler<CriteriaAllBranches> {
    public void addTables(AbstractSqlWriter writer) {
       List<String> branchAliases = writer.getAliases(TableEnum.BRANCH_TABLE);
       if (branchAliases.isEmpty()) {
-         brAlias = writer.addTable(TableEnum.BRANCH_TABLE);
-      } else {
-         brAlias = branchAliases.iterator().next();
+         writer.addTable(TableEnum.BRANCH_TABLE);
       }
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) {
-      boolean modified = false;
-      if (brAlias != null) {
-         modified = true;
-      }
-      return modified;
+      return false;
    }
 
    @Override

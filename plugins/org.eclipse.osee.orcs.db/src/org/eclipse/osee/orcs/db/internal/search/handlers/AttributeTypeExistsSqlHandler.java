@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlUtil;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
@@ -35,6 +36,8 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
    private CriteriaAttributeTypeExists criteria;
 
+   private String artAlias;
+   private String artTxsAlias;
    private String attrAlias;
    private String txsAlias;
 
@@ -94,14 +97,22 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
       }
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
-         writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      if (artAlias != null && artTxsAlias != null) {
+         writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
+         writer.write(" AND ");
+         writer.write(writer.getTxBranchFilter(artTxsAlias));
+         writer.writeAndLn();
+      }
+
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Long> typeIds = new HashSet<Long>();

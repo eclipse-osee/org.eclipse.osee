@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
@@ -74,8 +75,10 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   private void reset() {
+   protected void reset() {
       output.delete(0, output.length());
+      context.getJoins().clear();
+      context.getParameters().clear();
       tableEntries.clear();
       withClauses.clear();
       aliasManager.reset();
@@ -86,7 +89,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return QueryType.COUNT == queryType;
    }
 
-   protected void write(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void write(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       computeTables(handlers);
       computeWithClause(handlers);
 
@@ -137,7 +140,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       withClauses.add(clause);
    }
 
-   protected void computeWithClause(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void computeWithClause(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.addWithTables(this);
@@ -148,7 +151,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return context;
    }
 
-   protected abstract void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException;
+   protected abstract void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException;
 
    public abstract String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException;
 
@@ -168,7 +171,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected void computeTables(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void computeTables(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.addTables(this);
@@ -179,13 +182,13 @@ public abstract class AbstractSqlWriter implements HasOptions {
       level = handler.getLevel();
    }
 
-   protected void writePredicates(List<SqlHandler<?>> handlers) throws OseeCoreException {
-      int size = handlers.size();
-      for (int index = 0; index < size; index++) {
-         SqlHandler<?> handler = handlers.get(index);
+   protected void writePredicates(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+      Iterator<SqlHandler<?>> iterator = handlers.iterator();
+      while (iterator.hasNext()) {
+         SqlHandler<?> handler = iterator.next();
          setHandlerLevel(handler);
          boolean modified = handler.addPredicates(this);
-         if (modified && index + 1 < size) {
+         if (modified && iterator.hasNext()) {
             writeAndLn();
          }
       }
@@ -205,30 +208,76 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    protected boolean hasAlias(TableEnum table) {
-      return getAliasManager().hasAlias(table, level);
+      ObjectType type = getObjectType(table);
+      return getAliasManager().hasAlias(level, table, type);
    }
 
    public List<String> getAliases(TableEnum table) {
-      return getAliasManager().getAliases(table, level);
+      ObjectType type = getObjectType(table);
+      return getAliasManager().getAliases(level, table, type);
    }
 
    public String getFirstAlias(TableEnum table) {
-      return getAliasManager().getFirstAlias(table, level);
+      ObjectType type = getObjectType(table);
+      return getFirstAlias(level, table, type);
+   }
+
+   public String getFirstAlias(int level, TableEnum table, ObjectType type) {
+      return getAliasManager().getFirstAlias(level, table, type);
    }
 
    public String getLastAlias(TableEnum table) {
-      return getAliasManager().getLastAlias(table);
+      ObjectType type = getObjectType(table);
+      return getLastAlias(table, type);
+   }
+
+   public String getLastAlias(TableEnum table, ObjectType type) {
+      int level = getAliasManager().getLevel();
+      return getAliasManager().getLastAlias(level, table, type);
    }
 
    public String getNextAlias(AliasEntry table) {
-      return getAliasManager().getNextAlias(table);
+      ObjectType type = getObjectType(table);
+      return getNextAlias(table, type);
+   }
+
+   private String getNextAlias(AliasEntry table, ObjectType type) {
+      int level = getAliasManager().getLevel();
+      return getAliasManager().getNextAlias(level, table, type);
+   }
+
+   private ObjectType getObjectType(AliasEntry entry) {
+      ObjectType toReturn = ObjectType.UNKNOWN;
+      if (entry instanceof TableEnum) {
+         TableEnum table = (TableEnum) entry;
+         switch (table) {
+            case BRANCH_TABLE:
+               toReturn = ObjectType.BRANCH;
+               break;
+            case TX_DETAILS_TABLE:
+               toReturn = ObjectType.TX;
+               break;
+            case ARTIFACT_TABLE:
+               toReturn = ObjectType.ARTIFACT;
+               break;
+            case ATTRIBUTE_TABLE:
+               toReturn = ObjectType.ATTRIBUTE;
+               break;
+            case RELATION_TABLE:
+               toReturn = ObjectType.RELATION;
+               break;
+            default:
+               break;
+         }
+      }
+      return toReturn;
    }
 
    public void nextAliasLevel() {
       getAliasManager().nextLevel();
    }
 
-   private SqlAliasManager getAliasManager() {
+   protected SqlAliasManager getAliasManager() {
       return aliasManager;
    }
 
@@ -242,12 +291,22 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
+   public String addTable(AliasEntry table, ObjectType objectType) {
+      String alias = getNextAlias(table, objectType);
+      tableEntries.add(String.format("%s %s", table.getName(), alias));
+      return alias;
+   }
+
    public void write(String data, Object... params) throws OseeCoreException {
       if (params != null && params.length > 0) {
          output.append(String.format(data, params));
       } else {
          output.append(data);
       }
+   }
+
+   public void writeEquals(String table1, String table2, String column) {
+      write("%s.%s = %s.%s", table1, column, table2, column);
    }
 
    public void addParameter(Object data) {

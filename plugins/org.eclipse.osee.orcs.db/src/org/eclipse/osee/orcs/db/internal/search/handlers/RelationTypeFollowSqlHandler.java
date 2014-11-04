@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -45,18 +46,18 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
          artAlias0 = writer.addTable(TableEnum.ARTIFACT_TABLE);
-         txsAlias0 = writer.addTable(TableEnum.TXS_TABLE);
+         txsAlias0 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       } else {
          artAlias0 = artAliases.iterator().next();
       }
       relAlias1 = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
 
       // Set to next Level
       writer.nextAliasLevel();
 
       artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
-      txsAlias2 = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
    }
 
    @Override

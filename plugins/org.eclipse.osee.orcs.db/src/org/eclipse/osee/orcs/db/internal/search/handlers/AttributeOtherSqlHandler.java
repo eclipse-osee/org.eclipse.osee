@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import com.google.common.base.Function;
@@ -69,13 +70,13 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
       List<String> txs = writer.getAliases(TableEnum.TXS_TABLE);
 
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
 
       if (aliases.isEmpty()) {
          artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txs.isEmpty()) {
-         txs2Alias2 = writer.addTable(TableEnum.TXS_TABLE);
+         txs2Alias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
    }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import java.util.List;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -37,7 +36,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       String tableAlias = getLastAlias(table);
       if (isCountQueryType()) {
          write("SELECT%s count(%s.%s)", getSqlHint(), tableAlias, idColumn);
@@ -47,7 +46,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   protected void write(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void write(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       computeTables(handlers);
       computeWithClause(handlers);
 

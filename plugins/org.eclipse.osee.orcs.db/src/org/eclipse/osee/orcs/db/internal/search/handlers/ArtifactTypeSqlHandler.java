@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -56,7 +57,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
          artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
       if (txsAliases.isEmpty()) {
-         txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+         txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
       artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);

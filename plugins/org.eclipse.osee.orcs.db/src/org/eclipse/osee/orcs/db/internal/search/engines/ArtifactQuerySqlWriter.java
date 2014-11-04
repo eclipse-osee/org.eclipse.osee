@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -20,6 +19,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -38,7 +38,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    private void writeSelectHelper() throws OseeCoreException {
-      String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+      String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
 
       write("SELECT%s ", getSqlHint());
@@ -50,7 +50,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
       if (isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("SELECT count(xTable.art_id) FROM (\n ");
@@ -67,12 +67,12 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    @Override
    public void writeGroupAndOrder() throws OseeCoreException {
       if (OptionsUtil.isHistorical(getOptions())) {
-         String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
          String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
          write("\n GROUP BY %s.art_id, %s.branch_id", artAlias, txAlias);
       }
       if (!isCountQueryType()) {
-         String txAlias = getLastAlias(TableEnum.TXS_TABLE);
+         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
          String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
          write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
       } else {

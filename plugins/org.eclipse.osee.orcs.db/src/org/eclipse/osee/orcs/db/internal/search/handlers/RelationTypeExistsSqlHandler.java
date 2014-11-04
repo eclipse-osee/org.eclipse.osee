@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
 /**
@@ -23,15 +24,18 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class RelationTypeExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeExists> {
 
    private String relAlias;
+   private String txsAlias;
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
       super.addTables(writer);
       relAlias = writer.addTable(TableEnum.RELATION_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      super.addPredicates(writer);
       IRelationType type = criteria.getType();
       writer.write(relAlias);
       writer.write(".rel_link_type_id = ?");
