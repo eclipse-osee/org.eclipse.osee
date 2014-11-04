@@ -32,4 +32,6 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osee.framework.ui.skynet.blam,
  org.eclipse.osee.framework.ui.skynet.render,
+ org.eclipse.osee.vcast,
+ org.eclipse.osee.vcast.model,
  org.osgi.framework

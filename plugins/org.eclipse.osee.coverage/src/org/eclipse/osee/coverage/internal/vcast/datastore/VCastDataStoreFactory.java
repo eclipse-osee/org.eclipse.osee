@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.internal.vcast.datastore;
 
-import java.util.Properties;
-import org.eclipse.osee.coverage.internal.vcast.VCastDataStore;
-import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreImpl.StatementProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.vcast.VCastClient;
+import org.eclipse.osee.vcast.VCastDataStore;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -50,10 +48,7 @@ public class VCastDataStoreFactory {
       IOseeDatabaseService dbService = getDatabaseService();
       Conditions.checkNotNull(dbService, "dbService", "Error accessing IOseeDatabaseService");
 
-      String connectionId = GUID.create();
-      SqliteDbInfo dbInfo = new SqliteDbInfo(connectionId, dbPath, new Properties());
-      StatementProvider provider = new SqliteStatementProvider(dbService, dbInfo);
-      return new VCastDataStoreImpl(provider);
+      return VCastClient.newDataStore(dbService, dbPath);
    }
 
 }

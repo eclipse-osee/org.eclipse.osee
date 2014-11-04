@@ -14,13 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.coverage.internal.vcast.operations.VcpSourceFile;
-import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsLoader;
 import org.eclipse.osee.coverage.util.LineData;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.vcast.model.ICoverageUnitFileContentsLoader;
+import org.eclipse.osee.vcast.model.VcpSourceFile;
 
 /**
  * Reads <filename>.LIS file associated with a source file

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.vcast.model.ICoverageUnitFileContentsLoader;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items

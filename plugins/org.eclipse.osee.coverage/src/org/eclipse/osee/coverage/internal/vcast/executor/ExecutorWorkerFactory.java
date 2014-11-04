@@ -17,8 +17,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.coverage.internal.vcast.operations.VcpResultsFile;
-import org.eclipse.osee.coverage.internal.vcast.operations.VcpSourceFile;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.vcast.CoverageImportData;
@@ -26,6 +24,8 @@ import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.vcast.model.VcpResultsFile;
+import org.eclipse.osee.vcast.model.VcpSourceFile;
 
 /**
  * @author Donald G. Dunne

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
+import org.eclipse.osee.vcast.model.VCastVcp;
 
 public class VCastVerifyVcpOperation extends AbstractOperation {
 

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE VectorCAST (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.vcast
+Bundle-Version: 0.20.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.database,
+ org.eclipse.osee.framework.database.core,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml
+Export-Package: org.eclipse.osee.vcast,
+ org.eclipse.osee.vcast.model
+Bundle-Vendor: Eclipse Open System Engineering Environment

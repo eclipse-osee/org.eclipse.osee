@@ -11,8 +11,8 @@
 package org.eclipse.osee.coverage.util.widget;
 
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * @author Donald G. Dunne

@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.vcast.model.VCastVcp;
+import org.eclipse.osee.vcast.model.VcpResultsFile;
+import org.eclipse.osee.vcast.model.VcpSourceFile;
 
 /**
  * Represents the <dir>.wrk/vcast.vcp file which lists all the source files and results files specified in this

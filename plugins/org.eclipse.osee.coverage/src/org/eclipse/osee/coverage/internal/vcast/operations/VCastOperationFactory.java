@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.vcast.model.VCastVcp;
 
 /**
  * @author Roberto E. Escobar

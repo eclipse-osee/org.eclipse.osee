@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.internal.vcast.executor.ExecutorWorkerFactory;
-import org.eclipse.osee.coverage.internal.vcast.model.CoverageDataSubProgram;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -29,6 +28,8 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.vcast.model.CoverageDataSubProgram;
+import org.eclipse.osee.vcast.model.VCastVcp;
 
 /**
  * @author Donald G. Dunne

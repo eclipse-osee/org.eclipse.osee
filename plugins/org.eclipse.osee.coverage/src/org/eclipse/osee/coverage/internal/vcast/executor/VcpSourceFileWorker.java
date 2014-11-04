@@ -19,10 +19,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.internal.vcast.model.CoverageDataSubProgram;
-import org.eclipse.osee.coverage.internal.vcast.model.CoverageDataUnit;
-import org.eclipse.osee.coverage.internal.vcast.model.LineNumToBranches;
-import org.eclipse.osee.coverage.internal.vcast.operations.VcpSourceFile;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
@@ -33,6 +29,10 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.vcast.model.CoverageDataSubProgram;
+import org.eclipse.osee.vcast.model.CoverageDataUnit;
+import org.eclipse.osee.vcast.model.LineNumToBranches;
+import org.eclipse.osee.vcast.model.VcpSourceFile;
 
 /**
  * @author Donald G. Dunne

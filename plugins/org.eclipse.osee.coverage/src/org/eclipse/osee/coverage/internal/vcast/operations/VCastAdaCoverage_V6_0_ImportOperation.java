@@ -23,13 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.internal.vcast.VCastDataStore;
 import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastFunction;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastInstrumentedFile;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastResult;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastSourceFileJoin;
-import org.eclipse.osee.coverage.internal.vcast.model.VCastStatementCoverage;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
@@ -44,6 +38,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.vcast.VCastDataStore;
+import org.eclipse.osee.vcast.VCastLisFileParser;
+import org.eclipse.osee.vcast.VCastValidateDatFileSyntax;
+import org.eclipse.osee.vcast.model.VCastFunction;
+import org.eclipse.osee.vcast.model.VCastInstrumentedFile;
+import org.eclipse.osee.vcast.model.VCastResult;
+import org.eclipse.osee.vcast.model.VCastSourceFileJoin;
+import org.eclipse.osee.vcast.model.VCastStatementCoverage;
 
 /**
  * @author Shawn F. Cook
