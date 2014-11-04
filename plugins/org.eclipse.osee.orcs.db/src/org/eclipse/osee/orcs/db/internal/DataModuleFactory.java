@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
+import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
 
@@ -60,7 +61,8 @@ public class DataModuleFactory {
       final ProxyDataFactory proxyFactory = loaderModule.createProxyDataFactory(attributeTypes);
       final OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(proxyFactory);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
-      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory);
+      final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
+      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(objectFactory, loadProcessor);
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);

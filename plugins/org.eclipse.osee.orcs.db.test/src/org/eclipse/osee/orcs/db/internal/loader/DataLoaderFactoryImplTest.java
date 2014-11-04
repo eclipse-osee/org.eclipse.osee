@@ -103,7 +103,7 @@ public class DataLoaderFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null);
-      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory);
+      SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null);
 
       spyLoader = spy(loader);
       factory = module.createDataLoaderFactory(spyLoader);

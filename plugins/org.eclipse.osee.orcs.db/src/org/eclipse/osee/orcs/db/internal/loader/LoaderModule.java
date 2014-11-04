@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -21,6 +22,7 @@ import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
+import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 
 /**
@@ -55,18 +57,22 @@ public class LoaderModule {
       return new DataFactoryImpl(idFactory, factory, artifactTypes);
    }
 
-   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory) {
-      SqlObjectLoader sqlObjectLoader = createSqlObjectLoader(objectFactory);
+   public DataLoaderFactory createDataLoaderFactory(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
+      SqlObjectLoader sqlObjectLoader = createSqlObjectLoader(objectFactory, dynamicLoadProcessor);
       return createDataLoaderFactory(sqlObjectLoader);
+   }
+
+   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTypes orcsTypes, ProxyDataFactory proxyFactory) {
+      return new DynamicLoadProcessor(logger, orcsTypes, proxyFactory);
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
       return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader);
    }
 
-   protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory) {
+   protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
-      return new SqlObjectLoader(logger, dbService, sqlProvider, handlerFactory, objectFactory);
+      return new SqlObjectLoader(logger, dbService, sqlProvider, handlerFactory, objectFactory, dynamicLoadProcessor);
    }
 
 }

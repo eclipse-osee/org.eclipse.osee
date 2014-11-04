@@ -153,7 +153,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    protected abstract void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException;
 
-   public abstract String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException;
+   public abstract String getWithClauseTxBranchFilter(String txsAlias) throws OseeCoreException;
 
    public abstract String getTxBranchFilter(String txsAlias) throws OseeCoreException;
 

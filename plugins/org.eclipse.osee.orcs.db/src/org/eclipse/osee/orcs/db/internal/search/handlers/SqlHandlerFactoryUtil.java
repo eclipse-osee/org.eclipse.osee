@@ -67,7 +67,34 @@ public final class SqlHandlerFactoryUtil {
    public static SqlHandlerFactory createArtifactSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
       Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
          new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+      addArtifactHandlers(handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
+   }
 
+   public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityLocator identityService) {
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+      addBranchHandlers(handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
+   }
+
+   public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+      addTxHandlers(handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
+   }
+
+   public static SqlHandlerFactory createObjectSqlHandlerFactory(Log logger, IdentityLocator identityService, TagProcessor tagProcessor) {
+      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
+         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
+      addBranchHandlers(handleMap);
+      addTxHandlers(handleMap);
+      addArtifactHandlers(handleMap);
+      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
+   }
+
+   private static void addArtifactHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       handleMap.put(CriteriaArtifactGuids.class, ArtifactGuidSqlHandler.class);
       handleMap.put(CriteriaArtifactIds.class, ArtifactIdsSqlHandler.class);
       handleMap.put(CriteriaArtifactType.class, ArtifactTypeSqlHandler.class);
@@ -81,14 +108,9 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaAttributeKeywords.class, AttributeTokenSqlHandler.class);
       handleMap.put(CriteriaAllArtifacts.class, AllArtifactsSqlHandler.class);
       handleMap.put(CriteriaRelationTypeFollow.class, RelationTypeFollowSqlHandler.class);
-
-      return new SqlHandlerFactoryImpl(logger, identityService, tagProcessor, handleMap);
    }
 
-   public static SqlHandlerFactory createBranchSqlHandlerFactory(Log logger, IdentityLocator identityService) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
-
+   private static void addBranchHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       handleMap.put(CriteriaBranchArchived.class, BranchArchivedSqlHandler.class);
       handleMap.put(CriteriaBranchUuids.class, BranchIdsSqlHandler.class);
       handleMap.put(CriteriaBranchName.class, BranchNameSqlHandler.class);
@@ -97,14 +119,9 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaBranchChildOf.class, BranchChildOfSqlHandler.class);
       handleMap.put(CriteriaBranchAncestorOf.class, BranchAncestorOfSqlHandler.class);
       handleMap.put(CriteriaAllBranches.class, AllBranchesSqlHandler.class);
-
-      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 
-   public static SqlHandlerFactory createTxSqlHandlerFactory(Log logger, IdentityLocator identityService) {
-      Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap =
-         new HashMap<Class<? extends Criteria>, Class<? extends SqlHandler<?>>>();
-
+   private static void addTxHandlers(Map<Class<? extends Criteria>, Class<? extends SqlHandler<?>>> handleMap) {
       handleMap.put(CriteriaTxIds.class, TxIdsSqlHandler.class);
       handleMap.put(CriteriaTxBranchIds.class, TxBranchIdsSqlHandler.class);
       handleMap.put(CriteriaTxType.class, TxTypesSqlHandler.class);
@@ -119,7 +136,5 @@ public final class SqlHandlerFactoryUtil {
       handleMap.put(CriteriaCommitIds.class, TxCommitArtIdSqlHandler.class);
       handleMap.put(CriteriaTxGetHead.class, TxGetHeadSqlHandler.class);
       handleMap.put(CriteriaTxGetPrior.class, TxGetPriorSqlHandler.class);
-
-      return new SqlHandlerFactoryImpl(logger, identityService, null, handleMap);
    }
 }

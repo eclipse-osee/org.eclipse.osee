@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 
 /**
  * @author Roberto E. Escobar
@@ -23,9 +24,9 @@ import org.eclipse.osee.orcs.core.ds.Options;
 public class SqlContextImpl implements SqlContext {
 
    private String sql;
+   private ResultObjectDescription data;
    private final List<Object> parameters = new ArrayList<Object>();
    private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
-
    private final OrcsSession session;
    private final Options options;
 
@@ -65,8 +66,19 @@ public class SqlContextImpl implements SqlContext {
    }
 
    @Override
+   public ResultObjectDescription getObjectDescription() {
+      return data;
+   }
+
+   @Override
+   public void setObjectDescription(ResultObjectDescription data) {
+      this.data = data;
+   }
+
+   @Override
    public void clear() {
       setSql(null);
+      setObjectDescription(null);
       parameters.clear();
       joinTables.clear();
    }

@@ -82,7 +82,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException {
+   public String getWithClauseTxBranchFilter(String txsAlias) throws OseeCoreException {
       return Strings.emptyString();
    }
 

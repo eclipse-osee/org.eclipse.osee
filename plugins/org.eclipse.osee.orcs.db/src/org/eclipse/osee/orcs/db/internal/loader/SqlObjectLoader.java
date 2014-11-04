@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.BranchLoadProcessor;
+import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -61,18 +62,20 @@ public class SqlObjectLoader {
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
    private final RelationLoadProcessor relationProcessor;
+   private final DynamicLoadProcessor dynamicProcessor;
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlProvider sqlProvider;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory) {
+   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
+      this.dynamicProcessor = dynamicProcessor;
 
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
       attributeProcessor = new AttributeLoadProcessor(logger, objectFactory);
@@ -151,6 +154,22 @@ public class SqlObjectLoader {
 
       OrcsDataHandler<TxOrcsData> txHandler = asTransactionHandler(handler);
       load(txProcessor, txHandler, context, fetchSize);
+   }
+
+   public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) throws OseeCoreException {
+      logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
+      checkCancelled(cancellation);
+
+      Options options = context.getOptions();
+      options.put("sql", context.getSql());
+      options.put("parameters", context.getParameters().toString());
+      options.put("result.descriptor", context.getObjectDescription());
+      LoadDescription description = createDescription(context.getSession(), options, context.getObjectDescription());
+      handler.onLoadDescription(description);
+
+      load(dynamicProcessor, handler, context, fetchSize);
+
+      options.remove("result.descriptor");
    }
 
    private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
@@ -254,10 +273,18 @@ public class SqlObjectLoader {
    }
 
    private static LoadDescription createDescription(final OrcsSession session, final Options options) {
-      return createDescription(session, options, null, -1);
+      return createDescription(session, options, null, -1, null);
+   }
+
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final ResultObjectDescription data) {
+      return createDescription(session, options, null, -1, data);
    }
 
    private static LoadDescription createDescription(final OrcsSession session, final Options options, final IOseeBranch branch, final int transactionLoaded) {
+      return createDescription(session, options, branch, transactionLoaded, null);
+   }
+
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final IOseeBranch branch, final int transactionLoaded, final ResultObjectDescription data) {
       return new LoadDescription() {
 
          @Override
@@ -292,7 +319,7 @@ public class SqlObjectLoader {
 
          @Override
          public ResultObjectDescription getObjectDescription() {
-            return null;
+            return data;
          }
       };
    }

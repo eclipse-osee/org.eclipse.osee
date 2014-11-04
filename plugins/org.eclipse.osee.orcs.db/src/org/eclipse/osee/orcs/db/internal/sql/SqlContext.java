@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 import java.util.List;
 import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.DataStoreContext;
+import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 
 /**
  * @author Roberto E. Escobar
@@ -26,6 +27,10 @@ public interface SqlContext extends DataStoreContext {
    List<Object> getParameters();
 
    List<AbstractJoinQuery> getJoins();
+
+   ResultObjectDescription getObjectDescription();
+
+   void setObjectDescription(ResultObjectDescription data);
 
    void clear();
 

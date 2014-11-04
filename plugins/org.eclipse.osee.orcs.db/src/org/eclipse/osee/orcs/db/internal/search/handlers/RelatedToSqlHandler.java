@@ -69,7 +69,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
          sb.append("\n    WHERE  txs.gamma_id = rel.gamma_id AND \n");
          sb.append(getPredicate(writer, "txs", "rel"));
          sb.append(" AND ");
-         sb.append(writer.getAllChangesTxBranchFilter("txs"));
+         sb.append(writer.getWithClauseTxBranchFilter("txs"));
          sb.append("\n    GROUP BY rel.a_art_id\n");
          String body = sb.toString();
 

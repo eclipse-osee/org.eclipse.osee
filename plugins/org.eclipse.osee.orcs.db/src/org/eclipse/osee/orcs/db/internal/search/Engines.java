@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search;
 
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createBranchSqlHandlerFactory;
+import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createObjectSqlHandlerFactory;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQueryCallableFactory;
+import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryFilterFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.QuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
@@ -105,6 +107,19 @@ public final class Engines {
             };
          }
       };
+   }
+
+   public static QueryCallableFactory newQueryEngine(Log logger, IOseeDatabaseService dbService, // 
+      IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, // 
+      ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+
+      SqlHandlerFactory handlerFactory =
+         createObjectSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
+      QuerySqlContextFactory sqlContextFactory =
+         new ObjectQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, handlerFactory);
+      AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
+      QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
+      return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
    }
 
    public static TaggingEngine newTaggingEngine(Log logger) {

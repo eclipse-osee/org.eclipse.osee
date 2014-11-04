@@ -25,12 +25,14 @@ public class QueryEngineImpl implements QueryEngine {
    private final QueryCallableFactory artifactQueryEngineFactory;
    private final QueryCallableFactory branchQueryEngineFactory;
    private final QueryCallableFactory txQueryEngineFactory;
+   private final QueryCallableFactory allQueryEngineFactory;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QueryCallableFactory branchQueryEngineFactory, QueryCallableFactory txQueryEngineFactory) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QueryCallableFactory branchQueryEngineFactory, QueryCallableFactory txQueryEngineFactory, QueryCallableFactory allQueryEngineFactory) {
       super();
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchQueryEngineFactory = branchQueryEngineFactory;
       this.txQueryEngineFactory = txQueryEngineFactory;
+      this.allQueryEngineFactory = allQueryEngineFactory;
    }
 
    @Override
@@ -65,12 +67,12 @@ public class QueryEngineImpl implements QueryEngine {
 
    @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return null;
+      return allQueryEngineFactory.createQuery(session, queryData, handler);
    }
 
    @Override
    public CancellableCallable<Integer> createQueryCount(OrcsSession session, QueryData queryData) {
-      return null;
+      return allQueryEngineFactory.createCount(session, queryData);
    }
 
 }

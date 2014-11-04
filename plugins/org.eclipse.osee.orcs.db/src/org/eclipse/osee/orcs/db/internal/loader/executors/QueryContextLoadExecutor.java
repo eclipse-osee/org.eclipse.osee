@@ -46,6 +46,9 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
          case BRANCH:
             getLoader().loadBranches(cancellation, handler, queryContext, fetchSize);
             break;
+         case DYNAMIC_OBJECT:
+            getLoader().loadDynamicObjects(cancellation, handler, queryContext, fetchSize);
+            break;
          default:
             throw new OseeStateException("Unable to determine object to load from [%s]", queryContext);
       }

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newArtifactQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newBranchQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newIndexingEngine;
+import static org.eclipse.osee.orcs.db.internal.search.Engines.newQueryEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTaggingEngine;
 import static org.eclipse.osee.orcs.db.internal.search.Engines.newTxQueryEngine;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -75,7 +76,10 @@ public class QueryModule {
             attrTypes);
       QueryCallableFactory factory2 = newBranchQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
       QueryCallableFactory factory3 = newTxQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
-      return new QueryEngineImpl(factory1, factory2, factory3);
+      QueryCallableFactory factory4 =
+         newQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
+            attrTypes);
+      return new QueryEngineImpl(factory1, factory2, factory3, factory4);
    }
 
 }

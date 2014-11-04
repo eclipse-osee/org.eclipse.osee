@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Future;
@@ -324,6 +325,12 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       public void onData(ArtifactData data) throws OseeCoreException {
          incrementCount();
          super.onData(data);
+      }
+
+      @Override
+      public void onDynamicData(Map<String, Object> data) throws OseeCoreException {
+         incrementCount();
+         super.onDynamicData(data);
       }
 
    }

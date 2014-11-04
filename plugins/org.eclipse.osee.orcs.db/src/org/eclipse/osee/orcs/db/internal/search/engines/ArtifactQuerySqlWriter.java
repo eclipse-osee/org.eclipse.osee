@@ -143,7 +143,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getAllChangesTxBranchFilter(String txsAlias) throws OseeCoreException {
+   public String getWithClauseTxBranchFilter(String txsAlias) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       if (OptionsUtil.isHistorical(getOptions())) {
          sb.append(txsAlias);
