@@ -77,7 +77,9 @@ public class OseeEmailTest {
       "4) Verify location: Conference Room\n" +
       //
       "5) Verify subject is name of this test" + infoStr, BodyType.Text);
-      String context = new OutlookCalendarEvent("Conference Room", TEST_NAME, new Date(), "0800", "1300").getEvent();
+      Date start = new Date();
+      Date end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+      String context = new OutlookCalendarEvent("Conference Room", TEST_NAME, start, end).getEvent();
       emailMessage.addAttachment(context, "schedule class.vcs");
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");

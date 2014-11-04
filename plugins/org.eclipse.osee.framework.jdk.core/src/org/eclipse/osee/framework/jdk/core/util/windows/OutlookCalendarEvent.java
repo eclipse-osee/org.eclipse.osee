@@ -18,10 +18,9 @@ public class OutlookCalendarEvent {
 
    private final String location;
    private final String event;
-   private final Date date;
    private final DateFormat myDateFormat;
-   private final String startTime;
-   private final String endTime;
+   private final Date startDate;
+   private final Date endDate;
 
    /**
     * @param location - String the event location
@@ -29,14 +28,13 @@ public class OutlookCalendarEvent {
     * @param startTime - 0800 - 8am
     * @param endTime - 1300 - 1pm
     */
-   public OutlookCalendarEvent(String location, String event, Date date, String startTime, String endTime) {
+   public OutlookCalendarEvent(String location, String event, Date startDate, Date endDate) {
       super();
       this.location = location;
       this.event = event;
-      this.date = date;
-      this.startTime = startTime;
-      this.endTime = endTime;
-      myDateFormat = new SimpleDateFormat("yyyyMMdd");
+      this.startDate = startDate;
+      this.endDate = endDate;
+      myDateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
    }
 
    public String getEvent() {
@@ -48,9 +46,9 @@ public class OutlookCalendarEvent {
       //
       "BEGIN:VEVENT\n" +
       //
-      "DTSTART:" + myDateFormat.format(date) + "T" + startTime + "0Z\n" +
+      "DTSTART:" + myDateFormat.format(startDate) + "\n" +
       //
-      "DTEND:" + myDateFormat.format(date) + "T" + endTime + "0Z\n" +
+      "DTEND:" + myDateFormat.format(endDate) + "\n" +
       //
       "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" +
       //

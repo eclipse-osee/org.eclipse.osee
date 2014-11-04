@@ -104,8 +104,8 @@ public final class MailUtils {
       return new UrlDataSource(name, url, mediaType.toString());
    }
 
-   public static DataSource createOutlookEvent(String eventName, String location, Date date, String startTime, String endTime) {
-      OutlookCalendarEvent calendarEvent = new OutlookCalendarEvent(location, eventName, date, startTime, endTime);
+   public static DataSource createOutlookEvent(String eventName, String location, Date startDate, Date endDate) {
+      OutlookCalendarEvent calendarEvent = new OutlookCalendarEvent(location, eventName, startDate, endDate);
       String fileName = toFileName(eventName, OUTLOOK_CALENDAR_EXTENSION);
 
       StringDataSource dataSource = new StringDataSource(fileName, calendarEvent.getEvent()) {

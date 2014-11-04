@@ -166,8 +166,8 @@ public class MailMessage {
          return this;
       }
 
-      public MailMessageBuilder addOutlookEvent(String eventName, String location, Date date, String startTime, String endTime) {
-         attach(MailUtils.createOutlookEvent(eventName, location, date, startTime, endTime));
+      public MailMessageBuilder addOutlookEvent(String eventName, String location, Date startDate, Date endDate) {
+         attach(MailUtils.createOutlookEvent(eventName, location, startDate, endDate));
          return this;
       }
 

@@ -15,7 +15,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -134,7 +133,9 @@ public class MailUtilsTest {
 
    @org.junit.Test(expected = UnsupportedOperationException.class)
    public void testCreateOutlookEventGetOutputStream() throws Exception {
-      DataSource source = MailUtils.createOutlookEvent("Test 1", "Here", new Date(), "", "");
+      Date start = new Date();
+      Date end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
+      DataSource source = MailUtils.createOutlookEvent("Test 1", "Here", start, end);
       Assert.assertEquals("Test+1.vcs", source.getName());
       Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
 
@@ -146,39 +147,26 @@ public class MailUtilsTest {
       Date startDate = DateFormat.getInstance().parse(startDateStr);
       Date endDate = DateFormat.getInstance().parse(endDateStr);
 
-      Calendar startCal = Calendar.getInstance();
-      Calendar endCal = Calendar.getInstance();
-
-      startCal.setTime(startDate);
-      endCal.setTime(endDate);
-
-      String startTime = String.format("%s%s", startCal.get(Calendar.HOUR_OF_DAY), startCal.get(Calendar.MINUTE));
-      String endTime = String.format("%s%s", endCal.get(Calendar.HOUR_OF_DAY), endCal.get(Calendar.MINUTE));
-
-      DataSource source = MailUtils.createOutlookEvent(eventName, location, startDate, startTime, endTime);
+      DataSource source = MailUtils.createOutlookEvent(eventName, location, startDate, endDate);
 
       Assert.assertEquals(filename, source.getName());
       Assert.assertEquals("text/plain; charset=UTF-8", source.getContentType());
 
       String actualMessage = Lib.inputStreamToString(source.getInputStream());
-      String expectedMessage = toOutlookExpected(eventName, location, startDate, startTime, endTime);
+      String expectedMessage = toOutlookExpected(eventName, location, startDate, endDate);
       Assert.assertEquals(expectedMessage, actualMessage);
 
    }
 
    //@formatter:off
-   private static String toOutlookExpected(String event, String location, Date startDate, String startTime, String endTime) {
-     DateFormat myDateFormat = new SimpleDateFormat("yyyyMMdd");
+   private static String toOutlookExpected(String event, String location, Date startDate, Date endDate) {
+     DateFormat myDateFormat = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
      StringBuilder builder = new StringBuilder();
      builder.append("\nBEGIN:VCALENDAR\nPRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\nVERSION:1.0\nBEGIN:VEVENT\nDTSTART:");
      builder.append(myDateFormat.format(startDate));
-     builder.append("T"); 
-     builder.append(startTime);
-     builder.append("0Z\nDTEND:"); 
-     builder.append(myDateFormat.format(startDate));
-     builder.append("T"); 
-     builder.append(endTime);
-     builder.append("0Z\nLOCATION;ENCODING=QUOTED-PRINTABLE:");
+     builder.append("\nDTEND:"); 
+     builder.append(myDateFormat.format(endDate));
+     builder.append("\nLOCATION;ENCODING=QUOTED-PRINTABLE:");
      builder.append(location); 
      builder.append("\nTRANSP:1\nDESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\nSUMMARY;ENCODING=QUOTED-PRINTABLE:Event:");
      builder.append(event); 
