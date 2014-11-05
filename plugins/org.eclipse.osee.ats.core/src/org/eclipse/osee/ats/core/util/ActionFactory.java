@@ -337,7 +337,7 @@ public class ActionFactory implements IAtsActionFactory {
     */
    public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) throws OseeCoreException {
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
-      if (!Strings.emptyString().equals(desc)) {
+      if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
       atsServices.setChangeType(atsObject, changeType, changes);

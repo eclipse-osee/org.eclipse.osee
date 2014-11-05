@@ -13,9 +13,7 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -50,11 +48,14 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -104,14 +105,19 @@ public final class CpaResource {
    public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
       List<IAtsCpaDecision> decisions = new ArrayList<IAtsCpaDecision>();
       QueryBuilder queryBuilder =
-         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ProgramUuid, uuid);
+         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow,
+            "true").and(AtsAttributeTypes.ProgramUuid, uuid);
       if (open != null) {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));
       }
-      Map<String, IAtsCpaDecision> origPcrIdToDecision = new HashMap<String, IAtsCpaDecision>();
+      HashCollection<String, IAtsCpaDecision> origPcrIdToDecision = new HashCollection<String, IAtsCpaDecision>();
       String pcrToolId = null;
-      for (ArtifactReadable art : queryBuilder.getResults()) {
+      ElapsedTime time = new ElapsedTime("load cpa workflows");
+      ResultSet<ArtifactReadable> results = queryBuilder.getResults();
+      time.end(Units.SEC);
+      time = new ElapsedTime("process cpa workflows");
+      for (ArtifactReadable art : results) {
          IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(art);
          CpaDecision decision = CpaFactory.getDecision(teamWf, null);
          decision.setApplicability(art.getSoleAttributeValue(AtsAttributeTypes.ApplicableToProgram, ""));
@@ -149,12 +155,16 @@ public final class CpaResource {
 
          decisions.add(decision);
       }
+      time.end();
 
+      time = new ElapsedTime("load issues");
       IAtsCpaService service = cpaRegistry.getServiceById(pcrToolId);
-      for (Entry<String, ICpaPcr> entry : service.getOriginatingPcr(origPcrIdToDecision).entrySet()) {
-         CpaDecision decision = (CpaDecision) origPcrIdToDecision.get(entry.getKey());
-         decision.setOriginatingPcr(entry.getValue());
+      for (Entry<String, ICpaPcr> entry : service.getPcrsByIds(origPcrIdToDecision.keySet()).entrySet()) {
+         for (IAtsCpaDecision decision : origPcrIdToDecision.getValues(entry.getKey())) {
+            ((CpaDecision) decision).setOriginatingPcr(entry.getValue());
+         }
       }
+      time.end();
 
       return decisions;
    }

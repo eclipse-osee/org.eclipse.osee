@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.cpa;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -29,5 +30,5 @@ public interface IAtsCpaService {
 
    ICpaPcr getPcr(String pcrId);
 
-   Map<String, ICpaPcr> getOriginatingPcr(Map<String, IAtsCpaDecision> origPcrIdToDecision);
+   Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds);
 }
