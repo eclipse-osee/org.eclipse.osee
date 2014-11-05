@@ -28,7 +28,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.client</module>
 
 		<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl</module> -->
-		<module>../../plugins/org.eclipse.osee.framework.core.dsl.edit</module>
 		<!--<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module> -->
 		<!--<module>../../plugins/org.eclipse.osee.framework.database</module> -->
 		<module>../../plugins/org.eclipse.osee.framework.database.init</module>
