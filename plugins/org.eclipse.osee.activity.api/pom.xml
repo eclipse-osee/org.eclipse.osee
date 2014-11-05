@@ -12,5 +12,5 @@
 
 	<artifactId>org.eclipse.osee.activity.api</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>Activity Logging and Monitoring API (Incubation)</name>
+	<name>OSEE Activity Logging API - (Incubation)</name>
 </project>

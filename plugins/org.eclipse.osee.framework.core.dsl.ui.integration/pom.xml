@@ -12,7 +12,7 @@
 
 	<artifactId>org.eclipse.osee.framework.core.dsl.ui.integration</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE Core DSL UI Int (Incubation)</name>
+	<name>OSEE ORCS DSL UI Integration - (Incubation)</name>
 
    <build>
      <!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->

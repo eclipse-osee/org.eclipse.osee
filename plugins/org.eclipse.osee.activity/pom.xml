@@ -12,5 +12,5 @@
 
 	<artifactId>org.eclipse.osee.activity</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>Activity Logging and Monitoring Impl (Incubation)</name>
+	<name>OSEE Activity Logging Impl - (Incubation)</name>
 </project>

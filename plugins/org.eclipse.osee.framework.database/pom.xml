@@ -12,7 +12,7 @@
 
 	<artifactId>org.eclipse.osee.framework.database</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>OSEE ORCS DB - (Incubation)</name>
+	<name>OSEE Framework Database - (Incubation)</name>
 
 	<build>
 		<!-- workaround for https://issues.sonatype.org/browse/TYCHO-168 -->
