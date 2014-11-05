@@ -41,11 +41,12 @@ public class PercentCompleteTotalUtil {
             // Calculate total percent using configured weighting
             for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
                if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
-                  double stateWeightInt = stateDef.getStateWeight();
-                  double weight = stateWeightInt / 100;
-                  int percentCompleteForState = getPercentCompleteSMAStateTotal(workItem, stateDef, services);
-                  percent += weight * percentCompleteForState;
+                  percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
                }
+            }
+            if (workItem.getStateMgr().getStateType().isCompleted()) {
+               IAtsStateDefinition stateDef = workItem.getStateDefinition();
+               percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
             }
          } else {
             percent = getPercentCompleteSMASinglePercent(workItem, services);
@@ -67,6 +68,14 @@ public class PercentCompleteTotalUtil {
             }
          }
       }
+      return percent;
+   }
+
+   private static int addStatePercentWithWeight(IAtsServices services, int percent, IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
+      double stateWeightInt = stateDef.getStateWeight();
+      double weight = stateWeightInt / 100;
+      int percentCompleteForState = getPercentCompleteSMAStateTotal(workItem, stateDef, services);
+      percent += weight * percentCompleteForState;
       return percent;
    }
 
