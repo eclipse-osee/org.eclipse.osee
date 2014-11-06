@@ -189,7 +189,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       directoryFileSelector.setDirectorySelected(true);
       if (currentResourceSelection != null) {
          String text;
-         if (currentResourceSelection.isEmpty()) {
+         if (!currentResourceSelection.isEmpty()) {
             IResource selected = currentResourceSelection.iterator().next();
             directoryFileSelector.setDirectorySelected(selected.getType() != IResource.FILE);
             text = selected.getLocation().toString();
