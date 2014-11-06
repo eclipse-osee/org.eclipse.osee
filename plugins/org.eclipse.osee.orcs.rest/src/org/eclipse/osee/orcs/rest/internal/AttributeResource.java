@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -39,13 +40,19 @@ public class AttributeResource {
    private final Long branchUuid;
    private final String artifactUuid;
    private final int attrId;
+   private final int transactionId;
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attrId) {
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attributeId) {
+      this(uriInfo, request, branchUuid, artifactUuid, attributeId, -1);
+   }
+
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attributeId, int transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
       this.artifactUuid = artifactUuid;
-      this.attrId = attrId;
+      this.attrId = attributeId;
+      this.transactionId = transactionId;
    }
 
    @GET
@@ -53,7 +60,11 @@ public class AttributeResource {
    public String getAsText() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
-      ArtifactReadable exactlyOne = factory.fromBranch(branch).andGuid(artifactUuid).getResults().getExactlyOne();
+      QueryBuilder queryBuilder = factory.fromBranch(branch).andGuid(artifactUuid);
+      if (transactionId > 0) {
+         queryBuilder.fromTransaction(transactionId);
+      }
+      ArtifactReadable exactlyOne = queryBuilder.getResults().getExactlyOne();
 
       Optional<? extends AttributeReadable<Object>> item =
          Iterables.tryFind(exactlyOne.getAttributes(), new Predicate<AttributeReadable<Object>>() {

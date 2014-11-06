@@ -52,6 +52,11 @@ public class AttributesResource {
       return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId);
    }
 
+   @Path("{attributeId}/version/{transactionId}")
+   public AttributeResource getAttributeWithGamma(@PathParam("attributeId") int attributeId, @PathParam("transactionId") int transactionId) {
+      return new AttributeResource(uriInfo, request, branchUuid, artifactUuid, attributeId, transactionId);
+   }
+
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAllAttributes() throws OseeCoreException {

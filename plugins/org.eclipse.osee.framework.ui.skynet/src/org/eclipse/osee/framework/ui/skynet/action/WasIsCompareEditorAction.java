@@ -10,15 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
+import java.net.URI;
 import java.util.List;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -26,6 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -36,6 +47,9 @@ import org.eclipse.ui.PlatformUI;
  * @author Donald G. Dunne
  */
 public class WasIsCompareEditorAction extends Action {
+
+   private static String ATTRIBUTE_TRANSACTIONS_QUERY_DESC =
+      "SELECT txs.transaction_id, txs.gamma_id FROM osee_attribute atr, osee_txs txs WHERE atr.attr_id = ? AND atr.gamma_id = txs.gamma_id AND txs.branch_id = ? order by gamma_id desc";
 
    public WasIsCompareEditorAction() {
       super("View Was/Is Comparison");
@@ -60,24 +74,70 @@ public class WasIsCompareEditorAction extends Action {
                return;
             }
             Change change = localChanges.iterator().next();
+            List<TransactionRecord> transactionsFromStructuredSelection =
+               Handlers.getTransactionsFromStructuredSelection(structuredSelection);
+            int transactionId = transactionsFromStructuredSelection.iterator().next().getId();
+            List<Artifact> artifactsFromStructuredSelection =
+               Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+            Artifact artifact = artifactsFromStructuredSelection.iterator().next();
+
             String was = change.getWasValue();
-            String is = change.getIsValue();
-            if (!Strings.isValid(was)) {
-               AWorkbench.popup("\"Was Value\" is not a valid string; Nothing to compare.");
-               return;
+            int attrId = ((AttributeChange) change).getAttrId();
+            Integer previousTransaction = getPreviousTransaction(artifact.getBranchUuid(), attrId, transactionId);
+            if (!Strings.isValid(was) && (change instanceof AttributeChange)) {
+               if (previousTransaction > 0) {
+                  was = loadAttributeValue(attrId, previousTransaction, artifact);
+               }
             }
-            if (!Strings.isValid(is)) {
-               AWorkbench.popup("\"Is Value\" is not a valid string; Nothing to compare.");
-               return;
+
+            String is = change.getIsValue();
+            if (!Strings.isValid(is) && (change instanceof AttributeChange)) {
+               is = loadAttributeValue(attrId, transactionId, artifact);
             }
             CompareHandler compareHandler =
-               new CompareHandler(null, new CompareItem("Was", was, System.currentTimeMillis()), new CompareItem("Is",
-                  is, System.currentTimeMillis()), null);
+               new CompareHandler(String.format("Compare [%s]", change), new CompareItem(String.format(
+                  "Was [Transaction: %d]", previousTransaction), was, System.currentTimeMillis()), new CompareItem(
+                  String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis()), null);
             compareHandler.compare();
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   private Integer getPreviousTransaction(long branchUuid, int attrId, int transactionId) {
+      Integer previousTransaction = 0;
+      boolean found = false;
+      IOseeStatement chStmt = ConnectionHandler.getStatement(ConnectionHandler.getConnection(), true);
+      try {
+         chStmt.runPreparedQuery(ATTRIBUTE_TRANSACTIONS_QUERY_DESC, attrId, branchUuid);
+         while (chStmt.next()) {
+            int transaction = chStmt.getInt("transaction_id");
+            if (found) {
+               return transaction;
+            }
+            if (transaction == transactionId) {
+               found = true;
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+      return previousTransaction;
+   }
+
+   private String loadAttributeValue(int attrId, int transactionId, Artifact artifact) {
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      URI uri =
+         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchUuid())).path(
+            "artifact").path(artifact.getGuid()).path("attribute").path(String.valueOf(attrId)).path("version").path(
+            String.valueOf(transactionId)).build();
+      try {
+         return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
+
    }
 
    private static ISelectionProvider getSelectionProvider() {
