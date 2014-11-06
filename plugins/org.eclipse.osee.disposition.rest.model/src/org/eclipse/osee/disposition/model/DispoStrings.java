@@ -49,4 +49,7 @@ public class DispoStrings {
    public static final String DeletedDiscrepancy = "Deleted Discrepancy";
 
    public static final String Dispo_Config_Art = "Dispo_Config";
+
+   public static final String Test_Unit_Resolution = "Test_Script";
+   public static final String Exception_Handling_Resolution = "Exception_Handling";
 }

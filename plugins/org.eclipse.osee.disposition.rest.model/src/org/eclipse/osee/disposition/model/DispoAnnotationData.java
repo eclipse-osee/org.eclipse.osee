@@ -33,6 +33,7 @@ public class DispoAnnotationData implements Identifiable<String> {
    private String resolution;
    private boolean isResolutionValid;
    private String resolutionType;
+   private boolean isDefault;
 
    public DispoAnnotationData() {
 
@@ -88,6 +89,10 @@ public class DispoAnnotationData implements Identifiable<String> {
       return resolutionType;
    }
 
+   public boolean getIsDefault() {
+      return isDefault;
+   }
+
    public void setLocationRefs(String locationRefs) {
       this.locationRefs = locationRefs;
    }
@@ -128,8 +133,8 @@ public class DispoAnnotationData implements Identifiable<String> {
       this.resolutionType = resolutionType;
    }
 
-   public void addCoveredDiscrepancyIndex(Discrepancy discrepancy) {
-      idsOfCoveredDiscrepancies.put(discrepancy.getId());
+   public void setIsDefault(boolean isDefault) {
+      this.isDefault = isDefault;
    }
 
    public boolean isValid() {

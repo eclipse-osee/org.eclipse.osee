@@ -26,13 +26,15 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.internal.importer.AbstractDispoImporter;
+import org.eclipse.osee.disposition.rest.DispoImporterApi;
+import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -45,7 +47,6 @@ import org.json.JSONObject;
 /**
  * @author Angel Avila
  */
-
 public class DispoApiImpl implements DispoApi {
 
    private ExecutorAdmin executor;
@@ -57,6 +58,7 @@ public class DispoApiImpl implements DispoApi {
    private DispoFactory dispoFactory;
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
+   private IOseeDatabaseService dbService;
 
    public void setExecutor(ExecutorAdmin executor) {
       this.executor = executor;
@@ -82,10 +84,14 @@ public class DispoApiImpl implements DispoApi {
       this.resolutionValidator = resolutionValidator;
    }
 
+   public void setDatabaseService(IOseeDatabaseService dbService) {
+      this.dbService = dbService;
+   }
+
    public void start() {
       logger.trace("Starting DispoApiImpl...");
       dispoFactory = new DispoFactoryImpl();
-      importerFactory = new DispoImporterFactory(dataFactory, executor, logger);
+      importerFactory = new DispoImporterFactory(dataFactory, executor, logger, dbService);
    }
 
    public void stop() {
@@ -111,7 +117,6 @@ public class DispoApiImpl implements DispoApi {
       DispoSet parentSet = getQuery().findDispoSetsById(program, setId);
       if (parentSet != null) {
          ArtifactReadable author = getQuery().findUser();
-
          getWriter().createDispoItems(author, program, parentSet, dispoItems, "UnAssigned");
       }
    }
@@ -190,14 +195,6 @@ public class DispoApiImpl implements DispoApi {
    private boolean editDispoItems(DispoProgram program, List<DispoItem> dispoItems, boolean resetRerunFlag) {
       boolean wasUpdated = false;
 
-      for (DispoItem dispoItem : dispoItems) {
-         try {
-            ((DispoItemData) dispoItem).setStatus(dispoConnector.allDiscrepanciesAnnotated(dispoItem));
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
-         }
-      }
-
       ArtifactReadable author = getQuery().findUser();
       getWriter().updateDispoItems(author, program, dispoItems, resetRerunFlag);
       wasUpdated = true;
@@ -249,7 +246,7 @@ public class DispoApiImpl implements DispoApi {
             DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(program, itemId), true);
 
             modifiedDispoItem.setAnnotationsList(annotationsList);
-            modifiedDispoItem.setStatus(dispoConnector.allDiscrepanciesAnnotated(modifiedDispoItem));
+            modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
             getWriter().updateDispoItem(author, program, dispoItem.getGuid(), modifiedDispoItem);
 
             wasUpdated = true;
@@ -357,7 +354,14 @@ public class DispoApiImpl implements DispoApi {
       if (operation.equals(DispoStrings.Operation_Import)) {
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(program, setToEdit);
-            AbstractDispoImporter importer = importerFactory.createImporter(ImportFormat.TMO);
+
+            DispoImporterApi importer;
+            if (setToEdit.getDispoType().equalsIgnoreCase("codeCoverage")) {
+               importer = importerFactory.createImporter(ImportFormat.LIS);
+            } else {
+               importer = importerFactory.createImporter(ImportFormat.TMO);
+            }
+
             List<DispoItem> itemsFromParse =
                importer.importDirectory(nameToItemMap, new File(setToEdit.getImportPath()));
 
@@ -439,5 +443,25 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoFactory getDispoFactory() {
       return dispoFactory;
+   }
+
+   @Override
+   public boolean copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source) {
+      AnnotationCopier copier = new AnnotationCopier(dispoConnector);
+      List<DispoItemData> destinationItems = new ArrayList<DispoItemData>();
+      for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
+         DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
+         destinationItems.add(itemData);
+      }
+      List<DispoItem> toEdit = Collections.emptyList();
+      try {
+         toEdit = copier.copyEntireSet(destinationItems, getDispoItems(program, source.getGuid()), true);
+      } catch (JSONException ex) {
+         //
+      }
+      if (!toEdit.isEmpty()) {
+         editDispoItems(program, toEdit, false);
+      }
+      return true;
    }
 }

@@ -223,3 +223,11 @@ input.cellInput:focus{
 	background-color: inherit;
 	border: solid cyan;
 }
+
+#refresh {
+	margin-top: 20px;
+ }
+ 
+ #loadingModal {
+ 	margin-bottom: 0px;
+ }

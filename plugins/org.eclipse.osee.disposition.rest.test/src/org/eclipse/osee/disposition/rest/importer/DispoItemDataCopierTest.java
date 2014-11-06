@@ -78,7 +78,7 @@ public class DispoItemDataCopierTest {
       addAnnotation("14", annotationsList, discrepanciesList);
       oldItemTemp.setAnnotationsList(annotationsList);
 
-      String itemStatus = dispoConnector.allDiscrepanciesAnnotated(oldItemTemp);
+      String itemStatus = dispoConnector.getItemStatus(oldItemTemp);
       @SuppressWarnings("rawtypes")
       Iterator keys = discrepanciesList.keys();
       Discrepancy discrepancy9 = null;
@@ -112,7 +112,7 @@ public class DispoItemDataCopierTest {
 
       DispoItemDataCopier.copyOldItemData(oldItemTemp, itemFromNewVersion);
       JSONArray annotationsList2 = itemFromNewVersion.getAnnotationsList();
-      String secondItemStatus = dispoConnector.allDiscrepanciesAnnotated(itemFromNewVersion);
+      String secondItemStatus = dispoConnector.getItemStatus(itemFromNewVersion);
 
       DispoAnnotationData annotationOneSecondItem =
          DispoUtil.jsonObjToDispoAnnotationData(annotationsList2.getJSONObject(0));

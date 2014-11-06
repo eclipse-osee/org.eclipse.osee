@@ -23,15 +23,17 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
+import org.json.JSONArray;
 
 /**
  * @author Angel Avila
  */
-public class TmoImporter implements AbstractDispoImporter {
+public class TmoImporter implements DispoImporterApi {
 
    private final DispoDataFactory dataFactory;
    private final ExecutorAdmin executor;
@@ -104,18 +106,26 @@ public class TmoImporter implements AbstractDispoImporter {
             InputStream inputStream = null;
             try {
                inputStream = new FileInputStream(file);
-
                String sanitizedFileName = file.getName().replaceAll("\\..*", "");
 
                DispoItemData itemToBuild = new DispoItemData();
-               // We already have an item with this name so we now have to check the dates
+
+               // We already have an item with this name so we now have to check the dates in the parsing
                if (exisitingItems.containsKey(sanitizedFileName)) {
                   DispoItem oldItem = exisitingItems.get(sanitizedFileName);
                   Date lastUpdate = oldItem.getLastUpdate();
                   boolean wasSameFile =
                      DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, false, lastUpdate);
                   if (!wasSameFile) {
-                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
+                     // Copy Id to tell callee that this is not a new Item
+                     itemToBuild.setGuid(oldItem.getGuid());
+                     itemToBuild.setAnnotationsList(new JSONArray());
+
+                     // If Item has no Discrepancies then don't both copying over Annotations
+                     if (itemToBuild.getDiscrepanciesList().length() > 0) {
+                        DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
+                     }
+                     dataFactory.setStatus(itemToBuild);
                      fromThread.add(itemToBuild);
                   }
                } else {

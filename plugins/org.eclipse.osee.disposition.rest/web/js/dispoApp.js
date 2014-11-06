@@ -75,6 +75,15 @@ app.provider('ExportSet', function() {
 	        }
 	    ];
 	});
+	
+app.provider('CopySet', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var CopySet = $resource('/dispo/program/:programId/admin/copy', {}, {});
+            return CopySet;
+        }
+    ];
+});
 
 app.provider('Set', function() {
     this.$get = ['$resource',

@@ -19,6 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -115,17 +116,19 @@ public class DispoSetResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoSets() throws JSONException {
+   public Response getAllDispoSets(@QueryParam("type") String type) throws JSONException {
       List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
       JSONArray jarray = new JSONArray();
 
       for (DispoSet set : allDispoSets) {
          JSONObject jobject = new JSONObject();
-         jobject.put("guid", set.getGuid());
-         jobject.put("name", set.getName());
-         jobject.put("importPath", set.getImportPath());
-         jobject.put("notesList", set.getNotesList());
-         jarray.put(jobject);
+         if (set.getDispoType().equalsIgnoreCase(type)) {
+            jobject.put("guid", set.getGuid());
+            jobject.put("name", set.getName());
+            jobject.put("importPath", set.getImportPath());
+            jobject.put("notesList", set.getNotesList());
+            jarray.put(jobject);
+         }
       }
       Status status;
       if (allDispoSets.isEmpty()) {

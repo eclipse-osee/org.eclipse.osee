@@ -25,6 +25,7 @@ import java.util.zip.ZipFile;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -38,7 +39,7 @@ import org.json.JSONObject;
 /**
  * @author John Misinco
  */
-public class TmzImporter implements AbstractDispoImporter {
+public class TmzImporter implements DispoImporterApi {
 
    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM dd, yyyy H:mm:ss aa", Locale.US);
 

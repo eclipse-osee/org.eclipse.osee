@@ -50,7 +50,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.google.gson.Gson;
 
 /**
  * @author Angel Avila
@@ -199,20 +198,20 @@ public class OrcsStorageImpl implements Storage {
 
       List<DispoItem> toReturn = new ArrayList<DispoItem>();
       for (ArtifactReadable art : results) {
-         toReturn.add(new DispoItemArtifact(art));
+         DispoItemArtifact dispoItemArtifact = new DispoItemArtifact(art);
+         dispoItemArtifact.getAborted();
+         toReturn.add(dispoItemArtifact);
       }
       return toReturn;
    }
 
    @Override
    public Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
-      Gson gson = new Gson();
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
-      String dispoConfigJson = gson.toJson(descriptor.getDispoConfig());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoConfig, dispoConfigJson);
+      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoType, descriptor.getDispoType());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, descriptor.getNotesList().toString());
       tx.commit();
       return creatdArtId;

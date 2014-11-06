@@ -19,6 +19,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
@@ -42,6 +43,11 @@ public final class DispoUtil {
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
+   }
+
+   public static boolean isDefaultAnntoation(DispoAnnotationData annotation) {
+      return annotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
+         DispoStrings.Exception_Handling_Resolution);
    }
 
    public static JSONObject getById(JSONArray list, String id) {
@@ -96,7 +102,7 @@ public final class DispoUtil {
          dispoSetData.setImportPath(dispoSet.getImportPath());
          dispoSetData.setNotesList(dispoSet.getNotesList());
          dispoSetData.setGuid(dispoSet.getGuid());
-         dispoSetData.setDispoConfig(dispoSet.getDispoConfig());
+         dispoSetData.setDispoType(dispoSet.getDispoType());
       } else {
          dispoSetData = null;
       }
@@ -104,6 +110,10 @@ public final class DispoUtil {
    }
 
    public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies) {
+      return itemArtToItemData(dispoItemArt, isIncludeDiscrepancies, false);
+   }
+
+   public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies, boolean isIncludeAnnotations) {
       DispoItemData dispoItemData = new DispoItemData();
       dispoItemData.setName(dispoItemArt.getName());
       dispoItemData.setGuid(dispoItemArt.getGuid());
@@ -121,6 +131,9 @@ public final class DispoUtil {
       dispoItemData.setItemNotes(dispoItemArt.getItemNotes());
       if (isIncludeDiscrepancies) {
          dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
+      }
+      if (isIncludeAnnotations) {
+         dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
       }
       return dispoItemData;
    }

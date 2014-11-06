@@ -108,7 +108,7 @@ public class DispoConnectorTest {
 
       assertTrue(annotationOne.getIsConnected());
 
-      String actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
    }
 
@@ -139,7 +139,7 @@ public class DispoConnectorTest {
       }
       assertTrue(annotationOne.getIsConnected());
 
-      String actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_InComplete, actual);
    }
 
@@ -220,7 +220,7 @@ public class DispoConnectorTest {
       dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
       annotationsAsList.put(annotationToJsonObj(annotationOne));
       dispoItem.setAnnotationsList(annotationsAsList);
-      String actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
    }
 
@@ -265,7 +265,7 @@ public class DispoConnectorTest {
       dispoItem.setAnnotationsList(annotationsList);
       annotationsList.put(0, annotationToJsonObj(annotationOne));
       dispoItem.setAnnotationsList(annotationsList);
-      String actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_InComplete, actual);
 
       dispoConnector.connectAnnotation(annotationTwo, discrepanciesList);
@@ -273,7 +273,7 @@ public class DispoConnectorTest {
       dispoItem.setAnnotationsList(annotationsList);
       annotationsList.put(1, annotationToJsonObj(annotationTwo));
       dispoItem.setAnnotationsList(annotationsList);
-      actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_InComplete, actual);
 
       dispoConnector.connectAnnotation(annotationThree, discrepanciesList);
@@ -281,7 +281,7 @@ public class DispoConnectorTest {
       dispoItem.setAnnotationsList(annotationsList);
       annotationsList.put(2, annotationToJsonObj(annotationThree));
       dispoItem.setAnnotationsList(annotationsList);
-      actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
    }
 
@@ -380,7 +380,7 @@ public class DispoConnectorTest {
       assertEquals(idsOfCoveringDiscrepancies.getString(2), idsForDiscrepancies12_18[5]);
       assertEquals(idsOfCoveringDiscrepancies.getString(3), idsForDiscrepancies12_18[6]);
 
-      String actual = dispoConnector.allDiscrepanciesAnnotated(dispoItem);
+      String actual = dispoConnector.getItemStatus(dispoItem);
       assertEquals(DispoStrings.Item_Complete, actual);
    }
 }

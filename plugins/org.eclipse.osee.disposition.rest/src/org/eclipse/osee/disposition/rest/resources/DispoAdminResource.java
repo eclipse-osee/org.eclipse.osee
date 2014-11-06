@@ -45,7 +45,7 @@ public class DispoAdminResource {
    @Path("/report")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
+   public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final DispoSet dispoSet2 = dispoApi.getDispoSetById(program, secondarySet);
       final STRSReport writer = new STRSReport(dispoApi);
@@ -85,5 +85,16 @@ public class DispoAdminResource {
       String contentDisposition =
          String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
       return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
+   }
+
+   @Path("/copy")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet) {
+      final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
+      final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
+
+      dispoApi.copyDispoSet(program, destination, source);
+      return Response.ok().build();
    }
 }

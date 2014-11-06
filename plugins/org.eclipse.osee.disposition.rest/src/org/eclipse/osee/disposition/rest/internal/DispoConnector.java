@@ -61,7 +61,7 @@ public class DispoConnector {
       return allDiscrepancies;
    }
 
-   public String allDiscrepanciesAnnotated(DispoItem item) throws JSONException {
+   public String getItemStatus(DispoItem item) throws JSONException {
       String toReturn;
       JSONArray annotations = item.getAnnotationsList();
       List<Integer> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
@@ -82,7 +82,7 @@ public class DispoConnector {
       for (int i = 0; i < length; i++) {
          JSONObject annotationAsJson = annotatinos.getJSONObject(i);
          DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationAsJson);
-         if (!annotation.isValid()) {
+         if (!annotation.getIsDefault() && !annotation.isValid()) {
             return false;
          }
       }

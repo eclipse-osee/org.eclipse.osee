@@ -120,17 +120,18 @@ public class DispoSetResourceTest {
       // No Sets
       List<DispoSet> emptyResultSet = new ArrayList<DispoSet>();
       when(dispositionApi.getDispoSets(program)).thenReturn(emptyResultSet);
-      Response noSetsResponse = resource.getAllDispoSets();
+      Response noSetsResponse = resource.getAllDispoSets("testScript");
       String messageActual = (String) noSetsResponse.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noSetsResponse.getStatus());
       assertEquals("[]", messageActual);
 
       DispoSetData set = new DispoSetData();
       set.setGuid(id1.getGuid());
+      set.setDispoType("testScript");
       List<DispoSet> resultSet = Collections.singletonList((DispoSet) set);
 
       when(dispositionApi.getDispoSets(program)).thenReturn(resultSet);
-      Response oneSetResponse = resource.getAllDispoSets();
+      Response oneSetResponse = resource.getAllDispoSets("testScript");
       JSONArray entity = new JSONArray((String) oneSetResponse.getEntity());
       JSONObject setFromEntity = entity.getJSONObject(0);
       assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());

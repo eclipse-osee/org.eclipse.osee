@@ -1,10 +1,10 @@
-app.controller('mainController', [
+app.controller('coverageController', [
 		'$rootScope',
 		'$cookieStore',
 	    '$modal',
 
 		function($rootScope, $cookieStore, $modal) {
-			$rootScope.type = 'testScript';
+			$rootScope.type = 'codeCoverage';
 			
 			$rootScope.setUserName = function() {
 				$rootScope.attempts = 0;

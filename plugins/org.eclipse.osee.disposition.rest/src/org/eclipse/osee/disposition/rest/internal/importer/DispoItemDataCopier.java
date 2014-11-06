@@ -31,16 +31,13 @@ import org.json.JSONObject;
  */
 
 public class DispoItemDataCopier {
-
-   public static void copyOldItemData(DispoItem oldItem, DispoItemData itemToBuild) throws JSONException {
-      itemToBuild.setCreationDate(oldItem.getCreationDate());
-      JSONObject newItemDiscrepancies = itemToBuild.getDiscrepanciesList();
-      JSONArray oldAnnotations = oldItem.getAnnotationsList();
+   public static void copyOldItemData(DispoItem sourceItem, DispoItemData destItem) throws JSONException {
+      JSONObject destItemDiscrepancies = destItem.getDiscrepanciesList();
+      JSONArray sourceAnnotations = sourceItem.getAnnotationsList();
       HashMap<String, Integer> idsToUpdate =
-         matchupOldDiscrepancies(oldItem.getDiscrepanciesList(), newItemDiscrepancies, oldAnnotations);
-      updateTestPointNumbersForAnntations(idsToUpdate, oldAnnotations, newItemDiscrepancies);
-      itemToBuild.setGuid(oldItem.getGuid());
-      itemToBuild.setAnnotationsList(oldAnnotations);
+         matchupOldDiscrepancies(sourceItem.getDiscrepanciesList(), destItemDiscrepancies, sourceAnnotations);
+      updateTestPointNumbersForAnntations(idsToUpdate, sourceAnnotations, destItemDiscrepancies);
+      destItem.setAnnotationsList(sourceAnnotations);
    }
 
    private static void updateTestPointNumbersForAnntations(HashMap<String, Integer> idsToUpdate, JSONArray annotations, JSONObject discrepancies) throws JSONException {
@@ -81,7 +78,7 @@ public class DispoItemDataCopier {
             testPointNumber.add(discrepancy.getLocation());
          } else if (idsToUpdate.containsKey(id)) {
             int justTestPoint = idsToUpdate.get(id);
-            testPointNumber.add(justTestPoint * -1); // Made this locationRef negative to convey to User it was valid at one point but on reimport it was invalid
+            testPointNumber.add(justTestPoint); // Made this locationRef negative to convey to User it was valid at one point but on reimport it was invalid
          } else {
             isGaveup = true;
             break;
@@ -101,7 +98,7 @@ public class DispoItemDataCopier {
 
    @SuppressWarnings("unchecked")
    private static HashMap<String, Integer> matchupOldDiscrepancies(JSONObject oldDiscrepancies, JSONObject newDiscrepancies, JSONArray annotations) throws JSONException {
-      HashMap<String, Discrepancy> textToNewDiscrepancies = createTextToNewDiscrepanciesMap(newDiscrepancies);
+      HashMap<String, Discrepancy> textToNewDiscrepancies = createTextToDiscrepanciesMap(newDiscrepancies);
       HashMap<String, Integer> idsToUpdate = new HashMap<String, Integer>();
 
       Iterator<String> iterator = oldDiscrepancies.keys();
@@ -113,8 +110,12 @@ public class DispoItemDataCopier {
 
          Discrepancy matchedNewDiscrepancy = textToNewDiscrepancies.get(normalizedText);
          int oldTestPointNumber = oldDiscrepany.getLocation();
+
+         /**
+          * Transfer the id from the old discrepancy to the new one since annotations have the old ID reference in
+          * 'idsOfCoveredDiscrepancies' field
+          */
          if (matchedNewDiscrepancy != null) {
-            // Transfer the id from the old discrepancy to the new one
             String idToReplace = matchedNewDiscrepancy.getId();
             String idOfOldDiscrep = oldDiscrepany.getId();
             matchedNewDiscrepancy.setId(idOfOldDiscrep);
@@ -167,7 +168,7 @@ public class DispoItemDataCopier {
    }
 
    @SuppressWarnings("unchecked")
-   private static HashMap<String, Discrepancy> createTextToNewDiscrepanciesMap(JSONObject discrepancies) throws JSONException {
+   private static HashMap<String, Discrepancy> createTextToDiscrepanciesMap(JSONObject discrepancies) throws JSONException {
       HashMap<String, Discrepancy> textToDiscrepancy = new HashMap<String, Discrepancy>();
       Iterator<String> iterator = discrepancies.keys();
       while (iterator.hasNext()) {

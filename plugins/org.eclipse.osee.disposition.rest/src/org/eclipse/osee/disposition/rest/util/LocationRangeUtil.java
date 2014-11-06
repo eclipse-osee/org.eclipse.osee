@@ -32,12 +32,8 @@ public final class LocationRangeUtil {
    }
 
    public static void checkValid(int start, int end) {
-      if (start > 0 && end > 0) {
-         if (start > end) {
-            throw new OseeArgumentException("End Index must be equal to or greater than the Start Index");
-         }
-      } else {
-         throw new OseeArgumentException("Start and End Index must both be positive integers");
+      if (start > end) {
+         throw new OseeArgumentException("End Index must be equal to or greater than the Start Index");
       }
    }
 
@@ -55,6 +51,10 @@ public final class LocationRangeUtil {
          StringTokenizer tokenizer = new StringTokenizer(locationRef, "-");
          startFromString = Integer.valueOf(tokenizer.nextToken());
          endFromString = Integer.valueOf(tokenizer.nextToken());
+      } else if (locationRef.matches("-\\d+--\\d+")) {
+         StringTokenizer tokenizer = new StringTokenizer(locationRef, "-");
+         startFromString = -1 * Integer.valueOf(tokenizer.nextToken());
+         endFromString = -1 * Integer.valueOf(tokenizer.nextToken());
       } else {
          startFromString = Integer.valueOf(locationRef);
          endFromString = Integer.valueOf(locationRef);

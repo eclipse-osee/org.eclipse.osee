@@ -19,17 +19,40 @@ app.controller('userController', [
         $scope.loading = false;
         $scope.spinneractive = false;
         
+        
+        $scope.getDispoType = function() {
+        	if($rootScope.type == 'codeCoverage') {
+        		$scope.annotationHeaders = {
+        				'locationRefs': 'Code Line',
+        				'resolutionType': 'Disposition Type',
+        				'resolution': 'Resolution'}
+        	} else if($rootScope.type == 'testScript') {
+        		$scope.annotationHeaders = {
+        				'locationRefs': 'Test Point(s)',
+        				'resolutionType': 'PCR Type',
+        				'resolution': 'PCR'}
+        	}
+        }
+        
+        $scope.getDispoType();
+        
         // Get programs
         Program.query(function(data) {
             $scope.programs = data;
         });
         
+        $scope.isDefaultResolution = function isDefaultResolution(annotation) {
+        	var resolutionType = annotation.resolutionType;
+        	return resolutionType == 'Test_Script' || resolutionType == 'Exception_Handling';
+        }
+
         $scope.updateProgram = function updateProgram() {
         	var loadingModal = $scope.showLoadingModal();
         	$scope.items = {};
         	$scope.sets = {};
             Set.query({
-                programId: $scope.programSelection
+                programId: $scope.programSelection,
+                type: $rootScope.type
             }, function(data) {
             	loadingModal.close();
                 $scope.sets = data;
@@ -50,14 +73,13 @@ app.controller('userController', [
             	alert("Ooops...Something went wrong");
             });
 
-// Uncomment once Coverage gets included
-//            Set.get({
-//                programId: $scope.programSelection,
-//                setId: $scope.setSelection
-//            }, function(data) {
-//                $scope.set = data;
-//                $scope.dispoConfig = $scope.set.dispoConfig;
-//            });
+            Set.get({
+                programId: $scope.programSelection,
+                setId: $scope.setSelection
+            }, function(data) {
+                $scope.set = data;
+                $scope.dispoConfig = $scope.set.dispoConfig;
+            });
         };
 
         $scope.getItemDetails = function getItemDetails(item, row) {
@@ -145,7 +167,8 @@ app.controller('userController', [
         var cellEditableTemplate = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editItem(row.entity)"/>'
         var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)"></input>';
         var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
-
+        var dateCellTmpl = '<div>getReadableDate({{row.getProperty(col.field)}})</div>';
+        
         
         $scope.smallColumns = [{
             field: 'name',
@@ -341,8 +364,13 @@ app.controller('userController', [
                 }
             }
         }
-
-        $scope.resolutionTypes = [{
+        
+        $scope.isDisabledOption = function isDisabledOption(option) {
+        	var isSelectable = option.selectable;
+        	return !isSelectable;
+        }
+        
+        $scope.testResolutionTypes = [{
             text: "Code",
             value: "CODE"
         }, {
@@ -358,6 +386,32 @@ app.controller('userController', [
             text: "Undetermined",
             value: "UNDETERMINED"
         }];
+
+        $scope.coverageResolutionTypes = [{
+            text: "Test Script",
+            value: "Test_Script",
+            isinuse: true
+        }, {
+            text: "Exception_Handling",
+            value: "Exception_Handling",
+            isinuse: true
+        }, {
+            text: "Other",
+            value: "other",
+            isinuse: false
+        }, {
+            text: "Undetermined",
+            value: "UNDETERMINED",
+            isinuse: false
+        }];
+        
+        $scope.getResolutionTypes = function getResolutionTypes() {
+        	if($scope.set.dispoType == 'codeCoverage') {
+        		return $scope.coverageResolutionTypes;
+        	} else {
+        		return $scope.testResolutionTypes;
+        	}
+        }
 
         $scope.deleteAnnotation = function deleteAnnotation(annotation) {
             Annotation.delete({
@@ -670,3 +724,35 @@ app.directive('focusMe', function($timeout) {
 	    }
 	  };
 	});
+
+//http://stackoverflow.com/questions/16202254/ng-options-with-disabled-rows
+app.directive('optionsDisabled', function($parse) {
+    var disableOptions = function(scope, attr, element, data, fnDisableIfTrue) {
+        // refresh the disabled options in the select element.
+        $("option[value!='?']", element).each(function(i, e) {
+            var locals = {};
+            locals[attr] = data[i];
+            $(this).attr("disabled", fnDisableIfTrue(scope, locals));
+        });
+    };
+    return {
+        priority: 0,
+        require: 'ngModel',
+        link: function(scope, iElement, iAttrs, ctrl) {
+            // parse expression and build array of disabled options
+            var expElements = iAttrs.optionsDisabled.match(/^\s*(.+)\s+for\s+(.+)\s+in\s+(.+)?\s*/);
+            var attrToWatch = expElements[3];
+            var fnDisableIfTrue = $parse(expElements[1]);
+            scope.$watch(attrToWatch, function(newValue, oldValue) {
+                if(newValue)
+                    disableOptions(scope, expElements[2], iElement, newValue, fnDisableIfTrue);
+            }, true);
+            // handle model updates properly
+            scope.$watch(iAttrs.ngModel, function(newValue, oldValue) {
+                var disOptions = $parse(attrToWatch)(scope);
+                if(newValue)
+                    disableOptions(scope, expElements[2], iElement, disOptions, fnDisableIfTrue);
+            });
+        }
+    };
+});

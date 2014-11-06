@@ -21,7 +21,6 @@ import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,7 +137,7 @@ public class DiscrepancyParser {
                Discrepancy discrepancy = new Discrepancy();
                discrepancy.setText(textAppendable.toString());
                discrepancy.setLocation(idOfTestPoint.getValue());
-               String id = GUID.create();
+               String id = String.valueOf(Lib.generateUuid());
                discrepancy.setId(id);
                JSONObject discrepancyAsJson = DispoUtil.discrepancyToJsonObj(discrepancy);
                discrepancies.put(id, discrepancyAsJson);

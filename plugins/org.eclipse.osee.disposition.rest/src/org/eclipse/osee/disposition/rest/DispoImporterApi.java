@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.rest.internal.importer;
+package org.eclipse.osee.disposition.rest;
 
 import java.io.File;
 import java.util.List;
@@ -18,7 +18,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 /**
  * @author Angel Avila
  */
-public interface AbstractDispoImporter {
+public interface DispoImporterApi {
 
    public abstract List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir);
 

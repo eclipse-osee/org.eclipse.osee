@@ -1,155 +1,142 @@
 <!doctype html>
 <html>
-
-<head>
-
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-
-    <title>Dispo User</title>
-</head>
-
-<body>
-    <div class="container-fluid" id="content">
+   <head>
+      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+      <title>Dispo User</title>
+   </head>
+   <body>
+      <div class="container-fluid" id="content">
             <div class="row">
                 <div id="refresh" class="span1">
                    <button  ng-show="items.length>0" class="btn btn-primary active" ng-click="updateSet()">Refresh</button>
                 </div>   
                 <div class="span3">
-                    ATS Version:
-                    <select class="form-control" ng-show="programs" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs">
-                    </select>
-                </div>
+                  ATS Version:
+                  <select class="form-control" ng-show="programs" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
+               </div>
                 <div ng-show="programSelection != null" class="span3">
-                    Set:
-                    <select class="form-control" ng-show="sets" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
-                    </select>
-                </div>
+                  Set:
+                  <select class="form-control" ng-show="sets" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
+                  </select>
+               </div>
                 <div id="multItemEditDiv" class="span5">
                     <div ng-show="items.length>0" class="btn-group">
-                    <button class="btn btn-primary active" ng-click="toggleEditItems()">Edit Multiple Items</button>
-							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showAssigneeModal()">Assignee</button>
-							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showCategoryModal()">Category</button>
-							  <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
-							</div>
-                </div>  
+                     <button class="btn btn-primary active" ng-click="toggleEditItems()">Edit Multiple Items</button>
+                     <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showAssigneeModal()">Assignee</button>
+                     <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showCategoryModal()">Category</button>
+                     <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
+                  </div>
+               </div>
             </div>
             <div id="top-content" class="row">
                 <div style='height: 500px;' id="itemsGrid" class="gridStyle" ng-grid="gridOptions"></div>
             </div>
-        </div>
-
-        <div id="bottom-content">
+         </div>
+         <div id="bottom-content">
             <div id="itemSelectedBar">
-                Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}
+               Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}
             </div>
             <div id="annotationsGrid">
-                <table class="table subTable">
-                    <th>Test Point(s)</th>
-                    <th>Type</th>
-                    <th>Resolution (PCR)</th>
-                    <th>Developer Notes</th>
-                    <th>Customer Notes</th>
-                    <th width="50px;">Delete</th>
-                    <tr ng-repeat="annotation in annotations">
-                        <td>
-                            <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
-                        </td>
-                        <td>
-                            <select ng-class="{annotationInput: true, details: annotation.showDeets}" focus-me="annotation.guid !=null" ng-options="obj.value as obj.text for obj in resolutionTypes" ng-disabled="annotation.guid == null" ng-model="annotation.resolutionType" ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></select>
-                        </td>
-                        <td>
-                            <textarea ng-class="{annotationInput: true, invalid: getInvalidRes(annotation), details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.resolution" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></textarea>
-                        </td>
-                        <td>
-                            <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.developerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></textarea>
-                        </td>
-                        <td>
-                            <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.customerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="addDetailsClass($event)"></textarea>
-                        </td>
-                        <td>
-                            <button ng-class="{annotationDelete: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-click="deleteAnnotation(annotation)">X</button>
-                        </td>
-                    </tr>
-                </table>
+               <table class="table subTable">
+                  <th>{{ annotationHeaders.locationRefs }}</th>
+                  <th>{{ annotationHeaders.resolutionType }}</th>
+                  <th>{{ annotationHeaders.resolution }}</th>
+                  <th>Developer Notes</th>
+                  <th>Customer Notes</th>
+                  <th width="50px;">Delete</th>
+                  <tr ng-repeat="annotation in annotations">
+                     <td>
+                        <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-disabled="isDefaultResolution(annotation);" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     </td>
+                     <td>
+                        <select ng-class="{annotationInput: true, details: annotation.showDeets}" focus-me="annotation.guid !=null" ng-options="obj.value as obj.text for obj in getResolutionTypes();" options-disabled="option.isinuse for option in getResolutionTypes();" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-model="annotation.resolutionType" ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></select>
+                     </td>
+                     <td>
+                        <textarea ng-class="{annotationInput: true, invalid: getInvalidRes(annotation), details: annotation.showDeets}" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-model="annotation.resolution" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     </td>
+                     <td>
+                        <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.developerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     </td>
+                     <td>
+                        <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.customerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     </td>
+                     <td>
+                        <button ng-class="{annotationDelete: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-click="deleteAnnotation(annotation)">X</button>
+                     </td>
+                  </tr>
+               </table>
             </div>
-        </div>
-    </div>
-    <div id="content-resizer" resizer="horizontal" resizer-height="6" resizer-top="#top-content" resizer-bottom="#bottom-content">
-    </div>
-    
-    <!--  definitions for modal forms -->
-    <script type="text/ng-template" id="assigneeModal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Edit Assignees</h3>
-        </div>
-        <div class="modal-body" style="height: 300px; overflow: auto;">
-            <div class="form-group">
+         </div>
+      </div>
+      <div id="content-resizer" resizer="horizontal" resizer-height="6" resizer-top="#top-content" resizer-bottom="#bottom-content">
+      </div>
+      <!--  definitions for modal forms -->
+      <script type="text/ng-template" id="assigneeModal.html">
+         <div class="modal-header">
+             <h3 class="modal-title">Edit Assignees</h3>
+         </div>
+         <div class="modal-body" style="height: 300px; overflow: auto;">
+             <div class="form-group">
                 <label for="setAssignee">Assignee</label>
-                <input ng-model="multiAssignee" class="form-control" name="setMultiAssignee" placeholder="Enter Assignee" required>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-
-    </script>
-
-    <script type="text/ng-template" id="categoryModal.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Edit Category</h3>
-        </div>
-        <div class="modal-body" style="height: 300px; overflow: auto;">
-            <div class="form-group">
-                <label for="setCategory">Category</label>
-                <input ng-model="multiCategory" class="form-control" name="setMultiCategory" placeholder="Enter Category" required>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-
-    </script>
-    
-    <script type="text/ng-template" id="needsRerunModal.html">
-        <div class="modal-header">
+                 <input ng-model="multiAssignee" class="form-control" name="setMultiAssignee" placeholder="Enter Assignee" required>
+             </div>
+         </div>
+         
+         <div class="modal-footer">
+             <button class="btn btn-primary" ng-click="ok()">OK</button>
+             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+         </div>
+         
+      </script>
+      <script type="text/ng-template" id="categoryModal.html">
+         <div class="modal-header">
+             <h3 class="modal-title">Edit Category</h3>
+         </div>
+         <div class="modal-body" style="height: 300px; overflow: auto;">
+             <div class="form-group">
+                 <label for="setCategory">Category</label>
+                 <input ng-model="multiCategory" class="form-control" name="setMultiCategory" placeholder="Enter Category" required>
+             </div>
+         </div>
+         
+         <div class="modal-footer">
+             <button class="btn btn-primary" ng-click="ok()">OK</button>
+             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+         </div>
+         
+      </script>
+      <script type="text/ng-template" id="needsRerunModal.html">
+         <div class="modal-header">
             <h3 class="modal-title">Edit Rerun Flag</h3>
-        </div>
-        <div class="modal-body" style="height: 300px; overflow: auto;">
-    <label>Needs Rerun?</label>
-    <div class="form-group">
-        <div class="radio">
-            <label>
-                <input ng-checked="true" type="radio" name="needsRerun" value="true" ng-model="formData.multiNeedsRerun">
-                TRUE
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="needsRerun" value="false" ng-model="formData.multiNeedsRerun">
-                FALSE
-            </label>
-        </div>
-    </div>
-        </div>
-
-        <div class="modal-footer">
+         </div>
+         <div class="modal-body" style="height: 300px; overflow: auto;">
+            <label>Needs Rerun?</label>
+            <div class="form-group">
+               <div class="radio">
+                  <label>
+                  <input ng-checked="true" type="radio" name="needsRerun" value="true" ng-model="formData.multiNeedsRerun">
+                  TRUE
+                  </label>
+               </div>
+               <div class="radio">
+                  <label>
+                  <input type="radio" name="needsRerun" value="false" ng-model="formData.multiNeedsRerun">
+                  FALSE
+                  </label>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-
-    </script>
-    
+         </div>
+       </script>
     
     <script type="text/ng-template" id="loadingModal.html">
         <div id="loadingModal" class="alert alert-info">
 				Loading...
         </div>
     </script>   
-
-</body>
-
+             
+   </body>
 </html>

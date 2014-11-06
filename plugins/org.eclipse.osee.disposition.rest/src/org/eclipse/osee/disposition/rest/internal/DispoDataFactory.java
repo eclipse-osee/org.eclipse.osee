@@ -60,8 +60,14 @@ public class DispoDataFactory {
       return newSet;
    }
 
+   public void setStatus(DispoItemData item) throws JSONException {
+      item.setStatus(dispoConnector.getItemStatus(item));
+   }
+
    public void initDispoItem(DispoItemData itemToInit) {
-      itemToInit.setAnnotationsList(new JSONArray());
+      if (itemToInit.getAnnotationsList() == null) {
+         itemToInit.setAnnotationsList(new JSONArray());
+      }
       if (itemToInit.getDiscrepanciesList() == null) {
          itemToInit.setDiscrepanciesList(new JSONObject());
       }
@@ -79,13 +85,14 @@ public class DispoDataFactory {
       annotationToInit.setDeveloperNotes("");
       annotationToInit.setResolution("");
       annotationToInit.setResolutionType("None");
+      annotationToInit.setIsDefault(false);
    }
 
    public DispoItem createUpdatedItem(JSONArray annotationsList, JSONObject discrepanciesList) throws JSONException {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(annotationsList);
       newItem.setDiscrepanciesList(discrepanciesList);
-      newItem.setStatus(dispoConnector.allDiscrepanciesAnnotated(newItem));
+      newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
       return newItem;
    }

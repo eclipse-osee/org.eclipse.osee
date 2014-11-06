@@ -26,6 +26,13 @@
                     <button ng-click="generateReport()" class="btn btn-primary active" id=generateReportBtn>Generate Report</button>
                 </div>
             </div>
+            
+            <div ng-hide="true" class="row" id=setCopyRow>
+                <div class="span3 offset1" id=setCopyContainer>
+                    <button ng-click="openCopySetModal()" class="btn btn-primary active" id=generateReportBtn>Merge Annotations</button>
+                </div>
+            </div>
+            
         </div>
         <div class="span8 offset1">
             <div class="row">
@@ -51,6 +58,29 @@
             <div class="form-group">
                 <label for="setPathInput">Path</label>
                 <input ng-model="importPath" class="form-control" name="setPath" placeholder="Enter Import Path" required>
+            </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+
+    </script>
+    
+    
+    <script type="text/ng-template" id="copySets.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Copy Annotations</h3>
+        </div>
+        <div class="modal-body" style="height: 300px; overflow: auto;">
+            <div class="form-group">
+					 Select Destination Set
+                <select ng-model="destinationSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+					 </select>
+            </div>
+            <div class="form-group">
+					 Select Source Set
+                <select ng-model="sourceSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+					 </select>
             </div>
         </div>
         <div class="modal-footer">

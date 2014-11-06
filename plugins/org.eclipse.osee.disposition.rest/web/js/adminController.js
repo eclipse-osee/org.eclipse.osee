@@ -1,5 +1,5 @@
-		app.controller('adminController', ['$scope', '$modal', 'Program', 'Set', 'Report',
-		    function($scope, $modal, Program, Set, Report) {
+		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet',
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
@@ -132,7 +132,8 @@
 		        	$scope.items = {};
 		        	$scope.sets = {};
 		            Set.query({
-		                programId: $scope.programSelection
+		                programId: $scope.programSelection,
+		                type: $rootScope.type
 		            }, function(data) {
 		                $scope.loading = false;
 		                $scope.sets = data;
@@ -161,6 +162,7 @@
 
 
 		        $scope.importSet = function importSet(set) {
+		        	console.log(new Date().getTime());
 		            var newSet = new Set;
 		            newSet.operation = "Import";
 		            set.processingImport = true;
@@ -168,8 +170,11 @@
 		                programId: $scope.programSelection,
 		                setId: set.guid
 		            }, newSet, function(){
+		            	console.log(new Date().getTime());
 		            	set.processingImport = false;
 		            }, function() {
+		            	console.log("Failed");
+		            	console.log(new Date().getTime());
 		            	set.processingImport = false;
 		            	alert("Could not Import");
 		            });
@@ -189,12 +194,12 @@
 		            window.open(url);
 		        };
 
-		        $scope.createNewSet = function createNewSet(name, path, type) {
+		        $scope.createNewSet = function createNewSet(name, path) {
 		            if (name != "" && path != "") {
 		                var newSet = new Set;
 		                newSet.name = name;
 		                newSet.importPath = path;
-		                newSet.dispoType = type;
+		                newSet.dispoType = $rootScope.type;
 		                newSet.$save({
 		                    programId: $scope.programSelection
 		                }, function() {
@@ -202,7 +207,16 @@
 		                });
 		            }
 		        };
+		        
+		        $scope.copySet = function(destination, source)	 {
+		            CopySet.get({
+		                programId: $scope.programSelection,
+		                destinationSet: destination,
+		                sourceSet: source,
+		            });
+		        }
 
+		        // Create Set Modal
 		        $scope.createNewSetModal = function() {
 		            var modalInstance = $modal.open({
 		                templateUrl: 'popup.html',
@@ -212,20 +226,53 @@
 		            });
 
 		            modalInstance.result.then(function(inputs) {
-		                $scope.createNewSet(inputs.name, inputs.path, inputs.dispoType);
+		                $scope.createNewSet(inputs.name, inputs.path);
 		            });
 		        }
 
 		        var CreateSetModalCtrl = function($scope, $modalInstance) {
 		            $scope.setName = "";
 		            $scope.importPath = "";
-		            $scope.dispoType = "";
-
+		            
 		            $scope.ok = function() {
 		                var inputs = {};
 		                inputs.name = this.setName;
 		                inputs.path = this.importPath;
-		                inputs.dispoType = "testScripts";
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        };
+		        
+		        // Copy Set Modal
+		        $scope.openCopySetModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'copySets.html',
+		                controller: CopySetModalCtrl,
+		                size: 'md',
+		                windowClass: 'copySetModal',
+		                resolve: {
+		                	sets: function() {
+		                		return $scope.sets;
+		                	}
+		                }
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		                $scope.copySet(inputs.destinationSet, inputs.sourceSet);
+		            });
+		        }
+		        
+		        
+		        var CopySetModalCtrl = function($scope, $modalInstance, sets) {
+		            $scope.setsLocal = angular.copy(sets);
+
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.destinationSet = this.destinationSet;
+		                inputs.sourceSet = this.sourceSet;
 		                $modalInstance.close(inputs);
 		            };
 

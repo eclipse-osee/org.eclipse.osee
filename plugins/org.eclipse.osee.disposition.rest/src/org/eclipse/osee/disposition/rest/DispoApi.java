@@ -54,6 +54,8 @@ public interface DispoApi {
 
    boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
+   boolean copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source);
+
    // Deletes
 
    boolean deleteDispoSet(DispoProgram program, String dispoSetId);

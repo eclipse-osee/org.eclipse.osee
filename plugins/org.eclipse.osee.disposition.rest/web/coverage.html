@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Coverage</title>
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css">
+    <link href="css/user.css" rel="stylesheet">
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+
+<body ng-app="dispoApp">
+
+    <nav ng-controller="coverageController" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/user">Coverage</a>
+            </div>
+            <p ng-dblclick="resetUserName()" class="navbar-text">Signed in as {{ cachedName }}</p>
+            <div class="collapse navbar-collapse" ng-controller="HeaderController">
+                <ul class="nav navbar-nav navbar-right">
+                	  <button id="helpButton" class="btn btn-info" ng-click="showHelpModal()">Help</button>
+                    <li ng-class="{ active: isActive('/user')}"><a href="#/user">User</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div ng-view></div>
+
+    <script>
+        function HeaderController($scope, $location) {
+            $scope.isActive = function(viewLocation) {
+                return viewLocation === $location.path();
+            };
+        }
+    </script>
+
+    <script type="text/ng-template" id="helpModal.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Help</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <ul class="list-group">
+                <li>You can only modifiy a item's dispositions or notes if you are assigned to that item. To assign yourself, double click on the assignee field of the item you want</li>
+				    <li>To create or edit a note for the item, click in the 'item Notes' field of the item, the save happens automatically upon leaving the cell</li>
+                <li>To view and edit dispositions for a item, double click on the name field of item. This will populate the lower panel with all the current dispositions for that item</li>
+ 					 <li>To create a new disposition, click on the 'Locations' cell of the first empty row in the lower, Dispositions Table. Enter a test point failure number(or a comma seperated set of numbers and/or ranges) that the new disposition applies to</li>
+ 					 <li>When you leave a cell, the data will automatically be saved to the server (unless you get an error dialogue box)</li>
+					 <li>A item is considered "Complete" when all of its Test Point Failures are referenced by the set of dispositions and all the dispositions are valid</li>
+            </div>
+        </div>
+
+    </script>
+    
+    <script src="/lib/js/jquery-2.0.3.min.js"></script>
+    <script src="/lib/js/angular.min.js"></script>
+    <script src="/lib/js/angular-route.min.js"></script>
+    <script src="/lib/js/angular-resource.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-cookies.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+    <script src="/lib/js/bootstrap.min.js"></script>
+    <script src="/lib/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="js/resizer.js"></script>
+    <script src="js/dispoApp.js"></script>
+    <script src="js/userController.js"></script>
+    <script src="js/adminController.js"></script>
+    <script src="js/coverageController.js"></script>
+</body>
+
+</html>

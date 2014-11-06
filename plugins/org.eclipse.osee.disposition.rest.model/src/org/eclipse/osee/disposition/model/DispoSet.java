@@ -26,5 +26,5 @@ public interface DispoSet extends Identifiable<String> {
 
    String getImportState();
 
-   DispoConfig getDispoConfig();
+   String getDispoType();
 }

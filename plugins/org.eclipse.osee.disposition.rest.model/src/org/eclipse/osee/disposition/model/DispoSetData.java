@@ -26,7 +26,6 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private String operation;
    private JSONArray notesList;
    private String importState;
-   private DispoConfig dispoConfig;
 
    public DispoSetData() {
 
@@ -53,10 +52,6 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.notesList = notesList;
    }
 
-   public void setDispoConfig(DispoConfig dispoConfig) {
-      this.dispoConfig = dispoConfig;
-   }
-
    @Override
    public JSONArray getNotesList() {
       return notesList;
@@ -79,10 +74,5 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
          }
       }
       return false;
-   }
-
-   @Override
-   public DispoConfig getDispoConfig() {
-      return dispoConfig;
    }
 }
