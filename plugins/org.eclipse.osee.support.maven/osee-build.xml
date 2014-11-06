@@ -9,7 +9,7 @@
 		<echo>--------------------------------------------------------------</echo>
 		<echo>OSEE BUILD - Build Stage</echo>
 		<echo>--------------------------------------------------------------</echo>
-		<property name="input-arguments" value="all,all-ide,all-server,x-core,orcs,dispo,x-ats,x-server,runtime,ote,osee-client,coverage,ats-client,products" />
+		<property name="input-arguments" value="all,all-ide,all-server,x-core,orcs,dispo,x-ats,x-server,runtime,ote,osee-client,ats-client,coverage,products" />
 		<input message="${tab}[input] Select build to perform?" validargs="${input-arguments}" defaultvalue="${default-osee-build-stage}" addproperty="input-osee-build-stage">
 			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
 		</input>
@@ -68,7 +68,7 @@
 				<property name="osee-build-stage" value="osee-ats-client" />
 				<property name="osee-build-directory" value="org.eclipse.osee.ats.parent" />
 			</case>
-			<case value="client-all">
+			<case value="products">
 				<property name="osee-build-stage" value="osee-client-products" />
 				<property name="osee-build-directory" value="org.eclipse.osee.client.all.parent" />
 			</case>
