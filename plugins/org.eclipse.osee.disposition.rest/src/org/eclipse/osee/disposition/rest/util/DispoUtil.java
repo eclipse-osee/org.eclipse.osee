@@ -234,6 +234,7 @@ public final class DispoUtil {
          jsonObject.put("lastUpdated", dispoItem.getLastUpdate());
          jsonObject.put("creationDate", dispoItem.getCreationDate());
          jsonObject.put("itemNotes", dispoItem.getItemNotes());
+         jsonObject.put("version", dispoItem.getVersion());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

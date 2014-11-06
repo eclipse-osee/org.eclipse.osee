@@ -228,6 +228,11 @@ app.controller('userController', [
                 displayName: 'Aborted',
                 enableCellEdit: false,
                 visible: false
+            }, {
+                field: 'version',
+                displayName: 'Version',
+                enableCellEdit: false,
+                visible: false
             }]
 
         };
