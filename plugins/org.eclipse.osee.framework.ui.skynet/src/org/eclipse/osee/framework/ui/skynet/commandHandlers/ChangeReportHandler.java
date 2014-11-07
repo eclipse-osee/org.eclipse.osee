@@ -28,16 +28,27 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class ChangeReportHandler extends CommandHandler {
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+   public boolean isEnabledWithException(IStructuredSelection selection) {
       boolean enabled = false;
 
-      if (!structuredSelection.isEmpty()) {
-         Object selectedObject = structuredSelection.getFirstElement();
+      if (!selection.isEmpty()) {
+         if (selection.size() == 1) {
+            Object selectedObject = selection.getFirstElement();
 
-         if (selectedObject instanceof TransactionRecord) {
-            enabled = ((TransactionRecord) selectedObject).getTxType() != TransactionDetailsType.Baselined;
-         } else if (selectedObject instanceof IOseeBranch) {
-            enabled = true;
+            if (selectedObject instanceof TransactionRecord) {
+               enabled = ((TransactionRecord) selectedObject).getTxType() != TransactionDetailsType.Baselined;
+            } else if (selectedObject instanceof IOseeBranch) {
+               enabled = true;
+            }
+         } else if (selection.size() == 2) {
+            Object[] items = selection.toArray();
+            if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
+               if (((TransactionRecord) items[0]).getBranchId() == ((TransactionRecord) items[0]).getBranchId()) {
+                  enabled = true;
+               }
+            }
+         } else {
+            enabled = false;
          }
       }
 
@@ -47,12 +58,19 @@ public class ChangeReportHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (!selection.isEmpty()) {
-         Object selectedObject = selection.getFirstElement();
          try {
-            if (selectedObject instanceof TransactionRecord) {
-               ChangeUiUtil.open((TransactionRecord) selectedObject);
-            } else if (selectedObject instanceof IOseeBranch) {
-               ChangeUiUtil.open((IOseeBranch) selectedObject);
+            if (selection.size() == 2) {
+               Object[] items = selection.toArray();
+               if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
+                  ChangeUiUtil.open((TransactionRecord) items[0], (TransactionRecord) items[1]);
+               }
+            } else {
+               Object selectedObject = selection.getFirstElement();
+               if (selectedObject instanceof TransactionRecord) {
+                  ChangeUiUtil.open((TransactionRecord) selectedObject);
+               } else if (selectedObject instanceof IOseeBranch) {
+                  ChangeUiUtil.open((IOseeBranch) selectedObject);
+               }
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

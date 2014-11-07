@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -50,6 +50,16 @@ public final class ChangeUiUtil {
    public static void open(TransactionRecord transactionId) throws OseeCoreException {
       Conditions.checkNotNull(transactionId, "TransactionId");
       open(createInput(transactionId, true));
+   }
+
+   public static void open(TransactionRecord startTx, TransactionRecord endTx) throws OseeCoreException {
+      Conditions.checkNotNull(startTx, "First TransactionId");
+      Conditions.checkNotNull(endTx, "Second TransactionId");
+      TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
+      if (!txDelta.areOnTheSameBranch()) {
+         throw new OseeArgumentException("invalid selection - transactions not on the same branch", txDelta);
+      }
+      open(createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, true));
    }
 
    public static ChangeReportEditorInput createInput(TransactionRecord transactionId, boolean loadOnOpen) throws OseeCoreException {
