@@ -1725,3 +1725,18 @@ artifactType "Osee Type Definition" extends "Artifact" {
 	attribute "Active"
 	attribute "Uri General String Data"
 }
+
+artifactType "Feature" extends "Artifact" {
+	uuid 0x0000000000000057
+	attribute "Description"
+}
+
+relationType "Related Feature" {
+	uuid 0x0000000000000058
+	sideAName "feature"
+	sideAArtifactType "Feature"
+	sideBName "artifact"
+	sideBArtifactType "Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
+}
