@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.rest.internal;
 import org.eclipse.osee.orcs.rest.internal.search.ArtifactSearch_V1Test;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDslTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandlerTest;
-import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistsTypePredicateHandlerTest;
+import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistenceTypePredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.GuidsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IdsPredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.IsOfTypePredicateHandlerTest;
@@ -28,7 +28,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    SearchDslTest.class,
    AttributeTypePredicateHandlerTest.class,
-   ExistsTypePredicateHandlerTest.class,
+   ExistenceTypePredicateHandlerTest.class,
    IdsPredicateHandlerTest.class,
    GuidsPredicateHandlerTest.class,
    IsOfTypePredicateHandlerTest.class,

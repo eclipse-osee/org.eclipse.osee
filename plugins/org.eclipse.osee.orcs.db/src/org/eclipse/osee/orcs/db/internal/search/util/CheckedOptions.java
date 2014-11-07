@@ -32,17 +32,12 @@ public class CheckedOptions {
       caseType = QueryOption.CASE__IGNORE;
       countType = QueryOption.TOKEN_COUNT__IGNORE;
       delimiter = QueryOption.TOKEN_DELIMITER__ANY;
-      exists = QueryOption.EXISTANCE__EXISTS;
 
       for (QueryOption option : options) {
          switch (option) {
             case CASE__MATCH:
             case CASE__IGNORE:
                caseType = option;
-               break;
-            case EXISTANCE__EXISTS:
-            case EXISTANCE__NOT_EXISTS:
-               exists = option;
                break;
             case TOKEN_COUNT__MATCH:
             case TOKEN_COUNT__IGNORE:

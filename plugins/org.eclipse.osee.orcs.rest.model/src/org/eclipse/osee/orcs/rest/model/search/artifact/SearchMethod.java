@@ -23,6 +23,7 @@ public enum SearchMethod {
    IS_OF_TYPE("isOfType"),
    TYPE_EQUALS("typeEquals"),
    EXISTS_TYPE("exists"),
+   NOT_EXISTS_TYPE("notExists"),
    ATTRIBUTE_TYPE("attrType"),
    RELATED_TO("related");
 
@@ -45,5 +46,14 @@ public enum SearchMethod {
       }
       Conditions.checkNotNull(toReturn, "SearchMethod", "Invalid type [%s]", value);
       return toReturn;
+   }
+
+   public boolean isOfType(SearchMethod... methods) {
+      for (SearchMethod method : methods) {
+         if (this == method) {
+            return true;
+         }
+      }
+      return false;
    }
 }

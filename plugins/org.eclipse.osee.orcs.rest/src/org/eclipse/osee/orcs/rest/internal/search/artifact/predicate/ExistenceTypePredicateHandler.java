@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,12 +29,13 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author John R. Misinco
  * @author Roberto E. Escobar
  */
-public class ExistsTypePredicateHandler implements PredicateHandler {
+public class ExistenceTypePredicateHandler implements PredicateHandler {
 
    @Override
    public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
-      if (predicate.getType() != SearchMethod.EXISTS_TYPE) {
-         throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.EXISTS_TYPE);
+      if (!predicate.getType().isOfType(SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE)) {
+         throw new OseeArgumentException("This predicate handler only supports [%s] and [%s]",
+            SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE);
       }
       List<String> typeParameters = predicate.getTypeParameters();
       Collection<String> values = predicate.getValues();
@@ -48,26 +48,31 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
          if ("attrType".equals(existsType)) {
             Collection<IAttributeType> attributeTypes = PredicateHandlerUtil.getIAttributeTypes(values);
             if (!attributeTypes.isEmpty()) {
-               builder.andExists(attributeTypes);
+               if (checkExists(predicate.getType())) {
+                  builder.andExists(attributeTypes);
+               } else {
+                  for (IAttributeType type : attributeTypes) {
+                     builder.andNotExists(type);
+                  }
+               }
             }
          } else if ("relType".equals(existsType)) {
-            QueryOption[] options = predicate.getOptions();
-            for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
-               if (searchNotExists(options)) {
-                  builder.andNotExists(rt);
-               } else {
+            Collection<IRelationType> iRelationTypes = PredicateHandlerUtil.getIRelationTypes(values);
+            for (IRelationType rt : iRelationTypes) {
+               if (checkExists(predicate.getType())) {
                   builder.andExists(rt);
+               } else {
+                  builder.andNotExists(rt);
                }
             }
          } else if ("relTypeSide".equals(existsType)) {
-            QueryOption[] options = predicate.getOptions();
             RelationSide side = typeParameters.get(1).equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
             for (IRelationType rt : PredicateHandlerUtil.getIRelationTypes(values)) {
                IRelationTypeSide rts = TokenFactory.createRelationTypeSide(side, rt.getGuid(), "SearchRelTypeSide");
-               if (searchNotExists(options)) {
-                  builder.andNotExists(rts);
-               } else {
+               if (checkExists(predicate.getType())) {
                   builder.andExists(rts);
+               } else {
+                  builder.andNotExists(rts);
                }
             }
          }
@@ -76,13 +81,8 @@ public class ExistsTypePredicateHandler implements PredicateHandler {
       return builder;
    }
 
-   private boolean searchNotExists(QueryOption[] options) {
-      for (QueryOption option : options) {
-         if (option == QueryOption.EXISTANCE__NOT_EXISTS) {
-            return true;
-         }
-      }
-      return false;
+   private boolean checkExists(SearchMethod method) {
+      return method == SearchMethod.EXISTS_TYPE;
    }
 
 }

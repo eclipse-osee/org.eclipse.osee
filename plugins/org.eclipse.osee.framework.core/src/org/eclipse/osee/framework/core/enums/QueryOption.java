@@ -17,10 +17,6 @@ public enum QueryOption {
    CASE__MATCH,
    CASE__IGNORE,
 
-   // these are used for attribute and relation existence
-   EXISTANCE__EXISTS,
-   EXISTANCE__NOT_EXISTS,
-
    TOKEN_COUNT__MATCH,
    TOKEN_COUNT__IGNORE,
 

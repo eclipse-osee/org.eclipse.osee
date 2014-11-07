@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistsTypePredicateHandler;
+import org.eclipse.osee.orcs.rest.internal.search.artifact.predicate.ExistenceTypePredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -41,7 +41,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author John R. Misinco
  */
-public class ExistsTypePredicateHandlerTest {
+public class ExistenceTypePredicateHandlerTest {
 
    @Mock
    private QueryBuilder builder;
@@ -58,7 +58,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleRelationTypeSideA() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("relType");
       //for relation type sides, first char must be A or B denoting side, followed by relation type uuid
       String relationValue = "12345";
@@ -72,7 +72,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleRelationTypeSideB() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("relType");
       //no flags for exists type
       String relationValue = "12345";
@@ -87,7 +87,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleRelationTypeSideMultiples() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("relType");
       //test multiples
       String relationValue1 = "12345";
@@ -108,7 +108,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleAttrTypeSingle() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("attrType");
       //for relation type sides, first char must be A or B denoting side, followed by relation type uuid
       String attrUuid = "12345";
@@ -123,7 +123,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleAttrTypeMultiple() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("attrType");
       String attrType1 = "12345";
       String attrType2 = "34567";
@@ -141,7 +141,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test
    public void testHandleBadValues() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("attrType");
       String value = "12A4G";
       List<String> values = Collections.singletonList(value);
@@ -160,7 +160,7 @@ public class ExistsTypePredicateHandlerTest {
 
    @Test(expected = OseeCoreException.class)
    public void testBadValuesThrowException() throws OseeCoreException {
-      ExistsTypePredicateHandler handler = new ExistsTypePredicateHandler();
+      ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
       Predicate testPredicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"),
             Collections.singletonList("A12A4G"), QueryOption.TOKEN_DELIMITER__ANY);

@@ -110,14 +110,14 @@ public class PredicateFactoryImpl implements PredicateFactory {
    @Override
    public Predicate createRelationTypeSideNotExistsSearch(IRelationTypeSide relationTypeSide) {
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relTypeSide", side), getLongIds(relationTypeSide),
-         QueryOption.EXISTANCE__NOT_EXISTS);
+      return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("relTypeSide", side),
+         getLongIds(relationTypeSide));
    }
 
    @Override
    public Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
-      return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), typeIds, QueryOption.EXISTANCE__NOT_EXISTS);
+      return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("relType"), typeIds);
    }
 
    @Override
