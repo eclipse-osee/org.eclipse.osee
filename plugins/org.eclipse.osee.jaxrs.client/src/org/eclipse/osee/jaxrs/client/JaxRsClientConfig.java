@@ -567,6 +567,45 @@ public class JaxRsClientConfig {
       return data;
    }
 
+   protected void copy(JaxRsClientConfig src) {
+      this.asyncExecuteTimeout = src.asyncExecuteTimeout;
+      this.asyncExecuteTimeoutRejection = src.asyncExecuteTimeoutRejection;
+      this.connectionTimeout = src.connectionTimeout;
+      this.receiveTimeout = src.receiveTimeout;
+      this.connectionType = src.connectionType;
+      this.maxRetransmits = src.maxRetransmits;
+      this.nonProxyHosts = src.nonProxyHosts;
+      this.fullProxyAddress = src.fullProxyAddress;
+      this.proxyAuthorizationType = src.proxyAuthorizationType;
+      this.proxyPassword = src.proxyPassword;
+      this.proxyType = src.proxyType;
+      this.proxyUsername = src.proxyUsername;
+      this.serverAuthorizationType = src.serverAuthorizationType;
+      this.serverPassword = src.serverPassword;
+      this.serverUsername = src.serverUsername;
+      this.followRedirects = src.followRedirects;
+      this.chunkingAllowed = src.chunkingAllowed;
+      this.chunkingThreshold = src.chunkingThreshold;
+      this.chunkLength = src.chunkLength;
+      this.proxyClientSubResourcesInheritHeaders = src.proxyClientSubResourcesInheritHeaders;
+      this.proxyClientThreadSafe = src.proxyClientThreadSafe;
+      this.oauthAuthorizeUri = src.oauthAuthorizeUri;
+      this.oauthTokenUri = src.oauthTokenUri;
+      this.oauthTokenValidationUri = src.oauthTokenValidationUri;
+      this.oauthClientId = src.oauthClientId;
+      this.oauthClientSecret = src.oauthClientSecret;
+      this.oauthRedirectUri = src.oauthRedirectUri;
+      this.oauthScopes = src.oauthScopes;
+      this.oauthSecretKeyAlgorithm = src.oauthSecretKeyAlgorithm;
+      this.oauthEncodedSecretKey = src.oauthEncodedSecretKey;
+      this.oauthTokenStore = src.oauthTokenStore;
+      this.oauthConfirmAccessHandler = src.oauthConfirmAccessHandler;
+      this.oauthFailsOnRefreshTokenError = src.oauthFailsOnRefreshTokenError;
+      this.oauthCacheEnabled = src.oauthCacheEnabled;
+      this.oauthCacheMaxSize = src.oauthCacheMaxSize;
+      this.oauthCacheEvictTimeoutMillis = src.oauthCacheEvictTimeoutMillis;
+   }
+
    @Override
    public String toString() {
       return "JaxRsClientConfig [asyncExecuteTimeout=" + asyncExecuteTimeout + ", asyncExecuteTimeoutRejection=" + asyncExecuteTimeoutRejection + ", connectionTimeout=" + connectionTimeout + ", receiveTimeout=" + receiveTimeout + ", connectionType=" + connectionType + ", maxRetransmits=" + maxRetransmits + ", nonProxyHosts=" + nonProxyHosts + ", fullProxyAddress=" + fullProxyAddress + ", proxyAuthorizationType=" + proxyAuthorizationType + ", proxyPassword=" + proxyPassword + ", proxyType=" + proxyType + ", proxyUsername=" + proxyUsername + ", serverAuthorizationType=" + serverAuthorizationType + ", serverPassword=" + serverPassword + ", serverUsername=" + serverUsername + ", followRedirects=" + followRedirects + ", chunkingAllowed=" + chunkingAllowed + ", chunkingThreshold=" + chunkingThreshold + ", chunkLength=" + chunkLength + ", proxyClientSubResourcesInheritHeaders=" + proxyClientSubResourcesInheritHeaders + ", proxyClientThreadSafe=" + proxyClientThreadSafe + ", oauthAuthorizeUri=" + oauthAuthorizeUri + ", oauthTokenUri=" + oauthTokenUri + ", oauthTokenValidationUri=" + oauthTokenValidationUri + ", oauthClientId=" + oauthClientId + ", oauthClientSecret=" + oauthClientSecret + ", oauthRedirectUri=" + oauthRedirectUri + ", oauthScopes=" + oauthScopes + ", oauthTokenStore=" + oauthTokenStore + ", oauthConfirmAccessHandler=" + oauthConfirmAccessHandler + ", oauthSecretKeyAlgorithm=" + oauthSecretKeyAlgorithm + ", oauthEncodedSecretKey=" + oauthEncodedSecretKey + ", oauthFailsOnRefreshTokenError=" + oauthFailsOnRefreshTokenError + "]";

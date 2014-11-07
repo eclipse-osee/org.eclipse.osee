@@ -134,6 +134,7 @@ public final class JaxRsClient {
       }
 
       private JaxRsClientBuilder withConfig(JaxRsClientConfig config) {
+         this.copy(config);
          return this;
       }
 
