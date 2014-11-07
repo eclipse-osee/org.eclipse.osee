@@ -23,7 +23,7 @@ app.controller('userController', [
         Program.query(function(data) {
             $scope.programs = data;
         });
-
+        
         $scope.updateProgram = function updateProgram() {
         	var loadingModal = $scope.showLoadingModal();
         	$scope.items = {};
@@ -146,6 +146,153 @@ app.controller('userController', [
         var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)"></input>';
         var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
 
+        
+        $scope.smallColumns = [{
+            field: 'name',
+            displayName: 'Name',
+            cellTemplate: origCellTmpl
+        }, {
+            field: 'status',
+            displayName: 'Status',
+        }, {
+            field: 'totalPoints',
+            displayName: 'Total',
+        }, {
+            field: 'failureCount',
+            displayName: 'Failure Count',
+        }, {
+            field: 'discrepanciesAsRanges',
+            displayName: 'Failed Points',
+        }, {
+            field: 'assignee',
+            displayName: 'Assignee',
+            enableCellEdit: false,
+            cellTemplate: assigneeCellTmpl
+        }, {
+            field: 'itemNotes',
+            displayName: 'Script Notes',
+            cellTemplate: cellEditableTemplate
+        },{
+            field: 'needsRerun',
+            displayName: 'Rerun?',
+            enableCellEdit: false,
+            cellTemplate: chkBoxTemplate,
+            sortFn: checkboxSorting
+        },{
+            field: 'lastUpdated',
+            displayName: 'Last Ran',
+            enableCellEdit: false,
+            visible: false
+        }, {
+            field: 'category',
+            displayName: 'Category',
+            enableCellEdit: true,
+            visible: false
+        }, {
+            field: 'machine',
+            displayName: 'Station',
+            enableCellEdit: true,
+            visible: false
+        }, {
+            field: 'elapsedTime',
+            displayName: 'Elapsed Time',
+            enableCellEdit: false,
+            visible: false
+        },{
+            field: 'creationDate',
+            displayName: 'Creation Date',
+            enableCellEdit: false,
+            visible: false
+        },{
+            field: 'aborted',
+            displayName: 'Aborted',
+            enableCellEdit: false,
+            visible: false
+            }, {
+                field: 'version',
+                displayName: 'Version',
+                enableCellEdit: false,
+                visible: false
+        }];
+        
+        $scope.wideColumns = [{
+            field: 'name',
+            displayName: 'Name',
+            width: 350,
+            cellTemplate: origCellTmpl
+        }, {
+            field: 'status',
+            displayName: 'Status',
+            width: 100
+        }, {
+            field: 'totalPoints',
+            displayName: 'Total',
+            width: 100
+        }, {
+            field: 'failureCount',
+            displayName: 'Failure Count',
+        }, {
+            field: 'discrepanciesAsRanges',
+            displayName: 'Failed Points',
+        }, {
+            field: 'assignee',
+            displayName: 'Assignee',
+            enableCellEdit: false,
+            cellTemplate: assigneeCellTmpl
+        }, {
+            field: 'itemNotes',
+            displayName: 'Script Notes',
+            cellTemplate: cellEditableTemplate
+        },{
+            field: 'needsRerun',
+            displayName: 'Rerun?',
+            enableCellEdit: false,
+            cellTemplate: chkBoxTemplate,
+            sortFn: checkboxSorting,
+            width: 70
+        },{
+            field: 'lastUpdated',
+            displayName: 'Last Ran',
+            enableCellEdit: false,
+            visible: false
+        }, {
+            field: 'category',
+            displayName: 'Category',
+            enableCellEdit: true,
+            visible: false
+        }, {
+            field: 'machine',
+            displayName: 'Station',
+            enableCellEdit: true,
+            visible: false
+        }, {
+            field: 'elapsedTime',
+            displayName: 'Elapsed Time',
+            enableCellEdit: false,
+            visible: false
+        },{
+            field: 'creationDate',
+            displayName: 'Creation Date',
+            enableCellEdit: false,
+            visible: false
+        },{
+            field: 'aborted',
+            displayName: 'Aborted',
+            enableCellEdit: false,
+            visible: false
+        },  {
+                field: 'version',
+                displayName: 'Version',
+                enableCellEdit: false,
+                visible: false
+        }];
+        
+        if(window.innerWidth < 1000) {
+        	$scope.columns = $scope.smallColumns;
+        } else {
+        	$scope.columns = $scope.wideColumns;
+        }
+        
         $scope.gridOptions = {
             data: 'items',
             enableHighlighting: true,
@@ -159,83 +306,9 @@ app.controller('userController', [
             showFilter: true,
             noTabInterference: true,
             tabIndex: 0,
-            columnDefs: [{
-                field: 'name',
-                displayName: 'Name',
-                width: 400,
-                cellTemplate: origCellTmpl
-            }, {
-                field: 'status',
-                displayName: 'Status',
-                width: 150,
-            }, {
-                field: 'totalPoints',
-                displayName: 'Total',
-                width: 100
-            }, {
-                field: 'failureCount',
-                displayName: 'Failure Count',
-                width: 125
-            }, {
-                field: 'discrepanciesAsRanges',
-                displayName: 'Failed Points',
-                width: 400
-            }, {
-                field: 'assignee',
-                displayName: 'Assignee',
-                width: 200,
-                enableCellEdit: false,
-                cellTemplate: assigneeCellTmpl
-            }, {
-                field: 'itemNotes',
-                displayName: 'Script Notes',
-                widht: 319,
-                cellTemplate: cellEditableTemplate
-            },{
-                field: 'needsRerun',
-                displayName: 'Rerun?',
-                enableCellEdit: false,
-                width:70,
-                cellTemplate: chkBoxTemplate,
-                sortFn: checkboxSorting
-            },{
-                field: 'lastUpdated',
-                displayName: 'Last Ran',
-                enableCellEdit: false,
-                visible: false
-            }, {
-                field: 'category',
-                displayName: 'Category',
-                enableCellEdit: true,
-                visible: false
-            }, {
-                field: 'machine',
-                displayName: 'Station',
-                enableCellEdit: true,
-                visible: false
-            }, {
-                field: 'elapsedTime',
-                displayName: 'Elapsed Time',
-                enableCellEdit: false,
-                visible: false
-            },{
-                field: 'creationDate',
-                displayName: 'Creation Date',
-                enableCellEdit: false,
-                visible: false
-            },{
-                field: 'aborted',
-                displayName: 'Aborted',
-                enableCellEdit: false,
-                visible: false
-            }, {
-                field: 'version',
-                displayName: 'Version',
-                enableCellEdit: false,
-                visible: false
-            }]
-
+            columnDefs: 'columns'
         };
+        
         
         $scope.saveLastFocused = function saveLastFocused(element) {
             $scope.lastFocused = element;
