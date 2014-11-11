@@ -18,7 +18,7 @@ import org.eclipse.osee.database.schema.internal.data.ColumnMetadata;
 import org.eclipse.osee.database.schema.internal.data.IndexElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
@@ -27,8 +27,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class OracleSqlManager extends SqlManager {
 
-   public OracleSqlManager(Log logger, SqlDataType sqlDataType) {
-      super(logger, sqlDataType);
+   public OracleSqlManager(Log logger, SqlDataType sqlDataType, IOseeDatabaseService dbService) {
+      super(logger, sqlDataType, dbService);
    }
 
    protected String handleColumnCreationSection(Map<String, ColumnMetadata> columns) {
@@ -56,7 +56,7 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(tableDef.getTablespace());
       toExecute.append("\n");
       getLogger().debug("Creating Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(toExecute.toString());
+      getDatabaseService().runPreparedUpdate(toExecute.toString());
    }
 
    @Override
@@ -73,6 +73,6 @@ public class OracleSqlManager extends SqlManager {
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
          "\\.") + " cascade constraints purge");
       getLogger().debug("Dropping Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(toExecute.toString());
+      getDatabaseService().runPreparedUpdate(toExecute.toString());
    }
 }

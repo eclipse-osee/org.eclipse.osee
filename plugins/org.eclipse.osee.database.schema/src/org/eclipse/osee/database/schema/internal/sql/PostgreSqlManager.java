@@ -20,11 +20,11 @@ import org.eclipse.osee.database.schema.internal.data.ConstraintElement;
 import org.eclipse.osee.database.schema.internal.data.ForeignKey;
 import org.eclipse.osee.database.schema.internal.data.IndexElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause;
-import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnUpdateEnum;
+import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -35,8 +35,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class PostgreSqlManager extends SqlManagerImpl {
 
-   public PostgreSqlManager(Log logger, SqlDataType sqlDataType) {
-      super(logger, sqlDataType);
+   public PostgreSqlManager(Log logger, SqlDataType sqlDataType, IOseeDatabaseService dbService) {
+      super(logger, sqlDataType, dbService);
    }
 
    private String handleColumnCreationSection(OseeConnection connection, Map<String, ColumnMetadata> columns) {
@@ -58,14 +58,14 @@ public class PostgreSqlManager extends SqlManagerImpl {
          handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
       getLogger().debug("Creating Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(connection, toExecute);
+      getDatabaseService().runPreparedUpdate(connection, toExecute);
    }
 
    @Override
    public void dropTable(TableElement tableDef) throws OseeCoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " CASCADE";
       getLogger().debug("Dropping Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(toExecute);
+      getDatabaseService().runPreparedUpdate(toExecute);
    }
 
    @Override
@@ -86,10 +86,10 @@ public class PostgreSqlManager extends SqlManagerImpl {
          }
          getLogger().debug("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName);
          if (iData.getId().equals("PRIMARY")) {
-            ConnectionHandler.runPreparedUpdate(connection,
+            getDatabaseService().runPreparedUpdate(connection,
                "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {
-            ConnectionHandler.runPreparedUpdate(connection,
+            getDatabaseService().runPreparedUpdate(connection,
                "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
          }
       }
@@ -185,7 +185,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
             String.format("%s %s INDEX %s ON %s (%s)", CREATE_STRING, iData.getIndexType(), indexId, tableName,
                appliesTo);
          getLogger().debug(toExecute);
-         ConnectionHandler.runPreparedUpdate(connection, toExecute);
+         getDatabaseService().runPreparedUpdate(connection, toExecute);
       }
    }
 

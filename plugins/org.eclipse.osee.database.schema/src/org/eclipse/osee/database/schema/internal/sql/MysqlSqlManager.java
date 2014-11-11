@@ -19,11 +19,11 @@ import org.eclipse.osee.database.schema.internal.data.ConstraintElement;
 import org.eclipse.osee.database.schema.internal.data.ForeignKey;
 import org.eclipse.osee.database.schema.internal.data.IndexElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause;
-import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnUpdateEnum;
+import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -34,8 +34,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class MysqlSqlManager extends SqlManagerImpl {
 
-   public MysqlSqlManager(Log logger, SqlDataType sqlDataType) {
-      super(logger, sqlDataType);
+   public MysqlSqlManager(Log logger, SqlDataType sqlDataType, IOseeDatabaseService dbService) {
+      super(logger, sqlDataType, dbService);
    }
 
    private String handleColumnCreationSection(OseeConnection connection, Map<String, ColumnMetadata> columns) {
@@ -57,14 +57,14 @@ public class MysqlSqlManager extends SqlManagerImpl {
          handleConstraintCreationSection(tableDef.getForeignKeyConstraints(), tableDef.getFullyQualifiedTableName());
       toExecute += " \n)\n";
       getLogger().debug("Creating Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(connection, toExecute);
+      getDatabaseService().runPreparedUpdate(connection, toExecute);
    }
 
    @Override
    public void dropTable(TableElement tableDef) throws OseeCoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
       getLogger().debug("Dropping Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(toExecute);
+      getDatabaseService().runPreparedUpdate(toExecute);
    }
 
    @Override
@@ -86,9 +86,11 @@ public class MysqlSqlManager extends SqlManagerImpl {
          }
          getLogger().debug("Dropping Index: [%s] FROM [%s]", iData.getId(), tableName);
          if (iData.getId().equals("PRIMARY")) {
-            ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
+            getDatabaseService().runPreparedUpdate(
+               "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP PRIMARY KEY");
          } else {
-            ConnectionHandler.runPreparedUpdate("ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
+            getDatabaseService().runPreparedUpdate(
+               "ALTER TABLE " + tableDef.getFullyQualifiedTableName() + " DROP INDEX " + iData.getId());
          }
       }
    }

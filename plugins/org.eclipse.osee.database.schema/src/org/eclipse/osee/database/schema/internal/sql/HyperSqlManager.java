@@ -23,7 +23,7 @@ import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnDeleteEn
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -33,8 +33,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class HyperSqlManager extends SqlManagerImpl {
 
-   public HyperSqlManager(Log logger, SqlDataType sqlDataType) {
-      super(logger, sqlDataType);
+   public HyperSqlManager(Log logger, SqlDataType sqlDataType, IOseeDatabaseService dbService) {
+      super(logger, sqlDataType, dbService);
    }
 
    private String handleColumnCreationSection(Map<String, ColumnMetadata> columns) {
@@ -138,7 +138,7 @@ public class HyperSqlManager extends SqlManagerImpl {
          String toExecute = String.format("%s INDEX %s ON %s (%s)", CREATE_STRING, indexId, tableName, appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
          getLogger().debug(toExecute);
-         ConnectionHandler.runPreparedUpdate(toExecute);
+         getDatabaseService().runPreparedUpdate(toExecute);
       }
    }
 
@@ -152,7 +152,7 @@ public class HyperSqlManager extends SqlManagerImpl {
          tableDef.getFullyQualifiedTableName()));
       builder.append(" \n)\n");
       getLogger().debug("Creating Table: [%s]", tableDef.getFullyQualifiedTableName());
-      ConnectionHandler.runPreparedUpdate(builder.toString());
+      getDatabaseService().runPreparedUpdate(builder.toString());
    }
 
    @Override

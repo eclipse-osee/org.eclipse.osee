@@ -26,13 +26,13 @@ import org.eclipse.osee.database.schema.internal.data.ConstraintElement;
 import org.eclipse.osee.database.schema.internal.data.ForeignKey;
 import org.eclipse.osee.database.schema.internal.data.IndexElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause;
-import org.eclipse.osee.database.schema.internal.data.SchemaDataLookup;
-import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnDeleteEnum;
 import org.eclipse.osee.database.schema.internal.data.ReferenceClause.OnUpdateEnum;
+import org.eclipse.osee.database.schema.internal.data.SchemaDataLookup;
+import org.eclipse.osee.database.schema.internal.data.TableElement;
 import org.eclipse.osee.database.schema.internal.data.TableElement.ColumnFields;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -47,12 +47,19 @@ public abstract class SqlManager {
 
    private final Log logger;
    protected SqlDataType sqlDataType;
+   private final IOseeDatabaseService dbService;
+
    public static final String CREATE_STRING = "CREATE";
    public static final String DROP_STRING = "DROP";
 
-   protected SqlManager(Log logger, SqlDataType sqlDataType) {
+   protected SqlManager(Log logger, SqlDataType sqlDataType, IOseeDatabaseService dbService) {
       this.logger = logger;
       this.sqlDataType = sqlDataType;
+      this.dbService = dbService;
+   }
+
+   protected IOseeDatabaseService getDatabaseService() {
+      return dbService;
    }
 
    protected Log getLogger() {
@@ -101,7 +108,7 @@ public abstract class SqlManager {
       for (int index = 0; index < columnNames.size(); index++) {
          data[index] = preparedStatementHelper(columnTypes.get(index), columnValues.get(index));
       }
-      ConnectionHandler.runPreparedUpdate(toExecute, data);
+      dbService.runPreparedUpdate(toExecute, data);
    }
 
    public Object preparedStatementHelper(SQL3DataType columnType, String value) throws OseeDataStoreException {
@@ -246,11 +253,11 @@ public abstract class SqlManager {
    }
 
    public void createSchema(String schema) throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(CREATE_STRING + " SCHEMA \"" + schema + "\"");
+      dbService.runPreparedUpdate(CREATE_STRING + " SCHEMA \"" + schema + "\"");
    }
 
    public void dropSchema(String schema) throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
+      dbService.runPreparedUpdate(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
    }
 
    protected String insertDataToSQL(String fullyQualifiedTableName, List<String> columns, List<String> columnData) {
@@ -299,7 +306,7 @@ public abstract class SqlManager {
                appliesTo);
          toExecute = createIndexPostProcess(iData, toExecute);
          getLogger().debug(toExecute);
-         ConnectionHandler.runPreparedUpdate(toExecute);
+         dbService.runPreparedUpdate(toExecute);
       }
    }
 
@@ -312,7 +319,7 @@ public abstract class SqlManager {
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndices) {
          getLogger().debug("Dropping Index: [%s] FROM [%s]\n", iData.getId(), tableName);
-         ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
+         dbService.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());
       }
    }
 }

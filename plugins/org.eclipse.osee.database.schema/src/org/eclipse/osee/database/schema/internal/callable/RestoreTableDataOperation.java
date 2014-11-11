@@ -47,7 +47,7 @@ public class RestoreTableDataOperation extends DatabaseTxCallable<Object> {
    @Override
    protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
       DatabaseMetaData metaData = connection.getMetaData();
-      SqlManager sqlManager = SqlFactory.getSqlManager(getLogger(), metaData);
+      SqlManager sqlManager = SqlFactory.getSqlManager(getLogger(), getDatabaseService(), metaData);
 
       for (String schemaKey : schemas) {
          if (userSpecifiedConfig.containsKey(schemaKey)) {

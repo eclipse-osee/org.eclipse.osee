@@ -45,7 +45,7 @@ public class CreateSchemaCallable extends DatabaseTxCallable<Object> {
       DatabaseMetaData metaData = connection.getMetaData();
 
       SupportedDatabase dbType = SupportedDatabase.getDatabaseType(metaData);
-      SqlManager sqlManager = SqlFactory.getSqlManager(logger, metaData);
+      SqlManager sqlManager = SqlFactory.getSqlManager(logger, getDatabaseService(), metaData);
       SchemaSqlUtil dbInit = new SchemaSqlUtil(sqlManager);
 
       Set<String> schemas = userSchema.keySet();
