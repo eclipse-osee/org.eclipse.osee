@@ -280,23 +280,6 @@
 		Usually this references an Action (type-of-artifact)" example="370"/>
 	</TableDescription>
 
-	<Table name="OSEE_JOIN_SEARCH_TAGS" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="CODED_TAG_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
-		<Constraint schema="OSEE" id="OSEE_JOIN_SEARCH_TAGS_Q_C_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, CODED_TAG_ID" />
-		<Index id="OSEE_JOIN_SEARCH_TAGS_Q_IDX" tablespace="osee_index">
-			<AppliesTo id="QUERY_ID"/>
-		</Index>
-	</Table>
-	   
-	<TableDescription referenceTable="OSEE_JOIN_SEARCH_TAGS">
-		<Note purpose="Core table describing ?"/>
-		<Column id="QUERY_ID" description="randomly generated identifier for this short-lived join" />
-		<Column id="CODED_TAG_ID" description="" />
-		<Column id="INSERT_TIME" description="" />
-	</TableDescription>
-
 	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />

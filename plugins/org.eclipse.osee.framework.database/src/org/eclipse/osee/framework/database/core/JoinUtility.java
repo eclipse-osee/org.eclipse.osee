@@ -55,10 +55,6 @@ public class JoinUtility {
       return new ArtifactJoinQuery(createAccessor(service), getNewQueryId(), getMaxArtifactJoinSize(service));
    }
 
-   public static SearchTagJoinQuery createSearchTagJoinQuery(IOseeDatabaseService service) {
-      return new SearchTagJoinQuery(createAccessor(service), getNewQueryId());
-   }
-
    public static TagQueueJoinQuery createTagQueueJoinQuery(IOseeDatabaseService service) {
       return new TagQueueJoinQuery(createAccessor(service), getNewQueryId());
    }
@@ -91,10 +87,6 @@ public class JoinUtility {
    public static ArtifactJoinQuery createArtifactJoinQuery() throws OseeDataStoreException {
       return new ArtifactJoinQuery(createAccessor(getDatabase()), getNewQueryId(),
          getMaxArtifactJoinSize(getDatabase()));
-   }
-
-   public static SearchTagJoinQuery createSearchTagJoinQuery() throws OseeDataStoreException {
-      return new SearchTagJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() throws OseeDataStoreException {

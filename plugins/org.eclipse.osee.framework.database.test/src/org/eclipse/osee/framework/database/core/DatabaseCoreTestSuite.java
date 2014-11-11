@@ -19,7 +19,6 @@ import org.junit.runners.Suite;
    CharJoinQueryTest.class,
    ExportImportJoinQueryTest.class,
    IdJoinQueryTest.class,
-   SearchTagJoinQueryTest.class,
    TagQueueJoinQueryTest.class,
    TransactionJoinQueryTest.class})
 /**

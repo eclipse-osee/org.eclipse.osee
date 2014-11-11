@@ -29,9 +29,6 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
    private static final String INSERT_INTO_JOIN_TRANSACTION =
       "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
 
-   private static final String INSERT_INTO_JOIN_SEARCH_TAGS =
-      "INSERT INTO osee_join_search_tags (query_id, insert_time, coded_tag_id) VALUES (?, ?, ?)";
-
    private static final String INSERT_INTO_TAG_GAMMA_QUEUE =
       "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";
 
@@ -49,7 +46,6 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
    private static final String DELETE_FROM_JOIN_ID = "DELETE FROM osee_join_id WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
-   private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
    private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_EXPORT_IMPORT = "DELETE FROM osee_join_export_import WHERE query_id =?";
    private static final String DELETE_FROM_JOIN = "DELETE FROM osee_join_cleanup WHERE query_id =?";
@@ -58,7 +54,6 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
    public enum JoinItem {
       TRANSACTION("osee_join_transaction", INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
       ARTIFACT("osee_join_artifact", INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
-      SEARCH_TAGS("osee_join_search_tags", INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
       TAG_GAMMA_QUEUE("osee_tag_gamma_queue", INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
       EXPORT_IMPORT("osee_join_export_import", INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
       ID("osee_join_id", INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID),
