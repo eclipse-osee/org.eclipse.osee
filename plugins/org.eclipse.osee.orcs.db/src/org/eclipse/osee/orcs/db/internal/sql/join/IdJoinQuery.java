@@ -8,25 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class TagQueueJoinQuery extends AbstractJoinQuery {
+public class IdJoinQuery extends AbstractJoinQuery {
 
-   private final class GammaEntry implements IJoinRow {
-      private final long gammaId;
+   private final class TempIdEntry implements IJoinRow {
+      private final Long id;
 
-      private GammaEntry(Long gammaId) {
-         this.gammaId = gammaId;
+      private TempIdEntry(Long id) {
+         this.id = id;
       }
 
       @Override
       public Object[] toArray() {
-         return new Object[] {getQueryId(), getInsertTime(), gammaId};
+         return new Object[] {getQueryId(), getInsertTime(), id};
       }
 
       @Override
@@ -34,29 +34,29 @@ public final class TagQueueJoinQuery extends AbstractJoinQuery {
          if (obj == this) {
             return true;
          }
-         if (!(obj instanceof GammaEntry)) {
+         if (!(obj instanceof TempIdEntry)) {
             return false;
          }
-         GammaEntry other = (GammaEntry) obj;
-         return this.gammaId == other.gammaId;
+         TempIdEntry other = (TempIdEntry) obj;
+         return other.id.equals(this.id);
       }
 
       @Override
       public int hashCode() {
-         return Long.valueOf(37 * gammaId).hashCode();
+         return 37 * id.hashCode();
       }
 
       @Override
       public String toString() {
-         return String.format("gammaId=%s", gammaId);
+         return "id = " + id;
       }
    }
 
-   protected TagQueueJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.TAG_GAMMA_QUEUE, queryId);
+   protected IdJoinQuery(IJoinAccessor joinAccessor, int queryId) {
+      super(joinAccessor, JoinItem.ID, queryId);
    }
 
-   public void add(Long gammaId) {
-      entries.add(new GammaEntry(gammaId));
+   public void add(Number id) {
+      entries.add(new TempIdEntry(id.longValue()));
    }
 }

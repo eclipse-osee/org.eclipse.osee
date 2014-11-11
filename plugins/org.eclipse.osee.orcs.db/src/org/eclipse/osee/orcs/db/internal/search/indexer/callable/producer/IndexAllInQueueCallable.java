@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.TagQueueJoinQuery;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**

@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.branch.graph.operation.IProgressListener;
  */
 public class GraphLoader {
    private static final String GET_TRANSACTION_DATA =
-      "SELECT otd.* FROM osee_join_transaction ojt, osee_tx_details otd WHERE ojt.transaction_id = otd.transaction_id and ojt.query_id = ? ORDER BY otd.transaction_id desc";
+      "SELECT otd.* FROM osee_join_id ojt, osee_tx_details otd WHERE ojt.id = otd.transaction_id and ojt.query_id = ? ORDER BY otd.transaction_id desc";
 
    private GraphLoader() {
    }
@@ -59,21 +59,21 @@ public class GraphLoader {
    }
 
    private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
-      TransactionJoinQuery txJoinQuery = JoinUtility.createTransactionJoinQuery();
+      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
          List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
-            txJoinQuery.add(-1L, branch.getSourceTransaction().getId());
+            joinQuery.add(branch.getSourceTransaction().getId());
          }
-         txJoinQuery.store();
+         joinQuery.store();
 
-         for (TxData txData : getTxData(txJoinQuery.getQueryId())) {
+         for (TxData txData : getTxData(joinQuery.getQueryId())) {
             BranchModel branchModel = graphCache.getOrCreateBranchModel(txData.getBranch());
             branchModel.addTx(graphCache.getOrCreateTxModel(txData));
          }
       } finally {
-         txJoinQuery.delete();
+         joinQuery.delete();
       }
    }
 

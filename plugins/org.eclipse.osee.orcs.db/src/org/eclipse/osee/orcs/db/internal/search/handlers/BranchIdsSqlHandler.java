@@ -12,12 +12,12 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author Roberto E. Escobar

@@ -16,10 +16,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.database.core.CharJoinQuery;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,6 +25,10 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Roberto E. Escobar

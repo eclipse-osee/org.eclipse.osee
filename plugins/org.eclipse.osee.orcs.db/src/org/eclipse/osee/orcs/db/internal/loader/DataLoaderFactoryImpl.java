@@ -15,7 +15,6 @@ import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -31,6 +30,7 @@ import org.eclipse.osee.orcs.db.internal.loader.executors.ArtifactQueryContextLo
 import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author Roberto E. Escobar

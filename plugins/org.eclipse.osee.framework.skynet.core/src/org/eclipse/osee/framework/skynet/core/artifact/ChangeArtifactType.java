@@ -265,7 +265,8 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
+      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
+      IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery(database);
 
       for (Artifact artifact : inputArtifacts) {
          artifactJoin.add(artifact.getArtId());
@@ -277,7 +278,8 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
+      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
+      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery(database);
 
       // loop through all non-archieved non-deleted non-purged
 
@@ -293,9 +295,9 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
-
       IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
+
+      IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery(database);
       IOseeStatement chStmt = database.getStatement();
 
       try {

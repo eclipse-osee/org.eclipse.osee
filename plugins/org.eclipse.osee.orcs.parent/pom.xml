@@ -27,7 +27,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
 		<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.database</module>
-		<module>../../plugins/org.eclipse.osee.framework.database.test</module>
 
 		<module>../../plugins/org.eclipse.osee.database.schema</module>
 

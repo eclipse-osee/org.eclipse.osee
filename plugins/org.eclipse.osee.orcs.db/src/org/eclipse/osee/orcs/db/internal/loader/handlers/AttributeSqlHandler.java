@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.db.internal.loader.handlers;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author Roberto E. Escobar

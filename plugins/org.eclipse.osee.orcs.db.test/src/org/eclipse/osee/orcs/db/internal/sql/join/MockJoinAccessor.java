@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.test.mocks;
+package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
-import org.eclipse.osee.framework.database.core.IJoinAccessor;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar

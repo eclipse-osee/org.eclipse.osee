@@ -19,9 +19,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -30,6 +27,9 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.data.TransactionReadableDelta;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.TransactionJoinQuery;
 
 /**
  * @author Ryan D. Brooks
@@ -72,7 +72,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       Conditions.checkExpressionFailOnTrue(!txDelta.areOnTheSameBranch(),
          "Unable to compute deltas between transactions on different branches [%s]", txDelta);
 
-      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
+      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getDatabaseService());
 
       loadChangesAtEndTx(txJoin);
 
@@ -112,7 +112,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory) throws OseeCoreException {
 
-      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
 
       HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
       changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);

@@ -64,7 +64,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       }
       ensureDependantCachePopulated();
       if (transactionIds.size() > 1) {
-         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
+         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(oseeDatabaseService);
          try {
             for (Integer txNumber : transactionIds) {
                joinQuery.add(txNumber);

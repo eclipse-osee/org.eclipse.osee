@@ -13,10 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -29,6 +26,9 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Andrew M. Finkbeiner

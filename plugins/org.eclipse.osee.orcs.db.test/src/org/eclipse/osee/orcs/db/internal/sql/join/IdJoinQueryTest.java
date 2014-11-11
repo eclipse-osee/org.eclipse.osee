@@ -8,35 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.test.mocks.MockJoinAccessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link TagQueueJoinQuery}
+ * Test Case for {@link IdJoinQuery}
  * 
  * @author Roberto E. Escobar
  */
-public class TagQueueJoinQueryTest {
+public class IdJoinQueryTest {
 
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      TagQueueJoinQuery join = new TagQueueJoinQuery(joinAccessor, 999);
+      IdJoinQuery join = new IdJoinQuery(joinAccessor, 999);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
-      join.add(1234L);
+      join.add(1234);
       Assert.assertEquals(1, join.size());
       Assert.assertEquals(false, join.isEmpty());
 
-      join.add(1234L);
+      join.add(1234);
       Assert.assertEquals(1, join.size());
 
       Assert.assertEquals(false, join.wasStored());
@@ -60,7 +59,7 @@ public class TagQueueJoinQueryTest {
    @Test(expected = OseeDataStoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      TagQueueJoinQuery join = new TagQueueJoinQuery(joinAccessor, 1000);
+      IdJoinQuery join = new IdJoinQuery(joinAccessor, 1000);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();

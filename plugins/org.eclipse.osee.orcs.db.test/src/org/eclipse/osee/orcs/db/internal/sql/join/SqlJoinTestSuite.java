@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseCoreTestSuite {
+public class SqlJoinTestSuite {
    // Test Suite
 }

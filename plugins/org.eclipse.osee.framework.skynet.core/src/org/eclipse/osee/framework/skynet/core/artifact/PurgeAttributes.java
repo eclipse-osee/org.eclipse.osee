@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -70,16 +69,16 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    }
 
    private IdJoinQuery populateTxsJoinTable() throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
 
       for (Attribute<?> attribute : attributesToPurge) {
          attributeJoin.add(attribute.getId());
       }
 
-      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
       try {
          attributeJoin.store();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = getDatabaseService().getStatement();
 
          try {
             chStmt.runPreparedQuery(MAX_FETCH, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());

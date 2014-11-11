@@ -17,16 +17,15 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Ryan D. Brooks
@@ -90,8 +89,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
       previousNetGammaId = -1;
       previousTransactionId = -1;
-      chStmt = ConnectionHandler.getStatement();
-      gammaJoin = JoinUtility.createExportImportJoinQuery();
+      chStmt = getDatabaseService().getStatement();
+      gammaJoin = JoinUtility.createExportImportJoinQuery(getDatabaseService());
 
       counter = 0;
    }
@@ -234,13 +233,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void updateGammas() throws OseeCoreException {
       console.writeln("Number of txs rows deleted: [%s]",
-         ConnectionHandler.runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
+         getDatabaseService().runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
 
       console.writeln("Number of relation rows deleted: [%s]",
-         ConnectionHandler.runBatchUpdate(connection, DELETE_RELATIONS, relationDeleteData));
+         getDatabaseService().runBatchUpdate(connection, DELETE_RELATIONS, relationDeleteData));
 
       console.writeln("Number of txs rows updated: [%s]",
-         ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
+         getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
    }
 
    private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) {

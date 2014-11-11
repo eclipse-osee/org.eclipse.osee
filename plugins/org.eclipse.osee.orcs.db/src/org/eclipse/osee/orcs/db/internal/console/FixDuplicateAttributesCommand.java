@@ -17,10 +17,7 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -28,6 +25,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
+import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Roberto E. Escobar
@@ -75,7 +75,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       @Override
       protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
-         ExportImportJoinQuery gammaJoin = JoinUtility.createExportImportJoinQuery();
+         ExportImportJoinQuery gammaJoin = JoinUtility.createExportImportJoinQuery(getDatabaseService());
          try {
             selectAttributes(gammaJoin, connection);
             gammaJoin.store(connection);
@@ -90,7 +90,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       }
 
       private void selectAttributes(ExportImportJoinQuery gammaJoin, OseeConnection connection) throws OseeCoreException {
-         IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery();
+         IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
          populateAttributeTypeJoin(typeJoin);
 
          IOseeStatement chStmt = getDatabaseService().getStatement(connection);

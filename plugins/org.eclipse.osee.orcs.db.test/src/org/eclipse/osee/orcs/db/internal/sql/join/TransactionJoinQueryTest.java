@@ -8,34 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.orcs.db.internal.sql.join;
 
+import java.sql.Timestamp;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.test.mocks.MockJoinAccessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test Case for {@link CharJoinQuery}
+ * Test Case for {@link TransactionJoinQuery}
  * 
  * @author Roberto E. Escobar
  */
-public class CharJoinQueryTest {
+public class TransactionJoinQueryTest {
 
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      CharJoinQuery join = new CharJoinQuery(joinAccessor, 999);
+      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, 999);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
-      join.add("hello");
+      join.add(1234L, 5678);
       Assert.assertEquals(1, join.size());
       Assert.assertEquals(false, join.isEmpty());
 
-      join.add("hello");
+      join.add(1234L, 5678);
       Assert.assertEquals(1, join.size());
 
       Assert.assertEquals(false, join.wasStored());
@@ -49,15 +49,18 @@ public class CharJoinQueryTest {
       Assert.assertEquals(1, data.size());
 
       Object[] entry = data.get(0);
-      Assert.assertEquals(2, entry.length);
+      Assert.assertEquals(4, entry.length);
       Assert.assertEquals(999, entry[0]);
-      Assert.assertEquals("hello", entry[1]);
+      Assert.assertTrue(entry[1] instanceof Timestamp);
+      Assert.assertEquals(1234L, entry[2]);
+      Assert.assertEquals(5678, entry[3]);
+
    }
 
    @Test(expected = OseeDataStoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      CharJoinQuery join = new CharJoinQuery(joinAccessor, 1000);
+      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, 1000);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();

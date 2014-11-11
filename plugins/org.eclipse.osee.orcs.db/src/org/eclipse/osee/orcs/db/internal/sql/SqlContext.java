@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.List;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.orcs.core.ds.DataStoreContext;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author Roberto E. Escobar

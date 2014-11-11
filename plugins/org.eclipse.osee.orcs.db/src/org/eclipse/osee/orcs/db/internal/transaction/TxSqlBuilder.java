@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
 /**

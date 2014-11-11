@@ -25,14 +25,14 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Ryan D. Brooks
@@ -180,7 +180,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             Integer branchUuid = (Integer) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
             statement.runPreparedQuery(MAX_FETCH, query, bindData);
-            IdJoinQuery joinId = JoinUtility.createIdJoinQuery();
+            IdJoinQuery joinId = JoinUtility.createIdJoinQuery(getDatabaseService());
             items.put(branchUuid, joinId);
 
             while (statement.next()) {

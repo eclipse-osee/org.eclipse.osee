@@ -15,11 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -28,6 +24,9 @@ import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.TagQueueJoinQuery;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -87,8 +86,8 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchUuids.add(branch.getUuid());
       }
 
-      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
-      IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery();
+      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
       try {
          Triplet<String, String, Object[]> data = createQueries(branchUuids, branchJoin, typeJoin);
          String countQuery = data.getFirst();
@@ -105,7 +104,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchJoin.store();
 
          if (collector != null) {
-            int totalAttributes = ConnectionHandler.runPreparedQueryFetchInt(-1, countQuery, params);
+            int totalAttributes = getDatabaseService().runPreparedQueryFetchObject(-1, countQuery, params);
             collector.onIndexTotalTaskItems(totalAttributes);
          }
 

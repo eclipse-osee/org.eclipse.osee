@@ -20,9 +20,6 @@ import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
-import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -35,6 +32,9 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 
 /**
  * @author Roberto E. Escobar
