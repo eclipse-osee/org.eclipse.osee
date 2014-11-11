@@ -30,10 +30,12 @@ public final class ActivityConstants {
    public static String ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS = qualify("write.rate.millis");
    public static String ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT = qualify("stacktrace.line.count");
    public static String ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE = qualify("executor.pool.size");
+   public static String ACTIVITY_LOGGER__ENABLED = qualify("enabled");
 
    public static long DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS = 3000L;
    public static int DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT = 5;
    public static int DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE = 1;
+   public static boolean DEFAULT_ACTIVITY_LOGGER__ENABLED = false;
 
    public static final String HTTP_HEADER__ACTIVITY_ENTRY_ID = "X-osee-activity-log-entryId";
    public static final String ERROR_MSG__MISSING_ACTIVITY_HEADER =

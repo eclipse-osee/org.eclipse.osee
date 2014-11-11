@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal;
 
+import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__ENABLED;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_ID;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
@@ -75,6 +77,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private volatile int exceptionLineCount;
    private volatile int executorPoolSize;
    private volatile long lastFlushTime;
+   private volatile boolean enabled;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -112,6 +115,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       freshnessMillis = get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
       exceptionLineCount = get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
       int newExecutorPoolSize = get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
+      enabled = get(properties, ACTIVITY_LOGGER__ENABLED, DEFAULT_ACTIVITY_LOGGER__ENABLED);
       //@formatter:on
 
       if (newExecutorPoolSize != executorPoolSize) {
@@ -256,22 +260,27 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    @Override
    public Void call() {
-      if (!initialized.getAndSet(true)) {
-         initialize();
-      }
-      if (!newEntities.isEmpty()) {
-         try {
-            storage.addEntries(new DrainingIterator<Object[]>(newEntities.values().iterator()));
-         } catch (Throwable ex) {
-            logger.error(ex, "Exception while storing updates to the activity log");
+      if (enabled) {
+         if (!initialized.getAndSet(true)) {
+            initialize();
          }
-      }
-      if (!updatedEntities.isEmpty()) {
-         try {
-            storage.updateEntries(new DrainingIterator<Object[]>(updatedEntities.values().iterator()));
-         } catch (Throwable ex) {
-            logger.error(ex, "Exception while storing updates to the activity log");
+         if (!newEntities.isEmpty()) {
+            try {
+               storage.addEntries(new DrainingIterator<Object[]>(newEntities.values().iterator()));
+            } catch (Throwable ex) {
+               logger.error(ex, "Exception while storing updates to the activity log");
+            }
          }
+         if (!updatedEntities.isEmpty()) {
+            try {
+               storage.updateEntries(new DrainingIterator<Object[]>(updatedEntities.values().iterator()));
+            } catch (Throwable ex) {
+               logger.error(ex, "Exception while storing updates to the activity log");
+            }
+         }
+      } else {
+         newEntities.clear();
+         updatedEntities.clear();
       }
       return null;
    }
