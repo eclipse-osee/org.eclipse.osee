@@ -15,6 +15,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -91,6 +95,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -492,9 +497,16 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public void sendNotifications(AtsNotificationCollector notifications) {
+   public void sendNotifications(final AtsNotificationCollector notifications) {
       if (AtsUtilClient.isEmailEnabled()) {
-         AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+         Jobs.startJob(new Job("Send Notifications") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+               return Status.OK_STATUS;
+            }
+         }, false);
       }
    }
 
