@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -52,11 +53,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceManager resourceManager;
    private final OrcsApi orcs;
+   private final IOseeDatabaseService dbService;
 
-   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, OrcsApi orcs) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, OrcsApi orcs, IOseeDatabaseService dbService) {
       super(logger);
       this.resourceManager = resourceManager;
       this.orcs = orcs;
+      this.dbService = dbService;
    }
 
    @Override
@@ -95,7 +98,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          }
          BranchReadable branch = query.getResults().getExactlyOne();
          Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
-         uri = ArtifactUtil.getUri(artifactGuid, branch);
+         uri = ArtifactUtil.getUri(dbService, artifactGuid, branch);
          handleArtifactUri(resourceManager, request.getQueryString(), uri, response);
       } catch (NumberFormatException ex) {
          handleError(response, HttpServletResponse.SC_BAD_REQUEST,

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.manager.servlet.ats;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
@@ -45,13 +46,15 @@ public class AtsService {
    private final AtsXmlMessages messages;
    private final IResourceManager resourceManager;
    private final OrcsApi orcsApi;
+   private final IOseeDatabaseService dbService;
 
-   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, OrcsApi orcsApi) {
+   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, OrcsApi orcsApi, IOseeDatabaseService dbService) {
       this.xmlSearch = xmlSearch;
       this.messages = messages;
       this.resourceProvider = resourceProvider;
       this.resourceManager = resourceManager;
       this.orcsApi = orcsApi;
+      this.dbService = dbService;
    }
 
    public void performOperation(IResource resource, HttpServletResponse response) {
@@ -134,7 +137,7 @@ public class AtsService {
             urlPath = request.getRequestURI().replace(servletPath, "");
 
             if (urlPath.contains("osee/data")) {
-               DataServlet.handleUriRequest(resourceManager, urlPath, response, orcsApi);
+               DataServlet.handleUriRequest(dbService, resourceManager, urlPath, response, orcsApi);
                return;
             } else {
                resource = getResource(urlPath);

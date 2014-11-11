@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SchedulingScheme;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -88,7 +87,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
          Timestamp time = new Timestamp(lastRan - THREE_HOURS);
          for (String table : TABLES) {
-            int rows = ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TIME, table), time);
+            int rows = dbService.runPreparedUpdate(String.format(DELETE_JOIN_TIME, table), time);
             deletedByTime.put(table, rows);
          }
          deleteFromJoinCleanup();
@@ -119,13 +118,12 @@ public class CleanJoinTablesServerTask implements IServerTask {
             }
             if (!isAlive) {
                queryIds.add(new Integer[] {queryId});
-               int rows =
-                  ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TABLE_SESSION, tableName), queryId);
+               int rows = dbService.runPreparedUpdate(String.format(DELETE_JOIN_TABLE_SESSION, tableName), queryId);
                sessionDeletes.put(sessionId, tableName, rows);
             }
             prevSessionId = sessionId;
          }
-         ConnectionHandler.runBatchUpdate(DELETE_JOIN_CLEANUP, queryIds);
+         dbService.runBatchUpdate(DELETE_JOIN_CLEANUP, queryIds);
       } finally {
          chStmt.close();
       }
