@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.config.admin.internal;
 
-import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_URI;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_POLL_TIME;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_POLL_TIME_UNIT;
+import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_URI;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME_UNIT;
 import java.net.URI;
@@ -135,6 +135,44 @@ public class ConfigManagerConfigurationBuilder {
             toReturn = String.valueOf(object);
          }
          return toReturn;
+      }
+
+      @Override
+      public int hashCode() {
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + ((configUri == null) ? 0 : configUri.hashCode());
+         result = prime * result + (int) (pollTime ^ (pollTime >>> 32));
+         result = prime * result + ((pollTimeUnit == null) ? 0 : pollTimeUnit.hashCode());
+         return result;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (this == obj) {
+            return true;
+         }
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
+            return false;
+         }
+         ConfigManagerConfigurationImpl other = (ConfigManagerConfigurationImpl) obj;
+         if (configUri == null) {
+            if (other.configUri != null) {
+               return false;
+            }
+         } else if (!configUri.equals(other.configUri)) {
+            return false;
+         }
+         if (pollTime != other.pollTime) {
+            return false;
+         }
+         if (pollTimeUnit != other.pollTimeUnit) {
+            return false;
+         }
+         return true;
       }
 
       @Override

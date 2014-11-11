@@ -98,13 +98,13 @@ public class ConfigParserTest {
       Iterator<Dictionary<String, Object>> valuesIt = valuesCaptor.getAllValues().iterator();
 
       assertEquals("service-1", idIt.next());
-      assertValues(valuesIt.next(), "key1", "val1", "key2", "val2");
+      assertValues(valuesIt.next(), "service.pid", "service-1", "key1", "val1", "key2", "val2");
 
       assertEquals("service-2", idIt.next());
-      assertValues(valuesIt.next(), "a", "34242", "b", "hello");
+      assertValues(valuesIt.next(), "service.pid", "service-2", "a", "34242", "b", "hello");
 
       assertEquals("service-3", idIt.next());
-      assertValues(valuesIt.next());
+      assertValues(valuesIt.next(), "service.pid", "service-3");
    }
 
    private static void assertValues(Dictionary<String, Object> actual, String... expected) {

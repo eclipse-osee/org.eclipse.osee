@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.UriWatcher;
 import org.eclipse.osee.framework.jdk.core.util.io.UriWatcher.UriWatcherListener;
@@ -62,10 +63,13 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
    public void update(Map<String, Object> properties) {
       logger.trace("Configuring ConfigurationManagerImpl...");
 
-      config = ConfigManagerConfigurationBuilder.newBuilder()//
+      ConfigManagerConfiguration temp = ConfigManagerConfigurationBuilder.newBuilder()//
       .properties(properties) //
       .build();
-      configure(config);
+      if (!temp.equals(config)) {
+         config = temp;
+         configure(config);
+      }
    }
 
    private void configure(ConfigManagerConfiguration config) {
@@ -116,7 +120,9 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
       Configuration configuration;
       try {
          configuration = configAdmin.getConfiguration(serviceId, null);
-         configuration.update(properties);
+         if (Compare.isDifferent(configuration.getProperties(), properties)) {
+            configuration.update(properties);
+         }
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
       }

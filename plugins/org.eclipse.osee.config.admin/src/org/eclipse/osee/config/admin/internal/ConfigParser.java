@@ -63,6 +63,7 @@ public class ConfigParser {
                   String value = object.getString(key);
                   if (key.equalsIgnoreCase(SERVICE_ID_FIELD)) {
                      serviceId = value;
+                     properties.put("service.pid", serviceId);
                   } else {
                      properties.put(key, value);
                   }

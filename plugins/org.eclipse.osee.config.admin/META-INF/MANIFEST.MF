@@ -12,4 +12,5 @@ Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util.io,
  org.eclipse.osee.logger,
  org.json,
+ org.osgi.framework,
  org.osgi.service.cm

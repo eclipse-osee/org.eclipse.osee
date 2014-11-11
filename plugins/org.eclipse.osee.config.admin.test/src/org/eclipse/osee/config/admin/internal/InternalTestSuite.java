@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ConfigParserTest.class, ConfigManagerConfigurationBuilderTest.class})
+@Suite.SuiteClasses({ConfigParserTest.class, ConfigManagerConfigurationBuilderTest.class, ConfigManagerImplTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

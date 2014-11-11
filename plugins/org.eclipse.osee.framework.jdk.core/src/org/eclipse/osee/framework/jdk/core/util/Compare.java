@@ -12,6 +12,9 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +39,9 @@ public final class Compare {
             result = isDifferent((Collection<Object>) original, (Collection<Object>) other);
          } else if (original instanceof Object[] && other instanceof Object[]) {
             result = isDifferent(Arrays.asList((Object[]) original), Arrays.asList((Object[]) other));
+         } else if (original instanceof Dictionary<?, ?> && other instanceof Dictionary<?, ?>) {
+            result =
+               isDifferent(toMap((Dictionary<Object, Object>) original), toMap((Dictionary<Object, Object>) other));
          } else {
             result = !original.equals(other);
          }
@@ -67,5 +73,14 @@ public final class Compare {
          }
       }
       return result;
+   }
+
+   private static Map<Object, Object> toMap(Dictionary<Object, Object> source) {
+      Map<Object, Object> sink = new HashMap<Object, Object>(source.size());
+      for (Enumeration<Object> keys = source.keys(); keys.hasMoreElements();) {
+         Object key = keys.nextElement();
+         sink.put(key, source.get(key));
+      }
+      return sink;
    }
 }
