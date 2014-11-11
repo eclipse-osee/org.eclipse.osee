@@ -27,7 +27,7 @@ import org.junit.rules.ExpectedException;
  */
 public class ConfigManagerConfigurationBuilderTest {
 
-   private static final String CONFIG_PATH = "adsflkajdfajlsdaj";
+   private static final String CONFIG_URI = "adsflkajdfajlsdaj";
    private static final long POLL_TIME = Long.MAX_VALUE;
    private static final TimeUnit POLL_TIME_UNIT = TimeUnit.MILLISECONDS;
 
@@ -45,11 +45,11 @@ public class ConfigManagerConfigurationBuilderTest {
 
    @Test
    public void testConfigUri() {
-      builder.configUri(CONFIG_PATH);
+      builder.configUri(CONFIG_URI);
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_PATH, actual.getConfigFile());
+      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
    }
 
    @Test
@@ -64,27 +64,27 @@ public class ConfigManagerConfigurationBuilderTest {
 
    @Test
    public void testDefaultProperties() {
-      String original = System.getProperty(ConfigManagerConstants.CONFIGURATION_FILE, "");
+      String original = System.getProperty(ConfigManagerConstants.CONFIGURATION_URI, "");
       try {
-         System.setProperty(ConfigManagerConstants.CONFIGURATION_FILE, "helloConfig");
+         System.setProperty(ConfigManagerConstants.CONFIGURATION_URI, "helloConfig");
 
          Map<String, Object> properties = new HashMap<String, Object>();
          builder.properties(properties);
 
          ConfigManagerConfiguration actual = builder.build();
 
-         assertEquals("helloConfig", actual.getConfigFile());
+         assertEquals("helloConfig", actual.getConfigUri().toString());
          assertEquals(ConfigManagerConstants.DEFAULT_POLL_TIME, actual.getPollTime());
          assertEquals(ConfigManagerConstants.DEFAULT_POLL_TIME_UNIT, actual.getTimeUnit());
       } finally {
-         System.setProperty(ConfigManagerConstants.CONFIGURATION_FILE, original);
+         System.setProperty(ConfigManagerConstants.CONFIGURATION_URI, original);
       }
    }
 
    @Test
    public void testConfigProperties() {
       Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put(ConfigManagerConstants.CONFIGURATION_FILE, CONFIG_PATH);
+      properties.put(ConfigManagerConstants.CONFIGURATION_URI, CONFIG_URI);
       properties.put(ConfigManagerConstants.CONFIGURATION_POLL_TIME, POLL_TIME);
       properties.put(ConfigManagerConstants.CONFIGURATION_POLL_TIME_UNIT, POLL_TIME_UNIT);
 
@@ -92,19 +92,19 @@ public class ConfigManagerConfigurationBuilderTest {
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_PATH, actual.getConfigFile());
+      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
    }
 
    @Test
    public void testNoChangeAfterBuild() {
-      builder.configUri(CONFIG_PATH);
+      builder.configUri(CONFIG_URI);
       builder.pollTime(POLL_TIME, POLL_TIME_UNIT);
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_PATH, actual.getConfigFile());
+      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
 
@@ -113,7 +113,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
       builder.build();
 
-      assertEquals(CONFIG_PATH, actual.getConfigFile());
+      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
    }

@@ -24,7 +24,7 @@ public final class ConfigUtil {
    }
 
    public static String getDefaultConfig() {
-      return System.getProperty(ConfigManagerConstants.CONFIGURATION_FILE, "");
+      return System.getProperty(ConfigManagerConstants.CONFIGURATION_URI, "");
    }
 
    public static void writeConfig(Configuration config, StringBuilder buffer) {

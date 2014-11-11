@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.config.admin.internal;
 
-import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_FILE;
+import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_URI;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_POLL_TIME;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_POLL_TIME_UNIT;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME_UNIT;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -50,28 +51,28 @@ public class ConfigManagerConfigurationBuilder {
    }
 
    public ConfigManagerConfigurationBuilder configUri(String configUri) {
-      config.setConfigFile(configUri);
+      config.setConfigUri(configUri);
       return this;
    }
 
    private static final class ConfigManagerConfigurationImpl implements ConfigManagerConfiguration, Cloneable {
 
-      private String configFile;
+      private URI configUri;
       private long pollTime;
       private TimeUnit pollTimeUnit;
 
       @Override
       public synchronized ConfigManagerConfigurationImpl clone() {
          ConfigManagerConfigurationImpl cloned = new ConfigManagerConfigurationImpl();
-         cloned.configFile = this.configFile;
+         cloned.configUri = this.configUri;
          cloned.pollTime = this.pollTime;
          cloned.pollTimeUnit = this.pollTimeUnit;
          return cloned;
       }
 
       @Override
-      public String getConfigFile() {
-         return configFile;
+      public URI getConfigUri() {
+         return configUri;
       }
 
       @Override
@@ -84,8 +85,10 @@ public class ConfigManagerConfigurationBuilder {
          return pollTimeUnit;
       }
 
-      public void setConfigFile(String configFile) {
-         this.configFile = configFile;
+      public void setConfigUri(String configUri) {
+         if (Strings.isValid(configUri)) {
+            this.configUri = URI.create(configUri);
+         }
       }
 
       public void setPollTime(long pollTime) {
@@ -98,7 +101,7 @@ public class ConfigManagerConfigurationBuilder {
 
       public void loadProperties(Map<String, Object> props) {
          if (props != null) {
-            setConfigFile(get(props, CONFIGURATION_FILE, ConfigUtil.getDefaultConfig()));
+            setConfigUri(get(props, CONFIGURATION_URI, ConfigUtil.getDefaultConfig()));
             setPollTime(getLong(props, CONFIGURATION_POLL_TIME, DEFAULT_POLL_TIME));
             setPollTimeUnit(getTimeUnit(props, CONFIGURATION_POLL_TIME_UNIT, DEFAULT_POLL_TIME_UNIT));
          }
@@ -136,7 +139,7 @@ public class ConfigManagerConfigurationBuilder {
 
       @Override
       public String toString() {
-         return "ConfigManagerConfigurationImpl [configFile=" + configFile + ", pollTime=" + pollTime + ", pollTimeUnit=" + pollTimeUnit + "]";
+         return "ConfigManagerConfigurationImpl [configFile=" + configUri + ", pollTime=" + pollTime + ", pollTimeUnit=" + pollTimeUnit + "]";
       }
 
    }

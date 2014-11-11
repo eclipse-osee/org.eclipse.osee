@@ -29,7 +29,7 @@ public final class ConfigManagerConstants {
       return String.format("%s.%s", NAMESPACE, value);
    }
 
-   public static final String CONFIGURATION_FILE = qualify("config.file");
+   public static final String CONFIGURATION_URI = qualify("config.uri");
    public static final String CONFIGURATION_POLL_TIME = qualify("poll.time");
    public static final String CONFIGURATION_POLL_TIME_UNIT = qualify("poll.time.unit");
 
