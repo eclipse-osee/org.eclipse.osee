@@ -37,11 +37,4 @@ public final class ActivityConstants {
    public static int DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE = 1;
    public static boolean DEFAULT_ACTIVITY_LOGGER__ENABLED = false;
 
-   public static final String HTTP_HEADER__ACTIVITY_ENTRY_ID = "X-osee-activity-log-entryId";
-   public static final String ERROR_MSG__MISSING_ACTIVITY_HEADER =
-      "Error [" + ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID + "] was missing from request http header";
-
-   public static final Long DEFAULT_ACCOUNT_ID = 1896L; // Guest Account Id
-   public static final Long DEFAULT_SERVER_ID = 777L;
-   public static final Long DEFAULT_CLIENT_ID = 111L;
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.activity.internal;
+package org.eclipse.osee.activity.server.internal;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;

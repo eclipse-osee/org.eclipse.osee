@@ -8,7 +8,7 @@
  * Contributors:
  * Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.activity.internal.jaxrs;
+package org.eclipse.osee.activity.server.internal.jaxrs;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
@@ -16,7 +16,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
-import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.logger.Log;

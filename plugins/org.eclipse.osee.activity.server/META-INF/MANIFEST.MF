@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Activity Logging Server - (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.activity.server
+Bundle-Version: 0.20.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Service-Component: OSGI-INF/*.xml
+Import-Package: javax.annotation;version="1.2.0",
+ javax.ws.rs;version="2.0.0",
+ javax.ws.rs.container;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
+ javax.ws.rs.ext;version="2.0.0",
+ org.eclipse.osee.activity.api,
+ org.eclipse.osee.database.schema,
+ org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.logger
+Bundle-Vendor: Eclipse Open System Engineering Environment

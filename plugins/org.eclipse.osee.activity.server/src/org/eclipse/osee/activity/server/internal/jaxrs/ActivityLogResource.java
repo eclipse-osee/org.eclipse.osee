@@ -8,7 +8,7 @@
  * Contributors:
  * Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.activity.internal.jaxrs;
+package org.eclipse.osee.activity.server.internal.jaxrs;
 
 import java.util.ArrayList;
 import java.util.List;
