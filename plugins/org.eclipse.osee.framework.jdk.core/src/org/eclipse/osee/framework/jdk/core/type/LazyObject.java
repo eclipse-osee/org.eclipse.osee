@@ -40,7 +40,11 @@ public abstract class LazyObject<T> {
             object = task.get();
             instanceReference.set(object);
          } catch (Exception ex) {
-            throw new OseeCoreException(ex);
+            Throwable cause = ex.getCause();
+            if (cause == null) {
+               cause = ex;
+            }
+            throw new OseeCoreException(cause);
          }
       }
       return object;
