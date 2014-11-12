@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="require" activate="start" deactivate="stop" modified="update">
+	<implementation class="org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory" />
+ <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+ <reference bind="setComponentFactory" cardinality="1..1" interface="org.osgi.service.component.ComponentFactory" name="ComponentFactory" policy="static" target="(component.factory=org.eclipse.osee.jdbc.JdbcService)"/>
+</scr:component>

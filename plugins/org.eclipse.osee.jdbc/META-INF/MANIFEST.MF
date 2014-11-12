@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE JDBC - (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.jdbc
+Bundle-Version: 0.20.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Import-Package: org.apache.commons.dbcp,
+ org.apache.commons.pool,
+ org.apache.commons.pool.impl,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.network,
+ org.eclipse.osee.framework.jdk.core.util.time,
+ org.eclipse.osee.framework.jdk.core.util.xml,
+ org.eclipse.osee.logger;resolution:=optional,
+ org.hsqldb;resolution:=optional,
+ org.hsqldb.jdbc;resolution:=optional,
+ org.hsqldb.persist;resolution:=optional,
+ org.hsqldb.server;resolution:=optional,
+ org.json;resolution:=optional,
+ org.osgi.service.component;resolution:=optional
+Export-Package: org.eclipse.osee.jdbc
+Service-Component: OSGI-INF/*.xml
+DynamicImport-Package: *
+Bundle-ActivationPolicy: lazy
