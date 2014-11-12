@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxArtifactTypeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -409,10 +409,10 @@ public class QuickSearchOptionComposite extends Composite {
       public void configure() {
          try {
             Collection<IAttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
-            AttributeTypeFilteredCheckTreeDialog dialog =
-               new AttributeTypeFilteredCheckTreeDialog("Attribute Type Filter Selection",
+            FilteredCheckboxAttributeTypeDialog dialog =
+               new FilteredCheckboxAttributeTypeDialog("Attribute Type Filter Selection",
                   "Select attribute types to search in.");
-            dialog.setSelectableTypes(taggableItems);
+            dialog.setSelectable(taggableItems);
 
             List<IAttributeType> selectedElements = new ArrayList<IAttributeType>();
             for (IAttributeType type : taggableItems) {
@@ -425,8 +425,8 @@ public class QuickSearchOptionComposite extends Composite {
             int result = dialog.open();
             if (result == Window.OK) {
                configuration.clear();
-               Collection<AttributeType> results = dialog.getChecked();
-               for (AttributeType selected : results) {
+               Collection<IAttributeType> results = dialog.getChecked();
+               for (IAttributeType selected : results) {
                   configuration.add(selected);
                }
                if (configuration.isEmpty()) {

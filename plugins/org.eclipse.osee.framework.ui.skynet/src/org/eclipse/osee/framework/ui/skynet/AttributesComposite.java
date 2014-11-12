@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -253,10 +253,10 @@ public class AttributesComposite extends Composite {
                      selectableTypes.add(attrType);
                   }
                }
-               AttributeTypeFilteredCheckTreeDialog dialog =
-                  new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
+               FilteredCheckboxAttributeTypeDialog dialog =
+                  new FilteredCheckboxAttributeTypeDialog("Select Attribute Types",
                      "Select attribute types to display.");
-               dialog.setSelectableTypes(selectableTypes);
+               dialog.setSelectable(selectableTypes);
                if (dialog.open() == 0) {
                   for (Object obj : dialog.getResult()) {
                      getArtifact().addAttribute((IAttributeType) obj);

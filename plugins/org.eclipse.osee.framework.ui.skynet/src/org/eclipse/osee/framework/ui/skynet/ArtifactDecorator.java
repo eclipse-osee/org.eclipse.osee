@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.ui.progress.UIJob;
@@ -329,10 +329,10 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      } else {
                         Collection<IAttributeType> selectableTypes =
                            AttributeTypeManager.getValidAttributeTypes(branch);
-                        AttributeTypeFilteredCheckTreeDialog dialog =
-                           new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
+                        FilteredCheckboxAttributeTypeDialog dialog =
+                           new FilteredCheckboxAttributeTypeDialog("Select Attribute Types",
                               "Select attribute types to display.");
-                        dialog.setSelectableTypes(selectableTypes);
+                        dialog.setSelectable(selectableTypes);
 
                         List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
                         for (IAttributeType entry : selectedTypes) {

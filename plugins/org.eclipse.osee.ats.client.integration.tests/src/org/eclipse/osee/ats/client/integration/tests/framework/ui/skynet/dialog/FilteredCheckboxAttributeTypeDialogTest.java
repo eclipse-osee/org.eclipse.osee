@@ -14,21 +14,21 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class AttributeTypeFilteredCheckTreeDialogTest {
+public class FilteredCheckboxAttributeTypeDialogTest {
 
    @Test
    public void test() {
-      AttributeTypeFilteredCheckTreeDialog dialog =
-         new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types", "Select attribute types to display.");
+      FilteredCheckboxAttributeTypeDialog dialog =
+         new FilteredCheckboxAttributeTypeDialog("Select Attribute Types", "Select attribute types to display.");
       List<IAttributeType> types = Collections.castAll(AttributeTypeManager.getAllTypes());
-      dialog.setSelectableTypes(types);
+      dialog.setSelectable(types);
 
       try {
          dialog.setBlockOnOpen(false);

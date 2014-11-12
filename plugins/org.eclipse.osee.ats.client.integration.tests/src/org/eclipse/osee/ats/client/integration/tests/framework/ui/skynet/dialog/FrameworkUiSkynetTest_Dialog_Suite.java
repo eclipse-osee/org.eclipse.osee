@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
 EmailWizardTest.class, //
-   AttributeTypeFilteredCheckTreeDialogTest.class, //
+   FilteredCheckboxAttributeTypeDialogTest.class, //
    FilteredTreeArtifactTypeDialogTest.class, //
    ArtifactSaveNotificationHandlerDialogTest.class // 
 })
