@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -20,13 +21,13 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTreeDialog {
+public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTypeDialog {
 
    private String entryValue = null;
    private final String entryName;
    private XText xText = null;
 
-   public ArtifactTypeFilteredTreeEntryDialog(String title, String message, String entryName) {
+   public FilteredTreeArtifactTypeEntryDialog(String title, String message, String entryName) {
       super(title, message);
       this.entryName = entryName;
    }
@@ -68,6 +69,10 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
          return new Result("Must enter Artifact name.");
       }
       return super.isComplete();
+   }
+
+   public IArtifactType getSelection() {
+      return getSelectedFirst();
    }
 
 }

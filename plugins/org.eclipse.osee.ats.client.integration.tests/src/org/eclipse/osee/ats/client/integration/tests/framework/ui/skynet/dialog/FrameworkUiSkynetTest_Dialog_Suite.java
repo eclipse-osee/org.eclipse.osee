@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
 EmailWizardTest.class, //
    AttributeTypeFilteredCheckTreeDialogTest.class, //
-   ArtifactTypeFilteredTreeDialogTest.class, //
+   FilteredTreeArtifactTypeDialogTest.class, //
    ArtifactSaveNotificationHandlerDialogTest.class // 
 })
 public class FrameworkUiSkynetTest_Dialog_Suite {

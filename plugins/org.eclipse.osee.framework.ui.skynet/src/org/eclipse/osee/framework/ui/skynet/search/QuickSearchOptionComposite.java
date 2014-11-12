@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxArtifactTypeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -512,9 +512,10 @@ public class QuickSearchOptionComposite extends Composite {
       public void configure() {
          try {
             Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-            ArtifactTypeFilteredTreeDialog dialog =
-               new ArtifactTypeFilteredTreeDialog("Artifact Type Filter Selection",
+            FilteredCheckboxArtifactTypeDialog dialog =
+               new FilteredCheckboxArtifactTypeDialog("Artifact Type Filter Selection",
                   "Select artifact types to search in.");
+            dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 
             List<IArtifactType> selectedElements = new ArrayList<IArtifactType>();
@@ -528,8 +529,8 @@ public class QuickSearchOptionComposite extends Composite {
             int result = dialog.open();
             if (result == Window.OK) {
                configuration.clear();
-               Collection<ArtifactType> results = dialog.getChecked();
-               for (ArtifactType selected : results) {
+               Collection<IArtifactType> results = dialog.getChecked();
+               for (IArtifactType selected : results) {
                   configuration.add(selected);
                }
             }

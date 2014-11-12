@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -57,7 +57,8 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
 
    @Override
    protected Dialog createSelectDialog(Shell shell, IArtifactType lastSelected) {
-      ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog(title, message);
+      FilteredTreeArtifactTypeDialog dialog =
+         new FilteredTreeArtifactTypeDialog(title, message, this.artifactTypes, new ArtifactTypeLabelProvider());
       dialog.setMultiSelect(false);
       if (lastSelected != null) {
          dialog.setInitialSelections(Arrays.asList(lastSelected));
@@ -66,8 +67,7 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
          dialog.setInput(artifactTypes);
       } catch (Exception ex) {
          ErrorDialog.openError(shell, title, null, // no special message
-            new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Unable to create artifact type selectiong dialog",
-               ex));
+            new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Unable to create artifact type selectiong dialog", ex));
       }
       return dialog;
    }
@@ -75,8 +75,8 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<IArtifactTy
    @Override
    protected boolean updateFromDialogResult(Dialog dialog) {
       boolean wasUpdated = false;
-      ArtifactTypeFilteredTreeDialog castedDialog = (ArtifactTypeFilteredTreeDialog) dialog;
-      IArtifactType artifactType = castedDialog.getSelection();
+      FilteredTreeArtifactTypeDialog castedDialog = (FilteredTreeArtifactTypeDialog) dialog;
+      IArtifactType artifactType = castedDialog.getSelectedFirst();
       if (artifactType != null) {
          setSelected(artifactType);
          wasUpdated = true;

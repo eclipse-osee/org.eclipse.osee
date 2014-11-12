@@ -11,18 +11,18 @@
 package org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.dialog;
 
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeDialog;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeFilteredTreeDialogTest {
+public class FilteredTreeArtifactTypeDialogTest {
 
    @Test
    public void test() {
-      ArtifactTypeFilteredTreeDialog dialog = new ArtifactTypeFilteredTreeDialog("title", "message");
+      FilteredTreeArtifactTypeDialog dialog = new FilteredTreeArtifactTypeDialog("title", "message");
       dialog.setMultiSelect(false);
       dialog.setInput(ArtifactTypeManager.getAllTypes());
 

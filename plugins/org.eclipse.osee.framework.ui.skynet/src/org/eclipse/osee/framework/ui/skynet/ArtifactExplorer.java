@@ -103,7 +103,7 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactTypeEntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -633,7 +633,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                   policy.canRelationBeModified(parent, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
 
                if (status.matched()) {
-                  ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
+                  FilteredTreeArtifactTypeEntryDialog dialog = getDialog();
                   if (dialog.open() == Window.OK) {
                      IArtifactType type = dialog.getSelection();
                      String name = dialog.getEntryValue();
@@ -659,14 +659,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             }
          }
 
-         private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
+         private FilteredTreeArtifactTypeEntryDialog getDialog() throws OseeCoreException {
             Collection<? extends IArtifactType> artifactTypes =
                ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
 
             artifactTypes.remove(CoreArtifactTypes.RootArtifact);
 
-            ArtifactTypeFilteredTreeEntryDialog dialog =
-               new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
+            FilteredTreeArtifactTypeEntryDialog dialog =
+               new FilteredTreeArtifactTypeEntryDialog("New Child", "Enter name and select Artifact type to create",
                   "Artifact Name");
             dialog.setInput(artifactTypes);
             return dialog;
