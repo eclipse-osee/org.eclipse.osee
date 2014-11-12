@@ -505,9 +505,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
          }
       }
-      changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(
-            AtsClientService.get().getUserService().getCurrentUser(), this, AtsNotifyType.Originator));
+      try {
+         changes.getNotifications().addWorkItemNotificationEvent(
+            AtsNotificationEventFactory.getWorkItemNotificationEvent(
+               AtsClientService.get().getUserService().getCurrentUser(), this, AtsNotifyType.Originator));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+      }
    }
 
    private void logCreatedByChange(IAtsUser user, Date date) throws OseeCoreException {

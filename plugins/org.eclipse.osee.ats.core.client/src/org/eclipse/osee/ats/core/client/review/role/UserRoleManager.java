@@ -200,7 +200,7 @@ public class UserRoleManager {
                   AtsClientService.get().getUserService().getCurrentUser(), (IAtsWorkItem) artifact,
                   AtsNotifyType.Peer_Reviewers_Completed));
          } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
          }
       }
    }

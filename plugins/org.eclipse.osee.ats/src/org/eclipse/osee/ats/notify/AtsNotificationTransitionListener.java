@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.notify;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
@@ -20,7 +21,9 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -34,10 +37,12 @@ public class AtsNotificationTransitionListener implements ITransitionListener {
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
-
-      changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, workItem,
-            AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled));
-
+      try {
+         changes.getNotifications().addWorkItemNotificationEvent(
+            AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, workItem,
+               AtsNotifyType.Subscribed, AtsNotifyType.Completed, AtsNotifyType.Cancelled));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+      }
    }
 }

@@ -197,9 +197,13 @@ public class ExcelAtsTaskArtifactExtractor {
          // always persist
          changes.add(taskArt);
          if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-            changes.getNotifications().addWorkItemNotificationEvent(
-               AtsNotificationEventFactory.getWorkItemNotificationEvent(
-                  AtsClientService.get().getUserService().getCurrentUser(), sma, AtsNotifyType.Assigned));
+            try {
+               changes.getNotifications().addWorkItemNotificationEvent(
+                  AtsNotificationEventFactory.getWorkItemNotificationEvent(
+                     AtsClientService.get().getUserService().getCurrentUser(), sma, AtsNotifyType.Assigned));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+            }
          }
       }
 

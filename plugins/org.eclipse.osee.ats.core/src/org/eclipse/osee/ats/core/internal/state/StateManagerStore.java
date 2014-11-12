@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.state;
 
+import java.rmi.activation.Activator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -38,9 +39,13 @@ public class StateManagerStore {
    }
 
    protected static void postPersistNotifyReset(IAtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<IAtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes) throws OseeCoreException {
-      changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser, workItem, assigneesAdded,
-            AtsNotifyType.Assigned));
+      try {
+         changes.getNotifications().addWorkItemNotificationEvent(
+            AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser, workItem, assigneesAdded,
+               AtsNotifyType.Assigned));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+      }
       load(workItem, stateMgr, attrResolver, workStateFactory);
    }
 

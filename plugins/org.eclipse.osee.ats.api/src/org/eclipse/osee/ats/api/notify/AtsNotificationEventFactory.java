@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -71,6 +73,9 @@ public class AtsNotificationEventFactory {
    public static AtsWorkItemNotificationEvent getWorkItemNotificationEvent(IAtsUser fromUser, IAtsWorkItem workItem, AtsNotifyType... notifyType) {
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(fromUser.getUserId());
+      if (!Strings.isValid(workItem.getAtsId())) {
+         throw new OseeArgumentException("ATS Id cannot be null for %s", workItem.toStringWithId());
+      }
       event.getAtsIds().add(workItem.getAtsId());
       event.setNotifyType(notifyType);
       return event;

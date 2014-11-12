@@ -235,9 +235,13 @@ public class ExcelAtsActionArtifactExtractor {
          AtsUtilClient.setEmailEnabled(true);
          if (emailPOCs) {
             for (TeamWorkFlowArtifact teamWf : teamWfs) {
-               changes.getNotifications().addWorkItemNotificationEvent(
-                  AtsNotificationEventFactory.getWorkItemNotificationEvent(
-                     AtsClientService.get().getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
+               try {
+                  changes.getNotifications().addWorkItemNotificationEvent(
+                     AtsNotificationEventFactory.getWorkItemNotificationEvent(
+                        AtsClientService.get().getUserService().getCurrentUser(), teamWf, AtsNotifyType.Assigned));
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
+               }
             }
          }
       } catch (OseeCoreException ex) {

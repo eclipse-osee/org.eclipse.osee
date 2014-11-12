@@ -132,6 +132,7 @@ public class StateManagerStoreTest {
       WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
+      when(workItem.getAtsId()).thenReturn("ATS1234");
 
       StateManagerStore.postPersistNotifyReset(asUser, workItem, stateMgr, stateMgr.getAssigneesAdded(), attrResolver,
          workStateFactory, changes);
@@ -160,6 +161,7 @@ public class StateManagerStoreTest {
       WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
+      when(workItem.getAtsId()).thenReturn("ATS1234");
 
       objects.add(workItem);
       objects.add("now");
