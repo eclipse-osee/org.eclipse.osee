@@ -48,8 +48,6 @@ public interface IAtsActionableItem extends IAtsConfigObject {
     ******************************/
    Collection<String> getStaticIds();
 
-   boolean isActive();
-
    void setActionable(boolean actionable);
 
    public boolean isActionable() throws OseeCoreException;

@@ -35,24 +35,30 @@ import org.eclipse.swt.widgets.Composite;
 public class XActionableItemCombo extends XComboViewer {
    public static final String WIDGET_ID = XActionableItemCombo.class.getSimpleName();
    private IAtsActionableItem selectedAi = null;
+   private final Active active;
 
    public XActionableItemCombo() {
+      this(Active.Active);
+   }
+
+   public XActionableItemCombo(Active active) {
       super("Actionable Item", SWT.READ_ONLY);
+      this.active = active;
    }
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
 
-      Collection<IAtsActionableItem> teamDefs = null;
+      Collection<IAtsActionableItem> ais = null;
       try {
-         teamDefs = ActionableItems.getActionableItems(Active.Active, AtsClientService.get().getConfig());
+         ais = ActionableItems.getActionableItems(active, AtsClientService.get().getConfig());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading actionable items", ex);
       }
 
       List<IAtsActionableItem> sortedAiArts = new ArrayList<IAtsActionableItem>();
-      sortedAiArts.addAll(teamDefs);
+      sortedAiArts.addAll(ais);
       Collections.sort(sortedAiArts, new ActionableItemSorter());
       getComboViewer().setInput(sortedAiArts);
       ArrayList<Object> defaultSelection = new ArrayList<Object>();

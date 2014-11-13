@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -28,15 +29,18 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class AtsObjectLabelProvider extends LabelProvider { //StyledCellLabelProvider {
+public class AtsObjectLabelProvider extends LabelProvider {
+   private final boolean showActive;
 
    public AtsObjectLabelProvider() {
-      super();
+      this(false);
    }
 
-   /*
-    * @see ILabelProvider#getImage(Object)
-    */
+   public AtsObjectLabelProvider(boolean showActive) {
+      super();
+      this.showActive = showActive;
+   }
+
    @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
@@ -53,26 +57,33 @@ public class AtsObjectLabelProvider extends LabelProvider { //StyledCellLabelPro
       return ImageManager.getImage(ImageManager.MISSING);
    }
 
-   /*
-    * @see ILabelProvider#getText(Object)
-    */
    @Override
    public String getText(Object element) {
-      if (element == null) {
-         return "";
-      }
-      if (element instanceof Match) {
-         element = ((Match) element).getElement();
-      }
-      if (element instanceof IAtsObject) {
-         IAtsObject artifact = (IAtsObject) element;
+      String result = "";
+      if (element != null) {
+         if (element instanceof Match) {
+            element = ((Match) element).getElement();
+         }
+         if (element instanceof IAtsObject) {
+            IAtsObject artifact = (IAtsObject) element;
 
-         List<String> extraInfo = new ArrayList<String>();
-         String name = artifact.getName();
-         extraInfo.add(name != null ? name : "");
-         return Collections.toString(" ", extraInfo);
-      } else {
-         return element.toString();
+            List<String> extraInfo = new ArrayList<String>();
+            String name = artifact.getName();
+            extraInfo.add(name != null ? name : "");
+            result = Collections.toString(" ", extraInfo);
+         } else {
+            result = element.toString();
+         }
       }
+      result = getActiveTag(element, result);
+      return result;
+   }
+
+   private String getActiveTag(Object element, String result) {
+      if (showActive && (element instanceof IAtsConfigObject)) {
+         IAtsConfigObject iAtsObject = (IAtsConfigObject) element;
+         result = String.format("%s (%s)", result, iAtsObject.isActive() ? "Active" : "InActive");
+      }
+      return result;
    }
 }

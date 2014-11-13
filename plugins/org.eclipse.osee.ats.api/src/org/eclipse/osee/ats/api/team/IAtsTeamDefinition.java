@@ -53,8 +53,6 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    void setActive(boolean active);
 
-   boolean isActive();
-
    Collection<String> getStaticIds();
 
    /*****************************

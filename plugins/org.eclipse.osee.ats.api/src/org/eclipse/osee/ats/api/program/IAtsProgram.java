@@ -12,14 +12,11 @@ package org.eclipse.osee.ats.api.program;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsProgram extends IAtsConfigObject {
-
-   public boolean isActive() throws OseeCoreException;
 
    public Long getUuid();
 
