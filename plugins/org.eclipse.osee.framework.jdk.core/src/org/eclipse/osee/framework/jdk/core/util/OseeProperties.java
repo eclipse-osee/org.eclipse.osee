@@ -115,12 +115,12 @@ public class OseeProperties {
     * @return number of max active connections
     */
    public static int getOseeDbConnectionCount() {
-      int toReturn = 6;
-      String connections = System.getProperty(OSEE_DB_CONNECTION_POOL_SIZE, "6");
+      int toReturn;
+      String connections = System.getProperty(OSEE_DB_CONNECTION_POOL_SIZE, "10");
       try {
          toReturn = Integer.parseInt(connections);
       } catch (Exception ex) {
-         toReturn = 6;
+         toReturn = 10;
       }
       return toReturn;
    }
