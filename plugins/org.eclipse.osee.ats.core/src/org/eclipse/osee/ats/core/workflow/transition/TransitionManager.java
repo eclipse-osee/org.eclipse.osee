@@ -392,7 +392,9 @@ public class TransitionManager implements IAtsTransitionManager {
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeCoreException {
       if (workItem.isTeamWorkflow() && toStateDef.getStateType().isCancelledState()) {
          for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
-            if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+            ReviewBlockType reviewBlockType = reviewService.getReviewBlockType(review);
+            boolean completedOrCancelled = review.getStateMgr().getStateType().isCompletedOrCancelled();
+            if (reviewBlockType == ReviewBlockType.Transition && !completedOrCancelled) {
                results.addResult(workItem, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL);
                break;
             }

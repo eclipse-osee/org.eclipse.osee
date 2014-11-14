@@ -598,6 +598,7 @@ public class AtsTestUtil {
                PeerToPeerReviewManager.createNewPeerToPeerReview(
                   AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
                   teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
+            peerRevArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
       } catch (OseeCoreException ex) {
          throw new OseeWrappedException(ex);

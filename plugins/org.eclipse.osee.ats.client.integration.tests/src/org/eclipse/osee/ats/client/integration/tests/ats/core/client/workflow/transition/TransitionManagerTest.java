@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -667,6 +668,46 @@ public class TransitionManagerTest {
       Assert.assertTrue("Transition Error: " + results.toString(), results.isEmpty());
       Assert.assertEquals("Cancelled", teamArt.getCurrentStateName());
       Assert.assertEquals(100, teamArt.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100).intValue());
+
+   }
+
+   @org.junit.Test
+   public void testIsStateTransitionable__ReviewsCancelled() throws OseeCoreException {
+      AtsTestUtil.cleanupAndReset("TransitionManagerTest-Cancel");
+      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      TransitionResults results = new TransitionResults();
+
+      // create a peer to peer review
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
+      PeerToPeerReviewArtifact peerReview =
+         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Transition, AtsTestUtilState.Analyze, changes);
+      changes.relate(teamArt, AtsRelationTypes.TeamWorkflowToReview_Review, peerReview);
+      changes.execute();
+
+      // transition workflow to cancelled - peer review not cancelled
+      changes.clear();
+      TransitionHelper transHelper =
+         new TransitionHelper("Transition Team Workflow Review", Arrays.asList(teamArt), "Cancelled",
+            new ArrayList<IAtsUser>(), "", changes, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck);
+      transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
+      TransitionManager mgr = new TransitionManager(transHelper);
+      results = mgr.handleAll();
+      changes.execute();
+      Assert.assertTrue(results.contains(teamArt, TransitionResult.CANCEL_REVIEWS_BEFORE_CANCEL));
+
+      // transition workflow again - peer review cancelled
+      results.clear();
+      changes.clear();
+      transHelper =
+         new TransitionHelper("Transition Team Workflow Review", Arrays.asList(peerReview), "Cancelled",
+            new ArrayList<IAtsUser>(), "", changes, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck);
+      transHelper.setTransitionUser(AtsClientService.get().getUserService().getCurrentUser());
+      mgr = new TransitionManager(transHelper);
+      results = mgr.handleAll();
+      changes.execute();
+      Assert.assertTrue(results.isEmpty());
 
    }
 
