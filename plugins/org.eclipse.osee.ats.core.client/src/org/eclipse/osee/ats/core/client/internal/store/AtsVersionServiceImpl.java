@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -265,6 +267,26 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
          }
       }
       return branch;
+   }
+
+   @Override
+   public IAtsVersion store(IAtsVersion version, IAtsTeamDefinition teamDef) {
+      Conditions.checkNotNull(version, "version");
+      Conditions.checkNotNull(teamDef, "teamDef");
+      Conditions.checkNotNull(teamDef.getStoreObject(), "teamDef storeObject");
+      IAtsVersion result = version;
+      if (version.getStoreObject() == null) {
+         Artifact verArt = cacheProvider.get().getArtifact(version);
+         if (verArt == null) {
+            AtsChangeSet changes = new AtsChangeSet("Create " + version);
+            VersionArtifactWriter writer = new VersionArtifactWriter();
+            verArt = writer.store(version, cacheProvider.get(), changes);
+            changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt);
+            version.setStoreObject(verArt);
+            changes.execute();
+         }
+      }
+      return result;
    }
 
 }

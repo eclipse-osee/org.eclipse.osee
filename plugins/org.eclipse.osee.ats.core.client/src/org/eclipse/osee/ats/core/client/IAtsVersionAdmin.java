@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -30,5 +31,7 @@ public interface IAtsVersionAdmin extends IAtsVersionService {
    void invalidateVersionCache(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    Branch getBranch(IAtsVersion version);
+
+   IAtsVersion store(IAtsVersion version, IAtsTeamDefinition teamDef);
 
 }
