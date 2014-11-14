@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 
 /**
@@ -28,6 +27,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
    private String value;
    private Collection<String> values;
    private final QueryOption[] options;
+   private final boolean existsSearch;
 
    public IAttributeType getAttributeType() {
       return attributeType;
@@ -52,7 +52,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * @param value to search;
     */
    public AttributeCriteria(IAttributeType attributeType, String value, QueryOption... options) {
-      this(attributeType, value, null, options);
+      this(attributeType, value, null, false, options);
    }
 
    /**
@@ -60,7 +60,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * existence)
     */
    public AttributeCriteria(IAttributeType attributeType, QueryOption... options) {
-      this(attributeType, null, null, options);
+      this(attributeType, null, null, true, options);
    }
 
    /**
@@ -70,7 +70,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * multiple values.
     */
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
-      this(attributeType, null, validate(values));
+      this(attributeType, null, validate(values), false);
    }
 
    private static Collection<String> validate(Collection<String> values) throws OseeArgumentException {
@@ -80,8 +80,9 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
       return values;
    }
 
-   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, QueryOption... options) {
+   private AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean existsSearch, QueryOption... options) {
       this.attributeType = attributeType;
+      this.existsSearch = existsSearch;
 
       if (!Conditions.hasValues(values)) {
          this.value = value;
@@ -113,12 +114,12 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
 
    @Override
    public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
-      if (Strings.isValid(getValue())) {
-         builder.and(getAttributeType(), getValue(), getOptions());
+      if (existsSearch) {
+         builder.andExists(getAttributeType());
       } else if (getValues() != null) {
          builder.and(getAttributeType(), getValues(), getOptions());
       } else {
-         builder.andExists(getAttributeType());
+         builder.and(getAttributeType(), getValue(), getOptions());
       }
    }
 }
