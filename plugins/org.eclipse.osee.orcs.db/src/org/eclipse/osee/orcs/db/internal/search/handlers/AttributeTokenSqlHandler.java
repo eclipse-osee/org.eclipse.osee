@@ -74,12 +74,22 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          tokenize(value, tags);
          int tagsSize = tags.size();
          gammaSb.append("  ( \n");
-         for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
-            Long tag = tags.get(tagIdx);
-            gammaSb.append("    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
-            writer.addParameter(tag);
-            if (tagIdx + 1 < tagsSize) {
-               gammaSb.append("\n INTERSECT \n");
+         if (tagsSize == 0) {
+            gammaSb.append("    SELECT gamma_id FROM osee_attribute where value ");
+            if (!Strings.isValid(value)) {
+               gammaSb.append("is null or value = ''");
+            } else {
+               gammaSb.append(" = ?");
+               writer.addParameter(value);
+            }
+         } else {
+            for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
+               Long tag = tags.get(tagIdx);
+               gammaSb.append("    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?");
+               writer.addParameter(tag);
+               if (tagIdx + 1 < tagsSize) {
+                  gammaSb.append("\n INTERSECT \n");
+               }
             }
          }
          gammaSb.append("\n  ) ");

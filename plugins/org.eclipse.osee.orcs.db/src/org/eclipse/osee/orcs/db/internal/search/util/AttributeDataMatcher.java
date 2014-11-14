@@ -77,7 +77,7 @@ public class AttributeDataMatcher {
       String value = getValue(data);
       for (String toMatch : valuesToMatch) {
          checkCancelled(cancellation);
-         if (value.equals(toMatch)) {
+         if (value.equals(toMatch) || (!Strings.isValid(value) && !Strings.isValid(toMatch))) {
             MatchLocation matchLocation = new MatchLocation(1, value.length());
             handler.onData(data, matchLocation);
          }

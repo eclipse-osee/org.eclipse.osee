@@ -90,4 +90,19 @@ public class OrcsAttributeSearchTest {
       assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
    }
 
+   @Test
+   public void testNullAttributeSearch() {
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Email, (String) null);
+      ResultSet<ArtifactReadable> resultSet = builder.getResults();
+      assertEquals(8, resultSet.size());
+
+      builder = queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Email, "");
+      resultSet = builder.getResults();
+      assertEquals(8, resultSet.size());
+
+      builder = queryFactory.fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.Email, " ");
+      resultSet = builder.getResults();
+      assertEquals(0, resultSet.size());
+   }
+
 }
