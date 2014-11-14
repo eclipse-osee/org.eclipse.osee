@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.vcast.VCastClient;
 import org.eclipse.osee.vcast.VCastDataStore;
 import org.eclipse.osee.vcast.VCastLisFileParser;
 import org.eclipse.osee.vcast.VCastValidateDatFileSyntax;
@@ -74,7 +74,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       File file = new File(input.getVCastDirectory() + input.getVCastDbPath());
 
       if (file.exists() && file.canRead()) {
-         VCastDataStore dataStore = VCastDataStoreFactory.createDataStore(file.getAbsolutePath());
+         VCastDataStore dataStore = VCastClient.newDataStore(file.getAbsolutePath());
 
          Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
          coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());

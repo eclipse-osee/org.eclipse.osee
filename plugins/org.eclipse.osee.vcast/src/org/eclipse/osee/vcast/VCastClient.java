@@ -10,29 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.vcast;
 
-import java.util.Properties;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.vcast.internal.SqliteDbInfo;
-import org.eclipse.osee.vcast.internal.SqliteStatementProvider;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcClientBuilder;
 import org.eclipse.osee.vcast.internal.VCastDataStoreImpl;
-import org.eclipse.osee.vcast.internal.VCastDataStoreImpl.StatementProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public class VCastClient {
 
+   private static final String JDBC_SQLITE_DRIVER = "org.sqlite.JDBC";
+   private static final String JDBC_SQLITE__CONNECTION_TEMPLATE = "jdbc:sqlite:%s";
+
    private VCastClient() {
       // Static Factory
    }
 
-   public static VCastDataStore newDataStore(IOseeDatabaseService dbService, String dbPath) throws OseeCoreException {
-      String connectionId = GUID.create();
-      SqliteDbInfo dbInfo = new SqliteDbInfo(connectionId, dbPath, new Properties());
-      StatementProvider provider = new SqliteStatementProvider(dbService, dbInfo);
-      return new VCastDataStoreImpl(provider);
+   public static VCastDataStore newDataStore(String dbPath) throws OseeCoreException {
+      JdbcClient jdbcClient = JdbcClientBuilder.newBuilder()//
+      .dbDriver(JDBC_SQLITE_DRIVER)//
+      .dbUri(JDBC_SQLITE__CONNECTION_TEMPLATE, dbPath)//
+      .build();
+      return new VCastDataStoreImpl(jdbcClient);
    }
-
 }

@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
 import org.eclipse.osee.coverage.internal.vcast.operations.VCastDataStoreToExcelOperation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.vcast.VCastClient;
 import org.eclipse.osee.vcast.VCastDataStore;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -71,7 +71,7 @@ public class SqliteToExcelBlam extends AbstractBlam {
       String filename = String.format("CoverageSQLite_%s.xml", Lib.getDateTimeString());
       final File outputFile = OseeData.getFile(filename);
 
-      VCastDataStore vcastDataStore = VCastDataStoreFactory.createDataStore(dbFile.getAbsolutePath());
+      VCastDataStore vcastDataStore = VCastClient.newDataStore(dbFile.getAbsolutePath());
       IOperation op1 = new VCastDataStoreToExcelOperation(vcastDataStore, outputFile);
       IOperation op2 = new AbstractOperation(String.format("Open %s", filename), Activator.PLUGIN_ID) {
 

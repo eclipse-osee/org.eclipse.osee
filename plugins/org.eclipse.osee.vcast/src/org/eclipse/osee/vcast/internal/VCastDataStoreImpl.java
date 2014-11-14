@@ -12,8 +12,10 @@ package org.eclipse.osee.vcast.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.vcast.VCastDataStore;
 import org.eclipse.osee.vcast.model.VCastBranchCoverage;
 import org.eclipse.osee.vcast.model.VCastBranchData;
@@ -42,26 +44,23 @@ import org.eclipse.osee.vcast.model.VCastWritable;
  */
 public class VCastDataStoreImpl implements VCastDataStore {
 
-   public static interface StatementProvider {
-      IOseeStatement getStatement() throws OseeCoreException;
-   }
+   private final JdbcClient client;
 
-   private final StatementProvider provider;
-
-   public VCastDataStoreImpl(StatementProvider provider) {
+   public VCastDataStoreImpl(JdbcClient client) {
       super();
-      this.provider = provider;
+      this.client = client;
    }
 
-   private IOseeStatement getStatement() throws OseeCoreException {
-      return provider.getStatement();
+   private JdbcStatement getStatement() throws OseeCoreException {
+      JdbcConnection connection = client.getConnection();
+      return client.getStatement(connection, true);
    }
 
    @Override
    public Collection<VCastBranchCoverage> getAllBranchCoverages() throws OseeCoreException {
       Collection<VCastBranchCoverage> toReturn = new ArrayList<VCastBranchCoverage>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM branch_coverage");
          while (stmt.next()) {
@@ -86,7 +85,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastBranchData> getAllBranchData() throws OseeCoreException {
       Collection<VCastBranchData> toReturn = new ArrayList<VCastBranchData>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM branch_data");
          while (stmt.next()) {
@@ -107,7 +106,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastFunction> getAllFunctions() throws OseeCoreException {
       Collection<VCastFunction> toReturn = new ArrayList<VCastFunction>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM functions");
          while (stmt.next()) {
@@ -132,7 +131,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastInstrumentedFile> getAllInstrumentedFiles() throws OseeCoreException {
       Collection<VCastInstrumentedFile> toReturn = new ArrayList<VCastInstrumentedFile>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM instrumented_files if");
          while (stmt.next()) {
@@ -155,7 +154,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    @Override
    public Collection<VCastMcdcCoverage> getAllMcdcCoverages() throws OseeCoreException {
       Collection<VCastMcdcCoverage> toReturn = new ArrayList<VCastMcdcCoverage>();
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_coverage");
          while (stmt.next()) {
@@ -180,7 +179,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions() throws OseeCoreException {
       Collection<VCastMcdcCoverageCondition> toReturn = new ArrayList<VCastMcdcCoverageCondition>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_coverage_conditions");
          while (stmt.next()) {
@@ -207,7 +206,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows() throws OseeCoreException {
       Collection<VCastMcdcCoveragePairRow> toReturn = new ArrayList<VCastMcdcCoveragePairRow>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_coverage_pair_rows");
          while (stmt.next()) {
@@ -230,7 +229,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs() throws OseeCoreException {
       Collection<VCastMcdcCoveragePair> toReturn = new ArrayList<VCastMcdcCoveragePair>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_coverage_pairs");
          while (stmt.next()) {
@@ -251,7 +250,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastMcdcData> getAllMcdcData() throws OseeCoreException {
       Collection<VCastMcdcData> toReturn = new ArrayList<VCastMcdcData>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_data");
          while (stmt.next()) {
@@ -274,7 +273,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastMcdcDataCondition> getAllMcdcDataConditions() throws OseeCoreException {
       Collection<VCastMcdcDataCondition> toReturn = new ArrayList<VCastMcdcDataCondition>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_data_conditions");
          while (stmt.next()) {
@@ -295,7 +294,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastProjectFile> getAllProjectFiles() throws OseeCoreException {
       Collection<VCastProjectFile> toReturn = new ArrayList<VCastProjectFile>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM project_files");
          while (stmt.next()) {
@@ -317,7 +316,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastProject> getAllProjects() throws OseeCoreException {
       Collection<VCastProject> toReturn = new ArrayList<VCastProject>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM projects");
          while (stmt.next()) {
@@ -336,7 +335,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastResult> getAllResults() throws OseeCoreException {
       Collection<VCastResult> toReturn = new ArrayList<VCastResult>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM results");
          while (stmt.next()) {
@@ -360,7 +359,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastSetting> getAllSettings() throws OseeCoreException {
       Collection<VCastSetting> toReturn = new ArrayList<VCastSetting>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM settings");
          while (stmt.next()) {
@@ -379,7 +378,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastSourceFile> getAllSourceFiles() throws OseeCoreException {
       Collection<VCastSourceFile> toReturn = new ArrayList<VCastSourceFile>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM source_files");
          while (stmt.next()) {
@@ -401,7 +400,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastStatementCoverage> getAllStatementCoverages() throws OseeCoreException {
       Collection<VCastStatementCoverage> toReturn = new ArrayList<VCastStatementCoverage>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM statement_coverage");
          while (stmt.next()) {
@@ -423,7 +422,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastStatementData> getAllStatementData() throws OseeCoreException {
       Collection<VCastStatementData> toReturn = new ArrayList<VCastStatementData>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM statement_data");
          while (stmt.next()) {
@@ -445,7 +444,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public VCastVersion getVersion() throws OseeCoreException {
       VCastVersion toReturn = null;
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM version");
          if (stmt.next()) {
@@ -463,7 +462,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public VCastWritable getWritable() throws OseeCoreException {
       VCastWritable toReturn = null;
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM writable");
          if (stmt.next()) {
@@ -481,7 +480,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) throws OseeCoreException {
       VCastSourceFileJoin toReturn = null;
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery(
             "SELECT sf.id, sf.path, sf.display_name, sf.checksum, sf.display_path, ifs.unit_index FROM source_files sf join instrumented_files ifs WHERE  sf.id = ifs.source_file_id AND sf.id=?",
@@ -506,7 +505,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) throws OseeCoreException {
       Collection<VCastFunction> toReturn = new ArrayList<VCastFunction>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM functions f WHERE instrumented_file_id=?", instrumentedFile.getId());
          while (stmt.next()) {
@@ -532,7 +531,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) throws OseeCoreException {
       Collection<VCastStatementCoverage> toReturn = new ArrayList<VCastStatementCoverage>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM statement_coverage sc WHERE function_id=?", function.getId());
          while (stmt.next()) {
@@ -553,7 +552,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) throws OseeCoreException {
       Collection<VCastStatementData> toReturn = new ArrayList<VCastStatementData>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM statement_data WHERE statement_id=?", statementCoverage.getId());
          while (stmt.next()) {
@@ -575,7 +574,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastResult> getResults(VCastStatementData statementDataItem) throws OseeCoreException {
       Collection<VCastResult> toReturn = new ArrayList<VCastResult>();
 
-      IOseeStatement stmt = getStatement();
+      JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM results WHERE id=?", statementDataItem.getResultId());
          while (stmt.next()) {

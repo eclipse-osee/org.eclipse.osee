@@ -34,7 +34,6 @@ import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -58,7 +57,6 @@ public class DispoApiImpl implements DispoApi {
    private DispoFactory dispoFactory;
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
-   private IOseeDatabaseService dbService;
 
    public void setExecutor(ExecutorAdmin executor) {
       this.executor = executor;
@@ -84,14 +82,10 @@ public class DispoApiImpl implements DispoApi {
       this.resolutionValidator = resolutionValidator;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
    public void start() {
       logger.trace("Starting DispoApiImpl...");
       dispoFactory = new DispoFactoryImpl();
-      importerFactory = new DispoImporterFactory(dataFactory, executor, logger, dbService);
+      importerFactory = new DispoImporterFactory(dataFactory, executor, logger);
    }
 
    public void stop() {

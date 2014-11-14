@@ -36,7 +36,6 @@ import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -66,14 +65,11 @@ public class LisFileParser implements DispoImporterApi {
    private final Set<String> datIdsCoveredByException = new HashSet<String>();
    private final Set<String> alreadyUsedDatIds = new HashSet<String>();
 
-   DispoConnector dispoConnector = new DispoConnector();
-
-   private final IOseeDatabaseService dbService;
+   private final DispoConnector dispoConnector = new DispoConnector();
 
    private String vCastDir;
 
-   public LisFileParser(Log logger, IOseeDatabaseService dbService, DispoDataFactory dataFactory) {
-      this.dbService = dbService;
+   public LisFileParser(Log logger, DispoDataFactory dataFactory) {
       this.dataFactory = dataFactory;
    }
 
@@ -84,7 +80,7 @@ public class LisFileParser implements DispoImporterApi {
       vCastDir = filesDir.getAbsolutePath() + File.separator + "vcast";
       File f = new File(vCastDir + File.separator + "cover.db");
 
-      VCastDataStore dataStore = VCastClient.newDataStore(dbService, f.getAbsolutePath());
+      VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath());
 
       Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore);
 

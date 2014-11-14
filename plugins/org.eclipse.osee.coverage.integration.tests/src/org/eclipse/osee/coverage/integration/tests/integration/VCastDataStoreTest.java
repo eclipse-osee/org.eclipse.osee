@@ -19,8 +19,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Collection;
-import org.eclipse.osee.coverage.internal.vcast.datastore.VCastDataStoreFactory;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.vcast.VCastClient;
 import org.eclipse.osee.vcast.VCastDataStore;
 import org.eclipse.osee.vcast.model.VCastBranchCoverage;
 import org.eclipse.osee.vcast.model.VCastBranchData;
@@ -65,7 +65,7 @@ public class VCastDataStoreTest {
 
       copyResource("vCastSqliteUtilityTest.db", outfile);
 
-      dataStore = VCastDataStoreFactory.createDataStore(outfile.getAbsolutePath());
+      dataStore = VCastClient.newDataStore(outfile.getAbsolutePath());
    }
 
    private static void copyResource(String resource, File output) throws IOException {
