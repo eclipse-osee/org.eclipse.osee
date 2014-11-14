@@ -12,15 +12,14 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
@@ -49,9 +48,8 @@ public class TmoImporter implements DispoImporterApi {
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory) {
       List<DispoItem> toReturn = new LinkedList<DispoItem>();
       if (tmoDirectory.isDirectory()) {
-         TmoFileFilter filter = new TmoFileFilter();
-         File[] files = tmoDirectory.listFiles(filter);
-         List<File> listOfFiles = Arrays.asList(files);
+
+         List<File> listOfFiles = Lib.recursivelyListFiles(tmoDirectory, Pattern.compile(".*\\.tmo"));
          int numThreads = 8;
          int partitionSize = listOfFiles.size() / numThreads;
 
@@ -141,13 +139,5 @@ public class TmoImporter implements DispoImporterApi {
       }
 
    };
-
-   private static final class TmoFileFilter implements FilenameFilter {
-
-      @Override
-      public boolean accept(File dir, String name) {
-         return name.endsWith(".tmo");
-      }
-   }
 
 }
