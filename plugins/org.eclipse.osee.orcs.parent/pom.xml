@@ -28,8 +28,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.database</module>
 
-		<module>../../plugins/org.eclipse.osee.database.schema</module>
-
 		<module>../../plugins/org.eclipse.osee.activity</module>
 		<module>../../plugins/org.eclipse.osee.activity.server</module>
 
