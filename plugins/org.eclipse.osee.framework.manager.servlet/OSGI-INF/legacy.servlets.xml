@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.framework.manager.servlet.internal.ServletRegistrationHandler">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
    <implementation class="org.eclipse.osee.framework.manager.servlet.internal.ServletRegistrationHandler"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    
@@ -11,6 +11,6 @@
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
    <reference bind="setActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
-   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
-   
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=orcs.jdbc.service)"/>
+      
 </scr:component>

@@ -15,7 +15,6 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.ats.AtsService;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.manager.servlet.data.ServletResourceBridge;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -40,13 +40,13 @@ public class AtsServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceManager resourceManager;
 
-   public AtsServlet(Log logger, IResourceManager resourceManager, OrcsApi orcsApi, IOseeDatabaseService dbService) {
+   public AtsServlet(Log logger, IResourceManager resourceManager, OrcsApi orcsApi, JdbcClient jdbcClient) {
       super(logger);
       this.resourceManager = resourceManager;
       AtsService.IResourceProvider provider = new ResourceProvider();
       AtsXmlSearch xmlSearch = new AtsXmlSearch();
       AtsXmlMessages messages = new AtsXmlMessages(new XmlMessage(getLogger()));
-      this.atsService = new AtsService(provider, xmlSearch, messages, resourceManager, orcsApi, dbService);
+      this.atsService = new AtsService(provider, xmlSearch, messages, resourceManager, orcsApi, jdbcClient);
    }
 
    @Override

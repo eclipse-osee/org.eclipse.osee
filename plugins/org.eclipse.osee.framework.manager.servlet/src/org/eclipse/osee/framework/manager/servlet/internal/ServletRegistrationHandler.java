@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.AtsServlet;
@@ -35,6 +34,8 @@ import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.osgi.framework.BundleContext;
@@ -53,7 +54,7 @@ public class ServletRegistrationHandler {
    private IAuthenticationManager authenticationManager;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
    private ActivityLog activityLog;
 
    private final Set<String> contexts = new HashSet<String>();
@@ -82,8 +83,8 @@ public class ServletRegistrationHandler {
       this.orcsApi = orcsApi;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setLogger(Log logger) {
@@ -110,11 +111,13 @@ public class ServletRegistrationHandler {
 
    private void registerServices(BundleContext context) {
       contexts.clear();
+      JdbcClient jdbcClient = jdbcService.getClient();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ResourceManagerServlet(logger, sessionManager, resourceManager), OseeServerContext.RESOURCE_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, dbService), OseeServerContext.PROCESS_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, dbService), OseeServerContext.ARTIFACT_CONTEXT);
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, dbService), "index");
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
+         OseeServerContext.ARTIFACT_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), "index");
       register(new BranchExchangeServlet(logger, sessionManager, resourceManager, orcsApi),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
@@ -127,9 +130,9 @@ public class ServletRegistrationHandler {
       register(new OseeModelServlet(logger, sessionManager, translationService, orcsApi),
          OseeServerContext.OSEE_MODEL_CONTEXT);
 
-      register(new AtsServlet(logger, resourceManager, orcsApi, dbService), "osee/ats");
+      register(new AtsServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/ats");
       register(new ConfigurationServlet(logger, translationService, orcsApi), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
-      register(new DataServlet(logger, resourceManager, orcsApi, dbService), "osee/data");
+      register(new DataServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }
 

@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -51,13 +51,13 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
 
    private final IResourceManager resourceManager;
    private final OrcsApi orcs;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, OrcsApi orcs, IOseeDatabaseService dbService) {
+   public ArtifactFileServlet(Log logger, IResourceManager resourceManager, OrcsApi orcs, JdbcClient jdbcClient) {
       super(logger);
       this.resourceManager = resourceManager;
       this.orcs = orcs;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    @Override
@@ -84,7 +84,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          }
          BranchReadable branch = query.getResults().getExactlyOne();
          Conditions.checkNotNull(branch, "branch", "Unable to determine branch");
-         uri = ArtifactUtil.getUri(dbService, artifactGuid, branch);
+         uri = ArtifactUtil.getUri(jdbcClient, artifactGuid, branch);
          handleArtifactUri(resourceManager, request.getQueryString(), uri, response);
       } catch (NumberFormatException ex) {
          handleError(response, HttpServletResponse.SC_BAD_REQUEST,

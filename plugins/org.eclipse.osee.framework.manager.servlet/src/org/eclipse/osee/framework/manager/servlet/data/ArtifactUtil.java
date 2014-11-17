@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.manager.servlet.data;
 
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
@@ -22,10 +22,10 @@ public class ArtifactUtil {
    private static final String URI_BY_GUID =
       "SELECT att.uri FROM osee_artifact art, osee_attribute att, %s txs where art.guid = ? and art.art_id = att.art_id and att.uri is not null and att.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = ?";
 
-   @SuppressWarnings("unchecked")
-   public static String getUri(IOseeDatabaseService dbService, String artifactGuid, BranchReadable branch) throws OseeCoreException {
+   public static String getUri(JdbcClient jdbcClient, String artifactGuid, BranchReadable branch) throws OseeCoreException {
       String sql = String.format(URI_BY_GUID, getTransactionTable(branch));
-      return dbService.runPreparedQueryFetchObject("", sql, artifactGuid, branch.getUuid(), TxChange.CURRENT.getValue());
+      return jdbcClient.runPreparedQueryFetchObject("", sql, artifactGuid, branch.getUuid(),
+         TxChange.CURRENT.getValue());
    }
 
    private static String getTransactionTable(BranchReadable branch) {

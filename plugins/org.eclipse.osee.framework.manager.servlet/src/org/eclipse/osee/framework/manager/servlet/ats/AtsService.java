@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.manager.servlet.ats;
 import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.w3c.dom.Node;
 
@@ -46,15 +46,15 @@ public class AtsService {
    private final AtsXmlMessages messages;
    private final IResourceManager resourceManager;
    private final OrcsApi orcsApi;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, OrcsApi orcsApi, IOseeDatabaseService dbService) {
+   public AtsService(IResourceProvider resourceProvider, AtsXmlSearch xmlSearch, AtsXmlMessages messages, IResourceManager resourceManager, OrcsApi orcsApi, JdbcClient jdbcClient) {
       this.xmlSearch = xmlSearch;
       this.messages = messages;
       this.resourceProvider = resourceProvider;
       this.resourceManager = resourceManager;
       this.orcsApi = orcsApi;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    public void performOperation(IResource resource, HttpServletResponse response) {
@@ -137,7 +137,7 @@ public class AtsService {
             urlPath = request.getRequestURI().replace(servletPath, "");
 
             if (urlPath.contains("osee/data")) {
-               DataServlet.handleUriRequest(dbService, resourceManager, urlPath, response, orcsApi);
+               DataServlet.handleUriRequest(jdbcClient, resourceManager, urlPath, response, orcsApi);
                return;
             } else {
                resource = getResource(urlPath);
