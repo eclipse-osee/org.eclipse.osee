@@ -15,11 +15,11 @@
 		<Column id="AUDIENCE" limits="512" type="VARCHAR" />
 		<Column id="APPROVED_SCOPES" limits="2000" type="VARCHAR" />
 
-		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTHORIZATION__ID_PK" type="PRIMARY KEY" appliesTo="ID" />
-		<Index id="OSEE_OAUTH_AUTHORIZATION__C_IDX" type="UNIQUE" tablespace="osee_index">
+		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTH__ID_PK" type="PRIMARY KEY" appliesTo="ID" />
+		<Index id="OSEE_OAUTH_AUTH__C_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="CODE" />
 		</Index>
-		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTHORIZATION__CI_FK" type="FOREIGN KEY" appliesTo="CLIENT_ID">
+		<Constraint schema="OSEE" id="OSEE_OAUTH_AUTH__CI_FK" type="FOREIGN KEY" appliesTo="CLIENT_ID">
 			<References schema="OSEE" table="OSEE_OAUTH_CLIENT_CREDENTIAL" column="CLIENT_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
@@ -57,11 +57,11 @@
 		<Column id="CLIENT_SECRET" limits="255" type="VARCHAR" />
 		<Column id="CLIENT_CERT" limits="255" type="VARCHAR" />
 
-		<Constraint schema="OSEE" id="OSEE_OAUTH_CLIENT_CREDENTIAL__U_PK" type="PRIMARY KEY" appliesTo="CLIENT_ID" />
-		<Index id="OSEE_OAUTH_CLIENT_CREDENTIAL__CK_IDX" type="UNIQUE" tablespace="osee_index">
+		<Constraint schema="OSEE" id="OSEE_OAUTH_CLIENT_CRED__U_PK" type="PRIMARY KEY" appliesTo="CLIENT_ID" />
+		<Index id="OSEE_OAUTH_CLIENT_CRED__CK_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="CLIENT_KEY" />
 		</Index>
-		<Index id="OSEE_OAUTH_CLIENT_CREDENTIAL__AI_IDX" tablespace="osee_index">
+		<Index id="OSEE_OAUTH_CLIENT_CRED__AI_IDX" tablespace="osee_index">
 			<AppliesTo id="APPLICATION_ID" />
 		</Index>
 	</Table>
