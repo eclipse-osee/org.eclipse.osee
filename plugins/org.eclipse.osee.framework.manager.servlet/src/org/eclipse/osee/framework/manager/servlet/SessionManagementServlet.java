@@ -162,9 +162,9 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
          activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS, String.format(
             "IDE Client Session Released " // 
                + "{" // 
-               + "\"sessionId\":\"%s\"" // 
-               + "\"duration\":\"%s\"" //
-               + "\"userId\":\"%s\", " //  
+               + "\"sessionId\":\"%s\", " // 
+               + "\"duration\":\"%s\", " //
+               + "\"userId\":\"%s\"" //  
                + "}", //
             sessionId, duration, userId));
       } catch (Exception ex) {
