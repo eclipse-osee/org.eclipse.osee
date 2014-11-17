@@ -65,6 +65,17 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
       String gammaAlias = writer.getNextAlias(GAMMA_WITH);
       StringBuilder gammaSb = new StringBuilder();
+      Collection<? extends IAttributeType> types = criteria.getTypes();
+      AbstractJoinQuery joinQuery = null;
+      String jIdAlias = null;
+      if (!criteria.isIncludeAllTypes() && types.size() > 1) {
+         Set<Long> typeIds = new HashSet<Long>();
+         for (IAttributeType type : types) {
+            typeIds.add(type.getGuid());
+         }
+         jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
+         joinQuery = writer.writeIdJoin(typeIds);
+      }
 
       Collection<String> values = criteria.getValues();
       int valueCount = values.size();
@@ -75,12 +86,31 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          int tagsSize = tags.size();
          gammaSb.append("  ( \n");
          if (tagsSize == 0) {
-            gammaSb.append("    SELECT gamma_id FROM osee_attribute where value ");
+            gammaSb.append("    SELECT gamma_id FROM osee_attribute");
+            if (Strings.isValid(jIdAlias)) {
+               gammaSb.append(", osee_join_id ");
+               gammaSb.append(jIdAlias);
+            }
+            gammaSb.append(" where value ");
             if (!Strings.isValid(value)) {
                gammaSb.append("is null or value = ''");
             } else {
-               gammaSb.append(" = ?");
+               gammaSb.append("= ?");
                writer.addParameter(value);
+            }
+
+            if (!criteria.isIncludeAllTypes()) {
+               gammaSb.append(" AND attr_type_id = ");
+               if (types.size() == 1) {
+                  gammaSb.append("?");
+                  writer.addParameter(types.iterator().next().getGuid());
+               } else {
+                  gammaSb.append(jIdAlias);
+                  gammaSb.append(".id AND ");
+                  gammaSb.append(jIdAlias);
+                  gammaSb.append(".query_id = ?");
+                  writer.addParameter(joinQuery.getQueryId());
+               }
             }
          } else {
             for (int tagIdx = 0; tagIdx < tagsSize; tagIdx++) {
@@ -99,14 +129,11 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          valueIdx++;
       }
       writer.addWithClause(newSimpleWithClause(gammaAlias, gammaSb.toString()));
-
       attrAlias = writer.getNextAlias(ATTRIBUTE_WITH);
-      Collection<? extends IAttributeType> types = criteria.getTypes();
+
       StringBuilder attrSb = new StringBuilder();
       attrSb.append("   SELECT art_id FROM osee_attribute att, osee_txs txs, ");
-      String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-         jIdAlias = writer.getNextAlias(TableEnum.ID_JOIN_TABLE);
          attrSb.append("osee_join_id ");
          attrSb.append(jIdAlias);
          attrSb.append(", ");
@@ -123,12 +150,6 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
             long typeId = criteria.getTypes().iterator().next().getGuid();
             writer.addParameter(typeId);
          } else {
-            Set<Long> typeIds = new HashSet<Long>();
-            for (IAttributeType type : types) {
-               typeIds.add(type.getGuid());
-            }
-            AbstractJoinQuery joinQuery = writer.writeIdJoin(typeIds);
-
             attrSb.append(jIdAlias);
             attrSb.append(".id AND ");
             attrSb.append(jIdAlias);
