@@ -15,7 +15,6 @@ import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONF
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.CONFIGURATION_URI;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME;
 import static org.eclipse.osee.config.admin.internal.ConfigManagerConstants.DEFAULT_POLL_TIME_UNIT;
-import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -57,7 +56,7 @@ public class ConfigManagerConfigurationBuilder {
 
    private static final class ConfigManagerConfigurationImpl implements ConfigManagerConfiguration, Cloneable {
 
-      private URI configUri;
+      private String configUri;
       private long pollTime;
       private TimeUnit pollTimeUnit;
 
@@ -71,7 +70,7 @@ public class ConfigManagerConfigurationBuilder {
       }
 
       @Override
-      public URI getConfigUri() {
+      public String getConfigUri() {
          return configUri;
       }
 
@@ -86,9 +85,7 @@ public class ConfigManagerConfigurationBuilder {
       }
 
       public void setConfigUri(String configUri) {
-         if (Strings.isValid(configUri)) {
-            this.configUri = URI.create(configUri);
-         }
+         this.configUri = configUri;
       }
 
       public void setPollTime(long pollTime) {

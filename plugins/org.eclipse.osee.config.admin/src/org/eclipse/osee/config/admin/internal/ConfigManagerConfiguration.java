@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.config.admin.internal;
 
-import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public interface ConfigManagerConfiguration {
 
-   URI getConfigUri();
+   String getConfigUri();
 
    long getPollTime();
 

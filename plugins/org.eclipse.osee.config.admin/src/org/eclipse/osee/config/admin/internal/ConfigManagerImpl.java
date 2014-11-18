@@ -63,18 +63,19 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
    public void update(Map<String, Object> properties) {
       logger.trace("Configuring ConfigurationManagerImpl...");
 
-      ConfigManagerConfiguration temp = ConfigManagerConfigurationBuilder.newBuilder()//
+      ConfigManagerConfiguration newConfig = ConfigManagerConfigurationBuilder.newBuilder()//
       .properties(properties) //
       .build();
-      if (!temp.equals(config)) {
-         config = temp;
-         configure(config);
+      if (Compare.isDifferent(config, newConfig)) {
+         configure(newConfig);
+         config = newConfig;
       }
    }
 
    private void configure(ConfigManagerConfiguration config) {
       logger.info("Configuration Manager settings: [%s]", config);
-      URI configUri = config.getConfigUri();
+
+      URI configUri = ConfigUtil.asUri(config.getConfigUri());
       if (configUri != null) {
          logger.warn("Reading configuration from: [%s]", configUri);
          long pollTime = config.getPollTime();

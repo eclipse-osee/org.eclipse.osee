@@ -49,7 +49,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
+      assertEquals(CONFIG_URI, actual.getConfigUri());
    }
 
    @Test
@@ -73,7 +73,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
          ConfigManagerConfiguration actual = builder.build();
 
-         assertEquals("helloConfig", actual.getConfigUri().toString());
+         assertEquals("helloConfig", actual.getConfigUri());
          assertEquals(ConfigManagerConstants.DEFAULT_POLL_TIME, actual.getPollTime());
          assertEquals(ConfigManagerConstants.DEFAULT_POLL_TIME_UNIT, actual.getTimeUnit());
       } finally {
@@ -92,7 +92,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
+      assertEquals(CONFIG_URI, actual.getConfigUri());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
    }
@@ -104,7 +104,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
       ConfigManagerConfiguration actual = builder.build();
 
-      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
+      assertEquals(CONFIG_URI, actual.getConfigUri());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
 
@@ -113,7 +113,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
       builder.build();
 
-      assertEquals(CONFIG_URI, actual.getConfigUri().toString());
+      assertEquals(CONFIG_URI, actual.getConfigUri());
       assertEquals(POLL_TIME, actual.getPollTime());
       assertEquals(POLL_TIME_UNIT, actual.getTimeUnit());
    }

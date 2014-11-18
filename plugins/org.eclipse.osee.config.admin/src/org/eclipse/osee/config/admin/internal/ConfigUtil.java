@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.config.admin.internal;
 
+import java.io.File;
+import java.net.URI;
 import java.util.Dictionary;
 import java.util.Enumeration;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.osgi.service.cm.Configuration;
 
 /**
@@ -48,5 +51,19 @@ public final class ConfigUtil {
             buffer.append("\t").append(key).append("=").append(value).append("\n");
          }
       }
+   }
+
+   public static URI asUri(String configUri) {
+      URI toReturn = null;
+      if (Strings.isValid(configUri)) {
+         if (!configUri.contains("://")) {
+            configUri = configUri.replaceAll("\\\\", "/");
+            File file = new File(configUri);
+            toReturn = file.toURI();
+         } else {
+            toReturn = URI.create(configUri);
+         }
+      }
+      return toReturn;
    }
 }

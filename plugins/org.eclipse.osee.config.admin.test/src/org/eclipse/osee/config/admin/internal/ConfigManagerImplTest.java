@@ -63,6 +63,7 @@ public class ConfigManagerImplTest {
       verify(configuration).update(newProps);
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testWriteWithOutChanges() throws IOException {
       Dictionary<String, Object> currentProps = new Hashtable<String, Object>();
