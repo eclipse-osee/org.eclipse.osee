@@ -21,13 +21,11 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.manager.servlet.data.ArtifactUtil;
-import org.eclipse.osee.framework.manager.servlet.data.DefaultOseeArtifact;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -65,28 +63,16 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
-
-         String branchName = null, artifactGuid = null;
          Long branchUuid = null;
-
-         String servletPath = request.getServletPath();
-         if (!Strings.isValid(servletPath) || "/".equals(servletPath) || "/index".equals(servletPath)) {
-            Pair<String, Long> defaultArtifact = DefaultOseeArtifact.get();
-            if (defaultArtifact != null) {
-               artifactGuid = defaultArtifact.getFirst();
-               branchUuid = defaultArtifact.getSecond();
-            }
+         String artifactGuid = request.getParameter(GUID_KEY);
+         String branchName = request.getParameter(BRANCH_NAME_KEY);
+         String branchGuid = request.getParameter(BRANCH_GUID_KEY);
+         if (branchGuid != null) {
+            getLogger().warn("Request with branch guid instead of uuid [%s]",
+               request.getRequestURL().append('?').append(request.getQueryString()));
+            branchUuid = extractBranchUuid(branchGuid);
          } else {
-            artifactGuid = request.getParameter(GUID_KEY);
-            branchName = request.getParameter(BRANCH_NAME_KEY);
-            String branchGuid = request.getParameter(BRANCH_GUID_KEY);
-            if (branchGuid != null) {
-               getLogger().warn("Request with branch guid instead of uuid [%s]",
-                  request.getRequestURL().append('?').append(request.getQueryString()));
-               branchUuid = extractBranchUuid(branchGuid);
-            } else {
-               branchUuid = Long.parseLong(request.getParameter(BRANCH_UUID_KEY));
-            }
+            branchUuid = Long.parseLong(request.getParameter(BRANCH_UUID_KEY));
          }
 
          String uri = null;
