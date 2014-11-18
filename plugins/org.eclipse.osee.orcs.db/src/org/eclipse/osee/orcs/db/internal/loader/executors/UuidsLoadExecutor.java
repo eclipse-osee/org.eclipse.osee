@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -37,12 +38,14 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    private static final String GUIDS_TO_IDS =
       "SELECT art.art_id FROM osee_join_char_id jid, osee_artifact art WHERE jid.query_id = ? AND jid.id = art.guid";
 
+   private final SystemPreferences preferences;
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final Collection<String> artifactIds;
 
-   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
+   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SystemPreferences preferences, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
       super(loader, dbService);
+      this.preferences = preferences;
       this.session = session;
       this.branch = branch;
       this.artifactIds = artifactIds;
@@ -61,7 +64,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
    private ArtifactJoinQuery createIdJoin(IOseeDatabaseService dbService, Options options) throws OseeCoreException {
 
-      ArtifactJoinQuery toReturn = JoinUtility.createArtifactJoinQuery(dbService);
+      ArtifactJoinQuery toReturn = JoinUtility.createArtifactJoinQuery(preferences, dbService);
 
       CharJoinQuery guidJoin = JoinUtility.createCharJoinQuery(dbService, session.getGuid());
       try {

@@ -13,12 +13,19 @@ package org.eclipse.osee.orcs.db.internal.console;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.callable.ConsolidateArtifactVersionDatabaseTxCallable;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ConsolidateArtifactVersionsCommand extends AbstractDatastoreConsoleCommand {
+
+   private SystemPreferences preferences;
+
+   public void setSystemPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
+   }
 
    @Override
    public String getName() {
@@ -37,6 +44,7 @@ public class ConsolidateArtifactVersionsCommand extends AbstractDatastoreConsole
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ConsolidateArtifactVersionDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), console);
+      return new ConsolidateArtifactVersionDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(),
+         preferences, console);
    }
 }

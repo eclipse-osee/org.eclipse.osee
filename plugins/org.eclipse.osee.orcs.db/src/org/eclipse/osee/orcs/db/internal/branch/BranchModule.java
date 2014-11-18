@@ -104,7 +104,8 @@ public class BranchModule {
 
          @Override
          public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
-            ExportItemFactory factory = new ExportItemFactory(logger, dbService, resourceManager, orcsTypes);
+            ExportItemFactory factory =
+               new ExportItemFactory(logger, preferences, dbService, resourceManager, orcsTypes);
             return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin, branches, options,
                exportName);
          }

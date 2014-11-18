@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Random;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**
  * @author Roberto E. Escobar
@@ -50,8 +50,8 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(service, sessionId), getNewQueryId());
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
-      return new ArtifactJoinQuery(createAccessor(service), getNewQueryId(), getMaxArtifactJoinSize(service));
+   public static ArtifactJoinQuery createArtifactJoinQuery(SystemPreferences preferences, IOseeDatabaseService service) {
+      return new ArtifactJoinQuery(createAccessor(service), getNewQueryId(), getMaxArtifactJoinSize(preferences));
    }
 
    public static TagQueueJoinQuery createTagQueueJoinQuery(IOseeDatabaseService service) {
@@ -70,9 +70,9 @@ public class JoinUtility {
       return new CharJoinQuery(createAccessor(service), getNewQueryId());
    }
 
-   private static int getMaxArtifactJoinSize(IOseeDatabaseService service) {
+   private static int getMaxArtifactJoinSize(SystemPreferences preferences) {
       int toReturn = Integer.MAX_VALUE;
-      String maxSize = OseeInfo.getCachedValue(service, "artifact.join.max.size");
+      String maxSize = preferences.getCachedValue("artifact.join.max.size");
       if (Strings.isNumeric(maxSize)) {
          toReturn = Integer.parseInt(maxSize);
       }

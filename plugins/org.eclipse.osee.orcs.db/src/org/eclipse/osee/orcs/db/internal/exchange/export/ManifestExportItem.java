@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
@@ -25,11 +25,14 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
  * @author Roberto E. Escobar
  */
 public class ManifestExportItem extends AbstractXmlExportItem {
+
+   private final SystemPreferences preferences;
    private final List<AbstractExportItem> exportItems;
    private final PropertyStore options;
 
-   public ManifestExportItem(Log logger, List<AbstractExportItem> exportItems, PropertyStore options) {
+   public ManifestExportItem(Log logger, SystemPreferences preferences, List<AbstractExportItem> exportItems, PropertyStore options) {
       super(logger, ExportItem.EXPORT_MANIFEST);
+      this.preferences = preferences;
       this.exportItems = exportItems;
       this.options = options;
    }
@@ -45,7 +48,7 @@ public class ManifestExportItem extends AbstractXmlExportItem {
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);
-      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, OseeInfo.getDatabaseGuid());
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, preferences.getSystemUuid());
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getBundleVersion());
 
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,

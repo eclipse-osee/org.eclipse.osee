@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
@@ -68,12 +69,14 @@ public class ExportItemFactory {
       "SELECT bac.* FROM osee_join_export_import jex, osee_branch_acl bac WHERE jex.query_id=? AND jex.id1=bac.branch_id ORDER BY bac.branch_id";
 
    private final Log logger;
+   private final SystemPreferences preferences;
    private final IOseeDatabaseService dbService;
    private final IResourceManager resourceManager;
    private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, SystemPreferences preferences, IOseeDatabaseService dbService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
+      this.preferences = preferences;
       this.dbService = dbService;
       this.resourceManager = resourceManager;
       this.orcsTypes = orcsTypes;
@@ -102,7 +105,7 @@ public class ExportItemFactory {
 
       int gammaJoinId = createGammaJoin(getDbService(), joinId, options);
 
-      items.add(new ManifestExportItem(logger, items, options));
+      items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getMetaData(getDbService())));
       items.add(new OseeTypeModelExportItem(logger, getOrcsTypes()));
 

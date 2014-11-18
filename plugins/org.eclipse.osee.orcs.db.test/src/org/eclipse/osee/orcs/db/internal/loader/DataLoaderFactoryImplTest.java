@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -66,7 +67,7 @@ import org.mockito.MockitoAnnotations;
 public class DataLoaderFactoryImplTest {
 
    //@formatter:off
-    @Mock private Log logger;
+   @Mock private Log logger;
 
    @Mock private IOseeDatabaseService dbService;
    @Mock private IOseeStatement chStmt;
@@ -78,16 +79,16 @@ public class DataLoaderFactoryImplTest {
    
    @Mock private OrcsObjectFactory rowDataFactory;
    @Mock private HasCancellation cancellation;
+   @Mock private SystemPreferences preferences;
    
-    @Captor private ArgumentCaptor<LoadSqlContext> contextCaptor;
-    @Captor private ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
-    @Captor private ArgumentCaptor<CriteriaOrcsLoad> criteriaCaptor;
-    @Captor private ArgumentCaptor<LoadDescription> descriptionCaptor;
+   @Captor private ArgumentCaptor<LoadSqlContext> contextCaptor;
+   @Captor private ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
+   @Captor private ArgumentCaptor<CriteriaOrcsLoad> criteriaCaptor;
+   @Captor private ArgumentCaptor<LoadDescription> descriptionCaptor;
    
    @Mock private OrcsSession session;
    //@formatter:on
 
-   private final static long EXPECTED_BRANCH_ID = 65;
    private final static int EXPECTED_TX_ID = 45678;
    private final static int EXPECTED_HEAD_TX_ID = 50000;
    private final static IOseeBranch BRANCH = CoreBranches.COMMON;
@@ -102,7 +103,7 @@ public class DataLoaderFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null);
+      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null, preferences);
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null);
 
       spyLoader = spy(loader);

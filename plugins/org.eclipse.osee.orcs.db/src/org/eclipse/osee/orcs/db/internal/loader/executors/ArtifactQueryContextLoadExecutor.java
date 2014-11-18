@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -36,10 +37,12 @@ import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
 
    private final ArtifactQuerySqlContext queryContext;
+   private final SystemPreferences preferences;
 
-   public ArtifactQueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, ArtifactQuerySqlContext queryContext) {
+   public ArtifactQueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, ArtifactQuerySqlContext queryContext, SystemPreferences preferences) {
       super(loader, dbService);
       this.queryContext = queryContext;
+      this.preferences = preferences;
    }
 
    @Override
@@ -61,7 +64,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
    }
 
    private ArtifactJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
-      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(dbService);
+      ArtifactJoinQuery artifactJoin = JoinUtility.createArtifactJoinQuery(preferences, dbService);
       try {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
             join.store();

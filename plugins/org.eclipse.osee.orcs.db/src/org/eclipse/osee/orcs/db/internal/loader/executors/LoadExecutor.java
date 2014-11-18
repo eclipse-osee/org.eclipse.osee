@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -31,12 +32,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
  */
 public class LoadExecutor extends AbstractLoadExecutor {
 
+   private final SystemPreferences preferences;
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
+   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SystemPreferences preferences, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
       super(loader, dbService);
+      this.preferences = preferences;
       this.session = session;
       this.branch = branch;
       this.artifactIds = artifactIds;
@@ -46,7 +49,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
 
-      ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(getDatabaseService());
+      ArtifactJoinQuery join = JoinUtility.createArtifactJoinQuery(preferences, getDatabaseService());
       Integer transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
          join.add(artId, branch.getUuid(), transactionId);

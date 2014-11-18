@@ -80,7 +80,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       TypesModule typesModule = new TypesModule(logger, dbService, idManager, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
-      LoaderModule loaderModule = new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider);
+      LoaderModule loaderModule =
+         new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider, preferences);
 
       queryModule = new QueryModule(logger, executorAdmin, dbService, idManager, sqlProvider);
       queryModule.startIndexer(resourceManager);

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -35,14 +36,16 @@ public class LoaderModule {
    private final IdentityManager idFactory;
    private final SqlProvider sqlProvider;
    private final DataProxyFactoryProvider proxyProvider;
+   private final SystemPreferences preferences;
 
-   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider) {
+   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SystemPreferences preferences) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.idFactory = idFactory;
       this.sqlProvider = sqlProvider;
       this.proxyProvider = proxyProvider;
+      this.preferences = preferences;
    }
 
    public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
@@ -67,7 +70,7 @@ public class LoaderModule {
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
-      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader);
+      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, preferences);
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {

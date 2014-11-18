@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -52,33 +53,35 @@ public class DataLoaderImpl implements DataLoader {
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final SqlObjectLoader sqlLoader;
+   private final SystemPreferences preferences;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SystemPreferences preferences) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
+      this.preferences = preferences;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader) {
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SystemPreferences preferences) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
-
+      this.preferences = preferences;
       withArtifactIds(artifactIds);
    }
 
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds) {
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SystemPreferences preferences) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
-
+      this.preferences = preferences;
       withArtifactGuids(artifactIds);
    }
 
@@ -186,12 +189,14 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
-      loadExecutor = new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), session, branch, artifactIds);
+      loadExecutor =
+         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), preferences, session, branch, artifactIds);
       return this;
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
-      loadExecutor = new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), session, branch, artifactGuids);
+      loadExecutor =
+         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), preferences, session, branch, artifactGuids);
       return this;
    }
 

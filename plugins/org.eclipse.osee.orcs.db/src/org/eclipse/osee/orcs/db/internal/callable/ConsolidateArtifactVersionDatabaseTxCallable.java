@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
@@ -77,10 +78,12 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private int updateTxsCounter;
    private int deleteTxsCounter;
 
+   private final SystemPreferences preferences;
    private final Console console;
 
-   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
+   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SystemPreferences preferences, Console console) {
       super(logger, session, databaseService, "Consolidate Artifact Versions");
+      this.preferences = preferences;
       this.console = console;
    }
 
@@ -100,7 +103,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    }
 
    private ArtifactJoinQuery populateJoinTableWithArtifacts() throws OseeCoreException {
-      ArtifactJoinQuery idJoinQuery = JoinUtility.createArtifactJoinQuery(getDatabaseService());
+      ArtifactJoinQuery idJoinQuery = JoinUtility.createArtifactJoinQuery(preferences, getDatabaseService());
       chStmt.runPreparedQuery(POPULATE_DUPLICATE_ARTID);
 
       while (chStmt.next()) {
