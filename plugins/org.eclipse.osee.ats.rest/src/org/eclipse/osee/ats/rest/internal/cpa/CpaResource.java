@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
@@ -76,6 +77,19 @@ public final class CpaResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
       return new DecisionProgramLoader(uuid, open, cpaRegistry, atsServer).load();
+   }
+
+   @GET
+   @Path("program/{uuid}/build")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<IAtsCpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
+      List<IAtsCpaBuild> builds = new ArrayList<IAtsCpaBuild>();
+      for (IAtsCpaProgram program : getPrograms()) {
+         for (IAtsCpaService service : cpaRegistry.getServices()) {
+            builds.addAll(service.getBuilds(programUuid));
+         }
+      }
+      return builds;
    }
 
    @GET

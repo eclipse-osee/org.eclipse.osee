@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.team;
+package org.eclipse.osee.ats.api.program;
 
-import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
-public interface IAtsTeamDefinitionService {
+/**
+ * @author Donald G. Dunne
+ */
+public interface IAtsProgramService {
 
-   IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException;
-
-   Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
+   IAtsTeamDefinition getTeamDefinition(IAtsProgram atsProgram);
 }

@@ -12,9 +12,12 @@ package org.eclipse.osee.ats.core.cpa;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -56,6 +59,13 @@ public class CpaFactory {
       CpaDecision decision = new CpaDecision(teamWf.getAtsId(), teamWf.getName());
       setStoreObject(teamWf.getAtsId(), storeObject);
       return decision;
+   }
+
+   public static IAtsCpaBuild getVersion(IAtsVersion version, Object storeObject) {
+      Long uuid = Long.valueOf(((ArtifactReadable) version.getStoreObject()).getLocalId());
+      CpaBuild build = new CpaBuild(uuid, version.getName());
+      setStoreObject(String.valueOf(uuid), storeObject);
+      return build;
    }
 
 }

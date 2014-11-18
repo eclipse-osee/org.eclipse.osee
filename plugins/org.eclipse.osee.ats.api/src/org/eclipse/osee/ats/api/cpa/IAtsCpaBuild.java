@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse  License v1.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -10,27 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsCpaService {
+public interface IAtsCpaBuild {
 
-   String getId();
+   public String getName();
 
-   List<IAtsCpaProgram> getPrograms();
-
-   String getConfigJson() throws Exception;
-
-   URI getLocation(URI uri, String uuid);
-
-   ICpaPcr getPcr(String pcrId);
-
-   Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds);
-   Collection<IAtsCpaBuild> getBuilds(String programUuid);
+   public Long getUuid();
 
 }

@@ -21,9 +21,11 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -63,6 +65,8 @@ import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
+import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
+import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
@@ -116,6 +120,8 @@ public class AtsServerImpl implements IAtsServer {
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAtsVersionService versionService;
    private IRelationResolver relationResolver;
+   private IAtsProgramService atsProgramService;
+   private IAtsTeamDefinitionService atsTeamDefinitionService;
    private boolean emailEnabled = true;
 
    public void setLogger(Log logger) {
@@ -179,6 +185,8 @@ public class AtsServerImpl implements IAtsServer {
       actionFactory =
          new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
             userService, attributeResolverService, atsStateFactory, config, getServices());
+      atsProgramService = new AtsProgramService(this);
+      atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
       System.out.println("ATS - AtsServerImpl started");
       started = true;
@@ -455,4 +463,14 @@ public class AtsServerImpl implements IAtsServer {
    public void setEmailEnabled(boolean emailEnabled) {
       this.emailEnabled = emailEnabled;
    }
+   @Override
+   public IAtsProgramService getProgramService() {
+      return atsProgramService;
+   }
+
+   @Override
+   public IAtsTeamDefinitionService getTeamDefinitionService() {
+      return atsTeamDefinitionService;
+   }
+
 }

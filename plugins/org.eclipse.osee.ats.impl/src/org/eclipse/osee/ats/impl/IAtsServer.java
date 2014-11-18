@@ -15,9 +15,11 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
@@ -89,5 +91,9 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    String getAtsId(Object obj);
 
    void setEmailEnabled(boolean emailEnabled);
+
+   IAtsProgramService getProgramService();
+
+   IAtsTeamDefinitionService getTeamDefinitionService();
 
 }

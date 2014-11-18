@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.cpa.ICpaPcr;
@@ -54,6 +55,11 @@ public class NoOpCpaService implements IAtsCpaService {
    @Override
    public Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds) {
       return Collections.emptyMap();
+   }
+
+   @Override
+   public Collection<IAtsCpaBuild> getBuilds(String programUuid) {
+      return Collections.emptyList();
    }
 
 }
