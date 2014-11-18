@@ -96,4 +96,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    IAtsTeamDefinitionService getTeamDefinitionService();
 
+   ArtifactReadable getArtifactByUuid(long uuid);
+
 }

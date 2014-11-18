@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.cpa.ICpaPcr;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
  * @author Roberto E. Escobar
@@ -60,6 +62,11 @@ public class NoOpCpaService implements IAtsCpaService {
    @Override
    public Collection<IAtsCpaBuild> getBuilds(String programUuid) {
       return Collections.emptyList();
+   }
+
+   @Override
+   public String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String originatingPcrId, XResultData rd) {
+      return null;
    }
 
 }

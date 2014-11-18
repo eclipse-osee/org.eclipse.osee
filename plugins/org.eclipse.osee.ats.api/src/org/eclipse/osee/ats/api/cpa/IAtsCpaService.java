@@ -14,6 +14,8 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +33,13 @@ public interface IAtsCpaService {
    ICpaPcr getPcr(String pcrId);
 
    Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds);
+   
    Collection<IAtsCpaBuild> getBuilds(String programUuid);
+
+   /**
+    * Duplicate originatingPcrId for programUuid and return duplicatedPcrId
+    */
+   String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String originatingPcrId, XResultData rd);
+
 
 }

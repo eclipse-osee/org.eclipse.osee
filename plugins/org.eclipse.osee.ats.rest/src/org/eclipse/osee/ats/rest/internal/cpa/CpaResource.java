@@ -84,10 +84,8 @@ public final class CpaResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsCpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
       List<IAtsCpaBuild> builds = new ArrayList<IAtsCpaBuild>();
-      for (IAtsCpaProgram program : getPrograms()) {
-         for (IAtsCpaService service : cpaRegistry.getServices()) {
-            builds.addAll(service.getBuilds(programUuid));
-         }
+      for (IAtsCpaService service : cpaRegistry.getServices()) {
+         builds.addAll(service.getBuilds(programUuid));
       }
       return builds;
    }
@@ -116,6 +114,27 @@ public final class CpaResource {
    @Path("decision")
    public Response putDecision(final DecisionUpdate update) throws Exception {
       return new DecisionUpdater(update, atsServer).update();
+   }
+
+   /**
+    * { "programUuid": "3472723", "uuids": [ "CPA41337" ], "userId": "727536" }
+    */
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Path("duplicate")
+   public Response putDuplicate(final DuplicateCpa duplicate) throws Exception {
+      return new CpaDuplicator(duplicate, atsServer, cpaRegistry).duplicate();
+   }
+
+   @GET
+   @Path("duplicateGet")
+   @Produces(MediaType.APPLICATION_JSON)
+   public DuplicateCpa getDuplicate() throws Exception {
+      DuplicateCpa duplicate = new DuplicateCpa();
+      duplicate.setProgramUuid("3472723");
+      duplicate.setUserId("727536");
+      duplicate.setCpaUuid("CPA41337");
+      return duplicate;
    }
 
    @GET

@@ -322,10 +322,24 @@ public class AtsServerImpl implements IAtsServer {
       if (GUID.isValid(id)) {
          action = getArtifactByGuid(id);
       }
+      Long uuid = null;
+      try {
+         uuid = Long.parseLong(id);
+      } catch (NumberFormatException ex) {
+         // do nothing
+      }
+      if (uuid != null) {
+         action = getArtifactByUuid(uuid);
+      }
       if (action == null) {
          action = getArtifactByAtsId(id);
       }
       return action;
+   }
+
+   @Override
+   public ArtifactReadable getArtifactByUuid(long uuid) {
+      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andLocalId(new Long(uuid).intValue()).getResults().getOneOrNull();
    }
 
    @Override
