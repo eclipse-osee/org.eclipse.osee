@@ -195,7 +195,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsCollectClause(OsCollectClause object) {
          DynamicObject parent = new DynamicObject("root", null);
-         resolveCollectExpression(object.getExpression(), parent);
+         parent.setLevel(-1);
+         resolveCollectExpression(object.getExpression(), parent, -1);
          DynamicData data = Iterables.getFirst(parent.getChildren(), null);
          data.setParent(null);
 
@@ -208,7 +209,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          return null;
       }
 
-      private void resolveCollectExpression(OsCollectExpression expression, DynamicObject parent) {
+      private void resolveCollectExpression(OsCollectExpression expression, DynamicObject parent, int level) {
          if (expression instanceof OsCollectAllFieldsExpression) {
             for (OsField field : fieldResolver.getAllowedFields(expression)) {
                resolveOsField(field, parent);
@@ -221,6 +222,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                String alias = resolveAlias(fieldExpr.getAlias());
 
                child = new DynamicData(name, alias);
+               child.setLevel(level + 1);
 
                String fieldName = fieldExpr.getName();
                Set<? extends OsField> declaredFields = fieldResolver.getDeclaredFields(fieldExpr);
@@ -232,9 +234,12 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
             } else if (expression instanceof OsCollectObjectExpression) {
                OsCollectObjectExpression objectExpr = (OsCollectObjectExpression) expression;
                String alias = resolveAlias(objectExpr.getAlias());
+
                DynamicObject dynamicObject = new DynamicObject(name, alias);
+               dynamicObject.setLevel(level + 1);
+
                for (OsCollectExpression childExpr : objectExpr.getExpressions()) {
-                  resolveCollectExpression(childExpr, dynamicObject);
+                  resolveCollectExpression(childExpr, dynamicObject, level + 1);
                }
                child = dynamicObject;
             }

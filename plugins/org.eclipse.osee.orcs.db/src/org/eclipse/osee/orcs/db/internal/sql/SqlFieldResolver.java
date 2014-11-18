@@ -131,30 +131,29 @@ public final class SqlFieldResolver {
    }
 
    private void processSelects() {
-      int level = 0;
       for (SelectSet selectSet : selectSets) {
          DynamicData data = selectSet.getData();
          if (data != null) {
-            processData(data, level);
-            level++;
+            processData(data);
          }
       }
    }
 
-   private void processData(DynamicData data, int level) {
+   private void processData(DynamicData data) {
       if (data instanceof DynamicObject) {
          DynamicObject object = (DynamicObject) data;
          for (DynamicData child : object.getChildren()) {
-            processData(child, level);
+            processData(child);
          }
-         addRequiredFields(object, level);
+         addRequiredFields(object);
       } else {
-         processField(data, level, false);
+         processField(data, false);
       }
    }
 
-   private void addRequiredFields(DynamicObject object, int level) {
+   private void addRequiredFields(DynamicObject object) {
       Family family = null;
+      int level = object.getLevel();
       Set<ObjectField> fields = new HashSet<ObjectField>();
       for (DynamicData child : object.getChildren()) {
          String fieldId = child.getFieldName();
@@ -162,6 +161,7 @@ public final class SqlFieldResolver {
             ObjectField objectField = ObjectField.fromString(fieldId);
             family = objectField.getFamily();
             fields.add(objectField);
+            level = child.getLevel();
          }
       }
       if (family != null && !fields.isEmpty()) {
@@ -172,14 +172,15 @@ public final class SqlFieldResolver {
          for (ObjectField field : missing) {
             String fieldId = field.name();
             DynamicData data = new DynamicData(fieldId, null);
+            data.setLevel(level);
             data.setFieldName(fieldId);
-            processField(data, level, true);
+            processField(data, true);
             object.addChild(index++, data);
          }
       }
    }
 
-   private void processField(DynamicData data, int level, boolean hidden) {
+   private void processField(DynamicData data, boolean hidden) {
       String fieldId = data.getFieldName();
       if (fieldId != null) {
          ObjectField field = getObjectField(data);
@@ -188,8 +189,7 @@ public final class SqlFieldResolver {
             setObjectField(data, field);
          }
 
-         setLevel(data, level);
-
+         int level = data.getLevel();
          data.setPrimaryKey(field.isPrimaryKey());
          data.setHidden(hidden);
 
@@ -232,7 +232,7 @@ public final class SqlFieldResolver {
       while (iterator.hasNext()) {
          DynamicData data = iterator.next();
          ObjectField field = getObjectField(data);
-         int level = getLevel(data);
+         int level = data.getLevel();
 
          String alias = aliasManager.getFirstAlias(level, field.getTable(), field.getType());
          if (alias != null) {
@@ -243,7 +243,6 @@ public final class SqlFieldResolver {
    }
 
    private static final String OBJECT_FIELD = "sql.object.field";
-   private static final String SQL_LEVEL = "sql.object.field.level";
    private static final String COLUMN_INFO = "sql.column.info";
 
    public static void setObjectField(DynamicData data, ObjectField field) {
@@ -252,14 +251,6 @@ public final class SqlFieldResolver {
 
    public static ObjectField getObjectField(DynamicData data) {
       return data.getObject(OBJECT_FIELD);
-   }
-
-   public static void setLevel(DynamicData data, int level) {
-      data.put(SQL_LEVEL, level);
-   }
-
-   public static int getLevel(DynamicData data) {
-      return data.getObject(SQL_LEVEL);
    }
 
    public static void setColumnInfo(DynamicData data, Map<String, String> columnData) {

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getColumnInfo;
-import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getLevel;
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getObjectField;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -324,7 +323,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       List<SqlHandler<?>> toReturn = new ArrayList<SqlHandler<?>>();
       Set<String> created = new HashSet<String>();
       for (DynamicData data : datas) {
-         int level = getLevel(data);
+         int level = data.getLevel();
          ObjectField objectField = getObjectField(data);
 
          TableEnum table = objectField.getTable();

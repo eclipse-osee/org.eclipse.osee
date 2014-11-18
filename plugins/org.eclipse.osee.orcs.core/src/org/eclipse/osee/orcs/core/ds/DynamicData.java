@@ -25,6 +25,7 @@ public class DynamicData extends BaseIdentity<String> implements Named {
    private static final String FIELD_NAME = "field.name";
    private static final String IS_HIDDEN = "is.hidden";
    private static final String IS_PRIMARY = "is.primary";
+   private static String LEVEL = "field.level";
 
    private final String alias;
    private DynamicObject parent;
@@ -97,6 +98,14 @@ public class DynamicData extends BaseIdentity<String> implements Named {
 
    public void setFieldName(String fieldName) {
       put(FIELD_NAME, fieldName);
+   }
+
+   public int getLevel() {
+      return getObject(LEVEL);
+   }
+
+   public void setLevel(int level) {
+      put(LEVEL, level);
    }
 
    @Override
