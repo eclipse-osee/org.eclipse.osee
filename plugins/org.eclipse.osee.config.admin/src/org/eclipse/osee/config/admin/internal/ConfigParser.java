@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osgi.framework.Constants;
 
 /**
  * Parses JSON String with the following format:
@@ -25,17 +26,17 @@ import org.json.JSONObject;
  *    "config": 
  *      [
  *         {
- *            "serviceId": "service-1",
+ *            "service.pid": "service-1",
  *            "key1": "val1",
  *            "key2": "val2"
  *         },
  *         {
- *            "serviceId": "service-2",
+ *            "service.pid": "service-2",
  *            "a": "34242",
  *            "b": "hello"
  *         },
  *         {
- *            "serviceId": "service-3"
+ *            "service.pid": "service-3"
  *         }
  *      ]
  * };
@@ -46,7 +47,6 @@ import org.json.JSONObject;
  */
 public class ConfigParser {
 
-   private static final String SERVICE_ID_FIELD = "serviceId";
    private static final String CONFIG_OBJECT = "config";
 
    public void process(ConfigWriter writer, String source) {
@@ -61,9 +61,9 @@ public class ConfigParser {
                String[] names = JSONObject.getNames(object);
                for (String key : names) {
                   String value = object.getString(key);
-                  if (key.equalsIgnoreCase(SERVICE_ID_FIELD)) {
+                  if (key.equalsIgnoreCase(Constants.SERVICE_PID)) {
                      serviceId = value;
-                     properties.put("service.pid", serviceId);
+                     properties.put(Constants.SERVICE_PID, serviceId);
                   } else {
                      properties.put(key, value);
                   }

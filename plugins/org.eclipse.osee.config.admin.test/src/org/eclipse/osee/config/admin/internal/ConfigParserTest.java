@@ -39,17 +39,17 @@ public class ConfigParserTest {
       "\"config\": " + //
       "  [" + //
       "     {" + //
-      "        \"serviceId\": \"service-1\"," + //
+      "        \"service.pid\": \"service-1\"," + //
       "        \"key1\": \"val1\"," + //
       "        \"key2\": \"val2\"" + //
       "     }," + //
       "     {" + //
-      "        \"serviceId\": \"service-2\"," + //
+      "        \"service.pid\": \"service-2\"," + //
       "        \"a\": \"34242\"," + //
       "        \"b\": \"hello\"" + //
       "     }," + //
       "     {" + //
-      "        \"serviceId\": \"service-3\"" + //
+      "        \"service.pid\": \"service-3\"" + //
       "     }" + //
       "  ]" + //
       "}";
