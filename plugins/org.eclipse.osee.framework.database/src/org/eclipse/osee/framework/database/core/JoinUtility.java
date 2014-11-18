@@ -51,8 +51,4 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
-   public static ExportImportJoinQuery createExportImportJoinQuery() throws OseeDataStoreException {
-      return new ExportImportJoinQuery(createAccessor(getDatabase()), getNewQueryId());
-   }
-
 }
