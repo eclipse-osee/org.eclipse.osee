@@ -25,6 +25,10 @@
 						Assignees</button>
 					  <button type="button" class="btn btn-default btn-xs" ng-click="updateRationale()"  ng-disabled="!itemsSelected()" >
 						Rationale</button>
+					  <button type="button" class="btn btn-default btn-xs" ng-click="duplicate('duplicate.html')"  ng-disabled="!itemsSelected()" >
+						Duplicate</button>
+					  <button type="button" class="btn btn-default btn-xs" ng-click="duplicate('enterPcr.html')"  ng-disabled="!itemsSelected()" >
+						Enter PCR</button>
 				  </span>
 				  <span class="pull-right"><strong>{{itemsSelected()}}</strong> of {{items.length}} Selected
 				  		<button type="button" class="btn btn-default btn-xs" ng-click="updateProject()" >
@@ -55,7 +59,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         </div>
     </script>
     
@@ -68,7 +72,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         </div>
     </script>
     
@@ -81,9 +85,57 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         </div>
     </script>
+    
+    <script type="text/ng-template" id="duplicate.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Duplicate the following issues?</h3>
+        </div>
+        <div class="modal-body">
+				<div ng-if="versions">
+					<p>Select a version to duplicate <strong>{{message}}</strong> to:</p>
+					<p><strong>Version</strong> <select ng-model="selected" ng-change="updateVersion(selected)" ng-options="item.name for item in versions" focus-me></select></p>
+				</div>
+				<div ng-if="alreadySet">
+				   <br/>
+			 		<strong>NOTE:</strong> The following already have duplicate PCR's and will not be duplicated: {{alreadySet}}
+			   </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+    
+    <script type="text/ng-template" id="enterPcr.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Enter the duplicate PCR:</h3>
+        </div>
+        <div class="modal-body">
+				<div ng-if="message">
+					PCR: <input type="text" class="input-small" ng-model="pcrInput.value" focus-me>
+					<br/>
+			 		Will be applied to the following: {{message}}
+				</div>
+				<div ng-if="alreadySet">
+				   <br/>
+			 		<strong>NOTE:</strong> The following already have duplicate PCR's and will not be updated: {{alreadySet}}
+			   </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-disabled="{{version}}" ng-click="ok()">OK</button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+    
+    <script type="text/ng-template" id="loadingModal.html">
+        <div id="loadingModal" class="alert alert-info">
+				Loading...
+        </div>
+    </script>   
 	</div>
 
 </body>

@@ -36,7 +36,7 @@ angular.module('CpaApp').controller('AnalyzeCtrl',
 					             {field: 'applicability', displayName: 'Applicability', width: 70, cellTemplate: applCellTmpl},
 					             {field: 'assignees', displayName: 'Assignees', width: 150},
 					             {field: 'rationale', displayName: 'Rationale'},
-					             {field: 'duplicatedPcrId', displayName: 'Duplicate Pcr', width: 70, enableCellEdit: true, cellTemplate: dupCellTmpl},
+					             {field: 'duplicatedPcrId', displayName: 'Duplicate PCR', width: 70, enableCellEdit: true, cellTemplate: dupCellTmpl},
 					             {field: 'completedDate', displayName: 'Completed Date', width: 90},
 					             {field: 'completedBy', displayName: 'Completed By', width: 100}]
 			};
@@ -48,8 +48,13 @@ angular.module('CpaApp').controller('AnalyzeCtrl',
 			$scope.updateProject = function() {
 				if($scope.selectedProject) {
 					$scope.items = null;
+					var loadingModal = $scope.showLoadingModal();
 					CpaFactory.getProjectCpas($scope.selectedProject).$promise.then(function(data){
 						$scope.items = data;
+						loadingModal.close();
+					});
+					CpaFactory.getVersions($scope.selectedProject).$promise.then(function(data){
+						$scope.versions = data;
 					});
 				}
 			}
@@ -193,5 +198,82 @@ angular.module('CpaApp').controller('AnalyzeCtrl',
 						    $modalInstance.dismiss('cancel');
 						  };
 						};
+						
+				$scope.duplicate = function(templateUrl) {
+							  var toUpdate = $scope.getSelected(true);
+							  var toSend = [];
+							  var ids = '';
+							  var alreadySet = '';
+							  for(var i = 0; i < toUpdate.length; i++) {
+								  toSend.push(toUpdate[i]);
+								  ids += toUpdate[i].uuid;
+								  ids += ', ';
+							  }
+							  ids = ids.slice(0, -2);
+							  alreadySet = alreadySet.slice(0, -2);
+							  
+								var modalInstance = $modal.open({
+									templateUrl : templateUrl,
+									controller : DuplicateModalCtrl,
+									size : 'md',
+									resolve : {
+										ids : function() {
+											return ids;
+										},
+										alreadySet : function() {
+											return alreadySet;
+										},
+										versions: function() {
+											return $scope.versions;
+										}
+									}
+								});
+
+							modalInstance.result.then(function(retVal) {
+								if(templateUrl === 'enterPcr.html') {
+								   CpaFactory.updateDuplicatedPcrId(toSend, retVal);
+								} else {
+									CpaFactory.duplicateIssue(toSend, $scope.selectedProject, retVal);
+								}
+							  });
+							};
+
+					var DuplicateModalCtrl = function($scope,
+									$modalInstance, ids, alreadySet, versions) {
+								$scope.message = ids;
+								$scope.alreadySet = alreadySet;
+								$scope.pcrInput = {value: ''};
+								$scope.versions = versions;
+								
+								$scope.updateVersion = function(version) {
+									$scope.version = version;
+								}
+
+								$scope.ok = function() {
+									var retVal = $scope.version;
+									if(!retVal) {
+										retVal = $scope.pcrInput.value;
+									}
+									console.log(retVal);
+									$modalInstance
+											.close(retVal);
+								};
+
+								$scope.cancel = function() {
+									$modalInstance.dismiss('cancel');
+								};
+							};
+							
+					 // Loading Modal
+			        $scope.showLoadingModal = function() {
+			            var modalInstance = $modal.open({
+			                templateUrl: 'loadingModal.html',
+			                size: 'sm',
+			                windowClass: 'needsRerunModal',
+			                backdrop: 'static'
+			            });
+			            
+			            return modalInstance;
+			        }
 			
 		} ]);

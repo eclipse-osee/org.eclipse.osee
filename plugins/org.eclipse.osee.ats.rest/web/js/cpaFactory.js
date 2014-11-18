@@ -10,7 +10,9 @@ angular.module('CpaApp').factory('CpaFactory', ['$resource', function($resource)
 	var projectCpaResource = $resource('/ats/cpa/program/:uuid');
 	var userResource = $resource('/ats/user', {active: 'Active'});
 	var configResource = $resource('/ats/cpa/config');
-	var decisionResource = $resource('/ats/cpa/decision');
+	var decisionResource = $resource('/ats/cpa/decision', {}, {'save2' : {method: 'POST', isArray:true}});
+	var buildsResource = $resource('/ats/cpa/program/:uuid/build');
+	var duplicateResource = $resource('/ats/cpa/duplicate');
 	
 	var users = userResource.query();
 	var config = configResource.get();
@@ -91,7 +93,7 @@ angular.module('CpaApp').factory('CpaFactory', ['$resource', function($resource)
 			toPost.uuids.push(items[i].uuid);
 		}
 		
-		decisionResource.save(toPost, function() {
+		decisionResource.save2(toPost, function() {
 			for(var i = 0; i < items.length; i++) {
 				items[i].applicability = applicability;
 			}
@@ -101,6 +103,96 @@ angular.module('CpaApp').factory('CpaFactory', ['$resource', function($resource)
 			}
 		});
 		
+	}
+	
+	factory.updateDuplicatedPcrId = function(item, pcrId) {
+		var items = item instanceof Array ? item : [item];
+		var toPost = {};
+		toPost.uuids = [];
+		toPost.duplicatedPcrId = pcrId; 
+
+		for(var i = 0; i < items.length; i++) {
+			toPost.uuids.push(items[i].uuid);
+		}
+		
+		decisionResource.save2(toPost).$promise.then(function(value) {
+			for(var i = 0; i < items.length; i++) {
+				items[i].duplicatedPcrId = pcrId;
+				items[i].duplicatedPcrLocation = null;
+				if(items[i].uuid != value[i].uuid) {
+					for(var j = 0; j < value.length; j++) {
+						if(items[i].uuid != value[j].uuid) {
+							items[i].duplicatedPcrLocation = value[j].duplicatedPcrLocation;
+							break;
+						}
+					}
+				} else {
+					items[i].duplicatedPcrLocation = value[i].duplicatedPcrLocation;
+				}
+			}
+		}).catch(function(err) {
+			for(var i = 0; i < items.length; i++) {
+				items[i].duplicatedPcrId = "Err - Refresh Table";
+				items[i].duplicatedPcrLocation = "Err - Refresh Table";
+			}
+		});
+		
+	}
+	
+	factory.getVersions = function(build) {
+		return buildsResource.query(build);
+	}
+	
+	// called when creating new pcr for issue
+	factory.duplicatePcr = function(item, pcrId) {
+		var items = item instanceof Array ? item : [item];
+		var toPost = {};
+		toPost.uuids = [];
+
+		for(var i = 0; i < items.length; i++) {
+			toPost.uuids.push(items[i].uuid);
+		}
+		
+		decisionResource.save2(toPost).$promise.then(function(value) {
+			for(var i = 0; i < items.length; i++) {
+				items[i].duplicatedPcrId = pcrId;
+				items[i].duplicatedPcrLocation = null;
+				if(items[i].uuid != value[i].uuid) {
+					for(var j = 0; j < value.length; j++) {
+						if(items[i].uuid != value[j].uuid) {
+							items[i].duplicatedPcrLocation = value[j].duplicatedPcrLocation;
+							break;
+						}
+					}
+				} else {
+					items[i].duplicatedPcrLocation = value[i].duplicatedPcrLocation;
+				}
+			}
+		}).catch(function(err) {
+			for(var i = 0; i < items.length; i++) {
+				items[i].duplicatedPcrId = "Err - Refresh Table";
+				items[i].duplicatedPcrLocation = "Err - Refresh Table";
+			}
+		});
+		
+	}
+	
+	factory.duplicateIssue = function(item, selectedProgram, version) {
+		var items = item instanceof Array ? item : [item];
+		for(var i = 0; i < items.length; i++) {
+			duplicate(items[i], selectedProgram, version);
+		}
+	}
+	
+	function duplicate(item, selectedProgram, version) {
+		var toPost = {cpaUuid: item.uuid, programUuid: selectedProgram.uuid, versionUuid: version.uuid};
+		duplicateResource.save(toPost, function(data) {
+			item.duplicatedPcrId = data.duplicatedPcrId;
+			item.duplicatedPcrLocation = data.duplicatedPcrLocation;
+		}, function(err){
+			item.duplicatedPcrId = "Err - Refresh Table";
+			item.duplicatedPcrLocation = "Err - Refresh Table";
+		});
 	}
 	
 	return factory;

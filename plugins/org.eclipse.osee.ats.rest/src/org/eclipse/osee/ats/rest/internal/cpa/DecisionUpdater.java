@@ -138,8 +138,8 @@ public class DecisionUpdater {
    }
 
    private void updateDuplicatedPcrId(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf) {
-      if (update.getRationale() != null) {
-         if (update.getRationale().equals("")) {
+      if (update.getDuplicatedPcrId() != null) {
+         if (update.getDuplicatedPcrId().equals("")) {
             changes.deleteAttributes(teamWf, AtsAttributeTypes.DuplicatedPcrId);
          } else {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.DuplicatedPcrId, update.getDuplicatedPcrId());

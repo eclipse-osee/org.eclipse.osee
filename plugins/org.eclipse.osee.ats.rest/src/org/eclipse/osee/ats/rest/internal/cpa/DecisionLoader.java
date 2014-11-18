@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.cpa;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.core.cpa.CpaFactory;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
@@ -35,16 +37,34 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G. Dunne
  */
-public class DecisionProgramLoader {
+public class DecisionLoader {
 
-   private final String programUuid;
-   private final Boolean open;
+   private String programUuid;
+   private Boolean open;
    private final IAtsServer atsServer;
    private final CpaServiceRegistry cpaRegistry;
+   private Collection<String> uuids;
 
-   public DecisionProgramLoader(String programUuid, Boolean open, CpaServiceRegistry cpaRegistry, IAtsServer atsServer) {
+   public static DecisionLoader createLoader(CpaServiceRegistry cpaRegistry, IAtsServer atsServer) {
+      return new DecisionLoader(cpaRegistry, atsServer);
+   }
+
+   public DecisionLoader andProgramUuid(String programUuid) {
       this.programUuid = programUuid;
+      return this;
+   }
+
+   public DecisionLoader andCpaIds(Collection<String> uuids) {
+      this.uuids = uuids;
+      return this;
+   }
+
+   public DecisionLoader andOpen(Boolean open) {
       this.open = open;
+      return this;
+   }
+
+   private DecisionLoader(CpaServiceRegistry cpaRegistry, IAtsServer atsServer) {
       this.cpaRegistry = cpaRegistry;
       this.atsServer = atsServer;
    }
@@ -53,7 +73,13 @@ public class DecisionProgramLoader {
       List<IAtsCpaDecision> decisions = new ArrayList<IAtsCpaDecision>();
       QueryBuilder queryBuilder =
          atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow,
-            "true").and(AtsAttributeTypes.ProgramUuid, programUuid);
+            "true");
+      if (Strings.isValid(programUuid)) {
+         queryBuilder.and(AtsAttributeTypes.ProgramUuid, programUuid);
+      }
+      if (Conditions.hasValues(uuids)) {
+         queryBuilder.and(AtsAttributeTypes.AtsId, uuids);
+      }
       if (open != null) {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));

@@ -76,7 +76,7 @@ public final class CpaResource {
    @Path("program/{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
-      return new DecisionProgramLoader(uuid, open, cpaRegistry, atsServer).load();
+      return DecisionLoader.createLoader(cpaRegistry, atsServer).andOpen(open).andProgramUuid(uuid).load();
    }
 
    @GET
@@ -112,8 +112,9 @@ public final class CpaResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Path("decision")
-   public Response putDecision(final DecisionUpdate update) throws Exception {
-      return new DecisionUpdater(update, atsServer).update();
+   public List<IAtsCpaDecision> putDecision(final DecisionUpdate update) throws Exception {
+      new DecisionUpdater(update, atsServer).update();
+      return DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(update.getUuids()).load();
    }
 
    /**
