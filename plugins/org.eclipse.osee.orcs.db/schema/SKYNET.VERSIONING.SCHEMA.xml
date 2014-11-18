@@ -191,6 +191,7 @@
 		<Column id="TIME" defaultValue="not null" type="TIMESTAMP"/>
 	   <Column id="AUTHOR" defaultValue="not null" type="INTEGER"/>
 		<Column id="COMMIT_ART_ID" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_TX_DETAILS_TXID_PK" type="PRIMARY KEY" appliesTo="TRANSACTION_ID" />
 		<Constraint schema="OSEE" id="BRANCH_ID_FK1" type="FOREIGN KEY" appliesTo="BRANCH_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" />
 		</Constraint>
