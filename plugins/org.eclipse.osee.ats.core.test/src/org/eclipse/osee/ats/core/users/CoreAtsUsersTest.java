@@ -189,6 +189,11 @@ public class CoreAtsUsersTest {
       public void setStoreObject(Object object) {
          // do nothing
       }
+
+      @Override
+      public long getId() {
+         return 999994;
+      }
    };
 
    private class ExceptionUser implements IAtsUser {
@@ -246,6 +251,11 @@ public class CoreAtsUsersTest {
       @Override
       public void setStoreObject(Object object) {
          // do nothing
+      }
+
+      @Override
+      public long getId() {
+         return 0;
       }
    };
 }

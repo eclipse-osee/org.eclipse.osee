@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.core.client.internal.config;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -19,11 +21,16 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 public class TeamDefinitionFactory implements ITeamDefinitionFactory {
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String guid, String name) {
+   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      return new TeamDefinition(name, guid);
+      return new TeamDefinition(name, guid, uuid);
+   }
+
+   @Override
+   public IAtsTeamDefinition createTeamDefinition(String name) {
+      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
    }
 
 }

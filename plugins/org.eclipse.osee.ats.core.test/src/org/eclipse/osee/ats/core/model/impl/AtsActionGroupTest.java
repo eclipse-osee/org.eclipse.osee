@@ -13,19 +13,21 @@ package org.eclipse.osee.ats.core.model.impl;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.mock.MockWorkItem;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Test case for {@link AtsActionGroup}
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsActionGroupTest {
 
    @Test
    public void testGetFirstAction() {
-      AtsActionGroup group = new AtsActionGroup("do this");
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateUuid());
       Assert.assertEquals(0, group.getActions().size());
       Assert.assertEquals(null, group.getFirstAction());
 
@@ -39,7 +41,7 @@ public class AtsActionGroupTest {
 
    @Test
    public void testSetActions() {
-      AtsActionGroup group = new AtsActionGroup("do this");
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateUuid());
 
       MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", StateType.Working);
       MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", StateType.Working);

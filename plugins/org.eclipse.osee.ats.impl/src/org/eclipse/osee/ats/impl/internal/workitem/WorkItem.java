@@ -47,7 +47,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    private final Log logger;
 
    public WorkItem(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(artifact.getName(), artifact.getGuid());
+      super(artifact.getName(), artifact.getGuid(), artifact.getLocalId());
       this.logger = logger;
       this.atsServer = atsServer;
       this.artifact = artifact;

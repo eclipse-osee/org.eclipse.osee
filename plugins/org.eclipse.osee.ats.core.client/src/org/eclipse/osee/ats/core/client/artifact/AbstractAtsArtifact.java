@@ -39,4 +39,9 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
       // do nothing
    }
 
+   @Override
+   public long getId() {
+      return getArtId();
+   }
+
 }

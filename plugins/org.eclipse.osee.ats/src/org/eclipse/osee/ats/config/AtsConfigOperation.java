@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -121,7 +120,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes) throws OseeCoreException {
-      IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), teamDefName);
+      IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(teamDefName);
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
       teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
       TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(teamDef);
@@ -133,7 +132,7 @@ public class AtsConfigOperation extends AbstractOperation {
       Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
 
       // Create top actionable item
-      IAtsActionableItem topAia = AtsClientService.get().createActionableItem(GUID.create(), teamDefName);
+      IAtsActionableItem topAia = AtsClientService.get().createActionableItem(teamDefName);
       topAia.setActionable(false);
       topAia.setTeamDefinition(teamDef);
       AtsClientService.get().storeConfigObject(topAia, changes);
@@ -144,7 +143,7 @@ public class AtsConfigOperation extends AbstractOperation {
 
       // Create children actionable item
       for (String name : actionableItemsNames) {
-         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(GUID.create(), name);
+         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name);
          childAi.setActionable(true);
          topAia.getChildrenActionableItems().add(childAi);
          childAi.setParentActionableItem(topAia);

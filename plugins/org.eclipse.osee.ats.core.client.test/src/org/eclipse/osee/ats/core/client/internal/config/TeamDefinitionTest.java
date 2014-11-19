@@ -36,15 +36,15 @@ public class TeamDefinitionTest {
 
    @Test
    public void testGetTeamDefinitionHoldingVersions() throws OseeCoreException {
-      TeamDefinition teamDef1 = new TeamDefinition("Team Def 1", "td1guid");
+      TeamDefinition teamDef1 = new TeamDefinition("Team Def 1", "td1guid", 234);
 
-      TeamDefinition teamDef1_child1 = new TeamDefinition("Team Def 1_1", "td1_1guid");
+      TeamDefinition teamDef1_child1 = new TeamDefinition("Team Def 1_1", "td1_1guid", 345);
       teamDef1_child1.setParentTeamDef(teamDef1);
 
       Assert.assertNull(teamDef1.getTeamDefinitionHoldingVersions());
       Assert.assertNull(teamDef1_child1.getTeamDefinitionHoldingVersions());
 
-      teamDef1.getVersions().add(new Version(versionService, "ver1", "ver1guid"));
+      teamDef1.getVersions().add(new Version(versionService, "ver1", "ver1guid", 234));
 
       Assert.assertEquals(teamDef1, teamDef1.getTeamDefinitionHoldingVersions());
       Assert.assertEquals(teamDef1, teamDef1_child1.getTeamDefinitionHoldingVersions());
@@ -52,15 +52,15 @@ public class TeamDefinitionTest {
 
    @Test
    public void testIsTeamUsesVersions() throws OseeCoreException {
-      TeamDefinition teamDef1 = new TeamDefinition("Team Def 1", "td1guid");
+      TeamDefinition teamDef1 = new TeamDefinition("Team Def 1", "td1guid", 456);
 
-      TeamDefinition teamDef1_child1 = new TeamDefinition("Team Def 1_1", "td1_1guid");
+      TeamDefinition teamDef1_child1 = new TeamDefinition("Team Def 1_1", "td1_1guid", 567);
       teamDef1_child1.setParentTeamDef(teamDef1);
 
       Assert.assertFalse(teamDef1.isTeamUsesVersions());
       Assert.assertFalse(teamDef1_child1.isTeamUsesVersions());
 
-      teamDef1.getVersions().add(new Version(versionService, "ver1", "ver1guid"));
+      teamDef1.getVersions().add(new Version(versionService, "ver1", "ver1guid", 123));
 
       Assert.assertTrue(teamDef1.isTeamUsesVersions());
       Assert.assertTrue(teamDef1_child1.isTeamUsesVersions());

@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.core.mock;
 
 import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -18,7 +20,7 @@ import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
 public class MockActionGroup extends AtsActionGroup {
 
    public MockActionGroup(String name) {
-      super(name);
+      super(GUID.create(), name, Lib.generateUuid());
    }
 
 }

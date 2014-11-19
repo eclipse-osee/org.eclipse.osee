@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.core.client.internal.config;
 
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -19,11 +21,16 @@ import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 public class ActionableItemFactory implements IActionableItemFactory {
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name) {
+   public IAtsActionableItem createActionableItem(String guid, String name, long uuid) {
       if (guid == null) {
          throw new IllegalArgumentException("guid can not be null");
       }
-      return new ActionableItem(name, guid);
+      return new ActionableItem(name, guid, uuid);
+   }
+
+   @Override
+   public IAtsActionableItem createActionableItem(String name) {
+      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
    }
 
 }

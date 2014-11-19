@@ -104,6 +104,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -316,24 +317,34 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String guid, String title) throws OseeCoreException {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(guid, title);
+   public IAtsTeamDefinition createTeamDefinition(String name) throws OseeCoreException {
+      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   }
+
+   @Override
+   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) throws OseeCoreException {
+      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(guid, name, uuid);
       AtsArtifactConfigCache cache = getConfigCache();
       cache.cache(item);
       return item;
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name) throws OseeCoreException {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name);
+   public IAtsActionableItem createActionableItem(String name) throws OseeCoreException {
+      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid());
+   }
+
+   @Override
+   public IAtsActionableItem createActionableItem(String guid, String name, long uuid) throws OseeCoreException {
+      IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name, uuid);
       AtsArtifactConfigCache cache = getConfigCache();
       cache.cache(item);
       return item;
    }
 
    @Override
-   public IAtsVersion createVersion(String title, String guid) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(title, guid);
+   public IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException {
+      IAtsVersion item = versionFactory.createVersion(title, guid, uuid);
       AtsArtifactConfigCache cache = getConfigCache();
       cache.cache(item);
       return item;
@@ -416,6 +427,21 @@ public class AtsClientImpl implements IAtsClient {
       @Override
       public void invalidate(IAtsConfigObject configObject) throws OseeCoreException {
          getConfigCache().invalidate(configObject);
+      }
+
+      @Override
+      public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+         return getConfigCache().getSoleByUuid(uuid, clazz);
+      }
+
+      @Override
+      public IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException {
+         return getConfigCache().getSoleByUuid(uuid);
+      }
+
+      @Override
+      public <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz) {
+         return getConfigCache().getById(id, clazz);
       }
 
    }

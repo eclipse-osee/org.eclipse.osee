@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  * @author Donald G. Dunne
  */
 public class TeamDefinitions {
-   public static String TopTeamDefinitionGuid = "AAABER+35b4A8O7WHrXTiA";
 
    public static Collection<String> getNames(Collection<? extends IAtsTeamDefinition> teamDefs) {
       ArrayList<String> names = new ArrayList<String>();
@@ -93,7 +93,7 @@ public class TeamDefinitions {
    }
 
    public static IAtsTeamDefinition getTopTeamDefinition(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByGuid(TopTeamDefinitionGuid, IAtsTeamDefinition.class);
+      return config.getSoleByGuid(AtsArtifactToken.TopTeamDefinition.getGuid(), IAtsTeamDefinition.class);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsConfig config) throws OseeCoreException {

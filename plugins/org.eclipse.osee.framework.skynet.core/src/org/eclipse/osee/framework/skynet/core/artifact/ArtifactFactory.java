@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Donald G. Dunne
  */
 public abstract class ArtifactFactory {
-   private static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
+   public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
    private final Set<IArtifactType> artifactTypeNames = new HashSet<IArtifactType>(5);
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
@@ -47,6 +47,10 @@ public abstract class ArtifactFactory {
     * Used to create a new artifact (one that has never been saved into the datastore)
     */
    public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid) throws OseeCoreException {
+      return makeNewArtifact(branch, artifactTypeToken, artifactName, guid, null);
+   }
+
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, Long uuid) {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
 
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
@@ -61,7 +65,7 @@ public abstract class ArtifactFactory {
 
       Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, false);
 
-      artifact.setArtId(getNextArtifactId());
+      artifact.setArtId(getNextArtifactId(uuid));
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
@@ -73,8 +77,8 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public static int getNextArtifactId() {
-      return (int) ConnectionHandler.getNextSequence(ART_ID_SEQ);
+   public static int getNextArtifactId(Long uuid) {
+      return uuid == null ? (int) ConnectionHandler.getNextSequence(ART_ID_SEQ) : uuid.intValue();
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

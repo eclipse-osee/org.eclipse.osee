@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,24 +39,24 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       this.versionFactory = versionFactory;
    }
 
-   protected IAtsActionableItem getOrCreateActionableItem(AtsArtifactConfigCache cache, FullyNamedIdentity<String> artifact) throws OseeCoreException {
+   protected IAtsActionableItem getOrCreateActionableItem(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       String guid = artifact.getGuid();
       IAtsActionableItem item = cache.getSoleByGuid(guid, IAtsActionableItem.class);
       if (item == null) {
-         item = actionableItemFactory.createActionableItem(guid, artifact.getName());
+         item = actionableItemFactory.createActionableItem(guid, artifact.getName(), artifact.getArtId());
          item.setStoreObject(artifact);
          cache.cache(item);
       }
       return item;
    }
 
-   protected IAtsTeamDefinition getOrCreateTeamDefinition(AtsArtifactConfigCache cache, FullyNamedIdentity<String> artifact) throws OseeCoreException {
+   protected IAtsTeamDefinition getOrCreateTeamDefinition(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       String guid = artifact.getGuid();
       IAtsTeamDefinition item = cache.getSoleByGuid(guid, IAtsTeamDefinition.class);
       if (item == null) {
-         item = teamDefFactory.createTeamDefinition(guid, artifact.getName());
+         item = teamDefFactory.createTeamDefinition(guid, artifact.getName(), artifact.getArtId());
          item.setStoreObject(artifact);
          cache.cache(item);
       }
@@ -69,7 +68,7 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
       String guid = artifact.getGuid();
       IAtsVersion item = cache.getSoleByGuid(guid, IAtsVersion.class);
       if (item == null) {
-         item = versionFactory.createVersion(artifact.getName(), guid);
+         item = versionFactory.createVersion(artifact.getName(), guid, artifact.getArtId());
          item.setStoreObject(artifact);
          cache.cache(item);
       }

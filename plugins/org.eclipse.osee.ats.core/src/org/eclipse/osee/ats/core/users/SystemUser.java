@@ -39,4 +39,9 @@ public final class SystemUser extends AbstractAtsUser {
       return true;
    }
 
+   @Override
+   public long getId() {
+      return 11;
+   }
+
 }

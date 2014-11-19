@@ -34,4 +34,9 @@ public final class Guest extends AbstractAtsUser {
       return true;
    }
 
+   @Override
+   public long getId() {
+      return 1896;
+   }
+
 }

@@ -49,7 +49,7 @@ public class AtsArtifactConfigCache extends AtsConfigCache {
 
    public Artifact getArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException {
       Conditions.checkNotNull(atsConfigObject, "atsConfigObject");
-      Artifact artifact = null;
+      Artifact artifact = (Artifact) atsConfigObject.getStoreObject();
       try {
          artifact = AtsArtifactQuery.getArtifactFromId(atsConfigObject.getGuid());
       } catch (ArtifactDoesNotExist ex) {

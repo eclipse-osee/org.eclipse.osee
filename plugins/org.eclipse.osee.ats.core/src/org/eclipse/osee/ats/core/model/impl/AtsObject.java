@@ -20,13 +20,11 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
 
    private String desc;
    private Object object;
+   private long id;
 
-   public AtsObject(String name, String guid) {
+   public AtsObject(String name, String guid, long id) {
       super(guid, name);
-   }
-
-   public AtsObject(String name) {
-      this(name, org.eclipse.osee.framework.jdk.core.util.GUID.create());
+      this.id = id;
    }
 
    @Override
@@ -88,6 +86,15 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
    @Override
    public void setStoreObject(Object object) {
       this.object = object;
+   }
+
+   @Override
+   public long getId() {
+      return id;
+   }
+
+   public void setId(long id) {
+      this.id = id;
    }
 
 }

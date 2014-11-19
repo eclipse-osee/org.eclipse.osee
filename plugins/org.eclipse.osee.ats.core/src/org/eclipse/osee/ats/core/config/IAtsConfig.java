@@ -30,7 +30,13 @@ public interface IAtsConfig {
 
    IAtsConfigObject getSoleByGuid(String guid) throws OseeCoreException;
 
+   <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException;
+
+   IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException;
+
    void getReport(XResultData rd) throws OseeCoreException;
 
    void invalidate(IAtsConfigObject configObject) throws OseeCoreException;
+
+   <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz);
 }

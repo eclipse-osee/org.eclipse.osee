@@ -66,8 +66,8 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       return relatedTaskWorkDefinition;
    }
 
-   public TeamDefinition(String name, String guid) {
-      super(name, guid);
+   public TeamDefinition(String name, String guid, long uuid) {
+      super(name, guid, uuid);
    }
 
    @Override

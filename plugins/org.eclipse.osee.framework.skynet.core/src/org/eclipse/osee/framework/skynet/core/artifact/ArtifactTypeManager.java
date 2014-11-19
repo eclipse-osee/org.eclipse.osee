@@ -157,6 +157,10 @@ public class ArtifactTypeManager {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
+   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid, long uuid) {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
+   }
+
    public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
          artifactToken.getName(), artifactToken.getGuid());
@@ -224,4 +228,5 @@ public class ArtifactTypeManager {
       }
       return factoryManager.getFactory(artifactType);
    }
+
 }

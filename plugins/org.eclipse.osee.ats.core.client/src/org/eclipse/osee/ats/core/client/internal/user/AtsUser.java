@@ -156,4 +156,9 @@ public class AtsUser implements IAtsUser {
       }
    }
 
+   @Override
+   public long getId() {
+      return user.getArtId();
+   }
+
 }

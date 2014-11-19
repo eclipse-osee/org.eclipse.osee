@@ -43,8 +43,7 @@ public class TeamDefinitionQuickSearchTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
       teamWf.persist(getClass().getSimpleName());
 
-      IAtsTeamDefinition randomTeamDef =
-         AtsClientService.get().createTeamDefinition("tdqst", getClass().getSimpleName());
+      IAtsTeamDefinition randomTeamDef = AtsClientService.get().createTeamDefinition(getClass().getSimpleName());
 
       TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(Arrays.asList(randomTeamDef));
       Assert.assertTrue("No results should be found", srch.performSearch().isEmpty());

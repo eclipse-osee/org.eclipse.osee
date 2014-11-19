@@ -18,6 +18,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -28,14 +29,21 @@ public class AtsConfigCache implements IAtsConfig {
    private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
    private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
       new HashCollection<String, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
+   private final HashCollection<Long, IAtsConfigObject> idToConfigObject = new HashCollection<Long, IAtsConfigObject>(
+      true, CopyOnWriteArrayList.class);
 
    public void cache(IAtsConfigObject configObject) {
       configObjects.add(configObject);
       cacheByTag(configObject.getGuid(), configObject);
+      cacheById(configObject.getId(), configObject);
    }
 
    public void cacheByTag(String tag, IAtsConfigObject configObject) {
       tagToConfigObject.put(tag, configObject);
+   }
+
+   public void cacheById(long id, IAtsConfigObject configObject) {
+      idToConfigObject.put(id, configObject);
    }
 
    /**
@@ -54,6 +62,21 @@ public class AtsConfigCache implements IAtsConfig {
    public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       List<A> objs = new ArrayList<A>();
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
+      if (values != null) {
+         for (IAtsConfigObject obj : values) {
+            if (clazz.isInstance(obj)) {
+               objs.add((A) obj);
+            }
+         }
+      }
+      return objs;
+   }
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public final <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz) {
+      List<A> objs = new ArrayList<A>();
+      Collection<IAtsConfigObject> values = idToConfigObject.getValues(id);
       if (values != null) {
          for (IAtsConfigObject obj : values) {
             if (clazz.isInstance(obj)) {
@@ -131,6 +154,20 @@ public class AtsConfigCache implements IAtsConfig {
 
    public void invalidateByTag(String tag) {
       tagToConfigObject.removeValues(tag);
+   }
+
+   @Override
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+      List<A> list = getById(uuid, clazz);
+      if (list.isEmpty()) {
+         return null;
+      }
+      return list.iterator().next();
+   }
+
+   @Override
+   public IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException {
+      return getSoleByUuid(uuid, IAtsConfigObject.class);
    }
 
 }

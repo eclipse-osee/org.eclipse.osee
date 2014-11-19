@@ -35,4 +35,9 @@ public abstract class AbstractAtsProgram extends UuidNamedIdentity<Long> impleme
       return false;
    }
 
+   @Override
+   public long getId() {
+      return getUuid();
+   }
+
 }

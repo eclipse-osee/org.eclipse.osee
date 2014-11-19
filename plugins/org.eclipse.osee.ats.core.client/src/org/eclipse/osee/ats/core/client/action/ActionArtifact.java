@@ -87,4 +87,9 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       // do nothing
    }
 
+   @Override
+   public long getId() {
+      return getArtId();
+   }
+
 }

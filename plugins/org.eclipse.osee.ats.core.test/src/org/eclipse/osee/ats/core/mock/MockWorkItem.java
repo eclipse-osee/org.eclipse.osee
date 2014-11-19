@@ -229,4 +229,9 @@ public class MockWorkItem implements IAtsWorkItem {
       this.stateMgr = stateManager;
    }
 
+   @Override
+   public long getId() {
+      return 456;
+   }
+
 }

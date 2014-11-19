@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
@@ -306,23 +307,33 @@ public class AtsTestUtil {
 
       AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
 
-      testAi = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI", postFixName));
+      testAi =
+         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       testAi.setActive(true);
       testAi.setActionable(true);
 
-      testAi2 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI2", postFixName));
+      testAi2 =
+         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI2", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       testAi2.setActive(true);
       testAi2.setActionable(true);
 
-      testAi3 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI3", postFixName));
+      testAi3 =
+         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI3", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       testAi3.setActive(true);
       testAi3.setActionable(true);
 
-      testAi4 = AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI4", postFixName));
+      testAi4 =
+         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI4", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       testAi4.setActive(true);
       testAi4.setActionable(true);
 
-      teamDef = AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName));
+      teamDef =
+         AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
@@ -332,16 +343,24 @@ public class AtsTestUtil {
       testAi3.setTeamDefinition(teamDef);
       testAi4.setTeamDefinition(teamDef);
 
-      verArt1 = AtsClientService.get().createVersion(getTitle("ver 1.0", postFixName), GUID.create());
+      verArt1 =
+         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 1.0", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt1);
 
-      verArt2 = AtsClientService.get().createVersion(getTitle("ver 2.0", postFixName));
+      verArt2 =
+         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 2.0", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt2);
 
-      verArt3 = AtsClientService.get().createVersion(getTitle("ver 3.0", postFixName));
+      verArt3 =
+         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 3.0", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt3);
 
-      verArt4 = AtsClientService.get().createVersion(getTitle("ver 4.0", postFixName));
+      verArt4 =
+         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 4.0", postFixName),
+            AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt4);
 
       actionArt =

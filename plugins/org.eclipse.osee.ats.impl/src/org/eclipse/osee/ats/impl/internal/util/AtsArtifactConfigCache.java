@@ -95,4 +95,19 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       cache.invalidate(configObject);
    }
 
+   @Override
+   public final <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz) {
+      return cache.getById(id, clazz);
+   }
+
+   @Override
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+      return cache.getSoleByUuid(uuid, clazz);
+   }
+
+   @Override
+   public IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException {
+      return cache.getSoleByUuid(uuid);
+   }
+
 }

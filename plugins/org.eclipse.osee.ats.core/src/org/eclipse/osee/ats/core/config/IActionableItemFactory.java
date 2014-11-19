@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String guid, String name) throws OseeCoreException;
+   IAtsActionableItem createActionableItem(String guid, String name, long uuid) throws OseeCoreException;
+
+   IAtsActionableItem createActionableItem(String name);
 
 }

@@ -153,4 +153,9 @@ public class AtsUser implements IAtsUser {
       }
    }
 
+   @Override
+   public long getId() {
+      return this.user.getLocalId();
+   }
+
 }

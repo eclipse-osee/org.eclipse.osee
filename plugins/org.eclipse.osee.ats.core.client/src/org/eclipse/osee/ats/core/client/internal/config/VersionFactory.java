@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
@@ -29,12 +30,12 @@ public class VersionFactory implements IVersionFactory {
 
    @Override
    public IAtsVersion createVersion(String title) {
-      return createVersion(title, GUID.create());
+      return createVersion(title, GUID.create(), AtsUtilClient.createConfigObjectUuid());
    }
 
    @Override
-   public IAtsVersion createVersion(String title, String guid) {
-      return new Version(versionService, title, guid);
+   public IAtsVersion createVersion(String title, String guid, long uuid) {
+      return new Version(versionService, title, guid, uuid);
    }
 
 }

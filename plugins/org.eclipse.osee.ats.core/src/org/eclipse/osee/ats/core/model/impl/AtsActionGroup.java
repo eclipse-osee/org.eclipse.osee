@@ -23,8 +23,8 @@ public class AtsActionGroup extends AtsObject implements IActionGroup {
 
    List<IAtsWorkItem> actions = new ArrayList<IAtsWorkItem>();
 
-   public AtsActionGroup(String name) {
-      super(name);
+   public AtsActionGroup(String guid, String name, long uuid) {
+      super(guid, name, uuid);
    }
 
    @Override

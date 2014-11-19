@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -26,8 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  * @author Donald G. Dunne
  */
 public class ActionableItems {
-
-   private static String TopActionableItemGuid = "AAABER+37QEA8O7WSQaqJQ";
 
    public static Collection<String> getNames(Collection<? extends IAtsActionableItem> ais) {
       ArrayList<String> names = new ArrayList<String>();
@@ -113,7 +112,7 @@ public class ActionableItems {
    }
 
    public static IAtsActionableItem getTopActionableItem(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByGuid(TopActionableItemGuid, IAtsActionableItem.class);
+      return config.getSoleByGuid(AtsArtifactToken.TopActionableItem.getGuid(), IAtsActionableItem.class);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsConfig config) throws OseeCoreException {

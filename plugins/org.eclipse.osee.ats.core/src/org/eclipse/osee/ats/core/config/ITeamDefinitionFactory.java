@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String guid, String title) throws OseeCoreException;
+   IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid) throws OseeCoreException;
+
+   IAtsTeamDefinition createTeamDefinition(String name) throws OseeCoreException;
 
 }
