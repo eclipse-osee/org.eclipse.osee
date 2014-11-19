@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.TagQueueJoinQuery;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastoreTxCallable<List<Future<?>>> {
 
+   private final SqlJoinFactory joinFactory;
    private final AttributeTypes types;
    private final IndexerCollector collector;
    private final int cacheLimit;
@@ -44,8 +45,9 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    private long totalGammas;
    private List<Future<?>> futures;
 
-   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
+   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
       super(logger, session, dbService, "Indexing Database Transaction");
+      this.joinFactory = joinFactory;
       this.types = types;
       this.consumer = consumer;
       this.collector = collector;
@@ -105,7 +107,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
 
    protected void addEntry(OseeConnection connection, long gammaId) throws OseeCoreException {
       if (currentJoinQuery == null) {
-         currentJoinQuery = JoinUtility.createTagQueueJoinQuery(getDatabaseService());
+         currentJoinQuery = joinFactory.createTagQueueJoinQuery();
       }
       currentJoinQuery.add(gammaId);
       if (isStorageNeeded()) {

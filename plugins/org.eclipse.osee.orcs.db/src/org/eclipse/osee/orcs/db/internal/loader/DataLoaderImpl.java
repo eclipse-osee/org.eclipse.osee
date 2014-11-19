@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -37,6 +36,7 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.loader.executors.AbstractLoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.LoadExecutor;
 import org.eclipse.osee.orcs.db.internal.loader.executors.UuidsLoadExecutor;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 public class DataLoaderImpl implements DataLoader {
 
@@ -53,35 +53,35 @@ public class DataLoaderImpl implements DataLoader {
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final SqlObjectLoader sqlLoader;
-   private final SystemPreferences preferences;
+   private final SqlJoinFactory joinFactory;
 
-   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SystemPreferences preferences) {
+   public DataLoaderImpl(Log logger, AbstractLoadExecutor loadExecutor, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
       this.logger = logger;
       this.loadExecutor = loadExecutor;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
    }
 
-   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SystemPreferences preferences) {
+   public DataLoaderImpl(Log logger, Collection<Integer> artifactIds, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, SqlJoinFactory joinFactory) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
       withArtifactIds(artifactIds);
    }
 
-   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SystemPreferences preferences) {
+   public DataLoaderImpl(Log logger, Options options, OrcsSession session, IOseeBranch branch, SqlObjectLoader sqlLoader, Collection<String> artifactIds, SqlJoinFactory joinFactory) {
       this.logger = logger;
       this.options = options;
       this.session = session;
       this.branch = branch;
       this.sqlLoader = sqlLoader;
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
       withArtifactGuids(artifactIds);
    }
 
@@ -190,13 +190,13 @@ public class DataLoaderImpl implements DataLoader {
 
    private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
       loadExecutor =
-         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), preferences, session, branch, artifactIds);
+         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), joinFactory, session, branch, artifactIds);
       return this;
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
       loadExecutor =
-         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), preferences, session, branch, artifactGuids);
+         new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), joinFactory, session, branch, artifactGuids);
       return this;
    }
 

@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -32,12 +33,14 @@ public class TxModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
 
-   public TxModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService) {
+   public TxModule(Log logger, IOseeDatabaseService dbService, SqlJoinFactory sqlJoinFactory, IdentityManager identityService) {
       super();
       this.logger = logger;
       this.dbService = dbService;
+      this.sqlJoinFactory = sqlJoinFactory;
       this.idManager = identityService;
    }
 
@@ -49,14 +52,14 @@ public class TxModule {
 
          @Override
          public Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData data) {
-            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(dbService, idManager);
+            TxSqlBuilderImpl builder = new TxSqlBuilderImpl(sqlJoinFactory, idManager);
             TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
             return new CommitTransactionDatabaseTxCallable(logger, session, dbService, processors, writer, data);
          }
 
          @Override
          public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactionsToPurge) {
-            return new PurgeTransactionTxCallable(logger, session, dbService, transactionsToPurge);
+            return new PurgeTransactionTxCallable(logger, session, dbService, sqlJoinFactory, transactionsToPurge);
          }
       };
    }

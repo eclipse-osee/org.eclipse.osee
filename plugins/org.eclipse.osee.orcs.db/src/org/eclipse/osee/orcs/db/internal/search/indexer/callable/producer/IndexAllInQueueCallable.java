@@ -17,7 +17,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.TagQueueJoinQuery;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -26,21 +26,23 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Integer> {
 
+   private final SqlJoinFactory joinFactory;
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
    private final AttributeTypes types;
    private Collection<Integer> queryIds;
 
-   public IndexAllInQueueCallable(Log logger, OrcsSession session, IOseeDatabaseService service, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
+   public IndexAllInQueueCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
       super(logger, session, service);
       this.types = types;
       this.consumer = consumer;
       this.collector = collector;
+      this.joinFactory = joinFactory;
    }
 
    @Override
    public Integer call() throws Exception {
-      TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery(getDatabaseService());
+      TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery();
       queryIds = joinQuery.getAllQueryIds();
 
       getLogger().info("Submitting - [%d] index tasks from queue", queryIds.size());

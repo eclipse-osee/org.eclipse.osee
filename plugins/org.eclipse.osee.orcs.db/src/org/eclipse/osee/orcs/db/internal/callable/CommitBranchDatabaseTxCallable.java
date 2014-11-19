@@ -31,6 +31,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -55,14 +56,16 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
 
+   private final SqlJoinFactory joinFactory;
    private final int userArtId;
    private final BranchReadable sourceBranch;
    private final BranchReadable destinationBranch;
    private final Long mergeBranchUuid;
    private final List<ChangeItem> changes;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, int userArtId, BranchReadable sourceBranch, BranchReadable destinationBranch, Long mergeBranchUuid, List<ChangeItem> changes) {
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, int userArtId, BranchReadable sourceBranch, BranchReadable destinationBranch, Long mergeBranchUuid, List<ChangeItem> changes) {
       super(logger, session, databaseService, "Commit branch");
+      this.joinFactory = joinFactory;
       this.userArtId = userArtId;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
@@ -119,7 +122,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private void updatePreviousCurrentsOnDestinationBranch(OseeConnection connection) throws OseeCoreException {
       UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(getDatabaseService(), connection, destinationBranch.getUuid());
+         new UpdatePreviousTxCurrent(getDatabaseService(), joinFactory, connection, destinationBranch.getUuid());
       for (ChangeItem change : changes) {
          if (change instanceof ArtifactChangeItem) {
             updater.addArtifact(change.getItemId());

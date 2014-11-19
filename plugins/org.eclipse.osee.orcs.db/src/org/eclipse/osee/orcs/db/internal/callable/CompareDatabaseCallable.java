@@ -23,9 +23,11 @@ import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<ChangeItem>> {
 
+   private final SqlJoinFactory joinFactory;
    private final TransactionReadable sourceTx;
    private final TransactionReadable destinationTx;
    private final MissingChangeItemFactory missingChangeItemFactory;
@@ -38,8 +40,9 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
    private static final String SELECT_MERGE_BRANCH_HEAD_TX =
       "select max(transaction_id) from osee_tx_details where branch_id = ?";
 
-   public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, TransactionReadable sourceTx, TransactionReadable destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
+   public CompareDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, TransactionReadable sourceTx, TransactionReadable destinationTx, MissingChangeItemFactory missingChangeItemFactory) {
       super(logger, session, service);
+      this.joinFactory = joinFactory;
       this.sourceTx = sourceTx;
       this.destinationTx = destinationTx;
       this.missingChangeItemFactory = missingChangeItemFactory;
@@ -51,7 +54,9 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
 
       Callable<List<ChangeItem>> callable;
       if (txDelta.areOnTheSameBranch()) {
-         callable = new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getDatabaseService(), txDelta);
+         callable =
+            new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getDatabaseService(), joinFactory,
+               txDelta);
       } else {
          Long mergeBranchId =
             getDatabaseService().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID, sourceTx.getBranchId(),
@@ -65,8 +70,8 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
             mergeBranchId = null;
          }
          callable =
-            new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), sourceTx.getBranchId(),
-               destinationTx.getBranchId(), destinationTx.getGuid(), mergeBranchId, mergeTxId);
+            new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), joinFactory,
+               sourceTx.getBranchId(), destinationTx.getBranchId(), destinationTx.getGuid(), mergeBranchId, mergeTxId);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 

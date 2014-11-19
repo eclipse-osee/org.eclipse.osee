@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
 import org.eclipse.osee.orcs.db.internal.types.TypesModule;
 import org.eclipse.osee.orcs.db.internal.util.IdentityManagerImpl;
@@ -47,6 +48,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private QueryModule queryModule;
    private IdentityManager idManager;
    private SqlProvider sqlProvider;
+   private SqlJoinFactory joinFactory;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -72,24 +74,28 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.proxyProvider = proxyProvider;
    }
 
+   public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
+      this.joinFactory = joinFactory;
+   }
+
    public void start(BundleContext context) throws Exception {
       sqlProvider = createSqlProvider();
 
       idManager = new IdentityManagerImpl(dbService);
 
-      TypesModule typesModule = new TypesModule(logger, dbService, idManager, resourceManager);
+      TypesModule typesModule = new TypesModule(logger, dbService, joinFactory, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
       LoaderModule loaderModule =
-         new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider, preferences);
+         new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider, joinFactory);
 
-      queryModule = new QueryModule(logger, executorAdmin, dbService, idManager, sqlProvider);
+      queryModule = new QueryModule(logger, executorAdmin, dbService, joinFactory, idManager, sqlProvider);
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
-         new BranchModule(logger, dbService, idManager, preferences, executorAdmin, resourceManager);
+         new BranchModule(logger, dbService, joinFactory, idManager, preferences, executorAdmin, resourceManager);
 
-      TxModule txModule = new TxModule(logger, dbService, idManager);
+      TxModule txModule = new TxModule(logger, dbService, joinFactory, idManager);
 
       AdminModule adminModule = new AdminModule(logger, dbService, idManager, preferences);
 

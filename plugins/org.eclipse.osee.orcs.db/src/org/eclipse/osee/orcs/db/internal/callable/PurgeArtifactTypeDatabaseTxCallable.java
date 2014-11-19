@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,12 +23,9 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 public final class PurgeArtifactTypeDatabaseTxCallable extends AbstractDatastoreTxCallable<Void> {
    @SuppressWarnings("unused")
    private final Collection<? extends IArtifactType> typesToPurge;
-   @SuppressWarnings("unused")
-   private final IdentityLocator identityService;
 
-   public PurgeArtifactTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityLocator identityService, Collection<? extends IArtifactType> typesToPurge) {
+   public PurgeArtifactTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Collection<? extends IArtifactType> typesToPurge) {
       super(logger, session, databaseService, "Purge Artifact Type");
-      this.identityService = identityService;
       this.typesToPurge = typesToPurge;
    }
 

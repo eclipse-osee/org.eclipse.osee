@@ -29,6 +29,7 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -40,22 +41,25 @@ public class QueryModule {
    private final IOseeDatabaseService dbService;
    private final IdentityLocator idService;
    private final SqlProvider sqlProvider;
+   private final SqlJoinFactory sqlJoinFactory;
 
    private TaggingEngine taggingEngine;
    private QueryEngineIndexer queryIndexer;
 
-   public QueryModule(Log logger, ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, IdentityLocator idService, SqlProvider sqlProvider) {
+   public QueryModule(Log logger, ExecutorAdmin executorAdmin, IOseeDatabaseService dbService, SqlJoinFactory sqlJoinFactory, IdentityLocator idService, SqlProvider sqlProvider) {
       super();
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.dbService = dbService;
+      this.sqlJoinFactory = sqlJoinFactory;
       this.idService = idService;
       this.sqlProvider = sqlProvider;
    }
 
    public void startIndexer(IResourceManager resourceManager) throws Exception {
       taggingEngine = newTaggingEngine(logger);
-      queryIndexer = newIndexingEngine(logger, dbService, idService, taggingEngine, executorAdmin, resourceManager);
+      queryIndexer =
+         newIndexingEngine(logger, dbService, sqlJoinFactory, taggingEngine, executorAdmin, resourceManager);
 
       executorAdmin.createFixedPoolExecutor(IndexerConstants.INDEXING_CONSUMER_EXECUTOR_ID, 4);
    }
@@ -72,12 +76,13 @@ public class QueryModule {
 
    public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
       QueryCallableFactory factory1 =
-         newArtifactQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
-            attrTypes);
-      QueryCallableFactory factory2 = newBranchQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
-      QueryCallableFactory factory3 = newTxQueryEngine(logger, dbService, idService, sqlProvider, objectLoader);
+         newArtifactQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine, executorAdmin,
+            objectLoader, attrTypes);
+      QueryCallableFactory factory2 =
+         newBranchQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
+      QueryCallableFactory factory3 = newTxQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
       QueryCallableFactory factory4 =
-         newQueryEngine(logger, dbService, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
+         newQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
             attrTypes);
       return new QueryEngineImpl(factory1, factory2, factory3, factory4);
    }

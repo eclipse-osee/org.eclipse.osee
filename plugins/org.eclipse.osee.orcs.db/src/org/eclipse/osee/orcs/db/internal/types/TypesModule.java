@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
-import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.OrcsTypeLoaderCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeArtifactTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeAttributeTypeDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeRelationTypeDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -34,14 +34,14 @@ public class TypesModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityManager identityService;
+   private final SqlJoinFactory joinFactory;
    private final IResourceManager resourceManager;
 
-   public TypesModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService, IResourceManager resourceManager) {
+   public TypesModule(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
-      this.identityService = identityService;
+      this.joinFactory = joinFactory;
       this.resourceManager = resourceManager;
    }
 
@@ -55,17 +55,17 @@ public class TypesModule {
 
          @Override
          public Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends IArtifactType> typesToPurge) {
-            return new PurgeArtifactTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
+            return new PurgeArtifactTypeDatabaseTxCallable(logger, session, dbService, typesToPurge);
          }
 
          @Override
          public Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends IAttributeType> typesToPurge) {
-            return new PurgeAttributeTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
+            return new PurgeAttributeTypeDatabaseTxCallable(logger, session, dbService, joinFactory, typesToPurge);
          }
 
          @Override
          public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
-            return new PurgeRelationTypeDatabaseTxCallable(logger, session, dbService, identityService, typesToPurge);
+            return new PurgeRelationTypeDatabaseTxCallable(logger, session, dbService, typesToPurge);
          }
 
       };

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -25,6 +24,7 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -34,14 +34,14 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    private final Log logger;
    private final SqlHandlerFactory handlerFactory;
    private final SqlProvider sqlProvider;
-   private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
    private final TableEnum table;
    private final String idColumn;
    private final ObjectQueryType type;
 
-   public QuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, TableEnum table, String idColumn, ObjectQueryType type) {
+   public QuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, TableEnum table, String idColumn, ObjectQueryType type) {
       this.logger = logger;
-      this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
       this.table = table;
@@ -62,7 +62,7 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
    private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), type);
       AbstractSqlWriter writer =
-         new QuerySqlWriter(logger, dbService, sqlProvider, context, queryType, table, idColumn);
+         new QuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, table, idColumn);
       List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
       writer.build(handlers);
       return context;

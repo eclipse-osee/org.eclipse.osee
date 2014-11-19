@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -42,35 +42,37 @@ public class UpdatePreviousTxCurrent {
 // @formatter:on
 
    private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
    private final long branchUuid;
    private final OseeConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, OseeConnection connection, long branchUuid) {
+   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, SqlJoinFactory joinFactory, OseeConnection connection, long branchUuid) {
       this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.branchUuid = branchUuid;
       this.connection = connection;
    }
 
    public void addAttribute(int attributeId) {
       if (attributeJoin == null) {
-         attributeJoin = JoinUtility.createIdJoinQuery(dbService);
+         attributeJoin = joinFactory.createIdJoinQuery();
       }
       attributeJoin.add(attributeId);
    }
 
    public void addArtifact(int artifactId) {
       if (artifactJoin == null) {
-         artifactJoin = JoinUtility.createIdJoinQuery(dbService);
+         artifactJoin = joinFactory.createIdJoinQuery();
       }
       artifactJoin.add(artifactId);
    }
 
    public void addRelation(int relationId) {
       if (relationJoin == null) {
-         relationJoin = JoinUtility.createIdJoinQuery(dbService);
+         relationJoin = joinFactory.createIdJoinQuery();
       }
       relationJoin.add(relationId);
    }

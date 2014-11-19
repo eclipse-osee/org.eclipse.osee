@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -28,7 +27,7 @@ import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -38,14 +37,14 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    private static final String GUIDS_TO_IDS =
       "SELECT art.art_id FROM osee_join_char_id jid, osee_artifact art WHERE jid.query_id = ? AND jid.id = art.guid";
 
-   private final SystemPreferences preferences;
+   private final SqlJoinFactory joinFactory;
    private final OrcsSession session;
    private final IOseeBranch branch;
    private final Collection<String> artifactIds;
 
-   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SystemPreferences preferences, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
+   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
       super(loader, dbService);
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
       this.session = session;
       this.branch = branch;
       this.artifactIds = artifactIds;
@@ -64,9 +63,9 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
    private ArtifactJoinQuery createIdJoin(IOseeDatabaseService dbService, Options options) throws OseeCoreException {
 
-      ArtifactJoinQuery toReturn = JoinUtility.createArtifactJoinQuery(preferences, dbService);
+      ArtifactJoinQuery toReturn = joinFactory.createArtifactJoinQuery();
 
-      CharJoinQuery guidJoin = JoinUtility.createCharJoinQuery(dbService, session.getGuid());
+      CharJoinQuery guidJoin = joinFactory.createCharJoinQuery(session.getGuid());
       try {
          for (String id : artifactIds) {
             guidJoin.add(id);

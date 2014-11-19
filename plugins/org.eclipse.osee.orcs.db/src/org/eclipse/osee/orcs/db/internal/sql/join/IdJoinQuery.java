@@ -52,7 +52,7 @@ public class IdJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected IdJoinQuery(IJoinAccessor joinAccessor, int queryId) {
+   public IdJoinQuery(IJoinAccessor joinAccessor, int queryId) {
       super(joinAccessor, JoinItem.ID, queryId);
    }
 

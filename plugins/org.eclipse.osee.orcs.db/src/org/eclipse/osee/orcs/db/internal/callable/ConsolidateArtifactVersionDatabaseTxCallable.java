@@ -29,10 +29,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -78,12 +77,12 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private int updateTxsCounter;
    private int deleteTxsCounter;
 
-   private final SystemPreferences preferences;
+   private final SqlJoinFactory joinFactory;
    private final Console console;
 
-   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SystemPreferences preferences, Console console) {
+   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Console console) {
       super(logger, session, databaseService, "Consolidate Artifact Versions");
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
       this.console = console;
    }
 
@@ -99,11 +98,11 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       updateTxsCounter = 0;
       deleteTxsCounter = 0;
       chStmt = getDatabaseService().getStatement(connection);
-      gammaJoin = JoinUtility.createExportImportJoinQuery(getDatabaseService());
+      gammaJoin = joinFactory.createExportImportJoinQuery();
    }
 
    private ArtifactJoinQuery populateJoinTableWithArtifacts() throws OseeCoreException {
-      ArtifactJoinQuery idJoinQuery = JoinUtility.createArtifactJoinQuery(preferences, getDatabaseService());
+      ArtifactJoinQuery idJoinQuery = joinFactory.createArtifactJoinQuery();
       chStmt.runPreparedQuery(POPULATE_DUPLICATE_ARTID);
 
       while (chStmt.next()) {

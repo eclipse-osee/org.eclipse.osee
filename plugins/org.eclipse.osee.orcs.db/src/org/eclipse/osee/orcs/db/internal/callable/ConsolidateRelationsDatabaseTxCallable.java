@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -62,6 +62,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private int counter;
    private IOseeStatement chStmt;
 
+   private final SqlJoinFactory joinFactory;
    private final Console console;
 
    long previousNetGammaId;
@@ -70,8 +71,9 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    ModificationType netModType;
    TxChange netTxCurrent;
 
-   public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
+   public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Console console) {
       super(logger, session, databaseService, "Consolidate Relations");
+      this.joinFactory = joinFactory;
       this.console = console;
    }
 
@@ -90,7 +92,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       previousNetGammaId = -1;
       previousTransactionId = -1;
       chStmt = getDatabaseService().getStatement();
-      gammaJoin = JoinUtility.createExportImportJoinQuery(getDatabaseService());
+      gammaJoin = joinFactory.createExportImportJoinQuery();
 
       counter = 0;
    }

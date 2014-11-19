@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -45,6 +45,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private final ExportItemFactory factory;
 
+   private final SqlJoinFactory joinFactory;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
    private final List<IOseeBranch> branches;
@@ -52,8 +53,9 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SqlJoinFactory joinFactory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<IOseeBranch> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), session, factory.getDbService());
+      this.joinFactory = joinFactory;
       this.factory = factory;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
@@ -106,7 +108,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private void doWork() throws Exception {
-      ExportImportJoinQuery joinQuery = JoinUtility.createExportImportJoinQuery(getDatabaseService());
+      ExportImportJoinQuery joinQuery = joinFactory.createExportImportJoinQuery();
 
       for (IOseeBranch branch : branches) {
          long branchUuid = branch.getUuid();

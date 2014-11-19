@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -32,6 +31,7 @@ import org.eclipse.osee.orcs.db.internal.loader.executors.QueryContextLoadExecut
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -41,14 +41,14 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    private final Log logger;
    private final IOseeDatabaseService dbService;
    private final SqlObjectLoader loader;
-   private final SystemPreferences preferences;
+   private final SqlJoinFactory joinFactory;
 
-   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, SystemPreferences preferences) {
+   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, SqlJoinFactory joinFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.loader = loader;
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
    }
 
    @Override
@@ -92,13 +92,13 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       AbstractLoadExecutor executor;
       if (queryContext instanceof ArtifactQuerySqlContext) {
          ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
-         executor = new ArtifactQueryContextLoadExecutor(loader, dbService, sqlQueryContext, preferences);
+         executor = new ArtifactQueryContextLoadExecutor(loader, dbService, joinFactory, sqlQueryContext);
       } else {
          QuerySqlContext sqlQueryContext = adapt(QuerySqlContext.class, queryContext);
          executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
       }
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, executor, options, null, null, loader, preferences);
+      return new DataLoaderImpl(logger, executor, options, null, null, loader, joinFactory);
    }
 
    @Override
@@ -110,7 +110,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    public DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Collection<Integer> ids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, ids, options, session, branch, loader, preferences);
+      return new DataLoaderImpl(logger, ids, options, session, branch, loader, joinFactory);
    }
 
    @Override
@@ -122,7 +122,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    public DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, Collection<String> guids) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
-      return new DataLoaderImpl(logger, options, session, branch, loader, guids, preferences);
+      return new DataLoaderImpl(logger, options, session, branch, loader, guids, joinFactory);
    }
 
    @SuppressWarnings("unchecked")

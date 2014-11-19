@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
@@ -25,6 +24,7 @@ import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -36,16 +36,16 @@ public class LoaderModule {
    private final IdentityManager idFactory;
    private final SqlProvider sqlProvider;
    private final DataProxyFactoryProvider proxyProvider;
-   private final SystemPreferences preferences;
+   private final SqlJoinFactory joinFactory;
 
-   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SystemPreferences preferences) {
+   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
       super();
       this.logger = logger;
       this.dbService = dbService;
       this.idFactory = idFactory;
       this.sqlProvider = sqlProvider;
       this.proxyProvider = proxyProvider;
-      this.preferences = preferences;
+      this.joinFactory = joinFactory;
    }
 
    public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
@@ -70,12 +70,13 @@ public class LoaderModule {
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
-      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, preferences);
+      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, joinFactory);
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
-      return new SqlObjectLoader(logger, dbService, sqlProvider, handlerFactory, objectFactory, dynamicLoadProcessor);
+      return new SqlObjectLoader(logger, dbService, joinFactory, sqlProvider, handlerFactory, objectFactory,
+         dynamicLoadProcessor);
    }
 
 }

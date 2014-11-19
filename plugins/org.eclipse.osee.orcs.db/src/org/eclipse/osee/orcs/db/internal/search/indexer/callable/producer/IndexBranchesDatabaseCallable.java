@@ -21,11 +21,10 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.TagQueueJoinQuery;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
@@ -58,7 +57,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private static final String COUNT_MISSING_BY_BRANCH =
       COUNT_TAGGABLE_ATTRIBUTES_BY_BRANCH + " AND att.gamma_id NOT IN (SELECT gamma_id FROM osee_search_tags)";
 
-   private final IdentityLocator idService;
+   private final SqlJoinFactory joinFactory;
    private final AttributeTypes types;
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
@@ -66,9 +65,9 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private final Collection<? extends IAttributeType> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, IdentityLocator idService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
-      this.idService = idService;
+      this.joinFactory = joinFactory;
       this.types = types;
       this.consumer = consumer;
       this.collector = collector;
@@ -86,8 +85,8 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchUuids.add(branch.getUuid());
       }
 
-      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
-      IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery branchJoin = joinFactory.createIdJoinQuery();
+      IdJoinQuery typeJoin = joinFactory.createIdJoinQuery();
       try {
          Triplet<String, String, Object[]> data = createQueries(branchUuids, branchJoin, typeJoin);
          String countQuery = data.getFirst();
@@ -127,13 +126,13 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(query, params);
-         TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery(getDatabaseService());
+         TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery();
          while (chStmt.next()) {
             long gammaId = chStmt.getLong("gamma_id");
             joinQuery.add(gammaId);
             if (joinQuery.size() >= BATCH_SIZE) {
                storeAndAddQueryId(joinQuery);
-               joinQuery = JoinUtility.createTagQueueJoinQuery(getDatabaseService());
+               joinQuery = joinFactory.createTagQueueJoinQuery();
             }
          }
          storeAndAddQueryId(joinQuery);

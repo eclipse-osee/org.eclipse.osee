@@ -32,7 +32,7 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -61,10 +61,12 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private static final String SELECT_TRANSACTION_BRANCH_ID =
       "select branch_id from osee_tx_details WHERE transaction_id = ?";
 
+   private final SqlJoinFactory joinFactory;
    private final Collection<? extends ITransaction> txIdsToDelete;
 
-   public PurgeTransactionTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Collection<? extends ITransaction> txIdsToDelete) {
+   public PurgeTransactionTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Collection<? extends ITransaction> txIdsToDelete) {
       super(logger, session, databaseService, "Purge transactions");
+      this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
    }
 
@@ -180,7 +182,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             Integer branchUuid = (Integer) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
             statement.runPreparedQuery(MAX_FETCH, query, bindData);
-            IdJoinQuery joinId = JoinUtility.createIdJoinQuery(getDatabaseService());
+            IdJoinQuery joinId = joinFactory.createIdJoinQuery();
             items.put(branchUuid, joinId);
 
             while (statement.next()) {

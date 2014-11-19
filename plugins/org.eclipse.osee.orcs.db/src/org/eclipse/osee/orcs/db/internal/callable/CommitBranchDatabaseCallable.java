@@ -23,12 +23,14 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.change.ComputeNetChangeCallable;
 import org.eclipse.osee.orcs.db.internal.change.LoadDeltasBetweenBranches;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Integer> {
 
+   private final SqlJoinFactory joinFactory;
    private final ArtifactReadable committer;
    private final TransactionReadable sourceHead;
    private final BranchReadable source;
@@ -41,8 +43,9 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
    private static final String SELECT_MERGE_BRANCH_HEAD_TX =
       "select max(transaction_id) from osee_tx_details where branch_id = ?";
 
-   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, ArtifactReadable committer, BranchReadable source, TransactionReadable sourceHead, BranchReadable destination, TransactionReadable destinationHead, MissingChangeItemFactory missingChangeItemFactory) {
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, ArtifactReadable committer, BranchReadable source, TransactionReadable sourceHead, BranchReadable destination, TransactionReadable destinationHead, MissingChangeItemFactory missingChangeItemFactory) {
       super(logger, session, service);
+      this.joinFactory = joinFactory;
       this.committer = committer;
       this.source = source;
       this.sourceHead = sourceHead;
@@ -64,8 +67,9 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
       }
 
       Callable<List<ChangeItem>> loadChanges =
-         new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), sourceHead.getBranchId(),
-            destinationHead.getBranchId(), destinationHead.getGuid(), mergeBranchId, mergeTxId);
+         new LoadDeltasBetweenBranches(getLogger(), getSession(), getDatabaseService(), joinFactory,
+            sourceHead.getBranchId(), destinationHead.getBranchId(), destinationHead.getGuid(), mergeBranchId,
+            mergeTxId);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
       changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceHead,
@@ -83,8 +87,8 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
       List<ChangeItem> changes = callComputeChanges(mergeBranchUuid);
 
       CancellableCallable<Integer> commitCallable =
-         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), getUserArtId(), source,
-            destination, mergeBranchUuid, changes);
+         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), joinFactory,
+            getUserArtId(), source, destination, mergeBranchUuid, changes);
       Integer newTx = callAndCheckForCancel(commitCallable);
 
       return newTx;

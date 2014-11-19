@@ -73,7 +73,7 @@ public final class CharJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected CharJoinQuery(IJoinAccessor joinAccessor, int queryId) {
+   public CharJoinQuery(IJoinAccessor joinAccessor, int queryId) {
       super(joinAccessor, JoinItem.CHAR_ID, queryId);
    }
 

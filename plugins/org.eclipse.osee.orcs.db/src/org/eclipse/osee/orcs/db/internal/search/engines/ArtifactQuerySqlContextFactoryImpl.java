@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -28,6 +27,7 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -40,12 +40,12 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    private final Log logger;
    private final SqlHandlerFactory handlerFactory;
    private final SqlProvider sqlProvider;
-   private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
 
-   public ArtifactQuerySqlContextFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory) {
+   public ArtifactQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
    }
@@ -79,7 +79,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
       IOseeBranch branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
-      return new ArtifactQuerySqlWriter(logger, dbService, sqlProvider, context, queryType, branch.getUuid());
+      return new ArtifactQuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, branch.getUuid());
    }
 
    private IOseeBranch getBranchToSearch(QueryData queryData) throws OseeCoreException {

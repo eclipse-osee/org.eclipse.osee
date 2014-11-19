@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +27,7 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -43,15 +42,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
    private final SqlAliasManager aliasManager = new SqlAliasManager();
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
    private final SqlProvider sqlProvider;
    private final SqlContext context;
    private final QueryType queryType;
    private int level = 0;
 
-   public AbstractSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType) {
+   public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType) {
       this.logger = logger;
-      this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.sqlProvider = sqlProvider;
       this.context = context;
       this.queryType = queryType;
@@ -318,7 +317,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public CharJoinQuery writeCharJoin(Collection<String> ids) {
-      CharJoinQuery joinQuery = JoinUtility.createCharJoinQuery(dbService, context.getSession().getGuid());
+      CharJoinQuery joinQuery = joinFactory.createCharJoinQuery(context.getSession().getGuid());
       for (String id : ids) {
          joinQuery.add(id);
       }
@@ -327,7 +326,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
-      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery(context.getSession().getGuid());
       for (Number id : ids) {
          joinQuery.add(id.longValue());
       }
@@ -336,7 +335,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public IdJoinQuery writeIdentifiableJoin(Collection<? extends Identifiable<Long>> ids) {
-      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(dbService, context.getSession().getGuid());
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery(context.getSession().getGuid());
       for (Identity<Long> id : ids) {
          joinQuery.add(id.getGuid());
       }

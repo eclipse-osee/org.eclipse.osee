@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -24,6 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -32,8 +32,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    private final long branchUuid;
 
-   public ArtifactQuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchUuid) {
-      super(logger, dbService, sqlProvider, context, queryType);
+   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchUuid) {
+      super(logger, joinFactory, sqlProvider, context, queryType);
       this.branchUuid = branchUuid;
    }
 

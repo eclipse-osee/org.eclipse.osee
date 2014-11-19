@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -35,9 +35,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
 public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleCommand {
 
    private OrcsApi orcsApi;
+   private SqlJoinFactory joinFactory;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+   }
+
+   public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
+      this.joinFactory = joinFactory;
    }
 
    @Override
@@ -75,7 +80,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       @Override
       protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
-         ExportImportJoinQuery gammaJoin = JoinUtility.createExportImportJoinQuery(getDatabaseService());
+         ExportImportJoinQuery gammaJoin = joinFactory.createExportImportJoinQuery();
          try {
             selectAttributes(gammaJoin, connection);
             gammaJoin.store(connection);
@@ -90,7 +95,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       }
 
       private void selectAttributes(ExportImportJoinQuery gammaJoin, OseeConnection connection) throws OseeCoreException {
-         IdJoinQuery typeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+         IdJoinQuery typeJoin = joinFactory.createIdJoinQuery();
          populateAttributeTypeJoin(typeJoin);
 
          IOseeStatement chStmt = getDatabaseService().getStatement(connection);

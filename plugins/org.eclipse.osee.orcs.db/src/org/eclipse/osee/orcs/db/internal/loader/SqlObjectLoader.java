@@ -51,6 +51,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -66,13 +67,15 @@ public class SqlObjectLoader {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
    private final SqlProvider sqlProvider;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
+   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
       super();
       this.logger = logger;
       this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
       this.dynamicProcessor = dynamicProcessor;
@@ -113,7 +116,7 @@ public class SqlObjectLoader {
    private void writeSql(Criteria criteria, LoadSqlContext context) throws OseeCoreException {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter writer = new LoadSqlWriter(logger, dbService, sqlProvider, context);
+      AbstractSqlWriter writer = new LoadSqlWriter(logger, joinFactory, sqlProvider, context);
       writer.build(handler);
    }
 

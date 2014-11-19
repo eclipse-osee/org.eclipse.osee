@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -51,13 +50,19 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IJoinAccessor;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link DataLoaderFactoryImpl}
@@ -79,7 +84,8 @@ public class DataLoaderFactoryImplTest {
    
    @Mock private OrcsObjectFactory rowDataFactory;
    @Mock private HasCancellation cancellation;
-   @Mock private SystemPreferences preferences;
+   @Mock private SqlJoinFactory joinFactory;
+   @Mock private IJoinAccessor joinAccessor;
    
    @Captor private ArgumentCaptor<LoadSqlContext> contextCaptor;
    @Captor private ArgumentCaptor<ArtifactJoinQuery> joinCaptor;
@@ -103,7 +109,7 @@ public class DataLoaderFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null, preferences);
+      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null, joinFactory);
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null);
 
       spyLoader = spy(loader);
@@ -114,6 +120,24 @@ public class DataLoaderFactoryImplTest {
       when(dbService.getStatement()).thenReturn(chStmt);
       when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getUuid()))).thenReturn(
          EXPECTED_HEAD_TX_ID);
+
+      when(joinFactory.createArtifactJoinQuery()).thenAnswer(new Answer<ArtifactJoinQuery>() {
+
+         @Override
+         public ArtifactJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new ArtifactJoinQuery(joinAccessor, 23, Integer.MAX_VALUE);
+         }
+
+      });
+
+      when(joinFactory.createIdJoinQuery(Mockito.anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+
+         @Override
+         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new IdJoinQuery(joinAccessor, 23);
+         }
+
+      });
    }
 
    @Test

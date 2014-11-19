@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -34,7 +33,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 
 /**
@@ -42,7 +41,7 @@ import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderE
  */
 public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
-   private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
 
    private int txId;
@@ -50,9 +49,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
 
-   public TxSqlBuilderImpl(IOseeDatabaseService dbService, IdentityManager idManager) {
+   public TxSqlBuilderImpl(SqlJoinFactory sqlJoinFactory, IdentityManager idManager) {
       super();
-      this.dbService = dbService;
+      this.sqlJoinFactory = sqlJoinFactory;
       this.idManager = idManager;
       clear();
    }
@@ -209,7 +208,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    protected IdJoinQuery createJoin() {
-      return JoinUtility.createIdJoinQuery(dbService);
+      return sqlJoinFactory.createIdJoinQuery();
    }
 
    protected boolean isGammaCreationAllowed(OrcsData data) {

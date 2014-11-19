@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 
@@ -30,14 +29,12 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityLocator idService;
    private final IResourceManager resourceManager;
 
-   public GammaQueueIndexerDataSourceLoader(Log logger, IOseeDatabaseService dbService, IdentityLocator idService, IResourceManager resourceManager) {
+   public GammaQueueIndexerDataSourceLoader(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
-      this.idService = idService;
       this.resourceManager = resourceManager;
    }
 

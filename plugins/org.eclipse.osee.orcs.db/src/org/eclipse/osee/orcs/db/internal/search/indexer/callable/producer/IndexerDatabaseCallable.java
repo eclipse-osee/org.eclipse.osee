@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.HasVersion;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -26,8 +27,8 @@ public class IndexerDatabaseCallable extends AbstractIndexerTxDatabaseCallable {
 
    private final Iterable<? extends HasVersion> datas;
 
-   public IndexerDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<? extends HasVersion> datas) {
-      super(logger, session, dbService, types, consumer, listener, isCacheAll, cacheLimit);
+   public IndexerDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<? extends HasVersion> datas) {
+      super(logger, session, dbService, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
       this.datas = datas;
    }
 

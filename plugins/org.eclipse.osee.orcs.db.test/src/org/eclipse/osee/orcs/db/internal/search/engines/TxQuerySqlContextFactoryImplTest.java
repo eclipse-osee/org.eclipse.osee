@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -18,7 +19,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -44,11 +44,15 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.Operator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QuerySqlContextFactoryImpl}
@@ -70,11 +74,12 @@ public class TxQuerySqlContextFactoryImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
    @Mock private IdentityLocator identityService;
    
    @Mock private OrcsSession session;
+   @Mock private SqlJoinFactory joinFactory;
+   @Mock private IdJoinQuery idJoinQuery;
    // @formatter:on
 
    private QuerySqlContextFactory queryEngine;
@@ -87,13 +92,21 @@ public class TxQuerySqlContextFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      queryEngine = Engines.newTxSqlContextFactory(logger, dbService, identityService, sqlProvider);
+      queryEngine = Engines.newTxSqlContextFactory(logger, joinFactory, identityService, sqlProvider);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
       queryData = new QueryData(criteriaSet, options);
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
+      when(joinFactory.createIdJoinQuery(anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+
+         @Override
+         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new IdJoinQuery(null, 23);
+         }
+
+      });
    }
 
    @Test

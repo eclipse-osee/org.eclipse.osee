@@ -49,6 +49,7 @@ import org.eclipse.osee.orcs.db.internal.callable.PurgeBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.change.MissingChangeItemFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -57,15 +58,17 @@ public class BranchModule {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
+   private final SqlJoinFactory joinFactory;
    private final IdentityLocator identityService;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
    private final IResourceManager resourceManager;
 
-   public BranchModule(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
+   public BranchModule(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, IdentityLocator identityService, SystemPreferences preferences, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
       super();
       this.logger = logger;
       this.dbService = dbService;
+      this.joinFactory = joinFactory;
       this.identityService = identityService;
       this.preferences = preferences;
       this.executorAdmin = executorAdmin;
@@ -82,13 +85,13 @@ public class BranchModule {
 
          @Override
          public Callable<Void> createBranchCopyTx(OrcsSession session, CreateBranchData branchData) {
-            return new BranchCopyTxCallable(logger, session, dbService, branchData);
+            return new BranchCopyTxCallable(logger, session, dbService, joinFactory, branchData);
          }
 
          @Override
          public Callable<Integer> commitBranch(OrcsSession session, ArtifactReadable committer, BranchReadable source, TransactionReadable sourceHead, BranchReadable destination, TransactionReadable destinationHead) {
-            return new CommitBranchDatabaseCallable(logger, session, dbService, committer, source, sourceHead,
-               destination, destinationHead, missingChangeItemFactory);
+            return new CommitBranchDatabaseCallable(logger, session, dbService, joinFactory, committer, source,
+               sourceHead, destination, destinationHead, missingChangeItemFactory);
          }
 
          @Override
@@ -98,7 +101,7 @@ public class BranchModule {
 
          @Override
          public Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionReadable sourceTx, TransactionReadable destinationTx) {
-            return new CompareDatabaseCallable(logger, session, dbService, sourceTx, destinationTx,
+            return new CompareDatabaseCallable(logger, session, dbService, joinFactory, sourceTx, destinationTx,
                missingChangeItemFactory);
          }
 
@@ -106,8 +109,8 @@ public class BranchModule {
          public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
             ExportItemFactory factory =
                new ExportItemFactory(logger, preferences, dbService, resourceManager, orcsTypes);
-            return new ExportBranchDatabaseCallable(session, factory, preferences, executorAdmin, branches, options,
-               exportName);
+            return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin,
+               branches, options, exportName);
          }
 
          @Override

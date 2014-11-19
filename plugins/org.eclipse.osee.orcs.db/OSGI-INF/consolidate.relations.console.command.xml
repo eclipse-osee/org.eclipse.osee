@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.orcs.db.internal.console.ConsolidateRelationsCommand">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
    <implementation class="org.eclipse.osee.orcs.db.internal.console.ConsolidateRelationsCommand"/>
    <service>
       <provide interface="org.eclipse.osee.console.admin.ConsoleCommand"/>
    </service>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setSqlJoinFactory" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory" name="SqlJoinFactory" policy="static"/>
 </scr:component>

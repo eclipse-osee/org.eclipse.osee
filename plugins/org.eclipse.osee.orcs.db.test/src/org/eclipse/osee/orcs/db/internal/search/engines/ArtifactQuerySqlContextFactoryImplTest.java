@@ -14,6 +14,7 @@ import static java.util.Arrays.asList;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -59,6 +59,9 @@ import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -111,13 +114,13 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
    @Mock private IdentityLocator identityService;
    @Mock private TagProcessor tagProcessor;
    
    @Mock private ExecutorAdmin executorAdmin;
    @Mock private OrcsSession session;
+   @Mock private SqlJoinFactory joinFactory;
    // @formatter:on
 
    private final static long EXPECTED_BRANCH_ID = 570;
@@ -134,7 +137,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(logger, identityService, tagProcessor);
-      queryEngine = new ArtifactQuerySqlContextFactoryImpl(logger, dbService, sqlProvider, handlerFactory);
+      queryEngine = new ArtifactQuerySqlContextFactoryImpl(logger, joinFactory, sqlProvider, handlerFactory);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
@@ -158,6 +161,23 @@ public class ArtifactQuerySqlContextFactoryImplTest {
             return null;
          }
       }).when(tagProcessor).collectFromString(eq(QUICK_SEARCH_VALUE), any(TagCollector.class));
+
+      when(joinFactory.createIdJoinQuery(anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+
+         @Override
+         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new IdJoinQuery(null, 23);
+         }
+
+      });
+      when(joinFactory.createCharJoinQuery(anyString())).thenAnswer(new Answer<CharJoinQuery>() {
+
+         @Override
+         public CharJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new CharJoinQuery(null, 23);
+         }
+
+      });
    }
 
    @Test

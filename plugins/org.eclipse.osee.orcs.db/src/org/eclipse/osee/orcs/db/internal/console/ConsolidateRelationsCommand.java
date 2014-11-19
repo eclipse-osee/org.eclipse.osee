@@ -14,11 +14,18 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.orcs.db.internal.callable.ConsolidateRelationsDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ConsolidateRelationsCommand extends AbstractDatastoreConsoleCommand {
+
+   private SqlJoinFactory joinFactory;
+
+   public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
+      this.joinFactory = joinFactory;
+   }
 
    @Override
    public String getName() {
@@ -37,6 +44,7 @@ public class ConsolidateRelationsCommand extends AbstractDatastoreConsoleCommand
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), console);
+      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), joinFactory,
+         console);
    }
 }

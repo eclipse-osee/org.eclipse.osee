@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.data.TransactionReadableDelta;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.TransactionJoinQuery;
 
 /**
@@ -44,11 +44,13 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
 
+   private final SqlJoinFactory joinFactory;
    private final TransactionReadableDelta txDelta;
    private final ChangeItemLoader changeItemLoader;
 
-   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionReadableDelta txDelta) {
+   public LoadDeltasBetweenTxsOnTheSameBranch(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, TransactionReadableDelta txDelta) {
       super(logger, session, dbService);
+      this.joinFactory = joinFactory;
       this.txDelta = txDelta;
       this.changeItemLoader = new ChangeItemLoader(dbService, changeByGammaId);
    }
@@ -72,7 +74,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       Conditions.checkExpressionFailOnTrue(!txDelta.areOnTheSameBranch(),
          "Unable to compute deltas between transactions on different branches [%s]", txDelta);
 
-      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getDatabaseService());
+      TransactionJoinQuery txJoin = joinFactory.createTransactionJoinQuery();
 
       loadChangesAtEndTx(txJoin);
 
@@ -112,7 +114,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory) throws OseeCoreException {
 
-      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
 
       HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
       changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);

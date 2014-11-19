@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -48,12 +47,15 @@ import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TransactionWriter.SqlOrderEnum;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link TxSqlBuilderImpl}
@@ -90,7 +92,7 @@ public class TxSqlBuilderTest {
    private static final String ATTR_VALUE = "ksahfkashfdlakshfashfaer";
 
    // @formatter:off
-   @Mock private IOseeDatabaseService dbService;
+   @Mock private SqlJoinFactory joinFactory;
    @Mock private IdentityManager idManager;
    
    @Mock private TransactionReadable tx;
@@ -115,14 +117,7 @@ public class TxSqlBuilderTest {
       versionData.setBranchId(EXPECTED_BRANCH_ID);
       versionData.setTransactionId(LOADED_TX_ID);
 
-      builder = new TxSqlBuilderImpl(dbService, idManager) {
-
-         @Override
-         protected IdJoinQuery createJoin() {
-            return join;
-         }
-
-      };
+      builder = new TxSqlBuilderImpl(joinFactory, idManager);
 
       artData = new ArtifactDataImpl(versionData);
       artData.setLocalId(ITEM_ID);
@@ -154,6 +149,15 @@ public class TxSqlBuilderTest {
       when(tx.getTxType()).thenReturn(EXPECTED_TX_TYPE);
 
       when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
+
+      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
+
+         @Override
+         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return join;
+         }
+
+      });
    }
 
    @Test

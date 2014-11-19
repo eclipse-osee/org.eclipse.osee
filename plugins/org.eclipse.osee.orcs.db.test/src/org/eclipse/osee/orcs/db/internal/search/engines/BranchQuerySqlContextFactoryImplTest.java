@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -51,10 +51,14 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.OseeSql;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QuerySqlContextFactoryImpl}
@@ -74,11 +78,11 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private IOseeDatabaseService dbService;
    @Mock private SqlProvider sqlProvider;
    @Mock private IdentityLocator identityService;
    
    @Mock private OrcsSession session;
+   @Mock private SqlJoinFactory joinFactory;
    // @formatter:on
 
    private QuerySqlContextFactory queryEngine;
@@ -91,13 +95,21 @@ public class BranchQuerySqlContextFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      queryEngine = Engines.newBranchSqlContextFactory(logger, dbService, identityService, sqlProvider);
+      queryEngine = Engines.newBranchSqlContextFactory(logger, joinFactory, identityService, sqlProvider);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createBranchOptions();
       queryData = new QueryData(criteriaSet, options);
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
+      when(joinFactory.createIdJoinQuery(anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+
+         @Override
+         public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
+            return new IdJoinQuery(null, 23);
+         }
+
+      });
    }
 
    @Test
@@ -426,10 +438,6 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    private static Criteria uuid(Long... values) {
-      return new CriteriaBranchUuids(Arrays.asList(values));
-   }
-
-   private static Criteria id(Long... values) {
       return new CriteriaBranchUuids(Arrays.asList(values));
    }
 

@@ -25,7 +25,6 @@ import org.eclipse.osee.orcs.core.ds.IndexerData;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.DeleteTagSetDatabaseTxCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.IndexerDatabaseStatisticsCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.PurgeAllTagsDatabaseCallable;
@@ -33,6 +32,7 @@ import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexA
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexBranchesDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexerDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.XmlStreamIndexerDatabaseCallable;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -42,15 +42,15 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    private final Log logger;
    private final IOseeDatabaseService dbService;
-   private final IdentityLocator identityService;
+   private final SqlJoinFactory joinFactory;
    private final IndexingTaskConsumer consumer;
 
    private final IndexerCollectorNotifier systemCollector;
 
-   public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, IdentityLocator identityService, IndexingTaskConsumer indexingConsumer) {
+   public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, IndexingTaskConsumer indexingConsumer) {
       this.logger = logger;
       this.dbService = dbService;
-      this.identityService = identityService;
+      this.joinFactory = joinFactory;
       this.consumer = indexingConsumer;
       this.systemCollector = new IndexerCollectorNotifier(logger);
    }
@@ -72,24 +72,24 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    @Override
    public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
-      return new IndexBranchesDatabaseCallable(logger, session, dbService, identityService, types, consumer,
+      return new IndexBranchesDatabaseCallable(logger, session, dbService, joinFactory, types, consumer,
          merge(collector), typeToTag, branches, indexOnlyMissing);
    }
 
    @Override
    public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector) {
-      return new IndexAllInQueueCallable(logger, session, dbService, types, consumer, merge(collector));
+      return new IndexAllInQueueCallable(logger, session, dbService, joinFactory, types, consumer, merge(collector));
    }
 
    @Override
    public CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, InputStream inputStream, IndexerCollector... collector) {
-      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, types, consumer, merge(collector),
-         IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
+      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, joinFactory, types, consumer,
+         merge(collector), IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
    }
 
    @Override
    public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<? extends HasVersion> datas, IndexerCollector... collector) {
-      return new IndexerDatabaseCallable(logger, session, dbService, types, consumer, merge(collector),
+      return new IndexerDatabaseCallable(logger, session, dbService, joinFactory, types, consumer, merge(collector),
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
    }
 

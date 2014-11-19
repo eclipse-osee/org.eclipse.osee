@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -45,7 +45,7 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
    private final static String INSERT_INTO_TXS =
       "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id, branch_id) values (?, ?, ?, ?, ?)";
 
-   private final IdentityLocator identityService;
+   private final SqlJoinFactory joinFactory;
    private final BranchCache branchCache;
    private final IOseeBranch branchToken;
 
@@ -55,9 +55,9 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
    private final int bArtId;
    private final String comment;
 
-   public DeleteRelationDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, IdentityLocator identityService, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
+   public DeleteRelationDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, BranchCache branchCache, IOseeBranch branchToken, IRelationTypeSide relationType, int aArtId, int bArtId, int artUserId, String comment) {
       super(logger, session, databaseService, "Delete Relation");
-      this.identityService = identityService;
+      this.joinFactory = joinFactory;
       this.branchCache = branchCache;
       this.branchToken = branchToken;
 
@@ -77,7 +77,8 @@ public class DeleteRelationDatabaseCallable extends AbstractDatastoreTxCallable<
 
       int modType = relIdModTypeGammaId.getSecond();
       if (modType != ModificationType.ARTIFACT_DELETED.getValue() && modType != ModificationType.DELETED.getValue()) {
-         UpdatePreviousTxCurrent txc = new UpdatePreviousTxCurrent(getDatabaseService(), connection, branch.getUuid());
+         UpdatePreviousTxCurrent txc =
+            new UpdatePreviousTxCurrent(getDatabaseService(), joinFactory, connection, branch.getUuid());
          txc.addRelation(relIdModTypeGammaId.getFirst());
          txc.updateTxNotCurrents();
 

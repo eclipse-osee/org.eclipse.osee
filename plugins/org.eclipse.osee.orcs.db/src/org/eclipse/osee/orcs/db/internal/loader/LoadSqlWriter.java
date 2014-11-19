@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -26,14 +25,15 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class LoadSqlWriter extends AbstractSqlWriter {
 
-   public LoadSqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context) {
-      super(logger, dbService, sqlProvider, context, QueryType.SELECT);
+   public LoadSqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context) {
+      super(logger, joinFactory, sqlProvider, context, QueryType.SELECT);
    }
 
    @Override

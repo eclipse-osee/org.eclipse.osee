@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -20,6 +19,7 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -29,8 +29,8 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    private final TableEnum table;
    private final String idColumn;
 
-   public QuerySqlWriter(Log logger, IOseeDatabaseService dbService, SqlProvider sqlProvider, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
-      super(logger, dbService, sqlProvider, context, queryType);
+   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
+      super(logger, joinFactory, sqlProvider, context, queryType);
       this.table = table;
       this.idColumn = idColumn;
    }

@@ -30,6 +30,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * the behavior of this class - it needs to: have a branch
@@ -49,8 +50,11 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
    private static final String SELECT_ADDRESSING =
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
-   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, CreateBranchData branchData) {
+   private final SqlJoinFactory joinFactory;
+
+   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, CreateBranchData branchData) {
       super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
+      this.joinFactory = joinFactory;
       this.branchData = branchData;
       //this.systemUserId = -1;
    }
@@ -81,7 +85,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
             branchData.getSavedTransaction().getGuid());
 
          UpdatePreviousTxCurrent updater =
-            new UpdatePreviousTxCurrent(getDatabaseService(), connection, branchData.getUuid());
+            new UpdatePreviousTxCurrent(getDatabaseService(), joinFactory, connection, branchData.getUuid());
          updater.updateTxNotCurrentsFromTx(nextTransactionId);
 
       } catch (Exception ex) {

@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.JoinUtility;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.TransactionJoinQuery;
 
 /**
@@ -51,9 +51,11 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private final Integer destinationHeadTxId, mergeTxId;
 
    private final ChangeItemLoader changeItemLoader;
+   private final SqlJoinFactory joinFactory;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, Long sourceBranchId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
+   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, Long sourceBranchId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
       super(logger, session, dbService);
+      this.joinFactory = joinFactory;
       this.sourceBranchId = sourceBranchId;
       this.destinationBranchId = destinationBranchId;
       this.destinationHeadTxId = destinationHeadTxId;
@@ -77,7 +79,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       Conditions.checkExpressionFailOnTrue(sourceBranchId.equals(destinationBranchId),
          "Unable to compute deltas between transactions on the same branch [%s]", sourceBranchId);
 
-      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getDatabaseService());
+      TransactionJoinQuery txJoin = joinFactory.createTransactionJoinQuery();
       int sourceBaselineTxId = getSourceBaselineTxId();
 
       loadSourceBranchChanges(txJoin, sourceBaselineTxId);
@@ -119,7 +121,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory, int sourceBaselineTxId) throws OseeCoreException {
       HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
 
-      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
       try {
          changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);
 

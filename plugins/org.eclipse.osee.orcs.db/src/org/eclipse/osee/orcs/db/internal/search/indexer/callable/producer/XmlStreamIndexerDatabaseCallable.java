@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer.IndexerXmlInputStreamParser.IndexItemIdCollector;
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.search.IndexerCollector;
 
 /**
@@ -29,8 +30,8 @@ public class XmlStreamIndexerDatabaseCallable extends AbstractIndexerTxDatabaseC
    private final IndexerXmlInputStreamParser parser;
    private final InputStream inputStream;
 
-   public XmlStreamIndexerDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
-      super(logger, session, dbService, types, consumer, listener, isCacheAll, cacheLimit);
+   public XmlStreamIndexerDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
+      super(logger, session, dbService, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
       parser = new IndexerXmlInputStreamParser();
       this.inputStream = inputStream;
    }

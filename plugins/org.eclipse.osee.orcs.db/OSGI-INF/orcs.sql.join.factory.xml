@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
+   <implementation class="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory"/>
+   <service>
+      <provide interface="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory"/>
+   </service>
+   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.core.SystemPreferences" name="SystemPreferences" policy="static"/>
+</scr:component>

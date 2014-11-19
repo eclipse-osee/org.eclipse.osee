@@ -96,7 +96,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected ArtifactJoinQuery(IJoinAccessor joinAccessor, int queryId, int maxJoinSize) {
+   public ArtifactJoinQuery(IJoinAccessor joinAccessor, int queryId, int maxJoinSize) {
       super(joinAccessor, JoinItem.ARTIFACT, queryId);
       this.maxJoinSize = maxJoinSize;
    }
