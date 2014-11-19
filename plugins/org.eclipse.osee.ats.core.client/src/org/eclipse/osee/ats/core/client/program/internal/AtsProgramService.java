@@ -8,35 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.core.client.program.internal;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsProgramService implements IAtsProgramService {
 
-   private final IAtsServer atsServer;
+   private final IAtsConfig config;
 
-   public AtsProgramService(IAtsServer atsServer) {
-      this.atsServer = atsServer;
+   public AtsProgramService(IAtsConfig config) {
+      this.config = config;
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsProgram atsProgram) {
       IAtsTeamDefinition teamDef = atsProgram.getTeamDefinition();
       if (teamDef == null) {
-         ArtifactReadable artifact = (ArtifactReadable) atsProgram.getStoreObject();
+         Artifact artifact = (Artifact) atsProgram.getStoreObject();
          String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, null);
          if (Strings.isValid(teamDefGuid)) {
-            teamDef = (IAtsTeamDefinition) atsServer.getConfig().getSoleByGuid(teamDefGuid);
+            teamDef = (IAtsTeamDefinition) config.getSoleByGuid(teamDefGuid);
          }
       }
       return teamDef;

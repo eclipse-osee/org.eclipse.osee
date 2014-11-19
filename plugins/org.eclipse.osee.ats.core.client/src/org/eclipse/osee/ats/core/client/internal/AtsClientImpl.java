@@ -29,11 +29,13 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -79,7 +81,9 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkItemArtifactProv
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
+import org.eclipse.osee.ats.core.client.program.internal.AtsProgramService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
+import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -148,6 +152,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsConfigItemFactory configItemFactory;
    private ActionableItemManager actionableItemManager;
    private IRelationResolver relationResolver;
+   private IAtsProgramService programService;
+   private IAtsTeamDefinitionService teamDefinitionService;
 
    public void setDatabaseService(IOseeDatabaseService dbService) {
       this.dbService = dbService;
@@ -218,6 +224,9 @@ public class AtsClientImpl implements IAtsClient {
          }
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
+
+      programService = new AtsProgramService(configProxy);
+      teamDefinitionService = new AtsTeamDefinitionService(configProxy, configItemFactory);
 
       actionFactory =
          new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
@@ -628,6 +637,16 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IRelationResolver getRelationResolver() {
       return relationResolver;
+   }
+
+   @Override
+   public IAtsProgramService getProgramService() {
+      return programService;
+   }
+
+   @Override
+   public IAtsTeamDefinitionService getTeamDefinitionService() {
+      return teamDefinitionService;
    }
 
 }

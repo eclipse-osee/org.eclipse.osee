@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
@@ -117,7 +118,9 @@ public class XButtonPush extends GenericXWidget {
 
    @Override
    public void dispose() {
-      labelWidget.dispose();
+      if (Widgets.isAccessible(labelWidget)) {
+         labelWidget.dispose();
+      }
       button.dispose();
       bComp.dispose();
       if (parent != null && !parent.isDisposed()) {

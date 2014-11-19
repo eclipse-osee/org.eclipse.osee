@@ -20,4 +20,5 @@ public interface IAtsTeamDefinitionService {
    IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
+
 }
