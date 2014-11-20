@@ -18,24 +18,18 @@ import java.util.concurrent.Future;
  */
 public interface ExecutorAdmin {
 
-   //   ExecutorService getDefaultExecutor() throws Exception;
-   //
-   //   ExecutorService getExecutor(String name) throws Exception;
-   //
-   //   <T> Callable<T> addCallback(Callable<T> callable, ExecutionCallback<T> callback);
+   void createFixedPoolExecutor(String id, int poolSize);
 
-   void createFixedPoolExecutor(String id, int poolSize) throws Exception;
+   void createCachedPoolExecutor(String id);
 
-   void createCachedPoolExecutor(String id) throws Exception;
+   <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback);
 
-   <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
+   <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback);
 
-   <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback) throws Exception;
+   <T> Future<T> schedule(Callable<T> callable);
 
-   <T> Future<T> schedule(Callable<T> callable) throws Exception;
+   <T> Future<T> schedule(String id, Callable<T> callable);
 
-   <T> Future<T> schedule(String id, Callable<T> callable) throws Exception;
-
-   void shutdown(String id) throws Exception;
+   void shutdown(String id);
 
 }

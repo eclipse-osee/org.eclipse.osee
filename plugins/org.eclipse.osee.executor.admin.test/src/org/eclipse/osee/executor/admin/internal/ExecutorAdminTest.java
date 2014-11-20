@@ -12,7 +12,6 @@ package org.eclipse.osee.executor.admin.internal;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.logger.Log;
 import org.junit.After;
 import org.junit.Assert;
@@ -28,7 +27,6 @@ public class ExecutorAdminTest {
 
    //@formatter:off
    @Mock private Log logger;
-   @Mock private EventService eventService;
    //@formatter:on
 
    private ExecutorAdminImpl admin;
@@ -39,7 +37,6 @@ public class ExecutorAdminTest {
 
       admin = new ExecutorAdminImpl();
       admin.setLogger(logger);
-      admin.setEventService(eventService);
 
       admin.start(new HashMap<String, Object>());
    }

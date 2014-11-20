@@ -19,7 +19,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.logger.Log;
@@ -42,7 +41,6 @@ public class ExecutionCallbackTest {
 
    //@formatter:off
    @Mock private Log logger;
-   @Mock private EventService eventService;
    @Mock private Callable<String> callable;
    @Mock private ExecutionCallback<String> callback;
    //@formatter:on
@@ -55,7 +53,6 @@ public class ExecutionCallbackTest {
 
       admin = new ExecutorAdminImpl();
       admin.setLogger(logger);
-      admin.setEventService(eventService);
 
       admin.start(new HashMap<String, Object>());
    }

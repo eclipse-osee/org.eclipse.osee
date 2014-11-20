@@ -17,17 +17,18 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.executor.admin.ExecutorConstants;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.logger.Log;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -38,7 +39,6 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
 
    private ExecutorCache cache;
    private Log logger;
-   private EventService eventService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -48,33 +48,24 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       return logger;
    }
 
-   public void setEventService(EventService eventService) {
-      this.eventService = eventService;
-   }
-
-   private EventService getEventService() {
-      return eventService;
-   }
-
    public void start(Map<String, ?> props) {
+      logger.trace("Starting [%s]...", getClass().getSimpleName());
       cache = new ExecutorCache();
-
-      getEventService().postEvent(ExecutorConstants.EXECUTOR_ADMIN_REGISTRATION_EVENT, props);
    }
 
    public void stop(Map<String, ?> props) {
+      logger.trace("Stopping [%s]...", getClass().getSimpleName());
       for (Entry<String, ListeningExecutorService> entry : cache.getExecutors().entrySet()) {
          shutdown(entry.getKey(), entry.getValue());
       }
       cache = null;
-      getEventService().postEvent(ExecutorConstants.EXECUTOR_ADMIN_DEREGISTRATION_EVENT, props);
    }
 
-   public ListeningExecutorService getDefaultExecutor() throws Exception {
+   public ListeningExecutorService getDefaultExecutor() {
       return getExecutor(DEFAULT_EXECUTOR);
    }
 
-   public ListeningExecutorService getExecutor(String id) throws Exception {
+   public ListeningExecutorService getExecutor(String id) {
       ListeningExecutorService service = null;
       synchronized (cache) {
          service = cache.getById(id);
@@ -83,31 +74,31 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
          }
       }
       if (service == null) {
-         throw new IllegalStateException(String.format("Error creating executor [%s].", id));
+         throw new OseeStateException("Error creating executor [%s].", id);
       }
       if (service.isShutdown() || service.isTerminated()) {
-         throw new IllegalStateException(String.format("Error executor [%s] was previously shutdown.", id));
+         throw new OseeStateException("Error executor [%s] was previously shutdown.", id);
       }
       return service;
    }
 
    @Override
-   public <T> Future<T> schedule(Callable<T> callable) throws Exception {
+   public <T> Future<T> schedule(Callable<T> callable) {
       return schedule(callable, null);
    }
 
    @Override
-   public <T> Future<T> schedule(String id, Callable<T> callable) throws Exception {
+   public <T> Future<T> schedule(String id, Callable<T> callable) {
       return schedule(id, callable, null);
    }
 
    @Override
-   public <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback) throws Exception {
+   public <T> Future<T> schedule(Callable<T> callable, ExecutionCallback<T> callback) {
       return schedule(DEFAULT_EXECUTOR, callable, callback);
    }
 
    @Override
-   public <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback) throws Exception {
+   public <T> Future<T> schedule(String id, Callable<T> callable, ExecutionCallback<T> callback) {
       ListenableFuture<T> listenableFuture = getExecutor(id).submit(callable);
       if (callback != null) {
          FutureCallback<T> futureCallback = asFutureCallback(callback);
@@ -135,8 +126,11 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       };
    }
 
-   private ListeningExecutorService createExecutor(String id, int poolSize) throws Exception {
-      ExecutorThreadFactory threadFactory = new ExecutorThreadFactory(id, Thread.NORM_PRIORITY);
+   private ListeningExecutorService createExecutor(String id, int poolSize) {
+      ThreadFactory threadFactory = new ThreadFactoryBuilder()//
+      .setNameFormat(id + "- [%s]")//
+      .setPriority(Thread.NORM_PRIORITY)//
+      .build();
 
       ExecutorService executor = null;
       if (poolSize > 0) {
@@ -173,17 +167,17 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
    }
 
    @Override
-   public void createFixedPoolExecutor(String id, int poolSize) throws Exception {
+   public void createFixedPoolExecutor(String id, int poolSize) {
       createExecutor(id, poolSize);
    }
 
    @Override
-   public void createCachedPoolExecutor(String id) throws Exception {
+   public void createCachedPoolExecutor(String id) {
       createExecutor(id, -1);
    }
 
    @Override
-   public void shutdown(String id) throws Exception {
+   public void shutdown(String id) {
       ListeningExecutorService service = cache.getById(id);
       if (service != null) {
          shutdown(id, service);

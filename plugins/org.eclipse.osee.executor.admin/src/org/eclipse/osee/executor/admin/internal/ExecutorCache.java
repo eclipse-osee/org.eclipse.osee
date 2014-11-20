@@ -12,6 +12,8 @@ package org.eclipse.osee.executor.admin.internal;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import com.google.common.util.concurrent.ListeningExecutorService;
 
 /**
@@ -22,15 +24,15 @@ public class ExecutorCache {
    private final ConcurrentHashMap<String, ListeningExecutorService> executors =
       new ConcurrentHashMap<String, ListeningExecutorService>();
 
-   public void put(String id, ListeningExecutorService service) throws IllegalStateException {
+   public void put(String id, ListeningExecutorService service) {
       if (executors.putIfAbsent(id, service) != null) {
-         throw new IllegalStateException(String.format("Error non-unique executor detected [%s]", id));
+         throw new OseeStateException("Error non-unique executor detected [%s]", id);
       }
    }
 
-   public ListeningExecutorService getById(String id) throws IllegalArgumentException {
+   public ListeningExecutorService getById(String id) {
       if (id == null || id.length() <= 0) {
-         throw new IllegalArgumentException("Error - executorId cannot be null");
+         throw new OseeArgumentException("Error - executorId cannot be null");
       }
       ListeningExecutorService executor = executors.get(id);
       if (executor != null && (executor.isShutdown() || executor.isTerminated())) {
