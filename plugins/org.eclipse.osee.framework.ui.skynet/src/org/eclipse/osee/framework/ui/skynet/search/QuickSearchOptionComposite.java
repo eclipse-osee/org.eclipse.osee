@@ -413,6 +413,7 @@ public class QuickSearchOptionComposite extends Composite {
                new FilteredCheckboxAttributeTypeDialog("Attribute Type Filter Selection",
                   "Select attribute types to search in.");
             dialog.setSelectable(taggableItems);
+            dialog.setShowSelectButtons(true);
 
             List<IAttributeType> selectedElements = new ArrayList<IAttributeType>();
             for (IAttributeType type : taggableItems) {
