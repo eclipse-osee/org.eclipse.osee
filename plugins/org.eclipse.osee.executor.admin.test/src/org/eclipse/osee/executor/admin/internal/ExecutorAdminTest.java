@@ -11,7 +11,10 @@
 package org.eclipse.osee.executor.admin.internal;
 
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.logger.Log;
 import org.junit.After;
 import org.junit.Assert;
@@ -73,5 +76,26 @@ public class ExecutorAdminTest {
       second.shutdown();
       ExecutorService third = admin.getExecutor("hello");
       Assert.assertFalse(third.equals(second));
+   }
+
+   @Test
+   public void testScheduleExecutor() throws InterruptedException {
+      final AtomicInteger executed = new AtomicInteger();
+      admin.scheduleAtFixedRate("schedule.test", new Callable<Void>() {
+
+         @Override
+         public Void call() throws Exception {
+            executed.incrementAndGet();
+            return null;
+         }
+      }, -1, 250, TimeUnit.MILLISECONDS);
+      synchronized (this) {
+         this.wait(1000L);
+      }
+      admin.shutdown("schedule.test");
+      int numOfExecutions = executed.get();
+      int limit = 3;
+      Assert.assertTrue("Number of executions was [" + numOfExecutions + "] expected > " + limit,
+         numOfExecutions > limit);
    }
 }

@@ -17,6 +17,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.executor.admin.ExecutionCallback;
@@ -27,6 +29,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
@@ -184,4 +187,73 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
          cache.remove(id);
       }
    }
+
+   public ListeningScheduledExecutorService getScheduledExecutor(String id) {
+      ListeningScheduledExecutorService service = null;
+      synchronized (cache) {
+         ListeningExecutorService executor = cache.getById(id);
+         if (executor instanceof ListeningScheduledExecutorService) {
+            service = (ListeningScheduledExecutorService) executor;
+         } else {
+            service = createScheduledExecutor(id, -1);
+         }
+      }
+      if (service == null) {
+         throw new OseeStateException("Error creating executor [%s].", id);
+      }
+      if (service.isShutdown() || service.isTerminated()) {
+         throw new OseeStateException("Error executor [%s] was previously shutdown.", id);
+      }
+      return service;
+   }
+
+   private ListeningScheduledExecutorService createScheduledExecutor(String id, int poolSize) {
+      ThreadFactory threadFactory = new ThreadFactoryBuilder()//
+      .setNameFormat(id + "- [%s]")//
+      .setPriority(Thread.NORM_PRIORITY)//
+      .build();
+      ScheduledExecutorService executor = null;
+      if (poolSize > 0) {
+         executor = Executors.newScheduledThreadPool(poolSize, threadFactory);
+      } else {
+         executor = Executors.newSingleThreadScheduledExecutor(threadFactory);
+      }
+      ListeningScheduledExecutorService listeningExecutor = MoreExecutors.listeningDecorator(executor);
+      cache.put(id, listeningExecutor);
+      return listeningExecutor;
+   }
+
+   @Override
+   public void createScheduledPoolExecutor(String id, int poolSize) {
+      createScheduledExecutor(id, poolSize);
+   }
+
+   @Override
+   public <T> Future<T> scheduleAtFixedRate(String id, Callable<T> callable, long executionRate, TimeUnit timeUnit) {
+      return scheduleAtFixedRate(id, callable, -1, executionRate, timeUnit);
+   }
+
+   @Override
+   @SuppressWarnings("unchecked")
+   public <T> Future<T> scheduleAtFixedRate(String id, final Callable<T> callable, long startAfter, long executionRate, TimeUnit timeUnit) {
+      ListeningScheduledExecutorService executor = getScheduledExecutor(id);
+      Runnable runnable = asRunnable(callable);
+      ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(runnable, startAfter, executionRate, timeUnit);
+      return (Future<T>) scheduledFuture;
+   }
+
+   private Runnable asRunnable(final Callable<?> callable) {
+      return new Runnable() {
+
+         @Override
+         public void run() {
+            try {
+               callable.call();
+            } catch (Throwable th) {
+               logger.error(th, "Error executing scheduled task [%s]", callable);
+            }
+         }
+      };
+   }
+
 }
