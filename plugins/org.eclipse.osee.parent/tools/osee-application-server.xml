@@ -10,7 +10,6 @@
    $xserver-db-password=osee.eclipse \
    $xserver-db-address=127.0.0.1 \
    $xserver-db-port=1623 \
-   $xserver-db-web-port=1623 \
    $xserver-db-type=H2,PGSQL \
    
    ${xserver-authentication} 
@@ -33,11 +32,13 @@
 			</sequential>
 		</for>
 
+		<property name="xserver-use-demo-data" value="false" />
+		<property name="osee.app.server.config.file" value="${xserver-data}/osee.hsql.test.json" />
 		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.performance.db.connection.xml" />
 		<property name="osee.app.server.connectionId" value="hsql" />
-		<property name="osee.application.server.data" value="${xserver-project}/target/server/demo/binary_data" />
 
 		<echo message="Server Connection File: [${osee.app.server.connectionFile}]" />
+		<echo message="Server Config File: [${osee.app.server.config.file}]" />
 		<echo message="Server Data Directory:  [${osee.application.server.data}]" />
 
 		<echo message="Osee Application Server Home: [${xserver-home}]" />
@@ -45,11 +46,28 @@
 		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
 		<echo message="Osee Application Server Db Type: [${xserver-db-type}]" />
 		<echo message="Osee Application Server Db Address: [${xserver-db-address}:${xserver-db-port}]" />
-		<echo message="Osee Application Server Db Web Port: [${xserver-db-web-port}]" />
+
+		<mkdir dir="${xserver-data}" />
+
+		<property name="osee.application.server.data" value="${xserver-data}/binary_data" />
+		<mkdir dir="${osee.application.server.data}" />
+
+		<!-- copy server data to temp area -->
+		<if>
+			<equals arg1="${xserver-use-demo-data}" arg2="true" />
+			<then>
+				<copydir src="${xserver-project}/target/server/demo/binary_data" dest="${osee.application.server.data}" />
+
+				<!-- copy database data to server area -->
+				<copy file="${xserver-project}/target/server/demo/hsql/osee.hsql.db.properties" tofile="${xserver-data}/${xserver-db-name}.properties" />
+				<copy file="${xserver-project}/target/server/demo/hsql/osee.hsql.db.script" tofile="${xserver-data}/${xserver-db-name}.script" />
+			</then>
+		</if>
 	</target>
 
 	<target name="writeHsqlConnectionFile" depends="init">
 		<writeConnectionFile dbType="hsql" dbHome="${xserver-db-home}" dbPrefix="jdbc:hsqldb:hsql" dbDriver="hsql.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
+		<writeJsonConfig dbaddress="${xserver-db-address}" dbpath="${xserver-db-home}" dbport="${xserver-db-port}" filepath="${osee.app.server.config.file}" />
 	</target>
 
 	<target name="run" depends="init,writeHsqlConnectionFile,startServer" />
@@ -81,10 +99,10 @@
 				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
 				<sysproperty key="osee.application.server.data" value="${osee.application.server.data}" />
 				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
-				<sysproperty key="osee.db.embedded.server" value="${xserver-db-address}:${xserver-db-port}" />
-				<sysproperty key="osee.db.embedded.web.server.port" value="${xserver-db-web-port}" />
+				<!--<sysproperty key="osee.db.embedded.server" value="${xserver-db-address}:${xserver-db-port}" />-->
 				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />
 				<sysproperty key="osgi.configuration.area" value="${xserver-project}/configuration" />
+				<sysproperty key="cm.config.uri" value="${osee.app.server.config.file}" />
 
 				<jvmarg line="${additionalJvmArgs}" />
 				<arg line=" -console ${xserver-telnet-port} -consoleLog -configuration &quot;${xserver-home}/configuration&quot;" />
@@ -163,6 +181,45 @@
 					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;db.connection.info&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
 				&lt;/AvailableDbServices&gt;${line.separator}
 			&lt;/DbConnection&gt;
+			</echo>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="writeJsonConfig">
+		<attribute name="dbAddress" />
+		<attribute name="dbPort" />
+		<attribute name="dbPath" />
+		<attribute name="filePath" />
+		<sequential>
+			<propertyregex property="dbFilePath" input="@{dbPath}" override="true" regexp="\\" replace="/" global="true" defaultValue="@{dbPath}" />
+
+			<echo message="Writing Json Configuration" />
+			<echo file="@{filePath}">
+{
+    "config": [
+        {
+            "service.pid": "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory",
+            "jdbc.service": [
+                {
+                    "service.id": "1001",
+                    "jdbc.server.host": "@{dbAddress}",
+                    "jdbc.server.port": "@{dbPort}",
+                    "jdbc.server.db.data.path": "${dbFilePath}",
+                    "jdbc.client.db.username": "public",
+                    "jdbc.client.connection.pool.enabled": "true",
+                    "jdbc.client.connection.pool.max.active.connections": "100",
+                    "jdbc.client.connection.pool.max.idle.connections": "100",
+                    "osgi.binding": [
+                        "activity.jdbc.service",
+                        "orcs.jdbc.service",
+                        "account.jdbc.service",
+                        "oauth.jdbc.service"
+                    ]
+                }
+            ]
+        }
+    ]
+}				
 			</echo>
 		</sequential>
 	</macrodef>

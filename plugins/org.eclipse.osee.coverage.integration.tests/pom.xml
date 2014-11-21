@@ -164,7 +164,8 @@
 											value="${project.build.directory}/server-data" />
 										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
 
-										<property name="xserver-db-home" value="file:target/server-data/osee-test-db.db" />
+										<property name="xserver-use-demo-data" value="true" />
+										<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
 										<property name="xserver-db-name" value="osee-test-db" />
 										<property name="xserver-db-username" value="public" />
 										<property name="xserver-db-password" value="" />

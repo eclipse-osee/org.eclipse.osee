@@ -13,6 +13,8 @@
 	</appender>
 
 	<!-- Configure OSEE log messages -->
+	<logger name="org.eclipse.osee.jdbc" level="TRACE" />
+	
 	<logger name="org.eclipse.osee.orcs.db" level="TRACE" />
 	<logger name="org.eclipse.osee.database" level="TRACE" />
 	<!-- <logger name="org.eclipse.osee.orcs.core" level="TRACE" /> -->

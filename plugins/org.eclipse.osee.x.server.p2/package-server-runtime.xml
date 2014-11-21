@@ -17,6 +17,7 @@
 
 		<property name="server-config-path" value="${server-path}/configuration" />
 		<property name="server-plugins-path" value="${server-path}/plugins" />
+		<property name="server-etc-path" value="${server-path}/etc" />
 
 		<mkdir dir="${server-config-path}" />
 		<mkdir dir="${server-plugins-path}" />
@@ -24,6 +25,9 @@
 		<copy todir="${server-plugins-path}">
 			<fileset dir="${p2-content-path}/plugins" excludes="**/*source_*.jar" />
 		</copy>
+
+		<mkdir dir="${server-etc-path}" />
+		<copydir src="${etc-content-path}" dest="${server-etc-path}" />
 
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
@@ -57,16 +61,17 @@
 	<!-- *************************************************************** -->
 	<!--   LAUNCH CONFIGS                                                -->
 	<!-- *************************************************************** -->
-	<target name="generateTemplate">
-		<createLaunch filepath="${server-path}/runExample.sh" connection.id="[id from connection file]" serverport="8089" executable="false" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] \${line.separator}-Dosee.application.server.data=[binary data path] \${line.separator}-Dosee.authentication.protocol=[trustAll,demo]" />
+
+	<target name="postgreSqlLaunch">
+		<createLaunch filepath="${server-path}/runPostgreSqlLocal.sh" cm.cfg.uri="etc/osee.postgresql.json" connection.id="postgresqlLocalhost" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll" />
 	</target>
 
-	<target name="generateHSQLLaunch">
-		<createLaunch filepath="${server-path}/runHSQL.sh" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088" />
+	<target name="hsqlLaunch">
+		<createLaunch filepath="${server-path}/runHsql.sh" cm.cfg.uri="etc/osee.hsql.json" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll " />
 	</target>
 
-	<target name="generateDemoLaunch">
-		<createLaunch filepath="${server-path}/runDemo.sh" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=demo \${line.separator}-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
+	<target name="demoLaunch">
+		<createLaunch filepath="${server-path}/runDemo.sh" cm.cfg.uri="etc/osee.hsql.json" connection.id="hsql" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=demo \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
 
 		<copy file="${server-path}/runDemo.sh" tofile="${server-path}/runDemo.bat" overwrite="true" />
 		<replaceregexp file="${server-path}/runDemo.bat" match="\\" replace="^" flags="g" />
@@ -82,11 +87,7 @@
 		<copy file="${demo-content-path}/osee.demo.db.connection.xml" tofile="${server-demo-path}/osee.demo.db.connection.xml" />
 	</target>
 
-	<target name="generateLocalPostgresLaunch">
-		<createLaunch filepath="${server-path}/runPostgresqlLocal.sh" connection.id="postgresqlLocalhost" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll"/>
-	</target>
-
-	<target name="generateLaunchScripts" depends="generateTemplate,generateDemoLaunch,generateHSQLLaunch,generateLocalPostgresLaunch" />
+	<target name="generateLaunchScripts" depends="demoLaunch,hsqlLaunch,postgreSqlLaunch" />
 
 	<!-- *************************************************************** -->
 	<!--   GENERATE CONFIG.INI                                           -->
@@ -174,12 +175,13 @@ osee.log.default=INFO
 		<attribute name="filepath" />
 		<attribute name="serverport" />
 		<attribute name="connection.id" />
-		<attribute name="db.connection.pool.size" default="100" />		
+		<attribute name="db.connection.pool.size" default="100" />
 		<attribute name="launcher" />
 		<attribute name="session.timeout" default="3600" />
 		<attribute name="serverMaxMem" default="1024m" />
 		<attribute name="executable" default="true" />
 		<attribute name="extraVMArgs" default=" " />
+		<attribute name="cm.cfg.uri" />
 		<sequential>
 			<echo file="@{filepath}" append="false">java -server \
 -Xmx@{serverMaxMem} \
@@ -187,6 +189,7 @@ osee.log.default=INFO
 -Dosee.db.connection.id=@{connection.id} \
 -Dosee.db.connection.pool.size=@{db.connection.pool.size} \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
+-Dcm.config.uri=&quot;@{cm.cfg.uri}&quot; \
 @{extraVMArgs} \
 -jar plugins/@{launcher} -console -consoleLog
 </echo>
