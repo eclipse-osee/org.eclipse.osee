@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.sql.Timestamp;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
@@ -28,7 +26,7 @@ public class TransactionJoinQueryTest {
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, 999);
+      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, -1L, 999);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
@@ -50,19 +48,17 @@ public class TransactionJoinQueryTest {
       Assert.assertEquals(1, data.size());
 
       Object[] entry = data.get(0);
-      Assert.assertEquals(5, entry.length);
+      Assert.assertEquals(4, entry.length);
       Assert.assertEquals(999, entry[0]);
-      Assert.assertTrue(entry[1] instanceof Timestamp);
-      Assert.assertEquals(1234L, entry[2]);
-      Assert.assertEquals(5678, entry[3]);
-      Assert.assertEquals(SQL3DataType.BIGINT, entry[4]);
-
+      Assert.assertEquals(1234L, entry[1]);
+      Assert.assertEquals(5678, entry[2]);
+      Assert.assertEquals(SQL3DataType.BIGINT, entry[3]);
    }
 
-   @Test(expected = OseeDataStoreException.class)
+   @Test(expected = OseeCoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, 1000);
+      TransactionJoinQuery join = new TransactionJoinQuery(joinAccessor, -1L, 1000);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();

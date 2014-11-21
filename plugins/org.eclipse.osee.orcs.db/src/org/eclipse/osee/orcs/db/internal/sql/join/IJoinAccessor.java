@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
  */
 public interface IJoinAccessor {
 
-   void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList) throws OseeCoreException;
+   void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException;
 
    int delete(OseeConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException;
 

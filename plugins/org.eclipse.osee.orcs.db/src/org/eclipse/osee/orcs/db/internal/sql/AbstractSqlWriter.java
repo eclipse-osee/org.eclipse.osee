@@ -317,7 +317,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public CharJoinQuery writeCharJoin(Collection<String> ids) {
-      CharJoinQuery joinQuery = joinFactory.createCharJoinQuery(context.getSession().getGuid());
+      CharJoinQuery joinQuery = joinFactory.createCharJoinQuery();
       for (String id : ids) {
          joinQuery.add(id);
       }
@@ -326,7 +326,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery(context.getSession().getGuid());
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       for (Number id : ids) {
          joinQuery.add(id.longValue());
       }
@@ -335,7 +335,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public IdJoinQuery writeIdentifiableJoin(Collection<? extends Identifiable<Long>> ids) {
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery(context.getSession().getGuid());
+      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       for (Identity<Long> id : ids) {
          joinQuery.add(id.getGuid());
       }

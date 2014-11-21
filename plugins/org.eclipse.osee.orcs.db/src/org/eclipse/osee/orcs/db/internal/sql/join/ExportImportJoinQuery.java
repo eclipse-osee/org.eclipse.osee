@@ -28,7 +28,7 @@ public final class ExportImportJoinQuery extends AbstractJoinQuery {
 
       @Override
       public Object[] toArray() {
-         return new Object[] {getQueryId(), getInsertTime(), id1, id2};
+         return new Object[] {getQueryId(), id1, id2};
       }
 
       @Override
@@ -83,8 +83,8 @@ public final class ExportImportJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected ExportImportJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.EXPORT_IMPORT, queryId);
+   protected ExportImportJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
+      super(joinAccessor, JoinItem.EXPORT_IMPORT, expiresIn, queryId);
    }
 
    public void add(Long id1, Long id2) {

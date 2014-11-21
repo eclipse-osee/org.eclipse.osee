@@ -14,7 +14,6 @@ import static java.util.Arrays.asList;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -162,19 +161,19 @@ public class ArtifactQuerySqlContextFactoryImplTest {
          }
       }).when(tagProcessor).collectFromString(eq(QUICK_SEARCH_VALUE), any(TagCollector.class));
 
-      when(joinFactory.createIdJoinQuery(anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
 
          @Override
          public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(null, 23);
+            return new IdJoinQuery(null, -1L, 23);
          }
 
       });
-      when(joinFactory.createCharJoinQuery(anyString())).thenAnswer(new Answer<CharJoinQuery>() {
+      when(joinFactory.createCharJoinQuery()).thenAnswer(new Answer<CharJoinQuery>() {
 
          @Override
          public CharJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new CharJoinQuery(null, 23);
+            return new CharJoinQuery(null, -1L, 23);
          }
 
       });

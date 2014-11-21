@@ -26,7 +26,7 @@ public class IdJoinQuery extends AbstractJoinQuery {
 
       @Override
       public Object[] toArray() {
-         return new Object[] {getQueryId(), getInsertTime(), id};
+         return new Object[] {getQueryId(), id};
       }
 
       @Override
@@ -52,8 +52,8 @@ public class IdJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected IdJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.ID, queryId);
+   public IdJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
+      super(joinAccessor, JoinItem.ID, expiresIn, queryId);
    }
 
    public void add(Number id) {

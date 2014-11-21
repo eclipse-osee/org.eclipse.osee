@@ -18,7 +18,6 @@ import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -102,11 +101,11 @@ public class BranchQuerySqlContextFactoryImplTest {
       queryData = new QueryData(criteriaSet, options);
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
-      when(joinFactory.createIdJoinQuery(anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
 
          @Override
          public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(null, 23);
+            return new IdJoinQuery(null, -1L, 23);
          }
 
       });

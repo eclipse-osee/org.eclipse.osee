@@ -33,7 +33,6 @@ public final class TransactionJoinQuery extends AbstractJoinQuery {
       public Object[] toArray() {
          return new Object[] {
             getQueryId(),
-            getInsertTime(),
             gammaId,
             transactionId,
             branchUuid != null ? branchUuid : SQL3DataType.BIGINT};
@@ -99,8 +98,8 @@ public final class TransactionJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected TransactionJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.TRANSACTION, queryId);
+   protected TransactionJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
+      super(joinAccessor, JoinItem.TRANSACTION, expiresIn, queryId);
    }
 
    public void add(Long gammaId, Integer transactionId) {

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.sql.Timestamp;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +25,7 @@ public class ExportImportJoinQueryTest {
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ExportImportJoinQuery join = new ExportImportJoinQuery(joinAccessor, 999);
+      ExportImportJoinQuery join = new ExportImportJoinQuery(joinAccessor, -1L, 999);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
@@ -49,18 +47,17 @@ public class ExportImportJoinQueryTest {
       Assert.assertEquals(1, data.size());
 
       Object[] entry = data.get(0);
-      Assert.assertEquals(4, entry.length);
+      Assert.assertEquals(3, entry.length);
       Assert.assertEquals(999, entry[0]);
-      Assert.assertTrue(entry[1] instanceof Timestamp);
-      Assert.assertEquals(1234L, entry[2]);
-      Assert.assertEquals(5678L, entry[3]);
+      Assert.assertEquals(1234L, entry[1]);
+      Assert.assertEquals(5678L, entry[2]);
 
    }
 
-   @Test(expected = OseeDataStoreException.class)
+   @Test(expected = OseeCoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ExportImportJoinQuery join = new ExportImportJoinQuery(joinAccessor, 1000);
+      ExportImportJoinQuery join = new ExportImportJoinQuery(joinAccessor, -1L, 1000);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();

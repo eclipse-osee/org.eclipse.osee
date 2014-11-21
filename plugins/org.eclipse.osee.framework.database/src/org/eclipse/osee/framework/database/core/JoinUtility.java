@@ -21,6 +21,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class JoinUtility {
 
+   private static final Long DEFAULT_JOIN_EXPIRATION_SECONDS = 3L * 60L * 60L; // 3 hours
+
+   private static final String EXPIRATION_SECS__ARTIFACT_JOIN_QUERY = "artifact.join.expiration.secs";
+   private static final String EXPIRATION_SECS__CHAR_JOIN_QUERY = "char.join.expiration.secs";
+   private static final String EXPIRATION_SECS__ID_JOIN_QUERY = "id.join.expiration.secs";
+   private static final String EXPIRATION_SECS__TX_JOIN_QUERY = "tx.join.expiration.secs";
+
    private static final Random random = new Random();
 
    private JoinUtility() {
@@ -36,19 +43,40 @@ public class JoinUtility {
    }
 
    public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service) {
-      return new CharJoinQuery(createAccessor(service), getNewQueryId());
+      return createCharJoinQuery(service, null);
    }
 
-   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service) throws OseeDataStoreException {
-      return new IdJoinQuery(createAccessor(service), getNewQueryId());
+   public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__CHAR_JOIN_QUERY);
+      return new CharJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
+   }
+
+   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service) {
+      return createIdJoinQuery(service, null);
+   }
+
+   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
+      return new IdJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
-      return new ArtifactJoinQuery(createAccessor(service), getNewQueryId(), getMaxArtifactJoinSize(service));
+      return createArtifactJoinQuery(service, null);
+   }
+
+   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
+      return new ArtifactJoinQuery(createAccessor(service), actualExpiration, getNewQueryId(),
+         getMaxArtifactJoinSize(service));
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service) {
-      return new TransactionJoinQuery(createAccessor(service), getNewQueryId());
+      return createTransactionJoinQuery(service, null);
+   }
+
+   public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__TX_JOIN_QUERY);
+      return new TransactionJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
    }
 
    ////////////////// Static Legacy Calls /////////////////////////
@@ -57,7 +85,7 @@ public class JoinUtility {
    }
 
    public static IdJoinQuery createIdJoinQuery() throws OseeDataStoreException {
-      return new IdJoinQuery(createAccessor(getDatabase()), getNewQueryId());
+      return createIdJoinQuery(getDatabase());
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
@@ -75,6 +103,19 @@ public class JoinUtility {
       String maxSize = OseeInfo.getCachedValue(service, "artifact.join.max.size");
       if (Strings.isNumeric(maxSize)) {
          toReturn = Integer.parseInt(maxSize);
+      }
+      return toReturn;
+   }
+
+   private static Long getExpiresIn(IOseeDatabaseService service, Long actual, String defaultKey) {
+      Long toReturn = DEFAULT_JOIN_EXPIRATION_SECONDS;
+      if (actual != null) {
+         toReturn = actual;
+      } else {
+         String expiration = OseeInfo.getCachedValue(service, defaultKey);
+         if (Strings.isNumeric(expiration)) {
+            toReturn = Long.parseLong(expiration);
+         }
       }
       return toReturn;
    }

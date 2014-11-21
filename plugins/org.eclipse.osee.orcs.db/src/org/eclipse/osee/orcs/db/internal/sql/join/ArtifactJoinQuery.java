@@ -36,7 +36,6 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       public Object[] toArray() {
          return new Object[] {
             getQueryId(),
-            getInsertTime(),
             artId,
             branchUuid,
             transactionId != null ? transactionId : SQL3DataType.INTEGER};
@@ -102,8 +101,8 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   public ArtifactJoinQuery(IJoinAccessor joinAccessor, int queryId, int maxJoinSize) {
-      super(joinAccessor, JoinItem.ARTIFACT, queryId);
+   public ArtifactJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId, int maxJoinSize) {
+      super(joinAccessor, JoinItem.ARTIFACT, expiresIn, queryId);
       this.maxJoinSize = maxJoinSize;
    }
 

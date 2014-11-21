@@ -26,7 +26,7 @@ public final class TagQueueJoinQuery extends AbstractJoinQuery {
 
       @Override
       public Object[] toArray() {
-         return new Object[] {getQueryId(), getInsertTime(), gammaId};
+         return new Object[] {getQueryId(), gammaId};
       }
 
       @Override
@@ -73,8 +73,8 @@ public final class TagQueueJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   protected TagQueueJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.TAG_GAMMA_QUEUE, queryId);
+   protected TagQueueJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
+      super(joinAccessor, JoinItem.TAG_GAMMA_QUEUE, expiresIn, queryId);
    }
 
    public void add(Long gammaId) {

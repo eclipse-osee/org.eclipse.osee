@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.sql.Timestamp;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,7 +25,7 @@ public class ArtifactJoinQueryTest {
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 999, 10);
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, -1L, 999, 10);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
@@ -49,18 +47,17 @@ public class ArtifactJoinQueryTest {
       Assert.assertEquals(1, data.size());
 
       Object[] entry = data.get(0);
-      Assert.assertEquals(5, entry.length);
+      Assert.assertEquals(4, entry.length);
       Assert.assertEquals(999, entry[0]);
-      Assert.assertTrue(entry[1] instanceof Timestamp);
-      Assert.assertEquals(1234, entry[2]);
-      Assert.assertEquals(5678L, entry[3]);
+      Assert.assertEquals(1234, entry[1]);
+      Assert.assertEquals(5678L, entry[2]);
 
    }
 
-   @Test(expected = OseeDataStoreException.class)
+   @Test(expected = OseeCoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 1000, 10);
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, -1L, 1000, 10);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();
@@ -72,11 +69,11 @@ public class ArtifactJoinQueryTest {
       join.store();
    }
 
-   @Test(expected = OseeDataStoreException.class)
+   @Test(expected = OseeCoreException.class)
    public void testMoreThanAllowed() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
       int maxSize = 5;
-      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, 1000, maxSize);
+      ArtifactJoinQuery join = new ArtifactJoinQuery(joinAccessor, -1L, 1000, maxSize);
 
       for (int i = 0; i < maxSize + 1; i++) {
          join.add(i + 1, 1123L, null);

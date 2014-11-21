@@ -11,8 +11,12 @@
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**
@@ -20,9 +24,27 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
  */
 public class SqlJoinFactory {
 
+   public static final String JOIN_CLEANER__EXECUTOR_ID = "join.cleaner.executor.id";
+   private static final Long DEFAULT_JOIN_EXPIRATION_SECONDS = 3L * 60L * 60L; // 3 hours
+   private static final long DEFAULT_JOIN_CLEANER__PERIOD_MINUTES = 60L; // 60 minutes;
+
+   private static final String EXPIRATION_SECS__ARTIFACT_JOIN_QUERY = "artifact.join.expiration.secs";
+   private static final String EXPIRATION_SECS__CHAR_JOIN_QUERY = "char.join.expiration.secs";
+   private static final String EXPIRATION_SECS__EXPORT_IMPORT_JOIN_QUERY = "export.import.join.expiration.secs";
+   private static final String EXPIRATION_SECS__ID_JOIN_QUERY = "id.join.expiration.secs";
+   private static final String EXPIRATION_SECS__TAG_QUEUE_JOIN_QUERY = "tag.queue.join.expiration.secs";
+   private static final String EXPIRATION_SECS__TX_JOIN_QUERY = "tx.join.expiration.secs";
+
+   private Log logger;
    private IOseeDatabaseService service;
    private SystemPreferences preferences;
+   private ExecutorAdmin executorAdmin;
+
    private Random random;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setDatabaseService(IOseeDatabaseService service) {
       this.service = service;
@@ -32,11 +54,22 @@ public class SqlJoinFactory {
       this.preferences = preferences;
    }
 
-   public void start() {
-      random = new Random();
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
    }
 
-   public void stop() {
+   public void start() throws Exception {
+      random = new Random();
+
+      Callable<?> callable = new JoinCleanerCallable(logger, service);
+      executorAdmin.scheduleAtFixedRate(JOIN_CLEANER__EXECUTOR_ID, callable, DEFAULT_JOIN_CLEANER__PERIOD_MINUTES,
+         DEFAULT_JOIN_CLEANER__PERIOD_MINUTES, TimeUnit.MINUTES);
+   }
+
+   public void stop() throws Exception {
+      if (executorAdmin != null) {
+         executorAdmin.shutdown(JOIN_CLEANER__EXECUTOR_ID);
+      }
       random = null;
    }
 
@@ -48,40 +81,71 @@ public class SqlJoinFactory {
       return new DatabaseJoinAccessor(service);
    }
 
-   private IJoinAccessor createAccessor(String sessionId) {
-      return new DatabaseJoinAccessor(service, sessionId);
+   public TransactionJoinQuery createTransactionJoinQuery() {
+      return createTransactionJoinQuery(null);
    }
 
-   public TransactionJoinQuery createTransactionJoinQuery() {
-      return new TransactionJoinQuery(createAccessor(), getNewQueryId());
+   public TransactionJoinQuery createTransactionJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__TX_JOIN_QUERY);
+      return new TransactionJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
    }
 
    public IdJoinQuery createIdJoinQuery() {
-      return new IdJoinQuery(createAccessor(), getNewQueryId());
+      return createIdJoinQuery(null);
    }
 
-   public IdJoinQuery createIdJoinQuery(String sessionId) {
-      return new IdJoinQuery(createAccessor(sessionId), getNewQueryId());
+   public IdJoinQuery createIdJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
+      return new IdJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
    }
 
    public ArtifactJoinQuery createArtifactJoinQuery() {
-      return new ArtifactJoinQuery(createAccessor(), getNewQueryId(), getMaxArtifactJoinSize());
+      return createArtifactJoinQuery(null);
+   }
+
+   public ArtifactJoinQuery createArtifactJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
+      return new ArtifactJoinQuery(createAccessor(), actualExpiration, getNewQueryId(), getMaxArtifactJoinSize());
    }
 
    public TagQueueJoinQuery createTagQueueJoinQuery() {
-      return new TagQueueJoinQuery(createAccessor(), getNewQueryId());
+      return createTagQueueJoinQuery(null);
+   }
+
+   public TagQueueJoinQuery createTagQueueJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__TAG_QUEUE_JOIN_QUERY);
+      return new TagQueueJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
    }
 
    public ExportImportJoinQuery createExportImportJoinQuery() {
-      return new ExportImportJoinQuery(createAccessor(), getNewQueryId());
+      return createExportImportJoinQuery(null);
    }
 
-   public CharJoinQuery createCharJoinQuery(String sessionId) {
-      return new CharJoinQuery(createAccessor(sessionId), getNewQueryId());
+   public ExportImportJoinQuery createExportImportJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__EXPORT_IMPORT_JOIN_QUERY);
+      return new ExportImportJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
    }
 
    public CharJoinQuery createCharJoinQuery() {
-      return new CharJoinQuery(createAccessor(), getNewQueryId());
+      return createCharJoinQuery(null);
+   }
+
+   public CharJoinQuery createCharJoinQuery(Long expiresIn) {
+      Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__CHAR_JOIN_QUERY);
+      return new CharJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+   }
+
+   private Long getExpiresIn(Long actual, String defaultKey) {
+      Long toReturn = DEFAULT_JOIN_EXPIRATION_SECONDS;
+      if (actual != null) {
+         toReturn = actual;
+      } else {
+         String expiration = preferences.getCachedValue(defaultKey);
+         if (Strings.isNumeric(expiration)) {
+            toReturn = Long.parseLong(expiration);
+         }
+      }
+      return toReturn;
    }
 
    private int getMaxArtifactJoinSize() {

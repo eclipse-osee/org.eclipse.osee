@@ -65,7 +65,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
       ArtifactJoinQuery toReturn = joinFactory.createArtifactJoinQuery();
 
-      CharJoinQuery guidJoin = joinFactory.createCharJoinQuery(session.getGuid());
+      CharJoinQuery guidJoin = joinFactory.createCharJoinQuery();
       try {
          for (String id : artifactIds) {
             guidJoin.add(id);

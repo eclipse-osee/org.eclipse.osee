@@ -73,8 +73,8 @@ public final class CharJoinQuery extends AbstractJoinQuery {
       }
    }
 
-   public CharJoinQuery(IJoinAccessor joinAccessor, int queryId) {
-      super(joinAccessor, JoinItem.CHAR_ID, queryId);
+   public CharJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
+      super(joinAccessor, JoinItem.CHAR_ID, expiresIn, queryId);
    }
 
    public void add(String value) {

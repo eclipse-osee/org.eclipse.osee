@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IJoinAccessor {
 
-   void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList) throws OseeCoreException;
+   void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException;
 
    int delete(OseeConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException;
 

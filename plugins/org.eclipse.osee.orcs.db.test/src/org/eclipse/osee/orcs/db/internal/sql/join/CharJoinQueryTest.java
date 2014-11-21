@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class CharJoinQueryTest {
    @Test
    public void testAdd() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      CharJoinQuery join = new CharJoinQuery(joinAccessor, 999);
+      CharJoinQuery join = new CharJoinQuery(joinAccessor, -1L, 999);
       Assert.assertEquals(0, join.size());
       Assert.assertEquals(true, join.isEmpty());
 
@@ -53,10 +52,10 @@ public class CharJoinQueryTest {
       Assert.assertEquals("hello", entry[1]);
    }
 
-   @Test(expected = OseeDataStoreException.class)
+   @Test(expected = OseeCoreException.class)
    public void testStoreTwice() throws OseeCoreException {
       MockJoinAccessor joinAccessor = new MockJoinAccessor();
-      CharJoinQuery join = new CharJoinQuery(joinAccessor, 1000);
+      CharJoinQuery join = new CharJoinQuery(joinAccessor, -1L, 1000);
 
       Assert.assertEquals(false, join.wasStored());
       join.store();

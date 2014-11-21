@@ -10,16 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -36,19 +33,19 @@ public abstract class AbstractJoinQuery {
 
    private final IJoinAccessor joinAccessor;
    private final JoinItem joinItem;
+   private final Long expiresIn;
    private final int queryId;
 
-   private final Timestamp insertTime;
    protected final Set<IJoinRow> entries = new HashSet<IJoinRow>();
 
    private boolean wasStored;
    private int storedSize;
 
-   protected AbstractJoinQuery(IJoinAccessor joinAccessor, JoinItem joinItem, int queryId) {
+   protected AbstractJoinQuery(IJoinAccessor joinAccessor, JoinItem joinItem, Long expiresIn, int queryId) {
       this.joinAccessor = joinAccessor;
       this.joinItem = joinItem;
+      this.expiresIn = expiresIn;
       this.queryId = queryId;
-      this.insertTime = GlobalTime.GreenwichMeanTimestamp();
       this.storedSize = -1;
       this.wasStored = false;
    }
@@ -65,10 +62,6 @@ public abstract class AbstractJoinQuery {
       return queryId;
    }
 
-   public Timestamp getInsertTime() {
-      return insertTime;
-   }
-
    public String getJoinTableName() {
       return joinItem.getJoinTableName();
    }
@@ -83,13 +76,21 @@ public abstract class AbstractJoinQuery {
          for (IJoinRow joinArray : entries) {
             data.add(joinArray.toArray());
          }
-         joinAccessor.store(connection, joinItem, getQueryId(), data);
+         joinAccessor.store(connection, joinItem, getQueryId(), data, getIssuedAt(), getExpiresIn());
          this.storedSize = this.entries.size();
          this.wasStored = true;
          this.entries.clear();
       } else {
-         throw new OseeDataStoreException("Cannot store query id twice");
+         throw new OseeCoreException("Cannot store query id twice");
       }
+   }
+
+   private Long getIssuedAt() {
+      return System.currentTimeMillis() / 1000L;
+   }
+
+   public Long getExpiresIn() {
+      return expiresIn;
    }
 
    public int delete(OseeConnection connection) throws OseeCoreException {

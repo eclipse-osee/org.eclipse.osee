@@ -59,7 +59,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -125,16 +124,16 @@ public class DataLoaderFactoryImplTest {
 
          @Override
          public ArtifactJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new ArtifactJoinQuery(joinAccessor, 23, Integer.MAX_VALUE);
+            return new ArtifactJoinQuery(joinAccessor, -1L, 23, Integer.MAX_VALUE);
          }
 
       });
 
-      when(joinFactory.createIdJoinQuery(Mockito.anyString())).thenAnswer(new Answer<IdJoinQuery>() {
+      when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
 
          @Override
          public IdJoinQuery answer(InvocationOnMock invocation) throws Throwable {
-            return new IdJoinQuery(joinAccessor, 23);
+            return new IdJoinQuery(joinAccessor, -1L, 23);
          }
 
       });

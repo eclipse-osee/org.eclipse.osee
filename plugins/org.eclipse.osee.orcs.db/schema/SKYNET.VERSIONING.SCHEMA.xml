@@ -284,7 +284,6 @@
 	<Table name="OSEE_TAG_GAMMA_QUEUE" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Constraint schema="OSEE" id="OSEE_JOIN_GAMMA_Q_G_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, GAMMA_ID" />
 	</Table>   
    
@@ -292,7 +291,6 @@
 		<Note purpose="Core table describing ?"/>
 		<Column id="QUERY_ID" description="randomly generated identifier for this short-lived join" />
 		<Column id="GAMMA_ID" description="" />
-		<Column id="INSERT_TIME" description="" />
 	</TableDescription>
 
 	<!-- __________________________________________________________ -->
@@ -384,7 +382,6 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ID1" defaultValue="not null" type="BIGINT" />
 		<Column id="ID2" defaultValue="not null" type="BIGINT" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_EXPORT_IMPORT_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 		</Index>
@@ -501,7 +498,6 @@
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_ID" defaultValue="not null" type="BIGINT" />
 		<Column id="TRANSACTION_ID" type="INTEGER" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ART__Q_A_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 			<AppliesTo id="ART_ID"/>
@@ -514,13 +510,11 @@
 		<Column id="ART_ID" 				description="application specific INTEGER identifier" />
 		<Column id="BRANCH_ID" 			description="application specific INTEGER identifier" />
 		<Column id="TRANSACTION_ID"	description="application specific INTEGER identifier" />
-		<Column id="INSERT_TIME" 		description="time this join query was started" />
 	</TableDescription>
 
 	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ID" type="BIGINT" />
-		<Column id="INSERT_TIME" type="TIMESTAMP" />
 		<Index id="OSEE_JOIN_ID__Q_I_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
 			<AppliesTo id="ID"/>
@@ -531,16 +525,14 @@
 		<Note purpose="Temporary working table to improve performance of joins"/>
 		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
 		<Column id="ID" 				description="application specific NUMBER identifier"/>
-		<Column id="INSERT_TIME" 	description="time this join query was started"/>
 	</TableDescription>
 
 	<Table name="OSEE_JOIN_CLEANUP" schema="OSEE" tablespace="osee_data">
-		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />		
 		<Column id="TABLE_NAME" defaultValue="not null" type="VARCHAR" limits="28"/>
-		<Index id="OSEE_JOIN_CLEANUP__Q_IDX" type="UNIQUE" tablespace="osee_index">
-			<AppliesTo id="QUERY_ID"/>
-		</Index>
+		<Column id="ISSUED_AT" defaultValue="not null" type="BIGINT" />
+		<Column id="EXPIRES_IN" defaultValue="not null" type="BIGINT" />
+		<Constraint schema="OSEE" id="OSEE_JOIN_CLEANUP__PK" type="PRIMARY KEY" appliesTo="QUERY_ID" />
 	</Table>
 
 	<TableDescription referenceTable="OSEE_JOIN_CLEANUP">
@@ -548,7 +540,6 @@
 		This cleanup is only needed if the application/server fails to do the expected delete
 		based on the corresponding query id.  Cleanup is performed when the corresponding session has been closed."/>
 		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
-		<Column id="SESSION_ID" 	description="unique identifier of the session that issued the query"/>
 		<Column id="TABLE_NAME" 	description="name of the join table that stores the join with this query_id"/>
 	</TableDescription>
 
@@ -571,7 +562,6 @@
 		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
 		<Column id="BRANCH_ID" type="BIGINT" />
 		<Index id="OSEE_JOIN_TRANSACTION_Q_IDX" tablespace="osee_index">
 			<AppliesTo id="QUERY_ID"/>
@@ -583,6 +573,5 @@
 		<Column id="QUERY_ID" 		description="randomly generated identifier for this short-lived join"/>
 		<Column id="TRANSACTION_ID" 		description="application specific INTEGER identifier"/>
 		<Column id="GAMMA_ID" 		description="application specific INTEGER identifier"/>
-		<Column id="INSERT_TIME" 	description="time this join query was started"/>
 	</TableDescription>
 </TableConfig>
