@@ -626,6 +626,15 @@ public interface OrcsScriptDslFactory extends EFactory
   OsArtifactIdCriteria createOsArtifactIdCriteria();
 
   /**
+   * Returns a new object of class '<em>Os Artifact Guid Criteria</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Os Artifact Guid Criteria</em>'.
+   * @generated
+   */
+  OsArtifactGuidCriteria createOsArtifactGuidCriteria();
+
+  /**
    * Returns a new object of class '<em>Os Artifact Type Criteria</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

@@ -410,6 +410,11 @@ public class OrcsScriptDslAdapterFactory extends AdapterFactoryImpl
         return createOsArtifactIdCriteriaAdapter();
       }
       @Override
+      public Adapter caseOsArtifactGuidCriteria(OsArtifactGuidCriteria object)
+      {
+        return createOsArtifactGuidCriteriaAdapter();
+      }
+      @Override
       public Adapter caseOsArtifactTypeCriteria(OsArtifactTypeCriteria object)
       {
         return createOsArtifactTypeCriteriaAdapter();
@@ -1577,6 +1582,21 @@ public class OrcsScriptDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createOsArtifactIdCriteriaAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria <em>Os Artifact Guid Criteria</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria
+   * @generated
+   */
+  public Adapter createOsArtifactGuidCriteriaAdapter()
   {
     return null;
   }

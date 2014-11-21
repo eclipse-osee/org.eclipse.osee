@@ -2294,6 +2294,43 @@ public interface OrcsScriptDslPackage extends EPackage
   int OS_ARTIFACT_ID_CRITERIA_FEATURE_COUNT = OS_ARTIFACT_CRITERIA_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactGuidCriteriaImpl <em>Os Artifact Guid Criteria</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactGuidCriteriaImpl
+   * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactGuidCriteria()
+   * @generated
+   */
+  int OS_ARTIFACT_GUID_CRITERIA = 67;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OS_ARTIFACT_GUID_CRITERIA__NAME = OS_ARTIFACT_CRITERIA__NAME;
+
+  /**
+   * The feature id for the '<em><b>Ids</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OS_ARTIFACT_GUID_CRITERIA__IDS = OS_ARTIFACT_CRITERIA_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Os Artifact Guid Criteria</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OS_ARTIFACT_GUID_CRITERIA_FEATURE_COUNT = OS_ARTIFACT_CRITERIA_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactTypeCriteriaImpl <em>Os Artifact Type Criteria</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2301,7 +2338,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactTypeCriteria()
    * @generated
    */
-  int OS_ARTIFACT_TYPE_CRITERIA = 67;
+  int OS_ARTIFACT_TYPE_CRITERIA = 68;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2338,7 +2375,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactTypeClause()
    * @generated
    */
-  int OS_ARTIFACT_TYPE_CLAUSE = 68;
+  int OS_ARTIFACT_TYPE_CLAUSE = 69;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2375,7 +2412,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactTypeEqualsClause()
    * @generated
    */
-  int OS_ARTIFACT_TYPE_EQUALS_CLAUSE = 69;
+  int OS_ARTIFACT_TYPE_EQUALS_CLAUSE = 70;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2412,7 +2449,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactTypeInstanceOfClause()
    * @generated
    */
-  int OS_ARTIFACT_TYPE_INSTANCE_OF_CLAUSE = 70;
+  int OS_ARTIFACT_TYPE_INSTANCE_OF_CLAUSE = 71;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2449,7 +2486,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsAttributeCriteria()
    * @generated
    */
-  int OS_ATTRIBUTE_CRITERIA = 71;
+  int OS_ATTRIBUTE_CRITERIA = 72;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2486,7 +2523,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsAttributeClause()
    * @generated
    */
-  int OS_ATTRIBUTE_CLAUSE = 72;
+  int OS_ATTRIBUTE_CLAUSE = 73;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -2523,7 +2560,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsAttributeExistClause()
    * @generated
    */
-  int OS_ATTRIBUTE_EXIST_CLAUSE = 73;
+  int OS_ATTRIBUTE_EXIST_CLAUSE = 74;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -2560,7 +2597,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOseAttributeOpClause()
    * @generated
    */
-  int OSE_ATTRIBUTE_OP_CLAUSE = 74;
+  int OSE_ATTRIBUTE_OP_CLAUSE = 75;
 
   /**
    * The feature id for the '<em><b>Types</b></em>' containment reference list.
@@ -2615,7 +2652,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsRelationCriteria()
    * @generated
    */
-  int OS_RELATION_CRITERIA = 75;
+  int OS_RELATION_CRITERIA = 76;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2652,7 +2689,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsRelationClause()
    * @generated
    */
-  int OS_RELATION_CLAUSE = 76;
+  int OS_RELATION_CLAUSE = 77;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2698,7 +2735,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsRelationExistClause()
    * @generated
    */
-  int OS_RELATION_EXIST_CLAUSE = 77;
+  int OS_RELATION_EXIST_CLAUSE = 78;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2753,7 +2790,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsRelatedToClause()
    * @generated
    */
-  int OS_RELATED_TO_CLAUSE = 78;
+  int OS_RELATED_TO_CLAUSE = 79;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2808,7 +2845,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsFollowClause()
    * @generated
    */
-  int OS_FOLLOW_CLAUSE = 79;
+  int OS_FOLLOW_CLAUSE = 80;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2845,7 +2882,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsFollowStatement()
    * @generated
    */
-  int OS_FOLLOW_STATEMENT = 80;
+  int OS_FOLLOW_STATEMENT = 81;
 
   /**
    * The number of structural features of the '<em>Os Follow Statement</em>' class.
@@ -2864,7 +2901,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsFollowRelationType()
    * @generated
    */
-  int OS_FOLLOW_RELATION_TYPE = 81;
+  int OS_FOLLOW_RELATION_TYPE = 82;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2928,7 +2965,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsVariableDeclaration()
    * @generated
    */
-  int OS_VARIABLE_DECLARATION = 82;
+  int OS_VARIABLE_DECLARATION = 83;
 
   /**
    * The feature id for the '<em><b>Elements</b></em>' containment reference list.
@@ -2956,7 +2993,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsVariable()
    * @generated
    */
-  int OS_VARIABLE = 83;
+  int OS_VARIABLE = 84;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2993,7 +3030,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsAssignment()
    * @generated
    */
-  int OS_ASSIGNMENT = 84;
+  int OS_ASSIGNMENT = 85;
 
   /**
    * The feature id for the '<em><b>Right</b></em>' containment reference.
@@ -3021,7 +3058,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsBooleanLiteral()
    * @generated
    */
-  int OS_BOOLEAN_LITERAL = 85;
+  int OS_BOOLEAN_LITERAL = 86;
 
   /**
    * The feature id for the '<em><b>Is True</b></em>' attribute.
@@ -3049,7 +3086,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsNullLiteral()
    * @generated
    */
-  int OS_NULL_LITERAL = 86;
+  int OS_NULL_LITERAL = 87;
 
   /**
    * The number of structural features of the '<em>Os Null Literal</em>' class.
@@ -3068,7 +3105,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsNumberLiteral()
    * @generated
    */
-  int OS_NUMBER_LITERAL = 87;
+  int OS_NUMBER_LITERAL = 88;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3096,7 +3133,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsStringLiteral()
    * @generated
    */
-  int OS_STRING_LITERAL = 88;
+  int OS_STRING_LITERAL = 89;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3124,7 +3161,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsTemplateLiteral()
    * @generated
    */
-  int OS_TEMPLATE_LITERAL = 89;
+  int OS_TEMPLATE_LITERAL = 90;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -3152,7 +3189,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsVariableReference()
    * @generated
    */
-  int OS_VARIABLE_REFERENCE = 90;
+  int OS_VARIABLE_REFERENCE = 91;
 
   /**
    * The feature id for the '<em><b>Ref</b></em>' reference.
@@ -3180,7 +3217,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsDotExpression()
    * @generated
    */
-  int OS_DOT_EXPRESSION = 91;
+  int OS_DOT_EXPRESSION = 92;
 
   /**
    * The feature id for the '<em><b>Ref</b></em>' containment reference.
@@ -3217,7 +3254,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsQueryExpression()
    * @generated
    */
-  int OS_QUERY_EXPRESSION = 92;
+  int OS_QUERY_EXPRESSION = 93;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3263,7 +3300,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsCollectObjectExpression()
    * @generated
    */
-  int OS_COLLECT_OBJECT_EXPRESSION = 93;
+  int OS_COLLECT_OBJECT_EXPRESSION = 94;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3309,7 +3346,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsCollectAllFieldsExpression()
    * @generated
    */
-  int OS_COLLECT_ALL_FIELDS_EXPRESSION = 94;
+  int OS_COLLECT_ALL_FIELDS_EXPRESSION = 95;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3337,7 +3374,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsCollectFieldExpression()
    * @generated
    */
-  int OS_COLLECT_FIELD_EXPRESSION = 95;
+  int OS_COLLECT_FIELD_EXPRESSION = 96;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3374,7 +3411,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsBranchState()
    * @generated
    */
-  int OS_BRANCH_STATE = 96;
+  int OS_BRANCH_STATE = 97;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsBranchType <em>Os Branch Type</em>}' enum.
@@ -3384,7 +3421,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsBranchType()
    * @generated
    */
-  int OS_BRANCH_TYPE = 97;
+  int OS_BRANCH_TYPE = 98;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsBranchArchiveFilter <em>Os Branch Archive Filter</em>}' enum.
@@ -3394,7 +3431,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsBranchArchiveFilter()
    * @generated
    */
-  int OS_BRANCH_ARCHIVE_FILTER = 98;
+  int OS_BRANCH_ARCHIVE_FILTER = 99;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsTxType <em>Os Tx Type</em>}' enum.
@@ -3404,7 +3441,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsTxType()
    * @generated
    */
-  int OS_TX_TYPE = 99;
+  int OS_TX_TYPE = 100;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsRelationSide <em>Os Relation Side</em>}' enum.
@@ -3414,7 +3451,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsRelationSide()
    * @generated
    */
-  int OS_RELATION_SIDE = 100;
+  int OS_RELATION_SIDE = 101;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsOperator <em>Os Operator</em>}' enum.
@@ -3424,7 +3461,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsOperator()
    * @generated
    */
-  int OS_OPERATOR = 101;
+  int OS_OPERATOR = 102;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsNonEqualOperator <em>Os Non Equal Operator</em>}' enum.
@@ -3434,7 +3471,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsNonEqualOperator()
    * @generated
    */
-  int OS_NON_EQUAL_OPERATOR = 102;
+  int OS_NON_EQUAL_OPERATOR = 103;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsExistenceOperator <em>Os Existence Operator</em>}' enum.
@@ -3444,7 +3481,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsExistenceOperator()
    * @generated
    */
-  int OS_EXISTENCE_OPERATOR = 103;
+  int OS_EXISTENCE_OPERATOR = 104;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsQueryOption <em>Os Query Option</em>}' enum.
@@ -3454,7 +3491,7 @@ public interface OrcsScriptDslPackage extends EPackage
    * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsQueryOption()
    * @generated
    */
-  int OS_QUERY_OPTION = 104;
+  int OS_QUERY_OPTION = 105;
 
 
   /**
@@ -4863,6 +4900,27 @@ public interface OrcsScriptDslPackage extends EPackage
    * @generated
    */
   EReference getOsArtifactIdCriteria_Ids();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria <em>Os Artifact Guid Criteria</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Os Artifact Guid Criteria</em>'.
+   * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria
+   * @generated
+   */
+  EClass getOsArtifactGuidCriteria();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria#getIds <em>Ids</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Ids</em>'.
+   * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria#getIds()
+   * @see #getOsArtifactGuidCriteria()
+   * @generated
+   */
+  EReference getOsArtifactGuidCriteria_Ids();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactTypeCriteria <em>Os Artifact Type Criteria</em>}'.
@@ -6879,6 +6937,24 @@ public interface OrcsScriptDslPackage extends EPackage
      * @generated
      */
     EReference OS_ARTIFACT_ID_CRITERIA__IDS = eINSTANCE.getOsArtifactIdCriteria_Ids();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactGuidCriteriaImpl <em>Os Artifact Guid Criteria</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactGuidCriteriaImpl
+     * @see org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OrcsScriptDslPackageImpl#getOsArtifactGuidCriteria()
+     * @generated
+     */
+    EClass OS_ARTIFACT_GUID_CRITERIA = eINSTANCE.getOsArtifactGuidCriteria();
+
+    /**
+     * The meta object literal for the '<em><b>Ids</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference OS_ARTIFACT_GUID_CRITERIA__IDS = eINSTANCE.getOsArtifactGuidCriteria_Ids();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.impl.OsArtifactTypeCriteriaImpl <em>Os Artifact Type Criteria</em>}' class.

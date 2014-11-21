@@ -132,6 +132,7 @@ public class OrcsScriptDslFactoryImpl extends EFactoryImpl implements OrcsScript
       case OrcsScriptDslPackage.OS_ITEM_CRITERIA: return createOsItemCriteria();
       case OrcsScriptDslPackage.OS_ARTIFACT_CRITERIA: return createOsArtifactCriteria();
       case OrcsScriptDslPackage.OS_ARTIFACT_ID_CRITERIA: return createOsArtifactIdCriteria();
+      case OrcsScriptDslPackage.OS_ARTIFACT_GUID_CRITERIA: return createOsArtifactGuidCriteria();
       case OrcsScriptDslPackage.OS_ARTIFACT_TYPE_CRITERIA: return createOsArtifactTypeCriteria();
       case OrcsScriptDslPackage.OS_ARTIFACT_TYPE_CLAUSE: return createOsArtifactTypeClause();
       case OrcsScriptDslPackage.OS_ARTIFACT_TYPE_EQUALS_CLAUSE: return createOsArtifactTypeEqualsClause();
@@ -967,6 +968,17 @@ public class OrcsScriptDslFactoryImpl extends EFactoryImpl implements OrcsScript
   {
     OsArtifactIdCriteriaImpl osArtifactIdCriteria = new OsArtifactIdCriteriaImpl();
     return osArtifactIdCriteria;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OsArtifactGuidCriteria createOsArtifactGuidCriteria()
+  {
+    OsArtifactGuidCriteriaImpl osArtifactGuidCriteria = new OsArtifactGuidCriteriaImpl();
+    return osArtifactGuidCriteria;
   }
 
   /**

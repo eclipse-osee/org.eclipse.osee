@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 import org.eclipse.osee.orcs.script.dsl.OsFieldEnum;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
+import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactIdCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryAll;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryByPredicate;
@@ -566,6 +567,13 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       @Override
+      public Void caseOsArtifactGuidCriteria(OsArtifactGuidCriteria object) {
+         Collection<String> ids = resolver.resolve(String.class, object.getIds());
+         getArtifactQuery().andGuids(ids);
+         return null;
+      }
+
+      @Override
       public Void caseOsArtifactTypeEqualsClause(OsArtifactTypeEqualsClause object) {
          getArtifactQuery().andTypeEquals(asArtifactTypes(object.getTypes()));
          return null;
@@ -756,5 +764,6 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          }
          return toReturn.toArray(new QueryOption[options.size()]);
       }
+
    }
 }

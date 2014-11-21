@@ -253,6 +253,9 @@
     <genClasses ecoreClass="OrcsScriptDsl.ecore#//OsArtifactIdCriteria">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OrcsScriptDsl.ecore#//OsArtifactIdCriteria/ids"/>
     </genClasses>
+    <genClasses ecoreClass="OrcsScriptDsl.ecore#//OsArtifactGuidCriteria">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OrcsScriptDsl.ecore#//OsArtifactGuidCriteria/ids"/>
+    </genClasses>
     <genClasses ecoreClass="OrcsScriptDsl.ecore#//OsArtifactTypeCriteria">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OrcsScriptDsl.ecore#//OsArtifactTypeCriteria/clause"/>
     </genClasses>

@@ -5,6 +5,7 @@ import com.google.inject.Provider;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScriptDslPackage;
+import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactIdCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryAll;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryByPredicate;
@@ -98,6 +99,15 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 			case OrcsScriptDslPackage.ORCS_SCRIPT:
 				if(context == grammarAccess.getOrcsScriptRule()) {
 					sequence_OrcsScript(context, (OrcsScript) semanticObject); 
+					return; 
+				}
+				else break;
+			case OrcsScriptDslPackage.OS_ARTIFACT_GUID_CRITERIA:
+				if(context == grammarAccess.getOsArtifactCriteriaRule() ||
+				   context == grammarAccess.getOsArtifactGuidCriteriaRule() ||
+				   context == grammarAccess.getOsCritieriaRule() ||
+				   context == grammarAccess.getOsItemCriteriaRule()) {
+					sequence_OsArtifactGuidCriteria(context, (OsArtifactGuidCriteria) semanticObject); 
 					return; 
 				}
 				else break;
@@ -319,6 +329,7 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 				else break;
 			case OrcsScriptDslPackage.OS_DOT_EXPRESSION:
 				if(context == grammarAccess.getOsAliasRule() ||
+				   context == grammarAccess.getOsArtifactGuidRule() ||
 				   context == grammarAccess.getOsArtifactIdRule() ||
 				   context == grammarAccess.getOsAttributeValueRule() ||
 				   context == grammarAccess.getOsBranchIdRule() ||
@@ -432,6 +443,7 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 				else break;
 			case OrcsScriptDslPackage.OS_STRING_LITERAL:
 				if(context == grammarAccess.getOsAliasRule() ||
+				   context == grammarAccess.getOsArtifactGuidRule() ||
 				   context == grammarAccess.getOsAssignmentValueRule() ||
 				   context == grammarAccess.getOsAttributeValueRule() ||
 				   context == grammarAccess.getOsBranchIdOrNameRule() ||
@@ -449,6 +461,7 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 				else break;
 			case OrcsScriptDslPackage.OS_TEMPLATE_LITERAL:
 				if(context == grammarAccess.getOsAliasRule() ||
+				   context == grammarAccess.getOsArtifactGuidRule() ||
 				   context == grammarAccess.getOsArtifactIdRule() ||
 				   context == grammarAccess.getOsAssignmentValueRule() ||
 				   context == grammarAccess.getOsAttributeValueRule() ||
@@ -638,6 +651,7 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 				else break;
 			case OrcsScriptDslPackage.OS_VARIABLE_REFERENCE:
 				if(context == grammarAccess.getOsAliasRule() ||
+				   context == grammarAccess.getOsArtifactGuidRule() ||
 				   context == grammarAccess.getOsArtifactIdRule() ||
 				   context == grammarAccess.getOsAssignmentValueRule() ||
 				   context == grammarAccess.getOsAttributeValueRule() ||
@@ -680,6 +694,15 @@ public class OrcsScriptDslSemanticSequencer extends AbstractDelegatingSemanticSe
 	 *     (version=ScriptVersion? statements+=ScriptStatement*)
 	 */
 	protected void sequence_OrcsScript(EObject context, OrcsScript semanticObject) {
+		genericSequencer.createSequence(context, semanticObject);
+	}
+	
+	
+	/**
+	 * Constraint:
+	 *     (name='art-guid' (ids+=OsArtifactGuid | (ids+=OsArtifactGuid ids+=OsArtifactGuid*)))
+	 */
+	protected void sequence_OsArtifactGuidCriteria(EObject context, OsArtifactGuidCriteria semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
 	}
 	

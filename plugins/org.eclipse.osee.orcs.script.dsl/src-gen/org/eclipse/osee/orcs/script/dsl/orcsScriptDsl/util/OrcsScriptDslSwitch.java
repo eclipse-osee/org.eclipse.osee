@@ -609,6 +609,16 @@ public class OrcsScriptDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case OrcsScriptDslPackage.OS_ARTIFACT_GUID_CRITERIA:
+      {
+        OsArtifactGuidCriteria osArtifactGuidCriteria = (OsArtifactGuidCriteria)theEObject;
+        T result = caseOsArtifactGuidCriteria(osArtifactGuidCriteria);
+        if (result == null) result = caseOsArtifactCriteria(osArtifactGuidCriteria);
+        if (result == null) result = caseOsItemCriteria(osArtifactGuidCriteria);
+        if (result == null) result = caseOsCritieria(osArtifactGuidCriteria);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case OrcsScriptDslPackage.OS_ARTIFACT_TYPE_CRITERIA:
       {
         OsArtifactTypeCriteria osArtifactTypeCriteria = (OsArtifactTypeCriteria)theEObject;
@@ -1924,6 +1934,22 @@ public class OrcsScriptDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseOsArtifactIdCriteria(OsArtifactIdCriteria object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Os Artifact Guid Criteria</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Os Artifact Guid Criteria</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseOsArtifactGuidCriteria(OsArtifactGuidCriteria object)
   {
     return null;
   }

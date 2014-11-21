@@ -14,6 +14,7 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScriptDslFactory;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScriptDslPackage;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactCriteria;
+import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactGuidCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactIdCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQuery;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryAll;
@@ -594,6 +595,13 @@ public class OrcsScriptDslPackageImpl extends EPackageImpl implements OrcsScript
    * @generated
    */
   private EClass osArtifactIdCriteriaEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass osArtifactGuidCriteriaEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2269,6 +2277,26 @@ public class OrcsScriptDslPackageImpl extends EPackageImpl implements OrcsScript
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getOsArtifactGuidCriteria()
+  {
+    return osArtifactGuidCriteriaEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getOsArtifactGuidCriteria_Ids()
+  {
+    return (EReference)osArtifactGuidCriteriaEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getOsArtifactTypeCriteria()
   {
     return osArtifactTypeCriteriaEClass;
@@ -3245,6 +3273,9 @@ public class OrcsScriptDslPackageImpl extends EPackageImpl implements OrcsScript
     osArtifactIdCriteriaEClass = createEClass(OS_ARTIFACT_ID_CRITERIA);
     createEReference(osArtifactIdCriteriaEClass, OS_ARTIFACT_ID_CRITERIA__IDS);
 
+    osArtifactGuidCriteriaEClass = createEClass(OS_ARTIFACT_GUID_CRITERIA);
+    createEReference(osArtifactGuidCriteriaEClass, OS_ARTIFACT_GUID_CRITERIA__IDS);
+
     osArtifactTypeCriteriaEClass = createEClass(OS_ARTIFACT_TYPE_CRITERIA);
     createEReference(osArtifactTypeCriteriaEClass, OS_ARTIFACT_TYPE_CRITERIA__CLAUSE);
 
@@ -3429,6 +3460,7 @@ public class OrcsScriptDslPackageImpl extends EPackageImpl implements OrcsScript
     osItemCriteriaEClass.getESuperTypes().add(this.getOsCritieria());
     osArtifactCriteriaEClass.getESuperTypes().add(this.getOsItemCriteria());
     osArtifactIdCriteriaEClass.getESuperTypes().add(this.getOsArtifactCriteria());
+    osArtifactGuidCriteriaEClass.getESuperTypes().add(this.getOsArtifactCriteria());
     osArtifactTypeCriteriaEClass.getESuperTypes().add(this.getOsArtifactCriteria());
     osArtifactTypeEqualsClauseEClass.getESuperTypes().add(this.getOsArtifactTypeClause());
     osArtifactTypeInstanceOfClauseEClass.getESuperTypes().add(this.getOsArtifactTypeClause());
@@ -3656,6 +3688,9 @@ public class OrcsScriptDslPackageImpl extends EPackageImpl implements OrcsScript
 
     initEClass(osArtifactIdCriteriaEClass, OsArtifactIdCriteria.class, "OsArtifactIdCriteria", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOsArtifactIdCriteria_Ids(), this.getOsExpression(), null, "ids", null, 0, -1, OsArtifactIdCriteria.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(osArtifactGuidCriteriaEClass, OsArtifactGuidCriteria.class, "OsArtifactGuidCriteria", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getOsArtifactGuidCriteria_Ids(), this.getOsExpression(), null, "ids", null, 0, -1, OsArtifactGuidCriteria.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(osArtifactTypeCriteriaEClass, OsArtifactTypeCriteria.class, "OsArtifactTypeCriteria", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOsArtifactTypeCriteria_Clause(), this.getOsArtifactTypeClause(), null, "clause", null, 0, 1, OsArtifactTypeCriteria.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

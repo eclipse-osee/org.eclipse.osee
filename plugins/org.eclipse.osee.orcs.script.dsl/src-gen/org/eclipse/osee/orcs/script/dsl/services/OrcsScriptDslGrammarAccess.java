@@ -910,6 +910,34 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getOsNumberLiteralParserRuleCall_2() { return cOsNumberLiteralParserRuleCall_2; }
 	}
 
+	public class OsArtifactGuidElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OsArtifactGuid");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cOsDotExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cOsTemplateLiteralParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cOsStringLiteralParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		
+		//OsArtifactGuid returns OsExpression:
+		//	OsDotExpression //
+		// //
+		// | OsTemplateLiteral | OsStringLiteral;
+		public ParserRule getRule() { return rule; }
+
+		//OsDotExpression //
+		// //
+		// | OsTemplateLiteral | OsStringLiteral
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//OsDotExpression
+		public RuleCall getOsDotExpressionParserRuleCall_0() { return cOsDotExpressionParserRuleCall_0; }
+
+		//OsTemplateLiteral
+		public RuleCall getOsTemplateLiteralParserRuleCall_1() { return cOsTemplateLiteralParserRuleCall_1; }
+
+		//OsStringLiteral
+		public RuleCall getOsStringLiteralParserRuleCall_2() { return cOsStringLiteralParserRuleCall_2; }
+	}
+
 	public class OsTxTimestampElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OsTxTimestamp");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -3431,14 +3459,17 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cOsArtifactIdCriteriaParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final RuleCall cOsArtifactTypeCriteriaParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cOsArtifactGuidCriteriaParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		
 		//OsArtifactCriteria:
 		//	OsArtifactIdCriteria //
-		// | OsArtifactTypeCriteria;
+		// //
+		// | OsArtifactTypeCriteria | OsArtifactGuidCriteria;
 		public ParserRule getRule() { return rule; }
 
 		//OsArtifactIdCriteria //
-		// | OsArtifactTypeCriteria
+		// //
+		// | OsArtifactTypeCriteria | OsArtifactGuidCriteria
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//OsArtifactIdCriteria
@@ -3446,6 +3477,9 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//OsArtifactTypeCriteria
 		public RuleCall getOsArtifactTypeCriteriaParserRuleCall_1() { return cOsArtifactTypeCriteriaParserRuleCall_1; }
+
+		//OsArtifactGuidCriteria
+		public RuleCall getOsArtifactGuidCriteriaParserRuleCall_2() { return cOsArtifactGuidCriteriaParserRuleCall_2; }
 	}
 
 	public class OsArtifactIdCriteriaElements extends AbstractParserRuleElementFinder {
@@ -3515,6 +3549,78 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//OsArtifactId
 		public RuleCall getIdsOsArtifactIdParserRuleCall_2_1_2_1_0() { return cIdsOsArtifactIdParserRuleCall_2_1_2_1_0; }
+
+		//"]"
+		public Keyword getRightSquareBracketKeyword_2_1_3() { return cRightSquareBracketKeyword_2_1_3; }
+	}
+
+	public class OsArtifactGuidCriteriaElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OsArtifactGuidCriteria");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final Keyword cNameArtGuidKeyword_0_0 = (Keyword)cNameAssignment_0.eContents().get(0);
+		private final Keyword cEqualsSignKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
+		private final Assignment cIdsAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
+		private final RuleCall cIdsOsArtifactGuidParserRuleCall_2_0_0 = (RuleCall)cIdsAssignment_2_0.eContents().get(0);
+		private final Group cGroup_2_1 = (Group)cAlternatives_2.eContents().get(1);
+		private final Keyword cLeftSquareBracketKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
+		private final Assignment cIdsAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
+		private final RuleCall cIdsOsArtifactGuidParserRuleCall_2_1_1_0 = (RuleCall)cIdsAssignment_2_1_1.eContents().get(0);
+		private final Group cGroup_2_1_2 = (Group)cGroup_2_1.eContents().get(2);
+		private final Keyword cCommaKeyword_2_1_2_0 = (Keyword)cGroup_2_1_2.eContents().get(0);
+		private final Assignment cIdsAssignment_2_1_2_1 = (Assignment)cGroup_2_1_2.eContents().get(1);
+		private final RuleCall cIdsOsArtifactGuidParserRuleCall_2_1_2_1_0 = (RuleCall)cIdsAssignment_2_1_2_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_2_1_3 = (Keyword)cGroup_2_1.eContents().get(3);
+		
+		//OsArtifactGuidCriteria:
+		//	name="art-guid" "=" (ids+=OsArtifactGuid | "[" ids+=OsArtifactGuid ("," ids+=OsArtifactGuid)* "]");
+		public ParserRule getRule() { return rule; }
+
+		//name="art-guid" "=" (ids+=OsArtifactGuid | "[" ids+=OsArtifactGuid ("," ids+=OsArtifactGuid)* "]")
+		public Group getGroup() { return cGroup; }
+
+		//name="art-guid"
+		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+
+		//"art-guid"
+		public Keyword getNameArtGuidKeyword_0_0() { return cNameArtGuidKeyword_0_0; }
+
+		//"="
+		public Keyword getEqualsSignKeyword_1() { return cEqualsSignKeyword_1; }
+
+		//ids+=OsArtifactGuid | "[" ids+=OsArtifactGuid ("," ids+=OsArtifactGuid)* "]"
+		public Alternatives getAlternatives_2() { return cAlternatives_2; }
+
+		//ids+=OsArtifactGuid
+		public Assignment getIdsAssignment_2_0() { return cIdsAssignment_2_0; }
+
+		//OsArtifactGuid
+		public RuleCall getIdsOsArtifactGuidParserRuleCall_2_0_0() { return cIdsOsArtifactGuidParserRuleCall_2_0_0; }
+
+		//"[" ids+=OsArtifactGuid ("," ids+=OsArtifactGuid)* "]"
+		public Group getGroup_2_1() { return cGroup_2_1; }
+
+		//"["
+		public Keyword getLeftSquareBracketKeyword_2_1_0() { return cLeftSquareBracketKeyword_2_1_0; }
+
+		//ids+=OsArtifactGuid
+		public Assignment getIdsAssignment_2_1_1() { return cIdsAssignment_2_1_1; }
+
+		//OsArtifactGuid
+		public RuleCall getIdsOsArtifactGuidParserRuleCall_2_1_1_0() { return cIdsOsArtifactGuidParserRuleCall_2_1_1_0; }
+
+		//("," ids+=OsArtifactGuid)*
+		public Group getGroup_2_1_2() { return cGroup_2_1_2; }
+
+		//","
+		public Keyword getCommaKeyword_2_1_2_0() { return cCommaKeyword_2_1_2_0; }
+
+		//ids+=OsArtifactGuid
+		public Assignment getIdsAssignment_2_1_2_1() { return cIdsAssignment_2_1_2_1; }
+
+		//OsArtifactGuid
+		public RuleCall getIdsOsArtifactGuidParserRuleCall_2_1_2_1_0() { return cIdsOsArtifactGuidParserRuleCall_2_1_2_1_0; }
 
 		//"]"
 		public Keyword getRightSquareBracketKeyword_2_1_3() { return cRightSquareBracketKeyword_2_1_3; }
@@ -4993,6 +5099,7 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 	private OsBranchIdElements pOsBranchId;
 	private OsBranchIdOrNameElements pOsBranchIdOrName;
 	private OsArtifactIdElements pOsArtifactId;
+	private OsArtifactGuidElements pOsArtifactGuid;
 	private OsTxTimestampElements pOsTxTimestamp;
 	private OsBranchNameElements pOsBranchName;
 	private OsBranchPatternElements pOsBranchPattern;
@@ -5074,6 +5181,7 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 	private OsItemCriteriaElements pOsItemCriteria;
 	private OsArtifactCriteriaElements pOsArtifactCriteria;
 	private OsArtifactIdCriteriaElements pOsArtifactIdCriteria;
+	private OsArtifactGuidCriteriaElements pOsArtifactGuidCriteria;
 	private OsArtifactTypeCriteriaElements pOsArtifactTypeCriteria;
 	private OsArtifactTypeClauseElements pOsArtifactTypeClause;
 	private OsArtifactTypeEqualsClauseElements pOsArtifactTypeEqualsClause;
@@ -5460,6 +5568,18 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getOsArtifactIdRule() {
 		return getOsArtifactIdAccess().getRule();
+	}
+
+	//OsArtifactGuid returns OsExpression:
+	//	OsDotExpression //
+	// //
+	// | OsTemplateLiteral | OsStringLiteral;
+	public OsArtifactGuidElements getOsArtifactGuidAccess() {
+		return (pOsArtifactGuid != null) ? pOsArtifactGuid : (pOsArtifactGuid = new OsArtifactGuidElements());
+	}
+	
+	public ParserRule getOsArtifactGuidRule() {
+		return getOsArtifactGuidAccess().getRule();
 	}
 
 	//OsTxTimestamp returns OsExpression:
@@ -6373,7 +6493,8 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 
 	//OsArtifactCriteria:
 	//	OsArtifactIdCriteria //
-	// | OsArtifactTypeCriteria;
+	// //
+	// | OsArtifactTypeCriteria | OsArtifactGuidCriteria;
 	public OsArtifactCriteriaElements getOsArtifactCriteriaAccess() {
 		return (pOsArtifactCriteria != null) ? pOsArtifactCriteria : (pOsArtifactCriteria = new OsArtifactCriteriaElements());
 	}
@@ -6390,6 +6511,16 @@ public class OrcsScriptDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getOsArtifactIdCriteriaRule() {
 		return getOsArtifactIdCriteriaAccess().getRule();
+	}
+
+	//OsArtifactGuidCriteria:
+	//	name="art-guid" "=" (ids+=OsArtifactGuid | "[" ids+=OsArtifactGuid ("," ids+=OsArtifactGuid)* "]");
+	public OsArtifactGuidCriteriaElements getOsArtifactGuidCriteriaAccess() {
+		return (pOsArtifactGuidCriteria != null) ? pOsArtifactGuidCriteria : (pOsArtifactGuidCriteria = new OsArtifactGuidCriteriaElements());
+	}
+	
+	public ParserRule getOsArtifactGuidCriteriaRule() {
+		return getOsArtifactGuidCriteriaAccess().getRule();
 	}
 
 	//OsArtifactTypeCriteria:

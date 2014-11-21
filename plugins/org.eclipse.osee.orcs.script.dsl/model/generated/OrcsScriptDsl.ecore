@@ -291,6 +291,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ids" upperBound="-1" eType="#//OsExpression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OsArtifactGuidCriteria" eSuperTypes="#//OsArtifactCriteria">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ids" upperBound="-1" eType="#//OsExpression"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OsArtifactTypeCriteria" eSuperTypes="#//OsArtifactCriteria">
     <eStructuralFeatures xsi:type="ecore:EReference" name="clause" eType="#//OsArtifactTypeClause"
         containment="true"/>

@@ -189,6 +189,12 @@ public class OrcsScriptDslParserTest {
       verify.rule(OsArtifactQueryStatement.class, "artifacts where art-id = [570, 645]");
       verify.ruleError(OsArtifactQueryStatement.class, "artifacts where art-id != [570, 645]");
 
+      verify.rule(OsArtifactQueryStatement.class, "artifacts where art-guid = 'AJWGM8WWN3fn2JkS5+AA'");
+      verify.rule(OsArtifactQueryStatement.class,
+         "artifacts where art-guid = ['AJWGM8WWN3fn2JkS5+AA', 'AJWGM8WWN3fn2JkS5+AB']");
+      verify.ruleError(OsArtifactQueryStatement.class,
+         "artifacts where art-guid != ['AJWGM8WWN3fn2JkS5+AA', 'AJWGM8WWN3fn2JkS5+AB']");
+
       verify.rule(OsArtifactQueryStatement.class, "artifacts where art-type = 570");
       verify.rule(OsArtifactQueryStatement.class, "artifacts where art-type = [123,2412]");
       verify.ruleError(OsArtifactQueryStatement.class, "artifacts where art-type != 570");

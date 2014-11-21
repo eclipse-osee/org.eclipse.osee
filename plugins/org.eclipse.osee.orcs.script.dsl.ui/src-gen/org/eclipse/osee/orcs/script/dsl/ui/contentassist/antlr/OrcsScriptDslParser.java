@@ -49,6 +49,7 @@ public class OrcsScriptDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOsBranchIdAccess().getAlternatives(), "rule__OsBranchId__Alternatives");
 					put(grammarAccess.getOsBranchIdOrNameAccess().getAlternatives(), "rule__OsBranchIdOrName__Alternatives");
 					put(grammarAccess.getOsArtifactIdAccess().getAlternatives(), "rule__OsArtifactId__Alternatives");
+					put(grammarAccess.getOsArtifactGuidAccess().getAlternatives(), "rule__OsArtifactGuid__Alternatives");
 					put(grammarAccess.getOsTxTimestampAccess().getAlternatives(), "rule__OsTxTimestamp__Alternatives");
 					put(grammarAccess.getOsBranchNameAccess().getAlternatives(), "rule__OsBranchName__Alternatives");
 					put(grammarAccess.getOsBranchPatternAccess().getAlternatives(), "rule__OsBranchPattern__Alternatives");
@@ -85,6 +86,7 @@ public class OrcsScriptDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOsItemCriteriaAccess().getAlternatives(), "rule__OsItemCriteria__Alternatives");
 					put(grammarAccess.getOsArtifactCriteriaAccess().getAlternatives(), "rule__OsArtifactCriteria__Alternatives");
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getAlternatives_2(), "rule__OsArtifactIdCriteria__Alternatives_2");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getAlternatives_2(), "rule__OsArtifactGuidCriteria__Alternatives_2");
 					put(grammarAccess.getOsArtifactTypeClauseAccess().getAlternatives(), "rule__OsArtifactTypeClause__Alternatives");
 					put(grammarAccess.getOsArtifactTypeEqualsClauseAccess().getAlternatives_1(), "rule__OsArtifactTypeEqualsClause__Alternatives_1");
 					put(grammarAccess.getOsArtifactTypeInstanceOfClauseAccess().getAlternatives_1(), "rule__OsArtifactTypeInstanceOfClause__Alternatives_1");
@@ -193,6 +195,9 @@ public class OrcsScriptDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getGroup(), "rule__OsArtifactIdCriteria__Group__0");
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getGroup_2_1(), "rule__OsArtifactIdCriteria__Group_2_1__0");
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getGroup_2_1_2(), "rule__OsArtifactIdCriteria__Group_2_1_2__0");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getGroup(), "rule__OsArtifactGuidCriteria__Group__0");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getGroup_2_1(), "rule__OsArtifactGuidCriteria__Group_2_1__0");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getGroup_2_1_2(), "rule__OsArtifactGuidCriteria__Group_2_1_2__0");
 					put(grammarAccess.getOsArtifactTypeCriteriaAccess().getGroup(), "rule__OsArtifactTypeCriteria__Group__0");
 					put(grammarAccess.getOsArtifactTypeEqualsClauseAccess().getGroup(), "rule__OsArtifactTypeEqualsClause__Group__0");
 					put(grammarAccess.getOsArtifactTypeEqualsClauseAccess().getGroup_1_1(), "rule__OsArtifactTypeEqualsClause__Group_1_1__0");
@@ -355,6 +360,10 @@ public class OrcsScriptDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getIdsAssignment_2_0(), "rule__OsArtifactIdCriteria__IdsAssignment_2_0");
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getIdsAssignment_2_1_1(), "rule__OsArtifactIdCriteria__IdsAssignment_2_1_1");
 					put(grammarAccess.getOsArtifactIdCriteriaAccess().getIdsAssignment_2_1_2_1(), "rule__OsArtifactIdCriteria__IdsAssignment_2_1_2_1");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getNameAssignment_0(), "rule__OsArtifactGuidCriteria__NameAssignment_0");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsAssignment_2_0(), "rule__OsArtifactGuidCriteria__IdsAssignment_2_0");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsAssignment_2_1_1(), "rule__OsArtifactGuidCriteria__IdsAssignment_2_1_1");
+					put(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsAssignment_2_1_2_1(), "rule__OsArtifactGuidCriteria__IdsAssignment_2_1_2_1");
 					put(grammarAccess.getOsArtifactTypeCriteriaAccess().getNameAssignment_0(), "rule__OsArtifactTypeCriteria__NameAssignment_0");
 					put(grammarAccess.getOsArtifactTypeCriteriaAccess().getClauseAssignment_1(), "rule__OsArtifactTypeCriteria__ClauseAssignment_1");
 					put(grammarAccess.getOsArtifactTypeEqualsClauseAccess().getNameAssignment_0(), "rule__OsArtifactTypeEqualsClause__NameAssignment_0");

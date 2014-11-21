@@ -135,7 +135,12 @@ OsArtifactId returns OsExpression:
 	OsDotExpression | //
 	OsTemplateLiteral | //
 	OsNumberLiteral;
-
+	
+OsArtifactGuid returns OsExpression:
+	OsDotExpression | //
+	OsTemplateLiteral | //
+	OsStringLiteral;
+	 
 OsTxTimestamp returns OsExpression:
 	OsDotExpression | //
 	OsTemplateLiteral | //
@@ -481,10 +486,14 @@ OsItemCriteria:
 
 OsArtifactCriteria:
 	OsArtifactIdCriteria | //
-	OsArtifactTypeCriteria;
+	OsArtifactTypeCriteria | //
+	OsArtifactGuidCriteria;
 
 OsArtifactIdCriteria:
 	name='art-id' '=' (ids+=OsArtifactId | '[' ids+=OsArtifactId (',' ids+=OsArtifactId)* ']');
+
+OsArtifactGuidCriteria:
+	name='art-guid' '=' (ids+=OsArtifactGuid | '[' ids+=OsArtifactGuid (',' ids+=OsArtifactGuid)* ']');
 
 OsArtifactTypeCriteria:
 	name='art-type' clause=OsArtifactTypeClause;

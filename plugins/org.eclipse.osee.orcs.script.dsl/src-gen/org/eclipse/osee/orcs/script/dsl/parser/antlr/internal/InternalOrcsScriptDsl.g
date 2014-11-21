@@ -1505,6 +1505,56 @@ ruleOsArtifactId returns [EObject current=null]
 
 
 
+// Entry rule entryRuleOsArtifactGuid
+entryRuleOsArtifactGuid returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getOsArtifactGuidRule()); }
+	 iv_ruleOsArtifactGuid=ruleOsArtifactGuid 
+	 { $current=$iv_ruleOsArtifactGuid.current; } 
+	 EOF 
+;
+
+// Rule OsArtifactGuid
+ruleOsArtifactGuid returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+(
+    { 
+        newCompositeNode(grammarAccess.getOsArtifactGuidAccess().getOsDotExpressionParserRuleCall_0()); 
+    }
+    this_OsDotExpression_0=ruleOsDotExpression
+    { 
+        $current = $this_OsDotExpression_0.current; 
+        afterParserOrEnumRuleCall();
+    }
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getOsArtifactGuidAccess().getOsTemplateLiteralParserRuleCall_1()); 
+    }
+    this_OsTemplateLiteral_1=ruleOsTemplateLiteral
+    { 
+        $current = $this_OsTemplateLiteral_1.current; 
+        afterParserOrEnumRuleCall();
+    }
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getOsArtifactGuidAccess().getOsStringLiteralParserRuleCall_2()); 
+    }
+    this_OsStringLiteral_2=ruleOsStringLiteral
+    { 
+        $current = $this_OsStringLiteral_2.current; 
+        afterParserOrEnumRuleCall();
+    }
+)
+;
+
+
+
+
+
 // Entry rule entryRuleOsTxTimestamp
 entryRuleOsTxTimestamp returns [EObject current=null] 
 	:
@@ -5846,6 +5896,16 @@ ruleOsArtifactCriteria returns [EObject current=null]
         $current = $this_OsArtifactTypeCriteria_1.current; 
         afterParserOrEnumRuleCall();
     }
+
+    |
+    { 
+        newCompositeNode(grammarAccess.getOsArtifactCriteriaAccess().getOsArtifactGuidCriteriaParserRuleCall_2()); 
+    }
+    this_OsArtifactGuidCriteria_2=ruleOsArtifactGuidCriteria
+    { 
+        $current = $this_OsArtifactGuidCriteria_2.current; 
+        afterParserOrEnumRuleCall();
+    }
 )
 ;
 
@@ -5952,6 +6012,113 @@ ruleOsArtifactIdCriteria returns [EObject current=null]
 ))*	otherlv_7=']' 
     {
     	newLeafNode(otherlv_7, grammarAccess.getOsArtifactIdCriteriaAccess().getRightSquareBracketKeyword_2_1_3());
+    }
+)))
+;
+
+
+
+
+
+// Entry rule entryRuleOsArtifactGuidCriteria
+entryRuleOsArtifactGuidCriteria returns [EObject current=null] 
+	:
+	{ newCompositeNode(grammarAccess.getOsArtifactGuidCriteriaRule()); }
+	 iv_ruleOsArtifactGuidCriteria=ruleOsArtifactGuidCriteria 
+	 { $current=$iv_ruleOsArtifactGuidCriteria.current; } 
+	 EOF 
+;
+
+// Rule OsArtifactGuidCriteria
+ruleOsArtifactGuidCriteria returns [EObject current=null] 
+    @init { enterRule(); 
+    }
+    @after { leaveRule(); }:
+((
+(
+		lv_name_0_0=	'art-guid' 
+    {
+        newLeafNode(lv_name_0_0, grammarAccess.getOsArtifactGuidCriteriaAccess().getNameArtGuidKeyword_0_0());
+    }
+ 
+	    {
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getOsArtifactGuidCriteriaRule());
+	        }
+       		setWithLastConsumed($current, "name", lv_name_0_0, "art-guid");
+	    }
+
+)
+)	otherlv_1='=' 
+    {
+    	newLeafNode(otherlv_1, grammarAccess.getOsArtifactGuidCriteriaAccess().getEqualsSignKeyword_1());
+    }
+((
+(
+		{ 
+	        newCompositeNode(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsOsArtifactGuidParserRuleCall_2_0_0()); 
+	    }
+		lv_ids_2_0=ruleOsArtifactGuid		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getOsArtifactGuidCriteriaRule());
+	        }
+       		add(
+       			$current, 
+       			"ids",
+        		lv_ids_2_0, 
+        		"OsArtifactGuid");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+)
+    |(	otherlv_3='[' 
+    {
+    	newLeafNode(otherlv_3, grammarAccess.getOsArtifactGuidCriteriaAccess().getLeftSquareBracketKeyword_2_1_0());
+    }
+(
+(
+		{ 
+	        newCompositeNode(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsOsArtifactGuidParserRuleCall_2_1_1_0()); 
+	    }
+		lv_ids_4_0=ruleOsArtifactGuid		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getOsArtifactGuidCriteriaRule());
+	        }
+       		add(
+       			$current, 
+       			"ids",
+        		lv_ids_4_0, 
+        		"OsArtifactGuid");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+)(	otherlv_5=',' 
+    {
+    	newLeafNode(otherlv_5, grammarAccess.getOsArtifactGuidCriteriaAccess().getCommaKeyword_2_1_2_0());
+    }
+(
+(
+		{ 
+	        newCompositeNode(grammarAccess.getOsArtifactGuidCriteriaAccess().getIdsOsArtifactGuidParserRuleCall_2_1_2_1_0()); 
+	    }
+		lv_ids_6_0=ruleOsArtifactGuid		{
+	        if ($current==null) {
+	            $current = createModelElementForParent(grammarAccess.getOsArtifactGuidCriteriaRule());
+	        }
+       		add(
+       			$current, 
+       			"ids",
+        		lv_ids_6_0, 
+        		"OsArtifactGuid");
+	        afterParserOrEnumRuleCall();
+	    }
+
+)
+))*	otherlv_7=']' 
+    {
+    	newLeafNode(otherlv_7, grammarAccess.getOsArtifactGuidCriteriaAccess().getRightSquareBracketKeyword_2_1_3());
     }
 )))
 ;
