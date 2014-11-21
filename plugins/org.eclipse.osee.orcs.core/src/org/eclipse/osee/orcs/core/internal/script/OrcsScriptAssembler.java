@@ -53,4 +53,6 @@ public interface OrcsScriptAssembler {
 
    void addCollect(DynamicData object, long limit);
 
+   int getSelectSetIndex();
+
 }

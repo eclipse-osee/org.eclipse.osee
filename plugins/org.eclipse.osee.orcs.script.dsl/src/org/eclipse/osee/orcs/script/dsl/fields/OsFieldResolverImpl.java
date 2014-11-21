@@ -11,7 +11,9 @@
 package org.eclipse.osee.orcs.script.dsl.fields;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.emf.ecore.EObject;
@@ -98,17 +100,36 @@ public class OsFieldResolverImpl implements IFieldResolver {
       Set<? extends OsField> toReturn;
       OsCollectType type = getCollectType(object);
       if (type != null) {
-         toReturn = getAllowedFieldsByType(type);
+         toReturn = getAllowedFieldsByType(object, type);
       } else {
          toReturn = Collections.<OsField> emptySet();
       }
       return toReturn;
    }
 
-   private Set<? extends OsField> getAllowedFieldsByType(OsCollectType type) {
-      Family family = getFamily(type);
+   private Set<? extends OsField> getAllowedFieldsByType(EObject object, OsCollectType type) {
       Set<? extends OsField> toReturn;
-      if (family != null) {
+      if (type != null) {
+         Family family = null;
+         if (OsCollectType.TXS == type) {
+            EObject container1 = object.eContainer();
+            if (container1 != null) {
+               EObject eContainer = container1.eContainer();
+               if (eContainer instanceof OsCollectObjectExpression) {
+                  String containerType = ((OsCollectObjectExpression) eContainer).getName();
+                  if ("artifacts".equals(containerType)) {
+                     family = Family.ARTIFACT_TX;
+                  } else if ("attributes".equals(containerType)) {
+                     family = Family.ATTRIBUTE_TX;
+                  } else if ("relations".equals(containerType)) {
+                     family = Family.RELATION_TX;
+                  }
+               }
+            }
+         }
+         if (family == null) {
+            family = getFamily(type);
+         }
          toReturn = OsFieldEnum.getFieldsFor(family);
       } else {
          toReturn = Collections.<OsField> emptySet();
@@ -185,18 +206,20 @@ public class OsFieldResolverImpl implements IFieldResolver {
          String collectName = container.getName();
          OsCollectType type = OsCollectType.fromString(collectName);
          if (type != null) {
-            Set<? extends OsField> allowed = getAllowedFieldsByType(type);
+            Set<? extends OsField> allowed = getAllowedFieldsByType(object, type);
+            Map<String, OsField> fieldMap = new HashMap<String, OsField>();
+            for (OsField item : allowed) {
+               fieldMap.put(item.getLiteral(), item);
+            }
             for (OsCollectExpression expression : container.getExpressions()) {
                if (expression instanceof OsCollectAllFieldsExpression) {
                   toReturn.addAll(allowed);
-               } else if (expression instanceof OsCollectObjectExpression) {
-                  String fieldName = ((OsCollectObjectExpression) expression).getName();
-                  OsField field = getField(type, fieldName);
-                  toReturn.add(field);
-               } else if (expression instanceof OsCollectFieldExpression) {
-                  OsCollectFieldExpression fieldExp = (OsCollectFieldExpression) expression;
-                  String fieldName = fieldExp.getName();
-                  OsField field = getField(type, fieldName);
+               } else if (expression instanceof OsCollectObjectExpression || expression instanceof OsCollectFieldExpression) {
+                  String fieldName = expression.getName();
+                  OsField field = fieldMap.get(fieldName);
+                  if (field == null) {
+                     field = OsFieldEnum.newField(fieldName);
+                  }
                   toReturn.add(field);
                }
             }
@@ -218,15 +241,6 @@ public class OsFieldResolverImpl implements IFieldResolver {
       Set<? extends OsField> allowedFields = getAllowedFields(object);
       Set<? extends OsField> declaredFields = getDeclaredFields(object);
       return Sets.difference(declaredFields, allowedFields);
-   }
-
-   private OsField getField(OsCollectType type, String fieldName) {
-      Family family = getFamily(type);
-      OsField toReturn = OsFieldEnum.getField(family, fieldName);
-      if (toReturn == null) {
-         toReturn = OsFieldEnum.newField(fieldName);
-      }
-      return toReturn;
    }
 
 }

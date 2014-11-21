@@ -156,12 +156,14 @@ public final class SqlFieldResolver {
       int level = object.getLevel();
       Set<ObjectField> fields = new HashSet<ObjectField>();
       for (DynamicData child : object.getChildren()) {
-         String fieldId = child.getFieldName();
+         String fieldId = child.getGuid();
          if (fieldId != null) {
             ObjectField objectField = ObjectField.fromString(fieldId);
-            family = objectField.getFamily();
-            fields.add(objectField);
-            level = child.getLevel();
+            if (objectField != null) {
+               family = objectField.getFamily();
+               fields.add(objectField);
+               level = child.getLevel();
+            }
          }
       }
       if (family != null && !fields.isEmpty()) {
@@ -181,7 +183,7 @@ public final class SqlFieldResolver {
    }
 
    private void processField(DynamicData data, boolean hidden) {
-      String fieldId = data.getFieldName();
+      String fieldId = data.getGuid();
       if (fieldId != null) {
          ObjectField field = getObjectField(data);
          if (field == null) {

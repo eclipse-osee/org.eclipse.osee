@@ -47,7 +47,7 @@ public class DynamicData extends BaseIdentity<String> implements Named {
 
    @Override
    public String getName() {
-      return isAliasValid() ? getAlias() : getGuid();
+      return isAliasValid() ? getAlias() : getFieldName();
    }
 
    public boolean hasParent() {
@@ -100,7 +100,7 @@ public class DynamicData extends BaseIdentity<String> implements Named {
       put(FIELD_NAME, fieldName);
    }
 
-   public int getLevel() {
+   public Integer getLevel() {
       return getObject(LEVEL);
    }
 

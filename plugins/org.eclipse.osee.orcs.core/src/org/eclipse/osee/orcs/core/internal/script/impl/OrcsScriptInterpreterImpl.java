@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -38,6 +39,7 @@ import org.eclipse.osee.orcs.core.internal.script.OrcsScriptInterpreter;
 import org.eclipse.osee.orcs.script.dsl.IExpressionResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
+import org.eclipse.osee.orcs.script.dsl.OsFieldEnum;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactIdCriteria;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsArtifactQueryAll;
@@ -194,9 +196,11 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsCollectClause(OsCollectClause object) {
+         int startLevel = assembler.getSelectSetIndex();
+
          DynamicObject parent = new DynamicObject("root", null);
-         parent.setLevel(-1);
-         resolveCollectExpression(object.getExpression(), parent, -1);
+         parent.setLevel(startLevel - 1);
+         resolveCollectExpression(object.getExpression(), parent, startLevel);
          DynamicData data = Iterables.getFirst(parent.getChildren(), null);
          data.setParent(null);
 
@@ -212,34 +216,59 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       private void resolveCollectExpression(OsCollectExpression expression, DynamicObject parent, int level) {
          if (expression instanceof OsCollectAllFieldsExpression) {
             for (OsField field : fieldResolver.getAllowedFields(expression)) {
-               resolveOsField(field, parent);
+               resolveOsField(field, parent, level);
             }
          } else {
-            String name = expression.getName();
             DynamicData child = null;
             if (expression instanceof OsCollectFieldExpression) {
                OsCollectFieldExpression fieldExpr = (OsCollectFieldExpression) expression;
                String alias = resolveAlias(fieldExpr.getAlias());
+               String fieldLiteral = fieldExpr.getName();
 
-               child = new DynamicData(name, alias);
-               child.setLevel(level + 1);
-
-               String fieldName = fieldExpr.getName();
                Set<? extends OsField> declaredFields = fieldResolver.getDeclaredFields(fieldExpr);
-               for (OsField field : declaredFields) {
-                  if (fieldName.equals(field.getLiteral())) {
-                     child.setFieldName(field.getId());
-                  }
+               OsField field = findField(declaredFields, fieldLiteral);
+               if (field != null) {
+                  child = new DynamicData(field.getId(), alias);
+                  child.setFieldName(field.getLiteral());
+                  child.setLevel(level);
+               } else {
+                  throw new OseeStateException("unable to find field for [%s] - declared [%s]", fieldLiteral,
+                     declaredFields);
                }
             } else if (expression instanceof OsCollectObjectExpression) {
                OsCollectObjectExpression objectExpr = (OsCollectObjectExpression) expression;
                String alias = resolveAlias(objectExpr.getAlias());
+               String objectType = objectExpr.getName();
 
-               DynamicObject dynamicObject = new DynamicObject(name, alias);
-               dynamicObject.setLevel(level + 1);
+               String id = objectType;
+               String literal = objectType;
+
+               if ("txs".equals(objectType)) {
+                  // determine whether its art_txs, attr_txs, or rel_txs 
+                  if (!(objectExpr.eContainer() instanceof OsCollectClause)) {
+                     String value = parent.getGuid();
+                     OsFieldEnum field = null;
+                     if ("artifacts".equals(value)) {
+                        field = OsFieldEnum.art_txs;
+                     } else if ("attributes".equals(value)) {
+                        field = OsFieldEnum.attr_txs;
+                     } else if ("relations".equals(value)) {
+                        field = OsFieldEnum.rel_txs;
+                     }
+
+                     if (field != null) {
+                        id = field.getId();
+                        literal = field.getLiteral();
+                     }
+                  }
+               }
+
+               DynamicObject dynamicObject = new DynamicObject(id, alias);
+               dynamicObject.setFieldName(literal);
+               dynamicObject.setLevel(level);
 
                for (OsCollectExpression childExpr : objectExpr.getExpressions()) {
-                  resolveCollectExpression(childExpr, dynamicObject, level + 1);
+                  resolveCollectExpression(childExpr, dynamicObject, level);
                }
                child = dynamicObject;
             }
@@ -249,17 +278,33 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
          }
       }
 
-      private void resolveOsField(OsField field, DynamicObject parent) {
+      private OsField findField(Set<? extends OsField> fields, String literal) {
+         OsField found = null;
+         for (OsField field : fields) {
+            if (literal.equals(field.getLiteral())) {
+               found = field;
+               break;
+            }
+         }
+         return found;
+      }
+
+      private void resolveOsField(OsField field, DynamicObject parent, int level) {
          String fieldName = field.getLiteral();
          if (field.hasChildren()) {
-            DynamicObject child = new DynamicObject(fieldName, null);
+            int newObjectLevel = level;
+            DynamicObject child = new DynamicObject(field.getId(), null);
+            child.setFieldName(fieldName);
+
+            child.setLevel(newObjectLevel);
             for (OsField childField : field.getChildren()) {
-               resolveOsField(childField, child);
+               resolveOsField(childField, child, newObjectLevel);
             }
             parent.addChild(child);
          } else {
-            DynamicData child = new DynamicData(fieldName, null);
-            child.setFieldName(field.getId());
+            DynamicData child = new DynamicData(field.getId(), null);
+            child.setFieldName(fieldName);
+            child.setLevel(level);
             parent.addChild(child);
          }
       }

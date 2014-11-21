@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import com.google.common.base.Supplier;
@@ -30,7 +31,7 @@ public enum ObjectField {
    branch_state(TableEnum.BRANCH_TABLE, "branch_state"),
    branch_archive_state(TableEnum.BRANCH_TABLE, "archived"),
    branch_parent_id(TableEnum.BRANCH_TABLE, "parent_branch_id"),
-   branch_source_tx_id(TableEnum.BRANCH_TABLE, "parent_transaction_id"),
+   branch_parent_tx_id(TableEnum.BRANCH_TABLE, "parent_transaction_id"),
    branch_baseline_tx_id(TableEnum.BRANCH_TABLE, "baseline_transaction_id"),
    branch_inherit_access_control(TableEnum.BRANCH_TABLE, "inherit_access_control"),
    branch_associated_art_id(TableEnum.BRANCH_TABLE, "associated_art_id"),
@@ -104,6 +105,7 @@ public enum ObjectField {
 
    private static SetMultimap<Family, ObjectField> FAMILY_TO_FIELDS;
    private static SetMultimap<Family, ObjectField> FAMILY_TO_REQUIRED_FIELDS;
+   private static Map<String, ObjectField> FIELD_BY_NAME;
 
    private final ObjectType objectType;
    private final Family family;
@@ -186,7 +188,14 @@ public enum ObjectField {
    }
 
    public static ObjectField fromString(String value) {
-      return ObjectField.valueOf(value);
+      if (FIELD_BY_NAME == null) {
+         Map<String, ObjectField> fieldByName = new HashMap<String, ObjectField>();
+         for (ObjectField field : ObjectField.values()) {
+            fieldByName.put(field.name(), field);
+         }
+         FIELD_BY_NAME = fieldByName;
+      }
+      return FIELD_BY_NAME.get(value);
    }
 
    private static ObjectType objectType(ObjectField value) {

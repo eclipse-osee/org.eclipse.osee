@@ -347,7 +347,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
             if (data.isHidden()) {
                value.append("hidden->");
             }
-            value.append(data.getFieldName());
+            value.append(data.getGuid());
             if (data.isPrimaryKey()) {
                value.append("*");
             }

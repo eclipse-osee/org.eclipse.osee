@@ -256,4 +256,19 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
       return results;
    }
 
+   @Override
+   public int getSelectSetIndex() {
+      int index = 0;
+      QueryData lastQuery = getLastQuery();
+      if (lastQuery != null) {
+         List<SelectSet> selectSets = lastQuery.getSelectSets();
+         index = selectSets.size() - 1;
+      }
+      return index;
+   }
+
+   protected LinkedList<QueryData> getQueries() {
+      return queries;
+   }
+
 }
