@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.SWT;
@@ -62,7 +62,7 @@ public class VersionListDialog extends FilteredTreeDialog {
       return control;
    }
 
-   public static class VersionContentProvider extends ArrayContentProvider {
+   public static class VersionContentProvider extends ArrayTreeContentProvider {
 
       boolean showReleased = false;
 
