@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamUsageSection;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -143,5 +144,15 @@ public class BlamOverviewPage extends FormPage {
 
    public VariableMap getInput() {
       return inputSection.getData();
+   }
+
+   public void refreshTextSize() {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            outputSection.refresh();
+         }
+      });
    }
 }

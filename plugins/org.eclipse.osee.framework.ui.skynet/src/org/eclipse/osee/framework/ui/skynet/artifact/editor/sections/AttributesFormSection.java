@@ -104,6 +104,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
       section.layout(true);
       form.getForm().getBody().layout(true);
+      formPart.computeTextSizesAndReflow();
 
       HelpUtil.setHelp(sectionBody, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
    }

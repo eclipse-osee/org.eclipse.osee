@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetAccessDecorationProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
@@ -109,6 +112,27 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
       }
+   }
+
+   public void computeTextSizesAndReflow() {
+      for (XWidget widget : XWidgetUtility.findXWidgetsInControl(composite)) {
+         if (widget instanceof XText) {
+            computeXTextSize((XText) widget);
+         }
+      }
+      getManagedForm().reflow(true);
+   }
+
+   public static void computeXTextSize(XText xText) {
+      int height = xText.getStyledText().getLineCount() * xText.getStyledText().getLineHeight();
+      GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      if (xText.isFillVertically() && height < 60) {
+         formTextGd.heightHint = 60;
+      } else {
+         formTextGd.heightHint = height;
+      }
+      formTextGd.widthHint = 200;
+      xText.getStyledText().setLayoutData(formTextGd);
    }
 
    public void createContents(Composite composite) {
@@ -201,6 +225,19 @@ public class AttributeFormPart extends AbstractFormPart {
          if (isExpandable) {
             for (XWidgetRendererItem data : concreteWidgets) {
                data.getXOptionHandler().add(XOption.NO_LABEL);
+            }
+         }
+         for (XWidgetRendererItem item : concreteWidgets) {
+            if (item.getXWidgetName().equals("XTextDam")) {
+               if (!item.isFillVertically()) {
+                  AttributeType attrType = AttributeTypeManager.getType(attributeType);
+                  if (attrType.getMaxOccurrences() == 1) {
+                     String value = artifact.getSoleAttributeValue(attributeType, "");
+                     if (value != null && value.contains(System.getProperty("line.separator"))) {
+                        item.setFillVertically(true);
+                     }
+                  }
+               }
             }
          }
          XWidgetPage workPage = new XWidgetPage(concreteWidgets, new DefaultXWidgetOptionResolver());

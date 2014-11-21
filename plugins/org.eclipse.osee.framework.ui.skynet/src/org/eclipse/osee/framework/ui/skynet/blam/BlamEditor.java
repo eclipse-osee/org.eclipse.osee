@@ -123,6 +123,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
          overviewPage.appendOutput(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
+         overviewPage.refreshTextSize();
       }
    }
 

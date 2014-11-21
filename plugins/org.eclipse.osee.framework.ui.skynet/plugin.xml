@@ -1940,4 +1940,11 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.CreateBranchGuidToUuidArtifactBlam">
       </Operation>
    </extension>
+   <extension
+         id="ExampleBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExampleOutputBlam">
+      </Operation>
+   </extension>
 </plugin>

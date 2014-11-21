@@ -41,10 +41,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -235,7 +237,17 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
+      computeTextSizesAndReflow();
       return workComp;
+   }
+
+   private void computeTextSizesAndReflow() {
+      for (XWidget widget : allXWidgets) {
+         if (widget instanceof XText) {
+            AttributeFormPart.computeXTextSize((XText) widget);
+         }
+      }
+      getManagedForm().reflow(true);
    }
 
    private void createCancelledPageWidgets(Composite parent) throws OseeCoreException {

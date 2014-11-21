@@ -94,6 +94,10 @@ public class XWidgetRendererItem implements Cloneable {
       return false;
    }
 
+   public boolean isFillVertically() {
+      return xOptionHandler.contains(XOption.FILL_VERTICALLY);
+   }
+
    public String getXWidgetName() {
       return xWidgetName;
    }
@@ -239,6 +243,10 @@ public class XWidgetRendererItem implements Cloneable {
 
    public Object getObject() {
       return object;
+   }
+
+   public void setFillVertically(boolean b) {
+      xOptionHandler.add(XOption.FILL_VERTICALLY);
    }
 
 }
