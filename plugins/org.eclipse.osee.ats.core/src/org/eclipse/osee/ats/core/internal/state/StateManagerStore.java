@@ -40,9 +40,11 @@ public class StateManagerStore {
 
    protected static void postPersistNotifyReset(IAtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<IAtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes) throws OseeCoreException {
       try {
-         changes.getNotifications().addWorkItemNotificationEvent(
-            AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser, workItem, assigneesAdded,
-               AtsNotifyType.Assigned));
+         if (!assigneesAdded.isEmpty()) {
+            changes.getNotifications().addWorkItemNotificationEvent(
+               AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser, workItem, assigneesAdded,
+                  AtsNotifyType.Assigned));
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
       }
