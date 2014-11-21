@@ -65,7 +65,7 @@ public final class GoalManager {
          FilteredTreeArtifactDialog dialog =
             new FilteredTreeArtifactDialog("Select Goal", "Artifact has multiple Goals\n\nSelect Goal to change order",
                goals, new ArrayTreeContentProvider(), new GoalLabelProvider(), new GoalViewerSorter());
-            dialog.setMultiSelect(false);
+         dialog.setMultiSelect(false);
          if (dialog.open() == 0) {
             goal = (GoalArtifact) dialog.getSelectedFirst();
          } else {

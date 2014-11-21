@@ -96,10 +96,10 @@ public class ActionFactory implements IAtsActionFactory {
 
       Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = workItemFactory.getAction(actionArt);
-      changes.add(action);
-      setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
       IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(config);
       utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
+      changes.add(action);
+      setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
