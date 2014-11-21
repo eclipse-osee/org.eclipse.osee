@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
@@ -162,11 +163,14 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    @Override
    public void endWorkbook() throws IOException {
-      if (inSheet) {
-         endSheet();
+      try {
+         if (inSheet) {
+            endSheet();
+         }
+         out.write("</Workbook>\n");
+      } finally {
+         Lib.close(out);
       }
-      out.write("</Workbook>\n");
-      out.close();
    }
 
    @Override
