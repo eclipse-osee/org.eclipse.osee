@@ -189,13 +189,12 @@ public class DecisionReviewManager {
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtilCore.getAtsBranch(), title);
 
-      // Initialize state machine
-      decRev.initializeNewStateMachine(assignees, createdDate, createdBy, changes);
-
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-
       AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), decRev,
          decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
+
+      // Initialize state machine
+      decRev.initializeNewStateMachine(assignees, createdDate, createdBy, changes);
 
       if (Strings.isValid(relatedToState)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, relatedToState);

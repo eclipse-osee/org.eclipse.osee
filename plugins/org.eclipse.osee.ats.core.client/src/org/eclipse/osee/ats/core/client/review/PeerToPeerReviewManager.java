@@ -153,30 +153,29 @@ public class PeerToPeerReviewManager {
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes) throws OseeCoreException {
-      return createNewPeerToPeerReview(workDefinition, teamArt, reviewTitle, againstState, new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), changes);
+      return createNewPeerToPeerReview(workDefinition, teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState,
+         new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       return createNewPeerToPeerReview(
          AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamArt).getWorkDefinition(),
-         teamArt, reviewTitle, againstState, createdDate, createdBy, changes);
+         teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
       PeerToPeerReviewArtifact peerArt =
          createNewPeerToPeerReview(
             AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
-               actionableItem).getWorkDefinition(), null, reviewTitle, againstState, createdDate, createdBy, changes);
+               actionableItem).getWorkDefinition(), null, teamDef, reviewTitle, againstState, createdDate, createdBy,
+            changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
-      IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerArt, teamDef,
-         changes);
       changes.add(peerArt);
       return peerArt;
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   private static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       PeerToPeerReviewArtifact peerToPeerRev =
          (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
             AtsUtilCore.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
@@ -185,15 +184,17 @@ public class PeerToPeerReviewManager {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
       }
 
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
+         teamDef, changes);
+
       // Initialize state machine
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDefinition.getId());
       peerToPeerRev.initializeNewStateMachine(null, new Date(), createdBy, changes);
 
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);
-         AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
-            teamArt.getParentTeamWorkflow().getTeamDefinition(), changes);
       }
+
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       changes.add(peerToPeerRev);
       AtsReviewCache.decache(teamArt);

@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -612,6 +613,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   } else {
                      legacyPcrIdToParentId.put(legacyPcrId, parentActionId);
                   }
+               }
+            }
+            // Test that ATS Id is set
+            if (artifact instanceof IAtsWorkItem) {
+               if (artifact.getSoleAttributeValue(AtsAttributeTypes.AtsId, null) == null) {
+                  String errorStr =
+                     String.format("Error: ATS Id not set for work item [%s] ", artifact.toStringWithId());
+                  results.log(artifact, "testArtifactIds", errorStr);
                }
             }
          } catch (Exception ex) {

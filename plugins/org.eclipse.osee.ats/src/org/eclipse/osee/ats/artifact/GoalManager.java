@@ -178,11 +178,12 @@ public final class GoalManager {
       GoalArtifact goalArt =
          (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), title);
 
+      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), changes);
+
       // Initialize state machine
       goalArt.initializeNewStateMachine(Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), changes);
 
       changes.add(goalArt);
       return goalArt;
