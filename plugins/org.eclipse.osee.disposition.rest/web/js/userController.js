@@ -164,8 +164,8 @@ app.controller('userController', [
 
         var origCellTmpl = '<div ng-dblclick="getItemDetails(row.entity, row)">{{row.entity.name}}</div>';
         var editCellTmpl = '<input ng-model="row.getProperty(col.field)" ng-model-onblur ng-change="editItem(row.entity);" value="row.getProperty(col.field);></input>';
-        var cellEditableTemplate = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editItem(row.entity)"/>'
-        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editItem(row.entity)"></input>';
+        var cellEditNotes = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editNotes(row.entity)"/>'
+        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editNeedsRerun(row.entity)"></input>';
         var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
         var dateCellTmpl = '<div>getReadableDate({{row.getProperty(col.field)}})</div>';
         
@@ -194,7 +194,7 @@ app.controller('userController', [
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditableTemplate
+            cellTemplate: cellEditNotes
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -265,7 +265,7 @@ app.controller('userController', [
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditableTemplate
+            cellTemplate: cellEditNotes
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -437,13 +437,34 @@ app.controller('userController', [
             });
 
         }
-
+        
         $scope.editItem = function editItem(item) {
+        	$scope.editItem(item, null);
+        }
+        
+        $scope.editNotes = function (item) {
+        	$scope.editItem(item, 'itemNotes');
+        }
+        
+        $scope.editNeedsRerun = function (item) {
+        	$scope.editItem(item, 'needsRerun');
+        }
+
+        $scope.editItem = function editItem(item, field) {
+        	var newItem = new Item;
+        	if(field == null) {
+        		newItem = item;
+        	} else if(field == 'itemNotes') {
+        		newItem.itemNotes = item.itemNotes;
+        	} else if(field == 'needsRerun') {
+        		newItem.needsRerun = item.needsRerun;
+        	}
+        	
             Item.update({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid,
-            }, item, function() {
+            }, newItem, function() {
             	if($scope.isMulitEditRequest) {
                 	$scope.gridOptions.selectAll(false);
             		$scope.isMulitEditRequest=false;
