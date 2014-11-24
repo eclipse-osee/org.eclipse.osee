@@ -13,9 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -25,11 +28,15 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 public class FilteredTreeDialog extends MessageDialog {
@@ -139,6 +146,27 @@ public class FilteredTreeDialog extends MessageDialog {
             updateStatusLabel();
          }
       });
+      final FilteredTreeDialog dialog = this;
+      treeViewer.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+
+         @Override
+         public void doubleClick(DoubleClickEvent event) {
+            updateSelected();
+            dialog.okPressed();
+         }
+      });
+      treeViewer.getFilterControl().addModifyListener(new ModifyListener() {
+
+         @Override
+         public void modifyText(ModifyEvent e) {
+            Collection<TreeItem> visibleItems = getVisibleItems();
+            if (visibleItems.size() == 1) {
+               treeViewer.getViewer().setSelection(
+                  new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
+               getButton(IDialogConstants.OK_ID).setEnabled(true);
+            }
+         }
+      });
       if (input != null) {
          treeViewer.getViewer().setInput(input);
       }
@@ -148,6 +176,21 @@ public class FilteredTreeDialog extends MessageDialog {
       updateStatusLabel();
 
       return parent;
+   }
+
+   public List<TreeItem> getVisibleItems() {
+      List<TreeItem> toReturn = new ArrayList<TreeItem>();
+      getVisibleItems(toReturn, treeViewer.getViewer().getTree().getItems());
+      return toReturn;
+   }
+
+   private void getVisibleItems(List<TreeItem> toReturn, TreeItem items[]) {
+      for (TreeItem item : items) {
+         toReturn.add(item);
+         if (item.getExpanded()) {
+            getVisibleItems(toReturn, item.getItems());
+         }
+      }
    }
 
    protected void updateSelected() {
