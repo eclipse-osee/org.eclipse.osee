@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 public class FilteredCheckboxTreeDialog extends MessageDialog {
@@ -61,7 +60,9 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    }
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(new Shell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
+         "OK",
+         "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerSorter = viewerSorter;
