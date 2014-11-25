@@ -255,7 +255,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias) throws OseeCoreException {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) throws OseeCoreException {
       return Strings.emptyString();
    }
 

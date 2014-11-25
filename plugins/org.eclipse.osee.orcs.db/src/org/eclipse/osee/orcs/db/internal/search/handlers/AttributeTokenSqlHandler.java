@@ -159,8 +159,9 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
          }
       }
       attrSb.append("\n AND \n");
-      attrSb.append("   att.gamma_id = txs.gamma_id AND ");
-      attrSb.append(writer.getTxBranchFilter("txs"));
+      attrSb.append("   att.gamma_id = txs.gamma_id");
+      attrSb.append(" AND ");
+      attrSb.append(writer.getWithClauseTxBranchFilter("txs", true));
       writer.addWithClause(newSimpleWithClause(attrAlias, attrSb.toString()));
       writer.addTable(attrAlias);
    }

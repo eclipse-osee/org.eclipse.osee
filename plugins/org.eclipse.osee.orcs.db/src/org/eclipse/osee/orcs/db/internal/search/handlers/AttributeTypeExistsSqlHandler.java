@@ -79,7 +79,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
             writer.addParameter(localId);
          }
          sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs"));
+         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
          sb.append("\n    GROUP BY attr.art_id");
          String body = sb.toString();
 

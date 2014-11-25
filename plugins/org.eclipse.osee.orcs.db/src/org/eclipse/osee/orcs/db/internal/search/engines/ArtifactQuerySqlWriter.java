@@ -84,8 +84,10 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public String getTxBranchFilter(String txsAlias) {
-      boolean allowDeleted =
-         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
+      boolean allowDeleted = //
+         OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
+         OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
+         OptionsUtil.areDeletedRelationsIncluded(getOptions());
 
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
@@ -143,20 +145,30 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias) throws OseeCoreException {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
-      if (OptionsUtil.isHistorical(getOptions())) {
-         sb.append(txsAlias);
-         sb.append(".transaction_id <= ?");
-         addParameter(OptionsUtil.getFromTransaction(getOptions()));
+
+      if (deletedPredicate) {
+         boolean allowDeleted = //
+            OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
+            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
+            OptionsUtil.areDeletedRelationsIncluded(getOptions());
+         writeTxFilter(txsAlias, sb, allowDeleted);
+      } else {
+         if (OptionsUtil.isHistorical(getOptions())) {
+            sb.append(txsAlias);
+            sb.append(".transaction_id <= ?");
+            addParameter(OptionsUtil.getFromTransaction(getOptions()));
+         }
       }
       if (branchUuid > 0) {
-         sb.append(" AND ");
+         if (sb.length() > 0) {
+            sb.append(" AND ");
+         }
          sb.append(txsAlias);
          sb.append(".branch_id = ?");
          addParameter(branchUuid);
       }
       return sb.toString();
    }
-
 }

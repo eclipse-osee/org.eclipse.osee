@@ -61,7 +61,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
             writer.addParameter(ids.iterator().next());
          }
          sb.append(" AND ");
-         sb.append(writer.getWithClauseTxBranchFilter("txs"));
+         sb.append(writer.getWithClauseTxBranchFilter("txs", false));
          sb.append("\n    GROUP BY art.art_id");
          String body = sb.toString();
 
