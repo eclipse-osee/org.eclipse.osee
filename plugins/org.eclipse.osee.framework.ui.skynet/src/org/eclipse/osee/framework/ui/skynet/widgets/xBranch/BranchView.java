@@ -83,8 +83,12 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
    public void dispose() {
       super.dispose();
       OseeEventManager.removeListener(this);
-      branchViewPresentationPreferences.setDisposed(true);
-      clipboard.dispose();
+      if (branchViewPresentationPreferences != null) {
+         branchViewPresentationPreferences.setDisposed(true);
+      }
+      if (clipboard != null) {
+         clipboard.dispose();
+      }
       if (xBranchWidget != null) {
          xBranchWidget.dispose();
       }
