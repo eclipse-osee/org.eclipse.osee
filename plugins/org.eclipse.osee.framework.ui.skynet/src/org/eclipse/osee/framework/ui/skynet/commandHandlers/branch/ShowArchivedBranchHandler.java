@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.ui.IWorkbenchPart;
@@ -73,7 +74,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
    @Override
    protected boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       boolean isValid = false;
-      if (!DbUtil.isDbInit()) {
+      if (!DbUtil.isDbInit() && DbConnectionUtility.isApplicationServerAlive()) {
          service.refreshElements(COMMAND_ID, null);
          try {
             isValid = AccessControlManager.isOseeAdmin();

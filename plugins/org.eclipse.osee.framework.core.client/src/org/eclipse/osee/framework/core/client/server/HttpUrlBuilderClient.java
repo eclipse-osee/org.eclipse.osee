@@ -99,12 +99,17 @@ public final class HttpUrlBuilderClient {
    }
 
    public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
+      String url = null;
       try {
-         return HttpUrlBuilder.createURL(getApplicationServerPrefix(), context, parameters);
+         String applicationServerPrefix = getApplicationServerPrefix();
+         if (Strings.isValid(applicationServerPrefix)) {
+            url = HttpUrlBuilder.createURL(applicationServerPrefix, context, parameters);
+         }
       } catch (UnsupportedEncodingException ex) {
          OseeExceptions.wrapAndThrow(ex);
          return null; // unreachable since wrapAndThrow() always throws an exception
       }
+      return url;
    }
 
    public String getPermanentLinkBaseUrl(String context, Map<String, String> parameters) throws OseeCoreException {

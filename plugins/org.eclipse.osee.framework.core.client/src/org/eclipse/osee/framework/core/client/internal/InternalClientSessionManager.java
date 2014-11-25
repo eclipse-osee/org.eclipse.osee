@@ -113,6 +113,9 @@ public class InternalClientSessionManager {
             OseeCredential credential = credentialProvider.getCredential();
             clearData();
             oseeSessionGrant = internalAcquireSession(credential);
+            if (oseeSessionGrant == null) {
+               return;
+            }
             oseeSession =
                new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
                   oseeSessionGrant.getUserToken().getUserId(), clientInfo.getClientAddress(), clientInfo.getPort(),
@@ -172,9 +175,11 @@ public class InternalClientSessionManager {
       try {
          String url =
             HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
-         String reponse = HttpProcessor.post(new URL(url));
-         OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
-         clearData();
+         if (Strings.isValid(url)) {
+            String reponse = HttpProcessor.post(new URL(url));
+            OseeLog.log(CoreClientActivator.class, Level.INFO, reponse);
+            clearData();
+         }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -186,15 +191,17 @@ public class InternalClientSessionManager {
          Map<String, String> parameters = new HashMap<String, String>();
          String url =
             HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
-         if (result.getCode() == HttpURLConnection.HTTP_OK) {
-            String protocols = outputStream.toString("UTF-8");
-            if (Strings.isValid(protocols)) {
-               String[] results = protocols.split("[\\[\\]\\s,]+");
-               for (String entry : results) {
-                  if (Strings.isValid(entry)) {
-                     toReturn.add(entry);
+         if (Strings.isValid(url)) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
+            if (result.getCode() == HttpURLConnection.HTTP_OK) {
+               String protocols = outputStream.toString("UTF-8");
+               if (Strings.isValid(protocols)) {
+                  String[] results = protocols.split("[\\[\\]\\s,]+");
+                  for (String entry : results) {
+                     if (Strings.isValid(entry)) {
+                        toReturn.add(entry);
+                     }
                   }
                }
             }
@@ -217,14 +224,16 @@ public class InternalClientSessionManager {
       String url =
          HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
 
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      AcquireResult result =
-         HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
-      if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
-         session = fromEncryptedBytes(outputStream.toByteArray());
-      } else {
-         throw new OseeCoreException("Error during create session request - code [%s]\n%s", result.getCode(),
-            outputStream.toString());
+      if (Strings.isValid(url)) {
+         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+         AcquireResult result =
+            HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
+         if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
+            session = fromEncryptedBytes(outputStream.toByteArray());
+         } else {
+            throw new OseeCoreException("Error during create session request - code [%s]\n%s", result.getCode(),
+               outputStream.toString());
+         }
       }
       return session;
    }

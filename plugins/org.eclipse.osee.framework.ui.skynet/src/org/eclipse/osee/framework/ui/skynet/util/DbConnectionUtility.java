@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
@@ -53,9 +55,14 @@ public class DbConnectionUtility {
 
    public static boolean isApplicationServerAlive() {
       if (applicationServerAlive == null) {
-         OseeClient client = ServiceUtil.getOseeClient();
-         if (client != null) {
-            applicationServerAlive = client.isApplicationServerAlive();
+         String address = OseeClientProperties.getOseeApplicationServer();
+         if (Strings.isValid(address)) {
+            OseeClient client = ServiceUtil.getOseeClient();
+            if (client != null) {
+               applicationServerAlive = client.isApplicationServerAlive();
+            } else {
+               applicationServerAlive = false;
+            }
          } else {
             applicationServerAlive = false;
          }
@@ -65,9 +72,14 @@ public class DbConnectionUtility {
 
    public static boolean isVersionSupported() {
       if (supported == null) {
-         OseeClient client = ServiceUtil.getOseeClient();
-         if (client != null) {
-            supported = client.isClientVersionSupportedByApplicationServer();
+         String address = OseeClientProperties.getOseeApplicationServer();
+         if (Strings.isValid(address)) {
+            OseeClient client = ServiceUtil.getOseeClient();
+            if (client != null) {
+               supported = client.isClientVersionSupportedByApplicationServer();
+            } else {
+               supported = false;
+            }
          } else {
             supported = false;
          }
