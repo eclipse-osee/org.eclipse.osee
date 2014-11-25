@@ -19,6 +19,8 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AccessCon
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
+import java.io.StringWriter;
+import java.util.Properties;
 import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -189,4 +191,67 @@ public class OseeClientQueryTest {
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
+   @PerfTest(threads = 1, invocations = 1)
+   @Test
+   public void orcsScript() {
+      String script =
+         "start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };";
+      String expected =
+         "{\n" + //
+         "  'parameters' : {\n" + //
+         "    'output.debug' : 'false'\n" + //
+         "  },\n" + //
+         "  'script' : 'start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };',\n" + //
+         "  'results' : [ {\n" + //
+         "    'artifacts' : [ {\n" + //
+         "      'id' : 8,\n" + //
+         "      'attributes' : {\n" + //
+         "        'Name' : {\n" + //
+         "          'value' : 'User Groups'\n" + //
+         "        }\n" + //
+         "      }\n" + //
+         "    }, {\n" + //
+         "      'id' : 26,\n" + //
+         "      'attributes' : {\n" + //
+         "        'Name' : {\n" + //
+         "          'value' : 'Document Templates'\n" + //
+         "        }\n" + //
+         "      }\n" + //
+         "    }, {\n" + //
+         "      'id' : 31,\n" + //
+         "      'attributes' : {\n" + //
+         "        'Name' : {\n" + //
+         "          'value' : 'Action Tracking System'\n" + //
+         "        }\n" + //
+         "      }\n" + //
+         "    }, {\n" + //
+         "      'id' : 34,\n" + //
+         "      'attributes' : {\n" + //
+         "        'Name' : {\n" + //
+         "          'value' : 'Config'\n" + //
+         "        }\n" + //
+         "      }\n" + //
+         "    }, {\n" + //
+         "      'id' : 35,\n" + //
+         "      'attributes' : {\n" + //
+         "        'Name' : {\n" + //
+         "          'value' : 'Work Definitions'\n" + //
+         "        }\n" + //
+         "      }\n" + //
+         "    } ]\n" + //
+         "  } ]\n" + //
+         "}";
+
+      StringWriter writer = new StringWriter();
+      Properties properties = new Properties();
+      createClient.executeScript(script, properties, false, writer);
+
+      assertEquals(expected, normalize(writer.toString()));
+   }
+
+   private String normalize(String value) {
+      value = value.replaceAll("\r\n", "\n");
+      value = value.replaceAll("\"", "'");
+      return value;
+   }
 }

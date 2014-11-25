@@ -150,16 +150,19 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public void executeScript(String script, Properties properties, boolean debug, Writer writer) {
-      StringWriter strWriter = new StringWriter();
+      String props = null;
       try {
          if (properties != null && !properties.isEmpty()) {
+            StringWriter strWriter = new StringWriter();
             properties.store(strWriter, "");
+            props = strWriter.toString();
          }
          Form form = new Form();
          form.param("script", script);
          form.param("debug", Boolean.toString(debug));
-         form.param("parameters", strWriter.toString());
-
+         if (props != null && props.length() > 0) {
+            form.param("parameters", props);
+         }
          URI uri = UriBuilder.fromUri(baseUri).path("script").build();
          String result =
             JaxRsClient.newClient().target(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form),

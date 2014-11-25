@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.script;
+package org.eclipse.osee.orcs.core.internal.script.impl;
 
-import org.eclipse.osee.orcs.core.internal.script.impl.ScriptImplTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -18,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ScriptImplTestSuite.class, OrcsScriptEngineFactoryTest.class, OrcsScriptEngineTest.class})
-public class ScriptEngineTestSuite {
+@Suite.SuiteClasses({OrcsScriptInterpreterTest.class})
+public class ScriptImplTestSuite {
    // Test Suite
 }

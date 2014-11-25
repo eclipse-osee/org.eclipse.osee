@@ -47,6 +47,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptOutputHandler;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
+import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil.OsStorageOption;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import com.google.common.collect.Iterables;
 
@@ -241,14 +242,17 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
          writer.writeEndObject();
       }
       writer.writeFieldName("script");
-      if (model != null && model.eAllContents().hasNext()) {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         OrcsScriptUtil.saveModel(model, "orcs:/unknown.orcs", outputStream);
-         String data = outputStream.toString("UTF-8");
-         writer.writeString(data);
-      } else {
-         writer.writeString("N/A");
+      String value = "N/A";
+      try {
+         if (model != null && model.eAllContents().hasNext()) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            OrcsScriptUtil.saveModel(model, "orcs:/unknown.orcs", outputStream, OsStorageOption.NO_VALIDATION_ON_SAVE);
+            value = outputStream.toString("UTF-8");
+         }
+      } catch (Exception ex) {
+         value = ex.getMessage();
       }
+      writer.writeString(value);
    }
 
    private void writeErrors() throws IOException {
