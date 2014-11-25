@@ -19,6 +19,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
@@ -33,16 +34,18 @@ public class BranchResource {
    Request request;
 
    Long branchUuid;
+   OrcsApi orcsApi;
 
-   public BranchResource(UriInfo uriInfo, Request request, Long branchUuid) {
+   public BranchResource(UriInfo uriInfo, Request request, Long branchUuid, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
+      this.orcsApi = orcsApi;
    }
 
    @Path("artifact")
    public ArtifactsResource getArtifacts() {
-      return new ArtifactsResource(uriInfo, request, branchUuid);
+      return new ArtifactsResource(uriInfo, request, branchUuid, orcsApi);
    }
 
    @Path("txs")

@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
@@ -37,15 +38,18 @@ public class BranchesResource {
    @Context
    Request request;
 
+   OrcsApi orcsApi;
+
    @Path("{uuid}")
    public BranchResource getBranch(@PathParam("uuid") Long id) {
-      return new BranchResource(uriInfo, request, id);
+      this.orcsApi = OrcsApplication.getOrcsApi();
+      return new BranchResource(uriInfo, request, id, orcsApi);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
       ResultSet<BranchReadable> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);

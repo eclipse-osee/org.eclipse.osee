@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -40,15 +41,18 @@ public class ArtifactsResource {
 
    private final Long branchUuid;
 
-   public ArtifactsResource(UriInfo uriInfo, Request request, Long branchUuid) {
+   private final OrcsApi orcsApi;
+
+   public ArtifactsResource(UriInfo uriInfo, Request request, Long branchUuid, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
+      this.orcsApi = orcsApi;
    }
 
    @Path("search/v1")
    public ArtifactSearch_V1 getSearch() {
-      return new ArtifactSearch_V1(uriInfo, request, branchUuid);
+      return new ArtifactSearch_V1(uriInfo, request, branchUuid, orcsApi);
    }
 
    @Path("{uuid}")
@@ -60,7 +64,7 @@ public class ArtifactsResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
-      QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
+      QueryFactory factory = orcsApi.getQueryFactory(null);
       ResultSet<ArtifactReadable> results =
          factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
       ArtifactReadable rootArtifact = results.getExactlyOne();
