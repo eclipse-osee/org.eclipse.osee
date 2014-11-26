@@ -12,22 +12,34 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.program.internal.Program;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class ConfigItemFactory implements IAtsConfigItemFactory {
 
+   private final IAtsClient atsClient;
+
+   public ConfigItemFactory(IAtsClient atsClient) {
+      this.atsClient = atsClient;
+   }
+
    @Override
    public IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException {
       IAtsConfigObject configObject = null;
       if (artifact instanceof IAtsConfigObject) {
          configObject = (IAtsConfigObject) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Program)) {
+         return new Program(atsClient, (Artifact) artifact);
       }
       return configObject;
    }
@@ -37,6 +49,10 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       IAtsVersion version = null;
       if (artifact instanceof IAtsVersion) {
          version = (IAtsVersion) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
+         Artifact artifact2 = (Artifact) artifact;
+         version =
+            atsClient.getVersionFactory().createVersion(artifact2.getName(), artifact2.getGuid(), artifact2.getArtId());
       }
       return version;
    }
@@ -60,10 +76,12 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsProgram getProgram(Object artifact) {
+   public IAtsProgram getProgram(Object object) {
       IAtsProgram program = null;
-      if (artifact instanceof IAtsProgram) {
-         program = (IAtsProgram) artifact;
+      if (object instanceof IAtsProgram) {
+         program = (IAtsProgram) object;
+      } else if ((object instanceof Artifact) && ((Artifact) object).isOfType(AtsArtifactTypes.Program)) {
+         program = new Program(atsClient, (Artifact) object);
       }
       return program;
    }

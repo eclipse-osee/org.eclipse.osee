@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.cpa;
+package org.eclipse.osee.ats.api.cpa;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;

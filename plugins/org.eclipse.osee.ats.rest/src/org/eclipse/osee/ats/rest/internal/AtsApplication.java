@@ -79,7 +79,7 @@ public class AtsApplication extends Application {
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
 
-      singletons.add(new AtsEndpointImpl(atsServer, logger, registry));
+      singletons.add(new AtsEndpointImpl(atsServer, logger, registry, cpaRegistry));
 
       singletons.add(new ActionUiResource(atsServer, logger));
       System.out.println("ATS - Application started - " + System.getProperty("OseeApplicationServer"));

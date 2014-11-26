@@ -10,16 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.cpa;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -38,7 +42,7 @@ public class CpaDuplicator {
       this.cpaRegistry = cpaRegistry;
    }
 
-   public Response duplicate() {
+   public XResultData duplicate() {
       XResultData rd = new XResultData(false);
       ArtifactReadable cpaArt = atsServer.getArtifactById(duplicate.getCpaUuid());
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
@@ -64,6 +68,20 @@ public class CpaDuplicator {
                   duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), originatingPcrId, rd);
                   if (Strings.isValid(duplicatePcrId)) {
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.DuplicatedPcrId, duplicatePcrId);
+                     changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.ApplicableToProgram, "Yes");
+                  }
+                  if (duplicate.isCompleteCpa()) {
+                     TransitionHelper helper =
+                        new TransitionHelper("Complete Applicability Workflow", Arrays.asList(cpaWf), "Completed",
+                           new ArrayList<IAtsUser>(), "", changes, atsServer.getServices(),
+                           TransitionOption.OverrideAssigneeCheck);
+                     IAtsUser asUser = atsServer.getUserService().getUserById(duplicate.getUserId());
+                     if (asUser == null) {
+                        rd.logErrorWithFormat("Invalid userId [%s].  Skipping.", asUser);
+                     }
+                     helper.setTransitionUser(asUser);
+                     TransitionManager mgr = new TransitionManager(helper);
+                     mgr.handleAll();
                   }
                   if (!changes.isEmpty()) {
                      changes.execute();
@@ -74,9 +92,6 @@ public class CpaDuplicator {
             rd.logErrorWithFormat("Workflow %s is not an applicability workflow.  Skipping.", atsId);
          }
       }
-      if (rd.isErrors()) {
-         return Response.status(Status.NOT_ACCEPTABLE).entity(AHTML.simplePage(rd.toString())).build();
-      }
-      return Response.ok().entity(duplicatePcrId).build();
+      return rd;
    }
 }

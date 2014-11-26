@@ -10,13 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsCpaBuild {
+@XmlRootElement
+public class CpaConfigTool {
+   private String id;
 
-   public String getName();
+   public CpaConfigTool(String id) {
+      this.id = id;
+   }
 
-   public Long getUuid();
+   public String getId() {
+      return id;
+   }
 
+   public void setId(String id) {
+      this.id = id;
+   }
 }

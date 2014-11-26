@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api;
 
 import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
+import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 
 /**
@@ -24,5 +25,8 @@ public interface AtsJaxRsApi {
 
    @Path("config")
    public AtsConfigEndpointApi getConfig();
+
+   @Path("cpa")
+   public AtsCpaEndpointApi getCpa();
 
 }

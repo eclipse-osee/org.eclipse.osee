@@ -24,14 +24,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
+import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
+import org.eclipse.osee.ats.api.cpa.CpaBuild;
+import org.eclipse.osee.ats.api.cpa.CpaConfig;
+import org.eclipse.osee.ats.api.cpa.CpaConfigTool;
+import org.eclipse.osee.ats.api.cpa.CpaDecision;
+import org.eclipse.osee.ats.api.cpa.CpaProgram;
+import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
+import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.cpa.CpaConfig;
-import org.eclipse.osee.ats.core.cpa.CpaConfigTool;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -42,8 +46,7 @@ import org.eclipse.osee.orcs.data.EnumEntry;
  * 
  * @author Donald G. Dunne
  */
-@Path("cpa")
-public final class CpaResource {
+public final class CpaResource implements AtsCpaEndpointApi {
 
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
@@ -57,6 +60,7 @@ public final class CpaResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
+   @Override
    public String get() throws Exception {
       return AHTML.simplePage("ATS CPA Resource");
    }
@@ -64,8 +68,9 @@ public final class CpaResource {
    @GET
    @Path("program")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsCpaProgram> getPrograms() throws Exception {
-      List<IAtsCpaProgram> programs = new ArrayList<IAtsCpaProgram>();
+   @Override
+   public List<CpaProgram> getPrograms() throws Exception {
+      List<CpaProgram> programs = new ArrayList<CpaProgram>();
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          programs.addAll(service.getPrograms());
       }
@@ -75,15 +80,17 @@ public final class CpaResource {
    @GET
    @Path("program/{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsCpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
+   @Override
+   public List<CpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
       return DecisionLoader.createLoader(cpaRegistry, atsServer).andOpen(open).andProgramUuid(uuid).load();
    }
 
    @GET
    @Path("program/{uuid}/build")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsCpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
-      List<IAtsCpaBuild> builds = new ArrayList<IAtsCpaBuild>();
+   @Override
+   public List<CpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
+      List<CpaBuild> builds = new ArrayList<CpaBuild>();
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          builds.addAll(service.getBuilds(programUuid));
       }
@@ -93,6 +100,7 @@ public final class CpaResource {
    @GET
    @Path("decision/{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
+   @Override
    public Response getDecision(@PathParam("uuid") String uuid, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
@@ -112,7 +120,8 @@ public final class CpaResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Path("decision")
-   public List<IAtsCpaDecision> putDecision(final DecisionUpdate update) throws Exception {
+   @Override
+   public List<CpaDecision> putDecision(final DecisionUpdate update) throws Exception {
       new DecisionUpdater(update, atsServer).update();
       return DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(update.getUuids()).load();
    }
@@ -123,24 +132,22 @@ public final class CpaResource {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Path("duplicate")
+   @Override
    public Response putDuplicate(final DuplicateCpa duplicate) throws Exception {
-      return new CpaDuplicator(duplicate, atsServer, cpaRegistry).duplicate();
-   }
-
-   @GET
-   @Path("duplicateGet")
-   @Produces(MediaType.APPLICATION_JSON)
-   public DuplicateCpa getDuplicate() throws Exception {
-      DuplicateCpa duplicate = new DuplicateCpa();
-      duplicate.setProgramUuid("3472723");
-      duplicate.setUserId("727536");
-      duplicate.setCpaUuid("CPA41337");
-      return duplicate;
+      XResultData rd = new CpaDuplicator(duplicate, atsServer, cpaRegistry).duplicate();
+      if (rd.isErrors()) {
+         return Response.status(Status.NOT_ACCEPTABLE).entity(rd.toString()).build();
+      }
+      CpaDecision decision =
+         DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(
+            java.util.Collections.singleton(duplicate.getCpaUuid())).load().iterator().next();
+      return Response.ok().entity(decision).build();
    }
 
    @GET
    @Path("config")
    @Produces(MediaType.APPLICATION_JSON)
+   @Override
    public CpaConfig getConfigs() throws Exception {
       CpaConfig config = new CpaConfig();
       for (EnumEntry entry : orcsApi.getOrcsTypes(null).getAttributeTypes().getEnumType(
@@ -156,6 +163,7 @@ public final class CpaResource {
    @GET
    @Path("config/tool/{id}")
    @Produces(MediaType.APPLICATION_JSON)
+   @Override
    public String getConfig(@PathParam("id") String id) throws Exception {
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          if (service.getId().equals(id)) {

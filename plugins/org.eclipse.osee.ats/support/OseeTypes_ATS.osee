@@ -239,11 +239,20 @@ attributeType "ats.Applicability Workflow" extends BooleanAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Applicable to Program" extends BooleanAttribute {
+oseeEnumType "enum.ats.applicability.to.program" {
+	uuid 0x10000067859000AA
+	entry "Yes"
+	entryGuid "CArJmR2JDn5DXT8FGPQA"
+	entry "No"
+	entryGuid "CArJmR3xrEmbw8zbyqgA"
+}
+
+attributeType "ats.Applicable to Program" extends EnumeratedAttribute {
 	uuid 0x10000067857000AA
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	enumType "enum.ats.applicability.to.program"
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }

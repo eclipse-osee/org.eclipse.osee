@@ -10,22 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
-public interface ICpaPcr {
+import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
 
-   String getProgramName();
+/**
+ * @author Donald G. Dunne
+ */
+public class CpaProgram extends UuidNamedIdentityJaxRs<Long> {
 
-   String getPriority();
+   public CpaProgram() {
+      super(null, null);
+   }
 
-   String getTitle();
-
-   String getResponsible();
-
-   String getSubsystem();
-
-   String getStatus();
-
-   String getId();
-
-   String getResponsibleTeam();
+   public CpaProgram(Long uuid, String name) {
+      super(uuid, name);
+   }
 
 }

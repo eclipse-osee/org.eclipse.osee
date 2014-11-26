@@ -214,7 +214,7 @@ public class AtsClientImpl implements IAtsClient {
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
       workItemFactory = new WorkItemFactory();
 
-      configItemFactory = new ConfigItemFactory();
+      configItemFactory = new ConfigItemFactory(this);
       actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService);
       sequenceProvider = new ISequenceProvider() {
 
@@ -232,6 +232,11 @@ public class AtsClientImpl implements IAtsClient {
          new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
             userService, attributeResolverService, atsStateFactory, configProxy, getServices());
 
+   }
+
+   @Override
+   public IVersionFactory getVersionFactory() {
+      return versionFactory;
    }
 
    public void stop() {
@@ -438,9 +443,17 @@ public class AtsClientImpl implements IAtsClient {
          getConfigCache().invalidate(configObject);
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
-         return getConfigCache().getSoleByUuid(uuid, clazz);
+         A object = getConfigCache().getSoleByUuid(uuid, clazz);
+         if (object == null) {
+            object = (A) getConfigItemFactory().getConfigObject(getArtifact(uuid));
+            if (object != null) {
+               getConfigCache().cache(object);
+            }
+         }
+         return object;
       }
 
       @Override
@@ -475,6 +488,20 @@ public class AtsClientImpl implements IAtsClient {
          }
       }
       return results;
+   }
+
+   /**
+    * @return corresponding Artifact or null if not found
+    */
+   @Override
+   public Artifact getArtifact(long uuid) throws OseeCoreException {
+      Artifact result = null;
+      try {
+         result = ArtifactQuery.getArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
    }
 
    @Override
@@ -647,6 +674,17 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsTeamDefinitionService getTeamDefinitionService() {
       return teamDefinitionService;
+   }
+
+   @Override
+   public Artifact getArtifact(String guid) {
+      Artifact result = null;
+      try {
+         result = ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
    }
 
 }

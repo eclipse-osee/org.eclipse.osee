@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.editor;
 
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -21,11 +23,12 @@ import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsConfigLabelProvider extends ResultsXViewerLabelProvider {
+public class AtsConfigLabelProvider extends ResultsXViewerLabelProvider implements ILabelProvider {
 
    public AtsConfigLabelProvider(ResultsXViewer resultsXViewer) {
       super(resultsXViewer);
@@ -79,5 +82,25 @@ public class AtsConfigLabelProvider extends ResultsXViewerLabelProvider {
          return "";
       }
       return super.getColumnText(element, xCol, columnIndex);
+   }
+
+   @Override
+   public Image getImage(Object element) {
+      Image result = null;
+      if (element instanceof IAtsActionableItem) {
+         result = ArtifactImageManager.getImage(AtsArtifactTypes.ActionableItem);
+      } else if (element instanceof IAtsTeamDefinition) {
+         result = ArtifactImageManager.getImage(AtsArtifactTypes.TeamDefinition);
+      } else if (element instanceof IAtsVersion) {
+         result = ArtifactImageManager.getImage(AtsArtifactTypes.Version);
+      } else if (element instanceof IAtsProgram) {
+         result = ArtifactImageManager.getImage(AtsArtifactTypes.Program);
+      }
+      return result;
+   }
+
+   @Override
+   public String getText(Object element) {
+      return element.toString();
    }
 }

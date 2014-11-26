@@ -8,29 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.cpa;
+package org.eclipse.osee.ats.api.cpa;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
-import org.eclipse.osee.ats.api.cpa.ICpaPcr;
-import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDecision {
+public class CpaDecision extends UuidNamedIdentityJaxRs<String> {
 
    private String applicability, rationale, assignees, pcrSystem, origPcrLocation, decisionLocation,
       duplicatedPcrLocation, completedBy, completedDate, duplicatedPcrId;
    private boolean complete = false;
-   private ICpaPcr originatingPcr;
+   private CpaPcr originatingPcr;
+
+   public CpaDecision() {
+      super(null, null);
+   }
 
    public CpaDecision(String id, String name) {
       super(id, name);
    }
 
-   @Override
    public String getRationale() {
       return rationale;
    }
@@ -39,7 +40,6 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.rationale = rationale;
    }
 
-   @Override
    public boolean isComplete() {
       return complete;
    }
@@ -56,7 +56,6 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.pcrSystem = pcrSystem;
    }
 
-   @Override
    public String getAssignees() {
       return assignees;
    }
@@ -89,12 +88,10 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.duplicatedPcrLocation = duplicatedPcrLocation;
    }
 
-   @Override
    public String completedBy() {
       return null;
    }
 
-   @Override
    public String completedDate() {
       return null;
    }
@@ -115,7 +112,6 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.completedDate = completedDate;
    }
 
-   @Override
    public String getApplicability() {
       return applicability;
    }
@@ -132,11 +128,11 @@ public class CpaDecision extends UuidNamedIdentity<String> implements IAtsCpaDec
       this.duplicatedPcrId = duplicatedPcrId;
    }
 
-   public ICpaPcr getOriginatingPcr() {
+   public CpaPcr getOriginatingPcr() {
       return originatingPcr;
    }
 
-   public void setOriginatingPcr(ICpaPcr originatingPcr) {
+   public void setOriginatingPcr(CpaPcr originatingPcr) {
       this.originatingPcr = originatingPcr;
    }
 

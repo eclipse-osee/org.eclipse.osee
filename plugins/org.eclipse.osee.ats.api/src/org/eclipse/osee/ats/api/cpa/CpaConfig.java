@@ -10,13 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsCpaProgram {
+@XmlRootElement
+public class CpaConfig {
 
-   public String getName();
+   private final List<String> applicabilityOptions = new ArrayList<String>();
 
-   public Long getUuid();
+   private final List<CpaConfigTool> tools = new ArrayList<CpaConfigTool>();
 
+   public List<String> getApplicabilityOptions() {
+      return applicabilityOptions;
+   }
+
+   public List<CpaConfigTool> getTools() {
+      return tools;
+   }
 }

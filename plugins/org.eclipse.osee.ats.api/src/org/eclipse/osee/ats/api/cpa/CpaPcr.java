@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.cpa;
+package org.eclipse.osee.ats.api.cpa;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.ats.api.cpa.ICpaPcr;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class CpaPcr implements ICpaPcr {
+public class CpaPcr {
    private String programName, priority, title, responsible, responsibleTeam, subsystem, status, id;
 
-   @Override
    public String getProgramName() {
       return programName;
    }
@@ -29,7 +27,6 @@ public class CpaPcr implements ICpaPcr {
       this.programName = programName;
    }
 
-   @Override
    public String getPriority() {
       return priority;
    }
@@ -38,7 +35,6 @@ public class CpaPcr implements ICpaPcr {
       this.priority = priority;
    }
 
-   @Override
    public String getTitle() {
       return title;
    }
@@ -47,7 +43,6 @@ public class CpaPcr implements ICpaPcr {
       this.title = title;
    }
 
-   @Override
    public String getResponsible() {
       return responsible;
    }
@@ -56,7 +51,6 @@ public class CpaPcr implements ICpaPcr {
       this.responsible = responsible;
    }
 
-   @Override
    public String getSubsystem() {
       return subsystem;
    }
@@ -65,7 +59,6 @@ public class CpaPcr implements ICpaPcr {
       this.subsystem = subsystem;
    }
 
-   @Override
    public String getStatus() {
       return status;
    }
@@ -74,7 +67,6 @@ public class CpaPcr implements ICpaPcr {
       this.status = status;
    }
 
-   @Override
    public String getId() {
       return id;
    }
@@ -83,7 +75,6 @@ public class CpaPcr implements ICpaPcr {
       this.id = id;
    }
 
-   @Override
    public String getResponsibleTeam() {
       return responsibleTeam;
    }

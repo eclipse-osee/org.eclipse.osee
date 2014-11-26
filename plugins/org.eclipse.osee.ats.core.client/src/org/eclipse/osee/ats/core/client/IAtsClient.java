@@ -128,4 +128,10 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IAtsProgramService getProgramService();
 
    IAtsTeamDefinitionService getTeamDefinitionService();
+
+   Artifact getArtifact(long uuid) throws OseeCoreException;
+
+   Artifact getArtifact(String guid);
+
+   IVersionFactory getVersionFactory();
 }

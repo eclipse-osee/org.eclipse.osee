@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaProgram;
+import org.eclipse.osee.ats.api.cpa.CpaBuild;
+import org.eclipse.osee.ats.api.cpa.CpaPcr;
+import org.eclipse.osee.ats.api.cpa.CpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
-import org.eclipse.osee.ats.api.cpa.ICpaPcr;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.util.XResultData;
 
@@ -35,7 +35,7 @@ public class NoOpCpaService implements IAtsCpaService {
    }
 
    @Override
-   public List<IAtsCpaProgram> getPrograms() {
+   public List<CpaProgram> getPrograms() {
       return Collections.emptyList();
    }
 
@@ -50,17 +50,17 @@ public class NoOpCpaService implements IAtsCpaService {
    }
 
    @Override
-   public ICpaPcr getPcr(String pcrId) {
+   public CpaPcr getPcr(String pcrId) {
       return null;
    }
 
    @Override
-   public Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds) {
+   public Map<String, CpaPcr> getPcrsByIds(Collection<String> issueIds) {
       return Collections.emptyMap();
    }
 
    @Override
-   public Collection<IAtsCpaBuild> getBuilds(String programUuid) {
+   public Collection<CpaBuild> getBuilds(String programUuid) {
       return Collections.emptyList();
    }
 

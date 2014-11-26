@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.core.cpa;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaBuild;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
+import org.eclipse.osee.ats.api.cpa.CpaBuild;
+import org.eclipse.osee.ats.api.cpa.CpaDecision;
+import org.eclipse.osee.ats.api.cpa.CpaProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -45,8 +46,8 @@ public class CpaFactory {
       Object result = null;
       if (obj instanceof IAtsProgram) {
          result = idToStoreObject.get(((IAtsProgram) obj).getUuid());
-      } else if (obj instanceof IAtsCpaDecision) {
-         result = idToStoreObject.get(((IAtsCpaDecision) obj).getUuid());
+      } else if (obj instanceof CpaDecision) {
+         result = idToStoreObject.get(((CpaDecision) obj).getUuid());
       }
       return result;
    }
@@ -61,7 +62,7 @@ public class CpaFactory {
       return decision;
    }
 
-   public static IAtsCpaBuild getVersion(IAtsVersion version, Object storeObject) {
+   public static CpaBuild getVersion(IAtsVersion version, Object storeObject) {
       Long uuid = Long.valueOf(((ArtifactReadable) version.getStoreObject()).getLocalId());
       CpaBuild build = new CpaBuild(uuid, version.getName());
       setStoreObject(String.valueOf(uuid), storeObject);

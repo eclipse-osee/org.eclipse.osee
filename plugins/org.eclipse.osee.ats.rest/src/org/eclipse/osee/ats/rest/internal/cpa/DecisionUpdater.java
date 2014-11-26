@@ -13,8 +13,7 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -27,11 +26,9 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -47,25 +44,34 @@ public class DecisionUpdater {
       this.atsServer = atsServer;
    }
 
-   public Response update() {
+   public XResultData update() {
+      XResultData rd = new XResultData(false);
       ResultSet<ArtifactReadable> results =
          atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getUuids()).getResults();
       IAtsChangeSet changes =
          atsServer.getStoreFactory().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (ArtifactReadable art : results) {
          IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(art);
-         updateRationale(update, changes, teamWf);
-         updateDuplicatedPcrId(update, changes, teamWf);
-         updateApplicability(update, changes, teamWf);
-         updateAssignees(update, changes, teamWf);
+         if (!rd.isErrors()) {
+            updateRationale(update, changes, teamWf, rd);
+         }
+         if (!rd.isErrors()) {
+            updateDuplicatedPcrId(update, changes, teamWf, rd);
+         }
+         if (!rd.isErrors()) {
+            updateApplicability(update, changes, teamWf, rd);
+         }
+         if (!rd.isErrors()) {
+            updateAssignees(update, changes, teamWf, rd);
+         }
       }
-      if (!changes.isEmpty()) {
+      if (!rd.isErrors() && !changes.isEmpty()) {
          changes.execute();
       }
-      return Response.ok().entity(AHTML.simplePage("Ok")).build();
+      return rd;
    }
 
-   private void updateApplicability(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf) {
+   private void updateApplicability(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       // update applicability - transition
       if (update.getApplicability() != null) {
          String appl = update.getApplicability();
@@ -81,7 +87,7 @@ public class DecisionUpdater {
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
-               throw new OseeCoreException(results.toString());
+               rd.logError(results.toString());
             }
 
          } else {
@@ -96,20 +102,19 @@ public class DecisionUpdater {
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
-               throw new OseeCoreException(results.toString());
+               rd.logError(results.toString());
             }
-
          }
       }
    }
 
-   private void updateAssignees(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf) {
+   private void updateAssignees(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       if (update.getAssignees() != null) {
          List<IAtsUser> assignees = new ArrayList<IAtsUser>();
          for (String userId : update.getAssignees()) {
             IAtsUser user = atsServer.getUserService().getUserById(userId);
             if (user == null) {
-               throw new OseeWebApplicationException(Status.BAD_REQUEST, String.format("Invalid userId [%s]", userId));
+               rd.logErrorWithFormat("Invalid userId [%s]", userId);
             }
             assignees.add(user);
          }
@@ -126,7 +131,7 @@ public class DecisionUpdater {
       }
    }
 
-   private void updateRationale(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf) {
+   private void updateRationale(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       // update rationale
       if (update.getRationale() != null) {
          if (update.getRationale().equals("")) {
@@ -137,7 +142,7 @@ public class DecisionUpdater {
       }
    }
 
-   private void updateDuplicatedPcrId(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf) {
+   private void updateDuplicatedPcrId(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       if (update.getDuplicatedPcrId() != null) {
          if (update.getDuplicatedPcrId().equals("")) {
             changes.deleteAttributes(teamWf, AtsAttributeTypes.DuplicatedPcrId);

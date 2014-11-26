@@ -14,14 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.ats.api.cpa.IAtsCpaDecision;
+import org.eclipse.osee.ats.api.cpa.CpaDecision;
+import org.eclipse.osee.ats.api.cpa.CpaPcr;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
-import org.eclipse.osee.ats.api.cpa.ICpaPcr;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.cpa.CpaDecision;
 import org.eclipse.osee.ats.core.cpa.CpaFactory;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -69,8 +68,8 @@ public class DecisionLoader {
       this.atsServer = atsServer;
    }
 
-   public List<IAtsCpaDecision> load() {
-      List<IAtsCpaDecision> decisions = new ArrayList<IAtsCpaDecision>();
+   public List<CpaDecision> load() {
+      List<CpaDecision> decisions = new ArrayList<CpaDecision>();
       QueryBuilder queryBuilder =
          atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow,
             "true");
@@ -84,7 +83,7 @@ public class DecisionLoader {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));
       }
-      HashCollection<String, IAtsCpaDecision> origPcrIdToDecision = new HashCollection<String, IAtsCpaDecision>();
+      HashCollection<String, CpaDecision> origPcrIdToDecision = new HashCollection<String, CpaDecision>();
       String pcrToolId = null;
       ElapsedTime time = new ElapsedTime("load cpa workflows");
       ResultSet<ArtifactReadable> results = queryBuilder.getResults();
@@ -133,9 +132,9 @@ public class DecisionLoader {
 
       time = new ElapsedTime("load issues");
       IAtsCpaService service = cpaRegistry.getServiceById(pcrToolId);
-      for (Entry<String, ICpaPcr> entry : service.getPcrsByIds(origPcrIdToDecision.keySet()).entrySet()) {
-         for (IAtsCpaDecision decision : origPcrIdToDecision.getValues(entry.getKey())) {
-            ((CpaDecision) decision).setOriginatingPcr(entry.getValue());
+      for (Entry<String, CpaPcr> entry : service.getPcrsByIds(origPcrIdToDecision.keySet()).entrySet()) {
+         for (CpaDecision decision : origPcrIdToDecision.getValues(entry.getKey())) {
+            decision.setOriginatingPcr(entry.getValue());
          }
       }
       time.end();

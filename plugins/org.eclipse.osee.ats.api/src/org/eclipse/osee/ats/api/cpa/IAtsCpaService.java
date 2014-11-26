@@ -24,22 +24,21 @@ public interface IAtsCpaService {
 
    String getId();
 
-   List<IAtsCpaProgram> getPrograms();
+   List<CpaProgram> getPrograms();
 
    String getConfigJson() throws Exception;
 
    URI getLocation(URI uri, String uuid);
 
-   ICpaPcr getPcr(String pcrId);
+   CpaPcr getPcr(String pcrId);
 
-   Map<String, ICpaPcr> getPcrsByIds(Collection<String> issueIds);
-   
-   Collection<IAtsCpaBuild> getBuilds(String programUuid);
+   Map<String, CpaPcr> getPcrsByIds(Collection<String> issueIds);
+
+   Collection<CpaBuild> getBuilds(String programUuid);
 
    /**
     * Duplicate originatingPcrId for programUuid and return duplicatedPcrId
     */
    String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String originatingPcrId, XResultData rd);
-
 
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.cpa;
+package org.eclipse.osee.ats.api.cpa;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,6 +20,8 @@ public class DuplicateCpa {
 
    private String programUuid;
    private String cpaUuid;
+   private String userId;
+   private boolean completeCpa;
 
    public String getCpaUuid() {
       return cpaUuid;
@@ -28,8 +30,6 @@ public class DuplicateCpa {
    public void setCpaUuid(String cpaUuid) {
       this.cpaUuid = cpaUuid;
    }
-
-   private String userId;
 
    public String getProgramUuid() {
       return programUuid;
@@ -45,6 +45,14 @@ public class DuplicateCpa {
 
    public void setUserId(String userId) {
       this.userId = userId;
+   }
+
+   public boolean isCompleteCpa() {
+      return completeCpa;
+   }
+
+   public void setCompleteCpa(boolean completeCpa) {
+      this.completeCpa = completeCpa;
    }
 
 }
