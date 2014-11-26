@@ -217,7 +217,9 @@ public class JdbcServerConfig {
 
       for (Entry<String, Object> entry : src.entrySet()) {
          String key = entry.getKey();
-         if (!key.startsWith(JdbcConstants.SERVER_NAMESPACE)) {
+         if (!key.startsWith(JdbcConstants.SERVER_NAMESPACE) && //
+         !key.equals(JdbcConstants.JDBC_SERVICE__ID) && //
+         !key.equals(JdbcConstants.JDBC_SERVICE__OSGI_BINDING)) {
             Object value = entry.getValue();
             if (value != null) {
                addDbParam(key, String.valueOf(value));
