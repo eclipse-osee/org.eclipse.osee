@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.sql.join;
+package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar
@@ -117,4 +116,5 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
    public void add(Integer art_id, Long branchUuid) {
       add(art_id, branchUuid, null);
    }
+
 }

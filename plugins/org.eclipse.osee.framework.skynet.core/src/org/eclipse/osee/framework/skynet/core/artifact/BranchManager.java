@@ -11,11 +11,9 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,14 +43,14 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -403,20 +401,13 @@ public class BranchManager {
    }
 
    private static MergeBranch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-      int mergeAddressingQueryId = ArtifactLoader.getNewQueryId();
-      List<Object[]> datas = new LinkedList<Object[]>();
+      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       for (int artId : expectedArtIds) {
-         datas.add(new Object[] {
-            mergeAddressingQueryId,
-            insertTime,
-            artId,
-            sourceBranch.getUuid(),
-            SQL3DataType.INTEGER});
+         joinQuery.add(artId, sourceBranch.getUuid());
       }
       MergeBranch mergeBranch = null;
       try {
-         ArtifactLoader.insertIntoArtifactJoin(datas);
+         joinQuery.store();
 
          int parentTxId = sourceBranch.getBaseTransaction().getId();
          String creationComment =
@@ -425,11 +416,11 @@ public class BranchManager {
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
             (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName,
-               Lib.generateUuid(), UserManager.getUser(), creationComment, mergeAddressingQueryId, destBranch.getUuid());
+               Lib.generateUuid(), UserManager.getUser(), creationComment, joinQuery.getQueryId(), destBranch.getUuid());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
-         ArtifactLoader.clearQuery(mergeAddressingQueryId);
+         joinQuery.delete();
       }
       return mergeBranch;
    }

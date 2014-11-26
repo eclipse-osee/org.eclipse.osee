@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 public final class TagQueueJoinQuery extends AbstractJoinQuery {
 
    private final class GammaEntry implements IJoinRow {
-      private final long gammaId;
+      private final Long gammaId;
 
       private GammaEntry(Long gammaId) {
          this.gammaId = gammaId;
@@ -31,24 +31,45 @@ public final class TagQueueJoinQuery extends AbstractJoinQuery {
 
       @Override
       public boolean equals(Object obj) {
-         if (obj == this) {
+         if (this == obj) {
             return true;
          }
-         if (!(obj instanceof GammaEntry)) {
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
             return false;
          }
          GammaEntry other = (GammaEntry) obj;
-         return this.gammaId == other.gammaId;
+         if (!getOuterType().equals(other.getOuterType())) {
+            return false;
+         }
+         if (gammaId == null) {
+            if (other.gammaId != null) {
+               return false;
+            }
+         } else if (!gammaId.equals(other.gammaId)) {
+            return false;
+         }
+         return true;
       }
 
       @Override
       public int hashCode() {
-         return Long.valueOf(37 * gammaId).hashCode();
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + getOuterType().hashCode();
+         result = prime * result + ((gammaId == null) ? 0 : gammaId.hashCode());
+         return result;
       }
 
       @Override
       public String toString() {
          return String.format("gammaId=%s", gammaId);
+      }
+
+      private TagQueueJoinQuery getOuterType() {
+         return TagQueueJoinQuery.this;
       }
    }
 

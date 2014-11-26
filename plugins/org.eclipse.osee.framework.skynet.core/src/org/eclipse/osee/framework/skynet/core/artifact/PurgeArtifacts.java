@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -21,12 +19,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -41,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
  */
 public class PurgeArtifacts extends AbstractDbTxOperation {
 
-   private static final String INSERT_SELECT_ITEM =
-      "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id, branch_id) SELECT /*+ ordered */ ?, ?, txs.gamma_id, txs.transaction_id, aj.branch_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
+   private static final String SELECT_ITEM_GAMMAS =
+      "SELECT /*+ ordered */ txs.gamma_id, txs.transaction_id, aj.branch_id FROM osee_join_artifact aj, %s item, osee_txs txs WHERE aj.query_id = ? AND %s AND item.gamma_id = txs.gamma_id AND aj.branch_id = txs.branch_id";
 
    private static final String COUNT_ARTIFACT_VIOLATIONS =
       "SELECT art.art_id, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id";
@@ -73,27 +71,100 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       if (artifactsToPurge == null || artifactsToPurge.isEmpty()) {
          return;
       }
-      //first determine if the purge is legal.
-      List<Object[]> batchParameters = new ArrayList<Object[]>();
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
+      checkPurgeValid(connection);
+
+      // now load the artifacts to be purged
+      Set<Artifact> childreArtifactsToPurge = new HashSet<Artifact>();
+      for (Artifact art : artifactsToPurge) {
+         childreArtifactsToPurge.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));
+      }
+      artifactsToPurge.addAll(childreArtifactsToPurge);
+
+      ArtifactJoinQuery artJoin2 = JoinUtility.createArtifactJoinQuery(getDatabaseService());
       try {
          for (Artifact art : artifactsToPurge) {
-            for (Branch branch : art.getFullBranch().getChildBranches(true)) {
-               batchParameters.add(new Object[] {
-                  queryId,
-                  insertTime,
-                  art.getArtId(),
-                  branch.getUuid(),
-                  SQL3DataType.INTEGER});
+            artJoin2.add(art.getArtId(), art.getFullBranch().getUuid());
+         }
+         artJoin2.store(connection);
+
+         int queryId = artJoin2.getQueryId();
+
+         TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getDatabaseService());
+
+         insertSelectItems(txJoin, connection, "osee_relation_link",
+            "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", queryId);
+         insertSelectItems(txJoin, connection, "osee_attribute", "aj.art_id = item.art_id", queryId);
+         insertSelectItems(txJoin, connection, "osee_artifact", "aj.art_id = item.art_id", queryId);
+
+         try {
+            txJoin.store(connection);
+            getDatabaseService().runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
+               txJoin.getQueryId());
+            getDatabaseService().runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
+               txJoin.getQueryId());
+         } finally {
+            txJoin.delete(connection);
+         }
+
+         for (Artifact artifact : artifactsToPurge) {
+            ArtifactCache.deCache(artifact);
+            artifact.internalSetDeleted();
+            for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+               rel.markAsPurged();
+            }
+            for (Attribute<?> attr : artifact.internalGetAttributes()) {
+               attr.markAsPurged();
             }
          }
-         if (batchParameters.size() > 0) {
-            ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
-            IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+         success = true;
+      } finally {
+         artJoin2.delete(connection);
+      }
+   }
+
+   @Override
+   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+      if (success) {
+         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+         for (Artifact artifact : artifactsToPurge) {
+            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
+         }
+         // Kick Local and Remote Events
+         ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
+         for (EventBasicGuidArtifact guidArt : artifactChanges) {
+            artifactEvent.getArtifacts().add(guidArt);
+         }
+         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
+      }
+   }
+
+   public void insertSelectItems(TransactionJoinQuery txJoin, OseeConnection connection, String tableName, String artifactJoinSql, int queryId) throws OseeCoreException {
+      String query = String.format(SELECT_ITEM_GAMMAS, tableName, artifactJoinSql);
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      try {
+         chStmt.runPreparedQuery(query, queryId);
+         while (chStmt.next()) {
+            txJoin.add(chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id"), chStmt.getLong("branch_id"));
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   private void checkPurgeValid(OseeConnection connection) {
+      ArtifactJoinQuery artJoin = JoinUtility.createArtifactJoinQuery(getDatabaseService());
+      for (Artifact art : artifactsToPurge) {
+         for (Branch branch : art.getFullBranch().getChildBranches(true)) {
+            artJoin.add(art.getArtId(), branch.getUuid());
+         }
+      }
+      if (!artJoin.isEmpty()) {
+         try {
+            artJoin.store(connection);
+            IOseeStatement chStmt = getDatabaseService().getStatement(connection);
             try {
-               chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
+               chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, artJoin.getQueryId());
                boolean failed = false;
                StringBuilder sb = new StringBuilder();
                while (chStmt.next()) {
@@ -117,89 +188,12 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                      "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString());
                }
             } finally {
-               ArtifactLoader.clearQuery(connection, queryId);
                chStmt.close();
             }
+         } finally {
+            artJoin.delete(connection);
          }
-
-         // now load the artifacts to be purged
-         batchParameters.clear();
-         queryId = ArtifactLoader.getNewQueryId();
-         insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-         Set<Artifact> childreArtifactsToPurge = new HashSet<Artifact>();
-         for (Artifact art : artifactsToPurge) {
-            childreArtifactsToPurge.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));
-         }
-
-         artifactsToPurge.addAll(childreArtifactsToPurge);
-
-         // insert into the artifact_join_table
-         for (Artifact art : artifactsToPurge) {
-            batchParameters.add(new Object[] {
-               queryId,
-               insertTime,
-               art.getArtId(),
-               art.getFullBranch().getUuid(),
-               SQL3DataType.INTEGER});
-         }
-         ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
-
-         //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)
-         int transactionJoinId = ArtifactLoader.getNewQueryId();
-         //run the insert select queries to populate the osee_join_transaction table  (this will take care of the txs table)
-
-         insertSelectItems(connection, "osee_relation_link",
-            "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", transactionJoinId, insertTime, queryId);
-         insertSelectItems(connection, "osee_attribute", "aj.art_id = item.art_id", transactionJoinId, insertTime,
-            queryId);
-         insertSelectItems(connection, "osee_artifact", "aj.art_id = item.art_id", transactionJoinId, insertTime,
-            queryId);
-
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION, transactionJoinId);
-
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
-            transactionJoinId);
-
-         ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
-            transactionJoinId);
-
-         for (Artifact artifact : artifactsToPurge) {
-            ArtifactCache.deCache(artifact);
-            artifact.internalSetDeleted();
-            for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-               rel.markAsPurged();
-            }
-            for (Attribute<?> attr : artifact.internalGetAttributes()) {
-               attr.markAsPurged();
-            }
-         }
-         success = true;
-      } finally {
-         ArtifactLoader.clearQuery(connection, queryId);
       }
-   }
-
-   @Override
-   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
-      if (success) {
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-         for (Artifact artifact : artifactsToPurge) {
-            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
-         }
-         // Kick Local and Remote Events
-         ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
-         for (EventBasicGuidArtifact guidArt : artifactChanges) {
-            artifactEvent.getArtifacts().add(guidArt);
-         }
-         OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeCoreException {
-      String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
-      getDatabaseService().runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);
    }
 
 }

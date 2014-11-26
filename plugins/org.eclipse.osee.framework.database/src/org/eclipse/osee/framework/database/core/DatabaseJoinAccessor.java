@@ -27,7 +27,7 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
       "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) VALUES (?, ?, ?, ?, ?)";
 
    private static final String INSERT_INTO_JOIN_TRANSACTION =
-      "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id) VALUES (?, ?, ?, ?)";
+      "INSERT INTO osee_join_transaction (query_id, insert_time, gamma_id, transaction_id, branch_id) VALUES (?, ?, ?, ?, ?)";
 
    private static final String INSERT_INTO_TAG_GAMMA_QUEUE =
       "INSERT INTO osee_tag_gamma_queue (query_id, insert_time, gamma_id) VALUES (?, ?, ?)";

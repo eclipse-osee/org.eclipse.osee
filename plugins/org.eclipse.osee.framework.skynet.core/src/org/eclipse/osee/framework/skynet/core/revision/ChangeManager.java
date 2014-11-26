@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -23,16 +21,15 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -104,38 +101,29 @@ public final class ChangeManager {
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
-      List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 5);
-
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
+      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
       for (Artifact artifact : artifacts) {
          Branch branch = artifact.getFullBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getUuid(), transactionNumber});
+         joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
 
          // for each combination of artifact and its branch hierarchy
          while (branch.hasParentBranch()) {
             transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
-            insertParameters.add(new Object[] {
-               queryId,
-               insertTime,
-               artifact.getArtId(),
-               branch.getUuid(),
-               transactionNumber});
+            joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
          }
       }
 
       HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<Artifact, TransactionRecord>();
       try {
-         ArtifactLoader.insertIntoArtifactJoin(insertParameters);
+         joinQuery.store();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(insertParameters.size() * 2,
-               ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING), queryId);
+            chStmt.runPreparedQuery(joinQuery.size() * 2, ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING),
+               joinQuery.getQueryId());
             while (chStmt.next()) {
                Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
@@ -145,9 +133,8 @@ public final class ChangeManager {
             chStmt.close();
          }
       } finally {
-         ArtifactLoader.clearQuery(queryId);
+         joinQuery.delete();
       }
-
       return transactionMap;
    }
 
@@ -158,9 +145,7 @@ public final class ChangeManager {
     * @return a map of artifact to collection of branches which affected the given artifact
     */
    public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
-      List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 5);
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
 
       CompositeKeyHashMap<Integer, IOseeBranch, Artifact> artifactMap =
          new CompositeKeyHashMap<Integer, IOseeBranch, Artifact>();
@@ -170,23 +155,18 @@ public final class ChangeManager {
          // hierarchy
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
-               insertParameters.add(new Object[] {
-                  queryId,
-                  insertTime,
-                  artifact.getArtId(),
-                  workingBranch.getUuid(),
-                  SQL3DataType.INTEGER});
+               joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
             }
          }
       }
 
       HashCollection<Artifact, Branch> branchMap = new HashCollection<Artifact, Branch>();
       try {
-         ArtifactLoader.insertIntoArtifactJoin(insertParameters);
+         joinQuery.store();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(insertParameters.size() * 2,
-               ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);
+            chStmt.runPreparedQuery(joinQuery.size() * 2, ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING),
+               joinQuery.getQueryId());
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
@@ -198,7 +178,7 @@ public final class ChangeManager {
             chStmt.close();
          }
       } finally {
-         ArtifactLoader.clearQuery(queryId);
+         joinQuery.delete();
       }
       return branchMap;
    }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,14 +25,14 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflictBuilder;
@@ -304,25 +303,17 @@ public class ConflictManagerInternal {
 
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
-      int queryId = ArtifactLoader.getNewQueryId();
-      try {
-         if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
-            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
-            List<Object[]> insertParameters = new LinkedList<Object[]>();
+      if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
+         ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
+         try {
             for (Conflict conflict : conflicts) {
-               insertParameters.add(new Object[] {
-                  queryId,
-                  insertTime,
-                  conflict.getObjectId(),
-                  branchUuid,
-                  conflict.getConflictType().getValue()});
+               joinQuery.add(conflict.getObjectId(), branchUuid, conflict.getConflictType().getValue());
             }
-            ArtifactLoader.insertIntoArtifactJoin(insertParameters);
-            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, queryId);
+            joinQuery.store();
+            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, joinQuery.getQueryId());
+         } finally {
+            joinQuery.delete();
          }
-      } finally {
-         ArtifactLoader.clearQuery(queryId);
       }
       monitor.worked(10);
    }

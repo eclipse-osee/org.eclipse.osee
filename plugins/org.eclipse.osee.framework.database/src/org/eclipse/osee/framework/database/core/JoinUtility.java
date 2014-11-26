@@ -14,6 +14,7 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.ServiceUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -42,6 +43,14 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(service), getNewQueryId());
    }
 
+   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
+      return new ArtifactJoinQuery(createAccessor(service), getNewQueryId(), getMaxArtifactJoinSize(service));
+   }
+
+   public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service) {
+      return new TransactionJoinQuery(createAccessor(service), getNewQueryId());
+   }
+
    ////////////////// Static Legacy Calls /////////////////////////
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
       return ServiceUtil.getDatabaseService();
@@ -51,4 +60,22 @@ public class JoinUtility {
       return new IdJoinQuery(createAccessor(getDatabase()), getNewQueryId());
    }
 
+   public static ArtifactJoinQuery createArtifactJoinQuery() {
+      IOseeDatabaseService service = getDatabase();
+      return createArtifactJoinQuery(service);
+   }
+
+   public static TransactionJoinQuery createTransactionJoinQuery() {
+      IOseeDatabaseService service = getDatabase();
+      return createTransactionJoinQuery(service);
+   }
+
+   private static int getMaxArtifactJoinSize(IOseeDatabaseService service) {
+      int toReturn = Integer.MAX_VALUE;
+      String maxSize = OseeInfo.getCachedValue(service, "artifact.join.max.size");
+      if (Strings.isNumeric(maxSize)) {
+         toReturn = Integer.parseInt(maxSize);
+      }
+      return toReturn;
+   }
 }

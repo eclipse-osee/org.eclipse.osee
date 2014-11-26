@@ -11,27 +11,24 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -128,9 +125,9 @@ public class UpdateMergeBranch extends DbTransaction {
       int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch.getUuid(),
-               artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getUuid(),
-               baselineTransaction);
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
+               mergeBranch.getUuid(), artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(),
+               mergeBranch.getUuid(), baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -163,23 +160,22 @@ public class UpdateMergeBranch extends DbTransaction {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      List<Object[]> datas = new LinkedList<Object[]>();
-      int queryId = ArtifactLoader.getNewQueryId();
-      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-
+      ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       for (int artId : artIds) {
-         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getUuid(), SQL3DataType.INTEGER});
+         joinQuery.add(artId, sourceBranch.getUuid());
       }
       try {
-         ArtifactLoader.insertIntoArtifactJoin(datas);
+         joinQuery.store(connection);
          Integer startTransactionNumber = mergeBranch.getBaseTransaction().getId();
-         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
-         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
+         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, joinQuery.getQueryId(),
+            sourceBranch, mergeBranch);
+         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, joinQuery.getQueryId(), sourceBranch,
+            mergeBranch);
       } catch (OseeCoreException ex) {
          throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getUuid(), Collections.toString(
             ",", artIds));
       } finally {
-         ArtifactLoader.clearQuery(connection, queryId);
+         joinQuery.delete(connection);
       }
    }
 

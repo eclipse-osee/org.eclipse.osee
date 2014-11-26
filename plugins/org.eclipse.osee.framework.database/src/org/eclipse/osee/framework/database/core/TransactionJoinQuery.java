@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.sql.join;
+package org.eclipse.osee.framework.database.core;
 
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar

@@ -18,8 +18,8 @@ import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 public final class ExportImportJoinQuery extends AbstractJoinQuery {
 
    private final class ExportImportEntry implements IJoinRow {
-      private final long id1;
-      private final long id2;
+      private final Long id1;
+      private final Long id2;
 
       private ExportImportEntry(Long id1, Long id2) {
          this.id1 = id1;
@@ -33,24 +33,53 @@ public final class ExportImportJoinQuery extends AbstractJoinQuery {
 
       @Override
       public boolean equals(Object obj) {
-         if (obj == this) {
+         if (this == obj) {
             return true;
          }
-         if (!(obj instanceof ExportImportEntry)) {
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
             return false;
          }
          ExportImportEntry other = (ExportImportEntry) obj;
-         return this.id1 == other.id1 && this.id2 == other.id2;
+         if (!getOuterType().equals(other.getOuterType())) {
+            return false;
+         }
+         if (id1 == null) {
+            if (other.id1 != null) {
+               return false;
+            }
+         } else if (!id1.equals(other.id1)) {
+            return false;
+         }
+         if (id2 == null) {
+            if (other.id2 != null) {
+               return false;
+            }
+         } else if (!id2.equals(other.id2)) {
+            return false;
+         }
+         return true;
       }
 
       @Override
       public int hashCode() {
-         return Long.valueOf(37 * id1 * id2).hashCode();
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + getOuterType().hashCode();
+         result = prime * result + ((id1 == null) ? 0 : id1.hashCode());
+         result = prime * result + ((id2 == null) ? 0 : id2.hashCode());
+         return result;
       }
 
       @Override
       public String toString() {
          return String.format("id1=%s id2=%s", id1, id2);
+      }
+
+      private ExportImportJoinQuery getOuterType() {
+         return ExportImportJoinQuery.this;
       }
    }
 

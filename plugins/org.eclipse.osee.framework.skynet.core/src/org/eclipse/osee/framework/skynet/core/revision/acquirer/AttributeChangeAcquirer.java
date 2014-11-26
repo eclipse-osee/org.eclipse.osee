@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,14 +25,13 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.database.core.ArtifactJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
@@ -180,42 +176,41 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             sqlParamter = transactionId.getId();
          }
 
-         int queryId = ArtifactLoader.getNewQueryId();
-         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
-         List<Object[]> datas = new LinkedList<Object[]>();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
-
+         ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
          try {
-            // insert into the artifact_join_table
             for (int artId : artIds) {
-               datas.add(new Object[] {queryId, insertTime, artId, wasValueBranch.getUuid(), SQL3DataType.INTEGER});
+               joinQuery.add(artId, wasValueBranch.getUuid());
             }
-            ArtifactLoader.insertIntoArtifactJoin(datas);
-            chStmt.runPreparedQuery(sql, sqlParamter, queryId);
-            int previousAttrId = -1;
+            joinQuery.store();
 
-            while (chStmt.next()) {
-               int attrId = chStmt.getInt("attr_id");
+            IOseeStatement chStmt = ConnectionHandler.getStatement();
+            try {
+               chStmt.runPreparedQuery(sql, sqlParamter, joinQuery.getQueryId());
+               int previousAttrId = -1;
+               while (chStmt.next()) {
+                  int attrId = chStmt.getInt("attr_id");
 
-               if (previousAttrId != attrId) {
-                  String wasValue = chStmt.getString("was_value");
-                  if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
-                     AttributeChangeBuilder changeBuilder =
-                        (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
+                  if (previousAttrId != attrId) {
+                     String wasValue = chStmt.getString("was_value");
+                     if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
+                        AttributeChangeBuilder changeBuilder =
+                           (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
 
-                     if (changeBuilder.getArtModType() != ModificationType.NEW) {
-                        if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {
-                           changeBuilder.setModType(ModificationType.MODIFIED);
+                        if (changeBuilder.getArtModType() != ModificationType.NEW) {
+                           if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {
+                              changeBuilder.setModType(ModificationType.MODIFIED);
+                           }
+                           changeBuilder.setWasValue(wasValue);
                         }
-                        changeBuilder.setWasValue(wasValue);
                      }
+                     previousAttrId = attrId;
                   }
-                  previousAttrId = attrId;
                }
+            } finally {
+               chStmt.close();
             }
          } finally {
-            chStmt.close();
-            ArtifactLoader.clearQuery(queryId);
+            joinQuery.delete();
          }
          if (getMonitor() != null) {
             monitor.worked(12);
