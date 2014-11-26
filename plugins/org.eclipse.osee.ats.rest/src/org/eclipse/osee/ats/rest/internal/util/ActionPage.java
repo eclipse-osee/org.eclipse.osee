@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -54,7 +55,6 @@ public class ActionPage {
    private static final String ROLE_WIDGET_NAME = "Role";
    private String pageTemplate;
    private IAtsWorkItem workItem;
-   private final String title;
    private final ArtifactReadable action;
    private final IAtsServer atsServer;
    private final Log logger;
@@ -65,16 +65,15 @@ public class ActionPage {
    private static List<String> ignoredWidgets;
    private final boolean details;
 
-   public ActionPage(Log logger, IAtsServer atsServer, IAtsWorkItem workItem, String title, boolean details) {
-      this(logger, atsServer, (ArtifactReadable) workItem.getStoreObject(), title, details);
+   public ActionPage(Log logger, IAtsServer atsServer, IAtsWorkItem workItem, boolean details) {
+      this(logger, atsServer, (ArtifactReadable) workItem.getStoreObject(), details);
       this.workItem = workItem;
    }
 
-   public ActionPage(Log logger, IAtsServer atsServer, ArtifactReadable action, String title, boolean details) {
+   public ActionPage(Log logger, IAtsServer atsServer, ArtifactReadable action, boolean details) {
       this.logger = logger;
       this.atsServer = atsServer;
       this.action = action;
-      this.title = title;
       this.details = details;
    }
 
@@ -90,11 +89,7 @@ public class ActionPage {
       Conditions.checkNotNull(workItem, "workItem");
 
       ViewModel page = new ViewModel("action.html");
-      if (Strings.isValid(title)) {
-         page.param("title", title);
-      } else {
-         page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
-      }
+      page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
       page.param("description", action.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
       page.param("team", getTeamStr(atsServer, action));
       page.param("ais", getAIStr(action));
@@ -224,7 +219,8 @@ public class ActionPage {
    private void addStates(ViewModel page, IAtsWorkItem workItem, ArtifactReadable action) throws Exception {
       StringBuilder statesSb = new StringBuilder();
       IAtsWorkDefinition workDefinition = workItem.getWorkDefinition();
-      Collection<String> visitedStates = workItem.getStateMgr().getVisitedStateNames();
+      IAtsStateManager stateMgr = workItem.getStateMgr();
+      Collection<String> visitedStates = stateMgr.getVisitedStateNames();
       List<IAtsStateDefinition> statesOrderedByOrdinal =
          atsServer.getWorkDefService().getStatesOrderedByOrdinal(workDefinition);
       for (int index = statesOrderedByOrdinal.size() - 1; index >= 0; index--) {
@@ -233,8 +229,19 @@ public class ActionPage {
             String stateHtmlTemplate = getStateHtmlTemplate();
 
             String stateName = state.getName();
-            if (stateName.equals(workItem.getStateMgr().getCurrentStateName())) {
-               stateName = "CURRENT STATE => " + stateName;
+            if (stateName.equals(stateMgr.getCurrentStateName())) {
+               stateName = String.format("CURRENT STATE => <b>%s</b>", stateName);
+               if (stateMgr.getStateType().isCompleted()) {
+                  stateName =
+                     String.format("%s - on <b>%s</b> - by <b>%s</b>", stateName,
+                        DateUtil.getMMDDYYHHMM(workItem.getCompletedDate()), workItem.getCompletedBy().getName());
+               } else if (stateMgr.getStateType().isCancelled()) {
+                  stateName =
+                     String.format("%s - on <b>%s</b> - by <b>%s</b><br/>from <b>%s</b> - reason <b>[%s]</b>",
+                        stateName, DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
+                        workItem.getCancelledBy().getName(), workItem.getCancelledFromState(),
+                        workItem.getCancelledReason());
+               }
             }
             stateHtmlTemplate = stateHtmlTemplate.replace("TITLE", stateName);
 

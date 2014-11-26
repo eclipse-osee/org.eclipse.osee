@@ -68,7 +68,7 @@ public final class ActionUiResource {
       if (workItems.size() == 1) {
          ActionPage page =
             new ActionPage(logger, atsServer, (ArtifactReadable) workItems.iterator().next().getStoreObject(),
-               "Action - " + ids, false);
+               false);
          return page.generate();
       } else {
          String idStr = "";
@@ -96,7 +96,7 @@ public final class ActionUiResource {
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
-      ActionPage page = new ActionPage(logger, atsServer, action, "Action - " + id, true);
+      ActionPage page = new ActionPage(logger, atsServer, action, true);
       return page.generate();
    }
 
@@ -164,7 +164,7 @@ public final class ActionUiResource {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
       IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
-      ActionPage page = new ActionPage(logger, atsServer, workItem, "Action - " + workItem.getAtsId(), false);
+      ActionPage page = new ActionPage(logger, atsServer, workItem, false);
       page.setAddTransition(true);
       return page.generate();
    }
