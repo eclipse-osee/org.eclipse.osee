@@ -14,10 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -39,14 +39,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class DataLoaderFactoryImpl implements DataLoaderFactory {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlObjectLoader loader;
    private final SqlJoinFactory joinFactory;
 
-   public DataLoaderFactoryImpl(Log logger, IOseeDatabaseService dbService, SqlObjectLoader loader, SqlJoinFactory joinFactory) {
+   public DataLoaderFactoryImpl(Log logger, JdbcClient jdbcClient, SqlObjectLoader loader, SqlJoinFactory joinFactory) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.loader = loader;
       this.joinFactory = joinFactory;
    }
@@ -69,7 +69,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
          if (cancellation != null) {
             cancellation.checkForCancelled();
          }
-         count = dbService.runPreparedQueryFetchObject(-1, context.getSql(), context.getParameters().toArray());
+         count = jdbcClient.runPreparedQueryFetchObject(-1, context.getSql(), context.getParameters().toArray());
       } finally {
          for (AbstractJoinQuery join : context.getJoins()) {
             try {
@@ -92,10 +92,10 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
       AbstractLoadExecutor executor;
       if (queryContext instanceof ArtifactQuerySqlContext) {
          ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
-         executor = new ArtifactQueryContextLoadExecutor(loader, dbService, joinFactory, sqlQueryContext);
+         executor = new ArtifactQueryContextLoadExecutor(loader, jdbcClient, joinFactory, sqlQueryContext);
       } else {
          QuerySqlContext sqlQueryContext = adapt(QuerySqlContext.class, queryContext);
-         executor = new QueryContextLoadExecutor(loader, dbService, sqlQueryContext);
+         executor = new QueryContextLoadExecutor(loader, jdbcClient, sqlQueryContext);
       }
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, executor, options, null, null, loader, joinFactory);

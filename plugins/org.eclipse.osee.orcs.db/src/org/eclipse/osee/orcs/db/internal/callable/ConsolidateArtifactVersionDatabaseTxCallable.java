@@ -15,23 +15,23 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
+import org.eclipse.osee.orcs.db.internal.util.Address;
 
 /**
  * @author Ryan D. Brooks
@@ -61,16 +61,16 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private static final String UPDATE_TXS_MOD_CURRENT =
       "update osee_txs%s set mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
 
-   private List<Long[]> deleteArtifactVersionData;
+   private List<Object[]> deleteArtifactVersionData;
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
    private final List<Object[]> updateTxsCurrentModData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
-   private OseeConnection connection;
+   private JdbcConnection connection;
    private int previousArtifactId;
    private long netGamma;
-   private IOseeStatement chStmt;
+   private JdbcStatement chStmt;
    private long previousNetGammaId;
    private long previousBranchId;
    private int previuosTransactionId;
@@ -80,14 +80,14 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private final SqlJoinFactory joinFactory;
    private final Console console;
 
-   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Console console) {
-      super(logger, session, databaseService, "Consolidate Artifact Versions");
+   public ConsolidateArtifactVersionDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Console console) {
+      super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.console = console;
    }
 
    private void init() throws OseeCoreException {
-      deleteArtifactVersionData = new ArrayList<Long[]>(14000);
+      deleteArtifactVersionData = new ArrayList<Object[]>(14000);
       obsoleteGammas.clear();
       updateAddressingData.clear();
       addressingToDelete.clear();
@@ -97,7 +97,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       previuosTransactionId = -1;
       updateTxsCounter = 0;
       deleteTxsCounter = 0;
-      chStmt = getDatabaseService().getStatement(connection);
+      chStmt = getJdbcClient().getStatement(connection);
       gammaJoin = joinFactory.createExportImportJoinQuery();
    }
 
@@ -117,7 +117,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       ArtifactJoinQuery artifactJoinQuery = populateJoinTableWithArtifacts();
       List<Address> mods = new ArrayList<Address>();
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
             long branchUuid = chStmt.getLong("branch_id");
@@ -198,7 +198,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    }
 
    @Override
-   protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
 
       this.connection = connection;
       init();
@@ -208,15 +208,14 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       console.writeln("updateTxsCurrentModData size: %d", updateTxsCurrentModData.size());
       console.writeln("addressingToDelete size: %d", addressingToDelete.size());
 
-      getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
-         updateTxsCurrentModData);
-      getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, false), addressingToDelete);
+      getJdbcClient().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false), updateTxsCurrentModData);
+      getJdbcClient().runBatchUpdate(connection, prepareSql(DELETE_TXS, false), addressingToDelete);
 
       findObsoleteGammas();
       console.writeln("gamma join size: %d", gammaJoin.size());
 
       console.writeln("Number of artifact version rows deleted: %d",
-         getDatabaseService().runBatchUpdate(connection, DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
+         getJdbcClient().runBatchUpdate(connection, DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
 
       gammaJoin.store(connection);
@@ -233,13 +232,13 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    }
 
    private void updataConflicts(String columnName) throws OseeCoreException {
-      int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
+      int count = getJdbcClient().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
       console.writeln("updated %s in %d rows", columnName, count);
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_ARTIFACT_VERSIONS);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ARTIFACT_VERSIONS);
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
 
@@ -268,8 +267,8 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    private void determineAffectedAddressingAndFix(boolean archived) throws OseeCoreException {
       try {
          console.writeln("query id: %d", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(MAX_FETCH, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
-            gammaJoin.getQueryId());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE,
+            String.format(SELECT_ADDRESSING, archived ? "_archived" : ""), gammaJoin.getQueryId());
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
@@ -329,15 +328,14 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       String archivedStr = archived ? "_archived" : "";
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=
-            getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
+            getJdbcClient().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
          console.writeln("Number of txs%s rows deleted: %d", archivedStr, deleteTxsCounter);
          addressingToDelete.clear();
       }
 
       if (updateAddressingData.size() > 99960 || force) {
          updateTxsCounter +=
-            getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
-               updateAddressingData);
+            getJdbcClient().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived), updateAddressingData);
          console.writeln("Number of txs%s rows updated: %d", archivedStr, updateTxsCounter);
 
          updateAddressingData.clear();

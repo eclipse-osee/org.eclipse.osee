@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**

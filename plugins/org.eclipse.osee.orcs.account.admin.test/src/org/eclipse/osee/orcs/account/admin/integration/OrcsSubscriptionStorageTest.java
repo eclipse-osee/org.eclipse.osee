@@ -45,7 +45,7 @@ public class OrcsSubscriptionStorageTest {
    private static final String SUBSCRIPTION_GROUP = "Subscription-Group1";
 
    @Rule
-   public TestRule osgi = OrcsIntegrationRule.integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = OrcsIntegrationRule.integrationRule(this);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

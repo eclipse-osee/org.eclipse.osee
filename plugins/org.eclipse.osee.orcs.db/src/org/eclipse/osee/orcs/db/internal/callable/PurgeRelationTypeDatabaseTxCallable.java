@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -45,21 +45,21 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
 
    private final Collection<? extends IRelationType> typesToPurge;
 
-   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Collection<? extends IRelationType> typesToPurge) {
-      super(logger, session, databaseService, "Purge Relation Type");
+   public PurgeRelationTypeDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Collection<? extends IRelationType> typesToPurge) {
+      super(logger, session, jdbcClient);
       this.typesToPurge = typesToPurge;
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
-      List<Integer[]> gammaIds = retrieveGammaIds(connection, typesToPurge);
+   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      List<Object[]> gammaIds = retrieveGammaIds(connection, typesToPurge);
       processDeletes(connection, gammaIds);
       return null;
    }
 
-   private List<Integer[]> retrieveGammaIds(OseeConnection connection, Collection<? extends IRelationType> types) throws OseeCoreException {
-      List<Integer[]> gammas = new ArrayList<Integer[]>(50000);
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IRelationType> types) throws OseeCoreException {
+      List<Object[]> gammas = new ArrayList<Object[]>(50000);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          for (IRelationType type : types) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_OF_REL_LINK_TXS, type.getGuid());
@@ -74,11 +74,11 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       return gammas;
    }
 
-   private void processDeletes(OseeConnection connection, List<Integer[]> gammas) throws OseeCoreException {
-      getDatabaseService().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs"), gammas);
-      getDatabaseService().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs_archived"), gammas);
-      getDatabaseService().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation_link"), gammas);
-      getDatabaseService().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_SOURCE_SIDE), gammas);
-      getDatabaseService().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_DEST_SIDE), gammas);
+   private void processDeletes(JdbcConnection connection, List<Object[]> gammas) throws OseeCoreException {
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs"), gammas);
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs_archived"), gammas);
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation_link"), gammas);
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_SOURCE_SIDE), gammas);
+      getJdbcClient().runBatchUpdate(connection, String.format(DELETE_FROM_CONFLICT_TABLE_DEST_SIDE), gammas);
    }
 }

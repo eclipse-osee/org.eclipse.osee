@@ -21,12 +21,13 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -37,17 +38,18 @@ import org.eclipse.osee.orcs.utility.OrcsUtil;
  */
 public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountStorage {
 
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    @Override
    public void start() {
       super.start();
-      sessionStore = new AccountSessionDatabaseStore(getLogger(), dbService, getFactory());
+      JdbcClient jdbcClient = jdbcService.getClient();
+      sessionStore = new AccountSessionDatabaseStore(getLogger(), jdbcClient, getFactory());
    }
 
    @Override

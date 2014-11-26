@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -30,12 +30,12 @@ import org.eclipse.osee.logger.Log;
 public abstract class AbstractDatabaseStorage<T> {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public AbstractDatabaseStorage(Log logger, IOseeDatabaseService dbService) {
+   public AbstractDatabaseStorage(Log logger, JdbcClient jdbcClient) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    protected Object asVarcharOrNull(String value) {
@@ -48,7 +48,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
    protected abstract Object[] asDelete(T item);
 
-   protected abstract T readData(IOseeStatement chStmt);
+   protected abstract T readData(JdbcStatement chStmt);
 
    protected <R> R execute(Callable<R> callable) {
       try {
@@ -100,7 +100,7 @@ public abstract class AbstractDatabaseStorage<T> {
          @Override
          protected ResultSet<T> innerCall() throws Exception {
             List<T> list = new LinkedList<T>();
-            IOseeStatement chStmt = dbService.getStatement();
+            JdbcStatement chStmt = jdbcClient.getStatement();
             try {
                chStmt.runPreparedQuery(query, data);
                while (chStmt.next()) {
@@ -120,7 +120,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected Long innerCall() throws Exception {
-            return dbService.runPreparedQueryFetchObject(-1L, query, data);
+            return jdbcClient.runPreparedQueryFetchObject(-1L, query, data);
          }
       };
    }
@@ -134,7 +134,7 @@ public abstract class AbstractDatabaseStorage<T> {
             for (T item : items) {
                data.add(asInsert(item));
             }
-            return dbService.runBatchUpdate(insertSql, data);
+            return jdbcClient.runBatchUpdate(insertSql, data);
          }
       };
    }
@@ -148,7 +148,7 @@ public abstract class AbstractDatabaseStorage<T> {
             for (T item : items) {
                data.add(asDelete(item));
             }
-            return dbService.runBatchUpdate(deleteSql, data);
+            return jdbcClient.runBatchUpdate(deleteSql, data);
          }
       };
    }
@@ -162,7 +162,7 @@ public abstract class AbstractDatabaseStorage<T> {
             for (T item : items) {
                data.add(asUpdate(item));
             }
-            return dbService.runBatchUpdate(updateSql, data);
+            return jdbcClient.runBatchUpdate(updateSql, data);
          }
       };
    }
@@ -178,8 +178,8 @@ public abstract class AbstractDatabaseStorage<T> {
          this.data = data;
       }
 
-      protected IOseeDatabaseService getDbService() {
-         return dbService;
+      protected JdbcClient getJdbcClient() {
+         return jdbcClient;
       }
 
       @Override

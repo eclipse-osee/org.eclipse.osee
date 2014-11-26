@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
-import org.eclipse.osee.framework.database.core.IDbTransactionWork;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -23,11 +22,8 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCallable<T> {
 
-   private final String name;
-
-   protected AbstractDatastoreTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, String name) {
-      super(logger, session, dbService);
-      this.name = name;
+   protected AbstractDatastoreTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient) {
+      super(logger, session, jdbcClient);
    }
 
    @Override
@@ -35,14 +31,9 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       T value = null;
       onExecutionStart();
       try {
-         OseeConnection connection = getDatabaseService().getConnection();
-         try {
-            InternalTxWork work = new InternalTxWork();
-            DatabaseTransactions.execute(getDatabaseService(), connection, work);
-            value = work.getResult();
-         } finally {
-            connection.close();
-         }
+         InternalTxWork work = new InternalTxWork();
+         getJdbcClient().runTransaction(work);
+         value = work.getResult();
       } finally {
          onExecutionComplete();
       }
@@ -57,7 +48,7 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       // 
    }
 
-   protected abstract T handleTxWork(OseeConnection connection) throws OseeCoreException;
+   protected abstract T handleTxWork(JdbcConnection connection) throws OseeCoreException;
 
    protected void handleTxException(Exception ex) {
       // Do nothing
@@ -67,20 +58,15 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       // Do nothing
    }
 
-   private final class InternalTxWork implements IDbTransactionWork {
+   private final class InternalTxWork extends JdbcTransaction {
       private T result;
-
-      @Override
-      public String getName() {
-         return name;
-      }
 
       public T getResult() {
          return result;
       }
 
       @Override
-      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
          result = AbstractDatastoreTxCallable.this.handleTxWork(connection);
       }
 

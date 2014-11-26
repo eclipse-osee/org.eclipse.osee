@@ -45,7 +45,7 @@ import org.mockito.Mock;
 public class OrcsAccountStorageTest {
 
    @Rule
-   public TestRule osgi = OrcsIntegrationRule.integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = OrcsIntegrationRule.integrationRule(this);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.proxy;
 
-import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
@@ -59,10 +59,10 @@ public class VarCharDataProxyTest {
 
    @Test
    public void testSetGetData() throws Exception {
-      String longData = Utility.generateData(MAX_VARCHAR_LENGTH + 1);
+      String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
-      String shortStringData = Utility.generateData(MAX_VARCHAR_LENGTH);
+      String shortStringData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH);
 
       MockDataHandler handler = new MockDataHandler();
       handler.setContent(zippedData);
@@ -98,7 +98,7 @@ public class VarCharDataProxyTest {
 
    @Test
    public void testSetValue() throws Exception {
-      String longData = Utility.generateData(MAX_VARCHAR_LENGTH + 1);
+      String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
       MockDataHandler handler = new MockDataHandler();
@@ -127,10 +127,10 @@ public class VarCharDataProxyTest {
 
    @Test
    public void testPersist() throws Exception {
-      String longData = Utility.generateData(MAX_VARCHAR_LENGTH + 1);
+      String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
-      String shortData = Utility.generateData(MAX_VARCHAR_LENGTH);
+      String shortData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH);
 
       MockDataHandler handler = new MockDataHandler();
       handler.setContent(zippedData);
@@ -180,7 +180,7 @@ public class VarCharDataProxyTest {
 
    @Test(expected = OseeCoreException.class)
    public void testPersistResolverException() throws Exception {
-      String longData = Utility.generateData(MAX_VARCHAR_LENGTH + 1);
+      String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
       MockDataHandler handler = new MockDataHandler();
@@ -204,7 +204,7 @@ public class VarCharDataProxyTest {
 
    @Test
    public void testPurge() throws Exception {
-      String longData = Utility.generateData(MAX_VARCHAR_LENGTH + 1);
+      String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
       MockDataHandler handler = new MockDataHandler();

@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -70,7 +70,7 @@ public abstract class AbstractJoinQuery {
       return wasStored;
    }
 
-   public void store(OseeConnection connection) throws OseeCoreException {
+   public void store(JdbcConnection connection) throws OseeCoreException {
       if (!this.wasStored) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (IJoinRow joinArray : entries) {
@@ -93,7 +93,7 @@ public abstract class AbstractJoinQuery {
       return expiresIn;
    }
 
-   public int delete(OseeConnection connection) throws OseeCoreException {
+   public int delete(JdbcConnection connection) throws OseeCoreException {
       return joinAccessor.delete(connection, joinItem, getQueryId());
    }
 
@@ -105,7 +105,7 @@ public abstract class AbstractJoinQuery {
       return delete(null);
    }
 
-   public Collection<Integer> getAllQueryIds(OseeConnection connection) throws OseeCoreException {
+   public Collection<Integer> getAllQueryIds(JdbcConnection connection) throws OseeCoreException {
       return joinAccessor.getAllQueryIds(connection, joinItem);
    }
 

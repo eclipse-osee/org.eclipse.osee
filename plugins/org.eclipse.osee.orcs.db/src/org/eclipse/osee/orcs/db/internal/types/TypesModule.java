@@ -15,9 +15,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
@@ -33,14 +33,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class TypesModule {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final IResourceManager resourceManager;
 
-   public TypesModule(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, IResourceManager resourceManager) {
+   public TypesModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IResourceManager resourceManager) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.resourceManager = resourceManager;
    }
@@ -50,22 +50,22 @@ public class TypesModule {
 
          @Override
          public Callable<IResource> getOrcsTypesLoader(OrcsSession session) {
-            return new OrcsTypeLoaderCallable(logger, session, dbService, resourceManager);
+            return new OrcsTypeLoaderCallable(logger, session, jdbcClient, resourceManager);
          }
 
          @Override
          public Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends IArtifactType> typesToPurge) {
-            return new PurgeArtifactTypeDatabaseTxCallable(logger, session, dbService, typesToPurge);
+            return new PurgeArtifactTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
          }
 
          @Override
          public Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends IAttributeType> typesToPurge) {
-            return new PurgeAttributeTypeDatabaseTxCallable(logger, session, dbService, joinFactory, typesToPurge);
+            return new PurgeAttributeTypeDatabaseTxCallable(logger, session, jdbcClient, joinFactory, typesToPurge);
          }
 
          @Override
          public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends IRelationType> typesToPurge) {
-            return new PurgeRelationTypeDatabaseTxCallable(logger, session, dbService, typesToPurge);
+            return new PurgeRelationTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
          }
 
       };

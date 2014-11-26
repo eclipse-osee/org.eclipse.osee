@@ -38,7 +38,7 @@ import org.junit.rules.TestRule;
 public class OrcsAttributeLoadingTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = integrationRule(this);
 
    @OsgiService
    private OrcsApi orcsApi;

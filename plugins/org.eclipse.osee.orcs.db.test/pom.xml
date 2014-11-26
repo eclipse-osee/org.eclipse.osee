@@ -51,11 +51,6 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.osee.hsqldb</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.logging</artifactId>
 							<version>0.0.0</version>
 						</dependency>

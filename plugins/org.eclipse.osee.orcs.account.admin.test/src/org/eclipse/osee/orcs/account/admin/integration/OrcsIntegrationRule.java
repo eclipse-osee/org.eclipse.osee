@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.account.admin.integration;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
@@ -32,8 +32,9 @@ public final class OrcsIntegrationRule extends OsgiRule {
       // Utility
    }
 
-   public static TestRule integrationRule(Object testObject, String dbId) {
-      return RuleChain.outerRule(new OseeDatabase(dbId)).around(new OsgiRule(new CheckServices(), testObject));
+   public static TestRule integrationRule(Object testObject) {
+      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service", "account.jdbc.service", "oauth.jdbc.service")).around(
+         new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {
@@ -42,7 +43,7 @@ public final class OrcsIntegrationRule extends OsgiRule {
       @OsgiService public EventAdmin eventAdmin;
       @OsgiService public EventService eventService;
       @OsgiService public ExecutorAdmin executorAdmin;
-      @OsgiService public IOseeDatabaseService dbService;
+      @OsgiService public JdbcService dbService;
       @OsgiService public OrcsApi orcsApi;
       @OsgiService public AccountAdmin accountAdmin;
       // @formatter:on

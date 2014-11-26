@@ -17,10 +17,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -151,7 +151,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
                   ExportImportXml.addXmlAttribute(appendable, ExportImportXml.ID, columnId);
 
                   int dataType = resultSet.getInt("DATA_TYPE");
-                  if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.foxpro)) {
+                  if (JdbcDbType.isDatabaseType(metaData, JdbcDbType.foxpro)) {
                      if (dataType == Types.CHAR) {
                         dataType = Types.VARCHAR;
                      }

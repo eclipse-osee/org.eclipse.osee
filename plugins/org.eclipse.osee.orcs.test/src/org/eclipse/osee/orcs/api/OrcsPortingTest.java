@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.ApplicationContext;
@@ -48,7 +48,7 @@ public class OrcsPortingTest {
    public ExpectedException thrown = ExpectedException.none();
 
    @Rule
-   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = integrationRule(this);
 
    @OsgiService
    private OrcsApi orcsApi;
@@ -126,7 +126,7 @@ public class OrcsPortingTest {
       assertNotNull(copyTxBranch);
 
       // There should only be one Port Branch per associated artifact. Expecting an exception
-      thrown.expect(OseeStateException.class);
+      thrown.expect(OseeCoreException.class);
       thrown.expectMessage(String.format("Existing port branch creation detected for [%s]", branchString));
       createCopyFromTransactionBranch(differentBranchTx, assocArtifactGuid);
       fail(); // should never get here due to thrown exception

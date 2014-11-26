@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.indexer;
+package org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,16 +17,15 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
-import org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer.IndexingTaskDatabaseTxCallable;
+import org.eclipse.osee.orcs.db.internal.search.indexer.IndexedResourceLoader;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagCollector;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -45,7 +44,7 @@ public class IndexingTaskDatabaseTxCallableTest {
    // @formatter:off
    @Mock private Log logger;
    @Mock private OrcsSession session;
-   @Mock private IOseeDatabaseService dbService;
+   @Mock private JdbcClient jdbcClient;
    @Mock private IndexerCollectorAdapter collector;
    @Mock private AttributeTypes types; 
    @Mock private IndexedResource resource1;
@@ -53,62 +52,10 @@ public class IndexingTaskDatabaseTxCallableTest {
    @Mock private TaggingEngine engine;
    @Mock private DatabaseMetaData metaData;
    @Mock private Tagger tagger;
+   @Mock private JdbcConnection connection;
    // @formatter:on
 
-   private class MockConnection extends OseeConnection {
-
-      public MockConnection() {
-         super();
-      }
-
-      @Override
-      public void close() throws OseeCoreException {
-         //
-      };
-
-      @Override
-      public boolean isClosed() throws OseeCoreException {
-         return true;
-      }
-
-      @Override
-      public boolean isStale() {
-         return false;
-      };
-
-      @Override
-      public DatabaseMetaData getMetaData() throws OseeCoreException {
-         return metaData;
-      };
-
-      @Override
-      protected void setAutoCommit(boolean autoCommit) throws OseeCoreException {
-         //
-      };
-
-      @Override
-      protected boolean getAutoCommit() throws OseeCoreException {
-         return true;
-      };
-
-      @Override
-      protected void commit() throws OseeCoreException {
-         //
-      };
-
-      @Override
-      protected void rollback() throws OseeCoreException {
-         //
-      };
-
-      @Override
-      protected void destroy() throws OseeCoreException {
-         //
-      };
-
-   }
-   private MockConnection connection;
-   private AbstractDatastoreTxCallable<Long> txCallable;
+   private IndexingTaskDatabaseTxCallable txCallable;
 
    @Before
    public void setUp() {
@@ -120,9 +67,8 @@ public class IndexingTaskDatabaseTxCallableTest {
             handler.onData(resource2);
          }
       };
-      connection = new MockConnection();
       txCallable =
-         new IndexingTaskDatabaseTxCallable(logger, session, dbService, loader, engine, collector, -1, false, 10000,
+         new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, engine, collector, -1, false, 10000,
             types);
    }
 
@@ -138,16 +84,19 @@ public class IndexingTaskDatabaseTxCallableTest {
       when(engine.hasTagger("")).thenReturn(false);
       when(engine.hasTagger("Tag")).thenReturn(true);
       when(engine.getTagger("Tag")).thenReturn(tagger);
-      when(dbService.getConnection()).thenReturn(connection);
+
       when(metaData.getDatabaseProductName()).thenReturn("h2");
       when(types.getByUuid(CoreAttributeTypes.Name.getGuid())).thenReturn(CoreAttributeTypes.Name);
       when(types.getByUuid(CoreAttributeTypes.QualificationMethod.getGuid())).thenReturn(
          CoreAttributeTypes.QualificationMethod);
       when(types.getTaggerId(CoreAttributeTypes.Name)).thenReturn("Tag");
       when(types.getTaggerId(CoreAttributeTypes.QualificationMethod)).thenReturn(null);
-      txCallable.call();
+
+      txCallable.handleTxWork(connection);
+
       verify(logger, times(1)).error("Field has invalid tagger[%s] provider and cannot be tagged - [Gamma: %s]", null,
          2L);
       verify(tagger, times(1)).tagIt(Matchers.eq(resource1), Matchers.any(TagCollector.class));
    }
+
 }

@@ -3,6 +3,6 @@
 	<implementation
 		class="org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthSchemaResource" />
  <service>
-    <provide interface="org.eclipse.osee.database.schema.SchemaResource"/>
+    <provide interface="org.eclipse.osee.jdbc.JdbcSchemaResource"/>
  </service>
 </scr:component>

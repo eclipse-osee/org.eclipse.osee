@@ -14,8 +14,9 @@ import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
@@ -36,18 +37,19 @@ public class SqlJoinFactory {
    private static final String EXPIRATION_SECS__TX_JOIN_QUERY = "tx.join.expiration.secs";
 
    private Log logger;
-   private IOseeDatabaseService service;
+   private JdbcService jdbcService;
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
 
    private Random random;
+   private IJoinAccessor joinAccessor;
 
    public void setLogger(Log logger) {
       this.logger = logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService service) {
-      this.service = service;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setSystemPreferences(SystemPreferences preferences) {
@@ -61,7 +63,11 @@ public class SqlJoinFactory {
    public void start() throws Exception {
       random = new Random();
 
-      Callable<?> callable = new JoinCleanerCallable(logger, service);
+      JdbcClient jdbcClient = jdbcService.getClient();
+
+      joinAccessor = new DatabaseJoinAccessor(jdbcClient);
+
+      Callable<?> callable = new JoinCleanerCallable(logger, jdbcClient);
       executorAdmin.scheduleAtFixedRate(JOIN_CLEANER__EXECUTOR_ID, callable, DEFAULT_JOIN_CLEANER__PERIOD_MINUTES,
          DEFAULT_JOIN_CLEANER__PERIOD_MINUTES, TimeUnit.MINUTES);
    }
@@ -77,8 +83,8 @@ public class SqlJoinFactory {
       return random.nextInt();
    }
 
-   private IJoinAccessor createAccessor() {
-      return new DatabaseJoinAccessor(service);
+   private IJoinAccessor getAccessor() {
+      return joinAccessor;
    }
 
    public TransactionJoinQuery createTransactionJoinQuery() {
@@ -87,7 +93,7 @@ public class SqlJoinFactory {
 
    public TransactionJoinQuery createTransactionJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__TX_JOIN_QUERY);
-      return new TransactionJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+      return new TransactionJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
    public IdJoinQuery createIdJoinQuery() {
@@ -96,7 +102,7 @@ public class SqlJoinFactory {
 
    public IdJoinQuery createIdJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
-      return new IdJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+      return new IdJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
    public ArtifactJoinQuery createArtifactJoinQuery() {
@@ -105,7 +111,7 @@ public class SqlJoinFactory {
 
    public ArtifactJoinQuery createArtifactJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
-      return new ArtifactJoinQuery(createAccessor(), actualExpiration, getNewQueryId(), getMaxArtifactJoinSize());
+      return new ArtifactJoinQuery(getAccessor(), actualExpiration, getNewQueryId(), getMaxArtifactJoinSize());
    }
 
    public TagQueueJoinQuery createTagQueueJoinQuery() {
@@ -114,7 +120,7 @@ public class SqlJoinFactory {
 
    public TagQueueJoinQuery createTagQueueJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__TAG_QUEUE_JOIN_QUERY);
-      return new TagQueueJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+      return new TagQueueJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
    public ExportImportJoinQuery createExportImportJoinQuery() {
@@ -123,7 +129,7 @@ public class SqlJoinFactory {
 
    public ExportImportJoinQuery createExportImportJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__EXPORT_IMPORT_JOIN_QUERY);
-      return new ExportImportJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+      return new ExportImportJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
    public CharJoinQuery createCharJoinQuery() {
@@ -132,7 +138,7 @@ public class SqlJoinFactory {
 
    public CharJoinQuery createCharJoinQuery(Long expiresIn) {
       Long actualExpiration = getExpiresIn(expiresIn, EXPIRATION_SECS__CHAR_JOIN_QUERY);
-      return new CharJoinQuery(createAccessor(), actualExpiration, getNewQueryId());
+      return new CharJoinQuery(getAccessor(), actualExpiration, getNewQueryId());
    }
 
    private Long getExpiresIn(Long actual, String defaultKey) {

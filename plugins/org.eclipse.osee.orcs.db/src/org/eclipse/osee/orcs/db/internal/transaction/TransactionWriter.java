@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -89,15 +89,15 @@ public class TransactionWriter {
    }
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final TxSqlBuilder sqlBuilder;
 
    private List<DaoToSql> binaryStores;
 
-   public TransactionWriter(Log logger, IOseeDatabaseService dbService, TxSqlBuilder sqlBuilder) {
+   public TransactionWriter(Log logger, JdbcClient jdbcClient, TxSqlBuilder sqlBuilder) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.sqlBuilder = sqlBuilder;
    }
 
@@ -115,7 +115,7 @@ public class TransactionWriter {
       }
    }
 
-   public void write(OseeConnection connection, TransactionReadable tx, OrcsChangeSet txData) throws OseeCoreException {
+   public void write(JdbcConnection connection, TransactionReadable tx, OrcsChangeSet txData) throws OseeCoreException {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
@@ -135,19 +135,19 @@ public class TransactionWriter {
          for (SqlOrderEnum key : SqlOrderEnum.values()) {
             List<Object[]> data = sqlBuilder.getInsertData(key);
             if (data != null && !data.isEmpty()) {
-               dbService.runBatchUpdate(connection, key.getInsertSql(), data);
+               jdbcClient.runBatchUpdate(connection, key.getInsertSql(), data);
             }
          }
-         dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+         jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
       } finally {
          sqlBuilder.clear();
       }
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, long branchUuid, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(JdbcConnection connection, long branchUuid, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
       try {
          join.store();
-         IOseeStatement chStmt = dbService.getStatement(connection);
+         JdbcStatement chStmt = jdbcClient.getStatement(connection);
          try {
             chStmt.runPreparedQuery(query, join.getQueryId(), branchUuid);
             while (chStmt.next()) {

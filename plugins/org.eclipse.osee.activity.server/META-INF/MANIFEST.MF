@@ -11,9 +11,9 @@ Import-Package: javax.annotation;version="1.2.0",
  javax.ws.rs.core;version="2.0.0",
  javax.ws.rs.ext;version="2.0.0",
  org.eclipse.osee.activity.api,
- org.eclipse.osee.database.schema,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.jdbc,
  org.eclipse.osee.logger
 Bundle-Vendor: Eclipse Open System Engineering Environment

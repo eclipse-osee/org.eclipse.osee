@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
@@ -45,13 +45,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private static final String DELETE_RELATIONS = "delete from osee_relation_link where gamma_id = ?";
 
-   private final List<Long[]> relationDeleteData = new ArrayList<Long[]>(14000);
+   private final List<Object[]> relationDeleteData = new ArrayList<Object[]>(14000);
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final StringBuilder addressingBackup = new StringBuilder(100000);
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
    private ExportImportJoinQuery gammaJoin;
-   private OseeConnection connection;
+   private JdbcConnection connection;
    private long previousRelationTypeId;
    private int previousArtifactAId;
    private int previousArtiafctBId;
@@ -60,7 +60,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    boolean materiallyDifferent;
    boolean updateAddressing;
    private int counter;
-   private IOseeStatement chStmt;
+   private JdbcStatement chStmt;
 
    private final SqlJoinFactory joinFactory;
    private final Console console;
@@ -71,8 +71,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    ModificationType netModType;
    TxChange netTxCurrent;
 
-   public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Console console) {
-      super(logger, session, databaseService, "Consolidate Relations");
+   public ConsolidateRelationsDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Console console) {
+      super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.console = console;
    }
@@ -91,14 +91,14 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
       previousNetGammaId = -1;
       previousTransactionId = -1;
-      chStmt = getDatabaseService().getStatement();
+      chStmt = getJdbcClient().getStatement();
       gammaJoin = joinFactory.createExportImportJoinQuery();
 
       counter = 0;
    }
 
    @Override
-   protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
       this.connection = connection;
       console.writeln("Consolidating relations:");
       init();
@@ -116,7 +116,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void findObsoleteRelations() throws OseeCoreException {
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_RELATIONS);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATIONS);
          while (chStmt.next()) {
             long relationTypeId = chStmt.getLong("rel_link_type_id");
             int artifactAId = chStmt.getInt("a_art_id");
@@ -156,7 +156,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       try {
          console.writeln("counter: [%s]", counter);
          console.writeln("query id: [%s]", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
@@ -235,13 +235,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private void updateGammas() throws OseeCoreException {
       console.writeln("Number of txs rows deleted: [%s]",
-         getDatabaseService().runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
+         getJdbcClient().runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
 
       console.writeln("Number of relation rows deleted: [%s]",
-         getDatabaseService().runBatchUpdate(connection, DELETE_RELATIONS, relationDeleteData));
+         getJdbcClient().runBatchUpdate(connection, DELETE_RELATIONS, relationDeleteData));
 
       console.writeln("Number of txs rows updated: [%s]",
-         getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
+         getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
    }
 
    private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) {
@@ -264,7 +264,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
-   private void relationMateriallyDiffers(IOseeStatement chStmt) throws OseeCoreException {
+   private void relationMateriallyDiffers(JdbcStatement chStmt) throws OseeCoreException {
       if (!materiallyDifferent) {
          String currentRationale = chStmt.getString("rationale");
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);

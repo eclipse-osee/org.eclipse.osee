@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -38,8 +38,8 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
    private final ArtifactQuerySqlContext queryContext;
    private final SqlJoinFactory joinFactory;
 
-   public ArtifactQueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, ArtifactQuerySqlContext queryContext) {
-      super(loader, dbService);
+   public ArtifactQueryContextLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, ArtifactQuerySqlContext queryContext) {
+      super(loader, jdbcClient);
       this.queryContext = queryContext;
       this.joinFactory = joinFactory;
    }
@@ -48,7 +48,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       int fetchSize = computeFetchSize(queryContext);
 
-      ArtifactJoinQuery join = createArtifactIdJoin(getDatabaseService(), cancellation, fetchSize);
+      ArtifactJoinQuery join = createArtifactIdJoin(getJdbcClient(), cancellation, fetchSize);
 
       LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranch());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
@@ -62,7 +62,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
       return LoadUtil.computeFetchSize(fetchSize);
    }
 
-   private ArtifactJoinQuery createArtifactIdJoin(IOseeDatabaseService dbService, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
+   private ArtifactJoinQuery createArtifactIdJoin(JdbcClient jdbcClient, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
       ArtifactJoinQuery artifactJoin = joinFactory.createArtifactJoinQuery();
       try {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
@@ -70,9 +70,9 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             checkCancelled(cancellation);
          }
          Integer transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
-         IOseeStatement chStmt = null;
+         JdbcStatement chStmt = null;
          try {
-            chStmt = dbService.getStatement();
+            chStmt = jdbcClient.getStatement();
             checkCancelled(cancellation);
             String query = queryContext.getSql();
             List<Object> params = queryContext.getParameters();

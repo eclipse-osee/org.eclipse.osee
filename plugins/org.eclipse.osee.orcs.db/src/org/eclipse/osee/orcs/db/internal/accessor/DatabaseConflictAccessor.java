@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.MergeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.conflict.Conflict;
 
 /**
@@ -37,18 +37,18 @@ public class DatabaseConflictAccessor {
 
    private static final String SELECT_CONFLICTS = "SELECT * FROM osee_conflict WHERE merge_branch_id = ?";
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public DatabaseConflictAccessor(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public DatabaseConflictAccessor(JdbcClient jdbcClient) {
+      this.jdbcClient = jdbcClient;
    }
 
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   public JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch) throws OseeCoreException {
-      IOseeStatement statement = getDatabaseService().getStatement();
+      JdbcStatement statement = getJdbcClient().getStatement();
       try {
          statement.runPreparedQuery(SELECT_CONFLICTS, mergeBranch.getUuid());
          while (statement.next()) {
@@ -86,9 +86,9 @@ public class DatabaseConflictAccessor {
             }
          }
       }
-      getDatabaseService().runBatchUpdate(INSERT_CONFLICT, insertData);
-      getDatabaseService().runBatchUpdate(UPDATE_CONFLICT, updateData);
-      getDatabaseService().runBatchUpdate(DELETE_CONFLICT, deleteData);
+      getJdbcClient().runBatchUpdate(INSERT_CONFLICT, insertData);
+      getJdbcClient().runBatchUpdate(UPDATE_CONFLICT, updateData);
+      getJdbcClient().runBatchUpdate(DELETE_CONFLICT, deleteData);
       for (Conflict conflict : conflicts) {
          conflict.clearDirty();
       }

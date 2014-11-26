@@ -14,8 +14,8 @@ import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
 public final class ArtifactChangeItemFactory implements ChangeItemFactory {
@@ -35,7 +35,7 @@ public final class ArtifactChangeItemFactory implements ChangeItemFactory {
    }
 
    @Override
-   public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
+   public ChangeItem createItem(JdbcStatement chStmt) throws OseeCoreException {
       int artId = chStmt.getInt("art_id");
       long artTypeId = chStmt.getLong("art_type_id");
 

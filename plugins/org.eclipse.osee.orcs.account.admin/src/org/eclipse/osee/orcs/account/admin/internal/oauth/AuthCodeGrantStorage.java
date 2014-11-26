@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.account.admin.internal.oauth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -33,8 +33,8 @@ public class AuthCodeGrantStorage extends AbstractDatabaseStorage<OAuthCodeGrant
 
    private static final String DELETE_AUTH_CODE_BY_ID = "DELETE FROM osee_oauth_authorization WHERE id = ?";
 
-   public AuthCodeGrantStorage(Log logger, IOseeDatabaseService dbService) {
-      super(logger, dbService);
+   public AuthCodeGrantStorage(Log logger, JdbcClient jdbcClient) {
+      super(logger, jdbcClient);
    }
 
    @Override
@@ -101,7 +101,7 @@ public class AuthCodeGrantStorage extends AbstractDatabaseStorage<OAuthCodeGrant
    }
 
    @Override
-   protected OAuthCodeGrant readData(IOseeStatement chStmt) {
+   protected OAuthCodeGrant readData(JdbcStatement chStmt) {
       final long uuid = chStmt.getLong("id");
       final long clientId = chStmt.getLong("client_id");
       final long subjectId = chStmt.getLong("subject_id");

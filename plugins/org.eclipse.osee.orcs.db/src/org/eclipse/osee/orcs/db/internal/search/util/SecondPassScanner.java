@@ -124,6 +124,8 @@ public final class SecondPassScanner {
                buffer.append((char) read);
             }
             break;
+         default:
+            break;
       }
 
       if (buffer.length() == 1) {

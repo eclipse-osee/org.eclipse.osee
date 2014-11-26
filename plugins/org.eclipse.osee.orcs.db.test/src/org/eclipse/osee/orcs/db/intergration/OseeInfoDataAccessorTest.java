@@ -12,11 +12,11 @@ package org.eclipse.osee.orcs.db.intergration;
 
 import static org.eclipse.osee.orcs.db.intergration.IntegrationUtil.integrationRule;
 import java.sql.DatabaseMetaData;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;
@@ -35,17 +35,17 @@ import org.junit.rules.TestRule;
 public class OseeInfoDataAccessorTest {
 
    @Rule
-   public TestRule db = integrationRule(this, "osee.demo.hsql");
+   public TestRule db = integrationRule(this);
 
    //@formatter:off
-   @OsgiService private IOseeDatabaseService dbService;
+   @OsgiService private JdbcService jdbcService;
    //@formatter:on
 
    @org.junit.Test
    public void testGetSetValue() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String value = accessor.getValue("test.data");
       Assert.assertEquals("", value);
@@ -61,7 +61,7 @@ public class OseeInfoDataAccessorTest {
    public void testSetBinaryDataPath() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       accessor.putValue(ResourceConstants.BINARY_DATA_PATH, "dummy");
    }
@@ -70,7 +70,7 @@ public class OseeInfoDataAccessorTest {
    public void testGetBinaryDataPath() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String original = accessor.getValue(ResourceConstants.BINARY_DATA_PATH);
       Assert.assertEquals(System.getProperty(ResourceConstants.BINARY_DATA_PATH), original);
@@ -88,7 +88,7 @@ public class OseeInfoDataAccessorTest {
    public void testSetDatabaseHintsSupported() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       accessor.putValue(SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY, "dummy");
    }
@@ -97,15 +97,15 @@ public class OseeInfoDataAccessorTest {
    public void testGetDatabaseHintsSupported() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String original = accessor.getValue(SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
 
       boolean expected = false;
-      OseeConnection connection = dbService.getConnection();
+      JdbcConnection connection = jdbcService.getClient().getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
-         expected = SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.oracle);
+         expected = JdbcDbType.isDatabaseType(metaData, JdbcDbType.oracle);
       } finally {
          connection.close();
       }
@@ -116,7 +116,7 @@ public class OseeInfoDataAccessorTest {
    public void testSetSQLRecursiveKeyword() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       accessor.putValue(SqlProvider.SQL_RECURSIVE_WITH_KEY, "dummy");
    }
@@ -125,15 +125,15 @@ public class OseeInfoDataAccessorTest {
    public void testGetSQLRecursiveKeyword() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String original = accessor.getValue(SqlProvider.SQL_RECURSIVE_WITH_KEY);
 
       String expected = "";
-      OseeConnection connection = dbService.getConnection();
+      JdbcConnection connection = jdbcService.getClient().getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
-         if (!SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.oracle)) {
+         if (!JdbcDbType.isDatabaseType(metaData, JdbcDbType.oracle)) {
             expected = "RECURSIVE";
          }
       } finally {
@@ -146,7 +146,7 @@ public class OseeInfoDataAccessorTest {
    public void testSetSQLRegExpPattern() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       accessor.putValue(SqlProvider.SQL_REG_EXP_PATTERN_KEY, "dummy");
    }
@@ -155,20 +155,20 @@ public class OseeInfoDataAccessorTest {
    public void testGetSQLRegExpPattern() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String original = accessor.getValue(SqlProvider.SQL_REG_EXP_PATTERN_KEY);
 
       String expected = "";
-      OseeConnection connection = dbService.getConnection();
+      JdbcConnection connection = jdbcService.getClient().getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
-         SupportedDatabase db = SupportedDatabase.getDatabaseType(metaData);
-         if (SupportedDatabase.oracle == db) {
+         JdbcDbType db = JdbcDbType.getDatabaseType(metaData);
+         if (JdbcDbType.oracle == db) {
             expected = "REGEXP_LIKE (%s, %s)";
-         } else if (SupportedDatabase.hsql == db || SupportedDatabase.postgresql == db) {
+         } else if (JdbcDbType.hsql == db || JdbcDbType.postgresql == db) {
             expected = "REGEXP_MATCHES (%s, %s)";
-         } else if (SupportedDatabase.mysql == db) {
+         } else if (JdbcDbType.mysql == db) {
             expected = "(%s REGEXP %s)";
          }
       } finally {
@@ -181,7 +181,7 @@ public class OseeInfoDataAccessorTest {
    public void testSetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       accessor.putValue(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "dummy");
    }
@@ -190,7 +190,7 @@ public class OseeInfoDataAccessorTest {
    public void testGetCheckTagQueueOnStartupAllowed() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
 
       String original = accessor.getValue(DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       Assert.assertEquals(System.getProperty(DataStoreConstants.DATASTORE_INDEX_ON_START_UP, "false"), original);
@@ -208,7 +208,7 @@ public class OseeInfoDataAccessorTest {
    public void testGetKeys() throws OseeCoreException {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
-      accessor.setDatabaseService(dbService);
+      accessor.setJdbcService(jdbcService);
       Assert.assertTrue(!accessor.getKeys().isEmpty());
    }
 

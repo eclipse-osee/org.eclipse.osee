@@ -12,29 +12,13 @@ package org.eclipse.osee.orcs.db.internal.console;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.operation.PurgeUnusedBackingDataAndTransactions;
-import org.eclipse.osee.orcs.db.internal.util.OperationCallableAdapter;
-import org.eclipse.osee.orcs.db.internal.util.OperationLoggerAdapter;
+import org.eclipse.osee.orcs.db.internal.callable.PurgeUnusedBackingDataAndTransactions;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TxPruneCommand implements ConsoleCommand {
-
-   private IOseeDatabaseService dbService;
-
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
-   }
-
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
+public class TxPruneCommand extends AbstractDatastoreConsoleCommand {
 
    @Override
    public String getName() {
@@ -53,8 +37,6 @@ public class TxPruneCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      OperationLogger logger = new OperationLoggerAdapter(console);
-      IOperation operation = new PurgeUnusedBackingDataAndTransactions(getDatabaseService(), logger);
-      return new OperationCallableAdapter(operation);
+      return new PurgeUnusedBackingDataAndTransactions(getLogger(), getSession(), getJdbcClient());
    }
 }

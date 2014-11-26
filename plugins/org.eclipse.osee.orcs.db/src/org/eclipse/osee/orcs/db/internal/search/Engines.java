@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -151,12 +151,12 @@ public final class Engines {
          handlerFactory, ObjectQueryType.TX);
    }
 
-   public static QueryEngineIndexer newIndexingEngine(Log logger, IOseeDatabaseService dbService, SqlJoinFactory sqlJoinFactory, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
-      IndexedResourceLoader resourceLoader = new GammaQueueIndexerDataSourceLoader(logger, dbService, resourceManager);
+   public static QueryEngineIndexer newIndexingEngine(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
+      IndexedResourceLoader resourceLoader = new GammaQueueIndexerDataSourceLoader(logger, jdbcClient, resourceManager);
       IndexerCallableFactory callableFactory =
-         new IndexerCallableFactoryImpl(logger, dbService, taggingEngine, resourceLoader);
+         new IndexerCallableFactoryImpl(logger, jdbcClient, taggingEngine, resourceLoader);
       IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
-      return new QueryEngineIndexerImpl(logger, dbService, sqlJoinFactory, indexConsumer);
+      return new QueryEngineIndexerImpl(logger, jdbcClient, sqlJoinFactory, indexConsumer);
    }
 
 }

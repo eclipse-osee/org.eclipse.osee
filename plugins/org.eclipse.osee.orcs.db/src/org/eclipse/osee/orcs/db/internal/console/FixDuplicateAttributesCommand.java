@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.console;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -62,7 +62,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new DuplicateAttributesDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), console);
+      return new DuplicateAttributesDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), console);
    }
 
    private final class DuplicateAttributesDatabaseTxCallable extends AbstractDatastoreTxCallable<Object> {
@@ -73,13 +73,13 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
 
       private final Console console;
 
-      public DuplicateAttributesDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Console console) {
-         super(logger, session, databaseService, "Duplicate Attributes");
+      public DuplicateAttributesDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Console console) {
+         super(logger, session, jdbcClient);
          this.console = console;
       }
 
       @Override
-      protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
+      protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
          ExportImportJoinQuery gammaJoin = joinFactory.createExportImportJoinQuery();
          try {
             selectAttributes(gammaJoin, connection);
@@ -94,13 +94,13 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          return null;
       }
 
-      private void selectAttributes(ExportImportJoinQuery gammaJoin, OseeConnection connection) throws OseeCoreException {
+      private void selectAttributes(ExportImportJoinQuery gammaJoin, JdbcConnection connection) throws OseeCoreException {
          IdJoinQuery typeJoin = joinFactory.createIdJoinQuery();
          populateAttributeTypeJoin(typeJoin);
 
-         IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+         JdbcStatement chStmt = getJdbcClient().getStatement(connection);
          try {
-            chStmt.runPreparedQuery(MAX_FETCH, SELECT_ATTRIBUTES, typeJoin.getQueryId());
+            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ATTRIBUTES, typeJoin.getQueryId());
             while (chStmt.next()) {
                gammaJoin.add(chStmt.getLong("gamma1"), chStmt.getLong("gamma2"));
             }
@@ -110,8 +110,8 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          }
       }
 
-      private void selectDuplicates(ExportImportJoinQuery gammaJoin, OseeConnection connection) throws OseeCoreException {
-         IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      private void selectDuplicates(ExportImportJoinQuery gammaJoin, JdbcConnection connection) throws OseeCoreException {
+         JdbcStatement chStmt = getJdbcClient().getStatement(connection);
          try {
             chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT.getValue(),
                TxChange.CURRENT.getValue());

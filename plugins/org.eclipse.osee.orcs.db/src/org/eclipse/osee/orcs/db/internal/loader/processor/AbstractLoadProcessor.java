@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.Options;
 
 /**
@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public abstract class AbstractLoadProcessor<H> {
 
-   public final int processResultSet(H handler, IOseeStatement chStmt, Options options) throws OseeCoreException {
+   public final int processResultSet(H handler, JdbcStatement chStmt, Options options) throws OseeCoreException {
       int rowCount = 0;
       Object conditions = createPreConditions(options);
       while (chStmt.next()) {
@@ -34,7 +34,7 @@ public abstract class AbstractLoadProcessor<H> {
       return null;
    }
 
-   protected abstract void onRow(H handler, IOseeStatement chStmt, Options options, Object conditions);
+   protected abstract void onRow(H handler, JdbcStatement chStmt, Options options, Object conditions);
 
    protected void onEnd(H handler, Options options, Object conditions, int rowCount) {
       // do nothing;

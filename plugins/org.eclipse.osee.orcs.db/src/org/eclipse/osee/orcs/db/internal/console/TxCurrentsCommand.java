@@ -12,29 +12,13 @@ package org.eclipse.osee.orcs.db.internal.console;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
-import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsOpFactory;
-import org.eclipse.osee.orcs.db.internal.util.OperationCallableAdapter;
-import org.eclipse.osee.orcs.db.internal.util.OperationLoggerAdapter;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TxCurrentsCommand implements ConsoleCommand {
-
-   private IOseeDatabaseService dbService;
-
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
-   }
-
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
+public class TxCurrentsCommand extends AbstractDatastoreConsoleCommand {
 
    @Override
    public String getName() {
@@ -54,9 +38,7 @@ public class TxCurrentsCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       boolean isArchivedTable = params.getBoolean("onTxsArchived");
-      OperationLogger logger = new OperationLoggerAdapter(console);
-      IOperation operation =
-         TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(getDatabaseService(), logger, isArchivedTable);
-      return new OperationCallableAdapter(operation);
+      return TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(getLogger(), getSession(), getJdbcClient(),
+         isArchivedTable);
    }
 }

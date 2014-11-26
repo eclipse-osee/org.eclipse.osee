@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleParameters;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
@@ -50,7 +50,7 @@ public class ConvertLocalTypeIdCommand extends AbstractDatastoreConsoleCommand {
       boolean runConversion = options.contains("P");
       boolean undoConversion = options.contains("U");
 
-      return new ConvertTypeIdsCallable(runConversion, undoConversion, console, getDatabaseService(), getLogger(),
+      return new ConvertTypeIdsCallable(runConversion, undoConversion, console, getJdbcClient(), getLogger(),
          getSession());
    }
 
@@ -61,17 +61,17 @@ public class ConvertLocalTypeIdCommand extends AbstractDatastoreConsoleCommand {
       private final boolean runConversion;
       private final boolean undoConversion;
       private final Console console;
-      private final IOseeDatabaseService dbService;
+      private final JdbcClient jdbcClient;
 
-      public ConvertTypeIdsCallable(boolean runConversion, boolean undoConversion, Console console, IOseeDatabaseService dbService, Log logger, OrcsSession session) {
-         super(logger, session, dbService, "Convert Type Ids");
+      public ConvertTypeIdsCallable(boolean runConversion, boolean undoConversion, Console console, JdbcClient jdbcClient, Log logger, OrcsSession session) {
+         super(logger, session, jdbcClient);
          this.runConversion = runConversion;
          this.undoConversion = undoConversion;
          this.console = console;
-         this.dbService = dbService;
+         this.jdbcClient = jdbcClient;
       }
 
-      private void updateTableIds(OseeConnection connection) throws OseeCoreException {
+      private void updateTableIds(JdbcConnection connection) throws OseeCoreException {
          for (int i = 0; i < tables.length; i++) {
             String table = tables[i];
             String column = columns[i];
@@ -80,22 +80,22 @@ public class ConvertLocalTypeIdCommand extends AbstractDatastoreConsoleCommand {
             String sql =
                String.format("update %s set %s = (select %s from osee_type_id_map where %s = %s)", table, column,
                   idCol1, idCol2, column);
-            int rowsUpdated = dbService.runPreparedUpdate(connection, sql);
+            int rowsUpdated = jdbcClient.runPreparedUpdate(connection, sql);
             console.writeln("[%s] had %d rows updated.", table, rowsUpdated);
          }
       }
 
-      private void updateOseeInfo(OseeConnection connection) throws OseeCoreException {
+      private void updateOseeInfo(JdbcConnection connection) throws OseeCoreException {
          String oseeInfoKey = "use.long.type.ids";
          String value = runConversion ? "true" : "false";
-         dbService.runPreparedUpdate(connection, "DELETE FROM osee_info WHERE OSEE_KEY = ?", oseeInfoKey);
-         dbService.runPreparedUpdate(connection, "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)",
+         jdbcClient.runPreparedUpdate(connection, "DELETE FROM osee_info WHERE OSEE_KEY = ?", oseeInfoKey);
+         jdbcClient.runPreparedUpdate(connection, "INSERT INTO osee_info (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)",
             oseeInfoKey, value);
       }
 
       private void performRowCounts() throws OseeCoreException {
          for (String table : tables) {
-            IOseeStatement stmt = dbService.getStatement();
+            JdbcStatement stmt = jdbcClient.getStatement();
             try {
                String query = String.format("select count(1) from %s", table);
                stmt.runPreparedQuery(query);
@@ -110,7 +110,7 @@ public class ConvertLocalTypeIdCommand extends AbstractDatastoreConsoleCommand {
       }
 
       @Override
-      protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
          if (runConversion && undoConversion) {
             console.writeln("Options U and P cannot be specified together");
             return null;

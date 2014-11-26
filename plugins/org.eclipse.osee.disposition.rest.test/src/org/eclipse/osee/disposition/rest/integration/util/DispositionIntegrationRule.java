@@ -30,8 +30,9 @@ public final class DispositionIntegrationRule extends OsgiRule {
       // Utility
    }
 
-   public static TestRule integrationRule(Object testObject, String dbId) {
-      return RuleChain.outerRule(new OseeDatabase(dbId)).around(new OsgiRule(new CheckServices(), testObject));
+   public static TestRule integrationRule(Object testObject) {
+      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service")).around(
+         new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {

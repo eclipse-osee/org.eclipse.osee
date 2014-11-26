@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.exchange.handler;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar

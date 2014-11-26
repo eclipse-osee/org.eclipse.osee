@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -42,12 +42,12 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
    private static final String DELETE_BY_SESSION_TOKEN = "DELETE FROM osee_account_session WHERE session_token = ?";
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final AccountFactory factory;
 
-   public AccountSessionDatabaseStore(Log logger, IOseeDatabaseService dbService, AccountFactory factory) {
+   public AccountSessionDatabaseStore(Log logger, JdbcClient jdbcClient, AccountFactory factory) {
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.factory = factory;
    }
 
@@ -86,7 +86,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
          @Override
          protected ResultSet<AccountSession> innerCall() throws Exception {
             List<AccountSession> list = new LinkedList<AccountSession>();
-            IOseeStatement chStmt = dbService.getStatement();
+            JdbcStatement chStmt = jdbcClient.getStatement();
             try {
                chStmt.runPreparedQuery(query, data);
                while (chStmt.next()) {
@@ -119,7 +119,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
             for (AccountSession session : datas) {
                data.add(asInsert(session));
             }
-            int result = dbService.runBatchUpdate(INSERT_ACCOUNT_SESSION, data);
+            int result = jdbcClient.runBatchUpdate(INSERT_ACCOUNT_SESSION, data);
             return result;
          }
       };
@@ -135,7 +135,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
             for (AccountSession session : datas) {
                data.add(asUpdate(session));
             }
-            int result = dbService.runBatchUpdate(UPDATE_BY_ACCOUNT_ID_AND_SESSION_TOKEN, data);
+            int result = jdbcClient.runBatchUpdate(UPDATE_BY_ACCOUNT_ID_AND_SESSION_TOKEN, data);
             return result;
          }
       };
@@ -147,7 +147,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
 
          @Override
          protected Integer innerCall() throws Exception {
-            return dbService.runPreparedUpdate(DELETE_BY_SESSION_TOKEN, token);
+            return jdbcClient.runPreparedUpdate(DELETE_BY_SESSION_TOKEN, token);
          }
       };
    }

@@ -32,8 +32,8 @@ public class IntegrationUtil {
 
    private static final Comparator<OrcsData> SORT_BY_LOCAL_ID = new IdComparator();
 
-   public static TestRule integrationRule(Object testObject, String dbId) {
-      return RuleChain.outerRule(new OseeDatabase(dbId)).around(new OsgiRule(testObject));
+   public static TestRule integrationRule(Object testObject) {
+      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service")).around(new OsgiRule(testObject));
    }
 
    public static void sort(List<? extends OrcsData> data) {

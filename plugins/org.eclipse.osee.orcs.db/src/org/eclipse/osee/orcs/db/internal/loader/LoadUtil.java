@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
+import org.eclipse.osee.jdbc.JdbcConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -33,8 +33,8 @@ public final class LoadUtil {
       // Account for attribute and relation loading
       fetchSize *= APPROXIMATE_NUMBER_OF_SUB_ITEMS;
 
-      if (fetchSize < 0 || fetchSize > RelationalConstants.MAX_FETCH_SIZE) {
-         fetchSize = RelationalConstants.MAX_FETCH_SIZE;
+      if (fetchSize < 0 || fetchSize > JdbcConstants.JDBC__MAX_FETCH_SIZE) {
+         fetchSize = JdbcConstants.JDBC__MAX_FETCH_SIZE;
       }
       return fetchSize;
    }

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
@@ -28,19 +28,19 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       "SELECT attr1.gamma_id, attr1.VALUE, attr1.uri, attr1.attr_type_id, attr1.attr_id FROM osee_attribute attr1, osee_tag_gamma_queue tgq1 WHERE attr1.gamma_id = tgq1.gamma_id AND tgq1.query_id = ?";
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
 
-   public GammaQueueIndexerDataSourceLoader(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager) {
+   public GammaQueueIndexerDataSourceLoader(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.resourceManager = resourceManager;
    }
 
    private boolean loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) throws OseeCoreException {
       boolean loaded = false;
-      IOseeStatement chStmt = dbService.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {

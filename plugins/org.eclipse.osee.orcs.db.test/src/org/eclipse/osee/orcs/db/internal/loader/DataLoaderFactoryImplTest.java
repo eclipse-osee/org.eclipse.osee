@@ -31,10 +31,10 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
@@ -73,8 +73,8 @@ public class DataLoaderFactoryImplTest {
    //@formatter:off
    @Mock private Log logger;
 
-   @Mock private IOseeDatabaseService dbService;
-   @Mock private IOseeStatement chStmt;
+   @Mock private JdbcClient jdbcClient;
+   @Mock private JdbcStatement chStmt;
    
    @Mock private IdentityManager identityService;
    @Mock private SqlProvider sqlProvider;
@@ -108,7 +108,7 @@ public class DataLoaderFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      LoaderModule module = new LoaderModule(logger, dbService, identityService, sqlProvider, null, joinFactory);
+      LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, sqlProvider, null, joinFactory);
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null);
 
       spyLoader = spy(loader);
@@ -116,8 +116,8 @@ public class DataLoaderFactoryImplTest {
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
-      when(dbService.getStatement()).thenReturn(chStmt);
-      when(dbService.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getUuid()))).thenReturn(
+      when(jdbcClient.getStatement()).thenReturn(chStmt);
+      when(jdbcClient.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(BRANCH.getUuid()))).thenReturn(
          EXPECTED_HEAD_TX_ID);
 
       when(joinFactory.createArtifactJoinQuery()).thenAnswer(new Answer<ArtifactJoinQuery>() {

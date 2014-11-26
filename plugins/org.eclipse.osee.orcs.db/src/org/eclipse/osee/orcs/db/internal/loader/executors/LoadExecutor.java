@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -36,8 +36,8 @@ public class LoadExecutor extends AbstractLoadExecutor {
    private final IOseeBranch branch;
    private final Collection<Integer> artifactIds;
 
-   public LoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
-      super(loader, dbService);
+   public LoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) {
+      super(loader, jdbcClient);
       this.joinFactory = joinFactory;
       this.session = session;
       this.branch = branch;

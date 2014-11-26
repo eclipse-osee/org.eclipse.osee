@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,14 +19,16 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -51,41 +52,41 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
       "SELECT gamma_id, mod_type FROM osee_txs txs WHERE txs.branch_id = ? AND txs.transaction_id = ?";
 
    private final SqlJoinFactory joinFactory;
+   private final IdentityManager idManager;
 
-   public BranchCopyTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, CreateBranchData branchData) {
-      super(logger, session, databaseService, String.format("Create Branch %s", branchData.getName()));
+   public BranchCopyTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, CreateBranchData branchData) {
+      super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.branchData = branchData;
-      //this.systemUserId = -1;
+      this.idManager = idManager;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   public Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
 
       // copy the branch up to the prior transaction - the goal is to have the provided
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
 
       Callable<Void> callable =
-         new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), branchData);
+         new CreateBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), idManager, branchData);
 
       try {
          callable.call();
 
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-         int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
+         int nextTransactionId = idManager.getNextTransactionId();
 
          String creationComment = branchData.getCreationComment();
 
-         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
+         getJdbcClient().runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
             creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
 
          populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranchUuid(),
             branchData.getSavedTransaction().getGuid());
 
          UpdatePreviousTxCurrent updater =
-            new UpdatePreviousTxCurrent(getDatabaseService(), joinFactory, connection, branchData.getUuid());
+            new UpdatePreviousTxCurrent(getJdbcClient(), joinFactory, connection, branchData.getUuid());
          updater.updateTxNotCurrentsFromTx(nextTransactionId);
 
       } catch (Exception ex) {
@@ -94,7 +95,7 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
       return null;
    }
 
-   private void populateTransaction(double workAmount, OseeConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
+   private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
       long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
@@ -105,16 +106,16 @@ public final class BranchCopyTxCallable extends AbstractDatastoreTxCallable<Void
       populateAddressingToCopy(connection, data, intoTx, gammas, SELECT_ADDRESSING, parentBranchId, copyTxId);
 
       if (!data.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, INSERT_ADDRESSING, data);
+         getJdbcClient().runBatchUpdate(connection, INSERT_ADDRESSING, data);
       }
 
       checkForCancelled();
    }
 
-   private void populateAddressingToCopy(OseeConnection connection, List<Object[]> data, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, query, parameters);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
          while (chStmt.next()) {
             checkForCancelled();
             Integer gamma = chStmt.getInt("gamma_id");

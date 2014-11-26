@@ -31,11 +31,6 @@
 						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.osee.database.schema</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.event.osgi</artifactId>
 							<version>0.0.0</version> 
 						</dependency>
@@ -68,17 +63,7 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.core</artifactId>
 							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.osee.framework.database</artifactId>
-							<version>0.0.0</version>
 						</dependency> -->
-						<dependency>
-							<type>eclipse-plugin</type>
-							<artifactId>org.eclipse.osee.hsqldb</artifactId>
-							<version>0.0.0</version>
-						</dependency>
 							<!-- 	<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.eclipse.osee.framework.jdk.core</artifactId>
@@ -183,32 +168,7 @@
 							<type>eclipse-plugin</type>
 							<artifactId>org.hsqldb</artifactId>
 							<version>0.0.0</version>
-						</dependency>
-
-
-
-						<!-- <dependency> <type>eclipse-plugin</type> <artifactId>org.eclipse.xtext</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>org.eclipse.xtext.util</artifactId> <version>0.0.0</version> 
-							</dependency> <dependency> <type>eclipse-plugin</type> <artifactId>org.antlr.runtime</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>org.aopalliance</artifactId> <version>0.0.0</version> </dependency> 
-							<dependency> <type>eclipse-plugin</type> <artifactId>com.google.inject</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>com.google.collect</artifactId> <version>0.0.0</version> </dependency> 
-							<dependency> <type>eclipse-plugin</type> <artifactId>org.eclipse.emf.common</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>org.eclipse.emf.compare</artifactId> <version>0.0.0</version> 
-							</dependency> <dependency> <type>eclipse-plugin</type> <artifactId>org.eclipse.emf.compare.diff</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>org.eclipse.emf.compare.match</artifactId> <version>0.0.0</version> 
-							</dependency> <dependency> <type>eclipse-plugin</type> <artifactId>org.eclipse.emf.ecore</artifactId> 
-							<version>0.0.0</version> </dependency> <dependency> <type>eclipse-plugin</type> 
-							<artifactId>org.eclipse.emf.ecore.xmi</artifactId> <version>0.0.0</version> 
-							</dependency> <dependency> <type>eclipse-plugin</type> <artifactId>org.eclipse.emf.edit</artifactId> 
-							<version>0.0.0</version> </dependency> -->
-
-
+						</dependency>						
 					</dependencies>
 				</configuration>
 			</plugin>

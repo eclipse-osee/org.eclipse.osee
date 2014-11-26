@@ -84,7 +84,7 @@ public class JdbcJaxRsOAuthStorageTest {
    public static final List<String> REGISTERED_SCOPES = Arrays.asList("scope-1", "scope-2", "scope-3");
 
    @Rule
-   public TestRule osgi = OrcsIntegrationRule.integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = OrcsIntegrationRule.integrationRule(this);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

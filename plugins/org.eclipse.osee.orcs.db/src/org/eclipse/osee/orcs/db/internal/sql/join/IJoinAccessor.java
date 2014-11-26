@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
  */
 public interface IJoinAccessor {
 
-   void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException;
+   void store(JdbcConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException;
 
-   int delete(OseeConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException;
+   int delete(JdbcConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException;
 
-   Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) throws OseeCoreException;
+   Collection<Integer> getAllQueryIds(JdbcConnection connection, JoinItem joinItem) throws OseeCoreException;
 }

@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -30,14 +30,14 @@ public class XmlStreamIndexerDatabaseCallable extends AbstractIndexerTxDatabaseC
    private final IndexerXmlInputStreamParser parser;
    private final InputStream inputStream;
 
-   public XmlStreamIndexerDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
-      super(logger, session, dbService, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
+   public XmlStreamIndexerDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, InputStream inputStream) {
+      super(logger, session, jdbcClient, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
       parser = new IndexerXmlInputStreamParser();
       this.inputStream = inputStream;
    }
 
    @Override
-   protected void convertInput(final OseeConnection connection) throws Exception {
+   protected void convertInput(final JdbcConnection connection) throws Exception {
       parser.parse(inputStream, new IndexItemIdCollector() {
 
          @Override

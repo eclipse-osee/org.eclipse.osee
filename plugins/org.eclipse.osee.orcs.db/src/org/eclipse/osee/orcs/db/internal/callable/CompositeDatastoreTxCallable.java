@@ -11,9 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import com.google.common.collect.Lists;
@@ -22,13 +22,13 @@ public class CompositeDatastoreTxCallable extends AbstractDatastoreTxCallable<Vo
 
    private final List<AbstractDatastoreTxCallable<?>> callables;
 
-   public CompositeDatastoreTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, String name, AbstractDatastoreTxCallable<?>... callables) {
-      super(logger, session, dbService, name);
+   public CompositeDatastoreTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, AbstractDatastoreTxCallable<?>... callables) {
+      super(logger, session, jdbcClient);
       this.callables = Lists.newArrayList(callables);
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       for (AbstractDatastoreTxCallable<?> callable : callables) {
          callable.handleTxWork(connection);
       }

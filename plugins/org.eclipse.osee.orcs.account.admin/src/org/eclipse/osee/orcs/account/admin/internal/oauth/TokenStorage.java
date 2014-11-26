@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.server.security.OAuthToken;
 import org.eclipse.osee.jaxrs.server.security.OAuthTokenType;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -42,8 +42,8 @@ public class TokenStorage extends AbstractDatabaseStorage<OAuthToken> {
    private static final String UPDATE_TOKEN_PARENT_BY_ID =
       "UPDATE osee_oauth_token SET parent_token_id = ? WHERE id = ?";
 
-   public TokenStorage(Log logger, IOseeDatabaseService dbService) {
-      super(logger, dbService);
+   public TokenStorage(Log logger, JdbcClient jdbcClient) {
+      super(logger, jdbcClient);
    }
 
    @Override
@@ -92,7 +92,7 @@ public class TokenStorage extends AbstractDatabaseStorage<OAuthToken> {
 
          @Override
          protected Void innerCall() throws Exception {
-            getDbService().runPreparedUpdate(query, data);
+            getJdbcClient().runPreparedUpdate(query, data);
             return null;
          }
 
@@ -108,7 +108,7 @@ public class TokenStorage extends AbstractDatabaseStorage<OAuthToken> {
 
          @Override
          protected Void innerCall() throws Exception {
-            getDbService().runPreparedUpdate(DELETE_TOKEN_BY_TOKEN_KEY, tokenKey);
+            getJdbcClient().runPreparedUpdate(DELETE_TOKEN_BY_TOKEN_KEY, tokenKey);
             return null;
          }
 
@@ -116,7 +116,7 @@ public class TokenStorage extends AbstractDatabaseStorage<OAuthToken> {
    }
 
    @Override
-   protected OAuthToken readData(IOseeStatement chStmt) {
+   protected OAuthToken readData(JdbcStatement chStmt) {
       final long uuid = chStmt.getLong("id");
       final long clientId = chStmt.getLong("client_id");
       final long subjectId = chStmt.getLong("subject_id");

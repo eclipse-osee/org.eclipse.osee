@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.List;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.junit.Assert;
 import org.junit.Test;
 

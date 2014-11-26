@@ -15,19 +15,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
-import org.eclipse.osee.framework.database.core.OseeConnection;
+import java.util.Dictionary;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
-import org.eclipse.osee.hsqldb.HsqlServerManager;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.db.mock.OseeDatabase;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Assert;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 
 /**
  * @author Roberto E. Escobar
@@ -36,17 +41,17 @@ public class TestDatabase {
 
    private final String className;
    private final String methodName;
+   private final String[] osgiBindings;
 
-   private ServiceRegistration<?> registration;
    private File tempFolder;
-   private final String connectionId;
-   private String dbId = "";
-   private HsqlServerManager hsqlServer;
 
-   public TestDatabase(String connectionId, String className, String methodName) {
-      this.connectionId = connectionId;
+   private Configuration configuration;
+   private JdbcService jdbcService;
+
+   public TestDatabase(String className, String methodName, String... osgiBindings) {
       this.className = className;
       this.methodName = methodName;
+      this.osgiBindings = osgiBindings;
    }
 
    private File createTempFolder() {
@@ -76,34 +81,44 @@ public class TestDatabase {
 
       String dbPath = getDbHomePath(tempFolder, "hsql");
 
-      int port = PortUtil.getInstance().getConsecutiveValidPorts(2);
-
-      IDatabaseInfo databaseInfo = new DbInfo(connectionId, port, dbPath);
-      TestDbProvider provider = new TestDbProvider(databaseInfo);
-
-      System.setProperty("osee.db.embedded.server", "");
       System.setProperty("osee.application.server.data", tempFolder.getAbsolutePath());
-      registerProvider(provider);
 
-      IOseeDatabaseService dbService = OsgiUtil.getService(IOseeDatabaseService.class);
-      Assert.assertNotNull(dbService);
+      ConfigurationAdmin configAdmin = OsgiUtil.getConfigAdmin();
 
-      hsqlServer = OsgiUtil.getService(HsqlServerManager.class);
-      Assert.assertNotNull(hsqlServer);
+      configuration = configAdmin.getConfiguration("org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory", null);
+      configuration.update(newConfig(dbPath));
 
-      dbId = hsqlServer.startServer("0.0.0.0", port, port + 1, databaseInfo);
-
-      OseeConnection connection = dbService.getConnection();
-      try {
-         Assert.assertNotNull(connection);
-      } finally {
-         connection.close();
-      }
+      jdbcService = OsgiUtil.getService(JdbcService.class, "(osgi.binding=orcs.jdbc.service)", 5000L);
+      Assert.assertNotNull("Unable to get JdbcService", jdbcService);
+      boolean isAlive = jdbcService.isServerAlive(10000L);
+      Assert.assertEquals("database service is not alive", true, isAlive);
    }
 
-   private void registerProvider(IDatabaseInfoProvider service) {
-      BundleContext context = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-      registration = context.registerService(IDatabaseInfoProvider.class, service, null);
+   private Dictionary<String, Object> newConfig(String dbPath) {
+      Map<String, Object> config = new LinkedHashMap<String, Object>();
+      config.put(JdbcConstants.JDBC_SERVICE__ID, Lib.generateUuid());
+      config.put(JdbcConstants.JDBC_SERVER__DB_DATA_PATH, dbPath);
+      config.put(JdbcConstants.JDBC_SERVER__USE_RANDOM_PORT, true);
+      config.put(JdbcConstants.JDBC_POOL__ENABLED, false);
+      config.put(JdbcConstants.JDBC_POOL__MAX_ACTIVE_CONNECTIONS, 100);
+      config.put(JdbcConstants.JDBC_POOL__MAX_IDLE_CONNECTIONS, 100);
+
+      Set<String> bindings = new HashSet<String>();
+      for (String binding : osgiBindings) {
+         bindings.add(binding);
+      }
+      config.put(JdbcConstants.JDBC_SERVICE__OSGI_BINDING, bindings);
+
+      JSONArray jsonArray = new JSONArray();
+      try {
+         jsonArray.put(0, config);
+      } catch (JSONException ex) {
+         throw new OseeCoreException(ex);
+      }
+      Hashtable<String, Object> data = new Hashtable<String, Object>();
+      data.put("serviceId", "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory");
+      data.put(JdbcConstants.JDBC_SERVICE__CONFIGS, jsonArray.toString());
+      return data;
    }
 
    private String getDbHomePath(File tempFolder, String dbFolder) {
@@ -127,14 +142,15 @@ public class TestDatabase {
    }
 
    public void cleanup() {
-      if (registration != null) {
-         registration.unregister();
+      if (configuration != null) {
+         try {
+            configuration.delete();
+         } catch (IOException ex) {
+            throw new OseeCoreException(ex);
+         }
       }
-
       System.setProperty("osee.application.server.data", "");
-      System.setProperty("osee.db.embedded.server", "");
-      boolean isDead = hsqlServer.stopServerWithWait(dbId);
-
+      boolean isDead = jdbcService != null ? !jdbcService.isServerAlive(2000L) : true;
       if (isDead) {
          if (tempFolder != null) {
             Lib.deleteDir(tempFolder);

@@ -75,7 +75,7 @@ public class OrcsTransactionTest {
    public ExpectedException thrown = ExpectedException.none();
 
    @Rule
-   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = integrationRule(this);
 
    @Rule
    public TestName testName = new TestName();

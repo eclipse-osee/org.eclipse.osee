@@ -40,6 +40,5 @@ public final class RelationalConstants {
    public static final Long DEFAULT_UUID = -1L;
 
    public static final int MIN_FETCH_SIZE = 10;
-   public static final int MAX_FETCH_SIZE = 10000;
 
 }

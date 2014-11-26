@@ -50,7 +50,7 @@ public class DispoItemDataCopierTest {
    public DispoConnector dispoConnector;
 
    @Rule
-   public TestRule rule = DispositionIntegrationRule.integrationRule(this, "osee.demo.hsql");
+   public TestRule rule = DispositionIntegrationRule.integrationRule(this);
 
    @Test
    public void testCopyItemData() throws Exception {

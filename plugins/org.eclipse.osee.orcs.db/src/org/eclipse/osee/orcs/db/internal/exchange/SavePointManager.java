@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange;
 
-import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,11 +18,11 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -41,19 +41,19 @@ public class SavePointManager {
 
    private final Map<String, SavePoint> savePoints = new LinkedHashMap<String, SavePoint>();
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
    private String currentSavePoint;
 
-   public SavePointManager(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public SavePointManager(JdbcClient jdbcClient) {
+      this.jdbcClient = jdbcClient;
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   private JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
-   public void storeSavePoints(OseeConnection connection, int importIdIndex) throws OseeCoreException {
+   public void storeSavePoints(JdbcConnection connection, int importIdIndex) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       for (SavePoint savePoint : savePoints.values()) {
          int status = 1;
@@ -64,20 +64,20 @@ public class SavePointManager {
             for (Throwable ex : savePoint.getErrors()) {
                builder.append(Lib.exceptionToString(ex).replaceAll("\n", " "));
             }
-            if (builder.length() < MAX_VARCHAR_LENGTH) {
+            if (builder.length() < JDBC__MAX_VARCHAR_LENGTH) {
                comment = builder.toString();
             } else {
-               comment = builder.substring(0, MAX_VARCHAR_LENGTH);
+               comment = builder.substring(0, JDBC__MAX_VARCHAR_LENGTH);
             }
          }
          data.add(new Object[] {importIdIndex, savePoint.getName(), status, comment});
       }
-      getDatabaseService().runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
+      getJdbcClient().runBatchUpdate(connection, INSERT_INTO_IMPORT_SAVE_POINT, data);
 
    }
 
    public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          setCurrentSetPointId(LOAD_SAVE_POINT_ID);
          chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId,

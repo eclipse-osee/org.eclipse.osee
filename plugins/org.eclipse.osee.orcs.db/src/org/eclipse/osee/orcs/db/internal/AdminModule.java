@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.SchemaOptions;
-import org.eclipse.osee.database.schema.SchemaResourceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcSchemaOptions;
+import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -25,6 +25,7 @@ import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
+import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar
@@ -32,14 +33,14 @@ import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
 public class AdminModule {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final IdentityManager identityService;
    private final SystemPreferences preferences;
 
-   public AdminModule(Log logger, IOseeDatabaseService dbService, IdentityManager identityService, SystemPreferences preferences) {
+   public AdminModule(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemPreferences preferences) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.identityService = identityService;
       this.preferences = preferences;
    }
@@ -53,17 +54,17 @@ public class AdminModule {
             boolean useFileSpecifiedSchemas =
                getOption(parameters, DataStoreConfigConstants.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
 
-            SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
+            Supplier<Iterable<JdbcSchemaResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
-            SchemaOptions options = new SchemaOptions(tableDataSpace, indexDataSpace, useFileSpecifiedSchemas);
-            return new InitializeDatastoreCallable(session, logger, dbService, identityService, branchStore,
+            JdbcSchemaOptions options = new JdbcSchemaOptions(tableDataSpace, indexDataSpace, useFileSpecifiedSchemas);
+            return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, branchStore,
                preferences, schemaProvider, options);
          }
 
          @Override
          public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
-            SchemaResourceProvider schemaProvider = new DynamicSchemaResourceProvider(logger);
-            return new FetchDatastoreInfoCallable(logger, session, dbService, schemaProvider, preferences);
+            Supplier<Iterable<JdbcSchemaResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
+            return new FetchDatastoreInfoCallable(logger, session, jdbcClient, schemaProvider, preferences);
          }
 
          private boolean getOption(Map<String, String> parameters, String key, boolean defaultValue) {
@@ -85,5 +86,4 @@ public class AdminModule {
          }
       };
    }
-
 }

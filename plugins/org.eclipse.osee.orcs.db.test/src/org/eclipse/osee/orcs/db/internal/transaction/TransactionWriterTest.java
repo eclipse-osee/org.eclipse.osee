@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -63,11 +63,11 @@ public class TransactionWriterTest {
 
    //@formatter:off
    @Mock private Log logger;
-   @Mock private IOseeDatabaseService dbService;
+   @Mock private JdbcClient jdbcClient;
    
    
    @Mock private TxSqlBuilder builder;
-   @Mock private OseeConnection connection;
+   @Mock private JdbcConnection connection;
    @Mock private TransactionReadable tx;
    @Mock private DaoToSql dao1;
    @Mock private DaoToSql dao2;
@@ -75,7 +75,7 @@ public class TransactionWriterTest {
    @Mock private IdJoinQuery join1;
    @Mock private IdJoinQuery join2;
    
-   @Mock private IOseeStatement chStmt;
+   @Mock private JdbcStatement chStmt;
    @Captor private ArgumentCaptor<List<Object[]>> paramCaptor;
    @Mock  private OrcsChangeSet changeSet;
    //@formatter:on
@@ -87,7 +87,7 @@ public class TransactionWriterTest {
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      writer = new TransactionWriter(logger, dbService, builder);
+      writer = new TransactionWriter(logger, jdbcClient, builder);
 
       stores = Arrays.asList(dao1, dao2);
 
@@ -108,7 +108,7 @@ public class TransactionWriterTest {
             return values;
          }
       });
-      when(dbService.getStatement(connection)).thenReturn(chStmt);
+      when(jdbcClient.getStatement(connection)).thenReturn(chStmt);
 
       when(chStmt.next()).thenReturn(true).thenReturn(true).thenReturn(false);
       when(chStmt.getInt("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
@@ -134,7 +134,7 @@ public class TransactionWriterTest {
 
    @Test
    public void testWrite() throws OseeCoreException {
-      InOrder inOrder = inOrder(builder, tx, join1, join2, dao1, dao2, dbService, chStmt);
+      InOrder inOrder = inOrder(builder, tx, join1, join2, dao1, dao2, jdbcClient, chStmt);
 
       writer.write(connection, tx, changeSet);
 
@@ -159,7 +159,7 @@ public class TransactionWriterTest {
       inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS_DETAIL);
       inOrder.verify(builder).getInsertData(SqlOrderEnum.TXS);
 
-      inOrder.verify(dbService).runBatchUpdate(eq(connection), eq(TransactionWriter.UPDATE_TXS_NOT_CURRENT),
+      inOrder.verify(jdbcClient).runBatchUpdate(eq(connection), eq(TransactionWriter.UPDATE_TXS_NOT_CURRENT),
          paramCaptor.capture());
 
       inOrder.verify(builder).clear();

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
@@ -26,17 +26,16 @@ public class IndexerDatabaseStatisticsCallable extends AbstractDatastoreCallable
    private static final String SELECT_TOTAL_QUERY_IDS_IN_QUEUE =
       "select count(DISTINCT query_id) from osee_tag_gamma_queue";
 
-   public IndexerDatabaseStatisticsCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
-      super(logger, session, service);
+   public IndexerDatabaseStatisticsCallable(Log logger, OrcsSession session, JdbcClient jdbcClient) {
+      super(logger, session, jdbcClient);
    }
 
    @Override
    public IndexerData call() throws Exception {
       IndexerData indexerData = new IndexerData();
 
-      indexerData.setTotalItemsInQueue(getDatabaseService().runPreparedQueryFetchObject(-1L,
-         SELECT_TOTAL_QUERY_IDS_IN_QUEUE));
-      indexerData.setTotalTags(getDatabaseService().runPreparedQueryFetchObject(-1L, SELECT_TOTAL_TAGS));
+      indexerData.setTotalItemsInQueue(getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE));
+      indexerData.setTotalTags(getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_TOTAL_TAGS));
 
       return indexerData;
    }

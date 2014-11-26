@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.HasVersion;
@@ -41,15 +41,15 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final IndexingTaskConsumer consumer;
 
    private final IndexerCollectorNotifier systemCollector;
 
-   public QueryEngineIndexerImpl(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, IndexingTaskConsumer indexingConsumer) {
+   public QueryEngineIndexerImpl(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IndexingTaskConsumer indexingConsumer) {
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.consumer = indexingConsumer;
       this.systemCollector = new IndexerCollectorNotifier(logger);
@@ -57,39 +57,39 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
 
    @Override
    public CancellableCallable<Integer> deleteIndexByQueryId(OrcsSession session, int queueId) {
-      return new DeleteTagSetDatabaseTxCallable(logger, session, dbService, queueId);
+      return new DeleteTagSetDatabaseTxCallable(logger, session, jdbcClient, queueId);
    }
 
    @Override
    public CancellableCallable<Integer> purgeAllIndexes(OrcsSession session) {
-      return new PurgeAllTagsDatabaseCallable(logger, session, dbService);
+      return new PurgeAllTagsDatabaseCallable(logger, session, jdbcClient);
    }
 
    @Override
    public CancellableCallable<IndexerData> getIndexerData(OrcsSession session) {
-      return new IndexerDatabaseStatisticsCallable(logger, session, dbService);
+      return new IndexerDatabaseStatisticsCallable(logger, session, jdbcClient);
    }
 
    @Override
    public CancellableCallable<Integer> indexBranches(OrcsSession session, AttributeTypes types, Collection<? extends IAttributeType> typeToTag, Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
-      return new IndexBranchesDatabaseCallable(logger, session, dbService, joinFactory, types, consumer,
+      return new IndexBranchesDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer,
          merge(collector), typeToTag, branches, indexOnlyMissing);
    }
 
    @Override
    public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, AttributeTypes types, IndexerCollector... collector) {
-      return new IndexAllInQueueCallable(logger, session, dbService, joinFactory, types, consumer, merge(collector));
+      return new IndexAllInQueueCallable(logger, session, jdbcClient, joinFactory, types, consumer, merge(collector));
    }
 
    @Override
    public CancellableCallable<List<Future<?>>> indexXmlStream(OrcsSession session, AttributeTypes types, InputStream inputStream, IndexerCollector... collector) {
-      return new XmlStreamIndexerDatabaseCallable(logger, session, dbService, joinFactory, types, consumer,
+      return new XmlStreamIndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer,
          merge(collector), IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, inputStream);
    }
 
    @Override
    public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<? extends HasVersion> datas, IndexerCollector... collector) {
-      return new IndexerDatabaseCallable(logger, session, dbService, joinFactory, types, consumer, merge(collector),
+      return new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer, merge(collector),
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
    }
 

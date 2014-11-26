@@ -15,14 +15,15 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.eclipse.osee.database.schema.SchemaResource;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClientConfig;
+import org.eclipse.osee.jdbc.JdbcSchemaResource;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountSessionSchemaResource implements SchemaResource {
+public class AccountSessionSchemaResource implements JdbcSchemaResource {
 
    private static final String SCHEMA_PATH = "schema/ACCOUNT.DS.SCHEMA.xml";
 
@@ -39,7 +40,7 @@ public class AccountSessionSchemaResource implements SchemaResource {
    }
 
    @Override
-   public boolean isApplicable() {
+   public boolean isApplicable(JdbcClientConfig config) {
       return true;
    }
 
@@ -55,4 +56,5 @@ public class AccountSessionSchemaResource implements SchemaResource {
    private URL getResourceURL() {
       return getClass().getResource(SCHEMA_PATH);
    }
+
 }

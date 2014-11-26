@@ -51,7 +51,7 @@ public class OrcsBranchTest {
    private static final String ARTIFACT_NAME = "Joe Smith";
 
    @Rule
-   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = integrationRule(this);
 
    @OsgiService
    private OrcsApi orcsApi;

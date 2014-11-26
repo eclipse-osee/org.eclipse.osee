@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.accessor;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -41,16 +41,16 @@ public class UpdatePreviousTxCurrent {
       "select txsb.transaction_id, txsb.gamma_id FROM item, osee_txs txsb where item.gamma_id = txsb.gamma_id AND txsb.branch_id = ? AND transaction_id <> ? AND txsb.tx_current <> ?";
 // @formatter:on
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final long branchUuid;
-   private final OseeConnection connection;
+   private final JdbcConnection connection;
    private IdJoinQuery artifactJoin;
    private IdJoinQuery attributeJoin;
    private IdJoinQuery relationJoin;
 
-   public UpdatePreviousTxCurrent(IOseeDatabaseService dbService, SqlJoinFactory joinFactory, OseeConnection connection, long branchUuid) {
-      this.dbService = dbService;
+   public UpdatePreviousTxCurrent(JdbcClient jdbcClient, SqlJoinFactory joinFactory, JdbcConnection connection, long branchUuid) {
+      this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.branchUuid = branchUuid;
       this.connection = connection;
@@ -95,9 +95,10 @@ public class UpdatePreviousTxCurrent {
       String query = String.format(SELECT_TXS_AND_GAMMAS, tableName, columnName);
 
       List<Object[]> updateData = new ArrayList<Object[]>();
-      IOseeStatement chStmt = dbService.getStatement(connection);
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, query, queryId, branchUuid, TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, branchUuid,
+            TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
@@ -105,15 +106,15 @@ public class UpdatePreviousTxCurrent {
          chStmt.close();
       }
 
-      dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
+      jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
    }
 
    public void updateTxNotCurrentsFromTx(int transaction_id) throws OseeCoreException {
       List<Object[]> updateData = new ArrayList<Object[]>();
-      IOseeStatement chStmt = dbService.getStatement(connection);
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid, transaction_id, branchUuid,
-            transaction_id, TxChange.NOT_CURRENT.getValue());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid,
+            transaction_id, branchUuid, transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
          }
@@ -121,6 +122,6 @@ public class UpdatePreviousTxCurrent {
          chStmt.close();
       }
 
-      dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
+      jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
    }
 }

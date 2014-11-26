@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -22,22 +22,22 @@ import org.eclipse.osee.orcs.OrcsSession;
 public abstract class AbstractDatastoreCallable<T> extends CancellableCallable<T> {
 
    private final OrcsSession session;
-   private final IOseeDatabaseService service;
+   private final JdbcClient jdbcClient;
    private final Log logger;
    private Callable<?> innerWorker;
 
-   protected AbstractDatastoreCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
+   protected AbstractDatastoreCallable(Log logger, OrcsSession session, JdbcClient jdbcClient) {
       this.logger = logger;
       this.session = session;
-      this.service = service;
+      this.jdbcClient = jdbcClient;
    }
 
    protected OrcsSession getSession() {
       return session;
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
-      return service;
+   protected JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    protected Log getLogger() {

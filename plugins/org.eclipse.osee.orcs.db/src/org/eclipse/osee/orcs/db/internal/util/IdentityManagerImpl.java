@@ -11,11 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.util;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
 /**
@@ -23,35 +22,36 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
  */
 public class IdentityManagerImpl implements IdentityManager {
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient client;
 
-   public IdentityManagerImpl(IOseeDatabaseService dbService) {
+   public IdentityManagerImpl(JdbcClient client) {
       super();
-      this.dbService = dbService;
-   }
-
-   private IOseeSequence getSequence() throws OseeDataStoreException {
-      return dbService.getSequence();
+      this.client = client;
    }
 
    @Override
-   public int getNextArtifactId() throws OseeCoreException {
-      return getSequence().getNextArtifactId();
+   public int getNextTransactionId() {
+      return (int) client.getNextSequence(TRANSACTION_ID_SEQ);
    }
 
    @Override
-   public int getNextAttributeId() throws OseeCoreException {
-      return getSequence().getNextAttributeId();
+   public int getNextArtifactId() {
+      return (int) client.getNextSequence(ART_ID_SEQ);
    }
 
    @Override
-   public int getNextRelationId() throws OseeCoreException {
-      return getSequence().getNextRelationId();
+   public int getNextAttributeId() {
+      return (int) client.getNextSequence(ATTR_ID_SEQ);
    }
 
    @Override
-   public long getNextGammaId() throws OseeCoreException {
-      return getSequence().getNextGammaId();
+   public int getNextRelationId() {
+      return (int) client.getNextSequence(REL_LINK_ID_SEQ);
+   }
+
+   @Override
+   public long getNextGammaId() {
+      return (int) client.getNextSequence(GAMMA_ID_SEQ);
    }
 
    @Override
@@ -70,7 +70,7 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public void invalidateIds() throws OseeDataStoreException {
-      getSequence().clear();
+      client.invalidateSequences();
    }
 
 }

@@ -15,13 +15,14 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.eclipse.osee.database.schema.SchemaResource;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClientConfig;
+import org.eclipse.osee.jdbc.JdbcSchemaResource;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OAuthSchemaResource implements SchemaResource {
+public class OAuthSchemaResource implements JdbcSchemaResource {
 
    private static final String SCHEMA_PATH = "schema/OAUTH.DS.SCHEMA.xml";
 
@@ -38,8 +39,12 @@ public class OAuthSchemaResource implements SchemaResource {
    }
 
    @Override
-   public boolean isApplicable() {
+   public boolean isApplicable(JdbcClientConfig config) {
       return true;
+   }
+
+   private URL getResourceURL() {
+      return getClass().getResource(SCHEMA_PATH);
    }
 
    @Override
@@ -49,9 +54,5 @@ public class OAuthSchemaResource implements SchemaResource {
       } catch (URISyntaxException ex) {
          throw new OseeCoreException(ex, "Error finding [%s] schema resource", SCHEMA_PATH);
       }
-   }
-
-   private URL getResourceURL() {
-      return getClass().getResource(SCHEMA_PATH);
    }
 }

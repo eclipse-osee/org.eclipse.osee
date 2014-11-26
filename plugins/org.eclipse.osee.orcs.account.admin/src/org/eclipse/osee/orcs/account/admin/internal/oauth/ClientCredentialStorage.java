@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.account.admin.internal.oauth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -41,8 +41,8 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
    private static final String UPDATE_BY_CLIENT_CREDENTIAL =
       "UPDATE osee_oauth_client_credential SET subject_id = ?, client_key = ?, client_key = ?, client_secret = ?, client_cert = ? WHERE client_id = ? AND application_id = ?";
 
-   public ClientCredentialStorage(Log logger, IOseeDatabaseService dbService) {
-      super(logger, dbService);
+   public ClientCredentialStorage(Log logger, JdbcClient jdbcClient) {
+      super(logger, jdbcClient);
    }
 
    @Override
@@ -101,7 +101,7 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
    }
 
    @Override
-   protected OAuthClientCredential readData(IOseeStatement chStmt) {
+   protected OAuthClientCredential readData(JdbcStatement chStmt) {
       final long clientId = chStmt.getLong("client_id");
       final long applicationId = chStmt.getLong("application_id");
       final long subjectId = chStmt.getLong("subject_id");

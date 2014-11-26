@@ -44,7 +44,7 @@ public class ConsolidateArtifactVersionsCommand extends AbstractDatastoreConsole
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ConsolidateArtifactVersionDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(),
-         joinFactory, console);
+      return new ConsolidateArtifactVersionDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), joinFactory,
+         console);
    }
 }

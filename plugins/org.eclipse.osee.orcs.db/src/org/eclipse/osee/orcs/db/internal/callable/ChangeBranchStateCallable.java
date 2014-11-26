@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -25,16 +25,16 @@ public class ChangeBranchStateCallable extends AbstractDatastoreTxCallable<Void>
    private final IOseeBranch branch;
    private final BranchState newState;
 
-   public ChangeBranchStateCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IOseeBranch branch, BranchState newState) {
-      super(logger, session, dbService, String.format("Change BranchState of %s to %s", branch, newState));
+   public ChangeBranchStateCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, BranchState newState) {
+      super(logger, session, jdbcClient);
       this.branch = branch;
       this.newState = newState;
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       Object[] params = new Object[] {newState.getValue(), branch.getUuid()};
-      getDatabaseService().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
+      getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
       return null;
    }
 }

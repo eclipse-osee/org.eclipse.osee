@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -25,21 +25,21 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
 public class IndexerCallableFactoryImpl implements IndexerCallableFactory {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final TaggingEngine taggingEngine;
    private final IndexedResourceLoader loader;
 
-   public IndexerCallableFactoryImpl(Log logger, IOseeDatabaseService dbService, TaggingEngine taggingEngine, IndexedResourceLoader loader) {
+   public IndexerCallableFactoryImpl(Log logger, JdbcClient jdbcClient, TaggingEngine taggingEngine, IndexedResourceLoader loader) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.taggingEngine = taggingEngine;
       this.loader = loader;
    }
 
    @Override
    public Callable<?> createIndexerTaskCallable(OrcsSession session, AttributeTypes types, IndexerCollector collector, int queueId) {
-      return new IndexingTaskDatabaseTxCallable(logger, session, dbService, loader, taggingEngine, collector, queueId,
+      return new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, taggingEngine, collector, queueId,
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, types);
    }
 

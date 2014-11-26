@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
  */
 public class ChangeItemLoader {
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final HashMap<Long, ModificationType> changeByGammaId;
 
    public static interface ChangeItemFactory {
@@ -37,11 +37,11 @@ public class ChangeItemLoader {
 
       String getLoadByGammaQuery();
 
-      ChangeItem createItem(IOseeStatement statement) throws OseeCoreException;
+      ChangeItem createItem(JdbcStatement statement) throws OseeCoreException;
    }
 
-   public ChangeItemLoader(IOseeDatabaseService dbService, HashMap<Long, ModificationType> changeByGammaId) {
-      this.dbService = dbService;
+   public ChangeItemLoader(JdbcClient jdbcClient, HashMap<Long, ModificationType> changeByGammaId) {
+      this.jdbcClient = jdbcClient;
       this.changeByGammaId = changeByGammaId;
    }
 
@@ -58,9 +58,9 @@ public class ChangeItemLoader {
    }
 
    public void loadItemIdsBasedOnGammas(ChangeItemFactory factory, int queryId, HashMap<Integer, ChangeItem> changesByItemId, IdJoinQuery idJoin) throws OseeCoreException {
-      IOseeStatement chStmt = dbService.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, factory.getLoadByGammaQuery(), queryId);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, factory.getLoadByGammaQuery(), queryId);
          while (chStmt.next()) {
             ChangeItem item = factory.createItem(chStmt);
             Integer itemId = item.getItemId();

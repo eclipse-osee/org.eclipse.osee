@@ -14,8 +14,8 @@ import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
 
 public final class RelationChangeItemFactory implements ChangeItemFactory {
@@ -35,7 +35,7 @@ public final class RelationChangeItemFactory implements ChangeItemFactory {
    }
 
    @Override
-   public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
+   public ChangeItem createItem(JdbcStatement chStmt) throws OseeCoreException {
       int relLinkId = chStmt.getInt("rel_link_id");
       long relTypeId = chStmt.getLong("rel_link_type_id");
 

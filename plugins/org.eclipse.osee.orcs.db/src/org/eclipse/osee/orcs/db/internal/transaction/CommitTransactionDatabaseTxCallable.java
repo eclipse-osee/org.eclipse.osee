@@ -14,12 +14,11 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
@@ -27,6 +26,7 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TransactionResult;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -39,23 +39,22 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public final class CommitTransactionDatabaseTxCallable extends AbstractDatastoreTxCallable<TransactionResult> {
 
    private final TransactionData transactionData;
-
+   private final IdentityManager identityManager;
    private final TransactionProcessorProvider provider;
    private final TransactionWriter writer;
    private static final String UPDATE_BRANCH_STATE =
       "UPDATE osee_branch SET branch_state = ? WHERE branch_id = ? and branch_state = ?";
 
-   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
-      super(logger, session, dbService, String.format("Committing Transaction: [%s] for branch [%s]",
-         transactionData.getComment(), transactionData.getBranch()));
+   public CommitTransactionDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IdentityManager identityManager, TransactionProcessorProvider provider, TransactionWriter writer, TransactionData transactionData) {
+      super(logger, session, jdbcClient);
+      this.identityManager = identityManager;
       this.provider = provider;
-
       this.writer = writer;
       this.transactionData = transactionData;
    }
 
-   private int getNextTransactionId() throws OseeDataStoreException, OseeCoreException {
-      return getDatabaseService().getSequence().getNextTransactionId();
+   private int getNextTransactionId() {
+      return identityManager.getNextTransactionId();
    }
 
    private void process(TxWritePhaseEnum phase) throws OseeCoreException {
@@ -66,7 +65,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    }
 
    @Override
-   protected TransactionResult handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected TransactionResult handleTxWork(JdbcConnection connection) throws OseeCoreException {
       ///// 
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
@@ -87,7 +86,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
 
       Object[] params =
          new Object[] {BranchState.MODIFIED.getValue(), branch.getUuid(), BranchState.CREATED.getValue()};
-      getDatabaseService().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
+      getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
 
       return new TransactionResultImpl(txRecord, changeSet);
    }

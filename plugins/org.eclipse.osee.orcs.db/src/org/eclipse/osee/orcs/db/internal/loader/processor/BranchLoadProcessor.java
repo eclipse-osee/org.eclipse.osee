@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.data.BranchObjectFactory;
@@ -29,7 +29,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
    }
 
    @Override
-   protected BranchData createData(Object conditions, BranchObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
+   protected BranchData createData(Object conditions, BranchObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       long branchUuid = chStmt.getLong("branch_id");
 
       String branchName = chStmt.getString("branch_name");

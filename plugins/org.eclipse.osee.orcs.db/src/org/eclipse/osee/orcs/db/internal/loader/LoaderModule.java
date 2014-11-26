@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataFactory;
@@ -32,16 +32,16 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class LoaderModule {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final IdentityManager idFactory;
    private final SqlProvider sqlProvider;
    private final DataProxyFactoryProvider proxyProvider;
    private final SqlJoinFactory joinFactory;
 
-   public LoaderModule(Log logger, IOseeDatabaseService dbService, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
+   public LoaderModule(Log logger, JdbcClient jdbcClient, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.idFactory = idFactory;
       this.sqlProvider = sqlProvider;
       this.proxyProvider = proxyProvider;
@@ -70,12 +70,12 @@ public class LoaderModule {
    }
 
    public DataLoaderFactory createDataLoaderFactory(SqlObjectLoader sqlObjectLoader) {
-      return new DataLoaderFactoryImpl(logger, dbService, sqlObjectLoader, joinFactory);
+      return new DataLoaderFactoryImpl(logger, jdbcClient, sqlObjectLoader, joinFactory);
    }
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
-      return new SqlObjectLoader(logger, dbService, joinFactory, sqlProvider, handlerFactory, objectFactory,
+      return new SqlObjectLoader(logger, jdbcClient, joinFactory, sqlProvider, handlerFactory, objectFactory,
          dynamicLoadProcessor);
    }
 

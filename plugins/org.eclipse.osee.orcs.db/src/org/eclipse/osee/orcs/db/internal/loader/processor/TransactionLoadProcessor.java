@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.db.internal.loader.data.TransactionObjectFactory;
@@ -28,7 +28,7 @@ public class TransactionLoadProcessor extends LoadProcessor<TxOrcsData, Transact
    }
 
    @Override
-   protected TxOrcsData createData(Object conditions, TransactionObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
+   protected TxOrcsData createData(Object conditions, TransactionObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       long branchUuid = chStmt.getLong("branch_id");
       int localId = chStmt.getInt("transaction_id");
       TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));

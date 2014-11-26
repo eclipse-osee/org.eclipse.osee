@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -24,13 +24,13 @@ public final class PurgeArtifactTypeDatabaseTxCallable extends AbstractDatastore
    @SuppressWarnings("unused")
    private final Collection<? extends IArtifactType> typesToPurge;
 
-   public PurgeArtifactTypeDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, Collection<? extends IArtifactType> typesToPurge) {
-      super(logger, session, databaseService, "Purge Artifact Type");
+   public PurgeArtifactTypeDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Collection<? extends IArtifactType> typesToPurge) {
+      super(logger, session, jdbcClient);
       this.typesToPurge = typesToPurge;
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) {
+   protected Void handleTxWork(JdbcConnection connection) {
       throw new UnsupportedOperationException("operation is not currently supported");
    }
 }

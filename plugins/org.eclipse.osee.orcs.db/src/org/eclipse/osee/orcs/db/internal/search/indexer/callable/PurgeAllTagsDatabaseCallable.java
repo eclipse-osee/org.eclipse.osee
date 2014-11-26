@@ -13,9 +13,9 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreCallable;
@@ -27,8 +27,8 @@ public final class PurgeAllTagsDatabaseCallable extends AbstractDatastoreCallabl
 
    private static final String SEARCH_TAG_TABLE_NAME = "osee_search_tags";
 
-   public PurgeAllTagsDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service) {
-      super(logger, session, service);
+   public PurgeAllTagsDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient) {
+      super(logger, session, jdbcClient);
    }
 
    @Override
@@ -37,7 +37,7 @@ public final class PurgeAllTagsDatabaseCallable extends AbstractDatastoreCallabl
       String cmd = isTruncateSupported() ? "TRUNCATE TABLE" : "DELETE FROM";
       String deleteSql = String.format("%s %s", cmd, SEARCH_TAG_TABLE_NAME);
       try {
-         return getDatabaseService().runPreparedUpdate(deleteSql);
+         return getJdbcClient().runPreparedUpdate(deleteSql);
       } catch (OseeCoreException ex) {
          getLogger().info(ex, "Error clearing: %s", deleteSql);
          throw ex;
@@ -46,7 +46,7 @@ public final class PurgeAllTagsDatabaseCallable extends AbstractDatastoreCallabl
 
    private boolean isTruncateSupported() throws OseeCoreException {
       boolean isTruncateSupported = false;
-      OseeConnection connection = getDatabaseService().getConnection();
+      JdbcConnection connection = getJdbcClient().getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
          ResultSet resultSet = null;

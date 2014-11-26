@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsDataFactory;
@@ -28,13 +28,13 @@ public abstract class LoadProcessor<D, F extends OrcsDataFactory> extends Abstra
    }
 
    @Override
-   protected final void onRow(OrcsDataHandler<D> handler, IOseeStatement chStmt, Options options, Object conditions) {
+   protected final void onRow(OrcsDataHandler<D> handler, JdbcStatement chStmt, Options options, Object conditions) {
       D data = createData(conditions, factory, chStmt, options);
       if (data != null) {
          handler.onData(data);
       }
    }
 
-   protected abstract D createData(Object conditions, F factory, IOseeStatement chStmt, Options options) throws OseeCoreException;
+   protected abstract D createData(Object conditions, F factory, JdbcStatement chStmt, Options options) throws OseeCoreException;
 
 }

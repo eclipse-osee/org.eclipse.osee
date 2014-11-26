@@ -44,7 +44,7 @@ public class DispositionIntegrationTest {
    public TemporaryFolder folder = new TemporaryFolder();
 
    @Rule
-   public TestRule rule = DispositionIntegrationRule.integrationRule(this, "osee.demo.hsql");
+   public TestRule rule = DispositionIntegrationRule.integrationRule(this);
 
    @OsgiService
    public OrcsApi orcsApi;

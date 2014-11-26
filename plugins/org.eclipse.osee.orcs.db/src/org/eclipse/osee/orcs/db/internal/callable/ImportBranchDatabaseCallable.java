@@ -22,9 +22,6 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -33,6 +30,8 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -70,7 +69,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final OrcsTypes orcsTypes;
 
    private final SavePointManager savePointManager;
-   private final OperationLogger legacyLogger;
 
    private final URI exchangeFile;
    private final List<IOseeBranch> selectedBranches;
@@ -84,14 +82,13 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private ExchangeDataProcessor exchangeDataProcessor;
    private long[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
-      super(logger, session, dbService);
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+      super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.resourceManager = resourceManager;
       this.identityService = identityService;
       this.orcsTypes = orcsTypes;
-      this.savePointManager = new SavePointManager(dbService);
-      this.legacyLogger = new OperationLoggerAdaptor();
+      this.savePointManager = new SavePointManager(jdbcClient);
       this.exchangeFile = exchangeFile;
       this.selectedBranches = selectedBranches;
       this.options = options;
@@ -113,7 +110,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          loadTypeModel(modelUri);
 
          ImportBranchesTx importBranchesTx =
-            new ImportBranchesTx(getLogger(), getSession(), getDatabaseService(), savePointManager,
+            new ImportBranchesTx(getLogger(), getSession(), getJdbcClient(), savePointManager,
                manifestHandler.getBranchFile());
          callAndCheckForCancel(importBranchesTx);
 
@@ -130,7 +127,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
          importBranchesTx.updateBaselineAndParentTransactionId();
 
-         exchangeTransformer.applyFinalTransforms(legacyLogger);
+         exchangeTransformer.applyFinalTransforms();
 
          savePointManager.setCurrentSetPointId("stop");
          savePointManager.addCurrentSavePointToProcessed();
@@ -146,7 +143,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private void checkPreconditions() throws OseeCoreException {
-      if (getDatabaseService().isProduction()) {
+      if (getJdbcClient().getConfig().isProduction()) {
          throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
 
@@ -172,20 +169,21 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       savePointManager.setCurrentSetPointId("sourceSetup");
 
       IExchangeTransformProvider transformProvider = new ExchangeTransformProvider();
-      exchangeTransformer = new ExchangeTransformer(getDatabaseService(), transformProvider, exchangeDataProcessor);
-      exchangeTransformer.applyTransforms(legacyLogger);
+      exchangeTransformer =
+         new ExchangeTransformer(getLogger(), getSession(), getJdbcClient(), transformProvider, exchangeDataProcessor);
+      exchangeTransformer.applyTransforms();
 
       savePointManager.setCurrentSetPointId("manifest");
       manifestHandler = new ManifestSaxHandler();
       exchangeDataProcessor.parse(ExportItem.EXPORT_MANIFEST, manifestHandler);
 
       savePointManager.setCurrentSetPointId("setup");
-      translator = new TranslationManager(getDatabaseService());
+      translator = new TranslationManager(getJdbcClient());
       translator.configure(options);
 
       // Process database meta data
       savePointManager.setCurrentSetPointId(manifestHandler.getMetadataFile());
-      metadataHandler = new MetaDataSaxHandler(getDatabaseService());
+      metadataHandler = new MetaDataSaxHandler(getJdbcClient());
       exchangeDataProcessor.parse(ExportItem.EXPORT_DB_SCHEMA, metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
@@ -198,7 +196,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private void processImportFiles(long[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler =
-         DbTableSaxHandler.createWithLimitedCache(getLogger(), getDatabaseService(), resourceManager, identityService,
+         DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(), resourceManager, identityService,
             exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
@@ -249,8 +247,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
    private void cleanup() throws Exception {
       try {
-         CommitImportSavePointsTx callable =
-            new CommitImportSavePointsTx(getLogger(), getSession(), getDatabaseService());
+         CommitImportSavePointsTx callable = new CommitImportSavePointsTx(getLogger(), getSession(), getJdbcClient());
          callAndCheckForCancel(callable);
       } catch (Exception ex) {
          getLogger().warn(ex, "Error during save point save - you will not be able to reimport from last source again.");
@@ -306,23 +303,24 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       getLogger().info("Type Model Import complete");
    }
    private final class CommitImportSavePointsTx extends AbstractDatastoreTxCallable<Boolean> {
+
+      private static final String IMPORT_ID_SEQ = "SKYNET_IMPORT_ID_SEQ";
       private static final String INSERT_INTO_IMPORT_SOURCES =
          "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
 
-      public CommitImportSavePointsTx(Log logger, OrcsSession session, IOseeDatabaseService dbService) {
-         super(logger, session, dbService, "Commit Import Save Points Tx");
+      public CommitImportSavePointsTx(Log logger, OrcsSession session, JdbcClient jdbcClient) {
+         super(logger, session, jdbcClient);
       }
 
-      @SuppressWarnings("unchecked")
       @Override
-      protected Boolean handleTxWork(OseeConnection connection) throws OseeCoreException {
+      protected Boolean handleTxWork(JdbcConnection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {
-            int importIdIndex = getDatabaseService().getSequence().getNextImportId();
+            int importIdIndex = (int) getJdbcClient().getNextSequence(IMPORT_ID_SEQ);
             String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
             Timestamp importDate = new Timestamp(new Date().getTime());
             Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());
-            getDatabaseService().runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex,
-               sourceDatabaseId, exportDate, importDate);
+            getJdbcClient().runPreparedUpdate(connection, INSERT_INTO_IMPORT_SOURCES, importIdIndex, sourceDatabaseId,
+               exportDate, importDate);
 
             translator.store(connection, importIdIndex);
 
@@ -334,16 +332,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
    }
 
-   private final class OperationLoggerAdaptor extends OperationLogger {
-
-      @Override
-      public void log(String... rows) {
-         for (String row : rows) {
-            getLogger().info(row);
-         }
-      }
-   }
-
    private final class ImportBranchesTx extends AbstractDatastoreTxCallable<Object> {
 
       private final SavePointManager savePointManager;
@@ -351,11 +339,11 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       private final IExportItem branchExportItem;
       private long[] branchesStored;
 
-      public ImportBranchesTx(Log logger, OrcsSession session, IOseeDatabaseService dbService, SavePointManager savePointManager, IExportItem branchExportItem) {
-         super(logger, session, dbService, "Import Branch Tx");
+      public ImportBranchesTx(Log logger, OrcsSession session, JdbcClient jdbcClient, SavePointManager savePointManager, IExportItem branchExportItem) {
+         super(logger, session, jdbcClient);
          this.savePointManager = savePointManager;
          this.branchExportItem = branchExportItem;
-         branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, dbService);
+         branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, jdbcClient);
          branchesStored = new long[0];
       }
 
@@ -370,7 +358,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
 
       @Override
-      protected Object handleTxWork(OseeConnection connection) throws OseeCoreException {
+      protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
          // Import Branches
          savePointManager.setCurrentSetPointId(branchExportItem.getSource());
          branchHandler.setConnection(connection);

@@ -28,7 +28,6 @@ import java.util.Iterator;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -58,10 +57,10 @@ import org.mockito.MockitoAnnotations;
 public class LoaderTest {
 
    @Rule
-   public TestRule db = integrationRule(this, "osee.demo.hsql");
+   public TestRule db = integrationRule(this);
 
    // @formatter:off
-	@OsgiService private IOseeDatabaseService dbService;
+//	@OsgiService private JdbcClient jdbcClient;
 	@OsgiService private OrcsDataStore dataStore;
    @Mock private LoadDataHandler builder; 
    @Captor private ArgumentCaptor<LoadDescription> descriptorCaptor;

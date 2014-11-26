@@ -11,8 +11,9 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -37,7 +38,7 @@ import org.osgi.framework.BundleContext;
 public class OrcsDataStoreImpl implements OrcsDataStore {
 
    private Log logger;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
@@ -54,8 +55,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.logger = logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -79,25 +80,27 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    }
 
    public void start(BundleContext context) throws Exception {
+      JdbcClient jdbcClient = jdbcService.getClient();
+
       sqlProvider = createSqlProvider();
 
-      idManager = new IdentityManagerImpl(dbService);
+      idManager = new IdentityManagerImpl(jdbcClient);
 
-      TypesModule typesModule = new TypesModule(logger, dbService, joinFactory, resourceManager);
+      TypesModule typesModule = new TypesModule(logger, jdbcClient, joinFactory, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
       LoaderModule loaderModule =
-         new LoaderModule(logger, dbService, idManager, sqlProvider, proxyProvider, joinFactory);
+         new LoaderModule(logger, jdbcClient, idManager, sqlProvider, proxyProvider, joinFactory);
 
-      queryModule = new QueryModule(logger, executorAdmin, dbService, joinFactory, idManager, sqlProvider);
+      queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory, idManager, sqlProvider);
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
-         new BranchModule(logger, dbService, joinFactory, idManager, preferences, executorAdmin, resourceManager);
+         new BranchModule(logger, jdbcClient, joinFactory, idManager, preferences, executorAdmin, resourceManager);
 
-      TxModule txModule = new TxModule(logger, dbService, joinFactory, idManager);
+      TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager);
 
-      AdminModule adminModule = new AdminModule(logger, dbService, idManager, preferences);
+      AdminModule adminModule = new AdminModule(logger, jdbcClient, idManager, preferences);
 
       dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, txModule, adminModule);
    }

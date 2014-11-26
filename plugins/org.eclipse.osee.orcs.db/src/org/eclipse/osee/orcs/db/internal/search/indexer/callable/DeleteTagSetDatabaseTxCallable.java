@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
@@ -32,15 +32,15 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
 
    private final int queryId;
 
-   public DeleteTagSetDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, int queryId) {
-      super(logger, session, dbService, "Delete Indexer Tags Database Transaction");
+   public DeleteTagSetDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, int queryId) {
+      super(logger, session, jdbcClient);
       this.queryId = queryId;
    }
 
    @Override
-   protected Integer handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Integer handleTxWork(JdbcConnection connection) throws OseeCoreException {
       int numberDeleted = 0;
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(SELECT_GAMMAS_FROM_TX_JOIN, queryId);
          List<Object[]> datas = new ArrayList<Object[]>();
@@ -48,7 +48,7 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
             datas.add(new Object[] {chStmt.getLong("gamma_id")});
          }
          if (!datas.isEmpty()) {
-            numberDeleted = getDatabaseService().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+            numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
          }
       } finally {
          chStmt.close();

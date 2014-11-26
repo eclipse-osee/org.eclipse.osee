@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
@@ -29,7 +29,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    @Override
-   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, IOseeStatement chStmt, Options options) throws OseeCoreException {
+   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("art_id");

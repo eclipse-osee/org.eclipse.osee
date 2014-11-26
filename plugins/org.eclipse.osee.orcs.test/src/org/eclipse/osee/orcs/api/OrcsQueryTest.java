@@ -63,7 +63,7 @@ import com.google.common.collect.Ordering;
 public class OrcsQueryTest {
 
    @Rule
-   public TestRule osgi = integrationRule(this, "osee.demo.hsql");
+   public TestRule osgi = integrationRule(this);
 
    private final boolean includeMatchLocationTests = false;
 

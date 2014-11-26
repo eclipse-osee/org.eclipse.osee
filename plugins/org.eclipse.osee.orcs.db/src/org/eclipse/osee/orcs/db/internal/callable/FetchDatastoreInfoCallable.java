@@ -18,14 +18,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.database.schema.SchemaResource;
-import org.eclipse.osee.database.schema.SchemaResourceProvider;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -33,17 +32,18 @@ import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.util.DataStoreInfoImpl;
+import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar
  */
 public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 
-   private final SchemaResourceProvider schemaProvider;
+   private final Supplier<Iterable<JdbcSchemaResource>> schemaProvider;
    private final SystemPreferences preferences;
 
-   public FetchDatastoreInfoCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SchemaResourceProvider schemaProvider, SystemPreferences preferences) {
-      super(logger, session, dbService);
+   public FetchDatastoreInfoCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, Supplier<Iterable<JdbcSchemaResource>> schemaProvider, SystemPreferences preferences) {
+      super(logger, session, jdbcClient);
       this.schemaProvider = schemaProvider;
       this.preferences = preferences;
    }
@@ -61,7 +61,7 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
       List<IResource> configResources = new ArrayList<IResource>();
       dataStoreInfo.setConfigurationResources(configResources);
 
-      for (SchemaResource resource : schemaProvider.getSchemaResources()) {
+      for (JdbcSchemaResource resource : schemaProvider.get()) {
          configResources.add(asResource(resource));
       }
       return dataStoreInfo;
@@ -82,7 +82,7 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
    }
 
    private void addDbMetaData(Map<String, String> props) throws OseeCoreException {
-      OseeConnection connection = getDatabaseService().getConnection();
+      JdbcConnection connection = getJdbcClient().getConnection();
       try {
          DatabaseMetaData meta = connection.getMetaData();
          props.put("db.connection.url", meta.getURL());
@@ -101,16 +101,16 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
       }
    }
 
-   private IResource asResource(SchemaResource resource) {
+   private IResource asResource(JdbcSchemaResource resource) {
       return new SchemaResourceAdaptor(getLogger(), resource);
    }
 
    private static final class SchemaResourceAdaptor implements IResource {
 
       private final Log logger;
-      private final SchemaResource resource;
+      private final JdbcSchemaResource resource;
 
-      public SchemaResourceAdaptor(Log logger, SchemaResource resource) {
+      public SchemaResourceAdaptor(Log logger, JdbcSchemaResource resource) {
          super();
          this.logger = logger;
          this.resource = resource;

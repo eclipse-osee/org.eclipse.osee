@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -32,7 +32,7 @@ public final class IndexAllInQueueCallable extends AbstractDatastoreCallable<Int
    private final AttributeTypes types;
    private Collection<Integer> queryIds;
 
-   public IndexAllInQueueCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
+   public IndexAllInQueueCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector) {
       super(logger, session, service);
       this.types = types;
       this.consumer = consumer;

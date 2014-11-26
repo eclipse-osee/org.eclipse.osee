@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.osgi.framework.Version;
 
 /**
@@ -21,7 +22,7 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    private static final Version MAX_VERSION = new Version("0.9.4");
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor, OperationLogger logger) {
+   public Version applyTransform(ExchangeDataProcessor processor, Log logger) {
       return getMaxVersion();
    }
 
@@ -31,7 +32,7 @@ public class V0_9_4Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) {
+   public void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor) {
       //
    }
 }

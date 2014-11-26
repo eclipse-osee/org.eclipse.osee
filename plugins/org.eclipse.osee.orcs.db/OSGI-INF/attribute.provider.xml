@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.orcs.db.internal.resource.AttributeProvider">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" >
 	<implementation class="org.eclipse.osee.orcs.db.internal.resource.AttributeProvider"/>
 	<service>
 		<provide interface="org.eclipse.osee.framework.resource.management.IResourceProvider"/>

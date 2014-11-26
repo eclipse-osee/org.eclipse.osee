@@ -14,18 +14,18 @@ import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeSequence;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.DbTableExportItem;
 import org.eclipse.osee.orcs.db.internal.exchange.export.ManifestExportItem;
@@ -35,7 +35,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 public class ExportItemFactory {
    private static final String GET_MAX_TX =
-      "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + IOseeSequence.TRANSACTION_ID_SEQ + "'";
+      "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + IdentityManager.TRANSACTION_ID_SEQ + "'";
 
    private static final String BRANCH_TABLE_QUERY =
       "SELECT br.* FROM osee_join_export_import jex, osee_branch br WHERE jex.query_id=? AND jex.id1=br.branch_id ORDER BY br.branch_id";
@@ -70,14 +70,14 @@ public class ExportItemFactory {
 
    private final Log logger;
    private final SystemPreferences preferences;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
    private final OrcsTypes orcsTypes;
 
-   public ExportItemFactory(Log logger, SystemPreferences preferences, IOseeDatabaseService dbService, IResourceManager resourceManager, OrcsTypes orcsTypes) {
+   public ExportItemFactory(Log logger, SystemPreferences preferences, JdbcClient jdbcClient, IResourceManager resourceManager, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.preferences = preferences;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.resourceManager = resourceManager;
       this.orcsTypes = orcsTypes;
    }
@@ -86,8 +86,8 @@ public class ExportItemFactory {
       return logger;
    }
 
-   public IOseeDatabaseService getDbService() {
-      return dbService;
+   public JdbcClient getDbService() {
+      return jdbcClient;
    }
 
    public IResourceManager getResourceManager() {
@@ -138,7 +138,7 @@ public class ExportItemFactory {
       }
    }
 
-   private int createGammaJoin(IOseeDatabaseService databaseService, int exportJoinId, PropertyStore options) throws OseeCoreException {
+   private int createGammaJoin(JdbcClient jdbcClient, int exportJoinId, PropertyStore options) throws OseeCoreException {
       List<Object> bindList = new ArrayList<Object>();
       int gammaJoinId = new Random().nextInt();
       StringBuilder sql =
@@ -153,7 +153,7 @@ public class ExportItemFactory {
 
       Object[] bindData = bindList.toArray(new Object[bindList.size()]);
       String insert = String.format(sql.toString(), gammaJoinId, gammaJoinId);
-      int itemsInserted = databaseService.runPreparedUpdate(insert, bindData);
+      int itemsInserted = jdbcClient.runPreparedUpdate(insert, bindData);
 
       getLogger().info("Export join rows: [%s]", itemsInserted);
 
@@ -218,8 +218,8 @@ public class ExportItemFactory {
       return toReturn;
    }
 
-   private static DatabaseMetaData getMetaData(IOseeDatabaseService dbService) throws OseeCoreException {
-      OseeConnection connection = dbService.getConnection();
+   private static DatabaseMetaData getMetaData(JdbcClient jdbcClient) throws OseeCoreException {
+      JdbcConnection connection = jdbcClient.getConnection();
       try {
          return connection.getMetaData();
       } finally {

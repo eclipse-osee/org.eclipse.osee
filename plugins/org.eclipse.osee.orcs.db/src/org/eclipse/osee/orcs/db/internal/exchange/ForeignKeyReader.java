@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.exchange;
 
 import java.util.Map;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.IExportItem;
@@ -24,8 +24,8 @@ public class ForeignKeyReader extends BaseDbSaxHandler {
    private final PrimaryKeyCollector primaryKeyCollector;
    private final IExportItem foreignTable;
 
-   public ForeignKeyReader(Log logger, IOseeDatabaseService service, PrimaryKeyCollector primaryKeyCollector, IExportItem foreignTable, String... foreignKeys) {
-      super(logger, service, true, 0);
+   public ForeignKeyReader(Log logger, JdbcClient jdbcClient, PrimaryKeyCollector primaryKeyCollector, IExportItem foreignTable, String... foreignKeys) {
+      super(logger, jdbcClient, true, 0);
       this.primaryKeyCollector = primaryKeyCollector;
       this.foreignKeys = foreignKeys;
       this.foreignTable = foreignTable;

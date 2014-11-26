@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
@@ -21,13 +21,13 @@ import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
  */
 public class MockJoinAccessor implements IJoinAccessor {
 
-   private OseeConnection connection;
+   private JdbcConnection connection;
    private JoinItem joinItem;
    private int queryId;
    private List<Object[]> dataList;
 
    @Override
-   public void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException {
+   public void store(JdbcConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException {
       this.connection = connection;
       this.joinItem = joinItem;
       this.queryId = queryId;
@@ -35,7 +35,7 @@ public class MockJoinAccessor implements IJoinAccessor {
    }
 
    @Override
-   public int delete(OseeConnection connection, JoinItem joinItem, int queryId) {
+   public int delete(JdbcConnection connection, JoinItem joinItem, int queryId) {
       this.connection = connection;
       this.joinItem = joinItem;
       this.queryId = queryId;
@@ -43,7 +43,7 @@ public class MockJoinAccessor implements IJoinAccessor {
    }
 
    @Override
-   public Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) {
+   public Collection<Integer> getAllQueryIds(JdbcConnection connection, JoinItem joinItem) {
       this.connection = connection;
       this.joinItem = joinItem;
       return null;
@@ -56,7 +56,7 @@ public class MockJoinAccessor implements IJoinAccessor {
       queryId = -1;
    }
 
-   public OseeConnection getConnection() {
+   public JdbcConnection getConnection() {
       return connection;
    }
 

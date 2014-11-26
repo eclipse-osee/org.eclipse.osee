@@ -18,10 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -37,10 +37,10 @@ public class IdTranslator {
    private final Map<Long, Long> originalToMapped;
    private final List<Long> newIds;
    private final Set<String> aliases;
-   private final IOseeDatabaseService service;
+   private final JdbcClient jdbcClient;
 
-   IdTranslator(IOseeDatabaseService service, String sequenceName, String... aliases) {
-      this.service = service;
+   IdTranslator(JdbcClient jdbcClient, String sequenceName, String... aliases) {
+      this.jdbcClient = jdbcClient;
       this.sequenceName = sequenceName;
       this.originalToMapped = new HashMap<Long, Long>();
       this.newIds = new ArrayList<Long>();
@@ -101,14 +101,14 @@ public class IdTranslator {
       } else {
          newVersion = this.originalToMapped.get(original);
          if (newVersion == null) {
-            newVersion = service.getSequence().getNextSequence(getSequence());
+            newVersion = jdbcClient.getNextSequence(getSequenceName());
             addToCache(original, newVersion);
          }
       }
       return newVersion;
    }
 
-   public String getSequence() {
+   public String getSequenceName() {
       return this.sequenceName;
    }
 
@@ -128,10 +128,10 @@ public class IdTranslator {
    }
 
    public void load(String sourceDatabaseId) throws OseeCoreException {
-      IOseeStatement chStmt = service.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       try {
          originalToMapped.clear();
-         chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
+         chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequenceName());
          while (chStmt.next()) {
             originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
          }
@@ -144,14 +144,14 @@ public class IdTranslator {
       return !newIds.isEmpty();
    }
 
-   public void store(OseeConnection connection, int sequenceId) throws OseeCoreException {
+   public void store(JdbcConnection connection, int sequenceId) throws OseeCoreException {
       if (hasItemsToStore()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Long original : newIds) {
             Long mapped = originalToMapped.get(original);
             data.add(new Object[] {sequenceId, original, mapped});
          }
-         service.runBatchUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
+         jdbcClient.runBatchUpdate(connection, INSERT_INTO_IMPORT_INDEX_MAP, data);
       }
    }
 }

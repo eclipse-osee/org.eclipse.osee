@@ -44,7 +44,7 @@ public class ConsolidateRelationsCommand extends AbstractDatastoreConsoleCommand
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getSession(), getDatabaseService(), joinFactory,
+      return new ConsolidateRelationsDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), joinFactory,
          console);
    }
 }

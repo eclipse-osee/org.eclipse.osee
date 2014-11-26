@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -42,8 +42,8 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    private final IOseeBranch branch;
    private final Collection<String> artifactIds;
 
-   public UuidsLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
-      super(loader, dbService);
+   public UuidsLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
+      super(loader, jdbcClient);
       this.joinFactory = joinFactory;
       this.session = session;
       this.branch = branch;
@@ -54,14 +54,14 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
       checkCancelled(cancellation);
       if (!artifactIds.isEmpty()) {
-         ArtifactJoinQuery join = createIdJoin(getDatabaseService(), options);
+         ArtifactJoinQuery join = createIdJoin(getJdbcClient(), options);
          LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
          int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
          getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
       }
    }
 
-   private ArtifactJoinQuery createIdJoin(IOseeDatabaseService dbService, Options options) throws OseeCoreException {
+   private ArtifactJoinQuery createIdJoin(JdbcClient jdbcClient, Options options) throws OseeCoreException {
 
       ArtifactJoinQuery toReturn = joinFactory.createArtifactJoinQuery();
 
@@ -74,9 +74,9 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
          Integer transactionId = OptionsUtil.getFromTransaction(options);
 
-         IOseeStatement chStmt = null;
+         JdbcStatement chStmt = null;
          try {
-            chStmt = dbService.getStatement();
+            chStmt = jdbcClient.getStatement();
             chStmt.runPreparedQuery(artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
             while (chStmt.next()) {
                Integer artId = chStmt.getInt("art_id");

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.export;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,8 +19,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
@@ -31,6 +28,9 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
@@ -48,19 +48,19 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    private final String query;
    private final Object[] bindData;
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
 
-   public DbTableExportItem(Log logger, IOseeDatabaseService dbService, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
+   public DbTableExportItem(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, ExportItem id, String query, Object[] bindData) {
       super(logger, id);
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.resourceManager = resourceManager;
       this.query = query;
       this.bindData = bindData;
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   private JdbcClient getDatabaseService() {
+      return jdbcClient;
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws OseeCoreException, IOException {
@@ -92,9 +92,9 @@ public class DbTableExportItem extends AbstractXmlExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getDatabaseService().getStatement();
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, query, bindData);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, bindData);
          while (chStmt.next()) {
             processData(appendable, chStmt);
          }
@@ -103,7 +103,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       }
    }
 
-   private void processData(Appendable appendable, IOseeStatement chStmt) throws Exception {
+   private void processData(Appendable appendable, JdbcStatement chStmt) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
 
       try {

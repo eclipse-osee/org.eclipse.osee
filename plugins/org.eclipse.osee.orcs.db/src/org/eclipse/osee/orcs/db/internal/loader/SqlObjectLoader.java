@@ -14,10 +14,10 @@ import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -66,15 +66,15 @@ public class SqlObjectLoader {
    private final DynamicLoadProcessor dynamicProcessor;
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final SqlProvider sqlProvider;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlObjectLoader(Log logger, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
@@ -95,8 +95,8 @@ public class SqlObjectLoader {
       return sqlProvider;
    }
 
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   public JdbcClient getDatabaseService() {
+      return jdbcClient;
    }
 
    private void checkCancelled(HasCancellation cancellation) throws CancellationException {
@@ -242,7 +242,7 @@ public class SqlObjectLoader {
          }
 
          long startTime = System.currentTimeMillis();
-         IOseeStatement chStmt = null;
+         JdbcStatement chStmt = null;
          try {
             chStmt = getDatabaseService().getStatement();
             chStmt.runPreparedQuery(fetchSize, loadContext.getSql(), loadContext.getParameters().toArray());

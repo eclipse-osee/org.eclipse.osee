@@ -15,10 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.TranslationManager;
 
@@ -34,10 +34,10 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private MetaData metadata;
    private TranslationManager translator;
    private PropertyStore options;
-   private final IOseeDatabaseService service;
+   private final JdbcClient service;
    private final Log logger;
 
-   protected BaseDbSaxHandler(Log logger, IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
+   protected BaseDbSaxHandler(Log logger, JdbcClient service, boolean isCacheAll, int cacheLimit) {
       super();
       if (cacheLimit < 0) {
          throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
@@ -95,7 +95,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       store(null);
    }
 
-   public void store(OseeConnection connection) throws OseeCoreException {
+   public void store(JdbcConnection connection) throws OseeCoreException {
       if (!data.isEmpty()) {
          getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), data);
          data.clear();
@@ -104,7 +104,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
 
    private boolean isTruncateSupported() throws OseeCoreException {
       boolean isTruncateSupported = false;
-      OseeConnection connection = service.getConnection();
+      JdbcConnection connection = service.getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
          ResultSet resultSet = null;
@@ -145,7 +145,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
+   protected JdbcClient getDatabaseService() {
       return service;
    }
 

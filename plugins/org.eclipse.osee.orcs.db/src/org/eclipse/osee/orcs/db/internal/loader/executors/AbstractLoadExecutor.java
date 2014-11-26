@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -25,18 +25,18 @@ import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 public abstract class AbstractLoadExecutor {
 
    private final SqlObjectLoader loader;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   protected AbstractLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService) {
+   protected AbstractLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient) {
       super();
       this.loader = loader;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    public abstract void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException;
 
-   protected IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   protected JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    protected SqlObjectLoader getLoader() {

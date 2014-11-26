@@ -7,18 +7,20 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.annotation,
  org.eclipse.osee.framework.jdk.core.util.network,
- org.eclipse.osee.hsqldb,
+ org.eclipse.osee.jdbc,
+ org.json,
  org.junit,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners.model,
  org.osgi.framework,
+ org.osgi.service.cm,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.orcs.db.mock
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.equinox.ds,
+ org.eclipse.equinox.cm

@@ -11,12 +11,13 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
 import org.eclipse.osee.jaxrs.server.security.OAuthToken;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -26,7 +27,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
 
    private Log logger;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
 
    private AuthCodeGrantStorage authCodeGrantStorage;
    private TokenStorage tokenStorage;
@@ -37,8 +38,8 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       this.logger = logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setClientStorageProvider(ClientStorageProvider clientStorageProvider) {
@@ -46,9 +47,10 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    }
 
    public void start() {
-      authCodeGrantStorage = new AuthCodeGrantStorage(logger, dbService);
-      tokenStorage = new TokenStorage(logger, dbService);
-      credentialStorage = new ClientCredentialStorage(logger, dbService);
+      JdbcClient jdbcClient = jdbcService.getClient();
+      authCodeGrantStorage = new AuthCodeGrantStorage(logger, jdbcClient);
+      tokenStorage = new TokenStorage(logger, jdbcClient);
+      credentialStorage = new ClientCredentialStorage(logger, jdbcClient);
    }
 
    public void stop() {

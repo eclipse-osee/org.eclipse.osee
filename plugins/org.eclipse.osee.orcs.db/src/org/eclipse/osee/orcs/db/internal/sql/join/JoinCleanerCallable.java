@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.database.schema.DatabaseCallable;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IQueryProcessor;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcProcessor;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ListMultimap;
@@ -30,13 +30,17 @@ import com.google.common.collect.Multimaps;
  * 
  * @author Roberto E. Escobar
  */
-public class JoinCleanerCallable extends DatabaseCallable<Void> {
+public class JoinCleanerCallable extends CancellableCallable<Void> {
 
    private final static String DELETE_JOIN_CLEANUP = "DELETE FROM osee_join_cleanup WHERE query_id = ?";
    private final static String SELECT_FROM_JOIN_CLEANUP = "SELECT * from osee_join_cleanup";
 
-   public JoinCleanerCallable(Log logger, IOseeDatabaseService service) {
-      super(logger, service);
+   private final Log logger;
+   private final JdbcClient jdbcClient;
+
+   public JoinCleanerCallable(Log logger, JdbcClient jdbcClient) {
+      this.logger = logger;
+      this.jdbcClient = jdbcClient;
    }
 
    private boolean isExpired(Long issuedAt, Long lifetime) {
@@ -45,29 +49,33 @@ public class JoinCleanerCallable extends DatabaseCallable<Void> {
 
    @Override
    public Void call() throws Exception {
-      final ListMultimap<String, Object[]> expiredItems = newListMultimap();
-      getDatabaseService().runQuery(new IQueryProcessor() {
+      try {
+         final ListMultimap<String, Object[]> expiredItems = newListMultimap();
+         jdbcClient.runQuery(new JdbcProcessor() {
 
-         @Override
-         public void processNext(IOseeStatement chStmt) {
-            Long issuedAt = chStmt.getLong("issues_at");
-            Long expiresIn = chStmt.getLong("expires_in");
-            if (isExpired(issuedAt, expiresIn)) {
-               String tableName = chStmt.getString("table_name");
-               Integer queryId = chStmt.getInt("query_id");
-               expiredItems.put(tableName, new Integer[] {queryId});
+            @Override
+            public void processNext(JdbcStatement chStmt) {
+               Long issuedAt = chStmt.getLong("issues_at");
+               Long expiresIn = chStmt.getLong("expires_in");
+               if (isExpired(issuedAt, expiresIn)) {
+                  String tableName = chStmt.getString("table_name");
+                  Integer queryId = chStmt.getInt("query_id");
+                  expiredItems.put(tableName, new Integer[] {queryId});
+               }
+            }
+         }, SELECT_FROM_JOIN_CLEANUP);
+
+         if (!expiredItems.isEmpty()) {
+            for (Entry<String, Collection<Object[]>> entry : expiredItems.asMap().entrySet()) {
+               String query = String.format("DELETE FROM %s WHERE query_id = ?", entry.getKey());
+               List<Object[]> ids = (List<Object[]>) entry.getValue();
+               jdbcClient.runBatchUpdate(query, ids);
+               jdbcClient.runBatchUpdate(DELETE_JOIN_CLEANUP, ids);
             }
          }
-      }, SELECT_FROM_JOIN_CLEANUP);
-
-      if (!expiredItems.isEmpty()) {
-         IOseeDatabaseService dbService = getDatabaseService();
-         for (Entry<String, Collection<Object[]>> entry : expiredItems.asMap().entrySet()) {
-            String query = String.format("DELETE FROM %s WHERE query_id = ?", entry.getKey());
-            List<Object[]> ids = (List<Object[]>) entry.getValue();
-            dbService.runBatchUpdate(query, ids);
-            dbService.runBatchUpdate(DELETE_JOIN_CLEANUP, ids);
-         }
+      } catch (Exception ex) {
+         logger.error(ex, "Error cleaning join");
+         throw ex;
       }
       return null;
    }

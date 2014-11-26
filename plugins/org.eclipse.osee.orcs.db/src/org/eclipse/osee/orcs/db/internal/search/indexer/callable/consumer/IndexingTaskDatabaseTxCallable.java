@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexedResource;
@@ -58,8 +58,8 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private long startTime;
    private long waitTime;
 
-   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
-      super(logger, session, dbService, "Attribute to Tag Database Transaction");
+   public IndexingTaskDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IndexedResourceLoader loader, TaggingEngine taggingEngine, IndexerCollector collector, int tagQueueQueryId, boolean isCacheAll, int cacheLimit, AttributeTypes attributeTypes) {
+      super(logger, session, jdbcClient);
       waitStartTime = System.currentTimeMillis();
 
       this.loader = loader;
@@ -86,7 +86,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    }
 
    @Override
-   protected Long handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Long handleTxWork(JdbcConnection connection) throws OseeCoreException {
       getLogger().debug("Tagging: [%s]", getTagQueueQueryId());
       long totalTags = -1;
       try {
@@ -116,7 +116,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return attributeTypes.getTaggerId(type);
    }
 
-   private long createTags(OseeConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
+   private long createTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
       Set<Long> processed = new HashSet<Long>();
@@ -183,8 +183,8 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       }
    }
 
-   private void removeIndexingTaskFromQueue(OseeConnection connection) throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(connection, JoinItem.TAG_GAMMA_QUEUE.getDeleteSql(), getTagQueueQueryId());
+   private void removeIndexingTaskFromQueue(JdbcConnection connection) throws OseeCoreException {
+      getJdbcClient().runPreparedUpdate(connection, JoinItem.TAG_GAMMA_QUEUE.getDeleteSql(), getTagQueueQueryId());
    }
 
    private boolean isStorageAllowed(Map<Long, Collection<Long>> searchTags) {
@@ -200,19 +200,19 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return needsStorage;
    }
 
-   public int deleteTags(OseeConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
+   public int deleteTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       int numberDeleted = 0;
       if (!sources.isEmpty()) {
          List<Object[]> datas = new ArrayList<Object[]>();
          for (IndexedResource source : sources) {
             datas.add(new Object[] {source.getGammaId()});
          }
-         numberDeleted = getDatabaseService().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
+         numberDeleted = getJdbcClient().runBatchUpdate(connection, DELETE_SEARCH_TAGS, datas);
       }
       return numberDeleted;
    }
 
-   private int storeTags(OseeConnection connection, Map<Long, Collection<Long>> toStore) throws OseeCoreException {
+   private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> toStore) throws OseeCoreException {
       int updated = 0;
       if (!toStore.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
@@ -225,7 +225,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
          }
          toStore.clear();
          if (!data.isEmpty()) {
-            updated += getDatabaseService().runBatchUpdate(connection, INSERT_SEARCH_TAG, data);
+            updated += getJdbcClient().runBatchUpdate(connection, INSERT_SEARCH_TAG, data);
          }
       }
       return updated;

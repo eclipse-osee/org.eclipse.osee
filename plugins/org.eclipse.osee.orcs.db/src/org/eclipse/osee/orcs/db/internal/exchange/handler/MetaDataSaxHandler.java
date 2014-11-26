@@ -17,13 +17,13 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;
 import org.xml.sax.Attributes;
 
@@ -34,10 +34,10 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private final Map<String, MetaData> importMetadataMap;
    private final Map<String, MetaData> targetMetadataMap;
-   private final IOseeDatabaseService service;
+   private final JdbcClient service;
    private MetaData currentMetadata;
 
-   public MetaDataSaxHandler(IOseeDatabaseService service) {
+   public MetaDataSaxHandler(JdbcClient service) {
       this.service = service;
       this.importMetadataMap = new HashMap<String, MetaData>();
       this.targetMetadataMap = new HashMap<String, MetaData>();
@@ -98,7 +98,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeCoreException {
       Map<String, MetaData> targetDbMetadata = new HashMap<String, MetaData>();
-      OseeConnection connection = service.getConnection();
+      JdbcConnection connection = service.getConnection();
       try {
          DatabaseMetaData dbMetaData = connection.getMetaData();
          for (String sourceTables : importMetadataMap.keySet()) {
@@ -146,7 +146,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             while (resultSet.next()) {
                String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
                int dataType = resultSet.getInt("DATA_TYPE");
-               if (SupportedDatabase.isDatabaseType(dbMetaData, SupportedDatabase.foxpro)) {
+               if (JdbcDbType.isDatabaseType(dbMetaData, JdbcDbType.foxpro)) {
                   if (dataType == Types.CHAR) {
                      dataType = Types.VARCHAR;
                   }

@@ -24,18 +24,18 @@ import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.TxCurrentsOpFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
+import org.eclipse.osee.orcs.db.internal.util.Address;
 import org.osgi.framework.Version;
 
 /**
@@ -59,7 +59,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor, Log logger) throws OseeCoreException {
       List<Long> branchUuids = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
@@ -82,9 +82,13 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(IOseeDatabaseService dbService, ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService, logger, false));
-      Operations.executeWorkAndCheckStatus(TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(dbService, logger, true));
+   public void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor) throws OseeCoreException {
+      try {
+         TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, false).call();
+         TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, true).call();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
    }
 
    private List<Long> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {

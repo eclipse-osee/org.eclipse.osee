@@ -21,12 +21,12 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
@@ -37,17 +37,17 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
 public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    private final Map<Integer, BranchData> idToImportFileBranchData;
-   private OseeConnection connection;
+   private JdbcConnection connection;
 
-   public static BranchDataSaxHandler createWithCacheAll(Log logger, IOseeDatabaseService service) {
+   public static BranchDataSaxHandler createWithCacheAll(Log logger, JdbcClient service) {
       return new BranchDataSaxHandler(logger, service, true, 0);
    }
 
-   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(Log logger, IOseeDatabaseService service, int cacheLimit) {
+   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(Log logger, JdbcClient service, int cacheLimit) {
       return new BranchDataSaxHandler(logger, service, false, cacheLimit);
    }
 
-   private BranchDataSaxHandler(Log logger, IOseeDatabaseService service, boolean isCacheAll, int cacheLimit) {
+   private BranchDataSaxHandler(Log logger, JdbcClient service, boolean isCacheAll, int cacheLimit) {
       super(logger, service, isCacheAll, cacheLimit);
       this.idToImportFileBranchData = new HashMap<Integer, BranchData>();
       this.connection = null;
@@ -115,7 +115,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public long[] store(OseeConnection connection, boolean writeToDb, long... branchesToImport) throws OseeCoreException {
+   public long[] store(JdbcConnection connection, boolean writeToDb, long... branchesToImport) throws OseeCoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
@@ -184,13 +184,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return newValue.intValue();
    }
 
-   private Collection<BranchData> checkTargetDbBranches(OseeConnection connection, Collection<BranchData> selectedBranches) throws OseeCoreException {
+   private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches) throws OseeCoreException {
       Map<String, BranchData> guidToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
          guidToImportFileBranchData.put(data.getBranchGuid(), data);
       }
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
@@ -217,11 +217,11 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             getMetaData().getTableName()));
    }
 
-   public void setConnection(OseeConnection connection) {
+   public void setConnection(JdbcConnection connection) {
       this.connection = connection;
    }
 
-   public OseeConnection getConnection() {
+   public JdbcConnection getConnection() {
       return connection;
    }
 

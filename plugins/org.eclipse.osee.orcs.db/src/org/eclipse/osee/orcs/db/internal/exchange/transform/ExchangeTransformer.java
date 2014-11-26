@@ -11,29 +11,34 @@
 package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 import org.osgi.framework.Version;
 
 public class ExchangeTransformer {
 
-   private final IOseeDatabaseService dbService;
+   private final Log logger;
+   private final OrcsSession session;
+   private final JdbcClient jdbcClient;
    private final IExchangeTransformProvider provider;
    private final ExchangeDataProcessor processor;
 
    private Collection<IOseeExchangeVersionTransformer> transformers;
 
-   public ExchangeTransformer(IOseeDatabaseService dbService, IExchangeTransformProvider provider, ExchangeDataProcessor processor) {
-      this.dbService = dbService;
+   public ExchangeTransformer(Log logger, OrcsSession session, JdbcClient jdbcClient, IExchangeTransformProvider provider, ExchangeDataProcessor processor) {
+      this.logger = logger;
+      this.session = session;
+      this.jdbcClient = jdbcClient;
       this.provider = provider;
       this.processor = processor;
    }
 
-   public void applyTransforms(OperationLogger logger) throws Exception {
+   public void applyTransforms() throws Exception {
       Version exchangeVersion = getExchangeManifestVersion();
       transformers = provider.getApplicableTransformers(exchangeVersion);
 
@@ -48,10 +53,10 @@ public class ExchangeTransformer {
       }
    }
 
-   public void applyFinalTransforms(OperationLogger logger) throws Exception {
+   public void applyFinalTransforms() throws Exception {
       Conditions.checkNotNull(transformers, "transformers", "forgot to call apply transforms first");
       for (IOseeExchangeVersionTransformer transform : transformers) {
-         transform.finalizeTransform(dbService, processor, logger);
+         transform.finalizeTransform(logger, session, jdbcClient, processor);
       }
       transformers = null;
    }

@@ -17,7 +17,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -46,7 +46,7 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
    private final SystemPreferences preferences;
    private final IResourceManager resourceManager;
 
-   public CheckBranchExchangeIntegrityCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
+   public CheckBranchExchangeIntegrityCallable(Log logger, OrcsSession session, JdbcClient service, SystemPreferences preferences, IResourceManager resourceManager, URI fileToCheck) {
       super(logger, session, service);
       this.fileToCheck = fileToCheck;
       this.preferences = preferences;
@@ -87,7 +87,7 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
          for (ReferentialIntegrityConstraint constraint : constraints) {
             getLogger().info("Verifing constraint [%s]", constraint.getPrimaryKeyListing());
 
-            constraint.checkConstraint(getLogger(), getDatabaseService(), processor);
+            constraint.checkConstraint(getLogger(), getJdbcClient(), processor);
             writeConstraintResults(writer, constraint);
          }
          ExportImportXml.closeXmlNode(writer, ExportImportXml.DATA);

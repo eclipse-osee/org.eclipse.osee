@@ -11,9 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.console;
 
 import org.eclipse.osee.console.admin.ConsoleCommand;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 public abstract class AbstractDatastoreConsoleCommand implements ConsoleCommand {
 
    private Log logger;
-   private IOseeDatabaseService dbService;
+   private JdbcClient jdbcClient;
 
    public Log getLogger() {
       return logger;
@@ -33,12 +34,12 @@ public abstract class AbstractDatastoreConsoleCommand implements ConsoleCommand 
       this.logger = logger;
    }
 
-   public IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   public JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcClient = jdbcService.getClient();
    }
 
    public OrcsSession getSession() {

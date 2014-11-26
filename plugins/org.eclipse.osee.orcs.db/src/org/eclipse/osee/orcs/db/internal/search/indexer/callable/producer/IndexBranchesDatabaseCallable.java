@@ -14,9 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -65,7 +65,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private final Collection<? extends IAttributeType> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends IAttributeType> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.types = types;
@@ -103,7 +103,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchJoin.store();
 
          if (collector != null) {
-            int totalAttributes = getDatabaseService().runPreparedQueryFetchObject(-1, countQuery, params);
+            int totalAttributes = getJdbcClient().runPreparedQueryFetchObject(-1, countQuery, params);
             collector.onIndexTotalTaskItems(totalAttributes);
          }
 
@@ -123,7 +123,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    }
 
    private void fetchAndProcessGammas(String query, Object... params) throws Exception {
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(query, params);
          TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery();

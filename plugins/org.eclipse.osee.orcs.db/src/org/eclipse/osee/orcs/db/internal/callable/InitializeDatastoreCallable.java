@@ -14,18 +14,17 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.database.schema.InitializeSchemaCallable;
-import org.eclipse.osee.database.schema.SchemaOptions;
-import org.eclipse.osee.database.schema.SchemaResourceProvider;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcSchemaOptions;
+import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -36,6 +35,7 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
+import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar
@@ -46,13 +46,13 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
 
    private final SystemPreferences preferences;
-   private final SchemaResourceProvider schemaProvider;
-   private final SchemaOptions options;
+   private final Supplier<Iterable<JdbcSchemaResource>> schemaProvider;
+   private final JdbcSchemaOptions options;
    private final IdentityManager identityService;
    private final BranchDataStore branchStore;
 
-   public InitializeDatastoreCallable(OrcsSession session, Log logger, IOseeDatabaseService dbService, IdentityManager identityService, BranchDataStore branchStore, SystemPreferences preferences, SchemaResourceProvider schemaProvider, SchemaOptions options) {
-      super(logger, session, dbService);
+   public InitializeDatastoreCallable(OrcsSession session, Log logger, JdbcClient jdbcClient, IdentityManager identityService, BranchDataStore branchStore, SystemPreferences preferences, Supplier<Iterable<JdbcSchemaResource>> schemaProvider, JdbcSchemaOptions options) {
+      super(logger, session, jdbcClient);
       this.identityService = identityService;
       this.branchStore = branchStore;
       this.preferences = preferences;
@@ -62,12 +62,10 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
 
    @Override
    public DataStoreInfo call() throws Exception {
-      Conditions.checkExpressionFailOnTrue(getDatabaseService().isProduction(),
+      Conditions.checkExpressionFailOnTrue(getJdbcClient().getConfig().isProduction(),
          "Error - attempting to initialize a production datastore.");
 
-      Callable<Object> callable =
-         new InitializeSchemaCallable(getLogger(), getDatabaseService(), schemaProvider, options);
-      callAndCheckForCancel(callable);
+      getJdbcClient().initSchema(options, schemaProvider.get());
 
       String attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
       getLogger().info("Deleting application server binary data [%s]...", attributeDataPath);
@@ -89,7 +87,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       callAndCheckForCancel(createSystemRoot);
 
       Callable<DataStoreInfo> fetchCallable =
-         new FetchDatastoreInfoCallable(getLogger(), getSession(), getDatabaseService(), schemaProvider, preferences);
+         new FetchDatastoreInfoCallable(getLogger(), getSession(), getJdbcClient(), schemaProvider, preferences);
       DataStoreInfo dataStoreInfo = callAndCheckForCancel(fetchCallable);
       return dataStoreInfo;
 
@@ -121,6 +119,6 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       for (PermissionEnum permission : PermissionEnum.values()) {
          data.add(new Object[] {permission.getPermId(), permission.getName()});
       }
-      getDatabaseService().runBatchUpdate(ADD_PERMISSION, data);
+      getJdbcClient().runBatchUpdate(ADD_PERMISSION, data);
    }
 }

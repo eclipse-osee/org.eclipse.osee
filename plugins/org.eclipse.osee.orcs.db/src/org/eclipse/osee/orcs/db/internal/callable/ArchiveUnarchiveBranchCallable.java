@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -32,28 +32,28 @@ public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<
    private final IOseeBranch branch;
    private final ArchiveOperation op;
 
-   public ArchiveUnarchiveBranchCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, IOseeBranch branch, ArchiveOperation op) {
-      super(logger, session, dbService, String.format("Change ArchivedState of %s to %s", branch, op.name()));
+   public ArchiveUnarchiveBranchCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, ArchiveOperation op) {
+      super(logger, session, jdbcClient);
       this.branch = branch;
       this.op = op;
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       boolean archive = op == ArchiveOperation.ARCHIVE;
-      IOseeDatabaseService dbService = getDatabaseService();
+      JdbcClient jdbcClient = getJdbcClient();
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
       String sql = String.format(INSERT_ADDRESSING, destinationTableName, sourceTableName);
-      dbService.runPreparedUpdate(connection, sql, branch.getUuid());
+      jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
 
       sql = String.format(DELETE_ADDRESSING, sourceTableName);
-      dbService.runPreparedUpdate(connection, sql, branch.getUuid());
+      jdbcClient.runPreparedUpdate(connection, sql, branch.getUuid());
 
       BranchArchivedState newState = archive ? BranchArchivedState.ARCHIVED : BranchArchivedState.UNARCHIVED;
       Object[] params = new Object[] {newState.getValue(), branch.getUuid()};
-      dbService.runPreparedUpdate(connection, UPDATE_BRANCH, params);
+      jdbcClient.runPreparedUpdate(connection, UPDATE_BRANCH, params);
       return null;
    }
 }

@@ -239,6 +239,7 @@ public class DataFactoryImplTest {
       assertEquals("", objData[2]);
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testCreateRelationData() throws OseeCoreException {
       IRelationType relationType = mock(IRelationType.class);

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -58,7 +58,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    @Override
-   protected void onRow(DynamicDataHandler handler, IOseeStatement chStmt, Options options, Object conditions) {
+   protected void onRow(DynamicDataHandler handler, JdbcStatement chStmt, Options options, Object conditions) {
       DynamicObjectBuilder builder = getBuilder(handler, conditions);
       for (DynamicData data : builder.getDescriptors()) {
          processData(chStmt, builder, data);
@@ -72,7 +72,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       }
    }
 
-   private void processData(IOseeStatement chStmt, DynamicObjectBuilder builder, DynamicData data) {
+   private void processData(JdbcStatement chStmt, DynamicObjectBuilder builder, DynamicData data) {
       if (data instanceof DynamicObject) {
          DynamicObject dynamicObject = (DynamicObject) data;
          builder.onDynamicObjectStart(dynamicObject);
@@ -92,7 +92,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       }
    }
 
-   private Object getValue(IOseeStatement chStmt, ObjectField field, String columnName) {
+   private Object getValue(JdbcStatement chStmt, ObjectField field, String columnName) {
       Object object = chStmt.getObject(columnName);
       switch (field) {
          case branch_type:
@@ -121,14 +121,14 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       return object;
    }
 
-   private void processCompositeField(IOseeStatement chStmt, DynamicObjectBuilder builder, DynamicData data) {
+   private void processCompositeField(JdbcStatement chStmt, DynamicObjectBuilder builder, DynamicData data) {
       Collection<String> columnIds = SqlFieldResolver.getColumnUniqueIds(data);
       Object value = getProxyData(chStmt, columnIds);
 
       builder.onDynamicField(data, data.getName(), value);
    }
 
-   private DataProxy getProxyData(IOseeStatement chStmt, Collection<String> columnIds) {
+   private DataProxy getProxyData(JdbcStatement chStmt, Collection<String> columnIds) {
       String typeColumnName = null;
       String uriColumnName = null;
       String valueColumnName = null;

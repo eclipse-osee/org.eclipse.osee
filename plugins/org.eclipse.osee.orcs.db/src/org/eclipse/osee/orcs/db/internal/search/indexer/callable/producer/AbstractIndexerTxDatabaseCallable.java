@@ -16,9 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -45,8 +45,8 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    private long totalGammas;
    private List<Future<?>> futures;
 
-   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService dbService, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
-      super(logger, session, dbService, "Indexing Database Transaction");
+   protected AbstractIndexerTxDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, boolean isCacheAll, int cacheLimit) {
+      super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.types = types;
       this.consumer = consumer;
@@ -59,7 +59,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    }
 
    @Override
-   protected List<Future<?>> handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected List<Future<?>> handleTxWork(JdbcConnection connection) throws OseeCoreException {
       totalGammas = 0;
       try {
          convertInput(connection);
@@ -105,7 +105,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       }
    }
 
-   protected void addEntry(OseeConnection connection, long gammaId) throws OseeCoreException {
+   protected void addEntry(JdbcConnection connection, long gammaId) throws OseeCoreException {
       if (currentJoinQuery == null) {
          currentJoinQuery = joinFactory.createTagQueueJoinQuery();
       }
@@ -119,7 +119,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       return !isCacheAll && currentJoinQuery != null && currentJoinQuery.size() > cacheLimit;
    }
 
-   private void storeQueryIds(OseeConnection connection) throws OseeCoreException {
+   private void storeQueryIds(JdbcConnection connection) throws OseeCoreException {
       if (currentJoinQuery != null && !currentJoinQuery.isEmpty()) {
          currentJoinQuery.store(connection);
          queryIds.add(currentJoinQuery.getQueryId());
@@ -128,5 +128,5 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       currentJoinQuery = null;
    }
 
-   abstract protected void convertInput(OseeConnection connection) throws Exception;
+   abstract protected void convertInput(JdbcConnection connection) throws Exception;
 }

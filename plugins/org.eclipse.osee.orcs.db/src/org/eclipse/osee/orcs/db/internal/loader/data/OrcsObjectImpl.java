@@ -20,6 +20,7 @@ public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> 
 
    private T localId = null;
 
+   @SuppressWarnings("unchecked")
    protected OrcsObjectImpl() {
       super();
       setLocalId((T) RelationalConstants.DEFAULT_ITEM_ID);
@@ -42,6 +43,7 @@ public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> 
       return result;
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public boolean equals(Object obj) {
       if (this == obj) {

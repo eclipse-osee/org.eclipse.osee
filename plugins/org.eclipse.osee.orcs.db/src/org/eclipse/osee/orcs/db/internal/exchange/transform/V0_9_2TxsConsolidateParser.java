@@ -14,10 +14,10 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
+import org.eclipse.osee.orcs.db.internal.util.Address;
 import org.xml.sax.Attributes;
 
 /**

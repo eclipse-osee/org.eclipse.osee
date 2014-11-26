@@ -14,26 +14,28 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.orcs.ImportOptions;
 
 public class TranslationManager {
+   private static final String IMPORT_MAPPED_INDEX_SEQ = "SKYNET_IMPORT_MAPPED_INDEX_SEQ";
+
    private static final String INSERT_INTO_IMPORT_MAP =
       "INSERT INTO osee_import_map (import_id, sequence_id, sequence_name) VALUES (?, ?, ?)";
 
    private final List<IdTranslator> translators;
    private final Map<String, IdTranslator> translatorMap;
-   private final IOseeDatabaseService service;
+   private final JdbcClient jdbcClient;
 
    private boolean useOriginalIds;
 
-   public TranslationManager(IOseeDatabaseService service) {
-      this.service = service;
+   public TranslationManager(JdbcClient jdbcClient) {
+      this.jdbcClient = jdbcClient;
       this.useOriginalIds = true;
-      this.translators = ExchangeDb.createTranslators(service);
+      this.translators = ExchangeDb.createTranslators(jdbcClient);
       this.translatorMap = new HashMap<String, IdTranslator>();
       for (IdTranslator translator : translators) {
          for (String alias : translator.getAliases()) {
@@ -57,21 +59,21 @@ public class TranslationManager {
    public List<String> getSequenceNames() {
       List<String> toReturn = new ArrayList<String>();
       for (IdTranslator translatedIdMap : translators) {
-         toReturn.add(translatedIdMap.getSequence());
+         toReturn.add(translatedIdMap.getSequenceName());
       }
       return toReturn;
    }
 
-   public void store(OseeConnection connection, int importIdIndex) throws OseeCoreException {
+   public void store(JdbcConnection connection, int importIdIndex) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
-            int importSeqId = service.getSequence().getNextImportMappedIndexId();
-            data.add(new Object[] {importIdIndex, importSeqId, translatedIdMap.getSequence()});
+            int importSeqId = (int) jdbcClient.getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
+            data.add(new Object[] {importIdIndex, importSeqId, translatedIdMap.getSequenceName()});
             translatedIdMap.store(connection, importSeqId);
          }
       }
-      service.runBatchUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
+      jdbcClient.runBatchUpdate(connection, INSERT_INTO_IMPORT_MAP, data);
    }
 
    public boolean isTranslatable(String name) {

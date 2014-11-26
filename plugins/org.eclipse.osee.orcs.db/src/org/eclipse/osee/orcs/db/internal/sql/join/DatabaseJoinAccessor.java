@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.db.internal.sql.join;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -84,35 +84,34 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
       }
    }
 
-   private final IOseeDatabaseService databaseService;
+   private final JdbcClient jdbcClient;
 
-   public DatabaseJoinAccessor(IOseeDatabaseService databaseService) {
+   public DatabaseJoinAccessor(JdbcClient jdbcClient) {
       super();
-      this.databaseService = databaseService;
+      this.jdbcClient = jdbcClient;
    }
 
    @Override
-   public int delete(OseeConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException {
+   public int delete(JdbcConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException {
       int updated = 0;
       if (queryId != -1) {
-         updated = databaseService.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
-         databaseService.runPreparedUpdate(connection, DELETE_FROM_JOIN_CLEANUP, queryId);
+         updated = jdbcClient.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
+         jdbcClient.runPreparedUpdate(connection, DELETE_FROM_JOIN_CLEANUP, queryId);
       }
       return updated;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException {
-      databaseService.runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP, queryId, joinItem.getJoinTableName(),
+   public void store(JdbcConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException {
+      jdbcClient.runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP, queryId, joinItem.getJoinTableName(),
          issuedAt, expiresIn);
-      databaseService.runBatchUpdate(connection, joinItem.getInsertSql(), dataList);
+      jdbcClient.runBatchUpdate(connection, joinItem.getInsertSql(), dataList);
    }
 
    @Override
-   public Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) throws OseeCoreException {
+   public Collection<Integer> getAllQueryIds(JdbcConnection connection, JoinItem joinItem) throws OseeCoreException {
       Collection<Integer> queryIds = new ArrayList<Integer>();
-      IOseeStatement chStmt = databaseService.getStatement(connection);
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          String query = String.format(SELECT_QUERY_IDS, joinItem.getJoinTableName());
          chStmt.runPreparedQuery(query);

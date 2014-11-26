@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.BaseDbSaxHandler;
 
@@ -32,7 +32,7 @@ public class PrimaryKeyCollector extends BaseDbSaxHandler {
       this.primaryKey = primaryKey;
    }
 
-   public PrimaryKeyCollector(Log logger, IOseeDatabaseService service) {
+   public PrimaryKeyCollector(Log logger, JdbcClient service) {
       super(logger, service, true, 0);
    }
 

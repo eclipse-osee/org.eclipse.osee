@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import static org.eclipse.osee.orcs.db.internal.sql.RelationalConstants.MIN_FETCH_SIZE;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.db.internal.loader.LoadUtil;
@@ -30,8 +30,8 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
 
    private final QuerySqlContext queryContext;
 
-   public QueryContextLoadExecutor(SqlObjectLoader loader, IOseeDatabaseService dbService, QuerySqlContext queryContext) {
-      super(loader, dbService);
+   public QueryContextLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, QuerySqlContext queryContext) {
+      super(loader, jdbcClient);
       this.queryContext = queryContext;
    }
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
@@ -32,14 +32,14 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 public class TxModule {
 
    private final Log logger;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
 
-   public TxModule(Log logger, IOseeDatabaseService dbService, SqlJoinFactory sqlJoinFactory, IdentityManager identityService) {
+   public TxModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityManager identityService) {
       super();
       this.logger = logger;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.idManager = identityService;
    }
@@ -53,13 +53,14 @@ public class TxModule {
          @Override
          public Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData data) {
             TxSqlBuilderImpl builder = new TxSqlBuilderImpl(sqlJoinFactory, idManager);
-            TransactionWriter writer = new TransactionWriter(logger, dbService, builder);
-            return new CommitTransactionDatabaseTxCallable(logger, session, dbService, processors, writer, data);
+            TransactionWriter writer = new TransactionWriter(logger, jdbcClient, builder);
+            return new CommitTransactionDatabaseTxCallable(logger, session, jdbcClient, idManager, processors, writer,
+               data);
          }
 
          @Override
          public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactionsToPurge) {
-            return new PurgeTransactionTxCallable(logger, session, dbService, sqlJoinFactory, transactionsToPurge);
+            return new PurgeTransactionTxCallable(logger, session, jdbcClient, sqlJoinFactory, transactionsToPurge);
          }
       };
    }

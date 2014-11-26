@@ -14,13 +14,14 @@ import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
@@ -37,12 +38,11 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    private static final String ERROR_MESSAGE = "Unsupported modification - attempt to modify [%s].";
    private static final String BINARY_DATA_ERROR_MSG =
       ERROR_MESSAGE + " This can be modified at startup through -D%s=<PATH>.";
-   private static final String DB_KEY_ERROR_MSG =
-      ERROR_MESSAGE + " This is an unmodifiable database specific setting.";
+   private static final String DB_KEY_ERROR_MSG = ERROR_MESSAGE + " This is an unmodifiable database specific setting.";
    private static final String INDEX_STARTUP_ERROR_MSG = ERROR_MESSAGE + " This is an launch time setting.";
 
    private Log logger;
-   private IOseeDatabaseService dbService;
+   private JdbcClient jdbcClient;
    private boolean wasBinaryDataChecked = false;
    private Boolean areHintsSupported;
    private String recursiveKeyword;
@@ -52,8 +52,8 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       this.logger = logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcClient = jdbcService.getClient();
    }
 
    public void start() {
@@ -80,7 +80,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          toReturn = String.valueOf(isCheckTagQueueOnStartupAllowed());
       } else {
-         toReturn = dbService.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+         toReturn = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
       }
       return toReturn;
    }
@@ -100,8 +100,8 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          throw new OseeStateException(INDEX_STARTUP_ERROR_MSG, DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
-         dbService.runPreparedUpdate(DELETE_KEY_SQL, key);
-         int updated = dbService.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
+         jdbcClient.runPreparedUpdate(DELETE_KEY_SQL, key);
+         int updated = jdbcClient.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
          wasUpdated = updated == 1;
       }
       return wasUpdated;
@@ -149,10 +149,10 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    private boolean areHintsSupported() throws OseeCoreException {
       if (areHintsSupported == null) {
          areHintsSupported = false;
-         OseeConnection connection = dbService.getConnection();
+         JdbcConnection connection = jdbcClient.getConnection();
          try {
             DatabaseMetaData metaData = connection.getMetaData();
-            areHintsSupported = SupportedDatabase.areHintsSupported(metaData);
+            areHintsSupported = JdbcDbType.areHintsSupported(metaData);
          } finally {
             connection.close();
          }
@@ -163,7 +163,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    @Override
    public Set<String> getKeys() throws OseeCoreException {
       Set<String> keys = new HashSet<String>();
-      IOseeStatement chStmt = dbService.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       try {
          chStmt.runPreparedQuery(GET_KEYS_SQL);
          while (chStmt.next()) {
@@ -177,10 +177,10 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    private String getSQLRecursiveKeyword() throws OseeCoreException {
       if (recursiveKeyword == null) {
-         OseeConnection connection = dbService.getConnection();
+         JdbcConnection connection = jdbcClient.getConnection();
          try {
             DatabaseMetaData metaData = connection.getMetaData();
-            recursiveKeyword = SupportedDatabase.getRecursiveWithSql(metaData);
+            recursiveKeyword = JdbcDbType.getRecursiveWithSql(metaData);
          } finally {
             connection.close();
          }
@@ -190,14 +190,15 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    private String getSQLRegExpPattern() throws OseeCoreException {
       if (regExpPattern == null) {
-         OseeConnection connection = dbService.getConnection();
+         JdbcConnection connection = jdbcClient.getConnection();
          try {
             DatabaseMetaData metaData = connection.getMetaData();
-            regExpPattern = SupportedDatabase.getRegularExpMatchSql(metaData);
+            regExpPattern = JdbcDbType.getRegularExpMatchSql(metaData);
          } finally {
             connection.close();
          }
       }
       return regExpPattern;
    }
+
 }

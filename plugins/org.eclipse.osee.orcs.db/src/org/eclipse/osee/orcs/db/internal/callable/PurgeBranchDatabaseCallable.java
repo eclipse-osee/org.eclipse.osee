@@ -13,11 +13,11 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -39,14 +39,13 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
 
    private final BranchReadable toDelete;
 
-   public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, BranchReadable toDelete) {
-      super(logger, session, databaseService, String.format("Purge Branch: [(%s)-%s]", toDelete.getUuid(),
-         toDelete.getName()));
+   public PurgeBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchReadable toDelete) {
+      super(logger, session, jdbcClient);
       this.toDelete = toDelete;
    }
 
    @Override
-   protected Void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       List<Pair<Long, Boolean>> branches = findMergeBranches(connection);
       branches.add(new Pair<Long, Boolean>(toDelete.getUuid(), toDelete.getArchiveState().isArchived()));
       for (Pair<Long, Boolean> toPurge : branches) {
@@ -55,7 +54,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
       return null;
    }
 
-   private void purgeBranch(OseeConnection connection, Long branchUuid, boolean isArchived) {
+   private void purgeBranch(JdbcConnection connection, Long branchUuid, boolean isArchived) {
       String sourceTableName = isArchived ? "osee_txs_archived" : "osee_txs";
       String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
       purgeFromTable(connection, sql, 0.20, branchUuid);
@@ -67,9 +66,9 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
       purgeFromTable(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, 0.01, branchUuid);
    }
 
-   private List<Pair<Long, Boolean>> findMergeBranches(OseeConnection connection) {
+   private List<Pair<Long, Boolean>> findMergeBranches(JdbcConnection connection) {
       List<Pair<Long, Boolean>> toReturn = new LinkedList<Pair<Long, Boolean>>();
-      IOseeStatement stmt = getDatabaseService().getStatement(connection);
+      JdbcStatement stmt = getJdbcClient().getStatement(connection);
       stmt.runPreparedQuery(SELECT_MERGE_BRANCHES, toDelete.getUuid(), toDelete.getUuid());
       while (stmt.next()) {
          Pair<Long, Boolean> toAdd =
@@ -79,9 +78,9 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
       return toReturn;
    }
 
-   private void purgeFromTable(OseeConnection connection, String sql, double percentage, Object... data) throws OseeCoreException {
+   private void purgeFromTable(JdbcConnection connection, String sql, double percentage, Object... data) throws OseeCoreException {
       checkForCancelled();
-      getDatabaseService().runPreparedUpdate(connection, sql, data);
+      getJdbcClient().runPreparedUpdate(connection, sql, data);
    }
 
 }

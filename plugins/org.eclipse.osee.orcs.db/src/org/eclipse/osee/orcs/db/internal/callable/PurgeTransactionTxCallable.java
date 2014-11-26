@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,11 +22,12 @@ import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -64,8 +64,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    private final SqlJoinFactory joinFactory;
    private final Collection<? extends ITransaction> txIdsToDelete;
 
-   public PurgeTransactionTxCallable(Log logger, OrcsSession session, IOseeDatabaseService databaseService, SqlJoinFactory joinFactory, Collection<? extends ITransaction> txIdsToDelete) {
-      super(logger, session, databaseService, "Purge transactions");
+   public PurgeTransactionTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Collection<? extends ITransaction> txIdsToDelete) {
+      super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.txIdsToDelete = txIdsToDelete;
    }
@@ -85,7 +85,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    }
 
    @Override
-   protected Integer handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected Integer handleTxWork(JdbcConnection connection) throws OseeCoreException {
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
       Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
 
@@ -98,7 +98,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          List<Object[]> txsToDelete = new ArrayList<Object[]>();
 
          long txBranchId =
-            getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
+            getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
                SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
 
          Conditions.checkExpressionFailOnTrue(RelationalConstants.BRANCH_SENTINEL == txBranchId,
@@ -106,7 +106,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          txsToDelete.add(new Object[] {txBranchId, txIdToDelete});
 
          int previousTransactionId =
-            getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
+            getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
                GET_PRIOR_TRANSACTION, txBranchId, txIdToDelete);
 
          Conditions.checkExpressionFailOnTrue(
@@ -124,31 +124,31 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          setChildBranchBaselineTxs(connection, txIdToDelete, previousTransactionId);
 
          //Remove txs Rows
-         getDatabaseService().runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
-         getDatabaseService().runBatchUpdate(connection, DELETE_TXS, txsToDelete);
+         getJdbcClient().runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
+         getJdbcClient().runBatchUpdate(connection, DELETE_TXS, txsToDelete);
 
          //Updating Previous txs to Current
          List<Object[]> updateData = new ArrayList<Object[]>();
          computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
          computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
-         getDatabaseService().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
+         getJdbcClient().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
          purgeCount++;
          getLogger().info("Transaction: [%s] - purged", txIdToDelete);
       }
       return purgeCount;
    }
 
-   private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {
+   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
       for (Entry<Integer, IdJoinQuery> entry : affected.entrySet()) {
          Integer branchUuid = entry.getKey();
          IdJoinQuery joinQuery = entry.getValue();
          try {
-            IOseeStatement statement = getDatabaseService().getStatement(connection);
+            JdbcStatement statement = getJdbcClient().getStatement(connection);
             try {
-               statement.runPreparedQuery(MAX_FETCH, query, joinQuery.getQueryId(), branchUuid);
+               statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, joinQuery.getQueryId(), branchUuid);
                int previousItem = -1;
                while (statement.next()) {
                   int currentItem = statement.getInt("item_id");
@@ -173,15 +173,15 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
-   private Map<Integer, IdJoinQuery> findAffectedItems(OseeConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
+   private Map<Integer, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
       Map<Integer, IdJoinQuery> items = new HashMap<Integer, IdJoinQuery>();
-      IOseeStatement statement = getDatabaseService().getStatement(connection);
+      JdbcStatement statement = getJdbcClient().getStatement(connection);
 
       try {
          for (Object[] bindData : bindDataList) {
             Integer branchUuid = (Integer) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
-            statement.runPreparedQuery(MAX_FETCH, query, bindData);
+            statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, bindData);
             IdJoinQuery joinId = joinFactory.createIdJoinQuery();
             items.put(branchUuid, joinId);
 
@@ -198,7 +198,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return items;
    }
 
-   private void setChildBranchBaselineTxs(OseeConnection connection, int toDeleteTransactionId, int previousTransactionId) throws OseeCoreException {
+   private void setChildBranchBaselineTxs(JdbcConnection connection, int toDeleteTransactionId, int previousTransactionId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       if (RelationalConstants.TRANSACTION_SENTINEL != previousTransactionId) {
          data.add(new Object[] {
@@ -207,7 +207,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             "%" + toDeleteTransactionId});
       }
       if (!data.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
+         getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
       }
    }
 

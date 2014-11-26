@@ -95,7 +95,7 @@ public final class ConflictUtil {
    //      //add it with an unedited setting and return unedited
    //      //If gammas are out of date, update the gammas and down grade markedMerged to Edited
    //
-   //      IOseeStatement chStmt = ConnectionHandler.getStatement();
+   //      JdbcStatement chStmt = ConnectionHandler.getStatement();
    //      try {
    //         chStmt.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
    //
