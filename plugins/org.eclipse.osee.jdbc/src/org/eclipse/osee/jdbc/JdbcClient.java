@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
+import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 
 /**
  * @author Roberto E. Escobar
@@ -26,6 +28,8 @@ public interface JdbcClient {
    JdbcStatement getStatement(int resultSetType, int resultSetConcurrency);
 
    void runQuery(JdbcProcessor processor, String query, Object... data);
+
+   List<IVariantData> runQuery(String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
 

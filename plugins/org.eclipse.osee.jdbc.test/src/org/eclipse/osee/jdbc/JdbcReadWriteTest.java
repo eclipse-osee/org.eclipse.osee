@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.After;
 import org.junit.Before;
@@ -111,6 +112,14 @@ public class JdbcReadWriteTest {
       });
       assertEquals("Lord of the Flies",
          client.runPreparedQueryFetchObject("", "select title from books where id = ?", 6));
+
+      Iterator<IVariantData> it = client.runQuery("select * from books").iterator();
+      assertVariant(it.next(), "1", "The Odyssey", "Homer");
+      assertVariant(it.next(), "2", "Pride and Prejudice", "Jane Austen");
+      assertVariant(it.next(), "3", "Romeo and Juliet", "William Shakespeare");
+      assertVariant(it.next(), "4", "The Great Gatsby", "F. Scott Fitzgerald");
+      assertVariant(it.next(), "5", "Dracula", "Bram Stoker");
+      assertVariant(it.next(), "6", "Lord of the Flies", "William Golding");
    }
 
    private static JdbcProcessor newBookProcessor(final List<Book> books) {
@@ -121,6 +130,12 @@ public class JdbcReadWriteTest {
             books.add(new Book(chStmt.getInt("id"), chStmt.getString("title"), chStmt.getString("author")));
          }
       };
+   }
+
+   private static void assertVariant(IVariantData data, String id, String title, String author) {
+      assertEquals(id, data.get("ID"));
+      assertEquals(title, data.get("TITLE"));
+      assertEquals(author, data.get("AUTHOR"));
    }
 
    private static void assertBook(Book book, int id, String title, String author) {

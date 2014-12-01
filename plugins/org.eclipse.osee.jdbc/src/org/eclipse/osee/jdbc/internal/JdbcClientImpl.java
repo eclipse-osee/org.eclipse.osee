@@ -16,10 +16,13 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -396,6 +399,13 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public void invalidateSequences() {
       sequenceProvider.invalidate();
+   }
+
+   @Override
+   public List<IVariantData> runQuery(String query, Object... data) {
+      List<IVariantData> toReturn = new ArrayList<IVariantData>();
+      runQuery(new JdbcVariantDataProcessor(toReturn), query, data);
+      return toReturn;
    }
 
 }
