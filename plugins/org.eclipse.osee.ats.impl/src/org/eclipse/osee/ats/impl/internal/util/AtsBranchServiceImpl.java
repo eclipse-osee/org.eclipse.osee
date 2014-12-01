@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -53,21 +53,21 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    private final String SELECT_COMMIT_TRANSACTIONS =
       "SELECT transaction_id FROM osee_tx_details WHERE commit_art_id = ?";
    private final String SELECT_TRANSACTION = "SELECT * FROM osee_tx_details WHERE transaction_id = ?";
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
    private final OrcsApi orcsApi;
    private static final HashMap<Integer, List<ITransaction>> commitArtifactIdMap =
       new HashMap<Integer, List<ITransaction>>();
 
-   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, IOseeDatabaseService dbService) {
+   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, JdbcClient jdbcClient) {
       super(atsServices);
       this.orcsApi = orcsApi;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    @Override
    public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
       Long longId =
-         dbService.runPreparedQueryFetchObject(0L,
+         jdbcClient.runPreparedQueryFetchObject(0L,
             String.format(SELECT_COMMITTED_WORKING_BRANCH, ((ArtifactReadable) teamWf.getStoreObject()).getLocalId()));
       if (longId == null) {
          return null;
@@ -86,7 +86,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          negatedStr = negatedStr.replaceFirst(",$", ")");
       }
       Long longId =
-         dbService.runPreparedQueryFetchObject(0L,
+         jdbcClient.runPreparedQueryFetchObject(0L,
             String.format(SELECT_WORKING_BRANCH, ((ArtifactReadable) teamWf.getStoreObject()).getLocalId(), negatedStr));
       if (longId == null) {
          return null;
@@ -96,7 +96,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchType getBranchType(IOseeBranch branch) {
-      String branchType = dbService.runPreparedQueryFetchObject("", SELECT_BRANCH_TYPE, branch.getUuid());
+      String branchType = jdbcClient.runPreparedQueryFetchObject("", SELECT_BRANCH_TYPE, branch.getUuid());
       if (!Strings.isValid(branchType)) {
          return null;
       }
@@ -105,7 +105,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchState getBranchState(IOseeBranch branch) {
-      String branchState = dbService.runPreparedQueryFetchObject("", SELECT_BRANCH_STATE, branch.getUuid());
+      String branchState = jdbcClient.runPreparedQueryFetchObject("", SELECT_BRANCH_STATE, branch.getUuid());
       if (!Strings.isNumeric(branchState)) {
          return null;
       }
@@ -130,7 +130,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return false;
       }
       Long longId =
-         dbService.runPreparedQueryFetchObject(0L, SELECT_MERGE_BRANCH, workingBranch.getUuid(),
+         jdbcClient.runPreparedQueryFetchObject(0L, SELECT_MERGE_BRANCH, workingBranch.getUuid(),
             destinationBranch.getUuid());
       return longId != null && longId > 0;
    }
@@ -148,7 +148,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchArchivedState getArchiveState(IOseeBranch branch) {
-      String archived = dbService.runPreparedQueryFetchObject("0", SELECT_BRANCH_ARCHIVE_STATE, branch.getUuid());
+      String archived = jdbcClient.runPreparedQueryFetchObject("0", SELECT_BRANCH_ARCHIVE_STATE, branch.getUuid());
       if (!Strings.isValid(archived)) {
          return null;
       }
@@ -173,7 +173,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
          transactionIds = new ArrayList<ITransaction>(5);
-         IOseeStatement chStmt = dbService.getStatement();
+         JdbcStatement chStmt = jdbcClient.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifactReadable.getLocalId());
             while (chStmt.next()) {
@@ -188,7 +188,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    private TransactionRecord getTransactionId(int int1) {
-      IOseeStatement chStmt = dbService.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_TRANSACTION, int1);
          while (chStmt.next()) {
@@ -204,14 +204,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public IOseeBranch getParentBranch(IOseeBranch branch) {
-      long parentId = dbService.runPreparedQueryFetchObject(0L, SELECT_BRANCH_PARENT_ID, branch.getUuid());
+      long parentId = jdbcClient.runPreparedQueryFetchObject(0L, SELECT_BRANCH_PARENT_ID, branch.getUuid());
       return getBranchByUuid(parentId);
    }
 
    @Override
    public ITransaction getBaseTransaction(IOseeBranch branch) {
       int baseTransactionId =
-         dbService.runPreparedQueryFetchObject(0, SELECT_BRANCH_BASE_TRANSACTION_ID, branch.getUuid());
+         jdbcClient.runPreparedQueryFetchObject(0, SELECT_BRANCH_BASE_TRANSACTION_ID, branch.getUuid());
       return getTransactionId(baseTransactionId);
    }
 

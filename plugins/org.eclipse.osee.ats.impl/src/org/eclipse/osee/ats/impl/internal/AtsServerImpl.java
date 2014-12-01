@@ -75,11 +75,12 @@ import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -106,7 +107,6 @@ public class AtsServerImpl implements IAtsServer {
    private AtsAttributeResolverServiceImpl attributeResolverService;
    private IAtsConfig config;
    private IAtsConfigItemFactory configItemFactory;
-   private static Boolean started = null;
    private IAtsLogFactory atsLogFactory;
    private IAtsStateFactory atsStateFactory;
    private IAtsStoreFactory atsStoreFactory;
@@ -114,16 +114,19 @@ public class AtsServerImpl implements IAtsServer {
    private ISequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
    private ActionableItemManager actionableItemManager;
-   private IOseeDatabaseService dbService;
-   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
+   private JdbcService jdbcService;
    private WorkItemNotificationProcessor workItemNotificationProcessor;
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAtsVersionService versionService;
    private IRelationResolver relationResolver;
    private IAtsProgramService atsProgramService;
    private IAtsTeamDefinitionService atsTeamDefinitionService;
-   private boolean emailEnabled = true;
+   private JdbcClient jdbcClient;
 
+   private volatile boolean emailEnabled = true;
+   private volatile boolean started = false;
+
+   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
 
@@ -136,8 +139,8 @@ public class AtsServerImpl implements IAtsServer {
       return configItemFactory;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
@@ -169,12 +172,14 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    public void start() throws OseeCoreException {
+      jdbcClient = jdbcService.getClient();
+
       notifyService = new AtsNotifierServiceImpl();
       workItemFactory = new WorkItemFactory(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
-      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, dbService);
+      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, jdbcClient);
       reviewService = new AtsReviewServiceImpl(this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 
@@ -196,7 +201,7 @@ public class AtsServerImpl implements IAtsServer {
 
          @Override
          public long getNext(String sequenceName) {
-            return dbService.getSequence().getNextSequence(sequenceName);
+            return jdbcClient.getNextSequence(sequenceName);
          }
 
       };
@@ -208,19 +213,20 @@ public class AtsServerImpl implements IAtsServer {
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
-      addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, dbService, orcsApi, this));
-      addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, dbService, orcsApi, this));
+      addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
+      addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
 
       System.out.println("ATS - AtsServerImpl started");
       started = true;
    }
 
    public void stop() {
-      //
+      started = false;
+      jdbcClient = null;
    }
 
-   private static void checkStarted() throws OseeStateException {
-      if (started == null) {
+   private void checkStarted() {
+      if (!started) {
          throw new OseeStateException("AtsServer did not start");
       }
    }
@@ -404,7 +410,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public boolean isProduction() {
-      return dbService.isProduction();
+      return jdbcClient.getConfig().isProduction();
    }
 
    @Override

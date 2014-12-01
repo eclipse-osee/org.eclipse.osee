@@ -15,10 +15,10 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -34,8 +34,8 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
 
    private int numChanges = 0;
 
-   public ConvertFavoriteBranchGuidToUuid(Log logger, IOseeDatabaseService dbService, OrcsApi orcsApi, IAtsServer atsServer) {
-      super(logger, dbService, orcsApi, atsServer);
+   public ConvertFavoriteBranchGuidToUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
+      super(logger, jdbcClient, orcsApi, atsServer);
    }
 
    @Override

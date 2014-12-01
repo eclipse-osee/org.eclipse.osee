@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -37,8 +37,8 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
    private static final IAttributeType BaselineBranchGuid = TokenFactory.createAttributeType(0x10000000000000A9L,
       "ats.Baseline Branch Guid");
 
-   public ConvertBaselineGuidToBaselineUuid(Log logger, IOseeDatabaseService dbService, OrcsApi orcsApi, IAtsServer atsServer) {
-      super(logger, dbService, orcsApi, atsServer);
+   public ConvertBaselineGuidToBaselineUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
+      super(logger, jdbcClient, orcsApi, atsServer);
    }
 
    @Override
