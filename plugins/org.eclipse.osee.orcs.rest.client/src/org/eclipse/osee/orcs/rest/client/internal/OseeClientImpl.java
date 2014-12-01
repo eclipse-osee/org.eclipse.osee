@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -122,6 +123,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    private SearchResponse performSearch(RequestType requestType, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+      Conditions.checkNotNull(requestType, "RequestType");
       int fromTx = 0;
       if (options.isHistorical()) {
          fromTx = options.getFromTransaction();
