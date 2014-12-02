@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -40,20 +39,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
  */
 public class WorkItemNotificationProcessor {
 
+   private final Log logger;
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsServer atsServer;
    private static String actionUrl;
 
-   public WorkItemNotificationProcessor(IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) throws OseeCoreException {
+   public WorkItemNotificationProcessor(Log logger, IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) throws OseeCoreException {
+      this.logger = logger;
       this.atsServer = atsServer;
       this.workItemFactory = workItemFactory;
       this.userService = userService;
@@ -81,8 +82,7 @@ public class WorkItemNotificationProcessor {
                IAtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
-                     OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
-                        originator.getEmail(), originator.getName());
+                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (!fromUser.equals(originator)) {
                      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                         getFromUser(event),
@@ -96,8 +96,7 @@ public class WorkItemNotificationProcessor {
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
-                  "Error processing Originator for workItem [%s] and event [%s]", workItem.toStringWithId(),
+               logger.error(ex, "Error processing Originator for workItem [%s] and event [%s]", workItem.toStringWithId(),
                   event.toString());
             }
          }
@@ -124,8 +123,7 @@ public class WorkItemNotificationProcessor {
                         workItem.getName())));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
-                  "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
+               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
                   event.toString());
             }
          }
@@ -144,7 +142,7 @@ public class WorkItemNotificationProcessor {
                         workItem.getStateMgr().getCurrentStateName())));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+               logger.error(ex,
                   "Error processing Subscribed for workItem [%s] and event [%s]", workItem.toStringWithId(),
                   event.toString());
             }
@@ -154,8 +152,7 @@ public class WorkItemNotificationProcessor {
                IAtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
-                     OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
-                        originator.getEmail(), originator.getName());
+                     logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
                      if (workItem.getStateDefinition().getStateType().isCompleted()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
@@ -176,7 +173,7 @@ public class WorkItemNotificationProcessor {
                   }
                }
             } catch (OseeCoreException ex) {
-               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+               logger.error(ex,
                   "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
                   workItem.toStringWithId(), event.toString());
             }
@@ -200,7 +197,7 @@ public class WorkItemNotificationProcessor {
                         workItem.getArtifactTypeName(), workItem.getName())));
                }
             } catch (OseeCoreException ex) {
-               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+               logger.error(ex,
                   "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
                   workItem.toStringWithId(), event.toString());
             }
@@ -237,8 +234,7 @@ public class WorkItemNotificationProcessor {
                      }
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
-                     "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]", workItem.toStringWithId(),
                      event.toString());
                }
             }
@@ -280,7 +276,7 @@ public class WorkItemNotificationProcessor {
             return "ID: " + workItem.getAtsId() + " / LegacyId: " + legacyPcrId;
          }
       } catch (Exception ex) {
-         OseeLog.log(WorkItemNotificationProcessor.class, Level.SEVERE, ex);
+         logger.error(ex, "Error getting legacyId pcr for workItem [%s]", workItem);
       }
       return "ID: " + workItem.getAtsId();
    }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal;
+package org.eclipse.osee.ats.impl.internal.notify;
 
-import org.eclipse.osee.ats.impl.IAtsServer;
+import java.util.Collection;
+import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsServerService {
+public class NoOpAtsNotifierServiceImpl implements IAtsNotifierServer {
 
-   private static IAtsServer dbService;
-
-   public static IAtsServer get() {
-      return dbService;
+   @Override
+   public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
+      // do nothing
    }
-
-   public void setServerService(IAtsServer dbService) {
-      AtsServerService.dbService = dbService;
-   }
-
 }

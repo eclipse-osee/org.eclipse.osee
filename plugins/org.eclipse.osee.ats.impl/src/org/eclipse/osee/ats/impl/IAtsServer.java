@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
-import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -64,11 +64,11 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    IAtsLogFactory getLogFactory();
 
-   List<IAtsDatabaseConversion> getDatabaseConversions();
+   Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
    IAtsUtilService getUtilService();
 
-   AtsSequenceProvider getSequenceProvider();
+   ISequenceProvider getSequenceProvider();
 
    IAtsActionFactory getActionFactory();
 

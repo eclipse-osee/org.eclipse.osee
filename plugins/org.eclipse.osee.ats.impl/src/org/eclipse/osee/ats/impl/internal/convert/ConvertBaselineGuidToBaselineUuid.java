@@ -14,11 +14,13 @@ import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -32,11 +34,11 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid {
 
    // Leave this attribute definition and conversion for other OSEE sites to convert
-   public static final IAttributeType BaselineBranchGuid = TokenFactory.createAttributeType(0x10000000000000A9L,
+   private static final IAttributeType BaselineBranchGuid = TokenFactory.createAttributeType(0x10000000000000A9L,
       "ats.Baseline Branch Guid");
 
-   public ConvertBaselineGuidToBaselineUuid(IOseeDatabaseService dbService, OrcsApi orcsApi) {
-      super(dbService, orcsApi);
+   public ConvertBaselineGuidToBaselineUuid(Log logger, IOseeDatabaseService dbService, OrcsApi orcsApi, IAtsServer atsServer) {
+      super(logger, dbService, orcsApi, atsServer);
    }
 
    @Override

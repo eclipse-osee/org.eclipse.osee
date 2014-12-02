@@ -12,11 +12,12 @@ package org.eclipse.osee.ats.impl.internal.convert;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -27,12 +28,31 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  */
 public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversion {
 
+   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
+
+   private final Log logger;
    private final IOseeDatabaseService dbService;
    private final OrcsApi orcsApi;
+   private final IAtsServer atsServer;
 
-   public AbstractConvertGuidToUuid(IOseeDatabaseService dbService, OrcsApi orcsApi) {
+   public AbstractConvertGuidToUuid(Log logger, IOseeDatabaseService dbService, OrcsApi orcsApi, IAtsServer atsServer) {
+      super();
+      this.logger = logger;
       this.dbService = dbService;
       this.orcsApi = orcsApi;
+      this.atsServer = atsServer;
+   }
+
+   protected OrcsApi getOrcsApi() {
+      return orcsApi;
+   }
+
+   protected Log getLogger() {
+      return logger;
+   }
+
+   protected IOseeDatabaseService getDatabaseService() {
+      return dbService;
    }
 
    protected BranchReadable getBranch(String guid) throws OseeCoreException {
@@ -42,23 +62,17 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    protected TransactionBuilder createTransactionBuilder() throws OseeCoreException {
       TransactionFactory txFactory = getOrcsApi().getTransactionFactory(null);
       Conditions.checkNotNull(txFactory, "transaction factory");
-      return txFactory.createTransaction(COMMON,
-         AtsServerService.get().getArtifactByGuid(SystemUser.OseeSystem.getGuid()), getName());
+      return txFactory.createTransaction(COMMON, atsServer.getArtifactByGuid(SystemUser.OseeSystem.getGuid()),
+         getName());
    }
-
-   private final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
 
    /**
     * Temporary method till all code uses branch uuid. Remove after 0.17.0
     */
    private long getBranchIdLegacy(String branchGuid) {
-      Long longId = dbService.runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+      Long longId = getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
       Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
       return longId;
-   }
-
-   public OrcsApi getOrcsApi() {
-      return orcsApi;
    }
 
 }

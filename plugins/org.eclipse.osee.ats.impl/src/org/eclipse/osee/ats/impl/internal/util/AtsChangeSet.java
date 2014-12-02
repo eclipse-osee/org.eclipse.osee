@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -22,7 +23,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.AttributeIdWrapper;
-import org.eclipse.osee.ats.impl.internal.AtsServerService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -40,13 +40,16 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
    private TransactionBuilder transaction;
+
+   private final IAttributeResolver attributeResolver;
    private final OrcsApi orcsApi;
    private final IAtsStateFactory stateFactory;
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
 
-   public AtsChangeSet(OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
+   public AtsChangeSet(IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
       super(comment, user);
+      this.attributeResolver = attributeResolver;
       this.orcsApi = orcsApi;
       this.stateFactory = stateFactory;
       this.logFactory = logFactory;
@@ -82,7 +85,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                stateFactory.writeToStore(user, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
-               logFactory.writeToStore(workItem, AtsServerService.get().getAttributeResolver(), this);
+               logFactory.writeToStore(workItem, attributeResolver, this);
             }
          }
       }

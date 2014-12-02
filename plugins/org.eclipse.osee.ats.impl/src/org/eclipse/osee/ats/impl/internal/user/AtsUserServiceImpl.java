@@ -39,15 +39,19 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsUserServiceImpl extends AbstractAtsUserService {
 
-   private static OrcsApi orcsApi;
+   private OrcsApi orcsApi;
 
-   public static void setOrcsApi(OrcsApi orcsApi) {
-      AtsUserServiceImpl.orcsApi = orcsApi;
+   public void setOrcsApi(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
    }
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(orcsApi, "OrcsApi");
       System.out.println("ATS - AtsUserService started");
+   }
+
+   public void stop() {
+      //
    }
 
    @Override
@@ -111,12 +115,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
          return (ArtifactReadable) user.getStoreObject();
       }
       return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
-   }
-
-   public static ArtifactReadable getCurrentUserArt() throws OseeCoreException {
-      // TODO Switch to real user
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
-         CoreAttributeTypes.UserId, SystemUser.OseeSystem.getUserId()).getResults().getExactlyOne();
    }
 
    @Override

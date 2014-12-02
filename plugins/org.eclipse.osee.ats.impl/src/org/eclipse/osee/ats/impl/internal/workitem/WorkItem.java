@@ -126,6 +126,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       return stateMgr;
    }
 
+   @Override
    public void setStateManager(IAtsStateManager stateMgr) {
       this.stateMgr = stateMgr;
    }

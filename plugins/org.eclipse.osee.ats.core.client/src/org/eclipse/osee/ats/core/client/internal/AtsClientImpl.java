@@ -91,7 +91,6 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
@@ -210,7 +209,13 @@ public class AtsClientImpl implements IAtsClient {
 
       configItemFactory = new ConfigItemFactory();
       actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService);
-      sequenceProvider = new AtsSequenceProvider(dbService);
+      sequenceProvider = new ISequenceProvider() {
+
+         @Override
+         public long getNext(String sequenceName) {
+            return dbService.getSequence().getNextSequence(sequenceName);
+         }
+      };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
 
       actionFactory =

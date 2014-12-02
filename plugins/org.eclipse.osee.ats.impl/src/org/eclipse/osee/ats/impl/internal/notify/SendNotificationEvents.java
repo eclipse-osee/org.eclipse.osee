@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -27,8 +26,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
 import org.eclipse.osee.mail.api.MailStatus;
@@ -37,6 +35,7 @@ import org.eclipse.osee.mail.api.MailStatus;
  * @author Donald G. Dunne
  */
 public class SendNotificationEvents {
+   private final Log logger;
    private final Collection<? extends AtsNotificationEvent> notificationEvents;
    private final String subject;
    private final String body;
@@ -45,7 +44,8 @@ public class SendNotificationEvents {
    private final String testingUserEmail;
    private final IAtsUserService userService;
 
-   protected SendNotificationEvents(MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
+   protected SendNotificationEvents(Log logger, MailService mailService, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
+      this.logger = logger;
       this.mailService = mailService;
       this.fromUserEmail = fromUserEmail;
       this.testingUserEmail = testingUserEmail;
@@ -54,8 +54,7 @@ public class SendNotificationEvents {
       this.notificationEvents = notificationEvents;
       this.userService = userService;
       if (isTesting()) {
-         OseeLog.log(SendNotificationEvents.class, Level.SEVERE,
-            "OseeNotifyUsersJob: testing is enabled....turn off for production.");
+         logger.error("OseeNotifyUsersJob: testing is enabled....turn off for production.");
       }
    }
 
@@ -81,7 +80,7 @@ public class SendNotificationEvents {
          }
          return Result.TrueResult;
       } catch (Exception ex) {
-         OseeLog.log(SendNotificationEvents.class, OseeLevel.SEVERE_POPUP, ex);
+         logger.error(ex, "Error notifying users");
          return new Result("Error notifying users [%s]", ex.getMessage());
       }
    }

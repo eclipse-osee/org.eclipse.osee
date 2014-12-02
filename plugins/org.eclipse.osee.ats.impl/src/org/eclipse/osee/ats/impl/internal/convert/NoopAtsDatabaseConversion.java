@@ -8,24 +8,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.impl.internal.convert;
 
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
+import org.eclipse.osee.framework.core.util.XResultData;
 
 /**
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public class AtsSequenceProvider implements ISequenceProvider {
+public class NoopAtsDatabaseConversion implements IAtsDatabaseConversion {
 
-   private final IOseeDatabaseService databaseService;
-
-   public AtsSequenceProvider(IOseeDatabaseService databaseService) {
-      this.databaseService = databaseService;
+   @Override
+   public String getName() {
+      return "NoopAtsDatabaseConversion";
    }
 
    @Override
-   public long getNext(String name) {
-      return databaseService.getSequence().getNextSequence(name);
+   public void run(XResultData data, boolean reportOnly) {
+      //
    }
+
+   @Override
+   public String getDescription() {
+      return "NoopAtsDatabaseConversion";
+   }
+
 }

@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -23,12 +24,14 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class AtsStoreFactoryImpl implements IAtsStoreFactory {
 
+   private final IAttributeResolver attributeResolver;
    private final OrcsApi orcsApi;
    private final IAtsStateFactory stateFactory;
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
 
-   public AtsStoreFactoryImpl(OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+   public AtsStoreFactoryImpl(IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+      this.attributeResolver = attributeResolver;
       this.logFactory = logFactory;
       this.stateFactory = stateFactory;
       this.orcsApi = orcsApi;
@@ -37,7 +40,7 @@ public class AtsStoreFactoryImpl implements IAtsStoreFactory {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
-      return new AtsChangeSet(orcsApi, stateFactory, logFactory, comment, user, notifier);
+      return new AtsChangeSet(attributeResolver, orcsApi, stateFactory, logFactory, comment, user, notifier);
    }
 
 }

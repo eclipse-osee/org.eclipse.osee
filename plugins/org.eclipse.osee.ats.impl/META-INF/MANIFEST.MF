@@ -4,10 +4,9 @@ Bundle-Name: ATS Implementation (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.impl;singleton:=true
 Bundle-Version: 0.20.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: com.google.inject,
- javax.ws.rs;version="2.0.0",
+Import-Package: javax.ws.rs;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
- javax.ws.rs.ext;version="2.0.0",
+ org.eclipse.core.runtime,
  org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.commit,
@@ -32,7 +31,6 @@ Import-Package: com.google.inject,
  org.eclipse.osee.ats.core.util,
  org.eclipse.osee.ats.core.workdef,
  org.eclipse.osee.ats.core.workflow.state,
- org.eclipse.osee.ats.core.workflow.transition,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.model,
@@ -41,18 +39,15 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.logging,
  org.eclipse.osee.jaxrs.mvc,
  org.eclipse.osee.logger,
  org.eclipse.osee.mail.api,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
- org.eclipse.osee.orcs.transaction,
- org.eclipse.osee.template.engine
+ org.eclipse.osee.orcs.transaction
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.core.runtime
 Export-Package: org.eclipse.osee.ats.impl,
  org.eclipse.osee.ats.impl.config

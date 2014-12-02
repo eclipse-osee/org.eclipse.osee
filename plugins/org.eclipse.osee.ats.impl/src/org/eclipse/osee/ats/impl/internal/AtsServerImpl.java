@@ -13,8 +13,9 @@ package org.eclipse.osee.ats.impl.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
+import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -46,17 +48,16 @@ import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.util.AtsSequenceProvider;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.internal.convert.AtsDatabaseConversions;
+import org.eclipse.osee.ats.impl.internal.convert.ConvertBaselineGuidToBaselineUuid;
+import org.eclipse.osee.ats.impl.internal.convert.ConvertFavoriteBranchGuidToUuid;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotifierServiceImpl;
 import org.eclipse.osee.ats.impl.internal.notify.IAtsNotifierServer;
 import org.eclipse.osee.ats.impl.internal.notify.WorkItemNotificationProcessor;
-import org.eclipse.osee.ats.impl.internal.user.AtsUserServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
@@ -79,7 +80,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -111,7 +111,7 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsStateFactory atsStateFactory;
    private IAtsStoreFactory atsStoreFactory;
    private IAtsUtilService utilService;
-   private AtsSequenceProvider sequenceProvider;
+   private ISequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
    private ActionableItemManager actionableItemManager;
    private IOseeDatabaseService dbService;
@@ -123,6 +123,9 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsProgramService atsProgramService;
    private IAtsTeamDefinitionService atsTeamDefinitionService;
    private boolean emailEnabled = true;
+
+   private final Map<String, IAtsDatabaseConversion> externalConversions =
+      new ConcurrentHashMap<String, IAtsDatabaseConversion>();
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -145,6 +148,18 @@ public class AtsServerImpl implements IAtsServer {
       this.workDefService = workDefService;
    }
 
+   public void setAtsUserService(IAtsUserService userService) {
+      this.userService = userService;
+   }
+
+   public void addAtsDatabaseConversion(IAtsDatabaseConversion conversion) {
+      externalConversions.put(conversion.getName(), conversion);
+   }
+
+   public void removeAtsDatabaseConversion(IAtsDatabaseConversion conversion) {
+      externalConversions.remove(conversion.getName());
+   }
+
    public void addNotifier(IAtsNotifierServer notifier) {
       notifiers.add(notifier);
    }
@@ -154,7 +169,6 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    public void start() throws OseeCoreException {
-
       notifyService = new AtsNotifierServiceImpl();
       workItemFactory = new WorkItemFactory(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
@@ -172,14 +186,20 @@ public class AtsServerImpl implements IAtsServer {
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
 
-      userService = new AtsUserServiceImpl();
-
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      atsStoreFactory = new AtsStoreFactoryImpl(orcsApi, atsStateFactory, atsLogFactory, this);
+      atsStoreFactory =
+         new AtsStoreFactoryImpl(attributeResolverService, orcsApi, atsStateFactory, atsLogFactory, this);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
-      sequenceProvider = new AtsSequenceProvider(dbService);
+      sequenceProvider = new ISequenceProvider() {
+
+         @Override
+         public long getNext(String sequenceName) {
+            return dbService.getSequence().getNextSequence(sequenceName);
+         }
+
+      };
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
       actionableItemManager = new ActionableItemManager(config, attributeResolverService);
       actionFactory =
@@ -188,8 +208,15 @@ public class AtsServerImpl implements IAtsServer {
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
+      addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, dbService, orcsApi, this));
+      addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, dbService, orcsApi, this));
+
       System.out.println("ATS - AtsServerImpl started");
       started = true;
+   }
+
+   public void stop() {
+      //
    }
 
    private static void checkStarted() throws OseeStateException {
@@ -293,12 +320,8 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public List<IAtsDatabaseConversion> getDatabaseConversions() {
-      return AtsDatabaseConversions.getConversions(getOrcsApi(), getDatabaseService());
-   }
-
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   public Iterable<IAtsDatabaseConversion> getDatabaseConversions() {
+      return externalConversions.values();
    }
 
    @Override
@@ -307,7 +330,7 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public AtsSequenceProvider getSequenceProvider() {
+   public ISequenceProvider getSequenceProvider() {
       return sequenceProvider;
    }
 
@@ -381,7 +404,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public boolean isProduction() {
-      return getDatabaseService().isProduction();
+      return dbService.isProduction();
    }
 
    @Override
@@ -393,10 +416,10 @@ public class AtsServerImpl implements IAtsServer {
    public void sendNotifications(AtsNotificationCollector notifications) {
       if (isEmailEnabled()) {
          if (notifiers.isEmpty() || !isProduction()) {
-            OseeLog.log(AtsServerImpl.class, Level.INFO, "Osee Notification Disabled");
+            logger.info("Osee Notification Disabled");
          } else {
             workItemNotificationProcessor =
-               new WorkItemNotificationProcessor(this, workItemFactory, userService, attributeResolverService);
+               new WorkItemNotificationProcessor(logger, this, workItemFactory, userService, attributeResolverService);
             notificationEventProcessor =
                new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
                   getConfigValue("NoReplyEmail"));
@@ -477,6 +500,7 @@ public class AtsServerImpl implements IAtsServer {
    public void setEmailEnabled(boolean emailEnabled) {
       this.emailEnabled = emailEnabled;
    }
+
    @Override
    public IAtsProgramService getProgramService() {
       return atsProgramService;

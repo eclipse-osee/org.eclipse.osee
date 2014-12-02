@@ -53,6 +53,10 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       System.out.println("ATS - AtsAttributeResolverServiceImpl started");
    }
 
+   public void stop() {
+      //
+   }
+
    @Override
    public boolean isAttributeNamed(String attributeName) {
       return getAttributeType(attributeName) != null;

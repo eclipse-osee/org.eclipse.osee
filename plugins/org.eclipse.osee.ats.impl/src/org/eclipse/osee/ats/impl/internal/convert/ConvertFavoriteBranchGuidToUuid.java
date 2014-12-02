@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.convert;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -34,8 +34,8 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
 
    private int numChanges = 0;
 
-   public ConvertFavoriteBranchGuidToUuid(IOseeDatabaseService dbService, OrcsApi orcsApi) {
-      super(dbService, orcsApi);
+   public ConvertFavoriteBranchGuidToUuid(Log logger, IOseeDatabaseService dbService, OrcsApi orcsApi, IAtsServer atsServer) {
+      super(logger, dbService, orcsApi, atsServer);
    }
 
    @Override
@@ -74,8 +74,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          }
          numChanges = 0;
       } catch (OseeCoreException ex) {
-         OseeLog.log(this.getClass(), Level.SEVERE, "Exception occurred while trying to convert branch guid to uuid",
-            ex);
+         getLogger().error(ex, "Exception occurred while trying to convert branch guid to uuid");
       }
    }
 
@@ -97,7 +96,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       try {
          branch = getBranch(value);
       } catch (OseeCoreException ex) {
-         OseeLog.log(this.getClass(), Level.WARNING, "No Branch found with value: " + value);
+         getLogger().warn(ex, "No Branch found with value: [%s]", value);
       }
       if (branch != null) {
          addUuid(data, reportOnly, tx, art, attr, branch);
