@@ -135,29 +135,29 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createEntry(ActivityType type, String... messageArgs) {
+   public Long createEntry(ActivityType type, Object... messageArgs) {
       return createEntry(type.getTypeId(), COMPLETE_STATUS, messageArgs);
    }
 
    @Override
-   public Long createUpdateableEntry(ActivityType type, String... messageArgs) {
+   public Long createUpdateableEntry(ActivityType type, Object... messageArgs) {
       return createEntry(type.getTypeId(), INITIAL_STATUS, messageArgs);
    }
 
    @Override
-   public Long createEntry(ActivityType type, Long parentId, Integer status, String... messageArgs) {
+   public Long createEntry(ActivityType type, Long parentId, Integer status, Object... messageArgs) {
       return createEntry(type.getTypeId(), parentId, status, messageArgs);
    }
 
    @Override
-   public Long createEntry(Long typeId, Integer status, String... messageArgs) {
+   public Long createEntry(Long typeId, Integer status, Object... messageArgs) {
       Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
       Long entryId = LogEntry.ENTRY_ID.from(threadRootEntry);
       return createEntry(typeId, entryId, status, messageArgs);
    }
 
    @Override
-   public Long createEntry(Long typeId, Long parentId, Integer status, String... messageArgs) {
+   public Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs) {
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
       Long accountId = LogEntry.ACCOUNT_ID.from(rootEntry);
       Long serverId = LogEntry.SERVER_ID.from(rootEntry);
@@ -167,10 +167,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       return LogEntry.ENTRY_ID.from(entry);
    }
 
-   private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, String... messageArgs) {
+   private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
       Long entryId = Lib.generateUuid();
       Long startTime = System.currentTimeMillis();
-      String fullMsg = Collections.toString("\n", (Object[]) messageArgs);
+      String fullMsg = Collections.toString("\n", messageArgs);
 
       String msg = fullMsg.substring(0, Math.min(fullMsg.length(), MAX_VARCHAR_LENGTH));
       // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
@@ -340,12 +340,12 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, String... messageArgs) {
+   public Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
       return createActivityThread(-1L, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
-   public Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, String... messageArgs) {
+   public Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
       Object[] entry = createEntry(parentId, type.getTypeId(), accountId, serverId, clientId, 0L, 0, messageArgs);
       activityMonitor.addActivityThread(entry);
       return LogEntry.ENTRY_ID.from(entry);

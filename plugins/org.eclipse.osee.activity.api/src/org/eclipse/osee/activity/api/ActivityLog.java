@@ -29,15 +29,15 @@ public interface ActivityLog {
 
    void queryEntry(Long entryId, ActivityDataHandler handler);
 
-   Long createEntry(Long typeId, Integer status, String... messageArgs);
+   Long createEntry(Long typeId, Integer status, Object... messageArgs);
 
-   Long createEntry(Long typeId, Long parentId, Integer status, String... messageArgs);
+   Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs);
 
-   Long createUpdateableEntry(ActivityType type, String... messageArgs);
+   Long createUpdateableEntry(ActivityType type, Object... messageArgs);
 
-   Long createEntry(ActivityType type, String... messageArgs);
+   Long createEntry(ActivityType type, Object... messageArgs);
 
-   Long createEntry(ActivityType type, Long parentId, Integer status, String... messageArgs);
+   Long createEntry(ActivityType type, Long parentId, Integer status, Object... messageArgs);
 
    Long createThrowableEntry(ActivityType type, Throwable throwable);
 
@@ -55,9 +55,9 @@ public interface ActivityLog {
 
    void endEntryAbnormally(Long entryId, Integer status);
 
-   Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, String... messageArgs);
+   Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
 
-   Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, String... messageArgs);
+   Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
 
    void createActivityTypes(ActivityType... types);
 
