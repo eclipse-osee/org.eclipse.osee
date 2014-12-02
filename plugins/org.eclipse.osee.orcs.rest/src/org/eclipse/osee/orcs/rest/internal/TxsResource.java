@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.Arrays;
+import java.util.Collections;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,11 +46,6 @@ public class TxsResource {
       this.branchUuid = branchUuid;
    }
 
-   @Path("{txId}")
-   public TxResource getTransaction(@PathParam("txId") int txId) {
-      return new TxResource(uriInfo, request, branchUuid, txId);
-   }
-
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
@@ -67,5 +63,16 @@ public class TxsResource {
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(Arrays.asList(baseTransaction, headTransaction));
+   }
+
+   @Path("{txId}")
+   @GET
+   @Produces(MediaType.TEXT_HTML)
+   public String getAsHtml(@PathParam("txId") int txId) throws OseeCoreException {
+      QueryFactory queryFactory = OrcsApplication.getOrcsApi().getQueryFactory(null);
+      TransactionQuery query2 = queryFactory.transactionQuery();
+      TransactionReadable baseTransaction = query2.andTxId(txId).getResults().getExactlyOne();
+      HtmlWriter writer = new HtmlWriter(uriInfo);
+      return writer.toHtml(Collections.singleton(baseTransaction));
    }
 }

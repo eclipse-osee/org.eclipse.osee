@@ -60,7 +60,7 @@ public class BranchResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
-      BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
       ResultSet<BranchReadable> results = query.andUuids(branchUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(results);
