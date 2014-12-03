@@ -55,6 +55,7 @@ public enum AtsImage implements KeyedImage {
    PIN_EDITOR("pinEditor.gif"),
    PLAY_GREEN("play.gif"),
    PRIVILEGED_EDIT("privEdit.gif"),
+   PROGRAM("program.gif"),
    PUBLISH("publish.gif"),
    RELEASED("orangeR_8_8.gif"),
    REPORT("report.gif"),
