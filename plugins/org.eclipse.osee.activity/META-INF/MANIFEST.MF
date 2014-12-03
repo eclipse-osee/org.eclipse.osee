@@ -10,9 +10,8 @@ Osee-Data: OSEE-INF/*
 Import-Package: org.eclipse.osee.activity.api,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.database,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.jdbc,
  org.eclipse.osee.logger
 Export-Package: org.eclipse.osee.activity

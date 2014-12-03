@@ -15,9 +15,10 @@ import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityTypeDataHandler;
 import org.eclipse.osee.activity.api.ActivityType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IQueryProcessor;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcProcessor;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan D. Brooks
@@ -40,7 +41,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    private static final String COUNT_TYPE = "SELECT count(1) FROM osee_activity_type WHERE type_id = ?";
 
-   private static class ActivityEntryProcessor implements IQueryProcessor {
+   private static class ActivityEntryProcessor implements JdbcProcessor {
 
       private final ActivityDataHandler handler;
 
@@ -50,7 +51,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
 
       @Override
-      public void processNext(IOseeStatement chStmt) {
+      public void processNext(JdbcStatement chStmt) {
          Long entryId = chStmt.getLong("entry_id");
          Long parentId = chStmt.getLong("parent_id");
          Long typeId = chStmt.getLong("type_id");
@@ -66,7 +67,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
    }
 
-   private static class ActivityTypeProcessor implements IQueryProcessor {
+   private static class ActivityTypeProcessor implements JdbcProcessor {
 
       private final ActivityTypeDataHandler handler;
 
@@ -76,7 +77,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
 
       @Override
-      public void processNext(IOseeStatement chStmt) {
+      public void processNext(JdbcStatement chStmt) {
          Long typeId = chStmt.getLong("type_id");
          Long logLevel = chStmt.getLong("log_level");
          String module = chStmt.getString("module");
@@ -85,34 +86,37 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
    }
 
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
+   }
+
+   private JdbcClient getJdbcClient() {
+      return jdbcService.getClient();
    }
 
    @Override
    public void selectEntry(Long entryId, final ActivityDataHandler handler) {
-      dbService.runQuery(new ActivityEntryProcessor(handler), SELECT_ENTRY, entryId);
+      getJdbcClient().runQuery(new ActivityEntryProcessor(handler), SELECT_ENTRY, entryId);
    }
 
    @Override
    public int addEntries(Iterable<Object[]> newEntries) {
-      return dbService.runBatchUpdate(INSERT_ENTRIES, newEntries);
+      return getJdbcClient().runBatchUpdate(INSERT_ENTRIES, newEntries);
    }
 
    @Override
    public int updateEntries(Iterable<Object[]> updatedEntries) {
-      return dbService.runBatchUpdate(UPDATE_ENTRIES, updatedEntries);
+      return getJdbcClient().runBatchUpdate(UPDATE_ENTRIES, updatedEntries);
    }
 
-   @SuppressWarnings("unchecked")
    private void addLogType(ActivityType type) {
       Long typeId = type.getTypeId();
       Long logLevel = type.getLogLevel();
       String module = type.getModule();
       String messageFormat = type.getMessageFormat();
-      dbService.runPreparedUpdate(INSERT_TYPE, typeId, logLevel, module, messageFormat);
+      getJdbcClient().runPreparedUpdate(INSERT_TYPE, typeId, logLevel, module, messageFormat);
    }
 
    @Override
@@ -129,17 +133,17 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    @Override
    public void selectTypes(final ActivityTypeDataHandler handler) {
-      dbService.runQuery(new ActivityTypeProcessor(handler), SELECT_ALL_TYPES);
+      getJdbcClient().runQuery(new ActivityTypeProcessor(handler), SELECT_ALL_TYPES);
    }
 
    @Override
    public void selectType(Long typeId, final ActivityTypeDataHandler handler) {
-      dbService.runQuery(new ActivityTypeProcessor(handler), SELECT_TYPE, typeId);
+      getJdbcClient().runQuery(new ActivityTypeProcessor(handler), SELECT_TYPE, typeId);
    }
 
    @Override
    public boolean typeExists(Long typeId) {
-      return dbService.runPreparedQueryFetchObject(-1L, COUNT_TYPE, typeId) > 0;
+      return getJdbcClient().runPreparedQueryFetchObject(-1L, COUNT_TYPE, typeId) > 0;
    }
 
 }

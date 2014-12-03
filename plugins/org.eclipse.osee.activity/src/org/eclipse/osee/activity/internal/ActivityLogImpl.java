@@ -21,7 +21,6 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
-import static org.eclipse.osee.framework.database.IOseeDatabaseService.MAX_VARCHAR_LENGTH;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.DrainingIterator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -172,15 +172,16 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       Long startTime = System.currentTimeMillis();
       String fullMsg = Collections.toString("\n", messageArgs);
 
-      String msg = fullMsg.substring(0, Math.min(fullMsg.length(), MAX_VARCHAR_LENGTH));
+      String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
       // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
       Object[] entry =
          new Object[] {entryId, parentId, typeId, accountId, serverId, clientId, startTime, duration, status, msg};
       newEntities.put(entryId, entry);
 
-      if (fullMsg.length() > MAX_VARCHAR_LENGTH) {
+      if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          Long parentCursor = entryId;
-         for (int i = MAX_VARCHAR_LENGTH; i < fullMsg.length(); i += MAX_VARCHAR_LENGTH) {
+         for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
+            JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
             Long continueEntryId = Lib.generateUuid();
             Object[] continueEntry =
                new Object[] {
@@ -193,7 +194,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
                   startTime,
                   duration,
                   status,
-                  fullMsg.substring(i, Math.min(fullMsg.length(), i + MAX_VARCHAR_LENGTH))};
+                  fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
             newEntities.put(continueEntryId, continueEntry);
             parentCursor = continueEntryId;
          }

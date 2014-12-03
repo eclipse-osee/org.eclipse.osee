@@ -4,5 +4,5 @@
    <service>
       <provide interface="org.eclipse.osee.activity.ActivityStorage"/>
    </service>
-   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=activity.jdbc.service)"/>
 </scr:component>
