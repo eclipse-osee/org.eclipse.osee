@@ -31,12 +31,11 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -47,7 +46,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
 
    private Log logger;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
 
    private ApplicationServerDataStore dataStore;
    private OseeServerInfo serverInfo;
@@ -66,16 +65,12 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return logger;
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   public void setJdbcService(JdbcService dbService) {
+      this.jdbcService = dbService;
    }
 
    public void start() throws Exception {
-      dataStore = new ApplicationServerDataStore(getDatabaseService());
+      dataStore = new ApplicationServerDataStore(jdbcService.getClient());
       serverInfo = createOseeServerInfo(getLogger(), dataStore, OseeCodeVersion.getVersion());
       System.setProperty("OseeApplicationServer", serverInfo.getUri().toString());
 
@@ -97,7 +92,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
          private boolean isDbInitialized() {
             boolean result = false;
             try {
-               String id = OseeInfo.getDatabaseGuid();
+               String id = dataStore.getDatabaseGuid();
                if (Strings.isValid(id)) {
                   result = true;
                }

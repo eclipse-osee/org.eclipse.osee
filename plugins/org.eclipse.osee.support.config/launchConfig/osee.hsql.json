@@ -16,7 +16,8 @@
                         "activity.jdbc.service",
                         "orcs.jdbc.service",
                         "account.jdbc.service",
-                        "oauth.jdbc.service"
+                        "oauth.jdbc.service",
+                        "app.server.jdbc.service"
                     ]
                 }
             ]

@@ -20,20 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 public interface IAuthenticationManager {
 
    /**
-    * Add a authentication provider
-    * 
-    * @param authenticationProvider to add
-    */
-   public void addAuthenticationProvider(IAuthenticationProvider authenticationProvider);
-
-   /**
-    * Remove a authentication provider
-    * 
-    * @param authenticationProvider to remove
-    */
-   public void removeAuthenticationProvider(IAuthenticationProvider authenticationProvider);
-
-   /**
     * @return <b>true</b> if authentication success
     */
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;

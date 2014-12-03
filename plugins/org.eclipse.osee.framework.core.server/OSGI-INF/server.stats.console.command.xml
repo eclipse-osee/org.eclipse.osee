@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.osee.framework.core.server.internal.console.ServerStatsCommand">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
    <implementation class="org.eclipse.osee.framework.core.server.internal.console.ServerStatsCommand"/>
    <service>
       <provide interface="org.eclipse.osee.console.admin.ConsoleCommand"/>
    </service>
    <reference bind="setApplicationServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
-   <reference bind="setDbInfoRegistry" cardinality="1..1" interface="org.eclipse.osee.framework.database.DatabaseInfoRegistry" name="DatabaseInfoRegistry" policy="static"/>
    <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
-   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="addJdbcService" cardinality="0..n" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="dynamic" unbind="removeJdbcService"/>
 </scr:component>

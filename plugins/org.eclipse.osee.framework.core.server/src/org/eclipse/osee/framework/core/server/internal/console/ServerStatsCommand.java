@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.console.admin.Console;
@@ -25,50 +26,34 @@ import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
-import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jdbc.JdbcClientConfig;
+import org.eclipse.osee.jdbc.JdbcServerConfig;
+import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ServerStatsCommand implements ConsoleCommand {
 
-   private IApplicationServerManager appManager;
-   private DatabaseInfoRegistry registry;
-   private IAuthenticationManager authenticationManager;
-   private IOseeDatabaseService dbService;
+   private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<String, JdbcService>();
+   private IApplicationServerManager manager;
+   private IAuthenticationManager authManager;
 
-   public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
-      this.registry = registry;
+   public void setApplicationServerManager(IApplicationServerManager manager) {
+      this.manager = manager;
    }
 
-   public void setApplicationServerManager(IApplicationServerManager appManager) {
-      this.appManager = appManager;
+   public void setAuthenticationManager(IAuthenticationManager authManager) {
+      this.authManager = authManager;
    }
 
-   public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
-      this.authenticationManager = authenticationManager;
+   public void addJdbcService(JdbcService jdbcService) {
+      jdbcServices.put(jdbcService.getId(), jdbcService);
    }
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
-   private DatabaseInfoRegistry getDbInfoRegistry() {
-      return registry;
-   }
-
-   private IApplicationServerManager getApplicationServerManager() {
-      return appManager;
-   }
-
-   private IAuthenticationManager getAuthenticationManager() {
-      return authenticationManager;
-   }
-
-   private IOseeDatabaseService getDbService() {
-      return dbService;
+   public void removeJdbcService(JdbcService jdbcService) {
+      jdbcServices.remove(jdbcService.getId());
    }
 
    @Override
@@ -87,108 +72,124 @@ public class ServerStatsCommand implements ConsoleCommand {
    }
 
    @Override
-   public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new ServerStatsCallable(getDbInfoRegistry(), getApplicationServerManager(), getAuthenticationManager(),
-         getDbService(), console);
-   }
+   public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
+      return new Callable<Boolean>() {
 
-   private static final class ServerStatsCallable implements Callable<Boolean> {
-      private final DatabaseInfoRegistry registry;
-      private final IApplicationServerManager manager;
-      private final IAuthenticationManager authManager;
-      private final IOseeDatabaseService dbService;
-      private final Console console;
+         @Override
+         public Boolean call() throws Exception {
+            console.writeln("\n----------------------------------------------");
+            console.writeln("                  Server Stats");
+            console.writeln("----------------------------------------------");
 
-      public ServerStatsCallable(DatabaseInfoRegistry registry, IApplicationServerManager manager, IAuthenticationManager authenticationManager, IOseeDatabaseService dbService, Console console) {
-         super();
-         this.registry = registry;
-         this.manager = manager;
-         this.authManager = authenticationManager;
-         this.dbService = dbService;
-         this.console = console;
-      }
+            console.writeln("Server:[%s]", manager.getServerUri());
+            console.writeln("Id: [%s]", manager.getId());
+            console.writeln("Running Since: [%s]\n",
+               DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted()));
 
-      @Override
-      public Boolean call() throws Exception {
-
-         console.writeln("\n----------------------------------------------");
-         console.writeln("                  Server Stats");
-         console.writeln("----------------------------------------------");
-
-         console.writeln("Server:[%s]", manager.getServerUri());
-         console.writeln("Id: [%s]", manager.getId());
-         console.writeln("Running Since: [%s]\n",
-            DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted()));
-
-         console.writeln("Code Base Location: [%s]", System.getProperty("user.dir"));
-         console.writeln("Datastore: [%s]", registry.getSelectedDatabaseInfo().toString());
-         console.writeln("Binary Data Path: [%s]", OseeServerProperties.getOseeApplicationServerData(null));
-         console.writeln();
-
-         console.writeln("Authentication Scheme: [%s]", authManager.getProtocol());
-         console.writeln("Supported Authentication Schemes: %s", Arrays.deepToString(authManager.getProtocols()));
-         console.writeln();
-
-         console.writeln("Supported Versions: %s", Arrays.deepToString(manager.getVersions()));
-         console.writeln(Lib.getMemoryInfo());
-
-         logServlets(manager);
-
-         console.writeln("\nServer State: [%s]", manager.isSystemIdle() ? "IDLE" : "BUSY");
-         console.writeln("Active Threads: [%s]", manager.getNumberOfActiveThreads());
-
-         IJobManager jobManager = Job.getJobManager();
-         console.writeln("Job Manager: [%s]", jobManager.isIdle() ? "IDLE" : "BUSY");
-
-         Job current = jobManager.currentJob();
-
-         console.writeln("Current Job: [%s]", current != null ? current.getName() : "NONE");
-
-         console.write("Current Tasks: ");
-         List<String> entries = manager.getCurrentProcesses();
-         if (entries.isEmpty()) {
-            console.writeln("[NONE]");
-         } else {
+            console.writeln("Code Base Location: [%s]", System.getProperty("user.dir"));
+            console.writeln("Binary Data Path: [%s]", OseeServerProperties.getOseeApplicationServerData(null));
+            JdbcService jdbcService = getJdbcService("orcs.jdbc.service");
+            writeOrcsJdbcServiceInfo(jdbcService);
             console.writeln();
-            for (int index = 0; index < entries.size(); index++) {
-               console.writeln("\t[%s] - %s", index, entries.get(index));
+
+            console.writeln("Authentication Scheme: [%s]", authManager.getProtocol());
+            console.writeln("Supported Authentication Schemes: %s", Arrays.deepToString(authManager.getProtocols()));
+            console.writeln();
+
+            console.writeln("Supported Versions: %s", Arrays.deepToString(manager.getVersions()));
+            console.writeln(Lib.getMemoryInfo());
+
+            logServlets(manager);
+
+            console.writeln("\nServer State: [%s]", manager.isSystemIdle() ? "IDLE" : "BUSY");
+            console.writeln("Active Threads: [%s]", manager.getNumberOfActiveThreads());
+
+            IJobManager jobManager = Job.getJobManager();
+            console.writeln("Job Manager: [%s]", jobManager.isIdle() ? "IDLE" : "BUSY");
+
+            Job current = jobManager.currentJob();
+
+            console.writeln("Current Job: [%s]", current != null ? current.getName() : "NONE");
+
+            console.write("Current Tasks: ");
+            List<String> entries = manager.getCurrentProcesses();
+            if (entries.isEmpty()) {
+               console.writeln("[NONE]");
+            } else {
+               console.writeln();
+               for (int index = 0; index < entries.size(); index++) {
+                  console.writeln("\t[%s] - %s", index, entries.get(index));
+               }
+            }
+            console.writeln();
+            writeJdbcStats();
+            console.writeln();
+            return Boolean.TRUE;
+         }
+
+         private void logServlets(IApplicationServerManager manager) {
+            console.writeln("Servlets:");
+            List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
+            Collections.sort(contexts);
+            if (contexts.size() % 2 == 1) {
+               contexts.add("");
+            }
+            int midPoint = contexts.size() / 2;
+            for (int i = 0; i < midPoint; i++) {
+               console.writeln("%-40.40s%s", contexts.get(i), contexts.get(i + midPoint));
             }
          }
-         console.writeln();
-         logDatabaseStats(dbService);
-         console.writeln();
 
-         return Boolean.TRUE;
-      }
-
-      private void logServlets(IApplicationServerManager manager) {
-         console.writeln("Servlets:");
-         List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
-         Collections.sort(contexts);
-         if (contexts.size() % 2 == 1) {
-            contexts.add("");
-         }
-         int midPoint = contexts.size() / 2;
-         for (int i = 0; i < midPoint; i++) {
-            console.writeln("%-40.40s%s", contexts.get(i), contexts.get(i + midPoint));
-         }
-      }
-
-      private void logDatabaseStats(IOseeDatabaseService dbService) {
-         console.writeln("Database Stats:");
-         try {
-            Map<String, String> store = dbService.getStatistics();
-            for (String key : store.keySet()) {
-               String value = store.get(key);
-
-               console.writeln("\t%s = %s", key, value);
+         private void writeOrcsJdbcServiceInfo(JdbcService jdbcService) {
+            if (jdbcService != null) {
+               JdbcClientConfig config = jdbcService.getClient().getConfig();
+               console.writeln("Datastore Uri: [%s]", config.getDbUri());
+               if (jdbcService.hasServer()) {
+                  JdbcServerConfig serverConfig = jdbcService.getServerConfig();
+                  console.writeln("Datastore Db Path: [%s]", serverConfig.getDbPath());
+               }
+            } else {
+               console.writeln("Datastore: [N/A]");
             }
-
-         } catch (Exception ex) {
-            console.write(ex);
          }
-      }
 
+         private JdbcService getJdbcService(String binding) {
+            JdbcService toReturn = null;
+            for (JdbcService jdbcService : jdbcServices.values()) {
+               if (jdbcService.getBindings().contains(binding)) {
+                  toReturn = jdbcService;
+                  break;
+               }
+            }
+            return toReturn;
+         }
+
+         private void writeJdbcStats() {
+            console.writeln("Jdbc Services:");
+            boolean isFirst = true;
+            for (JdbcService jdbcService : jdbcServices.values()) {
+               try {
+                  if (!isFirst) {
+                     console.writeln("");
+                  }
+                  console.writeln("\tid: %s", jdbcService.getId());
+                  console.writeln("\tbindings: %s", jdbcService.getBindings());
+                  console.writeln("\turi: %s", jdbcService.getClient().getConfig().getDbUri());
+                  if (jdbcService.hasServer()) {
+                     console.writeln("\tdb.file: %s", jdbcService.getServerConfig().getDbPath());
+                  }
+                  Map<String, String> store = jdbcService.getClient().getStatistics();
+                  for (String key : store.keySet()) {
+                     String value = store.get(key);
+                     console.writeln("\t%s: %s", key, value);
+                  }
+                  isFirst = false;
+               } catch (Exception ex) {
+                  console.write(ex);
+               }
+            }
+         }
+      };
    }
 
 }

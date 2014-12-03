@@ -15,25 +15,21 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
-import org.eclipse.osee.framework.database.core.IDbTransactionWork;
-import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.core.server.internal.util.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcTransaction;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationServerDataStore {
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public ApplicationServerDataStore(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
-   }
-
-   private IOseeDatabaseService getDbService() {
-      return dbService;
+   public ApplicationServerDataStore(JdbcClient jdbcClient) {
+      this.jdbcClient = jdbcClient;
    }
 
    public void create(OseeServerInfo info) throws OseeCoreException {
@@ -49,8 +45,7 @@ public class ApplicationServerDataStore {
    }
 
    private void executeTx(TxType op, OseeServerInfo info) throws OseeCoreException {
-      IDbTransactionWork tx = new ServerLookupTx(getDbService(), op, info);
-      DatabaseTransactions.execute(getDbService(), getDbService().getConnection(), tx);
+      jdbcClient.runTransaction(new ServerLookupTx(jdbcClient, op, info));
    }
 
    private static enum TxType {
@@ -59,7 +54,11 @@ public class ApplicationServerDataStore {
       DELETE;
    }
 
-   private static final class ServerLookupTx implements IDbTransactionWork {
+   public String getDatabaseGuid() {
+      return OseeInfo.getDatabaseGuid(jdbcClient);
+   }
+
+   private static final class ServerLookupTx extends JdbcTransaction {
 
       private static final String INSERT_LOOKUP_TABLE =
          "INSERT INTO osee_server_lookup (server_id, version_id, server_uri, start_time, accepts_requests) VALUES (?,?,?,?,?)";
@@ -68,21 +67,16 @@ public class ApplicationServerDataStore {
 
       private final TxType txType;
       private final OseeServerInfo data;
-      private final IOseeDatabaseService dbService;
+      private final JdbcClient jdbcClient;
 
-      public ServerLookupTx(IOseeDatabaseService dbService, TxType txType, OseeServerInfo data) {
-         this.dbService = dbService;
+      public ServerLookupTx(JdbcClient jdbcClient, TxType txType, OseeServerInfo data) {
+         this.jdbcClient = jdbcClient;
          this.txType = txType;
          this.data = data;
       }
 
       @Override
-      public String getName() {
-         return String.format("[%s] Application Server Info", txType);
-      }
-
-      @Override
-      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
          switch (txType) {
             case CREATE:
                create(connection);
@@ -98,7 +92,7 @@ public class ApplicationServerDataStore {
          }
       }
 
-      private void create(OseeConnection connection) throws OseeCoreException {
+      private void create(JdbcConnection connection) throws OseeCoreException {
          List<Object[]> insertData = new ArrayList<Object[]>();
          String serverId = data.getServerId();
          URI serverUri = data.getUri();
@@ -110,32 +104,23 @@ public class ApplicationServerDataStore {
             insertData.add(new Object[] {serverId, version, uri, dateStarted, acceptingRequests});
          }
          if (!insertData.isEmpty()) {
-            dbService.runBatchUpdate(connection, INSERT_LOOKUP_TABLE, insertData);
+            jdbcClient.runBatchUpdate(connection, INSERT_LOOKUP_TABLE, insertData);
          }
       }
 
-      private void update(OseeConnection connection) throws OseeCoreException {
+      private void update(JdbcConnection connection) throws OseeCoreException {
          delete(connection);
          create(connection);
       }
 
-      private void delete(OseeConnection connection) throws OseeCoreException {
+      private void delete(JdbcConnection connection) throws OseeCoreException {
          List<Object[]> deleteData = new ArrayList<Object[]>();
          deleteData.add(new Object[] {data.getServerId()});
          if (!deleteData.isEmpty()) {
-            dbService.runBatchUpdate(connection, DELETE_FROM_LOOKUP_TABLE_BY_ID, deleteData);
+            jdbcClient.runBatchUpdate(connection, DELETE_FROM_LOOKUP_TABLE_BY_ID, deleteData);
          }
       }
 
-      @Override
-      public void handleTxException(Exception ex) {
-         //
-      }
-
-      @Override
-      public void handleTxFinally() {
-         //
-      }
-   };
+   }
 
 }

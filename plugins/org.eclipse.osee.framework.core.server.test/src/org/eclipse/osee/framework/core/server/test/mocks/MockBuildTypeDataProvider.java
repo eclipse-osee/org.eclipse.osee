@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.test.mocks;
 
-import org.eclipse.osee.framework.core.server.internal.BuildTypeDataProvider;
+import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier.BuildTypeDataProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockBuildTypeDataProvider extends BuildTypeDataProvider {
+public class MockBuildTypeDataProvider implements BuildTypeDataProvider {
 
    private final String data;
    private final boolean isErrorOnGet;
@@ -27,7 +27,7 @@ public class MockBuildTypeDataProvider extends BuildTypeDataProvider {
    }
 
    @Override
-   public String getData() throws OseeCoreException {
+   public String getData() {
       if (isErrorOnGet) {
          throw new OseeCoreException("Error case set");
       }

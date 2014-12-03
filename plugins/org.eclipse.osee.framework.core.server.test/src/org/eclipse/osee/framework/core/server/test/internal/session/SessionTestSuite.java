@@ -14,11 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-SessionTest.class, //
-   SessionFactoryTest.class, //
-   SessionManagerTest.class, //
-})
+@Suite.SuiteClasses({SessionTest.class, SessionFactoryTest.class})
 /**
  * @author Roberto E. Escobar
  */

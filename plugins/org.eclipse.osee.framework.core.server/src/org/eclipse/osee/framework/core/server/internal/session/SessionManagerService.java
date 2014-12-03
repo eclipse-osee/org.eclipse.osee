@@ -20,11 +20,12 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.core.server.internal.BuildTypeDataProvider;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
-import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier.BuildTypeDataProvider;
+import org.eclipse.osee.framework.core.server.internal.util.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -32,9 +33,10 @@ import org.eclipse.osee.logger.Log;
  */
 public final class SessionManagerService implements ISessionManager {
 
+   private static final String BUILD_DATA_KEY = "osee.build.designation";
+
    private Log logger;
-   private DatabaseInfoRegistry registry;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
    private IAuthenticationManager authenticationManager;
    private CacheAdmin cacheAdmin;
    private ISessionManager proxiedSessionManager;
@@ -43,12 +45,8 @@ public final class SessionManagerService implements ISessionManager {
       this.logger = logger;
    }
 
-   public void setDbInfoRegistry(DatabaseInfoRegistry registry) {
-      this.registry = registry;
-   }
-
-   public void setDbService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
@@ -59,22 +57,21 @@ public final class SessionManagerService implements ISessionManager {
       this.cacheAdmin = cacheAdmin;
    }
 
-   private IOseeDatabaseService getDbService() {
-      return dbService;
-   }
-
-   private IAuthenticationManager getAuthenticationManager() {
-      return authenticationManager;
-   }
-
    public void start() throws OseeCoreException {
-      BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider());
+      final JdbcClient jdbcClient = jdbcService.getClient();
 
-      SessionFactory sessionFactory = new SessionFactory(logger, registry, dbService, identifier);
+      BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider() {
 
-      ISessionQuery sessionQuery = new DatabaseSessionQuery(getDbService());
+         @Override
+         public String getData() {
+            return OseeInfo.getValue(jdbcClient, BUILD_DATA_KEY);
+         }
 
-      DatabaseSessionAccessor accessor = new DatabaseSessionAccessor(sessionFactory, sessionQuery, getDbService());
+      });
+
+      SessionFactory sessionFactory = new SessionFactory(logger, jdbcService, identifier);
+      ISessionQuery sessionQuery = new DatabaseSessionQuery(jdbcClient);
+      DatabaseSessionAccessor accessor = new DatabaseSessionAccessor(sessionFactory, sessionQuery, jdbcClient);
 
       CacheConfiguration config = CacheConfiguration.newConfiguration();
       Cache<String, Session> sessionCache = null;
@@ -84,8 +81,7 @@ public final class SessionManagerService implements ISessionManager {
          OseeExceptions.wrapAndThrow(e);
       }
 
-      proxiedSessionManager =
-         new SessionManagerImpl(sessionFactory, sessionCache, getAuthenticationManager(), accessor);
+      proxiedSessionManager = new SessionManagerImpl(sessionFactory, sessionCache, authenticationManager, accessor);
    }
 
    public void stop() {

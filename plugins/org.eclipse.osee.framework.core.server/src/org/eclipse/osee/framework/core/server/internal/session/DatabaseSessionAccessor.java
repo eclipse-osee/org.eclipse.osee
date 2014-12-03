@@ -20,11 +20,10 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
-import org.eclipse.osee.framework.database.core.IDbTransactionWork;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcTransaction;
 
 /**
  * @author Roberto E. Escobar
@@ -38,21 +37,21 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
 
    private final SessionFactory sessionFactory;
    private final ISessionQuery sessionQuery;
-   private final IOseeDatabaseService databaseService;
+   private final JdbcClient jdbcClient;
 
-   public DatabaseSessionAccessor(SessionFactory sessionFactory, ISessionQuery sessionQuery, IOseeDatabaseService databaseService) {
+   public DatabaseSessionAccessor(SessionFactory sessionFactory, ISessionQuery sessionQuery, JdbcClient jdbcClient) {
       super();
       this.sessionFactory = sessionFactory;
       this.sessionQuery = sessionQuery;
-      this.databaseService = databaseService;
+      this.jdbcClient = jdbcClient;
    }
 
    private SessionFactory getFactory() {
       return sessionFactory;
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return databaseService;
+   private JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    private ISessionQuery getSessionQuery() {
@@ -60,8 +59,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
    }
 
    private void executeTx(SessionTxType op, Iterable<Session> sessions) throws OseeCoreException {
-      IDbTransactionWork tx = new SessionTx(getDatabaseService(), op, sessions);
-      DatabaseTransactions.execute(getDatabaseService(), getDatabaseService().getConnection(), tx);
+      jdbcClient.runTransaction(new SessionTx(getJdbcClient(), op, sessions));
    }
 
    @Override
@@ -126,25 +124,20 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       DELETE;
    }
 
-   private static final class SessionTx implements IDbTransactionWork {
+   private static final class SessionTx extends JdbcTransaction {
 
-      private final IOseeDatabaseService dbService;
+      private final JdbcClient jdbcClient;
       private final SessionTxType txType;
       private final Iterable<Session> sessions;
 
-      public SessionTx(IOseeDatabaseService dbService, SessionTxType txType, Iterable<Session> sessions) {
-         this.dbService = dbService;
+      public SessionTx(JdbcClient jdbcClient, SessionTxType txType, Iterable<Session> sessions) {
+         this.jdbcClient = jdbcClient;
          this.txType = txType;
          this.sessions = sessions;
       }
 
       @Override
-      public String getName() {
-         return String.format("[%s] Session", txType);
-      }
-
-      @Override
-      public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
          switch (txType) {
             case CREATE:
                create(connection);
@@ -157,23 +150,23 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          }
       }
 
-      private void create(OseeConnection connection) throws OseeCoreException {
+      private void create(JdbcConnection connection) throws OseeCoreException {
          List<Object[]> insertData = new ArrayList<Object[]>();
          for (Session session : sessions) {
             insertData.add(toInsert(session));
          }
          if (!insertData.isEmpty()) {
-            dbService.runBatchUpdate(connection, INSERT_SESSION, insertData);
+            jdbcClient.runBatchUpdate(connection, INSERT_SESSION, insertData);
          }
       }
 
-      private void delete(OseeConnection connection) throws OseeCoreException {
+      private void delete(JdbcConnection connection) throws OseeCoreException {
          List<Object[]> deleteData = new ArrayList<Object[]>();
          for (Session session : sessions) {
             deleteData.add(toDelete(session));
          }
          if (!deleteData.isEmpty()) {
-            dbService.runBatchUpdate(connection, DELETE_SESSION, deleteData);
+            jdbcClient.runBatchUpdate(connection, DELETE_SESSION, deleteData);
          }
       }
 
@@ -192,15 +185,6 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          return new Object[] {session.getGuid()};
       }
 
-      @Override
-      public void handleTxException(Exception ex) {
-         //
-      }
-
-      @Override
-      public void handleTxFinally() {
-         //
-      }
    }
 
 }

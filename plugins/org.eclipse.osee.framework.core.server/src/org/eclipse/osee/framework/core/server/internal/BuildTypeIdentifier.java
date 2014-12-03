@@ -29,6 +29,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class BuildTypeIdentifier {
 
+   public static interface BuildTypeDataProvider {
+
+      String getData();
+   }
+
    private static final String DEFAULT_IDENTIFIER = "N/A";
    private static final String START_TAG = "build";
    private static final String ID_TAG = "type";

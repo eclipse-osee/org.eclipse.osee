@@ -13,19 +13,20 @@ package org.eclipse.osee.framework.core.server.internal.session;
 import java.sql.DatabaseMetaData;
 import java.util.Date;
 import java.util.Properties;
+import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
-import org.eclipse.osee.framework.core.server.internal.compatibility.OseeSql_0_9_1;
-import org.eclipse.osee.framework.database.DatabaseInfoRegistry;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.core.server.internal.util.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcClientConfig;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcDbType;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -34,14 +35,12 @@ import org.eclipse.osee.logger.Log;
 public final class SessionFactory implements IOseeTypeFactory {
    private final BuildTypeIdentifier typeIdentifier;
    private final Log logger;
-   private final DatabaseInfoRegistry registry;
-   private final IOseeDatabaseService dbService;
+   private final JdbcService jdbcService;
 
-   public SessionFactory(Log logger, DatabaseInfoRegistry registry, IOseeDatabaseService dbService, BuildTypeIdentifier typeIdentifier) {
+   public SessionFactory(Log logger, JdbcService jdbcService, BuildTypeIdentifier typeIdentifier) {
       this.typeIdentifier = typeIdentifier;
       this.logger = logger;
-      this.registry = registry;
-      this.dbService = dbService;
+      this.jdbcService = jdbcService;
    }
 
    public Session createLoadedSession(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
@@ -64,9 +63,9 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setAuthenticationProtocol(authenticationType);
       sessionGrant.setCreationRequired(userToken.isCreationRequired());
       sessionGrant.setUserToken(userToken);
-      sessionGrant.setDatabaseInfo(registry.getSelectedDatabaseInfo());
+      sessionGrant.setDatabaseInfo(getDatabaseInfo());
 
-      Properties properties = getSQLProperties(dbService, session.getClientVersion());
+      Properties properties = getSQLProperties(jdbcService.getClient(), session.getClientVersion());
       sessionGrant.setSqlProperties(properties);
 
       sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));
@@ -74,16 +73,13 @@ public final class SessionFactory implements IOseeTypeFactory {
       return sessionGrant;
    }
 
-   private static Properties getSQLProperties(IOseeDatabaseService dbService, String clientVersion) throws OseeCoreException {
+   private static Properties getSQLProperties(JdbcClient jdbcClient, String clientVersion) throws OseeCoreException {
       Properties properties = null;
-      OseeConnection connection = dbService.getConnection();
+      JdbcConnection connection = jdbcClient.getConnection();
       try {
          DatabaseMetaData metaData = connection.getMetaData();
-         if (is_0_9_2_Compatible(clientVersion)) {
-            properties = OseeSql.getSqlProperties(metaData);
-         } else {
-            properties = OseeSql_0_9_1.getSqlProperties(metaData);
-         }
+         boolean areHintsSupported = JdbcDbType.areHintsSupported(metaData);
+         properties = OseeSql.getSqlProperties(areHintsSupported);
       } finally {
          if (connection != null) {
             connection.close();
@@ -92,14 +88,53 @@ public final class SessionFactory implements IOseeTypeFactory {
       return properties;
    }
 
-   private static boolean is_0_9_2_Compatible(String clientVersion) {
-      boolean result = false;
-      if (Strings.isValid(clientVersion)) {
-         String toCheck = clientVersion.toLowerCase();
-         if (!toCheck.startsWith("0.9.0") && !toCheck.startsWith("0.9.1")) {
-            result = true;
+   private IDatabaseInfo getDatabaseInfo() {
+      final String infoId = jdbcService.getId();
+      final JdbcClientConfig config = jdbcService.getClient().getConfig();
+      return new IDatabaseInfo() {
+
+         private static final long serialVersionUID = 192942011732757789L;
+
+         @Override
+         public boolean isProduction() {
+            return config.isProduction();
          }
-      }
-      return result;
+
+         @Override
+         public String getId() {
+            return infoId;
+         }
+
+         @Override
+         public String getDriver() {
+            return config.getDbDriver();
+         }
+
+         @Override
+         public String getDatabaseLoginName() {
+            return config.getDbUsername();
+         }
+
+         @Override
+         public String getConnectionUrl() {
+            return config.getDbUri();
+         }
+
+         @Override
+         public Properties getConnectionProperties() {
+            return config.getDbProps();
+         }
+
+         @Override
+         public String getDatabaseName() {
+            return jdbcService.hasServer() ? jdbcService.getServerConfig().getDbName() : "";
+         }
+
+         @Override
+         public String getDatabaseHome() {
+            return jdbcService.hasServer() ? jdbcService.getServerConfig().getDbPath() : "";
+         }
+
+      };
    }
 }
