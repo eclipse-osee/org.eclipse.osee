@@ -92,6 +92,15 @@ public class RunTests implements ITestServerCommand, Serializable {
         System.setProperty("ote.abort.on.fail", "true");
       }   
       
+      //Override the command line option only if batch pause has been selected in TestManager
+      boolean batchPauseFailMode = global.getBoolean(RunTestsKeys.batchFailPauseMode.name());
+      if(batchPauseFailMode){
+         System.setProperty("ote.pause.on.fail", "true");
+      }   
+      else {
+         System.clearProperty("ote.pause.on.fail");   
+      }
+
       for (IPropertyStore store : scripts) {
          if (cancelAll) {
             statusBoard.onTestComplete(store.get(RunTestsKeys.testClass.name()),
