@@ -46,10 +46,6 @@ background-color: lightslategray;
 
 
 
-
-
-
-
 #compareText {
 	width: 110px;
 	margin: 0px 0px 0px 75px;
@@ -200,6 +196,10 @@ textarea {
 	margin-top: 20px;
  }
  
+ #search {
+	margin-top: 20px;
+ }
+ 
  #loadingModal {
  	margin-bottom: 0px;
  }
@@ -224,10 +224,3 @@ input.cellInput:focus{
 	border: solid cyan;
 }
 
-#refresh {
-	margin-top: 20px;
- }
- 
- #loadingModal {
- 	margin-bottom: 0px;
- }

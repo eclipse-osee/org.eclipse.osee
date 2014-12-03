@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -190,4 +192,32 @@ public class DispoSetResource {
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
       return new DispoItemResource(dispoApi, program, setId);
    }
+
+   /**
+    * Get a specific Dispositionable Item given a key word within the Dispositions
+    * 
+    * @param itemId The Id of the Dispositionable Item to search for
+    * @return The found Dispositionable Item if successful. Error Code otherwise
+    * @response.representation.200.doc OK, Found Dispositionable Item
+    * @response.representation.404.doc Not Found, Could not find any Dispositionable Items
+    */
+   @Path("{setId}/search")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value) {
+      Response response;
+      Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(program, setId, value);
+      if (foundItems.isEmpty()) {
+         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
+      } else {
+         JSONArray jArray = new JSONArray();
+         for (DispoItem item : foundItems) {
+            jArray.put(DispoUtil.dispoItemToJsonObj(item));
+         }
+
+         response = Response.status(Response.Status.OK).entity(jArray.toString()).build();
+      }
+      return response;
+   }
+
 }

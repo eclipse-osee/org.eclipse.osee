@@ -16,8 +16,11 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDe
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -32,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -426,12 +430,34 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword) {
+      ArtifactReadable dispoSetArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
+
+      Set<DispoItem> toReturn = new HashSet<DispoItem>();
+      ResultSet<ArtifactReadable> dispoArtifacts =
+         getQuery()//
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoItem)//
+         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, dispoSetArt).and(
+            DispoConstants.DispoAnnotationsJson, keyword,//
+            QueryOption.CONTAINS_MATCH_OPTIONS)//
+         .getResults();
+
+      for (ArtifactReadable art : dispoArtifacts) {
+         toReturn.add(new DispoItemArtifact(art));
+      }
+
+      return toReturn;
+   }
+
+   @Override
    public DispoItem findDispoItemById(DispoProgram program, String itemId) {
       DispoItem toReturn = null;
       ArtifactReadable dispoArtifact = findDispoArtifact(program, itemId, DispoConstants.DispoItem);
       if (dispoArtifact != null) {
          toReturn = new DispoItemArtifact(dispoArtifact);
       }
+
       return toReturn;
    }
 

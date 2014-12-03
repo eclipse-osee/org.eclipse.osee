@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -70,5 +71,7 @@ public interface DispoApi {
    boolean isUniqueItemName(DispoProgram program, String setId, String itemName);
 
    DispoFactory getDispoFactory();
+
+   Collection<DispoItem> getDispoItemByAnnotationText(DispoProgram program, String setId, String keyword);
 
 }

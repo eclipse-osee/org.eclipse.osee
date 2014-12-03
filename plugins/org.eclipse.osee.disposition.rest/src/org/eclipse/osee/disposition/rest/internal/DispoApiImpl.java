@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -304,6 +305,11 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoItem getDispoItemById(DispoProgram program, String itemId) {
       return getQuery().findDispoItemById(program, itemId);
+   }
+
+   @Override
+   public Collection<DispoItem> getDispoItemByAnnotationText(DispoProgram program, String setId, String keyword) {
+      return getQuery().findDispoItemByAnnoationText(program, setId, keyword);
    }
 
    @Override

@@ -7,8 +7,9 @@ app.controller('userController', [
     'Set',
     'Item',
     'Annotation',
+    'SetSearch',
 
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation) {
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -17,9 +18,8 @@ app.controller('userController', [
         $scope.lastFocused = null;
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
-        $scope.spinneractive = false;
-        
-        
+		$scope.isSearchView = false;
+		
         $scope.getDispoType = function() {
         	if($rootScope.type == 'codeCoverage') {
         		$scope.annotationHeaders = {
@@ -32,14 +32,27 @@ app.controller('userController', [
         				'resolutionType': 'PCR Type',
         				'resolution': 'PCR'}
         	}
-        }
+        };
         
-        $scope.getDispoType();
-        
-        // Get programs
-        Program.query(function(data) {
-            $scope.programs = data;
-        });
+        // if this is a search result view, populate program, set and items from parent scope
+        if(window.opener != null) {
+        	$scope.programs = window.opener.$windowScope.programs;
+        	$scope.sets = window.opener.$windowScope.sets;
+        	$scope.programSelection = window.opener.$windowScope.programSelection;
+        	$scope.setSelection = window.opener.$windowScope.setSelection;
+    		$scope.items = window.opener.$windowScope.searchData;
+    		
+    		$scope.isSearchView = true;
+    		$scope.searchValue = window.opener.$windowScope.searchValue;
+    		
+    		$scope.dispoType = window.opener.$windowScope.dispoType;
+    	} else {
+            // Get programs from server
+            Program.query(function(data) {
+                $scope.programs = data;
+            });
+            $scope.getDispoType();
+    	}
         
         $scope.isDefaultResolution = function isDefaultResolution(annotation) {
         	var resolutionType = annotation.resolutionType;
@@ -62,24 +75,21 @@ app.controller('userController', [
         $scope.updateSet = function updateSet() {
         	var loadingModal = $scope.showLoadingModal();
         	$scope.items = {};
-            Item.query({
-                programId: $scope.programSelection,
-                setId: $scope.setSelection
-            }, function(data) {
-            	loadingModal.close();
-                $scope.items = data;
-            }, function(data) {
-            	loadingModal.close();
-            	alert("Ooops...Something went wrong");
-            });
-
-            Set.get({
-                programId: $scope.programSelection,
-                setId: $scope.setSelection
-            }, function(data) {
-                $scope.set = data;
-                $scope.dispoConfig = $scope.set.dispoConfig;
-            });
+        	
+        	if($scope.isSearchView) {
+        		$scope.doAdvSearch($scope.searchValue, loadingModal);
+        	} else {
+                Item.query({
+                    programId: $scope.programSelection,
+                    setId: $scope.setSelection
+                }, function(data) {
+                	loadingModal.close();
+                    $scope.items = data;
+                }, function(data) {
+                	loadingModal.close();
+                	alert("Ooops...Something went wrong");
+                });
+        	}
         };
 
         $scope.getItemDetails = function getItemDetails(item, row) {
@@ -142,7 +152,6 @@ app.controller('userController', [
         $scope.$on('ngGridEventEndCellEdit', function (event) {
             cellData = event.targetScope.row.entity[event.targetScope.col.field];
             if(cellData != $scope.previousCellData) {
-//            	$scope.editItem(event.targetScope.row.entity);
             }
         });
         
@@ -400,11 +409,6 @@ app.controller('userController', [
             headerRowHeight: 60 // give room for filter bar
         };
         
-        
-        $scope.saveLastFocused = function saveLastFocused(element) {
-            $scope.lastFocused = element;
-        }
-        
         $scope.stealItem = function(item) {
             Item.get({
                 programId: $scope.programSelection,
@@ -433,10 +437,6 @@ app.controller('userController', [
             }
         }
         
-        $scope.isDisabledOption = function isDisabledOption(option) {
-        	var isSelectable = option.selectable;
-        	return !isSelectable;
-        }
         
         $scope.testResolutionTypes = [{
             text: "Code",
@@ -458,19 +458,19 @@ app.controller('userController', [
         $scope.coverageResolutionTypes = [{
             text: "Test Script",
             value: "Test_Script",
-            isinuse: true
+            isDefault: true
         }, {
             text: "Exception_Handling",
             value: "Exception_Handling",
-            isinuse: true
+            isDefault: true
         }, {
             text: "Other",
             value: "other",
-            isinuse: false
+            isDefault: false
         }, {
             text: "Undetermined",
             value: "UNDETERMINED",
-            isinuse: false
+            isDefault: false
         }];
         
         
@@ -484,7 +484,7 @@ app.controller('userController', [
         }
         
         $scope.getResolutionTypes = function getResolutionTypes() {
-        	if($scope.set.dispoType == 'codeCoverage') {
+        	if($scope.dispoType == 'codeCoverage') {
         		return $scope.coverageResolutionTypes;
         	} else {
         		return $scope.testResolutionTypes;
@@ -667,6 +667,39 @@ app.controller('userController', [
         	oldItem.status = newItem.status;
         }
         
+        $scope.doAdvSearch = function(value, loadingModal) {
+        	SetSearch.query({
+                programId: $scope.programSelection,
+                setId: $scope.setSelection,
+                value: value,
+            }, function(data) {
+            	if($scope.isSearchView) {
+            		$scope.items = data;
+            		if(loadingModal != null) {
+            			loadingModal.close();
+            		}
+            	} else  {
+                	$scope.searchData = data;
+                	window.$windowScope = $scope;
+                	$scope.searchValue = value;
+                	window.open("/dispo/main.html#/search");
+            	}
+            }, function(data) {
+            	if($scope.isSearchView) {
+            		$scope.items = $scope.emptyItems;
+            	} else {
+                	$scope.searchData = $scope.emptyItems;
+                	window.$windowScope = $scope;
+                	window.open("/dispo/main.html#/search");
+            	}
+            	if(loadingModal != null) {
+        			loadingModal.close();
+        		}
+            });
+        }
+        
+        $scope.emptyItems = [{"name": "NONE FOUND"}]
+        
         
         // MODALS -------------------------------------------------------------------------------------------------
         $scope.showAssigneeModal = function() {
@@ -767,6 +800,45 @@ app.controller('userController', [
                 } else {
                 	inputs.needsRerun = this.formData.multiNeedsRerun;
                 }
+                $modalInstance.close(inputs);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
+        };
+        
+        
+        
+        // Advanced Serach Modal
+        $scope.showAdvSearchModal = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'advSearchModal.html',
+                controller: AdvSearchModalCtrl,
+                size: 'md',
+                windowClass: 'advSearch',
+                resolve: {
+                	value: function() {
+                		return $scope.searchValue;
+                	}
+                }
+            });
+
+            modalInstance.result.then(function(inputs) {
+            	var loadingModal = null;
+            	if($scope.isSearchView) {
+            		$scope.searchValue = inputs.value;
+            		loadingModal = $scope.showLoadingModal();
+            	}
+            	$scope.doAdvSearch(inputs.value, loadingModal)
+            });
+        }
+        
+        var AdvSearchModalCtrl = function($scope, $modalInstance, value) {
+        	$scope.searchValue = value;
+            $scope.ok = function() {
+                var inputs = {};
+            	inputs.value = this.searchValue;
                 $modalInstance.close(inputs);
             };
 

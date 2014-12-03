@@ -3,6 +3,7 @@
  */
 var app = angular.module('dispoApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'ngGrid', 'mc.resizer', 'ngCookies', ]);
 
+
 app.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.when('/', {
@@ -13,6 +14,9 @@ app.config(['$routeProvider',
         }).when('/admin', {
             templateUrl: 'admin.html',
             controller: 'adminController'
+        }).when('/search', {
+            templateUrl: 'user.html',
+            controller: 'userController'
         }).otherwise({
             redirectTo: "/user"
         });
@@ -118,6 +122,19 @@ app.provider('Item', function() {
         }
     ];
 });
+
+app.provider('SetSearch', function() {
+    this.$get = [
+        '$resource',
+        function($resource) {
+            var SetSearch = $resource(
+                '/dispo/program/:programId/set/:setId/search/', {}, {
+                });
+            return SetSearch;
+        }
+    ];
+});
+
 
 app.provider('Annotation', function() {
     this.$get = [

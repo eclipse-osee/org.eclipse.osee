@@ -12,11 +12,11 @@
                 </div>   
                 <div class="span3">
                   ATS Version:
-                  <select class="form-control" ng-show="programs" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
+                  <select class="form-control" ng-show="programs" ng-model="programSelection" ng-disabled="isSearchView" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
                </div>
-                <div ng-show="programSelection != null" class="span3">
+                <div class="span3">
                   Set:
-                  <select class="form-control" ng-show="sets" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
+                  <select ng-show="programSelection != null" class="form-control" ng-show="sets" ng-disabled="isSearchView" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
                   </select>
                </div>
                 <div id="multItemEditDiv" class="span5">
@@ -27,9 +27,10 @@
                      <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
                   </div>
                </div>
-               <div id="multItemEditDiv" class="span2" ng-show="items.length>0" class="btn-group">
-               	<button class="btn btn-primary active" ng-click="searchAnnotations()">Search Dispositions</button>
-               </div>
+                <div id="search" class="span1 offset1">
+                   <button class="btn btn-primary active" ng-show="items.length>0 && !isSearchView" ng-click="showAdvSearchModal()">Adv Search</button>
+                   <button class="btn btn-primary active" ng-show="items.length>0 && isSearchView" ng-click="showAdvSearchModal()">Searching: {{ searchValue }}</button>
+                </div> 
             </div>
             <div id="top-content" class="row">
                 <div style='height: 500px;' id="itemsGrid" class="gridStyle" ng-grid="gridOptions"></div>
@@ -52,7 +53,7 @@
                         <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-disabled="isDefaultResolution(annotation);" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
                      </td>
                      <td>
-                        <select ng-class="{annotationInput: true, details: annotation.showDeets}" focus-me="annotation.guid !=null" ng-options="obj.value as obj.text for obj in getResolutionTypes();" options-disabled="option.isinuse for option in getResolutionTypes();" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-model="annotation.resolutionType" ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></select>
+                        <select ng-class="{annotationInput: true, details: annotation.showDeets}" focus-me="annotation.guid !=null" ng-options="obj.value as obj.text for obj in getResolutionTypes();" options-disabled="option.isDefault for option in getResolutionTypes();" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-model="annotation.resolutionType" ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></select>
                      </td>
                      <td>
                         <textarea ng-class="{annotationInput: true, invalid: getInvalidRes(annotation), details: annotation.showDeets}" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-model="annotation.resolution" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
@@ -132,6 +133,20 @@
          <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+         </div>
+       </script>
+    
+    <script type="text/ng-template" id="advSearchModal.html">
+         <div class="modal-header">
+            <h3 class="modal-title">Advanced Search</h3>
+         </div>
+         <div class="modal-body" style="height: 300px; overflow: auto;">
+            <label>Disposition Keyword</label>
+            <input ng-model="searchValue" class="form-control" name="setMultiCategory" placeholder="Enter Search Value" required>
+         </div>
+         <div class="modal-footer">
+             <button class="btn btn-primary" ng-click="ok()">OK</button>
+             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
          </div>
        </script>
     

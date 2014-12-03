@@ -6,6 +6,8 @@ app.controller('mainController', [
 		function($rootScope, $cookieStore, $modal) {
 			$rootScope.type = 'testScript';
 			
+			$rootScope.searchResults = [];
+			
 			$rootScope.setUserName = function() {
 				$rootScope.attempts = 0;
 				while(($rootScope.cachedName == null || $rootScope.cachedName == "") && $rootScope.attempts < 5) {
