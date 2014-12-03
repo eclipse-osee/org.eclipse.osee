@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
@@ -24,7 +25,7 @@ import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
  */
 public class SystemPreferencesImpl implements SystemPreferences {
 
-   private Map<String, String> cache;
+   private static Map<String, Pair<Long, String>> cache;
    private KeyValueDataAccessor accessor;
 
    public void setDataAccessor(KeyValueDataAccessor accessor) {
@@ -32,7 +33,7 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    public void start() {
-      cache = new ConcurrentHashMap<String, String>();
+      cache = new ConcurrentHashMap<String, Pair<Long, String>>();
    }
 
    public void stop() {
@@ -47,19 +48,26 @@ public class SystemPreferencesImpl implements SystemPreferences {
    @Override
    public String getValue(String key) throws OseeCoreException {
       String toReturn = accessor.getValue(key);
-      cache.put(key, toReturn);
+      cacheValue(key, toReturn);
       return toReturn;
    }
 
    @Override
    public String getCachedValue(String key) throws OseeCoreException {
-      String cacheValue = cache.get(key);
-      if (cacheValue == null) {
-         cacheValue = getValue(key);
-         cache.put(key, cacheValue);
+      return getCachedValue(key, Integer.MAX_VALUE);
+   }
+
+   @Override
+   public String getCachedValue(String key, long maxStaleness) throws OseeCoreException {
+      Pair<Long, String> pair = cache.get(key);
+      String value;
+      if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
+         value = getValue(key);
+      } else {
+         value = pair.getSecond();
       }
 
-      return cacheValue;
+      return value;
    }
 
    @Override
@@ -103,12 +111,17 @@ public class SystemPreferencesImpl implements SystemPreferences {
    @Override
    public void putValue(String key, String value) throws OseeCoreException {
       accessor.putValue(key, value);
-      cache.put(key, value);
+      cacheValue(key, value);
    }
 
    @Override
    public Set<String> getKeys() throws OseeCoreException {
       return accessor.getKeys();
+   }
+
+   private static void cacheValue(String key, String value) {
+      Long time = System.currentTimeMillis();
+      cache.put(key, new Pair<Long, String>(time, value));
    }
 
 }

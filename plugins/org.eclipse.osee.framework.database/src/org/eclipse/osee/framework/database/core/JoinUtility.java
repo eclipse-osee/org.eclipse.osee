@@ -100,7 +100,7 @@ public class JoinUtility {
 
    private static int getMaxArtifactJoinSize(IOseeDatabaseService service) {
       int toReturn = Integer.MAX_VALUE;
-      String maxSize = OseeInfo.getCachedValue(service, "artifact.join.max.size");
+      String maxSize = OseeInfo.getValue(service, "artifact.join.max.size");
       if (Strings.isNumeric(maxSize)) {
          toReturn = Integer.parseInt(maxSize);
       }
@@ -112,7 +112,7 @@ public class JoinUtility {
       if (actual != null) {
          toReturn = actual;
       } else {
-         String expiration = OseeInfo.getCachedValue(service, defaultKey);
+         String expiration = OseeInfo.getValue(service, defaultKey);
          if (Strings.isNumeric(expiration)) {
             toReturn = Long.parseLong(expiration);
          }

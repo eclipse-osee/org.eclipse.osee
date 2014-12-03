@@ -124,7 +124,7 @@ public class BranchManager {
    }
 
    public static void refreshBranches() throws OseeCoreException {
-      String refreshWindow = OseeInfo.getCachedValue("cache.reload.throttle.millis");
+      String refreshWindow = OseeInfo.getValue("cache.reload.throttle.millis");
       boolean reload = true;
       if (Strings.isNumeric(refreshWindow)) {
          long timeInMillis = Long.parseLong(refreshWindow);

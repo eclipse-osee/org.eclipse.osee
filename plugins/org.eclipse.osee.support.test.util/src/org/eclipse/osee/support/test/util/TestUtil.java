@@ -41,11 +41,11 @@ public class TestUtil {
    }
 
    public static boolean isDbInitSuccessful() throws OseeCoreException {
-      return OseeInfo.isBoolean("DbInitSuccess");
+      return OseeInfo.getValue("DbInitSuccess").equals("true");
    }
 
    public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
-      OseeInfo.setBoolean("DbInitSuccess", success);
+      OseeInfo.setValue("DbInitSuccess", String.valueOf(success));
    }
 
    /**
@@ -64,11 +64,11 @@ public class TestUtil {
    }
 
    public static boolean isDemoDb() throws OseeCoreException {
-      return DEMO_DB_TYPE.equals(OseeInfo.getCachedValue(OseeInfo.DB_TYPE_KEY));
+      return DEMO_DB_TYPE.equals(OseeInfo.getValue(OseeInfo.DB_TYPE_KEY));
    }
 
    public static void setDemoDb(boolean set) throws OseeCoreException {
-      OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
+      OseeInfo.setValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
    }
 
    public static void sleep(long milliseconds) {

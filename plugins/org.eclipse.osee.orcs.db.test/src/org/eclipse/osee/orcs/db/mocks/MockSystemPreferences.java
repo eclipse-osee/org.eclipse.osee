@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.mocks;
 
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
 /**
@@ -72,6 +73,11 @@ public class MockSystemPreferences implements SystemPreferences {
    @Override
    public boolean isBooleanUsingCache(String key) throws OseeCoreException {
       return false;
+   }
+
+   @Override
+   public String getCachedValue(String key, long maxStaleness) throws OseeCoreException {
+      return Strings.emptyString();
    }
 
 }

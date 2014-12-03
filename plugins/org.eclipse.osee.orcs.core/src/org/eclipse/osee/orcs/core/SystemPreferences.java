@@ -26,6 +26,8 @@ public interface SystemPreferences {
 
    public String getCachedValue(String key) throws OseeCoreException;
 
+   public String getCachedValue(String key, long maxStaleness) throws OseeCoreException;
+
    /**
     * Return true if key is set and value = "true". Return false if key is either not set OR value != "true".<br>
     * <br>

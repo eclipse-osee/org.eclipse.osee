@@ -48,19 +48,19 @@ public class DemoUtil {
    }
 
    public static boolean isDbInitSuccessful() throws OseeCoreException {
-      return OseeInfo.isBoolean("DbInitSuccess");
+      return OseeInfo.getValue("DbInitSuccess").equals("true");
    }
 
    public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
-      OseeInfo.setBoolean("DbInitSuccess", success);
+      OseeInfo.setValue("DbInitSuccess", String.valueOf(success));
    }
 
    public static boolean isPopulateDbSuccessful() throws OseeCoreException {
-      return OseeInfo.isBoolean("PopulateSuccessful");
+      return OseeInfo.getValue("PopulateSuccessful").equals("true");
    }
 
    public static void setPopulateDbSuccessful(boolean success) throws OseeCoreException {
-      OseeInfo.setBoolean("PopulateSuccessful", success);
+      OseeInfo.setValue("PopulateSuccessful", String.valueOf(success));
    }
 
    public static TeamWorkFlowArtifact getSawCodeCommittedWf() throws OseeCoreException {

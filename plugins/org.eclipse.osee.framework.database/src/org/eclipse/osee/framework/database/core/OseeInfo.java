@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.internal.ServiceUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**
  * @author Donald G. Dunne
@@ -29,93 +30,45 @@ public class OseeInfo {
    public static final String DB_ID_KEY = "osee.db.guid";
    public static final String DB_TYPE_KEY = "osee.db.type";
 
-   private static Map<String, String> cache = new HashMap<String, String>();
+   private static Map<String, Pair<Long, String>> cache = new ConcurrentHashMap<String, Pair<Long, String>>();
 
    public static String getValue(String key) throws OseeCoreException {
-      return getValue(ConnectionHandler.getDatabase(), key);
+      return getValue(key, (long) Integer.MAX_VALUE);
    }
 
-   public static String getValue(IOseeDatabaseService service, String key) throws OseeCoreException {
-      String toReturn = service.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
-      cache.put(key, toReturn);
-      return toReturn;
+   public static String getValue(String key, Long maxStaleness) throws OseeCoreException {
+      return getValue(ServiceUtil.getDatabaseService(), key, maxStaleness);
    }
 
-   public static String getCachedValue(IOseeDatabaseService service, String key) throws OseeCoreException {
-      String cacheValue = cache.get(key);
-      if (cacheValue == null) {
-         cacheValue = getValue(service, key);
-         cache.put(key, cacheValue);
+   public static String getValue(IOseeDatabaseService service, String key) {
+      return getValue(service, key, (long) Integer.MAX_VALUE);
+   }
+
+   public static String getValue(IOseeDatabaseService service, String key, Long maxStaleness) {
+      Pair<Long, String> pair = cache.get(key);
+      String value;
+      if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
+         value = service.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+         cacheValue(key, value);
+      } else {
+         value = pair.getSecond();
       }
 
-      return cacheValue;
-
+      return value;
    }
 
-   public static String getCachedValue(String key) throws OseeCoreException {
-      return getCachedValue(ConnectionHandler.getDatabase(), key);
-   }
-
-   /**
-    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
-    * table OR value != "true".<br>
-    * <br>
-    * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
-    * isCacheEnabled that will cache the value
-    */
-   public static boolean isEnabled(String key) throws OseeCoreException {
-      return isBoolean(key);
-   }
-
-   /**
-    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
-    * table OR value != "true".<br>
-    * <br>
-    * Return cached value (value only loaded once per session. Restart will reset value if changed in osee_info
-    */
-   public static boolean isCacheEnabled(String key) throws OseeCoreException {
-      String dbProperty = OseeInfo.getCachedValue(key);
-      if (Strings.isValid(dbProperty)) {
-         return dbProperty.equals("true");
-      }
-      return false;
-   }
-
-   public static void setEnabled(String key, boolean enabled) throws OseeCoreException {
-      setBoolean(key, enabled);
-   }
-
-   public static void setBoolean(String key, boolean value) throws OseeCoreException {
-      putValue(key, String.valueOf(value));
-
-   }
-
-   /**
-    * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
-    * table OR value != "true".<br>
-    * <br>
-    * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
-    * isBooleanUsingCache that will cache the value
-    */
-   public static boolean isBoolean(String key) throws OseeCoreException {
-      String dbProperty = OseeInfo.getValue(key);
-      if (Strings.isValid(dbProperty)) {
-         return dbProperty.equals("true");
-      }
-      return false;
-   }
-
-   public static boolean isBooleanUsingCache(String key) throws OseeCoreException {
-      return isCacheEnabled(key);
-   }
-
-   public static void putValue(String key, String value) throws OseeCoreException {
+   public static void setValue(String key, String value) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
-      cache.put(key, value);
+      cacheValue(key, value);
    }
 
    public static String getDatabaseGuid() throws OseeCoreException {
       return getValue(DB_ID_KEY);
+   }
+
+   private static void cacheValue(String key, String value) {
+      Long time = System.currentTimeMillis();
+      cache.put(key, new Pair<Long, String>(time, value));
    }
 }
