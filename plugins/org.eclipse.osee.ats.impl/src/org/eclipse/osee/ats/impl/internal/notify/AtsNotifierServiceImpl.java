@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.impl.internal.notify;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.mail.api.MailService;
 
@@ -23,7 +23,7 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
 
    private Log logger;
    private MailService mailService;
-   private IAtsServer atsServer;
+   private IAtsUserService userService;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -33,6 +33,10 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
       this.mailService = mailService;
    }
 
+   public void setUserService(IAtsUserService userService) {
+      this.userService = userService;
+   }
+
    /**
     * Send notifications
     */
@@ -40,7 +44,7 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
       SendNotificationEvents job =
          new SendNotificationEvents(logger, mailService, fromUserEmail, testingUserEmail, subject, body,
-            notificationEvents, atsServer.getUserService());
+            notificationEvents, userService);
       job.run();
    }
 
