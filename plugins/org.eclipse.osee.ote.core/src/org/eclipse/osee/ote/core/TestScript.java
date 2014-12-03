@@ -171,12 +171,13 @@ public abstract class TestScript implements ITimeout {
    private final ArrayList<IScriptCompleteListener> scriptCompleteListeners =
       new ArrayList<IScriptCompleteListener>(32);
 
-   private final ScriptResultRecord sciprtResultRecord;
+   private final ScriptResultRecord scriptResultRecord;
    private int pass;
    private int fail;
    private ScriptLoggingListener loggingListener;
    private final TestPromptImpl promptImpl;
    private ITestRunListenerProvider listenerProvider;
+   private boolean shouldPauseOnFail;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
@@ -185,7 +186,7 @@ public abstract class TestScript implements ITimeout {
       this.isMpLevel = false;
 
       promptImpl = new TestPromptImpl();
-      sciprtResultRecord = new ScriptResultRecord(this);
+      scriptResultRecord = new ScriptResultRecord(this);
       if (environment != null) {
          this.environment = environment;
          this.startTime = new Date(0);
@@ -196,6 +197,7 @@ public abstract class TestScript implements ITimeout {
          throw new TestException("No environment found: Can not run script ", Level.SEVERE);
       }
       this.testPointTally = new TestPointTally(this.getClass().getName());
+      shouldPauseOnFail = OteProperties.isPauseOnFailEnabled();
    }
 
    public void abort() {
@@ -305,6 +307,18 @@ public abstract class TestScript implements ITimeout {
       prompt(new TestPrompt(message, PromptResponseType.SCRIPT_PAUSE));
    }
 
+   public void pauseScriptOnFail(int testPoint) throws InterruptedException{
+      if (shouldPauseOnFail){
+      promptPause("Test point " + testPoint + " failed.\n");
+      }
+   }
+   
+   public void pauseScriptOnFail(int testPoint, String name, String expected, String actual, String stackTrace) throws InterruptedException{
+      if (shouldPauseOnFail){
+      promptPause("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
+      }
+   }
+   
    /**
     * Do not use this method from tests instead use {@link #logTestPoint(boolean, String, String, String)}. Takes result of test point and updates the total test point tally.
     * 
@@ -319,7 +333,7 @@ public abstract class TestScript implements ITimeout {
    }
 
    public void addScriptSummary(XmlizableStream xml) {
-	   sciprtResultRecord.addChildElement((XmlizableStream) xml);
+	   scriptResultRecord.addChildElement((XmlizableStream) xml);
    }
    
    /**
@@ -583,7 +597,7 @@ public abstract class TestScript implements ITimeout {
 
    @JsonProperty
    public ScriptResultRecord getScriptResultRecord() {
-      return sciprtResultRecord;
+      return scriptResultRecord;
    }
 
    public void setAborted(boolean aborted) {

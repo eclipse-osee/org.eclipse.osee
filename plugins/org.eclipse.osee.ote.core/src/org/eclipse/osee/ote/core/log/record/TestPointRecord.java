@@ -85,6 +85,36 @@ public class TestPointRecord extends TestRecord {
      */
     public TestPointRecord(ITestEnvironmentAccessor source, TestScript script, TestCase testCase, ITestPoint testPoint) {
         this(source, script, testCase, testPoint, true);
+        int point = script.getCurrentPointNumber();  
+        
+        if (!testPoint.isPass()) {
+           try {
+              if (testPoint instanceof CheckPoint) {
+                 CheckPoint cp = (CheckPoint) testPoint;
+                 String exp = cp.getExpected();
+                 String act = cp.getActual();
+                 String name = cp.getTestPointName();
+                 Throwable th = new Throwable();
+                 StringBuilder stack = new StringBuilder();
+                 boolean printLine = false;
+                 for (StackTraceElement element : th.getStackTrace()) {
+                    if (!printLine && !element.toString().startsWith("org.eclipse.osee")) {
+                       printLine = true;
+                    }
+                    if (printLine){
+                       stack.append(element.toString());
+                       stack.append("\n");
+                    }
+                 }
+                 script.pauseScriptOnFail(point, name, exp, act, stack.toString()); 
+              }
+              else {
+                 script.pauseScriptOnFail(point);
+              }
+           } catch (InterruptedException e) {
+              e.printStackTrace();
+           }
+        }
     }
 
     /**
