@@ -60,13 +60,18 @@ public class PoolFactory {
       stats.put("db.pool.version", poolVersion);
 
       String[] names = driver.getPoolNames();
+      int count = 0;
       for (String name : names) {
+
          try {
             ObjectPool<?> pool = driver.getConnectionPool(name);
-            stats.put(String.format("db.pool.%s.active", name), String.valueOf(pool.getNumActive()));
-            stats.put(String.format("db.pool.%s.idle", name), String.valueOf(pool.getNumIdle()));
+            stats.put(String.format("db.pool.%s.id", count), name);
+            stats.put(String.format("db.pool.%s.active", count), String.valueOf(pool.getNumActive()));
+            stats.put(String.format("db.pool.%s.idle", count), String.valueOf(pool.getNumIdle()));
          } catch (SQLException ex) {
             // Do Nothing
+         } finally {
+            count++;
          }
       }
       return stats;

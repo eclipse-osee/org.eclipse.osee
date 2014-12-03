@@ -71,8 +71,8 @@ public class JdbcClientConfig {
       return (String) dbProps.get(DB_PASSWORD_KEY);
    }
 
-   Properties getDbProps() {
-      return dbProps;
+   public Properties getDbProps() {
+      return new Properties(dbProps);
    }
 
    public JdbcPoolConfig getPoolConfig() {
