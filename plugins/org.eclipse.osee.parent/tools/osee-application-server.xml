@@ -10,7 +10,6 @@
    $xserver-db-password=osee.eclipse \
    $xserver-db-address=127.0.0.1 \
    $xserver-db-port=1623 \
-   $xserver-db-type=H2,PGSQL \
    
    ${xserver-authentication} 
 	${xserver-data}
@@ -34,17 +33,13 @@
 
 		<property name="xserver-use-demo-data" value="false" />
 		<property name="osee.app.server.config.file" value="${xserver-data}/osee.hsql.test.json" />
-		<property name="osee.app.server.connectionFile" value="${xserver-data}/test.osee.performance.db.connection.xml" />
-		<property name="osee.app.server.connectionId" value="hsql" />
 
-		<echo message="Server Connection File: [${osee.app.server.connectionFile}]" />
 		<echo message="Server Config File: [${osee.app.server.config.file}]" />
 		<echo message="Server Data Directory:  [${osee.application.server.data}]" />
 
 		<echo message="Osee Application Server Home: [${xserver-home}]" />
 		<echo message="Osee Application Server Port: [${xserver-port}]" />
 		<echo message="Osee Application Server Telnet Port: [${xserver-telnet-port}]" />
-		<echo message="Osee Application Server Db Type: [${xserver-db-type}]" />
 		<echo message="Osee Application Server Db Address: [${xserver-db-address}:${xserver-db-port}]" />
 
 		<mkdir dir="${xserver-data}" />
@@ -56,7 +51,9 @@
 		<if>
 			<equals arg1="${xserver-use-demo-data}" arg2="true" />
 			<then>
-				<copydir src="${xserver-project}/target/server/demo/binary_data" dest="${osee.application.server.data}" />
+				<copy todir="${osee.application.server.data}">
+					<fileset dir="${xserver-project}/target/server/demo/binary_data" />
+				</copy>
 
 				<!-- copy database data to server area -->
 				<copy file="${xserver-project}/target/server/demo/hsql/osee.hsql.db.properties" tofile="${xserver-data}/${xserver-db-name}.properties" />
@@ -66,7 +63,6 @@
 	</target>
 
 	<target name="writeHsqlConnectionFile" depends="init">
-		<writeConnectionFile dbType="hsql" dbHome="${xserver-db-home}" dbPrefix="jdbc:hsqldb:hsql" dbDriver="hsql.db.connection" dbName="${xserver-db-name}" dbUser="${xserver-db-username}" dbPasswd="${xserver-db-password}" dbAddress="${xserver-db-address}" dbPort="${xserver-db-port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 		<writeJsonConfig dbaddress="${xserver-db-address}" dbpath="${xserver-db-home}" dbport="${xserver-db-port}" filepath="${osee.app.server.config.file}" />
 	</target>
 
@@ -95,11 +91,8 @@
 				<sysproperty key="osee.check.tag.queue.on.startup" value="false" />
 				<sysproperty key="osgi.noShutdown" value="true" />
 				<sysproperty key="org.osgi.service.http.port" value="${xserver-port}" />
-				<sysproperty key="osee.db.connection.id" value="${osee.app.server.connectionId}" />
-				<sysproperty key="osee.connection.info.uri" value="${osee.app.server.connectionFile}" />
 				<sysproperty key="osee.application.server.data" value="${osee.application.server.data}" />
 				<sysproperty key="osee.authentication.protocol" value="${xserver-authentication}" />
-				<!--<sysproperty key="osee.db.embedded.server" value="${xserver-db-address}:${xserver-db-port}" />-->
 				<sysproperty key="logback.configurationFile" value="${xserver-log-config}" />
 				<sysproperty key="osgi.configuration.area" value="${xserver-project}/configuration" />
 				<sysproperty key="cm.config.uri" value="${osee.app.server.config.file}" />
@@ -129,61 +122,6 @@
 		<echo message="${shutdownOutput}" />
 		<sleep milliseconds="10000" />
 	</target>
-
-	<macrodef name="writeConnectionFile">
-		<attribute name="dbHome" />
-		<attribute name="dbName" />
-		<attribute name="dbUser" />
-		<attribute name="dbPasswd" />
-		<attribute name="dbType" />
-		<attribute name="dbPrefix" />
-		<attribute name="dbDriver" />
-		<attribute name="dbAddress" />
-		<attribute name="dbPort" />
-		<attribute name="connectionId" />
-		<attribute name="connectionFilePath" />
-		<sequential>
-			<echo message="Writing [@{dbType}] Db Connection File" />
-			<echo file="@{connectionFilePath}">
-			&lt;DbConnection&gt;
-				&lt;DatabaseInfo id=&quot;db.connection.info&quot;&gt;${line.separator}
-					&lt;DatabaseHome key=&quot;#DBHOME#&quot; value=&quot;@{dbHome}&quot; /&gt;${line.separator}
-					&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;@{dbName}&quot; /&gt;${line.separator}
-					&lt;DatabaseType key=&quot;#TYPE#&quot; value=&quot;@{dbType}&quot; /&gt;${line.separator}
-					&lt;Prefix key=&quot;#PREFIX#&quot; value=&quot;@{dbPrefix}&quot; /&gt;${line.separator}
-					&lt;UserName key=&quot;#USERNAME#&quot; value=&quot;@{dbUser}&quot; /&gt;${line.separator}
-					&lt;Password key=&quot;#PASSWORD#&quot; value=&quot;@{dbPasswd}&quot; /&gt;${line.separator}
-					&lt;Host key=&quot;#HOST#&quot; value=&quot;@AvailableDbServices.hostAddress&quot; /&gt;${line.separator}
-					&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
-				&lt;/DatabaseInfo&gt;${line.separator}
-				${line.separator}
-				&lt;ConnectionDescription id=&quot;h2.db.connection&quot;&gt;${line.separator}
-					&lt;Driver&gt;org.h2.Driver&lt;/Driver&gt;${line.separator}
-					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=@{dbUser}, PUBLIC;MVCC=TRUE&lt;/Url&gt;${line.separator}
-				&lt;/ConnectionDescription&gt;${line.separator}
-				${line.separator}				
-				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
-					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
-					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}
-				&lt;/ConnectionDescription&gt;${line.separator}
-				${line.separator}
-				&lt;ConnectionDescription id=&quot;hsql.db.connection&quot;&gt;${line.separator}
-					&lt;Driver&gt;org.hsqldb.jdbc.JDBCDriver&lt;/Driver&gt;${line.separator}
-					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBNAME#&lt;/Url&gt;${line.separator}
-					&lt;Property key=&quot;hsqldb.tx&quot; value=&quot;MVCC&quot; /&gt;${line.separator}
-				&lt;/ConnectionDescription&gt;${line.separator}
-				${line.separator}
-			</echo>
-
-			<echo file="@{connectionFilePath}" append="true">
-				${line.separator}${line.separator}
-				&lt;AvailableDbServices&gt;${line.separator}
-					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;db.connection.info&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
-				&lt;/AvailableDbServices&gt;${line.separator}
-			&lt;/DbConnection&gt;
-			</echo>
-		</sequential>
-	</macrodef>
 
 	<macrodef name="writeJsonConfig">
 		<attribute name="dbAddress" />

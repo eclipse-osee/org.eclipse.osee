@@ -31,8 +31,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.message.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
 
-		<module>../../plugins/org.eclipse.osee.database</module>
-
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
 
 		<module>../../features/org.eclipse.osee.x.server.feature</module>

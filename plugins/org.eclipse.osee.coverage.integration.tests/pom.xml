@@ -177,7 +177,7 @@
 
 										<property name="xserver-log-output"
 											value="${project.build.directory}/server-output.log" />
-
+										<mkdir dir="${xserver-data}" />
 										<ant antfile="${osee-application-server-launch-ant}" target="run"
 											inheritRefs="true" output="${xserver-log-output}" />
 									</target>

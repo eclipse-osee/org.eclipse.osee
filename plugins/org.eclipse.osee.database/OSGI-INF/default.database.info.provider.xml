@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.database">
-   <implementation class="org.eclipse.osee.database.internal.DefaultDatabaseInfoProvider"/>
-   <service>
-      <provide interface="org.eclipse.osee.framework.database.core.IDatabaseInfoProvider"/>
-   </service>
-   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
-   <reference bind="setDatabaseInfoRegistry" cardinality="1..1" interface="org.eclipse.osee.framework.database.DatabaseInfoRegistry" name="DatabaseInfoRegistry" policy="static"/>
-</scr:component>
