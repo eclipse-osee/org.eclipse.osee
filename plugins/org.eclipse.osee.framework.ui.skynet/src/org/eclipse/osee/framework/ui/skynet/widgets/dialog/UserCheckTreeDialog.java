@@ -62,6 +62,9 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
+      if (teamMembers != null) {
+         ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
+      }
       getTreeViewer().setSorter(new ViewerSorter() {
          @SuppressWarnings("unchecked")
          @Override
@@ -119,7 +122,6 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
          this.teamMembers = new HashSet<User>();
       }
       this.teamMembers.addAll(teamMembers);
-      ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
    }
 
    public static class UserCheckTreeLabelProvider implements ILabelProvider {
