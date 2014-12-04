@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCommitResponseTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.runner.RunWith;

@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.message.internal.DatabaseService;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public final class BranchRow {
    private final long branchUuid;
@@ -26,13 +22,8 @@ public final class BranchRow {
    private final BranchType branchType;
    private final BranchState branchState;
    private final BranchArchivedState branchArchived;
-   private StorageState storageState;
+   private final StorageState storageState;
    private final boolean inheritAccessControl;
-
-   // TODO remove
-   public void setStorageState(StorageState storageState) {
-      this.storageState = storageState;
-   }
 
    public BranchRow(long branchUuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, StorageState storageState, boolean inheritAccessControl) {
       this.branchUuid = branchUuid;
@@ -73,111 +64,26 @@ public final class BranchRow {
    }
 
    public String[] toArray() {
-      if (isOseeUsingGuidsForAppServerMessaging()) {
-         return new String[] {
-            getBranchArchived().name(),
-            getBranchGuidLegacy(getBranchId()),
-            String.valueOf(getBranchId()),
-            getBranchName(),
-            getBranchState().name(),
-            getBranchType().name(),
-            getStorageState().name(),
-            Boolean.toString(isInheritAccessControl())};
-      } else {
-         return new String[] {
-            getBranchArchived().name(),
-            String.valueOf(getBranchId()),
-            getBranchName(),
-            getBranchState().name(),
-            getBranchType().name(),
-            getStorageState().name(),
-            Boolean.toString(isInheritAccessControl())};
-      }
+      return new String[] {
+         getBranchArchived().name(),
+         String.valueOf(getBranchId()),
+         getBranchName(),
+         getBranchState().name(),
+         getBranchType().name(),
+         getStorageState().name(),
+         Boolean.toString(isInheritAccessControl())};
    }
 
    public static BranchRow fromArray(String[] data) {
       BranchArchivedState archived = BranchArchivedState.valueOf(data[0]);
-      long branchUuid = 0;
-      boolean inheritAccessControl = false;
-      String branchName = null;
-      BranchState branchState = null;
-      BranchType branchType = null;
-      StorageState storageState = null;
-      if (isOseeUsingGuidsForAppServerMessaging()) {
-         // skip guid
-         branchUuid = Long.valueOf(data[2]);
-         branchName = data[3];
-         branchState = BranchState.valueOf(data[4]);
-         branchType = BranchType.valueOf(data[5]);
-         storageState = StorageState.valueOf(data[6]);
-      } else {
-         branchUuid = Long.valueOf(data[1]);
-         branchName = data[2];
-         branchState = BranchState.valueOf(data[3]);
-         branchType = BranchType.valueOf(data[4]);
-         storageState = StorageState.valueOf(data[5]);
-         inheritAccessControl = Boolean.parseBoolean(data[6]);
-      }
+      long branchUuid = Long.valueOf(data[1]);
+      String branchName = data[2];
+      BranchState branchState = BranchState.valueOf(data[3]);
+      BranchType branchType = BranchType.valueOf(data[4]);
+      StorageState storageState = StorageState.valueOf(data[5]);
+      boolean inheritAccessControl = Boolean.parseBoolean(data[6]);
       return new BranchRow(branchUuid, branchName, branchType, branchState, archived, storageState,
          inheritAccessControl);
-   }
-
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final String SELECT_OSEE_INFO =
-      "select osee_value from osee_info where osee_key = 'osee.using.guids.for.app.server.messaging'";
-   private static Boolean oseeUsingGuidsForAppServerMessaging = null;
-
-   public static boolean isOseeUsingGuidsForAppServerMessaging() {
-      if (oseeUsingGuidsForAppServerMessaging == null) {
-         oseeUsingGuidsForAppServerMessaging =
-            DatabaseService.getDatabaseService().runPreparedQueryFetchObject("", SELECT_OSEE_INFO).equals("true");
-      }
-      return oseeUsingGuidsForAppServerMessaging;
-   }
-
-   private static final String SELECT_BRANCH_GUID_BY_ID = "select branch_guid from osee_branch where branch_id = ?";
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final ConcurrentHashMap<Long, String> longToGuidCache = new ConcurrentHashMap<Long, String>(50);
-
-   /**
-    * Temporary method till all code uses branch uuid. Remove after 0.17.0
-    */
-   public static String getBranchGuidLegacy(long branchUuid) {
-      String guid = longToGuidCache.get(branchUuid);
-      if (!Strings.isValid(guid)) {
-         guid =
-            DatabaseService.getDatabaseService().runPreparedQueryFetchObject("", SELECT_BRANCH_GUID_BY_ID, branchUuid);
-         Conditions.checkExpressionFailOnTrue(!Strings.isValid(guid), "Error getting branch_guid for branch: [%d]",
-            branchUuid);
-         longToGuidCache.putIfAbsent(branchUuid, guid);
-      }
-      return guid;
-   }
-
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
-   // Temporary cache till all code uses branch uuid. Remove after 0.17.0
-   private static final ConcurrentHashMap<String, Long> guidToLongCache = new ConcurrentHashMap<String, Long>(50);
-
-   /**
-    * Temporary method till all code uses branch uuid. Remove after 0.17.0
-    */
-   public static long getBranchIdLegacy(String branchGuid) {
-      Long longId = guidToLongCache.get(branchGuid);
-      if (longId == null) {
-         if (branchGuid.equals("-1")) {
-            longId = -1L;
-         } else if (branchGuid.matches("\\d+")) {
-            longId = Long.valueOf(branchGuid);
-         } else {
-            longId =
-               DatabaseService.getDatabaseService().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID,
-                  branchGuid);
-            Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
-         }
-         guidToLongCache.putIfAbsent(branchGuid, longId);
-      }
-      return longId;
    }
 
 }
