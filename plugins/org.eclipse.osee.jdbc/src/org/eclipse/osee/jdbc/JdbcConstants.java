@@ -193,7 +193,7 @@ public final class JdbcConstants {
    }
 
    public static enum JdbcDriverType {
-      oracle_thin("oracle.jdbc.OracleDriver", "jdbc:oracle:thin", "%s@%s:%s:%s"),
+      oracle_thin("oracle.jdbc.OracleDriver", "jdbc:oracle:thin", "%s:@%s:%s:%s"),
       postgresql("org.postgresql.Driver", "jdbc:postgresql", "%s://%s:%s/%s"),
       mysql("com.mysql.jdbc.Driver", "jdbc:mysql", "%s://%s:%s/%s"),
       hsql("org.hsqldb.jdbc.JDBCDriver", "jdbc:hsqldb:hsql", "%s://%s:%s/%s");
