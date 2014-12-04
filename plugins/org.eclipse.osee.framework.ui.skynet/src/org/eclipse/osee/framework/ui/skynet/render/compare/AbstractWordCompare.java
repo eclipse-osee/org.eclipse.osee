@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,6 +24,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -133,11 +137,24 @@ public abstract class AbstractWordCompare implements IComparator {
       if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
          compareFiles = converter.convertToFile(presentationType, artifactDelta);
       } else {
-         // The artifactDelta should be a 3 Way Merge
+         // The artifactDelta is a 3 Way Merge
          List<IFile> outputFiles = new ArrayList<IFile>();
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getStartArtifact());
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
-
+         // this is where we are getting the exception that the length of outputFiles is 1
+         // This happens because the artifact did not exist on the previous branch or was removed on the current branch
+         if (outputFiles.size() == 1) {
+            String outputFileName = outputFiles.get(0).getRawLocation().toOSString();
+            try {
+               String tempFileName = Lib.removeExtension(outputFileName);
+               File tempFile = new File(tempFileName + ".temp.xml");
+               Lib.writeStringToFile("", tempFile);
+               IFile constructIFile = AIFile.constructIFile(tempFile.getPath());
+               outputFiles.add(constructIFile);
+            } catch (IOException ex) {
+               throw new OseeCoreException(ex, "Empty file for comparison could not be created, [%s]", outputFileName);
+            }
+         }
          compareFiles = new Pair<IFile, IFile>(outputFiles.get(0), outputFiles.get(1));
          data.addMerge(outputFiles.get(0).getLocation().toOSString());
       }
