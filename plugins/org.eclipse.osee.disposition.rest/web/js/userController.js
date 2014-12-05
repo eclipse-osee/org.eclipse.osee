@@ -200,7 +200,7 @@ app.controller('userController', [
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditableTemplate,
+            cellTemplate: cellEditNotes,
             headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
@@ -285,7 +285,7 @@ app.controller('userController', [
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditableTemplate,
+            cellTemplate: cellEditNotes,
             headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
