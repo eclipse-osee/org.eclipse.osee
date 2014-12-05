@@ -173,28 +173,35 @@ app.controller('userController', [
         $scope.smallColumns = [{
             field: 'name',
             displayName: 'Name',
-            cellTemplate: origCellTmpl
+            cellTemplate: origCellTmpl,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'status',
             displayName: 'Status',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'totalPoints',
             displayName: 'Total',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'failureCount',
             displayName: 'Failure Count',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'discrepanciesAsRanges',
             displayName: 'Failed Points',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'assignee',
             displayName: 'Assignee',
             enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl
+            cellTemplate: assigneeCellTmpl,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditNotes
+            cellTemplate: cellEditableTemplate,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -205,67 +212,81 @@ app.controller('userController', [
             field: 'lastUpdated',
             displayName: 'Last Ran',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'category',
             displayName: 'Category',
             enableCellEdit: true,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'machine',
             displayName: 'Station',
             enableCellEdit: true,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'elapsedTime',
             displayName: 'Elapsed Time',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'creationDate',
             displayName: 'Creation Date',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'aborted',
             displayName: 'Aborted',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
             }, {
                 field: 'version',
                 displayName: 'Version',
                 enableCellEdit: false,
-                visible: false
+                visible: false,
+                headerCellTemplate: 'templates/nameFilterTmpl.html'
         }];
         
         $scope.wideColumns = [{
             field: 'name',
             displayName: 'Name',
             width: 350,
-            cellTemplate: origCellTmpl
+            cellTemplate: origCellTmpl,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'status',
             displayName: 'Status',
-            width: 100
+            width: 100,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'totalPoints',
             displayName: 'Total',
-            width: 100
+            width: 100,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'failureCount',
             displayName: 'Failure Count',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'discrepanciesAsRanges',
             displayName: 'Failed Points',
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'assignee',
             displayName: 'Assignee',
             enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl
+            cellTemplate: assigneeCellTmpl,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
-            cellTemplate: cellEditNotes
+            cellTemplate: cellEditableTemplate,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -277,37 +298,44 @@ app.controller('userController', [
             field: 'lastUpdated',
             displayName: 'Last Ran',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'category',
             displayName: 'Category',
             enableCellEdit: true,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'machine',
             displayName: 'Station',
             enableCellEdit: true,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         }, {
             field: 'elapsedTime',
             displayName: 'Elapsed Time',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'creationDate',
             displayName: 'Creation Date',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },{
             field: 'aborted',
             displayName: 'Aborted',
             enableCellEdit: false,
-            visible: false
+            visible: false,
+            headerCellTemplate: 'templates/nameFilterTmpl.html'
         },  {
                 field: 'version',
                 displayName: 'Version',
                 enableCellEdit: false,
-                visible: false
+                visible: false,
+                headerCellTemplate: 'templates/nameFilterTmpl.html'
         }];
         
         if(window.innerWidth < 1000) {
@@ -315,6 +343,29 @@ app.controller('userController', [
         } else {
         	$scope.columns = $scope.wideColumns;
         }
+        
+        
+        var filterBarPlugin = {
+                init: function(scope, grid) {
+                    filterBarPlugin.scope = scope;
+                    filterBarPlugin.grid = grid;
+                    $scope.$watch(function() {
+                        var searchQuery = "";
+                        angular.forEach(filterBarPlugin.scope.columns, function(col) {
+                            if (col.visible && col.filterText) {
+                                var filterText = (col.filterText.indexOf('*') == 0 ? col.filterText.replace('*', '') : "^" + col.filterText) + ";";
+                                searchQuery += col.displayName + ": " + filterText;
+                            }
+                        });
+                        return searchQuery;
+                    }, function(searchQuery) {
+                        filterBarPlugin.scope.$parent.filterText = searchQuery;
+                        filterBarPlugin.grid.searchProvider.evalFilter();
+                    });
+                },
+                scope: undefined,
+                grid: undefined,
+            };
         
         $scope.gridOptions = {
             data: 'items',
@@ -329,7 +380,9 @@ app.controller('userController', [
             showFilter: true,
             noTabInterference: true,
             tabIndex: 0,
-            columnDefs: 'columns'
+            columnDefs: 'columns',
+            plugins: [filterBarPlugin],
+            headerRowHeight: 60 // give room for filter bar
         };
         
         
