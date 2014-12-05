@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
+import org.eclipse.osee.framework.skynet.core.utility.InvalidTxCurrentsAndModTypes;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsTableLogger;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.swt.SWT;

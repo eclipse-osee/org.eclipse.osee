@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.operation;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
@@ -22,8 +22,9 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.internal.ServiceUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -48,14 +49,14 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final IOseeDatabaseService dbService;
 
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
-      this(ServiceUtil.getDatabaseService(), operationName, tableName, columnName, logger, isFixOperationEnabled,
+      this(ServiceUtil.getOseeDatabaseService(), operationName, tableName, columnName, logger, isFixOperationEnabled,
          archived);
    }
 
    public InvalidTxCurrentsAndModTypes(IOseeDatabaseService dbService, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
-         ServiceUtil.PLUGIN_ID, logger);
+         Activator.PLUGIN_ID, logger);
       this.dbService = dbService;
       this.tableName = tableName;
       this.columnName = columnName;

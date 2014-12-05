@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.operation;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +19,9 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.ServiceUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
@@ -45,11 +46,11 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
-      this(ServiceUtil.getDatabaseService(), logger);
+      this(ServiceUtil.getOseeDatabaseService(), logger);
    }
 
    public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
-      super(dbService, "Data with no TXS Addressing and empty transactions", ServiceUtil.PLUGIN_ID, logger);
+      super(dbService, "Data with no TXS Addressing and empty transactions", Activator.PLUGIN_ID, logger);
    }
 
    private void processNotAddressedGammas(OseeConnection connection, String tableName) throws OseeCoreException {

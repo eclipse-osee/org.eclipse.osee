@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.database.operation;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.ServiceUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
@@ -71,7 +71,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, BranchCache branchCache, OperationLogger logger, List<Integer> txIdsToDelete) {
-      super(databaseService, "Purge transactions " + txIdsToDelete, ServiceUtil.PLUGIN_ID, logger);
+      super(databaseService, "Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
       this.success = false;
       this.branchCache = branchCache;
       this.txIdsToDelete = txIdsToDelete;
