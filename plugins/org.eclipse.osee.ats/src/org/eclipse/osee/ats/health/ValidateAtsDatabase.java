@@ -66,9 +66,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -86,6 +84,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -842,11 +841,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private static List<Integer> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
-      OseeConnection connection = ConnectionHandler.getConnection();
-      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Integer> artIds = new ArrayList<Integer>();
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
-
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtilCore.getAtsBranch().getUuid()});
          while (chStmt.next()) {
@@ -854,7 +851,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       } finally {
          chStmt.close();
-         connection.close();
          xResultData.log(null, "getCommonArtifactIds - Completed " + DateUtil.getMMDDYYHHMM());
       }
       return artIds;

@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Roberto E. Escobar

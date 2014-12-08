@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.DatabaseTransactions;
 import org.eclipse.osee.framework.database.core.IDbTransactionWork;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Roberto E. Escobar
@@ -65,6 +66,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    private final Collection<Artifact> artifactReferences;
 
    private boolean executedWithException;
+   private IOseeDatabaseService dbService;
 
    public StoreSkynetTransactionOperation(String name, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
       super(name, Activator.PLUGIN_ID);
@@ -92,7 +94,8 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      DatabaseTransactions.execute(this);
+      dbService = ServiceUtil.getOseeDatabaseService();
+      DatabaseTransactions.execute(dbService, dbService.getConnection(), this);
    }
 
    @Override
@@ -163,15 +166,15 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       Collections.sort(keys);
       for (int priority : keys) {
          String sqlKey = dataInsertOrder.get(priority);
-         ConnectionHandler.runBatchUpdate(connection, sqlKey, (List<Object[]>) dataItemInserts.getValues(sqlKey));
+         dbService.runBatchUpdate(connection, sqlKey, dataItemInserts.getValues(sqlKey));
       }
 
       // Set stale tx currents in txs table
-      ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private static void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+   private void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+      IOseeStatement chStmt = dbService.getStatement(connection);
       try {
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 

@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 
 /**
  * @author Ryan D. Brooks
@@ -31,7 +30,6 @@ public class ExecuteBlamOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      blamOperation.setOseeDatabaseService(ServiceUtil.getOseeDatabaseService());
       blamOperation.runOperation(variableMap, monitor);
    }
 }

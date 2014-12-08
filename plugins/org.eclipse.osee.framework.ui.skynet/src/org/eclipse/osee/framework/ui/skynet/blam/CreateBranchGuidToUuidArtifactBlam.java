@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author John Misinco
@@ -46,7 +46,7 @@ public class CreateBranchGuidToUuidArtifactBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IOseeStatement chStmt = ServiceUtil.getOseeDatabaseService().getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder sb = new StringBuilder();
       try {
          chStmt.runPreparedQuery("select branch_guid, branch_id from osee_branch");

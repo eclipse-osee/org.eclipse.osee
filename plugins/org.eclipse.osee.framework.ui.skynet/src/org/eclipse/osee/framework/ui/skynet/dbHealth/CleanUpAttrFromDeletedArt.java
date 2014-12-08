@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 public class CleanUpAttrFromDeletedArt extends DatabaseHealthOperation {
    private static final String INSERT_ATTRS_TO_ART_COMMIT_TRANSACTION =

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -69,7 +68,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public static final String branchXWidgetXml =
       "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
-   protected IOseeDatabaseService databaseService;
    private OperationLogger logger;
 
    private final String description;
@@ -155,10 +153,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public String getName() {
       return name;
-   }
-
-   public void setOseeDatabaseService(IOseeDatabaseService service) {
-      databaseService = service;
    }
 
    public void log(String... row) {

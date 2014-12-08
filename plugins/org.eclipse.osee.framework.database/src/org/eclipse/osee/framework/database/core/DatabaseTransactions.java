@@ -22,10 +22,6 @@ public final class DatabaseTransactions {
       // Utility class
    }
 
-   public static void execute(IDbTransactionWork dbWork) throws OseeCoreException {
-      execute(ConnectionHandler.getDatabase(), ConnectionHandler.getConnection(), dbWork);
-   }
-
    public static void execute(IOseeDatabaseService dbService, OseeConnection connection, IDbTransactionWork dbWork) throws OseeCoreException {
       boolean initialAutoCommit = true;
       Exception saveException = null;

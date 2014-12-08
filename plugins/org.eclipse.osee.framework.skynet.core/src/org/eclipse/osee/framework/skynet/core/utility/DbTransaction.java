@@ -8,9 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.DatabaseTransactions;
+import org.eclipse.osee.framework.database.core.IDbTransactionWork;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * This abstract class provides a uniform way of executing database transactions. It handles exceptions ensuring that
@@ -34,7 +39,8 @@ public abstract class DbTransaction {
     * roll-backs and exception handling to prevent transactions from being left in an incorrect state.
     */
    public void execute() throws OseeCoreException {
-      DatabaseTransactions.execute(new InternalTransactionWork());
+      IOseeDatabaseService dbService = ServiceUtil.getOseeDatabaseService();
+      DatabaseTransactions.execute(dbService, dbService.getConnection(), new InternalTransactionWork());
    }
 
    /**
