@@ -157,7 +157,7 @@ public class AtsConfigOperation extends AbstractOperation {
    private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
       if (versionNames != null) {
          for (String name : versionNames) {
-            IAtsVersion version = AtsClientService.get().createVersion(name);
+            IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name);
             teamDef.getVersions().add(version);
             AtsClientService.get().storeConfigObject(version, changes);
             AtsClientService.get().getVersionService().setTeamDefinition(version, teamDef);

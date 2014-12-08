@@ -20,11 +20,13 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
+import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -50,12 +52,14 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    private final CacheProvider<AtsArtifactConfigCache> cacheProvider;
    private final IAtsArtifactStore artifactStore;
    private final AtsVersionCache versionCache;
+   private final IVersionFactory versionFactory;
 
    public AtsVersionServiceImpl(CacheProvider<AtsArtifactConfigCache> configCacheProvider, IAtsArtifactStore artifactStore, AtsVersionCache versionCache) {
       super();
       this.cacheProvider = configCacheProvider;
       this.artifactStore = artifactStore;
       this.versionCache = versionCache;
+      this.versionFactory = new VersionFactory(this);
    }
 
    @Override
@@ -287,6 +291,27 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
          }
       }
       return result;
+   }
+
+   @Override
+   public IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException {
+      IAtsVersion item = versionFactory.createVersion(title, guid, uuid);
+      AtsArtifactConfigCache cache = cacheProvider.get();
+      cache.cache(item);
+      return item;
+   }
+
+   @Override
+   public IAtsVersion createVersion(String name) throws OseeCoreException {
+      IAtsVersion item = versionFactory.createVersion(name);
+      AtsArtifactConfigCache cache = cacheProvider.get();
+      cache.cache(item);
+      return item;
+   }
+
+   @Override
+   public IVersionFactory getVersionFactory() {
+      return versionFactory;
    }
 
 }

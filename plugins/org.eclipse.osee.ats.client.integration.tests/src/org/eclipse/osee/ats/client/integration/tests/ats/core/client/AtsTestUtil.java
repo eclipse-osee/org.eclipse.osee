@@ -344,22 +344,22 @@ public class AtsTestUtil {
       testAi4.setTeamDefinition(teamDef);
 
       verArt1 =
-         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 1.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 1.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt1);
 
       verArt2 =
-         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 2.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 2.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt2);
 
       verArt3 =
-         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 3.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 3.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt3);
 
       verArt4 =
-         AtsClientService.get().createVersion(GUID.create(), getTitle("ver 4.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 4.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt4);
 

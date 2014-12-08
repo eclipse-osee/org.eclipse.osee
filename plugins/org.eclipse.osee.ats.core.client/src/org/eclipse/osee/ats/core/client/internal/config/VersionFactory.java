@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**

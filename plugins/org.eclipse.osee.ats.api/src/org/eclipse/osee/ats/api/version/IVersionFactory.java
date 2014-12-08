@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.config;
+package org.eclipse.osee.ats.api.version;
 
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -92,7 +93,6 @@ import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -351,22 +351,6 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsActionableItem createActionableItem(String guid, String name, long uuid) throws OseeCoreException {
       IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name, uuid);
-      AtsArtifactConfigCache cache = getConfigCache();
-      cache.cache(item);
-      return item;
-   }
-
-   @Override
-   public IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(title, guid, uuid);
-      AtsArtifactConfigCache cache = getConfigCache();
-      cache.cache(item);
-      return item;
-   }
-
-   @Override
-   public IAtsVersion createVersion(String name) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(name);
       AtsArtifactConfigCache cache = getConfigCache();
       cache.cache(item);
       return item;

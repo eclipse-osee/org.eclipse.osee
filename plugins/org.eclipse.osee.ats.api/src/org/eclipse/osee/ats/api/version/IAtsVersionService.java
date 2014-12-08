@@ -43,4 +43,9 @@ public interface IAtsVersionService {
 
    IAtsVersion getById(Identity<String> id) throws OseeCoreException;
 
+   IAtsVersion createVersion(String title, String guid, long uuid);
+
+   IAtsVersion createVersion(String name);
+
+   IVersionFactory getVersionFactory();
 }

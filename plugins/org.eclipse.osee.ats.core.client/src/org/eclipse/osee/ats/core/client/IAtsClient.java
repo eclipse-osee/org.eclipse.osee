@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
+import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -44,7 +45,6 @@ import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.IVersionFactory;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IVersionFactory, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsQueryService, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
    <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
