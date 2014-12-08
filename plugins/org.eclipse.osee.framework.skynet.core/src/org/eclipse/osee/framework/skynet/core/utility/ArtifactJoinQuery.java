@@ -8,10 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.skynet.core.utility.AbstractJoinQuery.IJoinRow;
+import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar
