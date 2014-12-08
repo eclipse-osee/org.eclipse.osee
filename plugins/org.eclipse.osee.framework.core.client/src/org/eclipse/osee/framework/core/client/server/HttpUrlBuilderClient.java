@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -44,6 +43,12 @@ public final class HttpUrlBuilderClient {
       return instance;
    }
 
+   public boolean isUseConnectedServerUrl() {
+      boolean isUseConnectedServerUrl =
+         CoreClientActivator.getInstance().getPluginPreferences().getBoolean(USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
+      return isUseConnectedServerUrl;
+   }
+
    public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) throws OseeStateException {
       try {
          return HttpUrlBuilder.createURL(getHttpLocalServerPrefix(), context, parameters);
@@ -63,30 +68,6 @@ public final class HttpUrlBuilderClient {
 
    public String getApplicationServerPrefix() throws OseeCoreException {
       String address = OseeClientProperties.getOseeApplicationServer();
-      return normalize(address);
-   }
-
-   public String getPermanentBaseUrl() throws OseeCoreException {
-      String address = OseeInfo.getValue("osee.permanent.base.url");
-      return normalize(address);
-   }
-
-   public String getSelectedPermanenrLinkUrl() throws OseeCoreException {
-      boolean isUseConnectedServerUrl =
-         CoreClientActivator.getInstance().getPluginPreferences().getBoolean(USE_CONNECTED_SERVER_URL_FOR_PERM_LINKS);
-      String address = null;
-      if (isUseConnectedServerUrl) {
-         address = getApplicationServerPrefix();
-      } else {
-         try {
-            address = getPermanentBaseUrl();
-         } catch (Exception ex) {
-            OseeLog.log(CoreClientActivator.class, Level.WARNING, ex);
-         }
-         if (!Strings.isValid(address)) {
-            address = getApplicationServerPrefix();
-         }
-      }
       return normalize(address);
    }
 
@@ -112,12 +93,4 @@ public final class HttpUrlBuilderClient {
       return url;
    }
 
-   public String getPermanentLinkBaseUrl(String context, Map<String, String> parameters) throws OseeCoreException {
-      try {
-         return HttpUrlBuilder.createURL(getSelectedPermanenrLinkUrl(), context, parameters);
-      } catch (UnsupportedEncodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
-      }
-   }
 }

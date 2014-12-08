@@ -8,14 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.internal.ServiceUtil;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Donald G. Dunne
@@ -37,7 +38,7 @@ public class OseeInfo {
    }
 
    public static String getValue(String key, Long maxStaleness) throws OseeCoreException {
-      return getValue(ServiceUtil.getDatabaseService(), key, maxStaleness);
+      return getValue(ServiceUtil.getOseeDatabaseService(), key, maxStaleness);
    }
 
    public static String getValue(IOseeDatabaseService service, String key) {

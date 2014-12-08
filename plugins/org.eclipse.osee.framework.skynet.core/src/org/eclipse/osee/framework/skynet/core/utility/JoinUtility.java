@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 

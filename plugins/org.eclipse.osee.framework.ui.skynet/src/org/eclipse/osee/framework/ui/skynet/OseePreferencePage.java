@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
 import org.eclipse.osee.framework.skynet.core.preferences.PreferenceConstants;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
@@ -119,18 +120,16 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
    }
 
    private void setupUrlLinkButtons(Group group) {
-      HttpUrlBuilderClient builder = HttpUrlBuilderClient.getInstance();
-
       baseUrlCheckBox = new Button(group, SWT.RADIO);
       try {
-         baseUrlCheckBox.setText("Permanent Link: " + builder.getPermanentBaseUrl());
+         baseUrlCheckBox.setText("Permanent Link: " + ArtifactURL.getPermanentBaseUrl());
       } catch (OseeCoreException ex) {
          baseUrlCheckBox.setText("Permanent Link");
       }
 
       connectedUrlCheckBox = new Button(group, SWT.RADIO);
       try {
-         connectedUrlCheckBox.setText("Temporary Server Link: " + builder.getApplicationServerPrefix());
+         connectedUrlCheckBox.setText("Temporary Server Link: " + HttpUrlBuilderClient.getInstance().getApplicationServerPrefix());
       } catch (OseeCoreException ex) {
          connectedUrlCheckBox.setText("Temporary Server Link");
       }

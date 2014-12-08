@@ -45,6 +45,7 @@ import org.junit.runners.Suite;
    MergeManagerTest.class,
    NativeArtifactTest.class,
    OseeEnumerationValidationTest.class,
+   OseeInfoTest.class,
    PurgeTransactionTest.class,
    RelationCacheTest.class,
    RelationDeletionTest.class,

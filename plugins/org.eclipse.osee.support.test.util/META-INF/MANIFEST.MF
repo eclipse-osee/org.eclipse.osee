@@ -6,15 +6,11 @@ Bundle-Version: 0.20.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.support.test.util
-Import-Package: org.eclipse.core.runtime,
- org.eclipse.osee.framework.core.client,
- org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.exception,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.io,
  org.eclipse.osee.framework.logging,
- org.osgi.framework
-Require-Bundle: org.junit
+ org.eclipse.osee.framework.skynet.core.utility
 Bundle-Vendor: Eclipse Open System Engineering Environment
