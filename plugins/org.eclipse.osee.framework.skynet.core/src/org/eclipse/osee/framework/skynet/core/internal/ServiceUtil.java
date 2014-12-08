@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import java.util.Properties;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.cache.admin.CacheAdmin;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -96,5 +99,14 @@ public final class ServiceUtil {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return getService(AccessPolicy.class);
+   }
+
+   public static String getSql(OseeSql sqlEnum) throws OseeCoreException {
+      Properties properties = ClientSessionManager.getSqlProperties();
+      String sql = properties.getProperty(sqlEnum.toString());
+      if (sql != null) {
+         return sql;
+      }
+      throw new OseeArgumentException("Invalid sql key [%s]", sqlEnum.toString());
    }
 }

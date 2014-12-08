@@ -11,12 +11,11 @@
 package org.eclipse.osee.framework.core.client;
 
 import java.util.List;
+import java.util.Properties;
 import org.eclipse.osee.framework.core.client.internal.InternalClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -88,12 +87,8 @@ public class ClientSessionManager {
       return getSessionGrant().getDatabaseInfo().isProduction();
    }
 
-   public static String getSql(OseeSql sqlEnum) throws OseeCoreException {
-      String sql = getSessionGrant().getSqlProperties().getProperty(sqlEnum.toString());
-      if (sql != null) {
-         return sql;
-      }
-      throw new OseeArgumentException("Invalid sql key [%s]", sqlEnum.toString());
+   public static Properties getSqlProperties() {
+      return getSessionGrant().getSqlProperties();
    }
 
    public static List<String> getAuthenticationProtocols() {

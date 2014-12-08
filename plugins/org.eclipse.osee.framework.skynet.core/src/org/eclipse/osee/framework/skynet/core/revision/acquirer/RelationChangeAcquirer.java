@@ -13,19 +13,19 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -54,19 +54,19 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
          if (hasBranch) {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
-            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
-               getSourceBranch().getUuid(), fromTransactionId.getId());
+            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_RELATION), getSourceBranch().getUuid(),
+               fromTransactionId.getId());
          } else {//Changes per a transaction
             toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {
-               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
                   toTransactionId.getBranchId(), toTransactionId.getId(), getSpecificArtifact().getArtId(),
                   getSpecificArtifact().getArtId());
                fromTransactionId = toTransactionId;
             } else {
-               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
-                  toTransactionId.getBranchId(), toTransactionId.getId());
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_RELATION), toTransactionId.getBranchId(),
+                  toTransactionId.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }

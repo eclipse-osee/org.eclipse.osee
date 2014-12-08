@@ -16,14 +16,12 @@ import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,6 +29,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 /**
  * @author Ryan Schmitt
@@ -158,8 +158,8 @@ public class AttributeLoader {
             Level.WARNING,
 
             "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId, previous.modType,
-            current.modType);
+            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId,
+            previous.modType, current.modType);
       }
    }
 
@@ -198,6 +198,6 @@ public class AttributeLoader {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES;
       }
 
-      return ClientSessionManager.getSql(sqlKey);
+      return ServiceUtil.getSql(sqlKey);
    }
 }

@@ -13,15 +13,15 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
@@ -41,7 +41,7 @@ class RelationLoader {
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         String sqlQuery = ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS);
+         String sqlQuery = ServiceUtil.getSql(OseeSql.LOAD_RELATIONS);
          chStmt.runPreparedQuery(artifacts.size() * 8, sqlQuery, joinQueryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");

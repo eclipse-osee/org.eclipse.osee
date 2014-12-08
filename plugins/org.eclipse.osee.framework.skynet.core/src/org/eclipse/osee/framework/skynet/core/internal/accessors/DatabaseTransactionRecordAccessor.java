@@ -2,7 +2,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
@@ -14,10 +13,11 @@ import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 
@@ -170,7 +170,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
-      String query = ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
+      String query = ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
       return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1, query, branch.getUuid()));
    }
 }

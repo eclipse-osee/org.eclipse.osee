@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -44,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
 
 /**
@@ -173,7 +173,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    private static void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
-         String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
+         String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 
          chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getUuid());
          while (chStmt.next()) {

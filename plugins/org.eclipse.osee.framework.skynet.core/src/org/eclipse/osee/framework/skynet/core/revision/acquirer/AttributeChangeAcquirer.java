@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -35,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
@@ -71,20 +71,19 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          if (hasBranch) {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
-            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
+            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
                getSourceBranch().getUuid(), fromTransactionId.getId());
 
          }//Changes per transaction number
          else {
             toTransaction = getTransaction();
             if (hasSpecificArtifact) {
-               chStmt.runPreparedQuery(
-                  ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
                   toTransaction.getBranchId(), toTransaction.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
-               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
-                  toTransaction.getBranchId(), toTransaction.getId());
+               chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS), toTransaction.getBranchId(),
+                  toTransaction.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransaction);
             }
          }
@@ -168,11 +167,11 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
          if (hasBranch) {
             wasValueBranch = sourceBranch;
-            sql = ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
+            sql = ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_WAS);
             sqlParamter = wasValueBranch.getUuid();
          } else {
             wasValueBranch = transactionId.getBranch();
-            sql = ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
+            sql = ServiceUtil.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
             sqlParamter = transactionId.getId();
          }
 
