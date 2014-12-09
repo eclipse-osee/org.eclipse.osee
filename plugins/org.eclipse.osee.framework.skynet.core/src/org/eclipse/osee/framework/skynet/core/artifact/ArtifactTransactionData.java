@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Jeff C. Phillips
@@ -64,7 +63,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected int createGammaId() throws OseeCoreException {
-      return artifact.isUseBackingdata() ? artifact.getGammaId() : ConnectionHandler.getSequence().getNextGammaId();
+      return artifact.isUseBackingdata() ? artifact.getGammaId() : getNextGammaIdFromSequence();
    }
 
    @Override

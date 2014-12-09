@@ -14,7 +14,6 @@ import java.sql.DatabaseMetaData;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,10 +28,6 @@ public final class ConnectionHandler {
 
    protected static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
       return ServiceUtil.getOseeDatabaseService();
-   }
-
-   public static IOseeSequence getSequence() throws OseeDataStoreException {
-      return getDatabase().getSequence();
    }
 
    public static IOseeStatement getStatement() throws OseeDataStoreException {
@@ -85,6 +80,10 @@ public final class ConnectionHandler {
       } finally {
          connection.close();
       }
+   }
+
+   public static long getNextSequence(String sequenceName) {
+      return getDatabase().getNextSequence(sequenceName);
    }
 
 }

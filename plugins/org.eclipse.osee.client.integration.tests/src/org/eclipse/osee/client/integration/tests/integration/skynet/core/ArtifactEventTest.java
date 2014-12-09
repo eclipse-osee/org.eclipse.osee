@@ -68,7 +68,7 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class ArtifactEventTest {
-
+   private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
    @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
@@ -877,7 +877,7 @@ public class ArtifactEventTest {
     * @throws OseeDataStoreException
     */
    private int getIncrementingRelationId() throws OseeCoreException {
-      return ConnectionHandler.getSequence().getNextRelationId();
+      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ);
    }
 
    private static final class ArtifactEventListener implements IArtifactEventListener {

@@ -163,6 +163,6 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
 
    @Override
    public int getNextTestUnitId() throws OseeCoreException {
-      return (int) ConnectionHandler.getSequence().getNextSequence(COVERAGE_TEST_UNIT_NAME_SEQ);
+      return (int) ConnectionHandler.getNextSequence(COVERAGE_TEST_UNIT_NAME_SEQ);
    }
 }

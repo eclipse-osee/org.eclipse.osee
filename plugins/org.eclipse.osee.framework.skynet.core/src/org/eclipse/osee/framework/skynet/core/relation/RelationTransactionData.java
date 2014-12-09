@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Jeff C. Phillips
@@ -73,7 +72,7 @@ public class RelationTransactionData extends BaseTransactionData {
       if (relation.isUseBackingData()) {
          newGammaId = relation.getGammaId();
       } else {
-         newGammaId = ConnectionHandler.getSequence().getNextGammaId();
+         newGammaId = getNextGammaIdFromSequence();
       }
       return newGammaId;
    }

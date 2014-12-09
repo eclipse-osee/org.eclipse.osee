@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Jeff C. Phillips
@@ -83,7 +82,7 @@ public class AttributeTransactionData extends BaseTransactionData {
 
    @Override
    protected int createGammaId() throws OseeCoreException {
-      return attribute.isUseBackingData() ? attribute.getGammaId() : ConnectionHandler.getSequence().getNextGammaId();
+      return attribute.isUseBackingData() ? attribute.getGammaId() : getNextGammaIdFromSequence();
    }
 
    private static final class DAOToSQL {

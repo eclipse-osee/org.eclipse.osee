@@ -12,14 +12,15 @@ package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.database.DatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class OseeSequenceImpl implements IOseeSequence {
+public class OseeSequenceImpl {
+   private static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
+
    private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
    private static final String INSERT_SEQUENCE =
       "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
@@ -48,12 +49,10 @@ public class OseeSequenceImpl implements IOseeSequence {
       return range;
    }
 
-   @Override
    public synchronized void clear() {
       sequences.clear();
    }
 
-   @Override
    @SuppressWarnings("unchecked")
    public synchronized long getNextSequence(String sequenceName) throws OseeCoreException {
       SequenceRange range = getRange(sequenceName);
@@ -94,51 +93,6 @@ public class OseeSequenceImpl implements IOseeSequence {
       getDatabase().runPreparedUpdate(INSERT_SEQUENCE, 0, sequenceName);
    }
 
-   @Override
-   public int getNextSessionId() throws OseeCoreException {
-      return (int) getNextSequence(TTE_SESSION_SEQ);
-   }
-
-   @Override
-   public int getNextTransactionId() throws OseeCoreException {
-      return (int) getNextSequence(TRANSACTION_ID_SEQ);
-   }
-
-   @Override
-   public int getNextArtifactId() throws OseeCoreException {
-      return (int) getNextSequence(ART_ID_SEQ);
-   }
-
-   @Override
-   public int getNextGammaId() throws OseeCoreException {
-      return (int) getNextSequence(GAMMA_ID_SEQ);
-   }
-
-   @Override
-   public int getNextAttributeId() throws OseeCoreException {
-      return (int) getNextSequence(ATTR_ID_SEQ);
-   }
-
-   @Override
-   public int getNextBranchId() throws OseeCoreException {
-      return (int) getNextSequence(BRANCH_ID_SEQ);
-   }
-
-   @Override
-   public int getNextRelationId() throws OseeCoreException {
-      return (int) getNextSequence(REL_LINK_ID_SEQ);
-   }
-
-   @Override
-   public int getNextImportId() throws OseeCoreException {
-      return (int) getNextSequence(IMPORT_ID_SEQ);
-   }
-
-   @Override
-   public int getNextImportMappedIndexId() throws OseeCoreException {
-      return (int) getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
-   }
-
    private static final class SequenceRange {
       private long currentValue;
       private long lastAvailable;
@@ -159,11 +113,6 @@ public class OseeSequenceImpl implements IOseeSequence {
             prefetchSize *= 2; // next time grab twice as many
          }
       }
-   }
-
-   @Override
-   public int getNextLocalTypeId() throws OseeCoreException {
-      return (int) getNextSequence(LOCAL_TYPE_ID_SEQ);
    }
 
 }

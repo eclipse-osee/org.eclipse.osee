@@ -47,6 +47,8 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  */
 public final class TransactionManager {
 
+   private static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
+
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
       "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -183,11 +185,15 @@ public final class TransactionManager {
       return transactionId;
    }
 
+   private static int getNextTransactionId() {
+      return (int) ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ);
+   }
+
    public static synchronized TransactionRecord internalCreateTransactionRecord(IOseeBranch branch, User userToBlame, String comment) throws OseeCoreException {
-      Integer transactionNumber = ConnectionHandler.getSequence().getNextTransactionId();
       if (comment == null) {
          comment = "";
       }
+      Integer transactionNumber = getNextTransactionId();
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();

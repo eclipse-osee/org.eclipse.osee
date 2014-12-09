@@ -61,6 +61,8 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Jeff C. Phillips
  */
 public final class SkynetTransaction extends TransactionOperation<Branch> {
+   private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
+   private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
       new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
@@ -85,11 +87,11 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      return StoreSkynetTransactionOperation.getNewAttributeId(artifact, attribute);
+      return (int) ConnectionHandler.getNextSequence(ATTR_ID_SEQ);
    }
 
    private int getNewRelationId() throws OseeCoreException {
-      return ConnectionHandler.getSequence().getNextRelationId();
+      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ);
    }
 
    private User getAuthor() throws OseeCoreException {

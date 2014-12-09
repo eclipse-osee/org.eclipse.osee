@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Donald G. Dunne
  */
 public abstract class ArtifactFactory {
-
+   private static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
    private final Set<IArtifactType> artifactTypeNames = new HashSet<IArtifactType>(5);
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
@@ -61,7 +61,7 @@ public abstract class ArtifactFactory {
 
       Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, false);
 
-      artifact.setArtId(ConnectionHandler.getSequence().getNextArtifactId());
+      artifact.setArtId(getNextArtifactId());
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
@@ -71,6 +71,10 @@ public abstract class ArtifactFactory {
       }
 
       return artifact;
+   }
+
+   public static int getNextArtifactId() {
+      return (int) ConnectionHandler.getNextSequence(ART_ID_SEQ);
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

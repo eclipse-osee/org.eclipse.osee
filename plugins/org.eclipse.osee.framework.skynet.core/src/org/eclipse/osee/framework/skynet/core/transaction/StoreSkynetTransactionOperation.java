@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Roberto E. Escobar
@@ -229,10 +228,6 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       if (!artifactEvent.getArtifacts().isEmpty() || !artifactEvent.getRelations().isEmpty()) {
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
-   }
-
-   protected static int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      return ConnectionHandler.getSequence().getNextAttributeId();
    }
 
 }

@@ -3,7 +3,6 @@
    <implementation class="org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceProxy"/>
    <service>
       <provide interface="org.eclipse.osee.framework.database.IOseeDatabaseService"/>
-      <provide interface="org.eclipse.osee.framework.database.HasSequence"/>
       <provide interface="org.eclipse.osee.framework.database.DatabaseService"/>
    </service>
    <reference bind="addConnectionFactory" unbind="removeConnectionFactory" cardinality="0..n" interface="org.eclipse.osee.framework.database.core.IConnectionFactory" name="IConnectionFactory" policy="dynamic"/>

@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database;
 
+
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeDatabaseService extends HasSequence, DatabaseService {
+public interface IOseeDatabaseService extends DatabaseService {
    public static final int MAX_VARCHAR_LENGTH = 4000;
+
+   long getNextSequence(String sequenceName);
+
+   void invalidateSequences();
 }

@@ -213,7 +213,7 @@ public class AtsClientImpl implements IAtsClient {
 
          @Override
          public long getNext(String sequenceName) {
-            return dbService.getSequence().getNextSequence(sequenceName);
+            return dbService.getNextSequence(sequenceName);
          }
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);

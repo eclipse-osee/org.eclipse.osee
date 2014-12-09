@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IQueryProcessor;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
-import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,7 +34,7 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
 
    private ConnectionProvider connectionProvider;
    private DatabaseService databaseService;
-   private IOseeSequence oseeSequence;
+   private OseeSequenceImpl oseeSequence;
 
    private IDatabaseInfoProvider databaseInfoProvider;
 
@@ -83,14 +82,6 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
       if (databaseService == null) {
          throw new OseeDataStoreException("Error initializing database service");
       }
-   }
-
-   @Override
-   public IOseeSequence getSequence() throws OseeDataStoreException {
-      if (oseeSequence == null) {
-         throw new OseeDataStoreException("Error initializing database service with osee sequence");
-      }
-      return oseeSequence;
    }
 
    @Override
@@ -181,5 +172,15 @@ public class OseeDatabaseServiceProxy implements IOseeDatabaseService {
    public void runQuery(IQueryProcessor processor, String query, Object... data) {
       checkInitialized();
       getDatabaseService().runQuery(processor, query, data);
+   }
+
+   @Override
+   public long getNextSequence(String sequenceName) {
+      return oseeSequence.getNextSequence(sequenceName);
+   }
+
+   @Override
+   public void invalidateSequences() {
+      oseeSequence.clear();
    }
 }

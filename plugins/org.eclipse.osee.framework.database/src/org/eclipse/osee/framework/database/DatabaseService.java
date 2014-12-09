@@ -51,4 +51,5 @@ public interface DatabaseService {
    boolean isProduction() throws OseeCoreException;
 
    Map<String, String> getStatistics() throws OseeCoreException;
+
 }

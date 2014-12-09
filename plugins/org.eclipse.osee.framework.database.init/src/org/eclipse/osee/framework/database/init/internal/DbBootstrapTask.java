@@ -69,7 +69,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       service.clearAll();
 
       IOseeDatabaseService databaseService = DatabaseInitActivator.getInstance().getDatabaseService();
-      databaseService.getSequence().clear();
+      databaseService.invalidateSequences();
 
       Branch systemRoot = BranchManager.getSystemRootBranch();
       Conditions.checkNotNull(systemRoot, "System root was not created - ");

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Jeff C. Phillips
@@ -32,6 +33,7 @@ public abstract class BaseTransactionData {
       void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data);
    }
 
+   private static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
    private static final String INSERT_INTO_TRANSACTION_TABLE =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?, ?, ?, ?, ?)";
 
@@ -131,4 +133,8 @@ public abstract class BaseTransactionData {
     * @param artifactEvent TODO
     */
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException;
+
+   protected int getNextGammaIdFromSequence() {
+      return (int) ConnectionHandler.getNextSequence(GAMMA_ID_SEQ);
+   }
 }
