@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,21 +19,24 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @XmlRootElement
-public class Client {
+public class IdeVersion {
 
-   private List<String> supportedVersions = new ArrayList<String>();
+   private List<String> versions;
 
-   public List<String> getSupportedVersions() {
-      return supportedVersions;
+   public List<String> getVersions() {
+      if (versions == null) {
+         versions = new ArrayList<String>();
+      }
+      return versions;
    }
 
-   public void addSupportedVersion(String version) {
-      if (!supportedVersions.contains(version)) {
-         supportedVersions.add(version);
+   public void addVersion(String version) {
+      if (!getVersions().contains(version)) {
+         getVersions().add(version);
       }
    }
 
-   public void setSupportedVersions(List<String> supportedVersions) {
-      this.supportedVersions = supportedVersions;
+   public void setVersions(List<String> versions) {
+      this.versions = versions;
    }
 }

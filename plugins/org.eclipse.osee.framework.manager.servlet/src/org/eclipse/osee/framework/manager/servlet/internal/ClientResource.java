@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.rest.model.Client;
+import org.eclipse.osee.orcs.rest.model.IdeVersion;
 
 /**
  * @author Donald G. Dunne
@@ -58,11 +58,11 @@ public class ClientResource {
 
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public Client get() throws OseeCoreException {
-      Client client = new Client();
+   public IdeVersion get() throws OseeCoreException {
+      IdeVersion client = new IdeVersion();
       String[] supportedVersions = serverManager.getVersions();
       for (String ver : supportedVersions) {
-         client.addSupportedVersion(ver);
+         client.addVersion(ver);
       }
       return client;
    }

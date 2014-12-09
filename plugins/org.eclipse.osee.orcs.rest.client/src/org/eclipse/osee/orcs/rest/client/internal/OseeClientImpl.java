@@ -14,6 +14,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,7 +37,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.PredicateFactoryImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
-import org.eclipse.osee.orcs.rest.model.Client;
+import org.eclipse.osee.orcs.rest.model.IdeVersion;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
@@ -88,25 +90,26 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public boolean isClientVersionSupportedByApplicationServer() {
-      boolean result = false;
-      Client clientResult = null;
+   public Collection<String> getIdeClientSupportedVersions() {
+      IdeVersion clientResult = null;
       try {
-         clientResult = newTarget("client").request(MediaType.APPLICATION_JSON).get(Client.class);
+         clientResult = newTarget("ide/versions").request(MediaType.APPLICATION_JSON).get(IdeVersion.class);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
       }
-      if (clientResult != null) {
-         result = clientResult.getSupportedVersions().contains(OseeCodeVersion.getVersion());
-      }
-      return result;
+      return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
+   }
+
+   @Override
+   public boolean isClientVersionSupportedByApplicationServer() {
+      return getIdeClientSupportedVersions().contains(OseeCodeVersion.getVersion());
    }
 
    @Override
    public boolean isApplicationServerAlive() {
       boolean alive = false;
       try {
-         isClientVersionSupportedByApplicationServer();
+         getIdeClientSupportedVersions();
          alive = true;
       } catch (Exception ex) {
          alive = false;

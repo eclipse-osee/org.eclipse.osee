@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Properties;
 import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -189,6 +190,13 @@ public class OseeClientQueryTest {
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
+   }
+
+   @PerfTest(threads = 1, invocations = 1)
+   @Test
+   public void supportedVersions() {
+      Collection<String> supportedVersions = createClient.getIdeClientSupportedVersions();
+      assertEquals(true, !supportedVersions.isEmpty());
    }
 
    @PerfTest(threads = 1, invocations = 1)

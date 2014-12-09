@@ -46,6 +46,7 @@ public class OrcsApplication extends Application {
       classes.add(BranchesResource.class);
       resources.add(new TypesQueryResource(orcsApi));
       resources.add(new BranchQueryResource(orcsApi));
+      resources.add(new IdeClientResource());
    }
 
    public void stop() {

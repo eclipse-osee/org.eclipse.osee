@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.client;
 
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 
@@ -26,5 +27,7 @@ public interface OseeClient {
    boolean isApplicationServerAlive();
 
    void executeScript(String script, Properties properties, boolean debug, Writer writer);
+
+   Collection<String> getIdeClientSupportedVersions();
 
 }
