@@ -55,7 +55,7 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
 
             @Override
             public void processNext(JdbcStatement chStmt) {
-               Long issuedAt = chStmt.getLong("issues_at");
+               Long issuedAt = chStmt.getLong("issued_at");
                Long expiresIn = chStmt.getLong("expires_in");
                if (isExpired(issuedAt, expiresIn)) {
                   String tableName = chStmt.getString("table_name");
