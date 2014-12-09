@@ -126,6 +126,11 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
       return this;
    }
 
+   public JdbcClientBuilder production(boolean production) {
+      setProduction(production);
+      return this;
+   }
+
    public JdbcClientBuilder dbUri(String format, Object... args) {
       dbUri(String.format(format, args));
       return this;

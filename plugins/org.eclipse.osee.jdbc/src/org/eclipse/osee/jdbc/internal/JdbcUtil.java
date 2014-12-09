@@ -88,7 +88,7 @@ public final class JdbcUtil {
    }
 
    public static JdbcConnectionInfo newConnectionInfo(final String dbDriver, final String dbUri, final Properties dbProps, boolean appendPropsToUri) {
-      checkNotNull(dbDriver, "database driver");
+      checkNotNullOrEmpty(dbDriver, "database driver");
       checkNotNullOrEmpty(dbUri, "database uri");
 
       final String connectionUri;
