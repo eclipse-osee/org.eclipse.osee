@@ -77,102 +77,132 @@ public class WorkItemNotificationProcessor {
          IAtsWorkItem workItem = workItemFactory.getWorkItemByAtsId(atsId);
 
          if (types.contains(AtsNotifyType.Originator)) {
-            IAtsUser originator = workItem.getCreatedBy();
-            if (originator.isActive()) {
-               if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
-                  OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
-                     originator.getEmail(), originator.getName());
-               } else if (!fromUser.equals(originator)) {
-                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                     getFromUser(event),
-                     Arrays.asList(originator),
-                     getIdString(workItem),
-                     AtsNotifyType.Originator.name(),
-                     getUrl(workItem),
-                     String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
-                        workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
-                        workItem.getName())));
+            try {
+               IAtsUser originator = workItem.getCreatedBy();
+               if (originator.isActive()) {
+                  if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
+                     OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
+                        originator.getEmail(), originator.getName());
+                  } else if (!fromUser.equals(originator)) {
+                     notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                        getFromUser(event),
+                        Arrays.asList(originator),
+                        getIdString(workItem),
+                        AtsNotifyType.Originator.name(),
+                        getUrl(workItem),
+                        String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
+                           workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
+                           workItem.getName())));
+                  }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                  "Error processing Originator for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Assigned)) {
-            Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
-            if (!notifyUsers.isEmpty()) {
-               assignees.addAll(notifyUsers);
-            } else {
-               assignees.addAll(workItem.getStateMgr().getAssignees());
-            }
-            assignees.remove(fromUser);
-            assignees = AtsUsersUtility.getValidEmailUsers(assignees);
-            assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
-            if (assignees.size() > 0) {
-               notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                  getFromUser(event),
-                  assignees,
-                  getIdString(workItem),
-                  AtsNotifyType.Assigned.name(),
-                  getUrl(workItem),
-                  String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
-                     workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(), workItem.getName())));
+            try {
+               Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
+               if (!notifyUsers.isEmpty()) {
+                  assignees.addAll(notifyUsers);
+               } else {
+                  assignees.addAll(workItem.getStateMgr().getAssignees());
+               }
+               assignees.remove(fromUser);
+               assignees = AtsUsersUtility.getValidEmailUsers(assignees);
+               assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
+               if (assignees.size() > 0) {
+                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                     getFromUser(event),
+                     assignees,
+                     getIdString(workItem),
+                     AtsNotifyType.Assigned.name(),
+                     getUrl(workItem),
+                     String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
+                        workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
+                        workItem.getName())));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                  "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
-            Collection<IAtsUser> subscribed = new HashSet<IAtsUser>();
-            subscribed.addAll(userService.getSubscribed(workItem));
-            subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
-            subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
-            if (subscribed.size() > 0) {
-               notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                  getFromUser(event),
-                  subscribed,
-                  getIdString(workItem),
-                  AtsNotifyType.Subscribed.name(),
-                  getUrl(workItem),
-                  String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                     workItem.getArtifactTypeName(), workItem.getName(), workItem.getStateMgr().getCurrentStateName())));
+            try {
+               Collection<IAtsUser> subscribed = new HashSet<IAtsUser>();
+               subscribed.addAll(userService.getSubscribed(workItem));
+               subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
+               subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
+               if (subscribed.size() > 0) {
+                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                     getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
+                     getUrl(workItem), String.format(
+                        "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
+                        workItem.getArtifactTypeName(), workItem.getName(),
+                        workItem.getStateMgr().getCurrentStateName())));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                  "Error processing Subscribed for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed) && (!workItem.isTask() && (workItem.getStateDefinition().getStateType().isCompleted() || workItem.getStateDefinition().getStateType().isCancelled()))) {
-            IAtsUser originator = workItem.getCreatedBy();
-            if (originator.isActive()) {
-               if (!EmailUtil.isEmailValid(originator.getEmail())) {
-                  OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
-                     originator.getEmail(), originator.getName());
-               } else if (!fromUser.equals(originator)) {
-                  if (workItem.getStateDefinition().getStateType().isCompleted()) {
-                     notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                        getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                        workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
-                           "[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
-                           workItem.getStateMgr().getCurrentStateName())));
-                  }
-                  if (workItem.getStateDefinition().getStateType().isCancelled()) {
-                     notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                        getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                        workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
-                           "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
-                           workItem.getArtifactTypeName(), workItem.getName(),
-                           workItem.getStateMgr().getCurrentStateName(), workItem.getCancelledFromState(),
-                           DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()), workItem.getCancelledReason())));
+            try {
+               IAtsUser originator = workItem.getCreatedBy();
+               if (originator.isActive()) {
+                  if (!EmailUtil.isEmailValid(originator.getEmail())) {
+                     OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
+                        originator.getEmail(), originator.getName());
+                  } else if (!fromUser.equals(originator)) {
+                     if (workItem.getStateDefinition().getStateType().isCompleted()) {
+                        notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                           getFromUser(event), Arrays.asList(originator), getIdString(workItem),
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
+                              "[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
+                              workItem.getStateMgr().getCurrentStateName())));
+                     }
+                     if (workItem.getStateDefinition().getStateType().isCancelled()) {
+                        notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                           getFromUser(event), Arrays.asList(originator), getIdString(workItem),
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
+                              "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
+                              workItem.getArtifactTypeName(), workItem.getName(),
+                              workItem.getStateMgr().getCurrentStateName(), workItem.getCancelledFromState(),
+                              DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()), workItem.getCancelledReason())));
+                     }
                   }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                  "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsAbstractReview) {
-            UserRoleManager roleMgr = new UserRoleManager(attrResolver, userService, workItem);
-            Collection<IAtsUser> authorModerator = new ArrayList<IAtsUser>();
-            for (UserRole role : roleMgr.getUserRoles()) {
-               if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
-                  authorModerator.add(userService.getUserById(role.getUserId()));
+            try {
+               UserRoleManager roleMgr = new UserRoleManager(attrResolver, userService, workItem);
+               Collection<IAtsUser> authorModerator = new ArrayList<IAtsUser>();
+               for (UserRole role : roleMgr.getUserRoles()) {
+                  if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
+                     authorModerator.add(userService.getUserById(role.getUserId()));
+                  }
                }
-            }
-            authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);
-            authorModerator = AtsUsersUtility.getActiveEmailUsers(authorModerator);
-            if (authorModerator.size() > 0) {
-               notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(getFromUser(event),
-                  authorModerator, getIdString(workItem), AtsNotifyType.Peer_Reviewers_Completed.name(), String.format(
-                     "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
-                     workItem.getArtifactTypeName(), workItem.getName())));
+               authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);
+               authorModerator = AtsUsersUtility.getActiveEmailUsers(authorModerator);
+               if (authorModerator.size() > 0) {
+                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
+                     getFromUser(event), authorModerator, getIdString(workItem),
+                     AtsNotifyType.Peer_Reviewers_Completed.name(), String.format(
+                        "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
+                        workItem.getArtifactTypeName(), workItem.getName())));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                  "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
          if (types.contains(AtsNotifyType.SubscribedTeamOrAi)) {
@@ -207,7 +237,9 @@ public class WorkItemNotificationProcessor {
                      }
                   }
                } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsNotifierServiceImpl.class, Level.SEVERE, ex);
+                  OseeLog.logf(AtsNotifierServiceImpl.class, Level.SEVERE, ex,
+                     "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                     event.toString());
                }
             }
          }
