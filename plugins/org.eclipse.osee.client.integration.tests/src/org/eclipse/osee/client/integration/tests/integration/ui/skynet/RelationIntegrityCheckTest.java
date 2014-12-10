@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpReques
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.LocalRelationLink;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.RelationIntegrityCheck;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -123,7 +123,7 @@ public class RelationIntegrityCheckTest {
    }
 
    private void runQuery(String sqlQuery) throws OseeDataStoreException, OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sqlQuery);
          while (chStmt.next()) {

@@ -10,25 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.blam;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XList.XListItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -103,72 +103,67 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
          return;
       }
 
-      CharBackedInputStream charBak = new CharBackedInputStream();
-      ISheetWriter excelWriter = new ExcelXmlWriter(charBak.getWriter());
+      File file = OseeData.getFile("CoveragePartitionByTxID_" + Lib.getDateTimeString() + ".xml");
+      ISheetWriter excelWriter = new ExcelXmlWriter(new BufferedWriter(new FileWriter(file)));
+      try {
+         excelWriter.startSheet("Tx_CvgPartitions", 4);
+         excelWriter.writeRow("TX ID", "TX Comment", "Partition", "TX Time");
 
-      excelWriter.startSheet("Tx_CvgPartitions", 4);
-      excelWriter.writeRow("TX ID", "TX Comment", "Partition", "TX Time");
-
-      monitor.beginTask("Creating TX Coverage Partitions Report", txIds.size());
-      for (XListItem txItem : txIds) {
-         String txStr = txItem.toString();
-         if (monitor.isCanceled()) {
-            return;
-         }
-         monitor.setTaskName(txStr);
-         monitor.worked(1);
-
-         if (Strings.isValid(txStr)) {
-            String[] tokens = txStr.split(TASKITEMDELIM);
-            String txId = "";
-            String txComment = "";
-            String txTime = "";
-            if (tokens.length >= 1) {
-               txId = tokens[0];
+         monitor.beginTask("Creating TX Coverage Partitions Report", txIds.size());
+         for (XListItem txItem : txIds) {
+            String txStr = txItem.toString();
+            if (monitor.isCanceled()) {
+               return;
             }
-            if (tokens.length >= 2) {
-               txComment = tokens[1];
-            }
-            if (tokens.length >= 3) {
-               int lastTokenIndex = tokens.length - 1;
-               txTime = tokens[lastTokenIndex];
-            }
-            IOseeStatement chStmt = null;
-            try {
-               chStmt = ConnectionHandler.getStatement();
-               chStmt.runPreparedQuery(SELECT_ARTS_BY_BRANCH_AND_TX, branch.getUuid(), txId);
+            monitor.setTaskName(txStr);
+            monitor.worked(1);
 
-               while (chStmt.next()) {
-                  int artId = chStmt.getInt("art_id");
-                  monitor.setTaskName(txStr + " " + artId);
-                  Artifact art = ArtifactQuery.getArtifactFromId(artId, branch);
-                  String partition = getCoveragePartitionType(art);
-                  if (partition == null) {
-                     //                     OseeLog.log(Activator.class, Level.INFO,
-                     //                        "NON-Coverage modification found in transaction:" + txId);
-                     partition = "NON-Coverage modification.";
-                  }
-                  excelWriter.writeRow(txId, txComment, partition, txTime);
-                  if (!runGreedy) {
-                     break;
-                  }
+            if (Strings.isValid(txStr)) {
+               String[] tokens = txStr.split(TASKITEMDELIM);
+               String txId = "";
+               String txComment = "";
+               String txTime = "";
+               if (tokens.length >= 1) {
+                  txId = tokens[0];
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
-            } finally {
-               if (chStmt != null) {
+               if (tokens.length >= 2) {
+                  txComment = tokens[1];
+               }
+               if (tokens.length >= 3) {
+                  int lastTokenIndex = tokens.length - 1;
+                  txTime = tokens[lastTokenIndex];
+               }
+               JdbcStatement chStmt = ConnectionHandler.getStatement();
+               try {
+                  chStmt.runPreparedQuery(SELECT_ARTS_BY_BRANCH_AND_TX, branch.getUuid(), txId);
+
+                  while (chStmt.next()) {
+                     int artId = chStmt.getInt("art_id");
+                     monitor.setTaskName(txStr + " " + artId);
+                     Artifact art = ArtifactQuery.getArtifactFromId(artId, branch);
+                     String partition = getCoveragePartitionType(art);
+                     if (partition == null) {
+                        //                     OseeLog.log(Activator.class, Level.INFO,
+                        //                        "NON-Coverage modification found in transaction:" + txId);
+                        partition = "NON-Coverage modification.";
+                     }
+                     excelWriter.writeRow(txId, txComment, partition, txTime);
+                     if (!runGreedy) {
+                        break;
+                     }
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
+               } finally {
                   chStmt.close();
                }
             }
          }
+         excelWriter.endSheet();
+      } finally {
+         excelWriter.endWorkbook();
       }
-
-      excelWriter.endSheet();
-      excelWriter.endWorkbook();
-
-      IFile iFile = OseeData.getIFile("CoveragePartitionByTxID_" + Lib.getDateTimeString() + ".xml");
-      AIFile.writeToFile(iFile, charBak);
-      Program.launch(iFile.getLocation().toOSString());
+      Program.launch(file.getAbsolutePath());
       monitor.done();
    }
 
@@ -206,9 +201,8 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          IOseeBranch branch = branchWidget.getData();
-         IOseeStatement chStmt = null;
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt = ConnectionHandler.getStatement();
             chStmt.runPreparedQuery(SELECT_TXS_BY_BRANCH, branch.getUuid());
             txIdListWidget.removeAll();
             while (chStmt.next()) {
@@ -218,9 +212,7 @@ public class TxCoveragePartitionsReportBlam extends AbstractBlam {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          } finally {
-            if (chStmt != null) {
-               chStmt.close();
-            }
+            chStmt.close();
          }
       }
 

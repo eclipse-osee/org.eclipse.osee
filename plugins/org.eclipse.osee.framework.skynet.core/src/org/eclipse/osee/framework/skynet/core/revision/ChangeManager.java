@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Public API class for access to change data from branches and transactionIds
@@ -120,7 +120,7 @@ public final class ChangeManager {
       HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<Artifact, TransactionRecord>();
       try {
          joinQuery.store();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(joinQuery.size() * 2, ServiceUtil.getSql(OseeSql.CHANGE_TX_MODIFYING),
                joinQuery.getQueryId());
@@ -163,7 +163,7 @@ public final class ChangeManager {
       HashCollection<Artifact, Branch> branchMap = new HashCollection<Artifact, Branch>();
       try {
          joinQuery.store();
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(joinQuery.size() * 2, ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_MODIFYING),
                joinQuery.getQueryId());

@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Theron Virgin
@@ -35,7 +35,7 @@ public class ConflictStatusManager {
       "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.branch_id = ? AND tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
    public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, long mergeBranchId) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
          ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma,
@@ -50,7 +50,7 @@ public class ConflictStatusManager {
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
 

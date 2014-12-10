@@ -104,7 +104,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -113,6 +112,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.jdbc.JdbcService;
 
 /**
  * @author Donald G. Dunne
@@ -147,7 +147,7 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsLogFactory logFactory;
    private IAtsColumnUtilities columnUtilities;
    private IAtsUtilService utilService;
-   private IOseeDatabaseService dbService;
+   private JdbcService jdbcService;
    private IAtsWorkItemFactory workItemFactory;
    private IAtsConfigItemFactory configItemFactory;
    private ActionableItemManager actionableItemManager;
@@ -155,8 +155,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsProgramService programService;
    private IAtsTeamDefinitionService teamDefinitionService;
 
-   public void setDatabaseService(IOseeDatabaseService dbService) {
-      this.dbService = dbService;
+   public void setJdbcService(JdbcService jdbcService) {
+      this.jdbcService = jdbcService;
    }
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
@@ -220,7 +220,7 @@ public class AtsClientImpl implements IAtsClient {
 
          @Override
          public long getNext(String sequenceName) {
-            return dbService.getNextSequence(sequenceName);
+            return jdbcService.getClient().getNextSequence(sequenceName);
          }
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);

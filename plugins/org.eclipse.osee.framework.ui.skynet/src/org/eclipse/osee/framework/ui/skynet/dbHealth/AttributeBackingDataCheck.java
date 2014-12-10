@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -77,7 +77,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
 
    private List<AttrData> getInvalidAttributeData(SubMonitor subMonitor) throws OseeCoreException {
       List<AttrData> data = new ArrayList<AttrData>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(READ_VALID_ATTRIBUTES);
          while (chStmt.next()) {

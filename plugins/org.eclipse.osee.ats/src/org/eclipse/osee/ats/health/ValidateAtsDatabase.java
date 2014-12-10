@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -91,6 +90,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmail;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
@@ -843,7 +843,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private static List<Integer> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
       List<Integer> artIds = new ArrayList<Integer>();
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, new Object[] {AtsUtilCore.getAtsBranch().getUuid()});
          while (chStmt.next()) {

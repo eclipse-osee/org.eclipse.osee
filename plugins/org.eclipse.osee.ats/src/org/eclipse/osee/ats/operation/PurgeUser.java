@@ -15,19 +15,19 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.utility.DbTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcTransaction;
 
 /**
  * @author Megumi Telles
@@ -76,14 +76,15 @@ public class PurgeUser extends AbstractBlam {
                   return;
                }
                //handle roll-backs and exception handling
-               new DbTransaction() {
+               ConnectionHandler.getJdbcClient().runTransaction(new JdbcTransaction() {
+
                   @Override
-                  protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+                  public void handleTxWork(JdbcConnection connection) {
                      // start replacing all transactions, relations, etc.
                      findAndUpdateAuthoredTransactions(connection, fromUser, toUser);
                      findAndUpdateRelations(connection, fromUser, toUser);
                   }
-               }.execute();
+               });
                // confirm deletion of artifact
                confirmDeletionOfArtifact(fromUser);
                // output results
@@ -109,7 +110,7 @@ public class PurgeUser extends AbstractBlam {
       }
    }
 
-   private void findAndUpdateAuthoredTransactions(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfAuthoredTransactions =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_AUTHORED_TRANSACTIONS,
             new Object[] {fromUser.getArtId()});
@@ -119,12 +120,12 @@ public class PurgeUser extends AbstractBlam {
             fromUser.getArtId()});
    }
 
-   private void findAndUpdateRelations(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       updateRelationA(connection, fromUser, toUser);
       updateRelationB(connection, fromUser, toUser);
    }
 
-   private void updateRelationA(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfASideRelations =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
             new Object[] {fromUser.getArtId()});
@@ -134,7 +135,7 @@ public class PurgeUser extends AbstractBlam {
             fromUser.getArtId()});
    }
 
-   private void updateRelationB(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfBSideRelations =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
             new Object[] {fromUser.getArtId()});

@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.preferences;
 import java.text.DateFormat;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
@@ -115,7 +115,7 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
       StringBuilder builder = new StringBuilder();
       builder.append("<table class=\"oseeTable\" width=\"100%\">");
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Source Id", "Exported On", "Imported On"}));
-      IOseeStatement chStmt = null;
+      JdbcStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery("select * from osee_import_source");

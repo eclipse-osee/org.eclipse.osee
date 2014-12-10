@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.data.model.editor.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.StackedViewer;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -123,8 +125,11 @@ public class ODMImportPage extends WizardPage {
    private Button createDataStoreButton(Composite parent) {
       Button dataStoreButton = new Button(parent, SWT.CHECK);
       String message = null;
+
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
+      JdbcConnection connection = jdbcClient.getConnection();
       try {
-         DatabaseMetaData meta = ConnectionHandler.getMetaData();
+         DatabaseMetaData meta = connection.getMetaData();
          String product = meta.getDatabaseProductName();
          int majorVersion = meta.getDatabaseMajorVersion();
          int minorVersion = meta.getDatabaseMinorVersion();
@@ -135,6 +140,8 @@ public class ODMImportPage extends WizardPage {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.WARNING, ex);
          message = "Data Store";
+      } finally {
+         connection.close();
       }
       dataStoreButton.setText(String.format("%s", message));
       return dataStoreButton;

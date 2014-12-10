@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -108,7 +108,7 @@ public class WasIsCompareEditorAction extends Action {
    private Integer getPreviousTransaction(long branchUuid, int attrId, int transactionId) {
       Integer previousTransaction = 0;
       boolean found = false;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ATTRIBUTE_TRANSACTIONS_QUERY_DESC, attrId, branchUuid);
          while (chStmt.next()) {

@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeA
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Acquires changes for either branches or transactions.
@@ -95,7 +95,7 @@ public final class RevisionChangeLoader {
    }
 
    private void loadTransactions(Branch branch, Artifact artifact, TransactionRecord transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
             artifact.getArtId(), branch.getUuid(), transactionId.getId());

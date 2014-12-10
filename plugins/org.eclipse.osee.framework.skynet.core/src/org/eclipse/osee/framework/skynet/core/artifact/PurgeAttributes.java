@@ -10,24 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Jeff C. Phillips
@@ -47,16 +47,16 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    private boolean success;
 
    public PurgeAttributes(Collection<Attribute<?>> attributesToPurge) throws OseeCoreException {
-      super(ServiceUtil.getOseeDatabaseService(), "Purge Attributes", Activator.PLUGIN_ID);
+      super(ConnectionHandler.getJdbcClient(), "Purge Attributes", Activator.PLUGIN_ID);
       this.attributesToPurge = attributesToPurge;
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       IdJoinQuery txsJoin = populateTxsJoinTable();
       try {
-         getDatabaseService().runPreparedUpdate(connection, DELETE_TXS, txsJoin.getQueryId());
-         getDatabaseService().runPreparedUpdate(connection, DELETE_ATTR, txsJoin.getQueryId());
+         getJdbcClient().runPreparedUpdate(connection, DELETE_TXS, txsJoin.getQueryId());
+         getJdbcClient().runPreparedUpdate(connection, DELETE_ATTR, txsJoin.getQueryId());
 
          for (Attribute<?> attribute : attributesToPurge) {
             attribute.purge();
@@ -69,19 +69,19 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    }
 
    private IdJoinQuery populateTxsJoinTable() throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getJdbcClient());
 
       for (Attribute<?> attribute : attributesToPurge) {
          attributeJoin.add(attribute.getId());
       }
 
-      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery(getDatabaseService());
+      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery(getJdbcClient());
       try {
          attributeJoin.store();
-         IOseeStatement chStmt = getDatabaseService().getStatement();
+         JdbcStatement chStmt = getJdbcClient().getStatement();
 
          try {
-            chStmt.runPreparedQuery(MAX_FETCH, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
+            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
             while (chStmt.next()) {
                txsJoin.add(chStmt.getInt("gamma_id"));
             }

@@ -12,10 +12,9 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
  * @author Donald G. Dunne
@@ -37,18 +36,18 @@ public class OseeInfo {
    }
 
    public static String getValue(String key, Long maxStaleness) throws OseeCoreException {
-      return getValue(ServiceUtil.getOseeDatabaseService(), key, maxStaleness);
+      return getValue(ConnectionHandler.getJdbcClient(), key, maxStaleness);
    }
 
-   public static String getValue(IOseeDatabaseService service, String key) {
-      return getValue(service, key, (long) Integer.MAX_VALUE);
+   public static String getValue(JdbcClient jdbcClient, String key) {
+      return getValue(jdbcClient, key, (long) Integer.MAX_VALUE);
    }
 
-   public static String getValue(IOseeDatabaseService service, String key, Long maxStaleness) {
+   public static String getValue(JdbcClient jdbcClient, String key, Long maxStaleness) {
       Pair<Long, String> pair = cache.get(key);
       String value;
       if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
-         value = service.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+         value = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
          cacheValue(key, value);
       } else {
          value = pair.getSecond();

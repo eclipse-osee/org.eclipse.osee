@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 public final class ArtifactGuis {
 
@@ -85,7 +85,7 @@ public final class ArtifactGuis {
       // Can only be on other branches if it has already been saved
       if (artifact.isInDb()) {
 
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             Branch branch = artifact.getFullBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),

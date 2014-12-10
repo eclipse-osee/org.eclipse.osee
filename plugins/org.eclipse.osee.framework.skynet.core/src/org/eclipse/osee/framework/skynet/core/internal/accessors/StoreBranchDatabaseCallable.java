@@ -10,9 +10,9 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 
 /**
  * @author Ryan D. Brooks
@@ -29,15 +29,15 @@ public class StoreBranchDatabaseCallable {
    private static final String DELETE_BRANCH = "DELETE FROM osee_branch WHERE branch_id = ?";
 
    private final Collection<Branch> branches;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
-   public StoreBranchDatabaseCallable(IOseeDatabaseService dbService, Collection<Branch> branches) {
+   public StoreBranchDatabaseCallable(JdbcClient jdbcClient, Collection<Branch> branches) {
       this.branches = branches;
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
    }
 
    public IStatus handleTxWork() throws OseeCoreException {
-      OseeConnection connection = dbService.getConnection();
+      JdbcConnection connection = jdbcClient.getConnection();
       try {
          List<Object[]> insertData = new ArrayList<Object[]>();
          List<Object[]> updateData = new ArrayList<Object[]>();
@@ -61,7 +61,7 @@ public class StoreBranchDatabaseCallable {
             }
             if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
                MoveBranchDatabaseCallable task =
-                  new MoveBranchDatabaseCallable(dbService, branch.getArchiveState().isArchived(), branch);
+                  new MoveBranchDatabaseCallable(jdbcClient, branch.getArchiveState().isArchived(), branch);
                try {
                   task.handleTxWork();
                } catch (Exception ex) {
@@ -69,9 +69,9 @@ public class StoreBranchDatabaseCallable {
                }
             }
          }
-         dbService.runBatchUpdate(connection, INSERT_BRANCH, insertData);
-         dbService.runBatchUpdate(connection, UPDATE_BRANCH, updateData);
-         dbService.runBatchUpdate(connection, DELETE_BRANCH, deleteData);
+         jdbcClient.runBatchUpdate(connection, INSERT_BRANCH, insertData);
+         jdbcClient.runBatchUpdate(connection, UPDATE_BRANCH, updateData);
+         jdbcClient.runBatchUpdate(connection, DELETE_BRANCH, deleteData);
       } finally {
          connection.close();
       }

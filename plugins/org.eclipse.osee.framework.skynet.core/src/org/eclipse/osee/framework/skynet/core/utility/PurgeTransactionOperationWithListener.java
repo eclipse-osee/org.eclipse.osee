@@ -43,7 +43,7 @@ public class PurgeTransactionOperationWithListener {
    public static IOperation getPurgeTransactionOperationById(List<Integer> txIdsToDelete) throws OseeCoreException {
 
       final PurgeTransactionOperation op =
-         new PurgeTransactionOperation(ServiceUtil.getOseeDatabaseService(),
+         new PurgeTransactionOperation(ConnectionHandler.getJdbcClient(),
             ServiceUtil.getOseeCacheService().getBranchCache(), txIdsToDelete);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {

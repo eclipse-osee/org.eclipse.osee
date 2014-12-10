@@ -49,8 +49,6 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -77,6 +75,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -129,7 +129,7 @@ public class AccessControlService implements IAccessControlService {
       TimeUnit.HOURS).build();
 
    private final IOseeCachingService cachingService;
-   private final IOseeDatabaseService databaseService;
+   private final JdbcClient jdbcClient;
    private final OseeEventService eventService;
 
    private IArtifactEventListener listener1;
@@ -137,10 +137,10 @@ public class AccessControlService implements IAccessControlService {
 
    private final AtomicBoolean ensurePopulated = new AtomicBoolean(false);
 
-   public AccessControlService(IOseeDatabaseService databaseService, IOseeCachingService cachingService, OseeEventService eventService) {
+   public AccessControlService(JdbcClient jdbcClient, IOseeCachingService cachingService, OseeEventService eventService) {
 
       super();
-      this.databaseService = databaseService;
+      this.jdbcClient = jdbcClient;
       this.cachingService = cachingService;
       this.eventService = eventService;
    }
@@ -175,8 +175,8 @@ public class AccessControlService implements IAccessControlService {
       return cachingService.getBranchCache();
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return databaseService;
+   private JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    public void reloadCache() throws OseeCoreException {
@@ -211,7 +211,7 @@ public class AccessControlService implements IAccessControlService {
 
    private void populateBranchAccessControlList() throws OseeCoreException {
       ensurePopulated();
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
          while (chStmt.next()) {
@@ -236,7 +236,7 @@ public class AccessControlService implements IAccessControlService {
 
    private void populateArtifactAccessControlList() throws OseeCoreException {
       ensurePopulated();
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
@@ -270,7 +270,7 @@ public class AccessControlService implements IAccessControlService {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         IOseeStatement chStmt = getDatabaseService().getStatement();
+         JdbcStatement chStmt = getJdbcClient().getStatement();
          try {
             chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
 
@@ -489,7 +489,6 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   @SuppressWarnings("unchecked")
    public void persistPermission(AccessControlData data, boolean recurse) {
       ensurePopulated();
       Artifact subject = data.getSubject();
@@ -503,10 +502,10 @@ public class AccessControlService implements IAccessControlService {
                ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  getDatabaseService().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
+                  getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
                      data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getId());
                } else {
-                  getDatabaseService().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
+                  getJdbcClient().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
                      data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getId());
                }
 
@@ -539,10 +538,10 @@ public class AccessControlService implements IAccessControlService {
                BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
                if (data.isBirth()) {
-                  getDatabaseService().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
+                  getJdbcClient().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
                      data.getSubject().getArtId(), branchAccessObject.getId());
                } else {
-                  getDatabaseService().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
+                  getJdbcClient().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
                      data.getSubject().getArtId(), branchAccessObject.getId());
                }
             }
@@ -721,8 +720,8 @@ public class AccessControlService implements IAccessControlService {
    @Override
    public void removePermissions(IOseeBranch branch) throws OseeCoreException {
       Branch theBranch = getBranchCache().get(branch);
-      getDatabaseService().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
-      getDatabaseService().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
+      getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
+      getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
    }
 
    public boolean hasLock(Artifact object) throws OseeCoreException {

@@ -25,13 +25,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.DatabaseTransactions;
-import org.eclipse.osee.framework.database.core.IDbTransactionWork;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,13 +39,17 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
+import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class StoreSkynetTransactionOperation extends AbstractOperation implements IDbTransactionWork, InsertDataCollector {
+public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation implements InsertDataCollector {
 
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
@@ -65,10 +63,9 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    private final Collection<Artifact> artifactReferences;
 
    private boolean executedWithException;
-   private IOseeDatabaseService dbService;
 
    public StoreSkynetTransactionOperation(String name, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
-      super(name, Activator.PLUGIN_ID);
+      super(ConnectionHandler.getJdbcClient(), name, Activator.PLUGIN_ID);
       this.branch = branch;
       this.transactionRecord = transactionRecord;
       this.txDatas = txDatas;
@@ -92,13 +89,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      dbService = ServiceUtil.getOseeDatabaseService();
-      DatabaseTransactions.execute(dbService, dbService.getConnection(), this);
-   }
-
-   @Override
-   public void handleTxWork(OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       executedWithException = false;
       TransactionManager.internalPersist(connection, transactionRecord);
       if (!txDatas.isEmpty()) {
@@ -111,7 +102,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    }
 
    @Override
-   public void handleTxException(Exception ex) {
+   public void handleTxException(IProgressMonitor monitor, Exception ex) {
       executedWithException = true;
       for (BaseTransactionData transactionData : txDatas) {
          try {
@@ -123,7 +114,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
    }
 
    @Override
-   public void handleTxFinally() throws OseeCoreException {
+   public void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (!executedWithException) {
          updateModifiedCachedObject();
          tagGammas();
@@ -149,7 +140,7 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       }
    }
 
-   private void executeTransactionDataItems(OseeConnection connection) throws OseeCoreException {
+   private void executeTransactionDataItems(JdbcConnection connection) throws OseeCoreException {
       List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
       for (BaseTransactionData transactionData : txDatas) {
          // Collect inserts for attribute, relation, artifact, and artifact version tables
@@ -165,15 +156,15 @@ public final class StoreSkynetTransactionOperation extends AbstractOperation imp
       Collections.sort(keys);
       for (int priority : keys) {
          String sqlKey = dataInsertOrder.get(priority);
-         dbService.runBatchUpdate(connection, sqlKey, dataItemInserts.getValues(sqlKey));
+         getJdbcClient().runBatchUpdate(connection, sqlKey, dataItemInserts.getValues(sqlKey));
       }
 
       // Set stale tx currents in txs table
-      dbService.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
+      getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private void fetchTxNotCurrent(OseeConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      IOseeStatement chStmt = dbService.getStatement(connection);
+   private void fetchTxNotCurrent(JdbcConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 

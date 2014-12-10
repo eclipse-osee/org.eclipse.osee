@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.transaction;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -27,8 +26,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -39,6 +36,9 @@ import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -81,7 +81,7 @@ public final class TransactionManager {
 
    public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_TRANSACTION_COMMENTS, comment);
          while (chStmt.next()) {
@@ -111,10 +111,10 @@ public final class TransactionManager {
 
    public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, SELECT_TRANSACTIONS, branch.getUuid());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TRANSACTIONS, branch.getUuid());
 
          while (chStmt.next()) {
             transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
@@ -131,7 +131,7 @@ public final class TransactionManager {
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
          transactionIds = new ArrayList<TransactionRecord>(5);
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
             while (chStmt.next()) {
@@ -179,7 +179,7 @@ public final class TransactionManager {
       return getTransactionId(transactionNumber);
    }
 
-   public static synchronized TransactionRecord createNextTransactionId(OseeConnection connection, Branch branch, User userToBlame, String comment) throws OseeCoreException {
+   public static synchronized TransactionRecord createNextTransactionId(JdbcConnection connection, Branch branch, User userToBlame, String comment) throws OseeCoreException {
       TransactionRecord transactionId = internalCreateTransactionRecord(branch, userToBlame, comment);
       internalPersist(connection, transactionId);
       return transactionId;
@@ -204,7 +204,7 @@ public final class TransactionManager {
       return transactionId;
    }
 
-   public static synchronized void internalPersist(OseeConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
+   public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
          transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
          transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
@@ -217,7 +217,7 @@ public final class TransactionManager {
 
       TransactionRecord txRecord = null;
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchUuid,
             new Timestamp(maxDateExclusive.getTime()));
@@ -240,7 +240,7 @@ public final class TransactionManager {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionRecord getTransactionId(IOseeStatement chStmt) throws OseeCoreException {
+   public static TransactionRecord getTransactionId(JdbcStatement chStmt) throws OseeCoreException {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
@@ -252,7 +252,7 @@ public final class TransactionManager {
       }
    }
 
-   private synchronized static TransactionRecord getTransactionId(int txId, IOseeStatement chStmt) throws OseeCoreException {
+   private synchronized static TransactionRecord getTransactionId(int txId, JdbcStatement chStmt) throws OseeCoreException {
       TransactionCache txCache = getTransactionCache();
       TransactionRecord transactionRecord = txCache.getById(txId);
 

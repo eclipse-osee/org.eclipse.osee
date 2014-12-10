@@ -11,8 +11,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -20,6 +18,8 @@ import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -43,12 +43,12 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private static final String GET_PRIOR_TRANSACTION =
       "select max(transaction_id) FROM osee_tx_details where branch_id = ? and transaction_id < ?";
 
-   private final IOseeDatabaseService oseeDatabaseService;
+   private final JdbcClient jdbcClient;
    private final BranchCache branchCache;
    private final TransactionRecordFactory factory;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseService oseeDatabaseService, BranchCache branchCache, TransactionRecordFactory factory) {
-      this.oseeDatabaseService = oseeDatabaseService;
+   public DatabaseTransactionRecordAccessor(JdbcClient jdbcClient, BranchCache branchCache, TransactionRecordFactory factory) {
+      this.jdbcClient = jdbcClient;
       this.branchCache = branchCache;
       this.factory = factory;
    }
@@ -64,7 +64,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       }
       ensureDependantCachePopulated();
       if (transactionIds.size() > 1) {
-         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(oseeDatabaseService);
+         IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(jdbcClient);
          try {
             for (Integer txNumber : transactionIds) {
                joinQuery.add(txNumber);
@@ -104,7 +104,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       loadFromTransaction(cache, expectedCount, numberLoaded, query, queryId);
 
       if (numberLoaded.getValue() != expectedCount) {
-         IOseeStatement chStmt = oseeDatabaseService.getStatement();
+         JdbcStatement chStmt = jdbcClient.getStatement();
          try {
             chStmt.runPreparedQuery(expectedCount, SELECT_NON_EXISTING_TRANSACTIONS_BY_QUERY_ID, queryId);
             while (chStmt.next()) {
@@ -122,7 +122,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord loadFromTransaction(TransactionCache cache, int expectedCount, MutableInteger numberLoaded, String query, Object... parameters) throws OseeCoreException {
-      IOseeStatement chStmt = oseeDatabaseService.getStatement();
+      JdbcStatement chStmt = jdbcClient.getStatement();
       TransactionRecord record = null;
       int count = 0;
       try {
@@ -164,13 +164,13 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    @Override
    public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchUuid) throws OseeCoreException {
       int priorTransactionId =
-         oseeDatabaseService.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
+         jdbcClient.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
       return cache.getOrLoad(priorTransactionId);
    }
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
       String query = ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return cache.getOrLoad(oseeDatabaseService.runPreparedQueryFetchObject(-1, query, branch.getUuid()));
+      return cache.getOrLoad(jdbcClient.runPreparedQueryFetchObject(-1, query, branch.getUuid()));
    }
 }

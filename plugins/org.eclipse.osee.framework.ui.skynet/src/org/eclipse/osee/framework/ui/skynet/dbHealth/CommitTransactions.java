@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Updates commit transactions so new and then modified objects will be committed with a mod type of new. This BLAM
@@ -44,7 +44,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          checkForCancelledStatus(monitor);
 
-         IOseeStatement chStmt = ConnectionHandler.getStatement();
+         JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
 

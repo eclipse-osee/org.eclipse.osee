@@ -12,9 +12,8 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Random;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
 
 /**
  * @author Roberto E. Escobar
@@ -38,81 +37,81 @@ public class JoinUtility {
       return random.nextInt();
    }
 
-   private static IJoinAccessor createAccessor(IOseeDatabaseService service) {
-      return new DatabaseJoinAccessor(service);
+   private static IJoinAccessor createAccessor(JdbcClient jdbcClient) {
+      return new DatabaseJoinAccessor(jdbcClient);
    }
 
-   public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service) {
-      return createCharJoinQuery(service, null);
+   public static CharJoinQuery createCharJoinQuery(JdbcClient jdbcClient) {
+      return createCharJoinQuery(jdbcClient, null);
    }
 
-   public static CharJoinQuery createCharJoinQuery(IOseeDatabaseService service, Long expiresIn) {
-      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__CHAR_JOIN_QUERY);
-      return new CharJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
+   public static CharJoinQuery createCharJoinQuery(JdbcClient jdbcClient, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(jdbcClient, expiresIn, EXPIRATION_SECS__CHAR_JOIN_QUERY);
+      return new CharJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId());
    }
 
-   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service) {
-      return createIdJoinQuery(service, null);
+   public static IdJoinQuery createIdJoinQuery(JdbcClient jdbcClient) {
+      return createIdJoinQuery(jdbcClient, null);
    }
 
-   public static IdJoinQuery createIdJoinQuery(IOseeDatabaseService service, Long expiresIn) {
-      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
-      return new IdJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
+   public static IdJoinQuery createIdJoinQuery(JdbcClient jdbcClient, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(jdbcClient, expiresIn, EXPIRATION_SECS__ID_JOIN_QUERY);
+      return new IdJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId());
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service) {
-      return createArtifactJoinQuery(service, null);
+   public static ArtifactJoinQuery createArtifactJoinQuery(JdbcClient jdbcClient) {
+      return createArtifactJoinQuery(jdbcClient, null);
    }
 
-   public static ArtifactJoinQuery createArtifactJoinQuery(IOseeDatabaseService service, Long expiresIn) {
-      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
-      return new ArtifactJoinQuery(createAccessor(service), actualExpiration, getNewQueryId(),
-         getMaxArtifactJoinSize(service));
+   public static ArtifactJoinQuery createArtifactJoinQuery(JdbcClient jdbcClient, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(jdbcClient, expiresIn, EXPIRATION_SECS__ARTIFACT_JOIN_QUERY);
+      return new ArtifactJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId(),
+         getMaxArtifactJoinSize(jdbcClient));
    }
 
-   public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service) {
-      return createTransactionJoinQuery(service, null);
+   public static TransactionJoinQuery createTransactionJoinQuery(JdbcClient jdbcClient) {
+      return createTransactionJoinQuery(jdbcClient, null);
    }
 
-   public static TransactionJoinQuery createTransactionJoinQuery(IOseeDatabaseService service, Long expiresIn) {
-      Long actualExpiration = getExpiresIn(service, expiresIn, EXPIRATION_SECS__TX_JOIN_QUERY);
-      return new TransactionJoinQuery(createAccessor(service), actualExpiration, getNewQueryId());
+   public static TransactionJoinQuery createTransactionJoinQuery(JdbcClient jdbcClient, Long expiresIn) {
+      Long actualExpiration = getExpiresIn(jdbcClient, expiresIn, EXPIRATION_SECS__TX_JOIN_QUERY);
+      return new TransactionJoinQuery(createAccessor(jdbcClient), actualExpiration, getNewQueryId());
    }
 
    ////////////////// Static Legacy Calls /////////////////////////
-   private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return ServiceUtil.getOseeDatabaseService();
+   private static JdbcClient getJdbcClient() throws OseeDataStoreException {
+      return ConnectionHandler.getJdbcClient();
    }
 
    public static IdJoinQuery createIdJoinQuery() throws OseeDataStoreException {
-      return createIdJoinQuery(getDatabase());
+      return createIdJoinQuery(getJdbcClient());
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
-      IOseeDatabaseService service = getDatabase();
-      return createArtifactJoinQuery(service);
+      JdbcClient jdbcClient = getJdbcClient();
+      return createArtifactJoinQuery(jdbcClient);
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
-      IOseeDatabaseService service = getDatabase();
-      return createTransactionJoinQuery(service);
+      JdbcClient jdbcClient = getJdbcClient();
+      return createTransactionJoinQuery(jdbcClient);
    }
 
-   private static int getMaxArtifactJoinSize(IOseeDatabaseService service) {
+   private static int getMaxArtifactJoinSize(JdbcClient jdbcClient) {
       int toReturn = Integer.MAX_VALUE;
-      String maxSize = OseeInfo.getValue(service, "artifact.join.max.size");
+      String maxSize = OseeInfo.getValue(jdbcClient, "artifact.join.max.size");
       if (Strings.isNumeric(maxSize)) {
          toReturn = Integer.parseInt(maxSize);
       }
       return toReturn;
    }
 
-   private static Long getExpiresIn(IOseeDatabaseService service, Long actual, String defaultKey) {
+   private static Long getExpiresIn(JdbcClient jdbcClient, Long actual, String defaultKey) {
       Long toReturn = DEFAULT_JOIN_EXPIRATION_SECONDS;
       if (actual != null) {
          toReturn = actual;
       } else {
-         String expiration = OseeInfo.getValue(service, defaultKey);
+         String expiration = OseeInfo.getValue(jdbcClient, defaultKey);
          if (Strings.isNumeric(expiration)) {
             toReturn = Long.parseLong(expiration);
          }

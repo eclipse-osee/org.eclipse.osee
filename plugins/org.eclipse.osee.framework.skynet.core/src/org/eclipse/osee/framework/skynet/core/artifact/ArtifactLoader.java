@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan D. Brooks
@@ -195,8 +195,7 @@ public final class ArtifactLoader {
          sqlKey = OseeSql.LOAD_CURRENT_ARTIFACTS;
       }
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
-
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       String sql = null;
       try {
          sql = ServiceUtil.getSql(sqlKey);
@@ -280,7 +279,7 @@ public final class ArtifactLoader {
     * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
     */
    private static List<Pair<Integer, Long>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
       List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
@@ -304,7 +303,7 @@ public final class ArtifactLoader {
    /**
     * This method is called only after the cache has been checked
     */
-   private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
+   private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
       int transactionId = Artifact.TRANSACTION_SENTINEL;

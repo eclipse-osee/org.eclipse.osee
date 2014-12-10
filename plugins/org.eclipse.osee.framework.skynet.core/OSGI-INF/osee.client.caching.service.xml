@@ -5,5 +5,5 @@
       <provide interface="org.eclipse.osee.framework.core.services.IOseeCachingService"/>
    </service>
    <reference bind="setModelFactory" cardinality="1..1" interface="org.eclipse.osee.framework.core.services.IOseeModelFactoryService" name="IOseeModelFactoryService" policy="static"/>
-   <reference bind="setDatabaseService" cardinality="1..1" interface="org.eclipse.osee.framework.database.IOseeDatabaseService" name="IOseeDatabaseService" policy="static"/>
+   <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
 </scr:component>

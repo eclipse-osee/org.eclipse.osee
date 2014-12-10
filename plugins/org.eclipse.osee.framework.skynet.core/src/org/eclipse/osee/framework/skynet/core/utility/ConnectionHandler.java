@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.sql.DatabaseMetaData;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.jdbc.JdbcStatement;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import com.google.common.collect.Iterables;
 
 /**
  * Handles connection recovery in the event of database connection being lost
@@ -26,16 +32,42 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  */
 public final class ConnectionHandler {
 
-   protected static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return ServiceUtil.getOseeDatabaseService();
+   private ConnectionHandler() {
+      // Utility class
    }
 
-   public static IOseeStatement getStatement() throws OseeDataStoreException {
-      return getDatabase().getStatement();
+   private static JdbcService jdbcServiceInstance;
+
+   public static JdbcClient getJdbcClient() {
+      if (jdbcServiceInstance == null) {
+         Bundle bundle = FrameworkUtil.getBundle(ConnectionHandler.class);
+         BundleContext context = bundle.getBundleContext();
+         jdbcServiceInstance = findJdbcService(context);
+      }
+      return jdbcServiceInstance != null ? jdbcServiceInstance.getClient() : null;
    }
 
-   public static IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
-      return getDatabase().getStatement(connection);
+   private static JdbcService findJdbcService(BundleContext context) {
+      JdbcService toReturn = null;
+      try {
+         Collection<ServiceReference<JdbcService>> references =
+            context.getServiceReferences(JdbcService.class, "(osgi.binding=skynet.jdbc.service)");
+         ServiceReference<JdbcService> reference = Iterables.getFirst(references, null);
+         if (reference != null) {
+            toReturn = context.getService(reference);
+         }
+      } catch (InvalidSyntaxException ex) {
+         throw new OseeCoreException(ex, "Error finding JdbcService reference with osgi.binding=skynet.jdbc.service");
+      }
+      return toReturn;
+   }
+
+   public static JdbcStatement getStatement() throws OseeDataStoreException {
+      return getJdbcClient().getStatement();
+   }
+
+   public static JdbcStatement getStatement(JdbcConnection connection) throws OseeDataStoreException {
+      return getJdbcClient().getStatement(connection);
    }
 
    /**
@@ -44,7 +76,7 @@ public final class ConnectionHandler {
     * @return number of records updated
     */
    public static int runPreparedUpdate(String query, Object... data) throws OseeCoreException {
-      return getDatabase().runPreparedUpdate(query, data);
+      return getJdbcClient().runPreparedUpdate(query, data);
    }
 
    /**
@@ -52,8 +84,8 @@ public final class ConnectionHandler {
     * 
     * @return number of records updated
     */
-   public static <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException {
-      return getDatabase().runBatchUpdate(query, dataList);
+   public static int runBatchUpdate(String query, List<Object[]> dataList) throws OseeCoreException {
+      return getJdbcClient().runBatchUpdate(query, dataList);
    }
 
    /**
@@ -61,29 +93,20 @@ public final class ConnectionHandler {
     * 
     * @return number of records updated
     */
-   public static int runPreparedUpdate(OseeConnection connection, String query, Object... data) throws OseeCoreException {
-      return getDatabase().runPreparedUpdate(connection, query, data);
+   public static int runPreparedUpdate(JdbcConnection connection, String query, Object... data) throws OseeCoreException {
+      return getJdbcClient().runPreparedUpdate(connection, query, data);
    }
 
    public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeCoreException {
-      return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
+      return getJdbcClient().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
    public static String runPreparedQueryFetchString(String defaultValue, String query, Object... data) throws OseeCoreException {
-      return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
-   }
-
-   public static DatabaseMetaData getMetaData() throws OseeCoreException {
-      OseeConnection connection = getDatabase().getConnection();
-      try {
-         return connection.getMetaData();
-      } finally {
-         connection.close();
-      }
+      return getJdbcClient().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
    public static long getNextSequence(String sequenceName) {
-      return getDatabase().getNextSequence(sequenceName);
+      return getJdbcClient().getNextSequence(sequenceName);
    }
 
 }

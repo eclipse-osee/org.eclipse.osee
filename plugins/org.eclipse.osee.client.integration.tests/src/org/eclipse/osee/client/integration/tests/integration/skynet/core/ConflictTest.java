@@ -24,7 +24,6 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -228,7 +228,7 @@ public class ConflictTest {
    //@formatter:on
 
    private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String query =
             String.format(NO_TX_CURRENT_SET, dataId, dataTable, chStmt.getComplementSql(), dataId, dataTable);
@@ -242,7 +242,7 @@ public class ConflictTest {
    }
 
    private static void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String query = String.format(MULTIPLE_TX_CURRENT_SET, dataId, dataId, dataTable, dataId);
          chStmt.runPreparedQuery(query);

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,13 +27,14 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan D. Brooks
@@ -67,15 +67,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
    private Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, BranchCache branchCache, OperationLogger logger, List<Integer> txIdsToDelete) {
-      super(databaseService, "Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
+   public PurgeTransactionOperation(JdbcClient jdbcClient, BranchCache branchCache, OperationLogger logger, List<Integer> txIdsToDelete) {
+      super(jdbcClient, "Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, logger);
       this.success = false;
       this.branchCache = branchCache;
       this.txIdsToDelete = txIdsToDelete;
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, BranchCache branchCache, List<Integer> txIdsToDelete) {
-      this(databaseService, branchCache, NullOperationLogger.getSingleton(), txIdsToDelete);
+   public PurgeTransactionOperation(JdbcClient jdbcClient, BranchCache branchCache, List<Integer> txIdsToDelete) {
+      this(jdbcClient, branchCache, NullOperationLogger.getSingleton(), txIdsToDelete);
    }
 
    public void addListener(PurgeTransactionListener listener) {
@@ -91,7 +91,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       log();
 
       monitor.beginTask("Purge Transaction(s)", txIdsToDelete.size() * 5);
@@ -127,8 +127,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          monitor.worked(1);
 
          monitor.subTask("Remove Tx Rows");
-         getDatabaseService().runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
-         getDatabaseService().runBatchUpdate(connection, DELETE_TXS, txsToDelete);
+         getJdbcClient().runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
+         getJdbcClient().runBatchUpdate(connection, DELETE_TXS, txsToDelete);
          monitor.worked(1);
 
          monitor.subTask("Updating Previous Tx to Current");
@@ -136,7 +136,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
          computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
-         getDatabaseService().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
+         getJdbcClient().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
          monitor.worked(1);
       }
       monitor.done();
@@ -155,16 +155,16 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       changedTransactions = null;
    }
 
-   private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Long, IdJoinQuery> affected) throws OseeCoreException {
+   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<Long, IdJoinQuery> affected) throws OseeCoreException {
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
       for (Entry<Long, IdJoinQuery> entry : affected.entrySet()) {
          Long branchUuid = entry.getKey();
          IdJoinQuery joinQuery = entry.getValue();
 
-         IOseeStatement statement = getDatabaseService().getStatement(connection);
+         JdbcStatement statement = getJdbcClient().getStatement(connection);
          try {
-            statement.runPreparedQuery(MAX_FETCH, query, joinQuery.getQueryId(), branchUuid);
+            statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, joinQuery.getQueryId(), branchUuid);
             int previousItem = -1;
             while (statement.next()) {
                int currentItem = statement.getInt("item_id");
@@ -187,16 +187,16 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       }
    }
 
-   private Map<Long, IdJoinQuery> findAffectedItems(OseeConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
+   private Map<Long, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
       Map<Long, IdJoinQuery> items = new HashMap<Long, IdJoinQuery>();
-      IOseeStatement statement = getDatabaseService().getStatement(connection);
+      JdbcStatement statement = getJdbcClient().getStatement(connection);
 
       try {
          for (Object[] bindData : bindDataList) {
             Long branchUuid = (Long) bindData[0];
             String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
-            statement.runPreparedQuery(MAX_FETCH, query, bindData);
-            IdJoinQuery joinId = JoinUtility.createIdJoinQuery(getDatabaseService());
+            statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, bindData);
+            IdJoinQuery joinId = JoinUtility.createIdJoinQuery(getJdbcClient());
             items.put(branchUuid, joinId);
 
             while (statement.next()) {
@@ -225,7 +225,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       return previousTransaction;
    }
 
-   private void setChildBranchBaselineTxs(OseeConnection connection, TransactionRecord toDeleteTransaction, TransactionRecord previousTransaction) throws OseeCoreException {
+   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionRecord toDeleteTransaction, TransactionRecord previousTransaction) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       if (previousTransaction != null) {
          int toDeleteTransactionId = toDeleteTransaction.getId();
@@ -236,7 +236,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
             "%" + toDeleteTransactionId});
       }
       if (!data.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
+         getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
       }
    }
 }

@@ -14,7 +14,6 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.util,
- org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.init,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
@@ -26,7 +25,8 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.osee.framework.skynet.core.importing.resolvers,
  org.eclipse.osee.framework.skynet.core.transaction,
  org.eclipse.osee.framework.skynet.core.utility,
- org.eclipse.osee.framework.ui.skynet.Import
+ org.eclipse.osee.framework.ui.skynet.Import,
+ org.eclipse.osee.jdbc
 Export-Package: org.eclipse.osee.client.demo
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy

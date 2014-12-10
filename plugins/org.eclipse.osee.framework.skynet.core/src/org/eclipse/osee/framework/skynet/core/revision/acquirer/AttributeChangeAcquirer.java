@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Jeff C. Phillips
@@ -53,7 +53,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<Integer, ChangeBuilder>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();
       try {
@@ -98,7 +98,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       return getChangeBuilders();
    }
 
-   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, IOseeStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
+   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, JdbcStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
       ModificationType artModType;
       AttributeChangeBuilder attributeChangeBuilder;
 
@@ -182,7 +182,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             }
             joinQuery.store();
 
-            IOseeStatement chStmt = ConnectionHandler.getStatement();
+            JdbcStatement chStmt = ConnectionHandler.getStatement();
             try {
                chStmt.runPreparedQuery(sql, sqlParamter, joinQuery.getQueryId());
                int previousAttrId = -1;

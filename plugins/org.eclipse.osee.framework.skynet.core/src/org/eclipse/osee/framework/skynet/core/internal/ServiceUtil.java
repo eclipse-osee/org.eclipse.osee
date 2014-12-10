@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -70,10 +69,6 @@ public final class ServiceUtil {
 
    public static IDataTranslationService getTranslationService() throws OseeCoreException {
       return getService(IDataTranslationService.class);
-   }
-
-   public static IOseeDatabaseService getOseeDatabaseService() throws OseeCoreException {
-      return getService(IOseeDatabaseService.class);
    }
 
    public static TransactionRecordFactory getTransactionFactory() throws OseeCoreException {

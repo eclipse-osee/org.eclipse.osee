@@ -15,8 +15,8 @@ import java.util.Properties;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcDbType;
 
 /**
  * @author Ryan D. Brooks
@@ -82,7 +82,7 @@ public enum OseeSql {
 
    public static Properties getSqlProperties(DatabaseMetaData metaData) throws OseeCoreException {
       Properties sqlProperties = new Properties();
-      boolean areHintsSupported = SupportedDatabase.areHintsSupported(metaData);
+      boolean areHintsSupported = JdbcDbType.areHintsSupported(metaData);
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;
 

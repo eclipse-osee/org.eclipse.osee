@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import org.eclipse.osee.framework.skynet.core.utility.AbstractJoinQuery.IJoinRow;
 import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
 
 /**

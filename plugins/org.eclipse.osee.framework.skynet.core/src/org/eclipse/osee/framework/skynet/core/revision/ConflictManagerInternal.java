@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Theron Virgin
@@ -63,7 +63,7 @@ public class ConflictManagerInternal {
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
             commitTransaction.getId());
@@ -172,7 +172,7 @@ public class ConflictManagerInternal {
 
       monitor.subTask("Finding Artifact Version Conflicts");
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
          long commonBranchId = transactionId != null ? transactionId.getBranchId() : 0;
@@ -223,7 +223,7 @@ public class ConflictManagerInternal {
 
    private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       monitor.subTask("Finding the Attribute Conflicts");
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          int commonTransactionNumber = transactionId != null ? transactionId.getId() : 0;
@@ -320,7 +320,7 @@ public class ConflictManagerInternal {
 
    public static Collection<Long> getDestinationBranchesMerged(long sourceBranchId) throws OseeCoreException {
       List<Long> destinationBranches = new LinkedList<Long>();
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
          while (chStmt.next()) {
@@ -337,7 +337,7 @@ public class ConflictManagerInternal {
 
    private static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (sourceBranch != null && destBranch != null) {
             chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getUuid(), destBranch.getUuid());

@@ -28,13 +28,13 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.HttpMessage;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
@@ -68,8 +68,8 @@ public class DbBootstrapTask implements IDbInitializationTask {
       IOseeCachingService service = DatabaseInitActivator.getInstance().getCachingService();
       service.clearAll();
 
-      IOseeDatabaseService databaseService = DatabaseInitActivator.getInstance().getDatabaseService();
-      databaseService.invalidateSequences();
+      JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
+      jdbcClient.invalidateSequences();
 
       Branch systemRoot = BranchManager.getSystemRootBranch();
       Conditions.checkNotNull(systemRoot, "System root was not created - ");

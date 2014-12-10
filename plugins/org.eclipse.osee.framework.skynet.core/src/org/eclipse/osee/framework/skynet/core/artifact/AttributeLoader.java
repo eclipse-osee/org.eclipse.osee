@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan Schmitt
@@ -42,7 +42,7 @@ public class AttributeLoader {
          return;
       }
 
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String sql = getSql(allowDeletedArtifacts, loadLevel, historical);
          chStmt.runPreparedQuery(tempCache.size() * 8, sql, queryId);
@@ -90,7 +90,7 @@ public class AttributeLoader {
          // do nothing
       }
 
-      public AttrData(IOseeStatement chStmt, boolean historical) throws OseeCoreException {
+      public AttrData(JdbcStatement chStmt, boolean historical) throws OseeCoreException {
          artifactId = chStmt.getInt("art_id");
          branchUuid = chStmt.getLong("branch_id");
          attrId = chStmt.getInt("attr_id");

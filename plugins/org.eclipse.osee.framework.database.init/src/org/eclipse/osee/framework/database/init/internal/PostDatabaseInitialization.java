@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import java.util.logging.Level;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcDbType;
 
 /**
  * @author Roberto E. Escobar
@@ -29,15 +29,17 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
    @Override
    public void run() throws OseeCoreException {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
-      SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType(ConnectionHandler.getMetaData());
-      switch (supportedDb) {
+
+      JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
+      JdbcDbType dbType = jdbcClient.getDatabaseType();
+      switch (dbType) {
          case postgresql:
             OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");
-            ConnectionHandler.runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
+            jdbcClient.runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
             break;
          case oracle:
             OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Gathering Oracle Statistics");
-            ConnectionHandler.runPreparedUpdate(ORACLE_GATHER_STATS);
+            jdbcClient.runPreparedUpdate(ORACLE_GATHER_STATS);
             break;
          default:
             OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "No - postdbinit process to run");

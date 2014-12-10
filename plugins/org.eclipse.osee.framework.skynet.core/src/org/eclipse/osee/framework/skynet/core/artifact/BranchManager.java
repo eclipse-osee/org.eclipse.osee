@@ -42,8 +42,6 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -66,8 +64,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
@@ -175,10 +175,8 @@ public class BranchManager {
    }
 
    private static void loadBranchToCache(Object uuid) {
-      IOseeDatabaseService databaseService = ServiceUtil.getOseeDatabaseService();
-      IOseeStatement chStmt = null;
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt = databaseService.getStatement();
          chStmt.runPreparedQuery(1, SELECT_BRANCH, uuid);
          if (chStmt.next()) {
             long branchUuid = chStmt.getLong("branch_id");
@@ -201,7 +199,7 @@ public class BranchManager {
             created.setParentBranch(getBranch(parentBranchId));
          }
       } finally {
-         Lib.close(chStmt);
+         chStmt.close();
       }
 
    }
@@ -394,8 +392,10 @@ public class BranchManager {
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
       } else {
-         UpdateMergeBranch dbTransaction = new UpdateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
-         dbTransaction.execute();
+         UpdateMergeBranch op =
+            new UpdateMergeBranch(ConnectionHandler.getJdbcClient(), mergeBranch, expectedArtIds, destBranch,
+               sourceBranch);
+         Operations.executeWorkAndCheckStatus(op);
       }
       return mergeBranch;
    }

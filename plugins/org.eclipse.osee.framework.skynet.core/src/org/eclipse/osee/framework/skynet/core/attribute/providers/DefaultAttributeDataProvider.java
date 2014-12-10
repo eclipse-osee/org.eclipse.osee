@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
+import org.eclipse.osee.jdbc.JdbcConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -78,7 +78,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    private void storeValue(String value) throws OseeCoreException {
-      if (value != null && value.length() > IOseeDatabaseService.MAX_VARCHAR_LENGTH) {
+      if (value != null && value.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
                Lib.compressStream(new ByteArrayInputStream(value.getBytes("UTF-8")), getInternalFileName());

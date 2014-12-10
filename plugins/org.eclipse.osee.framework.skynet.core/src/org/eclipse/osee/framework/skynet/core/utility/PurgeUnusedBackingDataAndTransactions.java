@@ -15,12 +15,11 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
@@ -45,17 +44,17 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
    public PurgeUnusedBackingDataAndTransactions(OperationLogger logger) throws OseeDataStoreException {
-      this(ServiceUtil.getOseeDatabaseService(), logger);
+      this(ConnectionHandler.getJdbcClient(), logger);
    }
 
-   public PurgeUnusedBackingDataAndTransactions(IOseeDatabaseService dbService, OperationLogger logger) {
-      super(dbService, "Data with no TXS Addressing and empty transactions", Activator.PLUGIN_ID, logger);
+   private PurgeUnusedBackingDataAndTransactions(JdbcClient jdbcClient, OperationLogger logger) {
+      super(jdbcClient, "Data with no TXS Addressing and empty transactions", Activator.PLUGIN_ID, logger);
    }
 
-   private void processNotAddressedGammas(OseeConnection connection, String tableName) throws OseeCoreException {
+   private void processNotAddressedGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
          chStmt.runPreparedQuery(sql);
@@ -68,14 +67,14 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       }
 
       if (!notAddressedGammas.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), notAddressedGammas);
+         getJdbcClient().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), notAddressedGammas);
       }
    }
 
-   private void processAddressedButNonexistentGammas(OseeConnection connection, String tableName) throws OseeCoreException {
+   private void processAddressedButNonexistentGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
       List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String sql = String.format(NONEXISTENT_GAMMAS, tableName);
 
@@ -89,14 +88,14 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       }
 
       if (!nonexistentGammas.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
+         getJdbcClient().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
       }
    }
 
-   private void processEmptyTransactions(OseeConnection connection) throws OseeCoreException {
+   private void processEmptyTransactions(JdbcConnection connection) throws OseeCoreException {
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
          while (chStmt.next()) {
@@ -108,12 +107,12 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
       }
 
       if (!emptyTransactions.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, DELETE_EMPTY_TRANSACTIONS, emptyTransactions);
+         getJdbcClient().runBatchUpdate(connection, DELETE_EMPTY_TRANSACTIONS, emptyTransactions);
       }
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       processNotAddressedGammas(connection, "osee_attribute");
       processNotAddressedGammas(connection, "osee_artifact");
       processNotAddressedGammas(connection, "osee_relation_link");

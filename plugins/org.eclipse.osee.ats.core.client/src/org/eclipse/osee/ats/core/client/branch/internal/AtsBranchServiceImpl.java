@@ -141,7 +141,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       TransactionRecord txRecord = (TransactionRecord) transaction;
       result = txRecord.getBranch();
       if (result == null) {
-         result = TransactionManager.getTransactionId(transaction.getGuid()).getBranch();
+         Integer transactionId = transaction.getGuid();
+         result = TransactionManager.getTransactionId(transactionId).getBranch();
       }
       return result;
    }

@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.util.XResultData;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * {@link RelationIntegrityCheckTest }
@@ -308,7 +308,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    private void loadData(String description, String sql, boolean forDelete) throws OseeCoreException {
       monitor.subTask(description);
-      IOseeStatement chStmt = ConnectionHandler.getStatement();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
          chStmt.runPreparedQuery(sql);

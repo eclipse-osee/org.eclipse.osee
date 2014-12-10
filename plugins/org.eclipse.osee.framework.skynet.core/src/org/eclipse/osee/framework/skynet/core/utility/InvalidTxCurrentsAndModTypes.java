@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import static org.eclipse.osee.framework.database.core.IOseeStatement.MAX_FETCH;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,11 +19,11 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan D. Brooks
@@ -46,33 +45,33 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final String columnName;
    private final boolean isFixOperationEnabled;
    private final String txsTableName;
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
-      this(ServiceUtil.getOseeDatabaseService(), operationName, tableName, columnName, logger, isFixOperationEnabled,
+      this(ConnectionHandler.getJdbcClient(), operationName, tableName, columnName, logger, isFixOperationEnabled,
          archived);
    }
 
-   public InvalidTxCurrentsAndModTypes(IOseeDatabaseService dbService, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
+   private InvalidTxCurrentsAndModTypes(JdbcClient jdbcClient, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
          Activator.PLUGIN_ID, logger);
-      this.dbService = dbService;
+      this.jdbcClient = jdbcClient;
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
       txsTableName = archived ? "_archived" : "";
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   private JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    private void fixIssues(IProgressMonitor monitor) throws OseeCoreException {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
-         getDatabaseService().runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);
-         getDatabaseService().runBatchUpdate(String.format(UPDATE_ADDRESS, txsTableName), currentData);
+         getJdbcClient().runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);
+         getJdbcClient().runBatchUpdate(String.format(UPDATE_ADDRESS, txsTableName), currentData);
       }
       monitor.worked(calculateWork(0.1));
    }
@@ -178,10 +177,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       checkForCancelledStatus(monitor);
 
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
       try {
-         chStmt.runPreparedQuery(MAX_FETCH, sql);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
          monitor.worked(calculateWork(0.40));
 
          Address previousAddress = null;

@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,6 +30,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -42,19 +42,19 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
-   private final IOseeDatabaseService dbService;
+   private final JdbcClient jdbcClient;
 
    private final TransactionCache txCache;
    private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(IOseeDatabaseService dbService, TransactionCache txCache, BranchFactory branchFactory) {
-      this.dbService = dbService;
+   public DatabaseBranchAccessor(JdbcClient jdbcClient, TransactionCache txCache, BranchFactory branchFactory) {
+      this.jdbcClient = jdbcClient;
       this.txCache = txCache;
       this.branchFactory = branchFactory;
    }
 
-   private IOseeDatabaseService getDatabaseService() {
-      return dbService;
+   private JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    @Override
@@ -77,7 +77,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
          while (chStmt.next()) {
@@ -151,7 +151,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    }
 
    private void loadMergeBranches(BranchCache branchCache) throws OseeCoreException {
-      IOseeStatement chStmt = getDatabaseService().getStatement();
+      JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
@@ -170,7 +170,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      StoreBranchDatabaseCallable task = new StoreBranchDatabaseCallable(dbService, branches);
+      StoreBranchDatabaseCallable task = new StoreBranchDatabaseCallable(jdbcClient, branches);
       try {
          IStatus status = task.handleTxWork();
          if (status.isOK()) {

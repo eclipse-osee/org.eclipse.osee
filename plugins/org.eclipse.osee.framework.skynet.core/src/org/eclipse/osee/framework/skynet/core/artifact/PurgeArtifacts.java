@@ -18,8 +18,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -27,12 +25,14 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.TransactionJoinQuery;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Ryan D. Brooks
@@ -60,14 +60,14 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) throws OseeCoreException {
-      super(ServiceUtil.getOseeDatabaseService(), "Purge Artifact", Activator.PLUGIN_ID);
+      super(ConnectionHandler.getJdbcClient(), "Purge Artifact", Activator.PLUGIN_ID);
       this.artifactsToPurge = new LinkedList<Artifact>(artifactsToPurge);
       this.success = false;
       this.recurseChildrenBranches = recurseChildrenBranches;
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       if (artifactsToPurge == null || artifactsToPurge.isEmpty()) {
          return;
       }
@@ -81,7 +81,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       }
       artifactsToPurge.addAll(childreArtifactsToPurge);
 
-      ArtifactJoinQuery artJoin2 = JoinUtility.createArtifactJoinQuery(getDatabaseService());
+      ArtifactJoinQuery artJoin2 = JoinUtility.createArtifactJoinQuery(getJdbcClient());
       try {
          for (Artifact art : artifactsToPurge) {
             artJoin2.add(art.getArtId(), art.getFullBranch().getUuid());
@@ -90,7 +90,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
          int queryId = artJoin2.getQueryId();
 
-         TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getDatabaseService());
+         TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery(getJdbcClient());
 
          insertSelectItems(txJoin, connection, "osee_relation_link",
             "(aj.art_id = item.a_art_id OR aj.art_id = item.b_art_id)", queryId);
@@ -99,9 +99,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
          try {
             txJoin.store(connection);
-            getDatabaseService().runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION,
-               txJoin.getQueryId());
-            getDatabaseService().runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
+            getJdbcClient().runPreparedUpdate(connection, DELETE_FROM_TXS_USING_JOIN_TRANSACTION, txJoin.getQueryId());
+            getJdbcClient().runPreparedUpdate(connection, DELETE_FROM_TX_DETAILS_USING_JOIN_TRANSACTION,
                txJoin.getQueryId());
          } finally {
             txJoin.delete(connection);
@@ -139,9 +138,9 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       }
    }
 
-   public void insertSelectItems(TransactionJoinQuery txJoin, OseeConnection connection, String tableName, String artifactJoinSql, int queryId) throws OseeCoreException {
+   public void insertSelectItems(TransactionJoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, int queryId) throws OseeCoreException {
       String query = String.format(SELECT_ITEM_GAMMAS, tableName, artifactJoinSql);
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(query, queryId);
          while (chStmt.next()) {
@@ -152,8 +151,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       }
    }
 
-   private void checkPurgeValid(OseeConnection connection) {
-      ArtifactJoinQuery artJoin = JoinUtility.createArtifactJoinQuery(getDatabaseService());
+   private void checkPurgeValid(JdbcConnection connection) {
+      ArtifactJoinQuery artJoin = JoinUtility.createArtifactJoinQuery(getJdbcClient());
       for (Artifact art : artifactsToPurge) {
          for (Branch branch : art.getFullBranch().getChildBranches(true)) {
             artJoin.add(art.getArtId(), branch.getUuid());
@@ -162,7 +161,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       if (!artJoin.isEmpty()) {
          try {
             artJoin.store(connection);
-            IOseeStatement chStmt = getDatabaseService().getStatement(connection);
+            JdbcStatement chStmt = getJdbcClient().getStatement(connection);
             try {
                chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, artJoin.getQueryId());
                boolean failed = false;

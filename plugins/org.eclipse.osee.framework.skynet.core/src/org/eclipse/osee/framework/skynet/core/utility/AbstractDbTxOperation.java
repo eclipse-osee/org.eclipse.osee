@@ -14,37 +14,37 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
+import org.eclipse.osee.jdbc.JdbcTransaction;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbTxOperation extends AbstractOperation {
 
-   private final IOseeDatabaseService databaseService;
+   private final JdbcClient jdbcClient;
 
-   public AbstractDbTxOperation(IOseeDatabaseService databaseService, String operationName, String pluginId) {
-      this(databaseService, operationName, pluginId, NullOperationLogger.getSingleton());
+   public AbstractDbTxOperation(JdbcClient jdbcClient, String operationName, String pluginId) {
+      this(jdbcClient, operationName, pluginId, NullOperationLogger.getSingleton());
    }
 
-   public AbstractDbTxOperation(IOseeDatabaseService databaseService, String operationName, String pluginId, OperationLogger logger) {
+   public AbstractDbTxOperation(JdbcClient jdbcClient, String operationName, String pluginId, OperationLogger logger) {
       super(operationName, pluginId, logger);
-      this.databaseService = databaseService;
+      this.jdbcClient = jdbcClient;
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
-      return databaseService;
+   protected JdbcClient getJdbcClient() {
+      return jdbcClient;
    }
 
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
-      Transaction transaction = new Transaction(monitor);
-      transaction.execute();
+      getJdbcClient().runTransaction(new Transaction(monitor));
    }
 
-   protected abstract void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException;
+   protected abstract void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException;
 
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       // default implementation
@@ -55,7 +55,7 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       // default implementation
    }
 
-   private final class Transaction extends DbTransaction {
+   private final class Transaction extends JdbcTransaction {
       private final IProgressMonitor monitor;
 
       private Transaction(IProgressMonitor monitor) {
@@ -63,22 +63,17 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       }
 
       @Override
-      protected String getTxName() {
-         return AbstractDbTxOperation.this.getName();
-      }
-
-      @Override
-      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection) {
          AbstractDbTxOperation.this.doTxWork(monitor, connection);
       }
 
       @Override
-      protected void handleTxException(Exception ex) {
+      public void handleTxException(Exception ex) {
          AbstractDbTxOperation.this.handleTxException(monitor, ex);
       }
 
       @Override
-      protected void handleTxFinally() throws OseeCoreException {
+      public void handleTxFinally() {
          AbstractDbTxOperation.this.handleTxFinally(monitor);
       }
    }

@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -46,14 +44,15 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -132,9 +131,7 @@ public class ChangeArtifactType {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
-      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
-      IOseeStatement chStmt = database.getStatement();
-
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
             "select branch_id, gamma_id from osee_join_id jid1, osee_join_id jid2, osee_txs txs where jid1.query_id = ? and jid2.query_id = ? and jid1.id = txs.gamma_id and jid2.id = txs.branch_id and txs.tx_current = ?",
@@ -252,7 +249,7 @@ public class ChangeArtifactType {
          insertData.add(toUpdate(newArtifactType.getId(), artifact.getArtId()));
       }
 
-      ServiceUtil.getOseeDatabaseService().runBatchUpdate(UPDATE, insertData);
+      ConnectionHandler.getJdbcClient().runBatchUpdate(UPDATE, insertData);
 
       for (Artifact artifact : modifiedArtifacts) {
          artifact.setArtifactType(newArtifactType);
@@ -265,9 +262,7 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
-      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
-      IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery(database);
-
+      IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
       for (Artifact artifact : inputArtifacts) {
          artifactJoin.add(artifact.getArtId());
       }
@@ -278,8 +273,7 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
-      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
-      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery(database);
+      IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
 
       // loop through all non-archieved non-deleted non-purged
 
@@ -295,11 +289,8 @@ public class ChangeArtifactType {
    }
 
    private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException, OseeCoreException {
-      IOseeDatabaseService database = ServiceUtil.getOseeDatabaseService();
-
-      IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery(database);
-      IOseeStatement chStmt = database.getStatement();
-
+      IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
             "select art_id, gamma_id from osee_artifact art, osee_join_id jid where jid.query_id = ? and jid.id = art.art_id",
