@@ -40,7 +40,7 @@ public class CancelledByColumn extends XViewerAtsColumn implements IXViewerValue
 
    private CancelledByColumn() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cancelledBy", "Cancelled By", 80, SWT.LEFT, false,
-         SortDataType.Date, false, "User transitioning action to cancelled state.");
+         SortDataType.String, false, "User transitioning action to cancelled state.");
    }
 
    /**

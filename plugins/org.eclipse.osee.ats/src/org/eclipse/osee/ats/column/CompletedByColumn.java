@@ -40,7 +40,7 @@ public class CompletedByColumn extends XViewerAtsColumn implements IXViewerValue
 
    private CompletedByColumn() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".completedBy", "Completed By", 80, SWT.LEFT, false,
-         SortDataType.Date, false, "User transitioning action to completed state.");
+         SortDataType.String, false, "User transitioning action to completed state.");
    }
 
    /**
