@@ -179,7 +179,7 @@ public class AtsServerImpl implements IAtsServer {
       configItemFactory = new ConfigItemFactory(logger, this);
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
-      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, jdbcClient);
+      branchService = new AtsBranchServiceImpl(getServices(), orcsApi);
       reviewService = new AtsReviewServiceImpl(this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 

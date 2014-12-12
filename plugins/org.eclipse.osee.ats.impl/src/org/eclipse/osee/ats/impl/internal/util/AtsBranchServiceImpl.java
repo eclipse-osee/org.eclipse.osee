@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.impl.internal.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -26,90 +28,61 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
+import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
-   private final String SELECT_MERGE_BRANCH =
-      "select branch_id from osee_merge where source_branch_id = ? and dest_branch_id = ?";
-   private final String SELECT_WORKING_BRANCH =
-      "select branch_id from osee_branch where associated_art_id = %d and branch_type = 0 and archived = 0 %s";
-   private final String SELECT_COMMITTED_WORKING_BRANCH =
-      "select branch_id from osee_branch where associated_art_id = %d and branch_type = 0 and archived = 0 and branch_state = 2";
-   private final String SELECT_BRANCH_STATE = "select branch_state from osee_branch where branch_id = ?";
-   private final String SELECT_BRANCH_PARENT_ID = "select parent_branch_id from osee_branch where branch_id = ?";
-   private final String SELECT_BRANCH_BASE_TRANSACTION_ID =
-      "select base_transaction_id from osee_branch where branch_id = ?";
-   private final String SELECT_BRANCH_TYPE = "select branch_type from osee_branch where branch_id = ?";
-   private final String SELECT_BRANCH_ARCHIVE_STATE = "select archived from osee_branch where branch_id = ?";
-   private final String SELECT_COMMIT_TRANSACTIONS =
-      "SELECT transaction_id FROM osee_tx_details WHERE commit_art_id = ?";
-   private final String SELECT_TRANSACTION = "SELECT * FROM osee_tx_details WHERE transaction_id = ?";
-   private final JdbcClient jdbcClient;
    private final OrcsApi orcsApi;
    private static final HashMap<Integer, List<ITransaction>> commitArtifactIdMap =
       new HashMap<Integer, List<ITransaction>>();
 
-   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, JdbcClient jdbcClient) {
+   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi) {
       super(atsServices);
       this.orcsApi = orcsApi;
-      this.jdbcClient = jdbcClient;
    }
 
    @Override
    public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
-      Long longId =
-         jdbcClient.runPreparedQueryFetchObject(0L,
-            String.format(SELECT_COMMITTED_WORKING_BRANCH, ((ArtifactReadable) teamWf.getStoreObject()).getLocalId()));
-      if (longId == null) {
-         return null;
-      }
-      return orcsApi.getQueryFactory(null).branchQuery().andUuids(longId).getResults().getExactlyOne();
+      int assocArtId = ((ArtifactReadable) teamWf.getStoreObject()).getLocalId();
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      query =
+         query.andIsOfType(BranchType.WORKING).andStateIs(BranchState.COMMITTED).excludeArchived().andAssociatedArtId(
+            assocArtId);
+      return query.getResults().getOneOrNull();
    }
 
    @Override
    public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
-      String negatedStr = "";
+      BranchQuery branchQuery = orcsApi.getQueryFactory(null).branchQuery();
       if (negatedBranchStates.length > 0) {
-         negatedStr = "and branch_state not in (";
-         for (BranchState state : negatedBranchStates) {
-            negatedStr += state.getValue() + ",";
-         }
-         negatedStr = negatedStr.replaceFirst(",$", ")");
+         Collection<BranchState> statesToSearch = new LinkedList<BranchState>(Arrays.asList(BranchState.values()));
+         statesToSearch.removeAll(Arrays.asList(negatedBranchStates));
+         branchQuery.andStateIs(statesToSearch.toArray(new BranchState[statesToSearch.size()]));
       }
-      Long longId =
-         jdbcClient.runPreparedQueryFetchObject(0L,
-            String.format(SELECT_WORKING_BRANCH, ((ArtifactReadable) teamWf.getStoreObject()).getLocalId(), negatedStr));
-      if (longId == null) {
-         return null;
-      }
-      return orcsApi.getQueryFactory(null).branchQuery().andUuids(longId).getResults().getExactlyOne();
+      branchQuery.andIsOfType(BranchType.WORKING);
+      branchQuery.andAssociatedArtId(((ArtifactReadable) teamWf.getStoreObject()).getLocalId());
+      return branchQuery.getResultsAsId().getOneOrNull();
    }
 
    @Override
    public BranchType getBranchType(IOseeBranch branch) {
-      String branchType = jdbcClient.runPreparedQueryFetchObject("", SELECT_BRANCH_TYPE, branch.getUuid());
-      if (!Strings.isValid(branchType)) {
-         return null;
-      }
-      return BranchType.valueOf(branchType);
+      BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
+      return fullBranch.getBranchType();
    }
 
    @Override
    public BranchState getBranchState(IOseeBranch branch) {
-      String branchState = jdbcClient.runPreparedQueryFetchObject("", SELECT_BRANCH_STATE, branch.getUuid());
-      if (!Strings.isNumeric(branchState)) {
-         return null;
-      }
-      return BranchState.getBranchState(Integer.valueOf(branchState));
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
+      return fullBranch.getBranchState();
    }
 
    /**
@@ -129,14 +102,13 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       if (workingBranch == null) {
          return false;
       }
-      Long longId =
-         jdbcClient.runPreparedQueryFetchObject(0L, SELECT_MERGE_BRANCH, workingBranch.getUuid(),
-            destinationBranch.getUuid());
-      return longId != null && longId > 0;
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      query = query.andIsMergeFor(workingBranch.getUuid(), destinationBranch.getUuid());
+      return query.getCount() > 0;
    }
 
    @Override
-   public IOseeBranch getBranchByUuid(long branchUuid) {
+   public BranchReadable getBranchByUuid(long branchUuid) {
       return orcsApi.getQueryFactory(null).branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
    }
 
@@ -148,11 +120,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchArchivedState getArchiveState(IOseeBranch branch) {
-      String archived = jdbcClient.runPreparedQueryFetchObject("0", SELECT_BRANCH_ARCHIVE_STATE, branch.getUuid());
-      if (!Strings.isValid(archived)) {
-         return null;
-      }
-      return BranchArchivedState.valueOf(archived);
+      BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
+      return fullBranch.getArchiveState();
    }
 
    @Override
@@ -173,46 +142,26 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
          transactionIds = new ArrayList<ITransaction>(5);
-         JdbcStatement chStmt = jdbcClient.getStatement();
-         try {
-            chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifactReadable.getLocalId());
-            while (chStmt.next()) {
-               transactionIds.add(getTransactionId(chStmt.getInt("transaction_id")));
-            }
-            commitArtifactIdMap.put(artifactReadable.getLocalId(), transactionIds);
-         } finally {
-            chStmt.close();
+         TransactionQuery txQuery = orcsApi.getQueryFactory(null).transactionQuery();
+         txQuery.andCommitIds(artifactReadable.getLocalId());
+         for (TransactionReadable tx : txQuery.getResults()) {
+            transactionIds.add(tx);
          }
+         commitArtifactIdMap.put(artifactReadable.getLocalId(), transactionIds);
       }
       return transactionIds;
    }
 
-   private TransactionRecord getTransactionId(int int1) {
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         chStmt.runPreparedQuery(SELECT_TRANSACTION, int1);
-         while (chStmt.next()) {
-            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-            return new TransactionRecord(int1, chStmt.getLong("branch_id"), chStmt.getString("osee_comment"),
-               chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType, null);
-         }
-      } finally {
-         chStmt.close();
-      }
-      return null;
-   }
-
    @Override
    public IOseeBranch getParentBranch(IOseeBranch branch) {
-      long parentId = jdbcClient.runPreparedQueryFetchObject(0L, SELECT_BRANCH_PARENT_ID, branch.getUuid());
-      return getBranchByUuid(parentId);
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
+      return getBranchByUuid(fullBranch.getParentBranch());
    }
 
    @Override
    public ITransaction getBaseTransaction(IOseeBranch branch) {
-      int baseTransactionId =
-         jdbcClient.runPreparedQueryFetchObject(0, SELECT_BRANCH_BASE_TRANSACTION_ID, branch.getUuid());
-      return getTransactionId(baseTransactionId);
+      TransactionQuery txQuery = orcsApi.getQueryFactory(null).transactionQuery();
+      return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }
-
 }
