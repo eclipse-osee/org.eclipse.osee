@@ -32,29 +32,21 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
-import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectManager;
-import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -101,7 +93,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    "FROM osee_artifact art1, osee_txs txs1 " + //
    "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
    "ORDER BY art1.art_id, txs1.branch_id ";
-   private boolean fixAssignees = true;
    private boolean fixAttributeValues = false;
    private final Set<String> atsIds = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentId = new HashMap<String, String>(50000);
@@ -228,18 +219,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testAttributeSetWorkDefinitionsExist(artifacts);
             testAtsActionsHaveTeamWorkflow(artifacts);
             testAtsWorkflowsHaveAction(artifacts);
-            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
             testAtsWorkflowsValidVersion(artifacts);
             testTasksHaveParentWorkflow(artifacts);
             testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-            testReviewsHaveValidDefectAndRoleXml(artifacts);
             testTeamWorkflows(artifacts);
             testAtsBranchManager(artifacts);
             testTeamDefinitions(artifacts, results);
             testVersionArtifacts(artifacts, results);
             testParallelConfig(artifacts, results);
-            testStateMachineAssignees(artifacts);
-            testAtsLogs(artifacts);
             testActionableItemToTeamDefinition(artifacts, results);
 
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
@@ -979,45 +966,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testAtsWorkflowsHaveAction");
    }
 
-   private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) {
-      Date date = new Date();
-      for (Artifact artifact : artifacts) {
-         if (artifact.isDeleted()) {
-            continue;
-         }
-         try {
-            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-               if (teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() > 1) {
-                  results.log(
-                     artifact,
-                     "testAtsWorkflowsHaveZeroOrOneVersion",
-                     "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has " + teamArt.getRelatedArtifacts(
-                        AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() + " versions");
-               }
-               // Test that targeted version belongs to teamDefHoldingVersion
-               else {
-                  IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
-                  if (verArt != null && teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
-                     if (!teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(verArt)) {
-                        results.log(
-                           artifact,
-                           "testAtsWorkflowsHaveZeroOrOneVersion",
-                           "Error: Team workflow " + XResultDataUI.getHyperlink(teamArt) + " has version" + XResultDataUI.getHyperlink(teamArt) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(AtsClientService.get().getConfigArtifact(
-                              teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
-                     }
-                  }
-               }
-            }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            results.log(artifact, "testAtsWorkflowsHaveZeroOrOneVersion",
-               "Error: Exception: " + ex.getLocalizedMessage());
-         }
-      }
-      results.logTestTimeSpent(date, "testAtsWorkflowsHaveZeroOrOneVersion");
-   }
-
    private void testAtsWorkflowsValidVersion(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
@@ -1097,39 +1045,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    }
 
-   @SuppressWarnings("deprecation")
-   private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {
-      Date date = new Date();
-      for (Artifact artifact : artifacts) {
-         if (artifact.isDeleted()) {
-            continue;
-         }
-         if (artifact instanceof AbstractReviewArtifact) {
-            AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
-            try {
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.ReviewDefect).size() > 0 && ReviewDefectManager.getDefectItems(
-                  reviewArtifact).isEmpty()) {
-                  results.log(
-                     artifact,
-                     "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has defect attribute, but no defects (xml parsing error).");
-               }
-               if (reviewArtifact.getAttributes(AtsAttributeTypes.Role).size() > 0 && UserRoleManager.getUserRoles(
-                  reviewArtifact).isEmpty()) {
-                  results.log(
-                     artifact,
-                     "testReviewsHaveValidDefectAndRoleXml",
-                     "Error: Review " + XResultDataUI.getHyperlink(reviewArtifact) + " has role attribute, but no roles (xml parsing error).");
-               }
-            } catch (Exception ex) {
-               results.log(artifact, "testReviewsHaveValidDefectAndRoleXml",
-                  "Error: Exception processing Review defect test " + ex.getLocalizedMessage());
-            }
-         }
-      }
-      results.logTestTimeSpent(date, "testReviewsHaveValidDefectAndRoleXml");
-   }
-
    private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
@@ -1152,163 +1067,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       results.logTestTimeSpent(date, "testReviewsHaveParentWorkflowOrActionableItems");
-   }
-
-   private void testAtsLogs(Collection<Artifact> artifacts) {
-      Date date = new Date();
-      for (Artifact artifact : artifacts) {
-         if (artifact.isDeleted()) {
-            continue;
-         }
-         try {
-            if (artifact instanceof AbstractWorkflowArtifact) {
-               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               try {
-                  awa.getLog();
-                  if (awa.getCreatedBy() == null) {
-                     try {
-                        results.log(
-                           artifact,
-                           "testAtsLogs",
-                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " originator == null");
-                     } catch (Exception ex) {
-                        results.log(
-                           artifact,
-                           "testAtsLogs",
-                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
-                     }
-                  }
-                  for (IStateToken state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
-                     if (awa.isInState(state)) {
-                        IAtsLogItem logItem = awa.getStateMgr().getStateStartedData(state);
-                        if (logItem == null) {
-                           try {
-                              results.log(
-                                 artifact,
-                                 "testAtsLogs",
-                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
-                           } catch (Exception ex) {
-                              results.log(
-                                 artifact,
-                                 "testAtsLogs",
-                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
-
-                           }
-                        } else if (logItem.getDate() == null) {
-                           try {
-                              results.log(
-                                 artifact,
-                                 "testAtsLogs",
-                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
-                           } catch (Exception ex) {
-                              results.log(
-                                 artifact,
-                                 "testAtsLogs",
-                                 "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
-
-                           }
-                        }
-                     }
-                  }
-                  // Generate html log which will exercise all the conversions
-                  AtsLogUtility.getHtml(
-                     awa.getLog(),
-                     AtsClientService.get().getLogFactory().getLogProvider(awa,
-                        AtsClientService.get().getAttributeResolver()), true, AtsClientService.get().getUserService());
-                  // Verify that all users are resolved
-                  for (IAtsLogItem logItem : awa.getLog().getLogItems()) {
-                     if (logItem.getUserId() == null) {
-                        results.log(
-                           artifact,
-                           "testAtsLogs",
-                           "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
-                     }
-                  }
-               } catch (Exception ex) {
-                  results.log(
-                     artifact,
-                     "testAtsLogs",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
-               }
-            }
-         } catch (Exception ex) {
-            results.log(artifact, "testAtsLogs",
-               "Error: " + artifact.getArtifactTypeName() + " exception accessing logItem: " + ex.getLocalizedMessage());
-
-         }
-
-      }
-      results.logTestTimeSpent(date, "testAtsLogs");
-   }
-   private static IAtsUser unAssignedUser;
-   private static IAtsUser oseeSystemUser;
-
-   private void testStateMachineAssignees(Collection<Artifact> artifacts) {
-      Date date = new Date();
-      if (unAssignedUser == null) {
-         unAssignedUser = AtsCoreUsers.UNASSIGNED_USER;
-         oseeSystemUser = AtsCoreUsers.SYSTEM_USER;
-      }
-      AtsChangeSet changes = new AtsChangeSet("Validate ATS Database - testStateMachineAssignees");
-      for (Artifact artifact : artifacts) {
-         if (artifact.isDeleted()) {
-            continue;
-         }
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            try {
-               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               Collection<? extends IAtsUser> assignees = awa.getStateMgr().getAssignees();
-               if ((awa.isCompleted() || awa.isCancelled()) && assignees.size() > 0) {
-                  results.log(
-                     artifact,
-                     "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " cancel/complete with attribute assignees");
-                  if (fixAssignees) {
-                     awa.setSoleAttributeValue(AtsAttributeTypes.CurrentState,
-                        ((String) awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState)).replaceAll("<.*>", ""));
-                     changes.add(awa);
-                     results.log(artifact, "testStateMachineAssignees", "Fixed");
-                  }
-               }
-               if (assignees.size() > 1 && assignees.contains(unAssignedUser)) {
-                  results.log(
-                     artifact,
-                     "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " is unassigned and assigned => " + AtsObjects.toString(
-                        "; ", assignees));
-                  if (fixAssignees) {
-                     awa.getStateMgr().removeAssignee(unAssignedUser);
-                     changes.add(awa);
-                     results.log(artifact, "testStateMachineAssignees", "Fixed");
-                  }
-               }
-               if (assignees.contains(oseeSystemUser)) {
-                  results.log(
-                     artifact,
-                     "testStateMachineAssignees",
-                     "Error: " + awa.getAtsId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
-               }
-               if (!awa.isCompleted() && !awa.isCancelled() && assignees.isEmpty()) {
-                  results.log(
-                     artifact,
-                     "testStateMachineAssignees",
-                     "Error: " + awa.getArtifactTypeName() + " " + XResultDataUI.getHyperlink(awa) + " In Work without assignees");
-               }
-            } catch (Exception ex) {
-               results.log("testStateMachineAssignees",
-                  "Error: Exception testing assignees: " + ex.getLocalizedMessage());
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      }
-      if (!changes.isEmpty()) {
-         changes.execute();
-      }
-      results.logTestTimeSpent(date, "testStateMachineAssignees");
-   }
-
-   public void setFixAssignees(boolean fixAssignees) {
-      this.fixAssignees = fixAssignees;
    }
 
    public void setFixAttributeValues(boolean fixAttributeValues) {

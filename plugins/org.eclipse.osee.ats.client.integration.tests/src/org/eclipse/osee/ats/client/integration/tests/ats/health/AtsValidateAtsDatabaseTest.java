@@ -32,7 +32,6 @@ public class AtsValidateAtsDatabaseTest {
 
       ValidateAtsDatabase validateAtsDatabase = new ValidateAtsDatabase(null);
       XResultData rd = new XResultData();
-      validateAtsDatabase.setFixAssignees(false);
       validateAtsDatabase.setFixAttributeValues(false);
       validateAtsDatabase.runIt(null, rd);
       Matcher m = Pattern.compile("Error:.*$").matcher(XResultDataUI.getReport(rd, "").getManipulatedHtml());
