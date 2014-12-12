@@ -101,10 +101,11 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    /**
-    * @return columns for attributes valid for at least on of the given artifacts
+    * @return columns for attributes valid for at least on of the given artifacts; those with content first
     */
    public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+      Set<IAttributeType> attrTypesUsed = new HashSet<IAttributeType>();
       Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
       try {
          for (Artifact art : artifacts) {
@@ -112,6 +113,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
             // include attribute types that are used even if invalid
             for (IAttributeType attrType : art.getAttributeTypesUsed()) {
                attributeTypes.add(attrType);
+               attrTypesUsed.add(attrType);
             }
          }
       } catch (OseeCoreException ex) {
@@ -121,6 +123,14 @@ public class SkynetXViewerFactory extends XViewerFactory {
       // Add Name first
       columns.add(new ArtifactNameColumn(true));
       attrNames.add("Name");
+      // Add attribute types used next
+      for (IAttributeType attributeType : attrTypesUsed) {
+         if (!attrNames.contains(attributeType.getName())) {
+            columns.add(getAttributeColumn(attributeType));
+            attrNames.add(attributeType.getName());
+         }
+      }
+      // Add remainder last
       for (IAttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {
             columns.add(getAttributeColumn(attributeType));
