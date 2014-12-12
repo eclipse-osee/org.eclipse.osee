@@ -7,6 +7,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
@@ -55,5 +56,9 @@ public class BranchCriteriaFactory {
 
    public Criteria createMergeForCriteria(Long sourceUuid, Long destUuid) {
       return new CriteriaMergeBranchFor(sourceUuid, destUuid);
+   }
+
+   public Criteria createAssociatedArtIdCriteria(int artId) {
+      return new CriteriaAssociatedArtId(artId);
    }
 }

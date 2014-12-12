@@ -36,6 +36,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
@@ -456,6 +457,30 @@ public class BranchQuerySqlContextFactoryImplTest {
       Iterator<Object> iterator = parameters.iterator();
       assertEquals(1L, iterator.next());
       assertEquals(2L, iterator.next());
+   }
+
+   @Test
+   public void testAssociatedArtId() throws Exception {
+      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      " FROM \n" + //
+      "osee_branch br1\n" + //
+      " WHERE \n" + //
+      "br1.associated_art_id = ?\n" + //
+      " ORDER BY br1.branch_id";
+
+      queryData.addCriteria(new CriteriaAssociatedArtId(4));
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+
+      assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      assertEquals(1, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      assertEquals(4, iterator.next());
    }
 
    private static Criteria ancestorOf(IOseeBranch child) {

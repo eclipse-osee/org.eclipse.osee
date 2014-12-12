@@ -60,4 +60,6 @@ public interface BranchQueryBuilder<T> {
 
    T andIsMergeFor(Long sourceUuid, Long destUuid);
 
+   T andAssociatedArtId(int artId);
+
 }

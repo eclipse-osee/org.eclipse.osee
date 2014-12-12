@@ -170,6 +170,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       return addAndCheck(getQueryData(), criteria);
    }
 
+   @Override
+   public T andAssociatedArtId(int artId) {
+      Criteria criteria = criteriaFactory.createAssociatedArtIdCriteria(artId);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
    @SuppressWarnings("unchecked")
    private T addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
       criteria.checkValid(getOptions());
