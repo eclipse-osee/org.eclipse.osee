@@ -164,6 +164,12 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       return addAndCheck(getQueryData(), criteria);
    }
 
+   @Override
+   public T andIsMergeFor(Long sourceUuid, Long destUuid) {
+      Criteria criteria = criteriaFactory.createMergeForCriteria(sourceUuid, destUuid);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
    @SuppressWarnings("unchecked")
    private T addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
       criteria.checkValid(getOptions());

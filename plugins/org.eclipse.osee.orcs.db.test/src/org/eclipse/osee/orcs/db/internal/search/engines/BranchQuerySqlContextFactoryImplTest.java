@@ -43,6 +43,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
@@ -426,6 +427,35 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(joins.get(0).getQueryId(), iterator.next());
       assertEquals(ARCHIVED.getValue(), iterator.next());
       assertEquals("Hello.*", iterator.next());
+   }
+
+   @Test
+   public void testMergeBranchFor() throws Exception {
+      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      " FROM \n" + //
+      "osee_merge mbr1, osee_branch br1\n" + //
+      " WHERE \n" + //
+      "mbr1.source_branch_id = ?\n" + //
+      " AND \n" + //
+      "mbr1.dest_branch_id = ?\n" + //
+      " AND \n" + //
+      "mbr1.merge_branch_id = br1.branch_id\n" + //
+      " ORDER BY br1.branch_id";
+
+      queryData.addCriteria(new CriteriaMergeBranchFor(1L, 2L));
+
+      QuerySqlContext context = queryEngine.createQueryContext(session, queryData);
+
+      assertEquals(expected, context.getSql());
+
+      List<Object> parameters = context.getParameters();
+      assertEquals(2, parameters.size());
+      List<AbstractJoinQuery> joins = context.getJoins();
+      assertEquals(0, joins.size());
+
+      Iterator<Object> iterator = parameters.iterator();
+      assertEquals(1L, iterator.next());
+      assertEquals(2L, iterator.next());
    }
 
    private static Criteria ancestorOf(IOseeBranch child) {

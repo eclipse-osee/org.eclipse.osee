@@ -10,10 +10,11 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchArchived;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchChildOf;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchName;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchState;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchType;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchUuids;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaMergeBranchFor;
 
 /**
  * @author Roberto E. Escobar
@@ -50,5 +51,9 @@ public class BranchCriteriaFactory {
 
    public Criteria createBranchArchivedCriteria(Collection<BranchArchivedState> states) {
       return new CriteriaBranchArchived(states);
+   }
+
+   public Criteria createMergeForCriteria(Long sourceUuid, Long destUuid) {
+      return new CriteriaMergeBranchFor(sourceUuid, destUuid);
    }
 }
