@@ -90,7 +90,6 @@ public class ActionPage {
 
       ViewModel page = new ViewModel("action.html");
       page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
-      page.param("description", action.getSoleAttributeAsString(AtsAttributeTypes.Description, ""));
       page.param("team", getTeamStr(atsServer, action));
       page.param("ais", getAIStr(action));
       page.param("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
@@ -379,7 +378,7 @@ public class ActionPage {
          if (attributesToStringList.size() > 1) {
             sb.append(attributesToStringList.toString());
          } else if (attributesToStringList.size() == 1) {
-            sb.append(String.valueOf(attributesToStringList.iterator().next()));
+            sb.append(AHTML.textToHtml(String.valueOf(attributesToStringList.iterator().next())));
          }
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
