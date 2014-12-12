@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -298,8 +299,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+               if (awa.getStateMgr() == null) {
+                  throw new OseeStateException("StateManager can not be null for %s", artifact.toStringWithId());
+               }
                if (awa.getStateMgr().isDirty()) {
-                  return new Result(true, "StateMgr is dirty");
+                  return new Result(true, "StateManager is dirty");
                }
                if (awa.getLog().isDirty()) {
                   return new Result(true, "Log is dirty");
@@ -322,7 +326,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getAtsId(), ex);
+         OseeLog.log(Activator.class, Level.SEVERE, "Unable to determine if artifact is dirty " + getAtsId(), ex);
       }
       return Result.FalseResult;
    }
