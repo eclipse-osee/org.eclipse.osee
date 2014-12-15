@@ -60,7 +60,7 @@ public class BuildTraceReportResource {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            programsAndBuilds.getProgramsTable(logger, output);
+            programsAndBuilds.getProgramsTable(orcsApi, logger, output);
          }
       }).build();
    }
@@ -73,7 +73,7 @@ public class BuildTraceReportResource {
 
          @Override
          public void write(OutputStream output) throws WebApplicationException {
-            programsAndBuilds.getBuildsTable(logger, output, programName, programId);
+            programsAndBuilds.getBuildsTable(orcsApi, logger, output, programName, programId);
          }
       }).build();
    }

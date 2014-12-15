@@ -11,8 +11,12 @@
 package org.eclipse.osee.ats.rest.internal.build.report;
 
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsBuildData;
 import org.eclipse.osee.ats.rest.internal.build.report.model.AtsProgramData;
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsAbstractSAXParser.AtsDataHandler;
@@ -20,19 +24,24 @@ import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsBuildDataParser
 import org.eclipse.osee.ats.rest.internal.build.report.parser.AtsProgramDataParser;
 import org.eclipse.osee.ats.rest.internal.build.report.table.UrlListTable;
 import org.eclipse.osee.ats.rest.internal.build.report.util.InputFilesUtil;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author John Misinco
  */
 public class ProgramsAndBuildsTables {
+   private static final String LAST_SUCCESSFUL_RUN = "lastSuccessfulRun";
 
-   public void getProgramsTable(final Log logger, OutputStream output) {
+   public void getProgramsTable(OrcsApi orcsApi, final Log logger, OutputStream output) {
       final UrlListTable table = new UrlListTable(output);
       try {
-         table.initializeTable("Programs", "Programs");
+         table.initializeTable("Programs", getLastSuccessfulRun(orcsApi), "Programs");
          AtsDataHandler<AtsProgramData> handler = new AtsDataHandler<AtsProgramData>() {
 
             @SuppressWarnings("unchecked")
@@ -57,10 +66,10 @@ public class ProgramsAndBuildsTables {
       }
    }
 
-   public void getBuildsTable(final Log logger, OutputStream output, final String programName, final String programId) {
+   public void getBuildsTable(OrcsApi orcsApi, final Log logger, OutputStream output, final String programName, final String programId) {
       final UrlListTable table = new UrlListTable(output);
       try {
-         table.initializeTable("Builds", programName + " Builds", "Offline Download");
+         table.initializeTable("Builds", getLastSuccessfulRun(orcsApi), programName + " Builds", "Offline Download");
 
          AtsDataHandler<AtsBuildData> handler = new AtsDataHandler<AtsBuildData>() {
 
@@ -92,6 +101,27 @@ public class ProgramsAndBuildsTables {
       } catch (OseeCoreException ex) {
          throw new WebApplicationException(ex);
       }
+   }
+
+   private String getLastSuccessfulRun(OrcsApi orcsApi) {
+      String toReturn = "Last run time not set";
+      ArtifactReadable webGroup =
+         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.WebPrograms).getResults().getExactlyOne();
+      if (webGroup != null) {
+         List<String> staticIds = webGroup.getAttributeValues(CoreAttributeTypes.StaticId);
+         for (String staticId : staticIds) {
+            if (staticId.startsWith(LAST_SUCCESSFUL_RUN)) {
+               String[] tokens = staticId.split("=");
+               if (tokens.length == 2) {
+                  Date date = new Date(Long.parseLong(tokens[1]));
+                  SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                  toReturn = String.format("Last successful synchronization:\n%s", dateFormat.format(date));
+                  break;
+               }
+            }
+         }
+      }
+      return toReturn;
    }
 
 }

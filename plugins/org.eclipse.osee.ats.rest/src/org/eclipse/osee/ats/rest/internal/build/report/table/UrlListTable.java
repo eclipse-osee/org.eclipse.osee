@@ -26,6 +26,7 @@ import com.lowagie.text.Cell;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.Table;
 import com.lowagie.text.html.HtmlWriter;
 
@@ -38,13 +39,15 @@ public class UrlListTable {
    private Table table;
    private Document document;
    private SortedSet<List<Anchor>> sortedList;
+   private String lastRunDate;
 
    public UrlListTable(OutputStream output) {
       this.output = output;
    }
 
-   public void initializeTable(String title, String... headers) throws OseeCoreException {
+   public void initializeTable(String title, String lastRun, String... headers) throws OseeCoreException {
       document = new Document();
+      lastRunDate = lastRun;
       sortedList = new TreeSet<List<Anchor>>(new Comparator<List<Anchor>>() {
 
          @Override
@@ -57,6 +60,7 @@ public class UrlListTable {
       HtmlWriter.getInstance(document, output);
       document.addTitle(title);
       document.open();
+
       try {
          table = new Table(headers.length);
       } catch (BadElementException ex) {
@@ -70,7 +74,7 @@ public class UrlListTable {
          table.addCell(headerCell);
       }
       table.setWidth(10f * headers.length);
-      table.setAlignment(Element.ALIGN_LEFT);
+      table.setAlignment(Element.ALIGN_BOTTOM);
    }
 
    public void addUrl(Pair<String, String>... urls) {
@@ -95,6 +99,7 @@ public class UrlListTable {
             }
          }
          document.add(table);
+         document.add(new Phrase(lastRunDate));
       } catch (DocumentException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
