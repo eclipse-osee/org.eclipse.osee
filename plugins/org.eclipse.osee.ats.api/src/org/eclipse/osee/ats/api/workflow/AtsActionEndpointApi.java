@@ -71,6 +71,6 @@ public interface AtsActionEndpointApi {
     */
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public abstract Response createAction(MultivaluedMap<String, String> form, UriInfo uriInfo) throws Exception;
+   public abstract Response createAction(MultivaluedMap<String, String> form) throws Exception;
 
 }

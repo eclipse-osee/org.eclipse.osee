@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal;
+package org.eclipse.osee.ats.rest.internal.notify;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.core.Response;

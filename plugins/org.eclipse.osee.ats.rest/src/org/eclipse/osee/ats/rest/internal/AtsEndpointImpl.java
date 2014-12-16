@@ -14,12 +14,17 @@ import org.eclipse.osee.ats.api.AtsJaxRsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
-import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
+import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.ActionResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsEndpointImpl implements AtsJaxRsApi {
 
    private final IAtsServer atsServer;

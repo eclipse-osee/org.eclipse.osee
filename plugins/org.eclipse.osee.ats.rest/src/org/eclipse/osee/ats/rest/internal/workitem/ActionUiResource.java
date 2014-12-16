@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.resources;
+package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
 import java.util.Collections;

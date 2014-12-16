@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.resources;
+package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -150,7 +150,7 @@ public final class ActionResource implements AtsActionEndpointApi {
    @Override
    @POST
    @Consumes("application/x-www-form-urlencoded")
-   public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {
+   public Response createAction(MultivaluedMap<String, String> form) throws Exception {
       // validate title
       String title = form.getFirst("ats_title");
       if (!Strings.isValid(title)) {

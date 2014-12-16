@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.resources;
+package org.eclipse.osee.ats.rest.internal.config;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

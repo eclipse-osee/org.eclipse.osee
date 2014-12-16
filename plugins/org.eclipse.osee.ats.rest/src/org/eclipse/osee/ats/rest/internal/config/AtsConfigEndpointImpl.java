@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal;
+package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
