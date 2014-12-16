@@ -48,7 +48,7 @@
 					</filesets>
 				</configuration>
 			</plugin>
-			<plugin>
+<!-- 		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${javadoc-version}</version>
@@ -202,7 +202,7 @@
 						</wadlGeneratorDescription>
 					</wadlGenerators>
 				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 </project>
