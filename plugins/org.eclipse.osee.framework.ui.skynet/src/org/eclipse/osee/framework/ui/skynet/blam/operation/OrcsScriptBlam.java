@@ -64,10 +64,10 @@ public class OrcsScriptBlam extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Debug\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"Parameters\" />");
       builder.append("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"Console\" defaultValue=\"");
       builder.append(SCRIPT_DSL_ID);
       builder.append("\" fill=\"vertically\"/>");
+      builder.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"Parameters\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }
