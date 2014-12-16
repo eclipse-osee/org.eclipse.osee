@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.osee.x.server.integration.tests
 Bundle-Version: 0.20.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.apache.commons.lang.math,
+Import-Package: javax.ws.rs.core;version="2.0.0",
+ org.apache.commons.lang.math,
  org.databene.contiperf,
  org.databene.contiperf.junit,
  org.databene.contiperf.report,
@@ -24,3 +25,4 @@ Import-Package: org.apache.commons.lang.math,
  org.junit.rules,
  org.junit.runner,
  org.junit.runners
+Require-Bundle: org.eclipse.osee.ats.api;bundle-version="0.20.0"

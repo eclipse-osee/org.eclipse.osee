@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 
 /**
  * @author Donald G. Dunne
@@ -28,5 +29,8 @@ public interface AtsJaxRsApi {
 
    @Path("cpa")
    public AtsCpaEndpointApi getCpa();
+   
+   @Path("action")
+   public AtsActionEndpointApi getAction();
 
 }

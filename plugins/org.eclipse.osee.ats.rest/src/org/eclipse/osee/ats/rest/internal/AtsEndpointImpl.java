@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
+import org.eclipse.osee.ats.rest.internal.resources.ActionResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 
@@ -28,6 +29,7 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
    private AtsConfigEndpointImpl atsConfigEndpointImpl;
    private AtsCpaEndpointApi atsCpaEndpointApi;
    private final CpaServiceRegistry cpaRegistry;
+   private ActionResource atsActionEndpointImpl;
 
    public AtsEndpointImpl(IAtsServer atsServer, Log logger, IResourceRegistry registry, CpaServiceRegistry cpaRegistry) {
       this.atsServer = atsServer;
@@ -58,6 +60,14 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
          atsCpaEndpointApi = new CpaResource(atsServer.getOrcsApi(), atsServer, cpaRegistry);
       }
       return atsCpaEndpointApi;
+   }
+
+   @Override
+   public ActionResource getAction() {
+      if (atsActionEndpointImpl == null) {
+         atsActionEndpointImpl = new ActionResource(atsServer, atsServer.getOrcsApi());
+      }
+      return atsActionEndpointImpl;
    }
 
 }

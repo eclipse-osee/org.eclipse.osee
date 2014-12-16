@@ -12,7 +12,10 @@ package org.eclipse.osee.ats.rest.internal.resources;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,10 +33,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -43,7 +48,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Donald G. Dunne
  */
 @Path("action")
-public final class ActionResource {
+public final class ActionResource implements AtsActionEndpointApi {
 
    private final IAtsServer atsServer;
    private final OrcsApi orcsApi;
@@ -54,6 +59,7 @@ public final class ActionResource {
       this.orcsApi = orcsApi;
    }
 
+   @Override
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() throws Exception {
@@ -64,6 +70,7 @@ public final class ActionResource {
     * @param ids (guid, atsId) of action to display
     * @return html representation of the action
     */
+   @Override
    @Path("{ids}")
    @IdentityView
    @GET
@@ -77,11 +84,56 @@ public final class ActionResource {
     * @param ids (guid, atsId) of action to display
     * @return html representation of the action
     */
+   @Override
    @Path("{ids}/details")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      return workItems;
+   }
+
+   /**
+    * @query_string <attr type name>=<value>, <attr type id>=<value>
+    * @return json representation of the matching workItem(s)
+    */
+   @Override
+   @Path("query")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) throws Exception {
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+      Set<IAtsWorkItem> workItems = new HashSet<IAtsWorkItem>();
+      for (String key : queryParameters.keySet()) {
+         IAttributeType attrType = null;
+         Long attrTypeId = Strings.isNumeric(key) ? Long.valueOf(key) : null;
+         for (IAttributeType type : atsServer.getOrcsApi().getOrcsTypes(null).getAttributeTypes().getAll()) {
+            if (attrTypeId != null && type.getGuid().equals(attrTypeId)) {
+               attrType = type;
+               break;
+            } else if (type.getName().equals(key)) {
+               attrType = type;
+               break;
+            }
+         }
+         if (attrType != null) {
+            for (String value : queryParameters.get(key)) {
+               Iterator<ArtifactReadable> iterator =
+                  atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
+                     value).getResults().iterator();
+               while (iterator.hasNext()) {
+                  ArtifactReadable artifactReadable = iterator.next();
+                  if (artifactReadable.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+                     IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(artifactReadable);
+                     if (workItem != null) {
+                        workItems.add(workItem);
+                     }
+                  }
+               }
+            }
+         }
+
+      }
       return workItems;
    }
 
@@ -95,6 +147,7 @@ public final class ActionResource {
     * @param form.userId - (required)
     * @return html representation of action created
     */
+   @Override
    @POST
    @Consumes("application/x-www-form-urlencoded")
    public Response createAction(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) throws Exception {

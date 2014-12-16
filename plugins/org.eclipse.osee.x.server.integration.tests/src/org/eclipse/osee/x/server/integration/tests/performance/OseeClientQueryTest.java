@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
+import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;

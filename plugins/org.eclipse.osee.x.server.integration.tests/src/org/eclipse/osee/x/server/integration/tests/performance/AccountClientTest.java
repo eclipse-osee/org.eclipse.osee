@@ -26,6 +26,7 @@ import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;

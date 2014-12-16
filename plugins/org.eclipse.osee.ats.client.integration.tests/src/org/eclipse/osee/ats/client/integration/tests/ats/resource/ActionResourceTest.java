@@ -46,6 +46,47 @@ import com.google.gson.JsonObject;
 public class ActionResourceTest extends AbstractRestTest {
 
    @Test
+   public void testQuerySingle() throws Exception {
+      TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      String url = String.format("%s/ats/action/query?ats%%2EId=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
+      System.err.println(url);
+      URI uri = new URL(url).toURI();
+
+      JsonArray array = getAndCheckArray(uri);
+      Assert.assertEquals(1, array.size());
+      JsonObject obj = (JsonObject) array.iterator().next();
+      testAction(obj);
+      String atsId = obj.get("AtsId").getAsString();
+      Assert.assertEquals(atsId, sawCodeCommittedWf.getAtsId());
+
+      url =
+         String.format("%s/ats/action/query?1152921504606847877=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
+      System.err.println(url);
+      uri = new URL(url).toURI();
+
+      array = getAndCheckArray(uri);
+      Assert.assertEquals(1, array.size());
+      obj = (JsonObject) array.iterator().next();
+      testAction(obj);
+      atsId = obj.get("AtsId").getAsString();
+      Assert.assertEquals(atsId, sawCodeCommittedWf.getAtsId());
+
+   }
+
+   @Test
+   public void testQueryMulti() throws Exception {
+      String name = DemoUtil.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20");
+      URI uri = UriBuilder.fromUri(getAppServerAddr()).path("/ats/action/query").queryParam("Name", name).build();
+
+      JsonArray array = getAndCheckArray(uri);
+      Assert.assertEquals(3, array.size());
+      JsonObject obj = (JsonObject) array.iterator().next();
+      testAction(obj);
+      String atsId = obj.get("AtsId").getAsString();
+      Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
+   }
+
+   @Test
    public void testGet() throws Exception {
       String results = getAndCheckStr("/ats/action");
       Assert.assertTrue(results.contains("Action Resource"));

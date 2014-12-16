@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.integration.tests;
 
+import org.eclipse.osee.x.server.integration.tests.ats.AtsActionEndpointTest;
 import org.eclipse.osee.x.server.integration.tests.performance.AccountClientTest;
 import org.eclipse.osee.x.server.integration.tests.performance.OseeClientQueryTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OseeClientQueryTest.class, AccountClientTest.class})
+@Suite.SuiteClasses({AtsActionEndpointTest.class, OseeClientQueryTest.class, AccountClientTest.class})
 public class ServerIntegrationTestSuite {
    // Test Suite
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.x.server.integration.tests.performance;
+package org.eclipse.osee.x.server.integration.tests.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +18,8 @@ import org.databene.contiperf.report.CSVSummaryReportModule;
 import org.databene.contiperf.report.HtmlReportModule;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
+import org.eclipse.osee.ats.api.AtsJaxRsApi;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 import org.junit.rules.MethodRule;
@@ -52,4 +54,16 @@ public final class IntegrationUtil {
       return AccountClientStandaloneSetup.createClient(config);
    }
 
+   public static AtsJaxRsApi createAtsClient() {
+      Map<String, Object> properties = createClientConfig();
+      String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
+      String atsUri = String.format("%s/ats", address);
+
+      AtsJaxRsApi atsEndpoint = JaxRsClient.newBuilder() //
+      .createThreadSafeProxyClients(true) //  if the client needs to be shared between threads 
+      .build() //
+      .targetProxy(atsUri, AtsJaxRsApi.class);
+
+      return atsEndpoint;
+   }
 }
