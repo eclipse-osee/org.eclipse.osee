@@ -410,7 +410,9 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          worldComposite.insert(art, -1);
       }
       loadedArtifacts.removeAll(toRemoveFromLoaded);
+      worldComposite.removeItems(loadedArtifacts);
       worldComposite.getXViewer().remove(loadedArtifacts);
+      worldComposite.getXViewer().refresh(goalArtifact);
    }
 
    private void refreshToolbar() {
