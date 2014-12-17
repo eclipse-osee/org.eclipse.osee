@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -125,7 +127,7 @@ public final class WordTemplateFileDiffer {
       for (Change change : changes) {
          changeIds.add(change.getArtId());
       }
-
+      IOseeBranch endBranch = txDelta.getEndTx().getBranch();
       // loop through all artifacts that are on the IS branch
       for (Artifact art : endArtifacts) {
          Integer artId = art.getArtId();
@@ -136,11 +138,17 @@ public final class WordTemplateFileDiffer {
                artifactDeltas.add(newChange.getDelta());
                addedIds.add(artId);
             }
+            // If artifact on the old branch didn't exist then return the entire artifact as a diff 
+         } else if (ArtifactQuery.checkArtifactFromId(artId, endBranch, DeletionFlag.EXCLUDE_DELETED) == null) {
+            // Return the current artifact as being new
+            artifactDeltas.add(new ArtifactDelta(txDelta, null, art));
+            addedIds.add(artId);
          } else {
             // No change to this artifact, so show the WAS version as is.
-            Artifact wasArt = ArtifactQuery.getArtifactFromId(artId, txDelta.getEndTx().getBranch());
+            Artifact wasArt = ArtifactQuery.getArtifactFromId(artId, endBranch);
             artifactDeltas.add(new ArtifactDelta(txDelta, wasArt, wasArt, wasArt));
             addedIds.add(artId);
+
          }
       }
 
