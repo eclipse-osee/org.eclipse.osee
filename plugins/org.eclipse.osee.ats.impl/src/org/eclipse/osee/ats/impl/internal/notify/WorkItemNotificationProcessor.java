@@ -156,7 +156,7 @@ public class WorkItemNotificationProcessor {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
                      OseeLog.logf(WorkItemNotificationProcessor.class, Level.INFO, "Email [%s] invalid for user [%s]",
                         originator.getEmail(), originator.getName());
-                  } else if (!fromUser.equals(originator)) {
+                  } else if (isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
                      if (workItem.getStateDefinition().getStateType().isCompleted()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
@@ -244,6 +244,18 @@ public class WorkItemNotificationProcessor {
             }
          }
       }
+   }
+
+   private boolean isOriginatorDifferentThanCancelledOrCompletedBy(IAtsWorkItem workItem, IAtsUser fromUser, IAtsUser originator) {
+      boolean different = true;
+      if (fromUser.equals(originator)) {
+         different = false;
+      } else if (workItem.getCancelledBy() != null && originator.equals(workItem.getCancelledBy())) {
+         different = false;
+      } else if (workItem.getCompletedBy() != null && originator.equals(workItem.getCompletedBy())) {
+         different = false;
+      }
+      return different;
    }
 
    private String getUrl(IAtsWorkItem workItem) {
