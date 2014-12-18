@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 public class PredicateHandlerUtil {
 
    public static Collection<IAttributeType> getIAttributeTypes(Collection<String> types) throws OseeCoreException {
-      Collection<IAttributeType> attrTypes = new HashSet<IAttributeType>();
+      Collection<IAttributeType> attrTypes = new LinkedHashSet<IAttributeType>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
@@ -39,7 +39,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IArtifactType> getIArtifactTypes(Collection<String> types) throws OseeCoreException {
-      Collection<IArtifactType> artTypes = new HashSet<IArtifactType>();
+      Collection<IArtifactType> artTypes = new LinkedHashSet<IArtifactType>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
@@ -50,7 +50,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IRelationType> getIRelationTypes(Collection<String> rels) throws OseeCoreException {
-      Collection<IRelationType> types = new HashSet<IRelationType>();
+      Collection<IRelationType> types = new LinkedHashSet<IRelationType>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
          if (longUuid != -1L) {
@@ -61,7 +61,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IRelationTypeSide> getIRelationTypeSides(Collection<String> rels) throws OseeCoreException {
-      Collection<IRelationTypeSide> relSides = new HashSet<IRelationTypeSide>();
+      Collection<IRelationTypeSide> relSides = new LinkedHashSet<IRelationTypeSide>();
       for (String value : rels) {
          char sideChar = value.charAt(0);
          String uuid = value.substring(1);

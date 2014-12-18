@@ -57,7 +57,7 @@ public class RelationTypeSideTest {
       Assert.assertEquals("c3", data.get(relTypeSide3));
       Assert.assertEquals("d4", data.get(relTypeSide4));
 
-      IRelationType relType1 = TokenFactory.createRelationType(uuid1, "");
+      IRelationType relType1 = create(uuid1, sideB, "");
       String removed = data.put(relType1, "hello");
       Assert.assertEquals("b2", removed);
 

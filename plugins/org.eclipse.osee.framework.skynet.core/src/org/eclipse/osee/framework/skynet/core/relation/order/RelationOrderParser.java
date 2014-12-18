@@ -72,7 +72,7 @@ public class RelationOrderParser {
 
       StringBuilder sb = new StringBuilder();
       openRoot(sb);
-      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : data.entrySet()) {
+      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : data.getOrderedEntrySet()) {
          writeEntry(sb, entry);
          sb.append("\n");
       }

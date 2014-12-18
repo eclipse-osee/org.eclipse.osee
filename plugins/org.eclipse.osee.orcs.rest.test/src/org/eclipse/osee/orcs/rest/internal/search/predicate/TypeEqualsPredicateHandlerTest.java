@@ -82,9 +82,8 @@ public class TypeEqualsPredicateHandlerTest {
       assertEquals(2, artifactTypesCaptor.getValue().size());
 
       Iterator<IArtifactType> iterator = artifactTypesCaptor.getValue().iterator();
-
-      assertEquals(id2, iterator.next().getGuid().toString());
       assertEquals(id1, iterator.next().getGuid().toString());
+      assertEquals(id2, iterator.next().getGuid().toString());
    }
 
    @Test(expected = OseeArgumentException.class)

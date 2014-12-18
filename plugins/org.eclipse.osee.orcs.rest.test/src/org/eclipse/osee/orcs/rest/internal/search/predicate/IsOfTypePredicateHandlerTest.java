@@ -14,7 +14,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -67,15 +67,15 @@ public class IsOfTypePredicateHandlerTest {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       String id1 = "12345";
       String id2 = "45678";
-      List<String> values = Arrays.asList(id1, id2);
 
-      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, values);
+      Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, Arrays.asList(id1, id2));
       handler.handle(builder, testPredicate);
       verify(builder).andIsOfType(artifactTypesCaptor.capture());
       Assert.assertEquals(2, artifactTypesCaptor.getValue().size());
-      List<IArtifactType> types = new LinkedList<IArtifactType>(artifactTypesCaptor.getValue());
-      Assert.assertEquals(id2, types.get(0).getGuid().toString());
-      Assert.assertEquals(id1, types.get(1).getGuid().toString());
+
+      Iterator<IArtifactType> iterator = artifactTypesCaptor.getValue().iterator();
+      Assert.assertEquals(id1, iterator.next().getGuid().toString());
+      Assert.assertEquals(id2, iterator.next().getGuid().toString());
    }
 
    @Test(expected = OseeArgumentException.class)

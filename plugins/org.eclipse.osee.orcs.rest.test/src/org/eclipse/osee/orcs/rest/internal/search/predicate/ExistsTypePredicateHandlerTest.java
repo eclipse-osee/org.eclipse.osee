@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -99,10 +100,10 @@ public class ExistsTypePredicateHandlerTest {
 
       Assert.assertEquals(2, relationTypeCaptor.getAllValues().size());
       IRelationType type = relationTypeCaptor.getAllValues().get(0);
-      Assert.assertTrue(34567L == type.getGuid());
+      Assert.assertTrue(12345L == type.getGuid());
 
       type = relationTypeCaptor.getAllValues().get(1);
-      Assert.assertTrue(12345L == type.getGuid());
+      Assert.assertTrue(34567L == type.getGuid());
    }
 
    @Test
@@ -127,14 +128,15 @@ public class ExistsTypePredicateHandlerTest {
       String attrType1 = "12345";
       String attrType2 = "34567";
       List<String> values = Arrays.asList(attrType1, attrType2);
-      Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate =
+         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
 
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
-      List<IAttributeType> attrTypes = new ArrayList<IAttributeType>(attrTypeSideCaptor.getValue());
-      Assert.assertTrue(34567L == attrTypes.get(0).getGuid());
-      Assert.assertTrue(12345L == attrTypes.get(1).getGuid());
+      Iterator<IAttributeType> iterator = attrTypeSideCaptor.getValue().iterator();
+      Assert.assertEquals(Long.valueOf(12345L), iterator.next().getGuid());
+      Assert.assertEquals(Long.valueOf(34567L), iterator.next().getGuid());
    }
 
    @Test
@@ -143,7 +145,8 @@ public class ExistsTypePredicateHandlerTest {
       List<String> typeParameters = Collections.singletonList("attrType");
       String value = "12A4G";
       List<String> values = Collections.singletonList(value);
-      Predicate testPredicate = new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate =
+         new Predicate(SearchMethod.EXISTS_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
       verify(builder, never()).andExists(anyCollectionOf(IAttributeType.class));
 

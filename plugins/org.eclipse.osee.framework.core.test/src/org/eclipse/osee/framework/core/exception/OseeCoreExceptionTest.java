@@ -52,9 +52,10 @@ public class OseeCoreExceptionTest {
    public void testMissingArguments() {
       String messageFormat = "max = %d; min = %d; avg = %d";
       Exception ex = new OseeCoreException(messageFormat, 1, 0);
-      Assert.assertEquals(
-         "Exception message could not be formatted: [" + messageFormat + "] with the following arguments [1,0].  Cause [java.util.MissingFormatArgumentException: Format specifier 'd']",
-         ex.getMessage());
+      Assert.assertTrue(
+         ex.getMessage(),
+         ex.getMessage().contains(
+            "Exception message could not be formatted: [" + messageFormat + "] with the following arguments [1,0].  Cause [java.util.MissingFormatArgumentException: Format specifier "));
    }
 
    @Test
