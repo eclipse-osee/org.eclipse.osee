@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -23,13 +26,17 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -57,6 +64,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    private final IDirtiableEditor editor;
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
    private final Composite parent;
+   private Action deleteAttributeValuesAction;
 
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
@@ -130,6 +138,63 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
       setupDragAndDropSupport();
+      createMenuActions();
+   }
+
+   private void createMenuActions() {
+
+      deleteAttributeValuesAction = new Action("Delete Attribute Value(s)", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               handleDeleteAttributeValues();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+   }
+
+   protected void handleDeleteAttributeValues() {
+      ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
+      if (selectedArtifacts.isEmpty()) {
+         AWorkbench.popup("Must select items to delete");
+         return;
+      }
+      // get attributes that can be deleted (from artifact and validity)
+      Set<IAttributeType> attrTypesUsed = new HashSet<IAttributeType>();
+      for (Artifact art : artifacts) {
+         // include attribute types that are used even if invalid
+         for (Attribute<?> attr : art.getAttributes()) {
+            attrTypesUsed.add(attr.getAttributeType());
+         }
+      }
+
+      // popup dialog
+      FilteredCheckboxAttributeTypeDialog dialog =
+         new FilteredCheckboxAttributeTypeDialog("Delete Attributes", "Select attribute type(s) to delete.");
+      dialog.setSelectable(attrTypesUsed);
+      if (dialog.open() == 0) {
+         // perform deletion
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(selectedArtifacts.iterator().next().getBranch(),
+               "Mass Editor - Delete Attributes");
+         for (Artifact art : selectedArtifacts) {
+            for (IAttributeType attributeType : dialog.getChecked()) {
+               art.deleteAttributes(attributeType);
+               art.persist(transaction);
+            }
+         }
+         transaction.execute();
+      }
+   }
+
+   @Override
+   public void updateMenuActionsForTable() {
+      MenuManager mm = getMenuManager();
+
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
+      deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
    }
 
    private void setupDragAndDropSupport() {
