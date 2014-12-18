@@ -20,10 +20,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -65,14 +65,14 @@ public class DoorsArtifactExtractorTest {
       VOICE_STATUS};
    private static final String[] ATTRIBUTE_TYPE_LIST = {
       "Name",
-      "Subsystem",
+      "Paragraph Number",
       "Legacy Id",
-      "Verification Event",
+      "Subsystem",
       "HTML Content",
-      IMAGE_CONTENT,
       "Qualification Method",
+      "Verification Event",
       "Verification Level",
-      "Paragraph Number"};
+      IMAGE_CONTENT};
 
    private static final RoughArtifactKind[] ARTIFACT_TYPES = {
       RoughArtifactKind.CONTAINER,
@@ -145,12 +145,12 @@ public class DoorsArtifactExtractorTest {
    }
 
    private void checkPrimeItemDiagram(RoughArtifact artifact) {
-      List<String> actualTypes = new ArrayList<String>(artifact.getAttributeTypeNames());
-      assertEquals("Wrong number of attribute types detected", ATTRIBUTE_TYPE_LIST.length, actualTypes.size());
+      Set<String> attributeTypeNames = artifact.getAttributeTypeNames();
+      assertEquals("Wrong number of attribute types detected", ATTRIBUTE_TYPE_LIST.length, attributeTypeNames.size());
 
-      for (int index = 0; index < ATTRIBUTE_TYPE_LIST.length; index++) {
-         String expectedTypeName = ATTRIBUTE_TYPE_LIST[index];
-         String typeName = actualTypes.get(index);
+      Iterator<String> iterator = attributeTypeNames.iterator();
+      for (String expectedTypeName : ATTRIBUTE_TYPE_LIST) {
+         String typeName = iterator.next();
 
          assertEquals("Incorrect attribute type", expectedTypeName, typeName);
 
