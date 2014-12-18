@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -79,7 +79,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new LinkedHashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
@@ -102,7 +102,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<AbstractWorkflowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          try {

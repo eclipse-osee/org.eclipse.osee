@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -35,7 +35,7 @@ public class XCombo extends XButtonCommon {
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
    //
-   private final Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
+   private final Map<String, Integer> displayDataStrings = new LinkedHashMap<String, Integer>();
    private String displayArray[];
    private boolean isDefaultSelectionAllowed;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.review;
 
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -61,7 +61,7 @@ public class XDecisionOptions {
    }
 
    public static Set<DecisionOption> getDecisionOptions(String decisionOptions) {
-      Set<DecisionOption> decOptions = new HashSet<DecisionOption>();
+      Set<DecisionOption> decOptions = new LinkedHashSet<DecisionOption>();
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
          Result result = state.setFromXml(decsionOpt);
