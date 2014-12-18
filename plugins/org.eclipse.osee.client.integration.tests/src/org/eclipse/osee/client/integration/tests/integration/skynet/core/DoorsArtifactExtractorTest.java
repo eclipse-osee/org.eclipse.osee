@@ -65,9 +65,9 @@ public class DoorsArtifactExtractorTest {
    private static final String[] ATTRIBUTE_TYPE_LIST = {
       "Name",
       "Paragraph Number",
+      "HTML Content",
       "Legacy Id",
       "Subsystem",
-      "HTML Content",
       "Qualification Method",
       "Verification Event",
       "Verification Level",
