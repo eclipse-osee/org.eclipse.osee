@@ -251,6 +251,12 @@
             commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
          <activeWhen>
             <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
                <with
                      variable="activePartId">
                   <equals
@@ -334,10 +340,22 @@
             commandId="org.eclipse.osee.framework.ui.skynet.atsworldeditor.command">
          <activeWhen>
             <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
                <with
                      variable="activePartId">
                   <equals
                         value="org.eclipse.osee.ats.world.WorldEditor">
+                  </equals>
+               </with>
+               <with
+                     variable="activePartId">
+                  <equals
+                        value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
                   </equals>
                </with>
                <with

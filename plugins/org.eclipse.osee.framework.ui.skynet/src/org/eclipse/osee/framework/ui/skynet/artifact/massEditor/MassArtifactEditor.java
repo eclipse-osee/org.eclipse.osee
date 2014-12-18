@@ -19,6 +19,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -45,12 +50,15 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -257,7 +265,39 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      bindMenu();
       getSite().setSelectionProvider(xViewer);
+   }
+
+   private void bindMenu() {
+      MenuManager manager = xViewer.getMenuManager();
+      manager.setRemoveAllWhenShown(true);
+      manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+      manager.addMenuListener(new MassEditorMenuListener(xViewer));
+
+      Control control = xViewer.getTree();
+      Menu menu = manager.createContextMenu(control);
+      control.setMenu(menu);
+
+      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassEdit", manager,
+         xViewer);
+      getSite().setSelectionProvider(xViewer);
+   }
+   private static final class MassEditorMenuListener implements IMenuListener {
+
+      private final MassXViewer xviewer;
+
+      private MassEditorMenuListener(MassXViewer xviewer) {
+         this.xviewer = xviewer;
+      }
+
+      @Override
+      public void menuAboutToShow(IMenuManager manager) {
+         MenuManager menuManager = xviewer.getMenuManager();
+         if (menuManager.find(XViewer.MENU_GROUP_PRE) != null) {
+            menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         }
+      }
    }
 
    public Branch getBranch() throws OseeCoreException {

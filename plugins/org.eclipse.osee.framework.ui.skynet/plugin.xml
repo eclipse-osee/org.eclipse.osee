@@ -251,7 +251,15 @@
        </MatchCriteria>
     </Template>
  </extension>
-	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
+ 	<extension name="The menus for the Mass Editor." point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassEdit">
+     <dynamic
+           class="org.eclipse.osee.framework.ui.skynet.OpenContributionItem"
+           id="org.eclipse.osee.framework.ui.open.with">
+     </dynamic>
+     </menuContribution>
+   </extension>
+ 	<extension name="The menus for the SearchResultsView." point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:org.eclipse.search.ui.views.SearchView">
      <dynamic
            class="org.eclipse.osee.framework.ui.skynet.OpenContributionItem"
@@ -523,6 +531,12 @@
            <with
                  variable="activePartId">
               <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
                     value="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
               </equals>
            </with>
@@ -604,6 +618,12 @@
       		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
            <activeWhen>
               <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
                  <with
                        variable="activePartId">
                     <equals
@@ -628,6 +648,12 @@
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
      <activeWhen>
         <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
            <with
                  variable="activePartId">
               <equals
@@ -697,6 +723,12 @@
            <with
                  variable="activePartId">
               <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
+           <with
+                 variable="activePartId">
+              <equals
                     value="org.eclipse.search.ui.views.SearchView">
               </equals>
            </with>
@@ -742,6 +774,12 @@
         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
      <activeWhen>
         <or>
+           <with
+                 variable="activePartId">
+              <equals
+                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+              </equals>
+           </with>
            <with
                  variable="activePartId">
               <equals
