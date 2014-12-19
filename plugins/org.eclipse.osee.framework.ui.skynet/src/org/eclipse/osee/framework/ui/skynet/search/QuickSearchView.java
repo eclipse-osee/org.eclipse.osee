@@ -83,7 +83,7 @@ public class QuickSearchView extends GenericViewPart {
    private Button includeDeleted;
 
    private final AttributeSearchListener attrSearchListener = new AttributeSearchListener();
-   private final GuidSearchListener guidSearchListener = new GuidSearchListener();
+   private final IdSearchListener idSearchListener = new IdSearchListener();
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
@@ -174,7 +174,7 @@ public class QuickSearchView extends GenericViewPart {
          branchSelect.setDisplayLabel(false);
          branchSelect.createWidgets(group, 2);
          branchSelect.addListener(attrSearchListener);
-         branchSelect.addListener(guidSearchListener);
+         branchSelect.addListener(idSearchListener);
          // allow user to double click the branch text area to select the branch
          if (Widgets.isAccessible(branchSelect.getSelectComposite())) {
             if (Widgets.isAccessible(branchSelect.getSelectComposite().getBranchSelectText())) {
@@ -202,8 +202,8 @@ public class QuickSearchView extends GenericViewPart {
          optionsComposite.setLayout(ALayout.getZeroMarginLayout());
          optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-         guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by GUID:");
-         guidSearchComposite.addListener(guidSearchListener);
+         guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
+         guidSearchComposite.addListener(idSearchListener);
 
          includeDeleted = new Button(group, SWT.CHECK);
          includeDeleted.setToolTipText("When selected, does not filter out deleted artifacts from search results.");
@@ -293,7 +293,7 @@ public class QuickSearchView extends GenericViewPart {
       }
    }
 
-   private class GuidSearchListener implements Listener {
+   private class IdSearchListener implements Listener {
 
       @Override
       public void handleEvent(Event event) {
@@ -310,9 +310,9 @@ public class QuickSearchView extends GenericViewPart {
             } else if (Widgets.isAccessible(guidSearchComposite) && guidSearchComposite.isExecuteSearchEvent(event)) {
                String searchString = guidSearchComposite.getQuery();
                List<String> invalids = new LinkedList<String>();
-               for (String guid : Arrays.asList(searchString.split("[\\s,]+"))) {
-                  if (Strings.isValid(guid) && !GUID.isValid(guid)) {
-                     invalids.add(guid);
+               for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
+                  if (!Strings.isValid(id) || !(GUID.isValid(id) || Strings.isNumeric(id))) {
+                     invalids.add(id);
                   }
                }
 
@@ -324,8 +324,8 @@ public class QuickSearchView extends GenericViewPart {
                   NewSearchUI.runQueryInBackground(query);
                } else {
                   String message =
-                     String.format("The following GUIDs are invalid: %s", Collections.toString(",", invalids));
-                  MessageDialog.openError(Displays.getActiveShell(), "Invalid GUID(s)", message);
+                     String.format("The following IDs are invalid: %s", Collections.toString(",", invalids));
+                  MessageDialog.openError(Displays.getActiveShell(), "Invalid ID(s)", message);
                }
 
             } else {

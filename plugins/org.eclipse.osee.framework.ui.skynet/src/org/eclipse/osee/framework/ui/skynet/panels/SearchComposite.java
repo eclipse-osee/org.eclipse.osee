@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Widget;
  * @author Roberto E. Escobar
  */
 public class SearchComposite extends Composite implements Listener {
-   private static final String SEARCH_BUTTON_TOOLTIP = "Executes search";
+   private static final String SEARCH_BUTTON_TOOLTIP = "Executes GUID or ArtId search";
    private static final String SEARCH_COMBO_TOOLTIP =
       "Enter word(s) to search for or select historical value from pull-down on the right.";
 
