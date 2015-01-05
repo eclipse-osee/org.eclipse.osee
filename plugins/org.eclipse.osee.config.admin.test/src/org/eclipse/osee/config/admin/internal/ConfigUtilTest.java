@@ -42,4 +42,11 @@ public class ConfigUtilTest {
       String value = uri.toASCIIString();
       assertEquals("other://x/abcd", value);
    }
+
+   @Test
+   public void testAsUri4() {
+      URI uri = ConfigUtil.asUri("file:/x/abcd");
+      String value = uri.toASCIIString();
+      assertEquals("file:/x/abcd", value);
+   }
 }

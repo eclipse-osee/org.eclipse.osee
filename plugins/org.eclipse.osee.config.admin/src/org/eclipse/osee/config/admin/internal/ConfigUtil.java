@@ -58,8 +58,12 @@ public final class ConfigUtil {
       if (Strings.isValid(configUri)) {
          if (!configUri.contains("://")) {
             configUri = configUri.replaceAll("\\\\", "/");
-            File file = new File(configUri);
-            toReturn = file.toURI();
+            if (configUri.startsWith("file:/")) {
+               toReturn = URI.create(configUri);
+            } else {
+               File file = new File(configUri);
+               toReturn = file.toURI();
+            }
          } else {
             toReturn = URI.create(configUri);
          }

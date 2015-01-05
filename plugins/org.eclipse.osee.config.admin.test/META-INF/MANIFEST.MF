@@ -12,4 +12,5 @@ Import-Package: org.hamcrest.core,
  org.junit.runner,
  org.junit.runners,
  org.mockito,
+ org.mockito.invocation,
  org.mockito.stubbing

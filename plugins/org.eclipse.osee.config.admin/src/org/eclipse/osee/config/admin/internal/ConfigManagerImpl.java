@@ -14,10 +14,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.UriWatcher;
@@ -29,7 +31,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 /**
  * @author Roberto E. Escobar
  */
-public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
+public class ConfigManagerImpl implements UriWatcherListener {
 
    private final ConfigParser parser = new ConfigParser();
 
@@ -38,6 +40,7 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
 
    private ConfigManagerConfiguration config;
    private final AtomicReference<UriWatcher> watcherRef = new AtomicReference<UriWatcher>();
+   private final Map<String, ServiceConfig> services = new HashMap<String, ServiceConfig>();
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -77,9 +80,10 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
 
       URI configUri = ConfigUtil.asUri(config.getConfigUri());
       if (configUri != null) {
-         logger.warn("Reading configuration from: [%s]", configUri);
          long pollTime = config.getPollTime();
          TimeUnit timeUnit = config.getTimeUnit();
+
+         logger.warn("Reading configuration from: [%s] every [%s %s]", configUri, pollTime, timeUnit);
 
          UriWatcher newWatcher = new UriWatcher(pollTime, timeUnit);
          newWatcher.addUri(configUri);
@@ -105,7 +109,15 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
    private void processUri(URI uri) {
       try {
          String source = Lib.inputStreamToString(uri.toURL().openStream());
-         parser.process(this, source);
+         final Map<String, Dictionary<String, Object>> newConfigs = new HashMap<String, Dictionary<String, Object>>();
+         parser.process(new ConfigWriter() {
+
+            @Override
+            public void write(String serviceId, Dictionary<String, Object> props) {
+               newConfigs.put(serviceId, props);
+            }
+         }, source);
+         configureServices(newConfigs);
       } catch (Exception ex) {
          logger.error(ex, "Error processing config [%s]", uri);
       }
@@ -117,28 +129,70 @@ public class ConfigManagerImpl implements UriWatcherListener, ConfigWriter {
    }
 
    @Override
-   public void write(String serviceId, Dictionary<String, Object> properties) {
-      Configuration configuration;
-      try {
-         configuration = configAdmin.getConfiguration(serviceId, null);
-         if (Compare.isDifferent(configuration.getProperties(), properties)) {
-            configuration.update(properties);
-         }
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
-      }
-      if (logger.isDebugEnabled()) {
-         StringBuilder builder = new StringBuilder();
-         ConfigUtil.writeConfig(configuration, builder);
-         logger.debug(builder.toString());
-      }
-   }
-
-   @Override
    public void modificationDateChanged(Collection<URI> uris) {
       for (URI uri : uris) {
          processUri(uri);
       }
    }
 
+   private void configureServices(Map<String, Dictionary<String, Object>> newConfigs) {
+      for (Entry<String, Dictionary<String, Object>> entry : newConfigs.entrySet()) {
+         String serviceId = entry.getKey();
+         ServiceConfig component = services.get(serviceId);
+         if (component == null) {
+            component = new ServiceConfig(serviceId);
+            services.put(serviceId, component);
+         }
+         component.update(entry.getValue());
+      }
+
+      Iterable<String> removed =
+         org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(services.keySet(), newConfigs.keySet());
+      for (String id : removed) {
+         ServiceConfig component = services.remove(id);
+         if (component != null) {
+            component.stop();
+         }
+      }
+   }
+
+   private final class ServiceConfig {
+
+      private final AtomicBoolean isRegistered = new AtomicBoolean(false);
+      private final String serviceId;
+      private Dictionary<String, Object> properties;
+
+      public ServiceConfig(String serviceId) {
+         super();
+         this.serviceId = serviceId;
+      }
+
+      public void update(Dictionary<String, Object> config) {
+         if (!isRegistered.getAndSet(true) || Compare.isDifferent(config, properties)) {
+            properties = config;
+            try {
+               Configuration configuration = configAdmin.getConfiguration(serviceId, null);
+               configuration.update(config);
+               if (logger.isDebugEnabled()) {
+                  StringBuilder builder = new StringBuilder();
+                  ConfigUtil.writeConfig(configuration, builder);
+                  logger.debug(builder.toString());
+               }
+            } catch (IOException ex) {
+               logger.error(ex, "Error configuring [%s] - config [%s]", serviceId, config);
+            }
+         }
+      }
+
+      public void stop() {
+         if (isRegistered.getAndSet(false)) {
+            try {
+               Configuration configuration = configAdmin.getConfiguration(serviceId, null);
+               configuration.delete();
+            } catch (IOException ex) {
+               logger.error(ex, "Error removing config [%s]", serviceId);
+            }
+         }
+      }
+   }
 }
