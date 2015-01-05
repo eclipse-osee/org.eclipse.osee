@@ -14,6 +14,7 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -167,7 +169,6 @@ public class WordTemplateRendererTest {
       String workingBranchName = String.format("%s.child_branch", method.getQualifiedTestName());
       updateBranch = BranchManager.createWorkingBranch(rootBranch, workingBranchName);
       setUpDocChanges(docFolder);
-      modifyOption("Branch", updateBranch);
    }
 
    @After
@@ -181,7 +182,61 @@ public class WordTemplateRendererTest {
    }
 
    @Test
+   public void testBlankWordTemplateContent() {
+      Branch rootBr = BranchManager.createTopLevelBranch("Root Branch");
+      SkynetTransaction tx =
+         TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
+      Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Volume 4");
+      vol4.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
+      vol4.persist(tx);
+      Artifact introArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Intro");
+      introArt.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "blah");
+
+      vol4.addChild(introArt);
+      introArt.persist(tx);
+      tx.execute();
+
+      Branch middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
+      Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), middleBr);
+      middleVol4.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, " ");
+      middleVol4.persist("added blank content");
+
+      Branch childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
+      vol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), childBr);
+
+      modifyOption("Branch", childBr);
+      modifyOption("Publish As Diff", true);
+      modifyOption("compareBranch", rootBr);
+
+      renderer.publish(singleTemplate, null, Collections.singletonList(vol4), options);
+
+      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
+         null);
+      try {
+         String document = getFileAsString(resultPath);
+         String testName = method.getQualifiedTestName();
+         String altString = "  \"";
+         String period = ".";
+
+         Assert.assertTrue(
+            String.format("%s, Expected 1. Volume 4", testName),
+            document.contains("<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4</w:t></w:r>"));
+
+         Assert.assertTrue(
+            String.format("%s, Expected 2.", testName),
+            document.contains("<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r>"));
+
+         // This is a separate check due to the wordMl.resetListValue(); function injecting extra wordML that resets the list numbering
+         Assert.assertTrue(String.format("%s, Expected Intro", testName), document.contains("<w:t>Intro</w:t></w:r>"));
+      } catch (IOException ex) {
+         // Do nothing - test failed
+      }
+   }
+
+   @Test
    public void testPublishWithoutDiff() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(docFolder);
@@ -200,6 +255,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiff() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
@@ -219,6 +275,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithoutDiffRecurseTemplate() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(docFolder);
@@ -237,6 +294,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffRecurseTemplate() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
@@ -256,6 +314,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffMerge() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       modifyOption("compareBranch", rootBranch);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
@@ -289,6 +348,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffLinks() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       modifyOption("compareBranch", null);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
@@ -338,6 +398,7 @@ public class WordTemplateRendererTest {
    public void testPublishWithoutDiffUpdateParagraphNumbers() throws OseeCoreException {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(updateBranch, String.format("%s", method.getQualifiedTestName()));
+      modifyOption("Branch", updateBranch);
       modifyOption(ITemplateRenderer.TRANSACTION_OPTION, transaction);
       modifyOption("Publish As Diff", false);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
@@ -375,6 +436,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffDontUseTemplateOnce() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       modifyOption(ITemplateRenderer.USE_TEMPLATE_ONCE, false);
@@ -404,6 +466,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishSoftwareRequirements() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(swReqFolder);
@@ -435,6 +498,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishUsingIds() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(swReqFolder);
@@ -466,6 +530,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishUsingIdAndName() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       artifacts.add(swReqFolder);
@@ -497,6 +562,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishDiffWithFieldCodes() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       setupFieldCodeChange();
@@ -523,6 +589,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishDiffWithOutFieldCodes() throws OseeCoreException {
+      modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<Artifact>();
       setupFieldCodeChange();
@@ -832,5 +899,4 @@ public class WordTemplateRendererTest {
          String.format("%s, Expected 3.2.1 Software Functions", testName),
          document.contains("<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>"));
    }
-
 }

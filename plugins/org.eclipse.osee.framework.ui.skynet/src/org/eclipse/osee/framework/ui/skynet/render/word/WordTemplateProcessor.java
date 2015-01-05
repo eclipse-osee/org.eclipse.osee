@@ -549,6 +549,10 @@ public class WordTemplateProcessor {
          artifact.getOrInitializeSoleAttributeValue(attributeType);
       }
 
+      /**
+       * In some cases this returns no attributes at all, including no wordTemplateContent, even though it exists This
+       * happens when wordTemplateContent is blank, so the else if condition takes this into account.
+       */
       Collection<Attribute<Object>> attributes = artifact.getAttributes(attributeType);
 
       if (!attributes.isEmpty()) {
@@ -566,7 +570,11 @@ public class WordTemplateProcessor {
             RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl, attributeElement,
                renderer.getValues());
          }
+      } else if (attributeType.equals(WordTemplateContent)) {
+         RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl, attributeElement,
+            renderer.getValues());
       }
+
    }
 
    private String getArtifactSetXml(String artifactElement) {

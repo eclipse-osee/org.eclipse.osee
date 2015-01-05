@@ -158,7 +158,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
          Attribute<?> wordTempConAttr = artifact.getSoleAttribute(attributeType);
-         String data = (String) wordTempConAttr.getValue();
+         String data = null;
+         if (wordTempConAttr != null) {
+            data = (String) wordTempConAttr.getValue();
+         }
 
          if (attributeElement.getLabel().length() > 0) {
             wordMl.addParagraph(attributeElement.getLabel());
@@ -179,7 +182,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             wordMl.addWordMl(data);
             wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
 
-         } else {
+         } else if (data != null) {
             wordMl.addWordMl(data);
          }
          wordMl.resetListValue();
