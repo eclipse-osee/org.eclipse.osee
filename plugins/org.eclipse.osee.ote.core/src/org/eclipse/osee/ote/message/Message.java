@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -62,7 +63,7 @@ import org.w3c.dom.Document;
 public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T extends MessageData, U extends Message<S, T, U>> implements Xmlizable, XmlizableStream {
    private static volatile AtomicLong constructed = new AtomicLong(0);
    private static volatile AtomicLong finalized = new AtomicLong(0);
-   private final HashMap<String, Element> elementMap;
+   private final LinkedHashMap<String, Element> elementMap;
    @JsonProperty
    private final String name;
    private final MessageSystemListener listenerHandler;
@@ -1318,4 +1319,20 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
       return getElement(path.getList(), type);
    }
+   
+   public ListIterator<Element> getElementIterator() {
+	   ArrayList<Element> list = new ArrayList<Element>(elementMap.values());
+	   return list.listIterator();
+   }
+   
+   public ListIterator<Element> getElementIterator(Element elemnt) {
+	   ArrayList<Element> list = new ArrayList<Element>(elementMap.values());
+	   int index = list.indexOf(elemnt);
+	   if (index >= 0) {
+		   return list.listIterator(index);		   
+	   }
+	   return null;
+   }
+
+   
 }
