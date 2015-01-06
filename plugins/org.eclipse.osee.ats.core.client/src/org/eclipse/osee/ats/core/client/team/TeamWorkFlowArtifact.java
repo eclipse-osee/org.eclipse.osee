@@ -84,7 +84,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
          rollup.resetAttributesOffChildren();
          changes.add(parentAction);
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
+         OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP, ex, "Can't reset Action parent of children for [%s]",
+            toStringWithId());
       }
    }
 
