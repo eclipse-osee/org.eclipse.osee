@@ -390,12 +390,6 @@ public class CharElement extends DiscreteElement<Character> {
 				setValue(value.charAt(0));
 				break;
 			default:
-				if (!(lsb == 7 && msb == 0)) {
-					OseeLog.log(
-							getClass(),
-							Level.SEVERE,
-							"Using parseAndSet on non-byte-sized elements is discouraged, iterate with setValue(Character) instead.\nStack Trace:\n" + Arrays.toString(Thread.currentThread().getStackTrace()));
-				}
 				setASCIIString(value);
 				break;
 		}

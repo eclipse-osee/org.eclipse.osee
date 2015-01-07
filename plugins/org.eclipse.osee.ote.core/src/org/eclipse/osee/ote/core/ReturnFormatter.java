@@ -62,7 +62,7 @@ public class ReturnFormatter implements Xmlizable, XmlizableStream {
     }
 
     public void add(Object value) {
-        returnValue = value.toString();
+        returnValue = value == null ? "null" : value.toString();
     }
 
     @Override
@@ -77,8 +77,9 @@ public class ReturnFormatter implements Xmlizable, XmlizableStream {
 
     @Override
     public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-        String toLog = returnValue != null ? XmlSupport.format(returnValue) : "null";
-        XMLStreamWriterUtil.writeElement(writer, "ReturnValue", toLog);
+    	if (returnValue != null) {            
+            XMLStreamWriterUtil.writeElement(writer, "ReturnValue", XmlSupport.format(returnValue));    		
+    	}
     }
 
     public String getValue() {

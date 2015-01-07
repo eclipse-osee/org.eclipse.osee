@@ -1424,11 +1424,18 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * gets this element's current value. Does logging
     */
    public T get(ITestEnvironmentAccessor accessor) {
-      accessor.getLogger().methodCalled(accessor, new MethodFormatter());
+//      accessor.getLogger().methodCalled(accessor, new MethodFormatter());
+	   if (accessor != null) {
+		   accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(), new MethodFormatter(),
+				   getMessage());
+	   }
+
       T v = getValue();
       ReturnFormatter returnFormatter = new ReturnFormatter();
       returnFormatter.add(v);
-      accessor.getLogger().methodEnded(accessor, returnFormatter);
+      if (accessor != null) {
+    	  accessor.getLogger().methodEnded(accessor, returnFormatter);    	  
+      }
       return v;
    }
 
