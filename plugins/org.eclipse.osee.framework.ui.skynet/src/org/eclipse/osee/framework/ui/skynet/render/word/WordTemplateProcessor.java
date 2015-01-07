@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.render.DataRightProvider;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -72,12 +73,6 @@ import org.eclipse.swt.program.Program;
  * @link WordTemplateProcessorTest
  */
 public class WordTemplateProcessor {
-
-   public interface DataRightProvider {
-      DataRightResult getDataRights(DataRightInput request);
-
-      DataRightInput createRequest();
-   }
 
    private static final String ARTIFACT = "Artifact";
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
@@ -434,7 +429,7 @@ public class WordTemplateProcessor {
                      }
                   }
                }
-               PageOrientation orientation = getPageOrientation(artifact);
+               PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
 
                String footer = data.getContent(artifact.getGuid(), orientation);
                processAttributes(artifact, wordMl, presentationType, publishInline, footer);
@@ -478,10 +473,9 @@ public class WordTemplateProcessor {
 
          int index = 0;
          for (Artifact artifact : allArtifacts) {
-            String classification =
-               artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+            String classification = WordRendererUtil.getDataRightsClassification(artifact);
 
-            PageOrientation orientation = getPageOrientation(artifact);
+            PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
             request.addData(artifact.getGuid(), classification, orientation, index);
             index++;
 
@@ -494,14 +488,6 @@ public class WordTemplateProcessor {
       if (!isDataRightsPresent) {
          request.clear();
       }
-   }
-
-   private PageOrientation getPageOrientation(Artifact artifact) {
-      String pageTypeValue = null;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
-         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
-      }
-      return PageOrientation.fromString(pageTypeValue);
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {

@@ -18,7 +18,7 @@ import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor.DataRightProvider;
+import org.eclipse.osee.framework.ui.skynet.render.DataRightProvider;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;

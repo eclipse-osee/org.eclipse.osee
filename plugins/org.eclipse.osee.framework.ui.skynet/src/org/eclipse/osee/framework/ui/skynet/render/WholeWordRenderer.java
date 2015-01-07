@@ -8,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
@@ -21,12 +20,19 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.eclipse.osee.define.report.api.DataRightInput;
+import org.eclipse.osee.define.report.api.DataRightResult;
+import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
@@ -36,12 +42,18 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
+import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
+import org.eclipse.osee.framework.ui.skynet.render.word.WordRendererUtil;
 
 /**
  * @author Jeff C. Phillips
  */
 public class WholeWordRenderer extends WordRenderer {
 
+   private static final String FTR_END_TAG = "</w:ftr>";
+   private static final String FTR_START_TAG = "<w:ftr[^>]*>";
+   private static final Pattern START_PATTERN = Pattern.compile(FTR_START_TAG);
+   private static final Pattern END_PATTERN = Pattern.compile(FTR_END_TAG);
    private final IComparator comparator;
 
    public WholeWordRenderer() {
@@ -94,6 +106,12 @@ public class WholeWordRenderer extends WordRenderer {
 
             LinkType linkType = LinkType.OSEE_SERVER_LINK;
             content = WordMlLinkHandler.link(linkType, artifact, content);
+
+            String classification = WordRendererUtil.getDataRightsClassification(artifact);
+            if (Strings.isValid(classification)) {
+               content = addDataRights(content, classification, artifact);
+            }
+
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
       } catch (IOException ex) {
@@ -117,5 +135,34 @@ public class WholeWordRenderer extends WordRenderer {
       for (Artifact artifact : artifacts) {
          super.open(Arrays.asList(artifact), presentationType);
       }
+   }
+
+   private String addDataRights(String content, String classification, Artifact artifact) {
+      String toReturn = content;
+      PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
+      DataRightInput request = new DataRightInput();
+      request.addData(artifact.getGuid(), classification, orientation, 0);
+
+      DataRightProvider provider = new DataRightProviderImpl();
+      DataRightResult dataRights = provider.getDataRights(request);
+      String footer = dataRights.getContent(artifact.getGuid(), orientation);
+
+      Matcher startFtr = START_PATTERN.matcher(footer);
+      Matcher endFtr = END_PATTERN.matcher(footer);
+      if (startFtr.find() && endFtr.find()) {
+         ChangeSet ftrCs = new ChangeSet(footer);
+         ftrCs.delete(0, startFtr.end());
+         ftrCs.delete(endFtr.start(), footer.length());
+         footer = ftrCs.applyChangesToSelf().toString();
+      }
+
+      startFtr.reset(content);
+      endFtr.reset(content);
+      if (startFtr.find() && endFtr.find()) {
+         ChangeSet cs = new ChangeSet(content);
+         cs.replace(startFtr.end(), endFtr.start(), footer);
+         toReturn = cs.applyChangesToSelf().toString();
+      }
+      return toReturn;
    }
 }

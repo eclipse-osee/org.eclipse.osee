@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor.DataRightProvider;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
