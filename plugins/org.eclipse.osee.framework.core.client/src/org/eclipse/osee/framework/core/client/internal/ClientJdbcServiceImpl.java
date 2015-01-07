@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -34,11 +33,8 @@ import org.eclipse.osee.jdbc.JdbcService;
  */
 public class ClientJdbcServiceImpl implements JdbcService {
 
-   private final AtomicReference<JdbcClient> clientRef = new AtomicReference<JdbcClient>();
+   private final JdbcClientExtended clientProxy = createClientProxy();
 
-   private final JdbcClient clientProxy = createClientProxy();
-
-   private String id = "N/A";
    private Set<String> bindings;
 
    public void start(Map<String, Object> props) {
@@ -46,16 +42,6 @@ public class ClientJdbcServiceImpl implements JdbcService {
       String[] values = getBindings(props);
       for (String value : values) {
          bindings.add(value);
-      }
-      synchronized (clientRef) {
-         InternalClientSessionManager instance = InternalClientSessionManager.getInstance();
-         OseeSessionGrant sessionGrant = instance.getOseeSessionGrant();
-         IDatabaseInfo dbInfo = sessionGrant.getDatabaseInfo();
-
-         JdbcClient jdbcClient = newClient(dbInfo);
-         clientRef.set(jdbcClient);
-
-         id = dbInfo.getId();
       }
    }
 
@@ -76,25 +62,9 @@ public class ClientJdbcServiceImpl implements JdbcService {
       bindings = null;
    }
 
-   private JdbcClient newClient(IDatabaseInfo dbInfo) {
-      JdbcClientBuilder builder = JdbcClientBuilder.newBuilder()//
-      .dbDriver(dbInfo.getDriver())//
-      .dbUri(dbInfo.getConnectionUrl())//
-      .dbUsername(dbInfo.getDatabaseLoginName())//
-      .production(dbInfo.isProduction());
-
-      Properties properties = dbInfo.getConnectionProperties();
-      if (properties != null && !properties.isEmpty()) {
-         for (Entry<Object, Object> entry : properties.entrySet()) {
-            builder.dbParam((String) entry.getKey(), (String) entry.getValue());
-         }
-      }
-      return builder.build();
-   }
-
    @Override
    public String getId() {
-      return id;
+      return clientProxy.getId();
    }
 
    @Override
@@ -122,19 +92,40 @@ public class ClientJdbcServiceImpl implements JdbcService {
       return false;
    }
 
-   private JdbcClient createClientProxy() {
+   private JdbcClientExtended createClientProxy() {
       InvocationHandler handler = new JdbcClientInvocationHandler();
-      Class<?>[] types = new Class<?>[] {JdbcClient.class};
-      return (JdbcClient) Proxy.newProxyInstance(this.getClass().getClassLoader(), types, handler);
+      Class<?>[] types = new Class<?>[] {JdbcClientExtended.class};
+      return (JdbcClientExtended) Proxy.newProxyInstance(this.getClass().getClassLoader(), types, handler);
+   }
+
+   private interface JdbcClientExtended extends JdbcClient {
+      String getId();
    }
 
    private final class JdbcClientInvocationHandler implements InvocationHandler {
 
+      private volatile JdbcClient proxiedClient;
+
+      public String getId() {
+         IDatabaseInfo dbInfo = getDbInfo();
+         return dbInfo != null ? dbInfo.getId() : "N/A";
+      }
+
+      private boolean isGetId(Method method) {
+         return "getid".equalsIgnoreCase(method.getName());
+      }
+
       @Override
       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
          try {
-            JdbcClient client = clientRef.get();
-            return method.invoke(client, args);
+            Object toReturn;
+            if (isGetId(method)) {
+               toReturn = getId();
+            } else {
+               JdbcClient client = getProxiedClient();
+               toReturn = method.invoke(client, args);
+            }
+            return toReturn;
          } catch (Throwable ex) {
             Throwable cause = ex.getCause();
             if (cause == null) {
@@ -144,6 +135,36 @@ public class ClientJdbcServiceImpl implements JdbcService {
          }
       }
 
+      private JdbcClient getProxiedClient() {
+         if (proxiedClient == null) {
+            IDatabaseInfo dbInfo = getDbInfo();
+            if (dbInfo != null) {
+               proxiedClient = newClient(dbInfo);
+            }
+         }
+         return proxiedClient;
+      }
+
+      private IDatabaseInfo getDbInfo() {
+         OseeSessionGrant sessionGrant = InternalClientSessionManager.getInstance().getOseeSessionGrant();
+         return sessionGrant != null ? sessionGrant.getDatabaseInfo() : null;
+      }
+
+      private JdbcClient newClient(IDatabaseInfo dbInfo) {
+         JdbcClientBuilder builder = JdbcClientBuilder.newBuilder()//
+         .dbDriver(dbInfo.getDriver())//
+         .dbUri(dbInfo.getConnectionUrl())//
+         .dbUsername(dbInfo.getDatabaseLoginName())//
+         .production(dbInfo.isProduction());
+
+         Properties properties = dbInfo.getConnectionProperties();
+         if (properties != null && !properties.isEmpty()) {
+            for (Entry<Object, Object> entry : properties.entrySet()) {
+               builder.dbParam((String) entry.getKey(), (String) entry.getValue());
+            }
+         }
+         return builder.build();
+      }
    }
 
 }
