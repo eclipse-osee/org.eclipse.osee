@@ -24,7 +24,6 @@ import java.sql.Timestamp;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**
  * @author Jeff C. Phillips
@@ -78,38 +77,12 @@ public final class JdbcStatementImpl implements JdbcStatement {
     */
    @Override
    public void runPreparedQuery(int fetchSize, String query, Object... data) throws JdbcException {
-
       try {
          allowReuse();
          preparedStatement = connection.prepareStatement(query, resultSetType, resultSetConcurrency);
          preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
-         JdbcUtil.populateValuesForPreparedStatement(preparedStatement, data);
-
+         JdbcUtil.setInputParametersForStatement(preparedStatement, data);
          rSet = preparedStatement.executeQuery();
-      } catch (SQLException ex) {
-         throw newJdbcException(ex);
-      }
-   }
-
-   /**
-    * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
-    * as in parameters
-    */
-   @Override
-   public void runCallableStatement(String query, Object... data) throws JdbcException {
-      try {
-         allowReuse();
-         callableStatement = connection.prepareCall(query, resultSetType, resultSetConcurrency);
-
-         for (int index = 0; index < data.length; index++) {
-            if (data[index] instanceof SQL3DataType) {
-               callableStatement.registerOutParameter(index + 1, ((SQL3DataType) data[index]).getSQLTypeNumber());
-            }
-         }
-         JdbcUtil.populateValuesForPreparedStatement(callableStatement, data);
-         if (callableStatement.execute()) {
-            rSet = callableStatement.getResultSet();
-         }
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }

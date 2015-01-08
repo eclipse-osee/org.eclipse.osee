@@ -31,12 +31,6 @@ public interface JdbcStatement extends Closeable {
     */
    void runPreparedQuery(int fetchSize, String query, Object... data);
 
-   /**
-    * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
-    * as in parameters
-    */
-   void runCallableStatement(String query, Object... data);
-
    boolean next();
 
    /**
@@ -122,4 +116,5 @@ public interface JdbcStatement extends Closeable {
    void updateObject(String columnName, Object value);
 
    void updateRow();
+
 }

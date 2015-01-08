@@ -37,6 +37,16 @@ public interface JdbcClient {
 
    <T> T runPreparedQueryFetchObject(T defaultValue, String query, Object... data);
 
+   /**
+    * <pre>
+    * Invoke an SQL stored function which returns a value. 
+    * Function uses the format function_name (?,?,?) if the function has parameters
+    * or function_name if no parameters. Default value cannot be null and must match
+    * the desired return type.
+    * </pre>
+    */
+   <T> T runFunction(T defaultValue, String function, Object... data);
+
    Map<String, String> getStatistics();
 
    //////////  QUESTIONABLE? MAYBE ONLY FOR TX SUPPORT

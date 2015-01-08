@@ -41,49 +41,56 @@ public final class JdbcUtil {
       // Utility class
    }
 
-   public static <O extends Object> void populateValuesForPreparedStatement(PreparedStatement preparedStatement, O... data) throws JdbcException {
-      try {
-         int preparedIndex = 0;
-         for (Object dataValue : data) {
-            preparedIndex++;
-            if (dataValue instanceof String) {
-               int length = ((String) dataValue).length();
-               if (length > JDBC__MAX_VARCHAR_LENGTH) {
-                  throw newJdbcException("SQL data value length must be <= %d not %d\nValue: %s",
-                     JDBC__MAX_VARCHAR_LENGTH, length, dataValue);
-               }
-            }
+   public static void setInputParametersForStatement(PreparedStatement statement, Object... data) throws JdbcException {
+      setInputParametersForStatement(statement, 1, data);
+   }
 
+   public static void setInputParametersForStatement(PreparedStatement statement, int paramIndexStart, Object... data) throws JdbcException {
+      try {
+         int preparedIndex = paramIndexStart;
+         for (Object dataValue : data) {
+            checkStringDataLength(dataValue);
             if (dataValue == null) {
-               throw newJdbcException("instead of passing null for an query parameter, pass the corresponding SQL3DataType");
+               throw newJdbcException("instead of passing null for a input parameter, pass the corresponding SQL3DataType");
             } else if (dataValue instanceof SQL3DataType) {
                int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
                if (dataTypeNumber == java.sql.Types.BLOB) {
                   // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
                   //  "content" is of type bytea but expression is of type oid"
-                  preparedStatement.setBytes(preparedIndex, null);
+                  statement.setBytes(preparedIndex, null);
                } else {
-                  preparedStatement.setNull(preparedIndex, dataTypeNumber);
+                  statement.setNull(preparedIndex, dataTypeNumber);
                }
             } else if (dataValue instanceof ByteArrayInputStream) {
-               preparedStatement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
+               statement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
                   ((ByteArrayInputStream) dataValue).available());
             } else if (dataValue instanceof Date) {
                java.util.Date javaDate = (java.util.Date) dataValue;
                java.sql.Timestamp date = new java.sql.Timestamp(javaDate.getTime());
-               preparedStatement.setTimestamp(preparedIndex, date);
+               statement.setTimestamp(preparedIndex, date);
             } else if (dataValue instanceof BigInteger) {
                BigInteger bigInt = (BigInteger) dataValue;
-               preparedStatement.setLong(preparedIndex, bigInt.longValue());
+               statement.setLong(preparedIndex, bigInt.longValue());
             } else if (dataValue instanceof BigDecimal) {
                BigDecimal bigDec = (BigDecimal) dataValue;
-               preparedStatement.setLong(preparedIndex, bigDec.longValue());
+               statement.setLong(preparedIndex, bigDec.longValue());
             } else {
-               preparedStatement.setObject(preparedIndex, dataValue);
+               statement.setObject(preparedIndex, dataValue);
             }
+            preparedIndex++;
          }
       } catch (SQLException ex) {
          throw newJdbcException(ex);
+      }
+   }
+
+   public static void checkStringDataLength(Object dataValue) {
+      if (dataValue instanceof String) {
+         int length = ((String) dataValue).length();
+         if (length > JDBC__MAX_VARCHAR_LENGTH) {
+            throw newJdbcException("SQL data value length must be <= %d not %d\nValue: %s", JDBC__MAX_VARCHAR_LENGTH,
+               length, dataValue);
+         }
       }
    }
 

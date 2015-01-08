@@ -12,12 +12,15 @@ package org.eclipse.osee.jdbc.internal;
 
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
+import java.sql.CallableStatement;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,7 @@ import org.eclipse.osee.jdbc.JdbcSchemaOptions;
 import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.jdbc.internal.schema.data.SchemaData;
 import org.eclipse.osee.jdbc.internal.schema.ops.CreateSchemaTx;
 import org.eclipse.osee.jdbc.internal.schema.ops.ExtractSchemaCallable;
@@ -111,7 +115,7 @@ public final class JdbcClientImpl implements JdbcClient {
       int updateCount = 0;
       try {
          preparedStatement = ((JdbcConnectionImpl) connection).prepareStatement(query);
-         JdbcUtil.populateValuesForPreparedStatement(preparedStatement, data);
+         JdbcUtil.setInputParametersForStatement(preparedStatement, data);
          updateCount = preparedStatement.executeUpdate();
       } catch (SQLException ex) {
          throw newJdbcException(ex);
@@ -134,7 +138,7 @@ public final class JdbcClientImpl implements JdbcClient {
          int count = 0;
          for (Object[] data : dataList) {
             count++;
-            JdbcUtil.populateValuesForPreparedStatement(preparedStatement, data);
+            JdbcUtil.setInputParametersForStatement(preparedStatement, data);
             preparedStatement.addBatch();
             preparedStatement.clearParameters();
             needExecute = true;
@@ -252,7 +256,7 @@ public final class JdbcClientImpl implements JdbcClient {
    @SuppressWarnings("unchecked")
    private <T> T runPreparedQueryFetchObject(JdbcStatement chStmt, T defaultValue, String query, Object... data) throws JdbcException {
       if (defaultValue == null) {
-         throw newJdbcException("%s cannot be null", defaultValue);
+         throw newJdbcException("default value cannot be null");
       }
       try {
          chStmt.runPreparedQuery(1, query, data);
@@ -276,6 +280,111 @@ public final class JdbcClientImpl implements JdbcClient {
          return defaultValue;
       } finally {
          chStmt.close();
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T runFunction(T defaultValue, String function, Object... data) {
+      if (defaultValue == null) {
+         throw newJdbcException("defaultValue cannot be null");
+      }
+      String sql;
+      if (JdbcDbType.oracle == getDatabaseType()) {
+         sql = String.format("{ ? = call %s }", function);
+      } else {
+         sql = String.format("call %s", function);
+      }
+      JdbcConnectionImpl connection = getConnection();
+      try {
+         CallableStatement stmt = null;
+         try {
+            stmt = connection.prepareCall(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+
+            Class<?> classValue = defaultValue.getClass();
+            SQL3DataType dataType = null;
+            if (classValue.isAssignableFrom(String.class)) {
+               dataType = SQL3DataType.VARCHAR;
+            } else if (classValue.isAssignableFrom(Boolean.class)) {
+               dataType = SQL3DataType.BOOLEAN;
+            } else if (classValue.isAssignableFrom(Integer.class)) {
+               dataType = SQL3DataType.INTEGER;
+            } else if (classValue.isAssignableFrom(Long.class)) {
+               dataType = SQL3DataType.BIGINT;
+            } else if (classValue.isAssignableFrom(Double.class)) {
+               dataType = SQL3DataType.DOUBLE;
+            } else if (classValue.isAssignableFrom(Number.class)) {
+               dataType = SQL3DataType.NUMERIC;
+            } else if (classValue.isAssignableFrom(Date.class)) {
+               dataType = SQL3DataType.TIMESTAMP;
+            } else {
+               throw newJdbcException(
+                  "Unable to determine ouput SQL3DataType for function [%s] using default value [%s]", function,
+                  defaultValue);
+            }
+
+            if (JdbcDbType.oracle == getDatabaseType()) {
+               stmt.registerOutParameter(1, dataType.getSQLTypeNumber());
+               JdbcUtil.setInputParametersForStatement(stmt, 2, data);
+            } else {
+               JdbcUtil.setInputParametersForStatement(stmt, 1, data);
+            }
+
+            boolean hasResultSet = stmt.execute();
+            Object toReturn = null;
+            if (hasResultSet) {
+               ResultSet rSet = stmt.getResultSet();
+               rSet.next();
+               switch (dataType) {
+                  case VARCHAR:
+                     toReturn = rSet.getString(1);
+                     break;
+                  case BOOLEAN:
+                     toReturn = rSet.getBoolean(1);
+                     break;
+                  case INTEGER:
+                     toReturn = rSet.getInt(1);
+                     break;
+                  case BIGINT:
+                     toReturn = rSet.getLong(1);
+                     break;
+                  case DOUBLE:
+                     toReturn = rSet.getDouble(1);
+                     break;
+                  default:
+                     toReturn = rSet.getObject(1);
+                     break;
+               }
+            } else {
+               switch (dataType) {
+                  case VARCHAR:
+                     toReturn = stmt.getString(1);
+                     break;
+                  case BOOLEAN:
+                     toReturn = stmt.getBoolean(1);
+                     break;
+                  case INTEGER:
+                     toReturn = stmt.getInt(1);
+                     break;
+                  case BIGINT:
+                     toReturn = stmt.getLong(1);
+                     break;
+                  case DOUBLE:
+                     toReturn = stmt.getDouble(1);
+                     break;
+                  default:
+                     toReturn = stmt.getObject(1);
+                     break;
+               }
+            }
+            return toReturn != null ? (T) toReturn : defaultValue;
+         } catch (SQLException ex) {
+            throw newJdbcException(ex);
+         } finally {
+            close(stmt);
+         }
+      } finally {
+         connection.close();
       }
    }
 
