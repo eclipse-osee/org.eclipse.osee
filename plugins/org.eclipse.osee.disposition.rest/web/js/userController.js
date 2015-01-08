@@ -146,16 +146,27 @@ app.controller('userController', [
             }
         });
         
-        var checkboxSorting = function checkboxSorting(itemA, itemB) {
-            if (itemA.needsRerun == itemA.needsRerun) {
-                return itemA;
-            } else if (itemA.needsRerun) {
-                return itemA;
-            } else if (itemB.needsRerun) {
-                return itemB;
+        var dateSorting = function (itemA, itemB) {
+        	var DateA = new Date(itemA);
+        	var DateB = new Date(itemB);
+        	
+            if (DateA < DateB) {
+                return -1;
+            } else if (DateB < DateA) {
+                return 1;
             } else {
-                return itemA;
+            	return 0;
             }
+        };
+        
+        var checkboxSorting = function checkboxSorting(itemA, itemB) {
+            if(itemA == itemB) {
+            	return 0;
+            } else if (itemA) {
+                return -1;
+            } else if (itemB) {
+                return 1;
+            } 
         };
         
         $scope.checkEditable = function checkEditable(item) {
@@ -213,7 +224,8 @@ app.controller('userController', [
             displayName: 'Last Ran',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            sortFn: dateSorting
         }, {
             field: 'category',
             displayName: 'Category',
@@ -237,7 +249,8 @@ app.controller('userController', [
             displayName: 'Creation Date',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            sortFn: dateSorting
         },{
             field: 'aborted',
             displayName: 'Aborted',
@@ -299,7 +312,8 @@ app.controller('userController', [
             displayName: 'Last Ran',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            sortFn: dateSorting
         }, {
             field: 'category',
             displayName: 'Category',
@@ -323,7 +337,8 @@ app.controller('userController', [
             displayName: 'Creation Date',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            sortFn: dateSorting
         },{
             field: 'aborted',
             displayName: 'Aborted',
