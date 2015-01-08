@@ -118,7 +118,6 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
       return artifact.getSoleAttributeValue(DispoConstants.DispoItemAborted, false);
    }
 
-
    @Override
    public String getItemNotes() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemItemNotes, "");

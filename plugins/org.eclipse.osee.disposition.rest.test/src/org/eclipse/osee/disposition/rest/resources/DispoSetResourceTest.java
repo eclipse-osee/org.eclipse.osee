@@ -22,6 +22,7 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -159,14 +160,16 @@ public class DispoSetResourceTest {
 
    @Test
    public void testPut() {
+      OperationReport report = new OperationReport();
+
       DispoSetData newSet = new DispoSetData();
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.editDispoSet(program, id1.getGuid(), newSet)).thenReturn(true);
+      when(dispositionApi.editDispoSet(program, id1.getGuid(), newSet)).thenReturn("id");
       Response response = resource.putDispoSet(id1.getGuid(), newSet);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoSet(program, id1.getGuid(), newSet)).thenReturn(false);
+      when(dispositionApi.editDispoSet(program, id1.getGuid(), newSet)).thenReturn("");
       response = resource.putDispoSet(id1.getGuid(), newSet);
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
    }

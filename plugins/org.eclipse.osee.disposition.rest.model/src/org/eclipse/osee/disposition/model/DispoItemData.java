@@ -39,6 +39,7 @@ public class DispoItemData implements DispoItem {
    private String elapsedTime;
    private Boolean aborted;
    private String itemNotes;
+   private Boolean needsReview;
 
    public DispoItemData() {
 
@@ -186,6 +187,10 @@ public class DispoItemData implements DispoItem {
 
    public void setItemNotes(String itemNotes) {
       this.itemNotes = itemNotes;
+   }
+
+   public void setNeedsReview(Boolean needsReview) {
+      this.needsReview = needsReview;
    }
 
    @Override

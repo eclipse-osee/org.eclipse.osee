@@ -24,6 +24,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
@@ -41,20 +42,21 @@ public class AnnotationCopier {
       this.connector = connector;
    }
 
-   public List<DispoItem> copyEntireSet(List<DispoItemData> destinationItems, Collection<DispoItem> sourceItems, boolean isCopySet) throws JSONException {
+   public List<DispoItem> copyEntireSet(List<DispoItemData> destinationItems, Collection<DispoItem> sourceItems, boolean isCopySet, OperationReport report) throws JSONException {
       List<DispoItem> modifiedItems = new ArrayList<DispoItem>();
 
       HashMap<String, DispoItemData> nameToDestItems = createNameToItemList(destinationItems);
       for (DispoItem sourceItem : sourceItems) {
          DispoItemData destItem = nameToDestItems.get(sourceItem.getName());
-         if (destItem != null) {
 
+         if (destItem != null) {
+            JSONArray annotationsList = destItem.getAnnotationsList();
             /**
              * If item is PASS don't bother copying over Annotations from Source Item, all annotations are Default
              * Annotations and already created in the Import
              */
             if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
-               DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCopySet);
+               DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCopySet, report);
                if (newItem != null) {
                   if (!Strings.isValid(destItem.getGuid())) {
                      newItem.setGuid(sourceItem.getGuid());
@@ -62,6 +64,11 @@ public class AnnotationCopier {
                      newItem.setGuid(destItem.getGuid());
                   }
                   modifiedItems.add(newItem);
+
+                  report.addMessageForItem(destItem.getName(), "$$$$Had %s Dispositions$$$$\n",
+                     annotationsList.length());
+                  report.addMessageForItem(destItem.getName(), "$$$$Now has %s Dispositions$$$$",
+                     newItem.getAnnotationsList().length());
                }
             } else if (!Strings.isValid(destItem.getGuid()) && !sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
                destItem.setGuid(sourceItem.getGuid());
@@ -73,20 +80,21 @@ public class AnnotationCopier {
       return modifiedItems;
    }
 
-   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCopySet) throws JSONException {
+   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCopySet, OperationReport report) throws JSONException {
       DispoItemData toReturn;
       boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
       if (isSameDiscrepancies) {
-         toReturn = buildNewItem(destItem, sourceItem, isCopySet);
+         toReturn = buildNewItem(destItem, sourceItem, isCopySet, report);
       } else {
          toReturn = null;
-         //log in report
+         report.addMessageForItem(destItem.getName(),
+            "Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid());
       }
 
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isSkipDestDefaultAnnotations) throws JSONException {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isSkipDestDefaultAnnotations, OperationReport report) throws JSONException {
       boolean isChangesMade = false;
       DispoItemData newItem = new DispoItemData();
       newItem.setDiscrepanciesList(destItem.getDiscrepanciesList());
@@ -107,32 +115,46 @@ public class AnnotationCopier {
          if (DispoUtil.isDefaultAnntoation(sourceAnnotation)) {
             /**
              * This means the source has an annotation that's TEST_UNIT or Exception_Handling, so don't copy it over, we
-             * might leave an uncovered discrepancy which is intended do nothing, maybe log
+             * might leave an uncovered discrepancy which is intended and need to log
              */
+            if (!destDefaultAnntationLocations.contains(sourceLocation)) {
+               report.addMessageForItem(destItem.getName(),
+                  "Did not copy annotations for location(s) [%s] because they are default annotations",
+                  sourceAnnotation.getLocationRefs());
+            }
          } else if (isSkipDestDefaultAnnotations && destDefaultAnntationLocations.contains(sourceLocation)) {
             /**
              * isSkipDestDefault is true when annotation copier is called by a copy set, this means we do not want to
              * copy over source annotations that have the same location as a Dest annotation that's already covered by a
              * Default Annotation This means the destination has an annotation that's TEST_UNIT or Exception_Handling,
-             * so don't copy over a manual Disposition do nothing, maybe log
+             * so don't copy over a manual Disposition
              */
+            report.addMessageForItem(
+               destItem.getName(),
+               "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
+               sourceAnnotation.getLocationRefs());
          } else if (newAnnotations.toString().contains(sourceAnnotation.getGuid())) {
-            //  The Destination already has this annotation
+            report.addMessageForItem(
+               destItem.getName(),
+               "Did not copy annotations for location(s) [%s] because the destination item already has the same annotations at these locations [%s]",
+               sourceAnnotation.getLocationRefs());
          } else {
             DispoAnnotationData newAnnotation = sourceAnnotation;
 
-            /**
-             * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
-             * Annotation is invalid mark as such by making the location Ref negative, don't bother connecting the
-             * annotation
-             */
             if (destDefaultAnntationLocations.contains(sourceLocation)) {
+               /**
+                * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
+                * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting the
+                * annotation
+                */
                // Make location ref negative to indicate this 
                String locationRefs = sourceAnnotation.getLocationRefs();
                Integer locationRefAsInt = Integer.valueOf(locationRefs);
                if (locationRefAsInt > 0) {
                   newAnnotation.setLocationRefs(String.valueOf(locationRefAsInt * -1));
                }
+               report.addMessageForItem(destItem.getName(),
+                  "The annotation was copied over but is no longer needed: [%s]", locationRefs);
             }
             connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
             isChangesMade = true;

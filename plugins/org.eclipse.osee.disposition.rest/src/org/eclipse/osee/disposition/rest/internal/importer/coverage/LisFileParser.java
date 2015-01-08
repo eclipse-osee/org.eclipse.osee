@@ -34,6 +34,7 @@ import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,7 +75,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report) {
       List<DispoItem> toReturn = new ArrayList<DispoItem>();
 
       vCastDir = filesDir.getAbsolutePath() + File.separator + "vcast";
@@ -82,27 +83,23 @@ public class LisFileParser implements DispoImporterApi {
 
       VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath());
 
-      Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore);
+      Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore, report);
 
       for (VCastInstrumentedFile instrumentedFile : instrumentedFiles) {
-         try {
-            processInstrumented(dataStore, instrumentedFile);
-         } catch (Exception ex) {
-            //
-         }
+         processInstrumented(dataStore, instrumentedFile, report);
       }
 
       Collection<VCastResult> results = getResultFiles(dataStore);
       for (VCastResult result : results) {
          try {
-            processResult(result);
+            processResult(result, report);
          } catch (Exception ex) {
             //
          }
       }
 
       try {
-         processExceptionHandled();
+         processExceptionHandled(report);
       } catch (JSONException ex) {
          //
       }
@@ -110,9 +107,6 @@ public class LisFileParser implements DispoImporterApi {
       Collection<DispoItemData> values = datIdToItem.values();
 
       for (DispoItemData item : values) {
-         if (item.getName().equals("air_data_cross_monitor.2.LIS.<<package-processing>>")) {
-            System.out.println("");
-         }
          dataFactory.initDispoItem(item);
          item.setTotalPoints(String.valueOf(item.getAnnotationsList().length() + item.getDiscrepanciesList().length()));
       }
@@ -124,7 +118,7 @@ public class LisFileParser implements DispoImporterApi {
             List<DispoItemData> itemsFromImport = new ArrayList<DispoItemData>();
             itemsFromImport.addAll(values);
 
-            toReturn = copier.copyEntireSet(itemsFromImport, exisitingItems.values(), false);
+            toReturn = copier.copyEntireSet(itemsFromImport, exisitingItems.values(), false, report);
          } catch (JSONException ex) {
             //
          }
@@ -135,7 +129,7 @@ public class LisFileParser implements DispoImporterApi {
       return toReturn;
    }
 
-   private void processExceptionHandled() throws JSONException {
+   private void processExceptionHandled(OperationReport report) throws JSONException {
       for (String datId : datIdsCoveredByException) {
          Matcher matcher = Pattern.compile("\\d*:\\d*:").matcher(datId);
          matcher.find();
@@ -149,7 +143,7 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private Collection<VCastInstrumentedFile> getInstrumentedFiles(VCastDataStore dataStore) {
+   private Collection<VCastInstrumentedFile> getInstrumentedFiles(VCastDataStore dataStore, OperationReport report) {
       Collection<VCastInstrumentedFile> instrumentedFiles = new ArrayList<VCastInstrumentedFile>();
       try {
          /**
@@ -158,48 +152,49 @@ public class LisFileParser implements DispoImporterApi {
           */
          instrumentedFiles = dataStore.getAllInstrumentedFiles();
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException(ex, "SQL error while reading functions for directory: ", vCastDir);
+         report.addOtherMessage("SQL error while reading functions for directory: [%s]", vCastDir);
       }
       return instrumentedFiles;
    }
 
-   private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile) throws Exception {
+   private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, OperationReport report) {
       VCastSourceFileJoin sourceFile = null;
       try {
          sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException(ex, "SQL error while reading source_files for instrumented_file id:%s",
-            instrumentedFile.getId());
+         report.addOtherMessage(
+            "SQL error while reading source_files for instrumented_file id: [%s]. Error Message: [%s]",
+            instrumentedFile.getId(), ex.getMessage());
       }
 
       if (sourceFile != null) {
          int fileNum = sourceFile.getUnitIndex();
 
-         String lisFileName_badPath = instrumentedFile.getLISFile();
-         if (!Strings.isValid(lisFileName_badPath)) {
-            // Log error here
+         String lisFileNameFullPath = instrumentedFile.getLISFile();
+         if (!Strings.isValid(lisFileNameFullPath)) {
+            report.addOtherMessage("Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
          }
-
-         String normalizedPath = lisFileName_badPath.replaceAll("\\\\", "/");
-         File f = new File(normalizedPath);
-         String lisFileName = f.getName();
+         String normalizedPath = lisFileNameFullPath.replaceAll("\\\\", "/");
+         File lisFile = new File(normalizedPath);
+         String lisFileName = lisFile.getName();
          VCastLisFileParser lisFileParser = new VCastLisFileParser(lisFileName, vCastDir);
 
          Collection<VCastFunction> functions = Collections.emptyList();
          try {
             functions = dataStore.getFunctions(instrumentedFile);
          } catch (OseeCoreException ex) {
-            throw new OseeCoreException(ex, "SQL error while reading functions for instrumented_file id: %d",
-               instrumentedFile.getId());
+            report.addOtherMessage(
+               "SQL error while reading functions for instrumented_file id: [%s]. Error Message: [%s]",
+               instrumentedFile.getId(), ex.getMessage());
          }
 
          for (VCastFunction function : functions) {
-            processFunction(lisFileName, lisFileParser, fileNum, dataStore, instrumentedFile, function);
+            processFunction(lisFileName, lisFileParser, fileNum, dataStore, instrumentedFile, function, report);
          }
       }
    }
 
-   private void processFunction(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function) {
+   private void processFunction(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, OperationReport report) {
       int functionNum = function.getFindex();
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new JSONArray());
@@ -213,22 +208,23 @@ public class LisFileParser implements DispoImporterApi {
       try {
          statementCoverageItems = dataStore.getStatementCoverageLines(function);
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException(ex, "SQL error while reading functions for instrumented_file id: %d",
-            instrumentedFile.getId());
+         report.addOtherMessage(
+            "SQL error while reading statement_coverages for instrumented_file id: [%s] and function id: [%s]. Error Message: [%s]",
+            instrumentedFile.getId(), function.getId(), ex.getMessage());
       }
 
       Map<String, JSONObject> discrepancies = new HashMap<String, JSONObject>();
 
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
          processStatement(lisFileName, lisFileParser, fileNum, functionNum, function, statementCoverageItem,
-            discrepancies);
+            discrepancies, report);
       }
 
       newItem.setDiscrepanciesList(new JSONObject(discrepancies));
       // add discrepancies to item
    }
 
-   private void processStatement(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, JSONObject> discrepancies) {
+   private void processStatement(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, JSONObject> discrepancies, OperationReport report) {
       // Create discrepancy for every line, annotate with test usnit or exception handled
       Integer functionNumber = function.getFindex();
       Integer lineNumber = statementCoverageItem.getLine();
@@ -239,8 +235,7 @@ public class LisFileParser implements DispoImporterApi {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error parsing LIS file: [%s], on function [%s]", lisFileName,
-            function.getName());
+         report.addOtherMessage("Error parsing LIS file: [%s], on function [%s]", lisFileName, function.getName());
       }
 
       if (lineData != null) {
@@ -269,16 +264,14 @@ public class LisFileParser implements DispoImporterApi {
       return sb.toString();
    }
 
-   private void processResult(VCastResult result) throws Exception {
+   private void processResult(VCastResult result, OperationReport report) throws Exception {
       String resultPath = result.getPath();
-
       String resultPathAbs = vCastDir + File.separator + resultPath;
 
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         // Log missing dat file
+         report.addOtherMessage(String.format("Could not find DAT file [%s]", resultPathAbs));
       } else {
-         //maybe create import record and log this Dat file
          //Start reading line by line
          BufferedReader br = null;
          try {
@@ -290,7 +283,8 @@ public class LisFileParser implements DispoImporterApi {
                if (Strings.isValid(resultsLine)) {
                   Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
                   if (!datFileSyntaxResult.isTrue()) {
-                     // Log
+                     report.addOtherMessage(String.format("This line [%s] is not in proper format. In DAT file [%s]",
+                        resultsFile.getName()));
                   } else {
                      Matcher m = fileMethodLineNumberPattern.matcher(resultsLine);
                      if (m.find()) {

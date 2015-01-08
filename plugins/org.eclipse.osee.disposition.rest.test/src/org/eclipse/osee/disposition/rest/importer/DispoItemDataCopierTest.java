@@ -25,6 +25,7 @@ import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegration
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoItemDataCopier;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -110,7 +111,8 @@ public class DispoItemDataCopierTest {
 
       JSONObject discrepanciesList2 = oldItemTemp.getDiscrepanciesList();
 
-      DispoItemDataCopier.copyOldItemData(oldItemTemp, itemFromNewVersion);
+      OperationReport report = new OperationReport();
+      DispoItemDataCopier.copyOldItemData(oldItemTemp, itemFromNewVersion, report);
       JSONArray annotationsList2 = itemFromNewVersion.getAnnotationsList();
       String secondItemStatus = dispoConnector.getItemStatus(itemFromNewVersion);
 

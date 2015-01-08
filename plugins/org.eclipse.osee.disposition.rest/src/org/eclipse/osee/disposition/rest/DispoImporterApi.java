@@ -14,12 +14,13 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 
 /**
  * @author Angel Avila
  */
 public interface DispoImporterApi {
 
-   public abstract List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir);
+   public abstract List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report);
 
 }

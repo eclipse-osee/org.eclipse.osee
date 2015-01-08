@@ -19,6 +19,7 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmzImporter;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.json.JSONException;
@@ -44,7 +45,8 @@ public class TmzImporterTest {
       File tmzFile = folder.newFile("CheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("CheckGroup.tmz"), tmzFile);
       TmzImporter importer = new TmzImporter(null, factory);
-      List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot());
+      OperationReport report = new OperationReport();
+      List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot(), report);
       Assert.assertEquals(1, results.size());
       DispoItem result = results.get(0);
       Assert.assertEquals("CheckGroup", result.getName());
@@ -77,7 +79,8 @@ public class TmzImporterTest {
       File tmzFile = folder.newFile("NoCheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("NoCheckGroup.tmz"), tmzFile);
       TmzImporter importer = new TmzImporter(null, factory);
-      List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot());
+      OperationReport report = new OperationReport();
+      List<DispoItem> results = importer.importDirectory(new HashMap<String, DispoItem>(), folder.getRoot(), report);
       Assert.assertEquals(1, results.size());
       DispoItem result = results.get(0);
       Assert.assertEquals("NoCheckGroup", result.getName());

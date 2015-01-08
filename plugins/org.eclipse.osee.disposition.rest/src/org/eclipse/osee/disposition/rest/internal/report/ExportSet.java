@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
+import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -23,6 +24,8 @@ import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -68,6 +71,7 @@ public class ExportSet {
             row[index++] = String.valueOf(item.getNeedsRerun());
             row[index++] = String.valueOf(item.getAborted());
             row[index++] = String.valueOf(item.getMachine());
+            row[index++] = String.valueOf(prettifyAnnotations(item.getAnnotationsList()));
 
             sheetWriter.writeRow((Object[]) row);
          }
@@ -79,6 +83,21 @@ public class ExportSet {
          throw new OseeCoreException(ex);
       }
 
+   }
+
+   private static String prettifyAnnotations(JSONArray annotations) throws JSONException {
+      StringBuilder sb = new StringBuilder();
+
+      for (int i = 0; i < annotations.length(); i++) {
+         JSONObject annotationJson = annotations.getJSONObject(i);
+         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
+         sb.append(annotation.getLocationRefs());
+         sb.append(":");
+         sb.append(annotation.getResolution());
+         sb.append("\n");
+      }
+
+      return sb.toString();
    }
 
    private static String[] getHeadersDetailed() {
@@ -95,7 +114,8 @@ public class ExportSet {
             "Item Notes",//
             "Needs Rerun",//
             "Aborted",//
-            "Station"//
+            "Station",//
+            "Dispositions"//
          };
       return toReturn;
    }

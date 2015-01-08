@@ -22,12 +22,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Angel Avila
@@ -91,10 +94,19 @@ public class DispoAdminResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet) {
+      Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
 
-      dispoApi.copyDispoSet(program, destination, source);
-      return Response.ok().build();
+      String reportUrl = dispoApi.copyDispoSet(program, destination, source);
+      DispoSetData responseSet = new DispoSetData();
+      responseSet.setOperationStatus(reportUrl);
+
+      if (Strings.isValid(reportUrl)) {
+         status = Status.OK;
+      } else {
+         status = Status.NOT_FOUND;
+      }
+      return Response.status(status).entity(responseSet).build();
    }
 }

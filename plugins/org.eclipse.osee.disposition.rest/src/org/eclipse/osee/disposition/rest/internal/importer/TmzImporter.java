@@ -27,6 +27,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -52,7 +53,7 @@ public class TmzImporter implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report) {
       List<DispoItem> toReturn = new LinkedList<DispoItem>();
       if (!filesDir.exists() || !filesDir.isDirectory()) {
          throw new OseeArgumentException("Input directory does not exists or is not a directory [%s]",
@@ -98,7 +99,7 @@ public class TmzImporter implements DispoImporterApi {
                   }
 
                   if (oldItem != null) {
-                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
+                     DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild, report);
                   } else {
                      dataFactory.initDispoItem(itemToBuild);
                   }

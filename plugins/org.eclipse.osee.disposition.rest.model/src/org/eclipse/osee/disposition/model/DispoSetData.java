@@ -26,6 +26,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private String operation;
    private JSONArray notesList;
    private String importState;
+   private String operationStatus;
 
    public DispoSetData() {
 
@@ -44,12 +45,20 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       return operation;
    }
 
+   public String getOperationStatus() {
+      return operationStatus;
+   }
+
    public void setOperation(String operation) {
       this.operation = operation;
    }
 
    public void setNotesList(JSONArray notesList) {
       this.notesList = notesList;
+   }
+
+   public void setOperationStatus(String operationStatus) {
+      this.operationStatus = operationStatus;
    }
 
    @Override

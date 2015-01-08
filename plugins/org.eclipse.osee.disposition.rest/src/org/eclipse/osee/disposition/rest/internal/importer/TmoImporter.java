@@ -24,6 +24,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -45,7 +46,7 @@ public class TmoImporter implements DispoImporterApi {
    }
 
    @Override
-   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory) {
+   public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory, OperationReport report) {
       List<DispoItem> toReturn = new LinkedList<DispoItem>();
       if (tmoDirectory.isDirectory()) {
 
@@ -64,7 +65,7 @@ public class TmoImporter implements DispoImporterApi {
                endIndex += remainder;
             }
             List<File> sublist = listOfFiles.subList(startIndex, endIndex);
-            Worker worker = new Worker(sublist, dataFactory, exisitingItems);
+            Worker worker = new Worker(sublist, dataFactory, exisitingItems, report);
             Future<List<DispoItem>> future;
             try {
                future = executor.schedule(worker);
@@ -89,12 +90,14 @@ public class TmoImporter implements DispoImporterApi {
       private final List<File> sublist;
       private final DispoDataFactory dataFactory;
       Map<String, DispoItem> exisitingItems;
+      private final OperationReport operationReport;
 
-      public Worker(List<File> sublist, DispoDataFactory dataFactory, Map<String, DispoItem> exisitingItems) {
+      public Worker(List<File> sublist, DispoDataFactory dataFactory, Map<String, DispoItem> exisitingItems, OperationReport operationReport) {
          super();
          this.sublist = sublist;
          this.dataFactory = dataFactory;
          this.exisitingItems = exisitingItems;
+         this.operationReport = operationReport;
       }
 
       @Override
@@ -121,7 +124,7 @@ public class TmoImporter implements DispoImporterApi {
 
                      // If Item has no Discrepancies then don't both copying over Annotations
                      if (itemToBuild.getDiscrepanciesList().length() > 0) {
-                        DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild);
+                        DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild, operationReport);
                      }
                      dataFactory.setStatus(itemToBuild);
                      fromThread.add(itemToBuild);

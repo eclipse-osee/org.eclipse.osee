@@ -48,13 +48,13 @@ public interface DispoApi {
 
    String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation, String userName);
 
-   boolean editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
+   String editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
 
    boolean editDispoItem(DispoProgram program, String itemId, DispoItemData newDispoItem);
 
    boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
-   boolean copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source);
+   String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source);
 
    // Deletes
 

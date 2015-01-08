@@ -473,6 +473,16 @@ app.controller('userController', [
             isinuse: false
         }];
         
+        
+        $scope.searchAnnotations = function() {
+        	Item.get({
+        		    programId: $scope.programSelection,
+                    setId: $scope.setSelection,
+                    itemId: $scope.selectedItem.guid,
+                    keyword: "text"
+        	})
+        }
+        
         $scope.getResolutionTypes = function getResolutionTypes() {
         	if($scope.set.dispoType == 'codeCoverage') {
         		return $scope.coverageResolutionTypes;

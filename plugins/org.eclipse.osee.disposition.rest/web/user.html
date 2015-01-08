@@ -27,6 +27,9 @@
                      <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
                   </div>
                </div>
+               <div id="multItemEditDiv" class="span2" ng-show="items.length>0" class="btn-group">
+               	<button class="btn btn-primary active" ng-click="searchAnnotations()">Search Dispositions</button>
+               </div>
             </div>
             <div id="top-content" class="row">
                 <div style='height: 500px;' id="itemsGrid" class="gridStyle" ng-grid="gridOptions"></div>

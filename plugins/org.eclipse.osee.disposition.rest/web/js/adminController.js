@@ -169,8 +169,10 @@
 		            Set.update({
 		                programId: $scope.programSelection,
 		                setId: set.guid
-		            }, newSet, function(){
-		            	console.log(new Date().getTime());
+		            }, newSet, function(data){
+		            	var reportUrl = data.operationStatus;
+			            window.open(reportUrl);
+		            	console.log(data);
 		            	set.processingImport = false;
 		            }, function() {
 		            	console.log("Failed");
@@ -213,6 +215,10 @@
 		                programId: $scope.programSelection,
 		                destinationSet: destination,
 		                sourceSet: source,
+		            }, function(data) {
+		            	var reportUrl = data.operationStatus;
+			            window.open(reportUrl);
+		            	console.log(data);
 		            });
 		        }
 

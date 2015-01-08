@@ -29,6 +29,7 @@ artifactType "dispo.Dispositionable Item" extends "Artifact" {
    attribute "dispo.Elapsed Time"
    attribute "dispo.Aborted"
    attribute "dispo.Item Notes"
+   attribute "dispo.Needs Review"
 }
 
 attributeType "dispo.Annotations JSON" extends StringAttribute {
@@ -223,6 +224,16 @@ attributeType "dispo.Item Notes" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider 
    defaultValue ""
+}
+
+attributeType "dispo.Needs Review" extends BooleanAttribute {
+	uuid 0x30000000000002012
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "false"
+	mediaType "text/plain"
+}
 
 oseeEnumType "enum.dispo.item status" {
 	uuid 0x3000000000000199

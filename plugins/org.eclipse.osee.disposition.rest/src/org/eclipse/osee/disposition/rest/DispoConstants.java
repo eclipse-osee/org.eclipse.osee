@@ -43,6 +43,7 @@ public final class DispoConstants {
    public static final IAttributeType DispoItemElapsedTime = TokenFactory.createAttributeType(0x3000000000000207L, "dispo.Elapsed Time"); 
    public static final IAttributeType DispoItemAborted = TokenFactory.createAttributeType(0x3000000000000208L, "dispo.Aborted"); 
    public static final IAttributeType DispoItemItemNotes = TokenFactory.createAttributeType(0x3000000000000210L, "dispo.Item Notes"); 
+   public static final IAttributeType DispoItemNeedsReview = TokenFactory.createAttributeType(0x3000000000000212L, "dispo.Needs Review");
 
 
    public static final ArtifactId DispoTypesArtifact = OrcsUtil.newArtifactId("BEQGMZJDBHPd4OeWg6AA", "DispositionTypes");

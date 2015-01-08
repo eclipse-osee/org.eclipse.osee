@@ -19,6 +19,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
+import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -155,11 +156,12 @@ public class AnnotationCopierTest {
       destDiscrepancies.put(discrepancy5.getId(), DispoUtil.discrepancyToJsonObj(discrepancy5));
 
       destItem.setDiscrepanciesList(destDiscrepancies);
+      OperationReport report = new OperationReport();
 
       AnnotationCopier copier = new AnnotationCopier(connector);
       List<DispoItem> toModify =
          copier.copyEntireSet(Collections.singletonList(destItem), Collections.singletonList((DispoItem) sourceItem),
-            true);
+            true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
@@ -209,10 +211,11 @@ public class AnnotationCopierTest {
       destItem.setAnnotationsList(destAnnotations);
       destItem.setDiscrepanciesList(destDiscrepancies);
 
+      OperationReport report = new OperationReport();
       AnnotationCopier copier = new AnnotationCopier(connector);
       List<DispoItem> toModify =
          copier.copyEntireSet(Collections.singletonList(destItem), Collections.singletonList((DispoItem) sourceItem),
-            true);
+            true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();

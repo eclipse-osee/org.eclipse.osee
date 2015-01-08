@@ -44,7 +44,9 @@ import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -431,5 +433,40 @@ public class OrcsStorageImpl implements Storage {
          toReturn = new DispoItemArtifact(dispoArtifact);
       }
       return toReturn;
+   }
+
+   @Override
+   public String createDispoReport(DispoProgram program, ArtifactReadable author, String contents, String operationTitle) {
+      String toReturn = "";
+
+      TransactionBuilder tx =
+         getTxFactory().createTransaction(program.getUuid(), author, "Update Report: " + operationTitle);
+
+      ArtifactReadable reportArt =
+         getQuery().fromBranch(program.getUuid()).andNameEquals("Dispo_Report").getResults().getOneOrNull();
+
+      if (reportArt == null) {
+         TransactionBuilder txToCreate =
+            getTxFactory().createTransaction(program.getUuid(), author, "Add Operation Report Art");
+         txToCreate.createArtifact(CoreArtifactTypes.GeneralData, "Dispo_Report");
+         txToCreate.commit();
+         reportArt =
+            getQuery().fromBranch(program.getUuid()).andNameEquals("Dispo_Report").getResults().getExactlyOne();
+      }
+
+      tx.setSoleAttributeFromString(reportArt, CoreAttributeTypes.GeneralStringData, contents);
+      TransactionReadable commit = tx.commit();
+
+      ArtifactReadable newRerpotArt =
+         getQuery().fromBranch(program.getUuid()).fromTransaction(commit.getCommit()).andGuid(reportArt.getGuid()).getResults().getExactlyOne();
+
+      AttributeReadable<Object> contentsAsAttribute =
+         newRerpotArt.getAttributes(CoreAttributeTypes.GeneralStringData).getExactlyOne();
+
+      toReturn =
+         String.format("../orcs/branch/%s/artifact/%s/attribute/%s/version/%s", program.getUuid(),
+            newRerpotArt.getGuid(), contentsAsAttribute.getLocalId(), commit.getGuid());
+      return toReturn;
+
    }
 }
