@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
@@ -260,6 +261,7 @@ public class ArtifactFormPage extends FormPage {
 
       @Override
       public void run() {
+         ((ArtifactEditorInput) getEditorInput()).getArtifact().reloadAttributesAndRelations();
          refresh();
       }
    }
