@@ -35,6 +35,9 @@ public final class AtsArtifactTypes {
    public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(0x000000000000003EL, "Work Definition");
    public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Definition");
    public static final IArtifactType Program = TokenFactory.createArtifactType(0x0000BA123443210004L, "Program");
+   
+   public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(0x68D469C51DA01041L, "Agile Team");
+
    // @formatter:on
 
    private AtsArtifactTypes() {

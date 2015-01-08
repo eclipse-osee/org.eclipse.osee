@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class AbstractConfigResource {
 
-   private final IAtsServer atsServer;
+   protected final IAtsServer atsServer;
    private final IArtifactType artifactType;
 
    public AbstractConfigResource(IArtifactType artifactType, IAtsServer atsServer) {

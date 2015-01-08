@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api;
+package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable<String>, HasDescription {
+@XmlRootElement
+public class NewAgileTeam {
 
-   String toStringWithId();
+   private String name;
+   private String guid;
 
-   Object getStoreObject();
+   public String getName() {
+      return name;
+   }
 
-   void setStoreObject(Object object);
+   public void setName(String name) {
+      this.name = name;
+   }
 
-   long getId();
+   public String getGuid() {
+      return guid;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
 
 }

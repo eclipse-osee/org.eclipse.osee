@@ -6,6 +6,7 @@ Bundle-Version: 0.20.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.agile,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.commit,
  org.eclipse.osee.ats.api.config,

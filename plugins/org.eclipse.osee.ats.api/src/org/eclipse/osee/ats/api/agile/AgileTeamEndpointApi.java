@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api;
+package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable<String>, HasDescription {
+@Path("agile/team")
+public interface AgileTeamEndpointApi {
 
-   String toStringWithId();
-
-   Object getStoreObject();
-
-   void setStoreObject(Object object);
-
-   long getId();
+   @POST
+   @IdentityView
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewAgileTeam createTeam(NewAgileTeam newTeam) throws Exception;
 
 }

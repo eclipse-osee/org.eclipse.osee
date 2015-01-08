@@ -4,6 +4,10 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
 	attribute "ats.Released"
 }
 
+artifactType "Agile Team" extends "ats.Ats Config Artifact" {
+	uuid  0x68D469C51DA01041
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	uuid 0x000000000000003E
 	attribute "ats.DSL Sheet"

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -49,6 +50,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
                configObject = getActionableItem(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.Program)) {
                configObject = getProgram(artRead);
+            } else if (artRead.isOfType(AtsArtifactTypes.AgileTeam)) {
+               configObject = getAgileTeam(artRead);
             }
          }
       } catch (OseeCoreException ex) {
@@ -103,6 +106,18 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
          }
       }
       return program;
+   }
+
+   @Override
+   public IAgileTeam getAgileTeam(Object artifact) {
+      IAgileTeam agileTeam = null;
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable artRead = (ArtifactReadable) artifact;
+         if (artRead.isOfType(AtsArtifactTypes.AgileTeam)) {
+            agileTeam = atsServer.getAgileService().getAgileTeam(artRead);
+         }
+      }
+      return agileTeam;
    }
 
 }

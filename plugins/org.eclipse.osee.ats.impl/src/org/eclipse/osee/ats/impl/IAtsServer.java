@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
@@ -97,5 +98,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    IAtsTeamDefinitionService getTeamDefinitionService();
 
    ArtifactReadable getArtifactByUuid(long uuid);
+
+   IAgileService getAgileService();
 
 }

@@ -58,6 +58,10 @@ public final class AtsArtifactToken {
    public static IArtifactToken WorkDef_Team_Simple = TokenFactory.createArtifactToken("BAEWlOp78DShE_gJymAA",
       "WorkDef_Team_Simple", AtsArtifactTypes.WorkDefinition);
 
+   // Agile
+   public static IArtifactToken TopAgileFolder = TokenFactory.createArtifactToken("APFgz7OwBmpcrGt0DbQA", "Agile",
+      CoreArtifactTypes.Folder);
+
    private AtsArtifactToken() {
       // Constants
    }

@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public enum AtsImage implements KeyedImage {
    ACTION("action.gif"),
    ACTIONABLE_ITEM("AI.gif"),
+   AGILE_SPRINT("agileSprint.gif"),
+   AGILE_TEAM("agileTeam.gif"),
    ART_VIEW("artView.gif"),
    ATS("atsPerspective.gif"),
    CENTER("center.gif"),

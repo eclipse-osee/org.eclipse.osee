@@ -162,6 +162,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          createGoalsSection(item, items);
          createVersionsSection(item, items);
+         createAgileSection(item, items);
          EvNavigateItems.createSection(item, items);
          addExtensionPointItems(item, items);
 
@@ -307,6 +308,16 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(releaseItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
+      }
+   }
+
+   private void createAgileSection(XNavigateItem parent, List<XNavigateItem> items) {
+      try {
+         XNavigateItem releaseItems = new XNavigateItem(parent, "Agile", FrameworkImage.VERSION);
+         new CreateNewAgileTeam(releaseItems);
+         items.add(releaseItems);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Agile section");
       }
    }
 

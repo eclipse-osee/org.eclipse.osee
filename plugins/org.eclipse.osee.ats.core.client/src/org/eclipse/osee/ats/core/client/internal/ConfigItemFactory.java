@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -18,6 +19,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.agile.AgileTeam;
 import org.eclipse.osee.ats.core.client.program.internal.Program;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -84,6 +86,17 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
          program = new Program(atsClient, (Artifact) object);
       }
       return program;
+   }
+
+   @Override
+   public IAgileTeam getAgileTeam(Object artifact) {
+      IAgileTeam agileTeam = null;
+      if (artifact instanceof IAgileTeam) {
+         agileTeam = (IAgileTeam) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileTeam)) {
+         agileTeam = new AgileTeam(atsClient, (Artifact) artifact);
+      }
+      return agileTeam;
    }
 
 }

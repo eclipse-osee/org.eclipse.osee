@@ -19,6 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -52,6 +53,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.internal.agile.AgileService;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertBaselineGuidToBaselineUuid;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertFavoriteBranchGuidToUuid;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
@@ -122,6 +124,7 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsProgramService atsProgramService;
    private IAtsTeamDefinitionService atsTeamDefinitionService;
    private JdbcClient jdbcClient;
+   private IAgileService agileService;
 
    private volatile boolean emailEnabled = true;
    private volatile boolean started = false;
@@ -212,6 +215,8 @@ public class AtsServerImpl implements IAtsServer {
             userService, attributeResolverService, atsStateFactory, config, getServices());
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
+
+      agileService = new AgileService(logger, this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
@@ -515,6 +520,11 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IAtsTeamDefinitionService getTeamDefinitionService() {
       return atsTeamDefinitionService;
+   }
+
+   @Override
+   public IAgileService getAgileService() {
+      return agileService;
    }
 
 }

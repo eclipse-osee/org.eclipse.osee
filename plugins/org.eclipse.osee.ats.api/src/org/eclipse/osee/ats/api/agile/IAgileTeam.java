@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api;
+package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable<String>, HasDescription {
-
-   String toStringWithId();
-
-   Object getStoreObject();
-
-   void setStoreObject(Object object);
-
-   long getId();
-
+public interface IAgileTeam extends IAtsConfigObject {
+   // do nothing
 }
