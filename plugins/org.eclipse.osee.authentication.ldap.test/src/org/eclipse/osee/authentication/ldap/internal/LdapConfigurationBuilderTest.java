@@ -57,6 +57,7 @@ public class LdapConfigurationBuilderTest {
    private static final String GROUP_NAME_PATTERN = "group name pattern";
    private static final String GROUP_BY_GROUP_MEMBER_PATTERN = "group member of pattern";
    private static final String GROUP_MEMBERS_OF = "member of pattern";
+   private static final String GROUP_NAMESPACE = "namespace_blah";
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -96,6 +97,7 @@ public class LdapConfigurationBuilderTest {
       builder.groupName(GROUP_NAME_PATTERN);
       builder.groupByGroupMemberPattern(GROUP_BY_GROUP_MEMBER_PATTERN);
       builder.groupMembersOf(GROUP_MEMBERS_OF);
+      builder.groupNamespace(GROUP_NAMESPACE);
 
       LdapConfiguration actual = builder.build();
 
@@ -123,6 +125,7 @@ public class LdapConfigurationBuilderTest {
       assertEquals(GROUP_NAME_PATTERN, actual.getGroupName());
       assertEquals(GROUP_BY_GROUP_MEMBER_PATTERN, actual.getGroupByGroupMemberPattern());
       assertEquals(GROUP_MEMBERS_OF, actual.getGroupMembersOf());
+      assertEquals(GROUP_NAMESPACE, actual.getGroupNamespace());
    }
 
    private static void add(Map<String, Object> props, String key, Object value) {
@@ -157,6 +160,7 @@ public class LdapConfigurationBuilderTest {
       add(props, LdapConstants.GROUP_NAME_PATTERN, GROUP_NAME_PATTERN);
       add(props, LdapConstants.GROUP_BY_GROUP_MEMBER_PATTERN, GROUP_BY_GROUP_MEMBER_PATTERN);
       add(props, LdapConstants.GROUP_MEMBER_OF, GROUP_MEMBERS_OF);
+      add(props, LdapConstants.GROUP_NAMESPACE, GROUP_NAMESPACE);
 
       builder.properties(props);
 
@@ -186,6 +190,7 @@ public class LdapConfigurationBuilderTest {
       assertEquals(GROUP_NAME_PATTERN, actual.getGroupName());
       assertEquals(GROUP_BY_GROUP_MEMBER_PATTERN, actual.getGroupByGroupMemberPattern());
       assertEquals(GROUP_MEMBERS_OF, actual.getGroupMembersOf());
+      assertEquals(GROUP_NAMESPACE, actual.getGroupNamespace());
    }
 
    @Test
@@ -214,6 +219,7 @@ public class LdapConfigurationBuilderTest {
       builder.groupName(GROUP_NAME_PATTERN);
       builder.groupByGroupMemberPattern(GROUP_BY_GROUP_MEMBER_PATTERN);
       builder.groupMembersOf(GROUP_MEMBERS_OF);
+      builder.groupNamespace(GROUP_NAMESPACE);
 
       LdapConfiguration actual = builder.build();
 
@@ -241,6 +247,7 @@ public class LdapConfigurationBuilderTest {
       assertEquals(GROUP_NAME_PATTERN, actual.getGroupName());
       assertEquals(GROUP_BY_GROUP_MEMBER_PATTERN, actual.getGroupByGroupMemberPattern());
       assertEquals(GROUP_MEMBERS_OF, actual.getGroupMembersOf());
+      assertEquals(GROUP_NAMESPACE, actual.getGroupNamespace());
 
       builder.authenticationType(LdapAuthenticationType.GSSAPI);
       builder.credentialSource(LdapCredentialsSource.SYSTEM_CREDENTIALS);
@@ -266,6 +273,7 @@ public class LdapConfigurationBuilderTest {
       builder.groupName("m");
       builder.groupByGroupMemberPattern("n");
       builder.groupMembersOf("i");
+      builder.groupNamespace("n");
 
       assertEquals(AUTHENTICATION_TYPE, actual.getAuthenticationType());
       assertEquals(CREDENTIALS_SOURCE, actual.getCredentialsSource());
@@ -291,6 +299,7 @@ public class LdapConfigurationBuilderTest {
       assertEquals(GROUP_NAME_PATTERN, actual.getGroupName());
       assertEquals(GROUP_BY_GROUP_MEMBER_PATTERN, actual.getGroupByGroupMemberPattern());
       assertEquals(GROUP_MEMBERS_OF, actual.getGroupMembersOf());
+      assertEquals(GROUP_NAMESPACE, actual.getGroupNamespace());
    }
 
 }

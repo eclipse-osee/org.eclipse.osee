@@ -17,6 +17,7 @@ import static org.eclipse.osee.authentication.ldap.LdapConstants.ACCOUNT_PATTERN
 import static org.eclipse.osee.authentication.ldap.LdapConstants.ACCOUNT_SCOPE;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.ACCOUNT_USERNAME_PATTERN;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_AUTHENTICATION_TYPE;
+import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_GROUP_NAMESPACE;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_LDAP_CREDENTIALS_SOURCE;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_LDAP_READ_TIMEOUT_IN_MILLIS;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_LDAP_REFERRAL_HANDLING;
@@ -26,8 +27,9 @@ import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_SSL_CER
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_USERNAME;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.DEFAULT_USERNAME_TO_LOWERCASE;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_BASE;
-import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_MEMBER_OF;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_BY_GROUP_MEMBER_PATTERN;
+import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_MEMBER_OF;
+import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_NAMESPACE;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_NAME_PATTERN;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_PATTERN;
 import static org.eclipse.osee.authentication.ldap.LdapConstants.GROUP_SCOPE;
@@ -201,6 +203,11 @@ public class LdapConfigurationBuilder {
       return this;
    }
 
+   public LdapConfigurationBuilder groupNamespace(String groupNamespace) {
+      config.setGroupNamespace(groupNamespace);
+      return this;
+   }
+
    private static final class LdapConfigurationImpl implements LdapConfiguration, Cloneable {
 
       private String serverAddress;
@@ -228,6 +235,7 @@ public class LdapConfigurationBuilder {
       private String groupNamePattern;
       private String groupByGroupMemberPattern;
       private String membersOfGroups;
+      private String groupNamespace;
 
       @Override
       public LdapCredentialsSource getCredentialsSource() {
@@ -428,6 +436,15 @@ public class LdapConfigurationBuilder {
       }
 
       @Override
+      public String getGroupNamespace() {
+         return groupNamespace;
+      }
+
+      public void setGroupNamespace(String groupNamespace) {
+         this.groupNamespace = groupNamespace;
+      }
+
+      @Override
       public synchronized LdapConfiguration clone() {
          LdapConfigurationImpl cloned = new LdapConfigurationImpl();
          cloned.serverAddress = this.serverAddress;
@@ -452,6 +469,7 @@ public class LdapConfigurationBuilder {
          cloned.groupSearchPattern = this.groupSearchPattern;
          cloned.groupNamePattern = this.groupNamePattern;
          cloned.groupByGroupMemberPattern = this.groupByGroupMemberPattern;
+         cloned.groupNamespace = this.groupNamespace;
          return cloned;
       }
 
@@ -484,6 +502,7 @@ public class LdapConfigurationBuilder {
             setGroupName(get(props, GROUP_NAME_PATTERN, PATTERN_DEFAULT));
             setGroupByGroupMemberPattern(get(props, GROUP_BY_GROUP_MEMBER_PATTERN, PATTERN_DEFAULT));
             setGroupMembersOf(get(props, GROUP_MEMBER_OF, PATTERN_DEFAULT));
+            setGroupNamespace(get(props, GROUP_NAMESPACE, DEFAULT_GROUP_NAMESPACE));
          }
       }
 
@@ -529,5 +548,6 @@ public class LdapConfigurationBuilder {
          }
          return toReturn;
       }
+
    }
 }

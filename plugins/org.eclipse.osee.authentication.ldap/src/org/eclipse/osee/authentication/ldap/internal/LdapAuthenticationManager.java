@@ -13,7 +13,9 @@ package org.eclipse.osee.authentication.ldap.internal;
 import static org.eclipse.osee.authentication.ldap.internal.util.LdapUtil.getValue;
 import java.security.PrivilegedActionException;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Set;
 import javax.naming.NamingException;
 import javax.security.auth.login.LoginException;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
@@ -27,6 +29,7 @@ import org.eclipse.osee.authentication.ldap.LdapReferralHandlingType;
 import org.eclipse.osee.authentication.ldap.internal.util.LdapUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -40,6 +43,7 @@ public final class LdapAuthenticationManager {
    private LdapAuthenticationType systemAuthType = LdapConstants.DEFAULT_AUTHENTICATION_TYPE;
    private String systemUserName;
    private String systemPassword;
+   private String groupNamespace;
    private LdapFilter ldapFilter;
 
    public LdapAuthenticationManager(LdapClient client) {
@@ -57,6 +61,7 @@ public final class LdapAuthenticationManager {
       isUserNameToLowerCaseEnabled = getValue(config.isUserNameToLowerCaseEnabled(), LdapConstants.DEFAULT_USERNAME_TO_LOWERCASE);
       loginType = getValue(config.getCredentialsSource(), LdapConstants.DEFAULT_LDAP_CREDENTIALS_SOURCE);
       systemAuthType = getValue(config.getAuthenticationType(), LdapConstants.DEFAULT_AUTHENTICATION_TYPE);
+      groupNamespace = getValue(config.getGroupNamespace(), LdapConstants.DEFAULT_GROUP_NAMESPACE);
       //@formatter:on
 
       systemUserName = getValue(config.getUsername(), null);
@@ -99,7 +104,14 @@ public final class LdapAuthenticationManager {
          connection = client.getConnection(systemAuthType, systemUserName, systemPassword);
          LdapAccount account = connection.findAccount(ldapFilter, username);
          boolean isAuthenticated = connection.authenticate(account.getDistinguishedName(), password);
-         return createPrincipal(isAuthenticated, account);
+
+         Set<String> roles;
+         if (isAuthenticated) {
+            roles = getRoles(connection, username, account);
+         } else {
+            roles = Collections.emptySet();
+         }
+         return createPrincipal(isAuthenticated, account, roles);
       } finally {
          Lib.close(connection);
       }
@@ -110,26 +122,46 @@ public final class LdapAuthenticationManager {
       try {
          connection = client.getConnection(LdapAuthenticationType.SIMPLE, username, password);
          LdapAccount account = connection.findAccount(ldapFilter, username);
-         return createPrincipal(true, account);
+         Set<String> roles = getRoles(connection, username, account);
+         return createPrincipal(true, account, roles);
       } finally {
          Lib.close(connection);
       }
    }
 
-   private AuthenticatedUser createPrincipal(boolean isAuthenticated, LdapAccount account) throws NamingException {
+   private Set<String> getRoles(LdapConnection connection, String username, LdapAccount account) {
+      Set<String> roles = new LinkedHashSet<String>();
+      try {
+         Set<LdapGroup> groups = connection.findGroups(ldapFilter, username, account);
+         if (Strings.isValid(groupNamespace)) {
+            for (LdapGroup group : groups) {
+               roles.add(String.format("%s.%s", groupNamespace, group.getGroupName()));
+            }
+         } else {
+            for (LdapGroup group : groups) {
+               roles.add(group.getGroupName());
+            }
+         }
+      } catch (NamingException ex) {
+         throw new OseeCoreException(ex, "Error getting ldap groups");
+      }
+      return roles;
+   }
+
+   private AuthenticatedUser createPrincipal(boolean isAuthenticated, LdapAccount account, Set<String> roles) throws NamingException {
       AuthenticatedUser authenticated;
       if (isAuthenticated) {
          String displayName = account.getDisplayName();
          String emailAddress = account.getEmailAddress();
          String userName = account.getUserName();
-         authenticated = newAuthenticated(displayName, emailAddress, userName);
+         authenticated = newAuthenticated(displayName, emailAddress, userName, roles);
       } else {
          authenticated = AuthenticationAdmin.ANONYMOUS_USER;
       }
       return authenticated;
    }
 
-   private AuthenticatedUser newAuthenticated(final String displayName, final String emailAddress, final String userName) {
+   private AuthenticatedUser newAuthenticated(final String displayName, final String emailAddress, final String userName, final Set<String> roles) {
       return new AuthenticatedUser() {
 
          @Override
@@ -159,7 +191,7 @@ public final class LdapAuthenticationManager {
 
          @Override
          public Iterable<String> getRoles() {
-            return Collections.emptyList();
+            return roles;
          }
 
          @Override

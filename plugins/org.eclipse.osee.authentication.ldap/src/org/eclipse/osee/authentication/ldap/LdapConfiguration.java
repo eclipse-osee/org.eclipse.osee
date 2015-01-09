@@ -35,4 +35,6 @@ public interface LdapConfiguration extends LdapAccountFilter, LdapGroupFilter {
 
    String getUserNameVariableName();
 
+   String getGroupNamespace();
+
 }

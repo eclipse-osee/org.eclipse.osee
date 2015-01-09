@@ -172,4 +172,68 @@ public class LdapConnection implements Closeable {
       return new LdapAccount(entry, accountFullName, accountEmailAddress, accountUserName);
    }
 
+   public Set<LdapGroup> findGroups(LdapFilter filter, String username) throws NamingException {
+      return findGroups(filter, username, null);
+   }
+
+   public Set<LdapGroup> findGroups(LdapFilter filter, String username, LdapAccount account) throws NamingException {
+      LdapFilter defaultFilter = getDefaultFilter();
+
+      String usernameVariableName =
+         LdapUtil.getValue(filter.getUserNameVariableName(), defaultFilter.getUserNameVariableName());
+
+      String searchBase = LdapUtil.getValue(filter.getGroupBase(), defaultFilter.getGroupBase());
+      LdapSearchScope groupSearchScope =
+         LdapUtil.getValue(filter.getGroupSearchScope(), defaultFilter.getGroupSearchScope());
+
+      Set<String> fieldsToGet = new HashSet<String>();
+      VariablePattern groupNamePattern = patternField(fieldsToGet, filter.getGroupName(), defaultFilter.getGroupName());
+      VariablePattern groupByGroupMemberPattern =
+         patternField(fieldsToGet, filter.getGroupByGroupMemberPattern(), defaultFilter.getGroupByGroupMemberPattern());
+
+      // In account on in group trees
+      String memberOfField = LdapUtil.getValue(filter.getGroupMembersOf(), defaultFilter.getGroupMembersOf());
+
+      ResultSet<LdapEntry> results;
+      boolean isGroupMembershipInAccount =
+         groupByGroupMemberPattern == null || defaultFilter.isGroupMembershipPartOfAccount();
+      if (isGroupMembershipInAccount) {
+         throw new UnsupportedOperationException("Not yet implemented");
+      } else {
+         LdapQuery query = new LdapQuery(logger) //
+         .base(searchBase)//
+         .pattern(groupByGroupMemberPattern)//
+         .fields(fieldsToGet)//
+         .scope(groupSearchScope);
+
+         HashMap<String, String> params = new HashMap<String, String>();
+         for (String key : query.getParameters()) {
+            String value = account.getField(key);
+            if (Strings.isValid(value)) {
+               params.put(key, value);
+            }
+         }
+         params.put(usernameVariableName, username);
+         results = query.search(connection, params);
+      }
+
+      Set<LdapGroup> groups = new HashSet<LdapGroup>();
+      Set<String> groupDns = new HashSet<String>();
+      for (LdapEntry entry : results) {
+         findSubGroups(groups, groupDns, groupNamePattern, memberOfField, entry);
+      }
+      return groups;
+   }
+
+   private void findSubGroups(Set<LdapGroup> groups, Set<String> groupDns, VariablePattern groupNamePattern, String memberOfField, LdapEntry entry) throws NamingException {
+      String currentGroupDn = entry.getDistinguishedName();
+      boolean wasAdded = groupDns.add(currentGroupDn);
+      if (wasAdded) {
+         LdapGroup group = new LdapGroup(entry, groupNamePattern);
+         groups.add(group);
+         if (Strings.isValid(memberOfField)) {
+            throw new UnsupportedOperationException("Not yet implemented");
+         }
+      }
+   }
 }

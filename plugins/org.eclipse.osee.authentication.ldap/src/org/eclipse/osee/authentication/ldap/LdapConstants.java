@@ -35,6 +35,7 @@ public final class LdapConstants {
    public static final String DEFAULT_PASSWORD = null;
    public static final String PATTERN_DEFAULT = null;
    public static final LdapSearchScope DEFAULT_SEARCH_SCOPE = LdapSearchScope.SUBTREE_SCOPE;
+   public static final String DEFAULT_GROUP_NAMESPACE = NAMESPACE;
 
    public static final String LDAP_SERVER_ADDRESS = qualify("server.address");
    public static final String LDAP_CREDENTIALS_SOURCE = qualify("credential.source");
@@ -63,4 +64,5 @@ public final class LdapConstants {
    public static final String GROUP_NAME_PATTERN = qualify("group.name.pattern");
    public static final String GROUP_BY_GROUP_MEMBER_PATTERN = qualify("group.by.group.member.search.pattern");
    public static final String GROUP_MEMBER_OF = qualify("group.member.of.groups");
+   public static final String GROUP_NAMESPACE = qualify("group.namespace");
 }
