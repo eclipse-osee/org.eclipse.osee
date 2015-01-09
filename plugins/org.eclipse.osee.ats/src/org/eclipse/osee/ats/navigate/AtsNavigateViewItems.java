@@ -289,7 +289,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new FilteredCheckboxTreeDialogExample(exampleItems);
       new FilteredCheckboxTreeArtifactDialogExample(exampleItems);
       new FilteredCheckboxTreeDialogSelectAllExample(exampleItems);
-      //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
       items.add(exampleItems);
 
    }
