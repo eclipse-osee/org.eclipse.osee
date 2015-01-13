@@ -16,6 +16,7 @@ import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -69,7 +70,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private final ArrayList<String> noTraceabilityFiles = new ArrayList<String>(200);
    private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<Artifact>();
    private final HashCollection<Artifact, String> requirementToCodeUnitsMap = new HashCollection<Artifact, String>(
-      false, LinkedList.class);
+      false, LinkedHashSet.class);
    private final HashSet<String> codeUnits = new HashSet<String>();
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
