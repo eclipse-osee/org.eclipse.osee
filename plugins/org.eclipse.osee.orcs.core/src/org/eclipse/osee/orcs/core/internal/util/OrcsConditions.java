@@ -35,8 +35,19 @@ public final class OrcsConditions {
       }
    }
 
+   public static void checkBranch(GraphData graph, RelationNode... nodes) throws OseeCoreException {
+      checkNotNull(graph, "graph");
+      for (RelationNode node : nodes) {
+         checkNotNull(node, "node");
+         GraphData graph2 = node.getGraph();
+         checkExpressionFailOnTrue(graph.getBranchUuid() != graph2.getBranchUuid(),
+            "Error - Node[%s] is on branch[%d] but should be on branch[%d]", node, graph2.getBranchUuid(),
+            graph.getBranchUuid());
+      }
+   }
+
    public static void checkBranch(RelationNode node1, RelationNode node2) throws OseeCoreException {
-      boolean areEqual = node1.getBranch().equals(node2.getBranch());
+      boolean areEqual = node1.getBranchUuid() == node2.getBranchUuid();
       checkExpressionFailOnTrue(!areEqual, "Cross branch linking is not yet supported.");
    }
 

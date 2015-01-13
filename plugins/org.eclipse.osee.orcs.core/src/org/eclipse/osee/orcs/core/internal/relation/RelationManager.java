@@ -38,47 +38,47 @@ public interface RelationManager {
 
    ///////////////////////////////////////
 
-   boolean hasDirtyRelations(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException;
+   boolean hasDirtyRelations(OrcsSession session, RelationNode node) throws OseeCoreException;
 
-   Collection<? extends IRelationType> getExistingRelationTypes(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException;
+   Collection<? extends IRelationType> getExistingRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException;
 
-   int getRelatedCount(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
 
-   int getRelatedCount(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException;
+   int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException;
 
-   boolean areRelated(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   boolean areRelated(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
 
-   String getRationale(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
-
-   ///////////////////////////////////////
-
-   <T extends RelationNode> T getParent(OrcsSession session, GraphData graph, RelationNode child) throws OseeCoreException;
-
-   <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, GraphData graph, RelationNode parent) throws OseeCoreException;
-
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   String getRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
 
    ///////////////////////////////////////
 
-   void addChild(OrcsSession session, GraphData graph, RelationNode parent, RelationNode child) throws OseeCoreException;
+   <T extends RelationNode> T getParent(OrcsSession session, RelationNode child) throws OseeCoreException;
 
-   void addChildren(OrcsSession session, GraphData graph, RelationNode parent, List<? extends RelationNode> children) throws OseeCoreException;
+   <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent) throws OseeCoreException;
 
-   void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
 
-   void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
+   ///////////////////////////////////////
 
-   void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException;
+   void addChild(OrcsSession session, RelationNode parent, RelationNode child) throws OseeCoreException;
 
-   void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException;
+   void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children) throws OseeCoreException;
 
-   void setRationale(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
 
-   void unrelate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
 
-   void unrelateFromAll(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException;
 
-   void unrelateFromAll(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
+   void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException;
+
+   void setRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException;
+
+   void unrelate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException;
+
+   void unrelateFromAll(OrcsSession session, RelationNode node) throws OseeCoreException;
+
+   void unrelateFromAll(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException;
 
    void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) throws OseeCoreException;
 

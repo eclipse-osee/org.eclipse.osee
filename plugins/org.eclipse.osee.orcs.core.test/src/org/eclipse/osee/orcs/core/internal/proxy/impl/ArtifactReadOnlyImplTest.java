@@ -290,36 +290,36 @@ public class ArtifactReadOnlyImplTest {
    @Test
    public void testAreRelated() throws OseeCoreException {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-      when(relationManager.areRelated(session, graph, proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
+      when(relationManager.areRelated(session, proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
 
       boolean actual = readOnly.areRelated(Default_Hierarchical__Child, readable1);
 
       assertEquals(true, actual);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(relationManager).areRelated(session, graph, proxiedObject, DEFAULT_HIERARCHY, artifact1);
+      verify(relationManager).areRelated(session, proxiedObject, DEFAULT_HIERARCHY, artifact1);
    }
 
    @Test
    public void testGetParent() throws OseeCoreException {
-      when(relationManager.getParent(session, graph, proxiedObject)).thenReturn(artifact1);
+      when(relationManager.getParent(session, proxiedObject)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
 
       ArtifactReadable actual = readOnly.getParent();
 
       assertEquals(readable1, actual);
-      verify(relationManager).getParent(session, graph, proxiedObject);
+      verify(relationManager).getParent(session, proxiedObject);
       verify(proxyManager).asExternalArtifact(session, artifact1);
    }
 
    @Test
    public void testGetExistingRelationTypes() throws OseeCoreException {
       List<? extends IRelationType> types = Arrays.asList(Allocation__Requirement);
-      when(relationManager.getExistingRelationTypes(session, graph, proxiedObject)).thenAnswer(answer(types));
+      when(relationManager.getExistingRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
 
       Collection<? extends IRelationType> actual = readOnly.getExistingRelationTypes();
 
       assertEquals(types, actual);
-      verify(relationManager).getExistingRelationTypes(session, graph, proxiedObject);
+      verify(relationManager).getExistingRelationTypes(session, proxiedObject);
    }
 
    @Test
@@ -338,26 +338,24 @@ public class ArtifactReadOnlyImplTest {
    public void testGetRationale() throws OseeCoreException {
       String expected = "This is my rationale";
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
-      when(relationManager.getRationale(session, graph, artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(
-         expected);
+      when(relationManager.getRationale(session, artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(expected);
 
       String actual = readOnly.getRationale(Default_Hierarchical__Parent, readable1);
 
       assertEquals(expected, actual);
 
-      verify(relationManager).getRationale(session, graph, artifact1, DEFAULT_HIERARCHY, proxiedObject);
+      verify(relationManager).getRationale(session, artifact1, DEFAULT_HIERARCHY, proxiedObject);
    }
 
    @Test
    public void testGetRelatedCount() throws OseeCoreException {
       int expected = 35;
-      when(relationManager.getRelatedCount(session, graph, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(
-         expected);
+      when(relationManager.getRelatedCount(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(expected);
 
       int actual = readOnly.getRelatedCount(Default_Hierarchical__Parent);
 
       assertEquals(expected, actual);
-      verify(relationManager).getRelatedCount(session, graph, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
+      verify(relationManager).getRelatedCount(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
    }
 
    @Test
@@ -365,14 +363,14 @@ public class ArtifactReadOnlyImplTest {
       ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
 
       ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
-      when(relationManager.getRelated(session, graph, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenAnswer(
+      when(relationManager.getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenAnswer(
          answer(resultSet1));
       when(proxyManager.asExternalArtifacts(session, resultSet1)).thenReturn(expected);
 
       ResultSet<ArtifactReadable> actual = readOnly.getRelated(Default_Hierarchical__Parent);
 
       assertEquals(expected, actual);
-      verify(relationManager).getRelated(session, graph, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
+      verify(relationManager).getRelated(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD);
       verify(proxyManager).asExternalArtifacts(session, resultSet1);
    }
 
@@ -381,13 +379,13 @@ public class ArtifactReadOnlyImplTest {
       ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
 
       ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
-      when(relationManager.getChildren(session, graph, proxiedObject)).thenAnswer(answer(resultSet1));
+      when(relationManager.getChildren(session, proxiedObject)).thenAnswer(answer(resultSet1));
       when(proxyManager.asExternalArtifacts(session, resultSet1)).thenReturn(expected);
 
       ResultSet<ArtifactReadable> actual = readOnly.getChildren();
 
       assertEquals(expected, actual);
-      verify(relationManager).getChildren(session, graph, proxiedObject);
+      verify(relationManager).getChildren(session, proxiedObject);
       verify(proxyManager).asExternalArtifacts(session, resultSet1);
    }
 

@@ -102,10 +102,6 @@ public class TxDataManager {
       txData.setCommitInProgress(false);
    }
 
-   private GraphData getGraphForWrite(TxData txData) {
-      return txData.getGraph();
-   }
-
    public Iterable<Artifact> getForWrite(TxData txData, Iterable<? extends ArtifactId> ids) throws OseeCoreException {
       checkChangesAllowed(txData);
       Set<ArtifactId> toLoad = new LinkedHashSet<ArtifactId>();
@@ -299,72 +295,62 @@ public class TxDataManager {
 
    public void deleteArtifact(TxData txData, ArtifactId sourceArtifact) throws OseeCoreException {
       Artifact asArtifact = getForWrite(txData, sourceArtifact);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.unrelateFromAll(txData.getSession(), graph, asArtifact);
+      relationManager.unrelateFromAll(txData.getSession(), asArtifact);
       asArtifact.delete();
    }
 
    public void addChildren(TxData txData, ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException {
       OrcsSession session = txData.getSession();
       Artifact asArtifact = getForWrite(txData, artA);
-      GraphData graph = getGraphForWrite(txData);
       Iterable<? extends RelationNode> artifacts = getForWrite(txData, children);
       List<RelationNode> nodes = Lists.newLinkedList(artifacts);
-      relationManager.addChildren(session, graph, asArtifact, nodes);
+      relationManager.addChildren(session, asArtifact, nodes);
    }
 
    public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB);
    }
 
    public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
    }
 
    public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, IRelationSorterId sortType) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, sortType);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, sortType);
    }
 
    public void relate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.relate(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale, sortType);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);
    }
 
    public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.setRationale(txData.getSession(), graph, asArtifactA, type, asArtifactB, rationale);
+      relationManager.setRationale(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
    }
 
    public void unrelate(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.unrelate(txData.getSession(), graph, asArtifactA, type, asArtifactB);
+      relationManager.unrelate(txData.getSession(), asArtifactA, type, asArtifactB);
    }
 
    public void unrelateFromAll(TxData txData, ArtifactId artA) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.unrelateFromAll(txData.getSession(), graph, asArtifactA);
+      relationManager.unrelateFromAll(txData.getSession(), asArtifactA);
    }
 
    public void unrelateFromAll(TxData txData, IRelationType type, ArtifactId artA, RelationSide side) throws OseeCoreException {
       Artifact asArtifactA = getForWrite(txData, artA);
-      GraphData graph = getGraphForWrite(txData);
-      relationManager.unrelateFromAll(txData.getSession(), graph, type, asArtifactA, side);
+      relationManager.unrelateFromAll(txData.getSession(), type, asArtifactA, side);
    }
 
    public TransactionData createChangeData(TxData txData) throws OseeCoreException {

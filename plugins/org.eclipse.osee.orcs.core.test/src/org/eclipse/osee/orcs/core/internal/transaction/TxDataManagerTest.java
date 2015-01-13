@@ -490,7 +490,7 @@ public class TxDataManagerTest {
       txDataManager.deleteArtifact(txData, artifact1);
 
       verify(artifact2).delete();
-      verify(relationManager).unrelateFromAll(session, graph, artifact2);
+      verify(relationManager).unrelateFromAll(session, artifact2);
    }
 
    @Test
@@ -512,7 +512,7 @@ public class TxDataManagerTest {
 
       txDataManager.setRationale(txData, readable1, DEFAULT_HIERARCHY, readable2, rationale);
 
-      verify(relationManager).setRationale(session, graph, artifact1, DEFAULT_HIERARCHY, artifact3, rationale);
+      verify(relationManager).setRationale(session, artifact1, DEFAULT_HIERARCHY, artifact3, rationale);
    }
 
    @Test
@@ -523,7 +523,7 @@ public class TxDataManagerTest {
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
-      verify(relationManager).relate(session, graph, artifact1, DEFAULT_HIERARCHY, artifact2);
+      verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
    }
 
    @Test
@@ -534,7 +534,7 @@ public class TxDataManagerTest {
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2, LEXICOGRAPHICAL_DESC);
 
-      verify(relationManager).relate(session, graph, artifact1, DEFAULT_HIERARCHY, artifact2, LEXICOGRAPHICAL_DESC);
+      verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2, LEXICOGRAPHICAL_DESC);
    }
 
    @Test
@@ -548,7 +548,7 @@ public class TxDataManagerTest {
 
       txDataManager.addChildren(txData, readable1, children);
 
-      verify(relationManager).addChildren(eq(session), eq(graph), eq(artifact1), nodeCaptor.capture());
+      verify(relationManager).addChildren(eq(session), eq(artifact1), nodeCaptor.capture());
 
       Iterator<? extends RelationNode> iterator = nodeCaptor.getValue().iterator();
       assertEquals(artifact2, iterator.next());
@@ -563,7 +563,7 @@ public class TxDataManagerTest {
 
       txDataManager.unrelate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
-      verify(relationManager).unrelate(session, graph, artifact1, DEFAULT_HIERARCHY, artifact2);
+      verify(relationManager).unrelate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
    }
 
    @Test
@@ -573,7 +573,7 @@ public class TxDataManagerTest {
 
       txDataManager.unrelateFromAll(txData, DEFAULT_HIERARCHY, readable1, IS_CHILD);
 
-      verify(relationManager).unrelateFromAll(session, graph, DEFAULT_HIERARCHY, artifact1, IS_CHILD);
+      verify(relationManager).unrelateFromAll(session, DEFAULT_HIERARCHY, artifact1, IS_CHILD);
    }
 
    @Test
@@ -583,7 +583,7 @@ public class TxDataManagerTest {
 
       txDataManager.unrelateFromAll(txData, readable1);
 
-      verify(relationManager).unrelateFromAll(session, graph, artifact1);
+      verify(relationManager).unrelateFromAll(session, artifact1);
    }
 
    private <T> Answer<T> answerValue(final T value) {

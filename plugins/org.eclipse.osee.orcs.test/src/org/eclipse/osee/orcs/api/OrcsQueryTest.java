@@ -51,6 +51,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.MatchComparator;
 import org.eclipse.osee.orcs.utility.NameComparator;
 import org.eclipse.osee.orcs.utility.SortOrder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -417,6 +418,59 @@ public class OrcsQueryTest {
       iterator = getNames(results).iterator();
       assertEquals("Robot Interfaces", iterator.next());
       assertEquals("Robot collaboration", iterator.next());
+   }
+
+   @Test
+   public void testRelatedTo() {
+      // do a query on branch
+      ArtifactReadable robotApi = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andNameEquals("Robot API") //
+      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+
+      // create a tx on branch
+      ArtifactReadable author =
+         factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      TransactionBuilder tx = txFactory.createTransaction(TestBranches.SAW_Bld_2, author, "Simple Tx");
+      tx.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
+      tx.commit();
+
+      // do another query on branch
+      ArtifactReadable robotInt = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+
+      // see if artifact from query 1 is related to artifact from query 2
+      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, robotInt));
+   }
+
+   @Test
+   public void testMultipleTxs() {
+      // do a query on branch
+      ArtifactReadable robotApi = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andNameEquals("Robot API") //
+      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+
+      ArtifactReadable author =
+         factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+
+      // create a tx on branch
+      TransactionBuilder tx1 = txFactory.createTransaction(TestBranches.SAW_Bld_2, author, "Simple Tx1");
+      TransactionBuilder tx2 = txFactory.createTransaction(TestBranches.SAW_Bld_2, author, "Simple Tx2");
+
+      ArtifactId folder = tx1.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
+      tx1.commit();
+
+      tx2.addChildren(robotApi, folder);
+
+      tx2.commit();
+
+      // do another query on branch
+      ArtifactReadable robotInt = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+
+      ArtifactReadable folderArt = factory.fromBranch(TestBranches.SAW_Bld_2) //
+      .andIds(folder).getResults().getExactlyOne();
+      // robotApi should be related to folder
+      Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
    }
 
    private Set<String> getNames(ResultSet<ArtifactReadable> results) {

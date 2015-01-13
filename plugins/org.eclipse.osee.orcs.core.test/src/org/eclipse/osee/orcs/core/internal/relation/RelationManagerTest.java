@@ -173,7 +173,7 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRelatedOnSideA() throws OseeCoreException {
-      ResultSet<RelationNode> nodes = manager.getRelated(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      ResultSet<RelationNode> nodes = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
@@ -193,7 +193,7 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRelatedOnSideB() throws OseeCoreException {
-      ResultSet<RelationNode> readables = manager.getRelated(session, graph, DEFAULT_HIERARCHY, node1, IS_CHILD);
+      ResultSet<RelationNode> readables = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_CHILD);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
@@ -209,13 +209,13 @@ public class RelationManagerTest {
 
    @Test
    public void testGetParent() throws OseeCoreException {
-      RelationNode actual = manager.getParent(session, graph, node1);
+      RelationNode actual = manager.getParent(session, node1);
       assertEquals(node4, actual);
    }
 
    @Test
    public void testGetChildren() throws OseeCoreException {
-      ResultSet<RelationNode> actual = manager.getChildren(session, graph, node1);
+      ResultSet<RelationNode> actual = manager.getChildren(session, node1);
 
       assertEquals(3, actual.size());
       Iterator<RelationNode> iterator = actual.iterator();
@@ -226,40 +226,40 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRationale() throws OseeCoreException {
-      String rationale = manager.getRationale(session, graph, node4, DEFAULT_HIERARCHY, node1);
+      String rationale = manager.getRationale(session, node4, DEFAULT_HIERARCHY, node1);
       assertEquals("rationale on relation3", rationale);
    }
 
    @Test
    public void testGetRelatedCount() throws OseeCoreException {
-      int actual = manager.getRelatedCount(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      int actual = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(3, actual);
 
       when(relation2.isDeleted()).thenReturn(true);
 
-      int actual2 = manager.getRelatedCount(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      int actual2 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(2, actual2);
 
-      int actual3 = manager.getRelatedCount(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT, INCLUDE_DELETED);
+      int actual3 = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT, INCLUDE_DELETED);
       assertEquals(3, actual3);
    }
 
    @Test
    public void testAreRelated() throws OseeCoreException {
-      assertTrue(manager.areRelated(session, graph, node4, DEFAULT_HIERARCHY, node1));
+      assertTrue(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node1));
 
-      assertTrue(manager.areRelated(session, graph, node1, DEFAULT_HIERARCHY, node2));
-      assertTrue(manager.areRelated(session, graph, node1, DEFAULT_HIERARCHY, node3));
-      assertTrue(manager.areRelated(session, graph, node1, DEFAULT_HIERARCHY, node5));
+      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node2));
+      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node3));
+      assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node5));
 
-      assertFalse(manager.areRelated(session, graph, node1, DEFAULT_HIERARCHY, node4));
-      assertFalse(manager.areRelated(session, graph, node2, DEFAULT_HIERARCHY, node1));
-      assertFalse(manager.areRelated(session, graph, node3, DEFAULT_HIERARCHY, node1));
-      assertFalse(manager.areRelated(session, graph, node5, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node4));
+      assertFalse(manager.areRelated(session, node2, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(session, node3, DEFAULT_HIERARCHY, node1));
+      assertFalse(manager.areRelated(session, node5, DEFAULT_HIERARCHY, node1));
 
-      assertFalse(manager.areRelated(session, graph, node4, DEFAULT_HIERARCHY, node2));
-      assertFalse(manager.areRelated(session, graph, node4, DEFAULT_HIERARCHY, node3));
-      assertFalse(manager.areRelated(session, graph, node4, DEFAULT_HIERARCHY, node5));
+      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node2));
+      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node3));
+      assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node5));
    }
 
    private class LoaderAnswer implements Answer<Iterable<RelationNode>> {

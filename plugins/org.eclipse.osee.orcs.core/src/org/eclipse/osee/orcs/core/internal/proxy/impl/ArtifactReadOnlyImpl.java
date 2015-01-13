@@ -207,18 +207,18 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public Collection<? extends IRelationType> getExistingRelationTypes() throws OseeCoreException {
-      return getRelationManager().getExistingRelationTypes(getSession(), getGraphData(), getProxiedObject());
+      return getRelationManager().getExistingRelationTypes(getSession(), getProxiedObject());
    }
 
    @Override
    public ArtifactReadable getParent() throws OseeCoreException {
-      Artifact parent = getRelationManager().getParent(getSession(), getGraphData(), getProxiedObject());
+      Artifact parent = getRelationManager().getParent(getSession(), getProxiedObject());
       return getProxyManager().asExternalArtifact(getSession(), parent);
    }
 
    @Override
    public ResultSet<ArtifactReadable> getChildren() throws OseeCoreException {
-      ResultSet<Artifact> children = getRelationManager().getChildren(getSession(), getGraphData(), getProxiedObject());
+      ResultSet<Artifact> children = getRelationManager().getChildren(getSession(), getProxiedObject());
       return getProxyManager().asExternalArtifacts(getSession(), children);
    }
 
@@ -250,8 +250,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public ResultSet<ArtifactReadable> getRelated(IRelationTypeSide typeAndSide) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       RelationSide side = whichSideAmIOn(typeAndSide);
-      ResultSet<Artifact> related =
-         getRelationManager().getRelated(getSession(), getGraphData(), type, getProxiedObject(), side);
+      ResultSet<Artifact> related = getRelationManager().getRelated(getSession(), type, getProxiedObject(), side);
       return getProxyManager().asExternalArtifacts(getSession(), related);
    }
 
@@ -259,21 +258,21 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    public int getRelatedCount(IRelationTypeSide typeAndSide) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       RelationSide side = whichSideAmIOn(typeAndSide);
-      return getRelationManager().getRelatedCount(getSession(), getGraphData(), type, getProxiedObject(), side);
+      return getRelationManager().getRelatedCount(getSession(), type, getProxiedObject(), side);
    }
 
    @Override
    public boolean areRelated(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
-      return getRelationManager().areRelated(getSession(), getGraphData(), nodes.getFirst(), type, nodes.getSecond());
+      return getRelationManager().areRelated(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
    public String getRationale(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
       IRelationType type = asRelationType(typeAndSide);
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
-      return getRelationManager().getRationale(getSession(), getGraphData(), nodes.getFirst(), type, nodes.getSecond());
+      return getRelationManager().getRationale(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
    private Pair<RelationNode, RelationNode> asABNodes(RelationSide side, ArtifactReadable readable) throws OseeCoreException {

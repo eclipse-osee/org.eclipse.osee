@@ -214,34 +214,27 @@ public class RelationManagerImplTest {
    @Test
    public void testHasDirtyRelations() throws OseeCoreException {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      assertFalse(manager.hasDirtyRelations(session, graph, node1));
+      assertFalse(manager.hasDirtyRelations(session, node1));
 
       when(container1.hasDirty()).thenReturn(true);
       when(graph.getAdjacencies(node1)).thenReturn(container1);
-      assertTrue(manager.hasDirtyRelations(session, graph, node1));
+      assertTrue(manager.hasDirtyRelations(session, node1));
 
       when(container1.hasDirty()).thenReturn(false);
-      assertFalse(manager.hasDirtyRelations(session, graph, node1));
-   }
-
-   @Test
-   public void testGetExistingRelationTypeNullGraph() throws OseeCoreException {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("graph cannot be null");
-      manager.getExistingRelationTypes(session, null, node1);
+      assertFalse(manager.hasDirtyRelations(session, node1));
    }
 
    @Test
    public void testGetExistingRelationTypeNullNode() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getExistingRelationTypes(session, graph, null);
+      manager.getExistingRelationTypes(session, null);
    }
 
    @Test
    public void testGetExistingRelationType() throws OseeCoreException {
       when(graph.getAdjacencies(node1)).thenReturn(null);
-      Collection<? extends IRelationType> actuals = manager.getExistingRelationTypes(session, graph, node1);
+      Collection<? extends IRelationType> actuals = manager.getExistingRelationTypes(session, node1);
       assertEquals(Collections.emptyList(), actuals);
 
       final List<IRelationType> types = Arrays.asList(relType1, relType2);
@@ -254,7 +247,7 @@ public class RelationManagerImplTest {
          }
 
       });
-      actuals = manager.getExistingRelationTypes(session, graph, node1);
+      actuals = manager.getExistingRelationTypes(session, node1);
       verify(container1).getExistingTypes(EXCLUDE_DELETED);
       assertEquals(2, actuals.size());
       Iterator<? extends IRelationType> iterator = actuals.iterator();
@@ -263,17 +256,10 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetParentNullGraph() throws OseeCoreException {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("graph cannot be null");
-      manager.getParent(session, null, node1);
-   }
-
-   @Test
    public void testGetParentNullNode() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getParent(session, graph, null);
+      manager.getParent(session, null);
    }
 
    @Test
@@ -284,7 +270,7 @@ public class RelationManagerImplTest {
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD)).thenReturn(relations);
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
 
-      RelationNode parentNode = manager.getParent(session, graph, node1);
+      RelationNode parentNode = manager.getParent(session, node1);
 
       assertEquals(node1, parentNode);
       verify(resolver).resolve(session, graph, relations, SIDE_A);
@@ -299,7 +285,7 @@ public class RelationManagerImplTest {
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(arts);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      RelationNode parent = manager.getParent(session, graph, node1);
+      RelationNode parent = manager.getParent(session, node1);
       assertEquals(node1, parent);
 
       verify(resolver).resolve(session, graph, relations, SIDE_A);
@@ -307,17 +293,10 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetChildrenNullGraph() throws OseeCoreException {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("graph cannot be null");
-      manager.getChildren(session, null, node1);
-   }
-
-   @Test
    public void testGetChildrenNullNode() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getChildren(session, graph, null);
+      manager.getChildren(session, null);
    }
 
    @Test
@@ -329,7 +308,7 @@ public class RelationManagerImplTest {
       when(resolver.resolve(session, graph, relations, SIDE_B)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      ResultSet<RelationNode> result = manager.getChildren(session, graph, node1);
+      ResultSet<RelationNode> result = manager.getChildren(session, node1);
       assertEquals(2, result.size());
       Iterator<RelationNode> iterator = result.iterator();
       assertEquals(node2, iterator.next());
@@ -340,31 +319,24 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetRelatedNullGraph() throws OseeCoreException {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("graph cannot be null");
-      manager.getRelated(session, null, TYPE_1, node1, SIDE_A);
-   }
-
-   @Test
    public void testGetRelatedNullNode() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
-      manager.getRelated(session, graph, TYPE_1, null, SIDE_A);
+      manager.getRelated(session, TYPE_1, null, SIDE_A);
    }
 
    @Test
    public void testGetRelatedNullType() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationType cannot be null");
-      manager.getRelated(session, graph, null, node1, SIDE_A);
+      manager.getRelated(session, null, node1, SIDE_A);
    }
 
    @Test
    public void testGetRelatedNullSide() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationSide cannot be null");
-      manager.getRelated(session, graph, TYPE_1, node1, null);
+      manager.getRelated(session, TYPE_1, node1, null);
    }
 
    @Test
@@ -377,7 +349,7 @@ public class RelationManagerImplTest {
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      ResultSet<RelationNode> result = manager.getRelated(session, graph, TYPE_1, node1, SIDE_B);
+      ResultSet<RelationNode> result = manager.getRelated(session, TYPE_1, node1, SIDE_B);
       assertEquals(3, result.size());
       Iterator<RelationNode> iterator = result.iterator();
       assertEquals(node2, iterator.next());
@@ -394,13 +366,13 @@ public class RelationManagerImplTest {
    public void testAreRelated() throws OseeCoreException {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
-      boolean value = manager.areRelated(session, graph, node1, TYPE_1, node2);
+      boolean value = manager.areRelated(session, node1, TYPE_1, node2);
       assertTrue(value);
 
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(null);
 
-      boolean value2 = manager.areRelated(session, graph, node1, TYPE_1, node2);
+      boolean value2 = manager.areRelated(session, node1, TYPE_1, node2);
       assertFalse(value2);
    }
 
@@ -409,7 +381,7 @@ public class RelationManagerImplTest {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
       when(relation1.getRationale()).thenReturn("Hello rationale");
 
-      String value = manager.getRationale(session, graph, node1, TYPE_1, node2);
+      String value = manager.getRationale(session, node1, TYPE_1, node2);
       assertEquals("Hello rationale", value);
 
       verify(container1).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);
@@ -422,7 +394,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(list);
 
-      int actual = manager.getRelatedCount(session, graph, TYPE_1, node1, SIDE_B);
+      int actual = manager.getRelatedCount(session, TYPE_1, node1, SIDE_B);
       Assert.assertEquals(3, actual);
 
       verify(container1).getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B);
@@ -434,7 +406,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(list);
 
-      int actual = manager.getRelatedCount(session, graph, TYPE_1, node1, SIDE_A, INCLUDE_DELETED);
+      int actual = manager.getRelatedCount(session, TYPE_1, node1, SIDE_A, INCLUDE_DELETED);
       Assert.assertEquals(2, actual);
 
       verify(container1).getList(TYPE_1, INCLUDE_DELETED, node1, SIDE_A);
@@ -442,12 +414,12 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorOnDifferentBranches() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(SYSTEM_ROOT);
-      when(node2.getBranch()).thenReturn(COMMON);
+      when(node1.getBranchUuid()).thenReturn(SYSTEM_ROOT.getUuid());
+      when(node2.getBranchUuid()).thenReturn(COMMON.getUuid());
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cross branch linking is not yet supported.");
-      manager.relate(session, graph, node1, typeAndSide1, node2);
+      manager.relate(session, node1, typeAndSide1, node2);
    }
 
    @Test
@@ -457,7 +429,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
-      manager.relate(session, graph, node1, typeAndSide1, node1);
+      manager.relate(session, node1, typeAndSide1, node1);
    }
 
    @Test
@@ -467,7 +439,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
-      manager.relate(session, graph, node1, typeAndSide1, node1);
+      manager.relate(session, node1, typeAndSide1, node1);
    }
 
    @Test
@@ -481,7 +453,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
-      manager.relate(session, graph, node1, TYPE_1, node2);
+      manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
       verify(validity, times(0)).checkRelationTypeValid(TYPE_1, node2, SIDE_A);
@@ -502,7 +474,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Type Exception");
-      manager.relate(session, graph, node1, TYPE_1, node2);
+      manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
       verify(validity).checkRelationTypeValid(TYPE_1, node2, SIDE_B);
@@ -519,7 +491,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Multiplicity Exception");
-      manager.relate(session, graph, node1, TYPE_1, node2);
+      manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
       verify(validity).checkRelationTypeMultiplicity(TYPE_1, node1, SIDE_A, 1);
@@ -541,7 +513,7 @@ public class RelationManagerImplTest {
 
       thrown.expect(OseeCoreException.class);
       thrown.expectMessage("Test Multiplicity Exception");
-      manager.relate(session, graph, node1, TYPE_1, node2);
+      manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
       verify(validity).checkRelationTypeMultiplicity(TYPE_1, node1, SIDE_A, 1);
@@ -555,7 +527,7 @@ public class RelationManagerImplTest {
 
       when(container2.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
-      manager.setRationale(session, graph, node1, TYPE_1, node2, rationale);
+      manager.setRationale(session, node1, TYPE_1, node2, rationale);
 
       verify(container1).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED);
@@ -573,7 +545,7 @@ public class RelationManagerImplTest {
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      manager.relate(session, graph, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
+      manager.relate(session, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
 
       IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
 
@@ -600,7 +572,7 @@ public class RelationManagerImplTest {
       IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
-      manager.relate(session, graph, node1, TYPE_1, node2);
+      manager.relate(session, node1, TYPE_1, node2);
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
@@ -628,7 +600,7 @@ public class RelationManagerImplTest {
       List<RelationNode> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
 
-      manager.relate(session, graph, node1, TYPE_1, node2, USER_DEFINED);
+      manager.relate(session, node1, TYPE_1, node2, USER_DEFINED);
 
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
@@ -663,7 +635,7 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      manager.addChild(session, graph, node1, node2);
+      manager.addChild(session, node1, node2);
 
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
@@ -686,7 +658,7 @@ public class RelationManagerImplTest {
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
       List<? extends RelationNode> children = Arrays.asList(node2);
-      manager.addChildren(session, graph, node1, children);
+      manager.addChildren(session, node1, children);
 
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
@@ -710,7 +682,7 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      manager.addChild(session, graph, node1, node2);
+      manager.addChild(session, node1, node2);
 
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
       verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
@@ -733,7 +705,7 @@ public class RelationManagerImplTest {
       List<RelationNode> nodesToOrder = Arrays.asList(node3, node2, node5, node6);
       when(resolver.resolve(session, graph, relations, SIDE_B)).thenReturn(nodesToOrder);
 
-      manager.unrelate(session, graph, node1, DEFAULT_HIERARCHY, node2);
+      manager.unrelate(session, node1, DEFAULT_HIERARCHY, node2);
 
       verify(relation1).delete();
 
@@ -764,7 +736,7 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(PREEXISTING);
 
-      manager.unrelateFromAll(session, graph, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      manager.unrelateFromAll(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
       verify(relation1).getLocalIdForSide(SIDE_B);
       verify(graph).getNode(22);
@@ -795,7 +767,7 @@ public class RelationManagerImplTest {
       when(resolver.resolve(session, graph, asAChild, IS_CHILD)).thenReturn(children);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(PREEXISTING);
 
-      manager.unrelateFromAll(session, graph, node1);
+      manager.unrelateFromAll(session, node1);
 
       verify(container1).getList(EXCLUDE_DELETED);
       verify(resolver).resolve(session, graph, allRelations, SIDE_A, SIDE_B);

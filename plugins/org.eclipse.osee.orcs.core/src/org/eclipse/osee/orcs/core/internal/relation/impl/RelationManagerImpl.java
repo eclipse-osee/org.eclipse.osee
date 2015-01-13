@@ -102,16 +102,17 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public boolean hasDirtyRelations(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException {
-      checkOnGraph(graph, node);
+   public boolean hasDirtyRelations(OrcsSession session, RelationNode node) throws OseeCoreException {
+      GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies container = graph.getAdjacencies(node);
       return container != null ? container.hasDirty() : false;
    }
 
    @Override
-   public Collection<? extends IRelationType> getExistingRelationTypes(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException {
-      checkOnGraph(graph, node);
+   public Collection<? extends IRelationType> getExistingRelationTypes(OrcsSession session, RelationNode node) throws OseeCoreException {
+      checkNotNull(node, "node");
+      GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies container = graph.getAdjacencies(node);
       Collection<? extends IRelationType> toReturn = null;
@@ -125,39 +126,40 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public int getRelatedCount(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      return getRelatedCount(session, graph, type, node, side, EXCLUDE_DELETED);
+   public int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
+      return getRelatedCount(session, type, node, side, EXCLUDE_DELETED);
    }
 
    @Override
-   public int getRelatedCount(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException {
-      return getRelations(session, graph, type, node, side, includeDeleted).size();
+   public int getRelatedCount(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException {
+      return getRelations(session, type, node, side, includeDeleted).size();
    }
 
    @Override
-   public boolean areRelated(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
-      return getRelation(session, graph, aNode, type, bNode, EXCLUDE_DELETED).size() > 0;
+   public boolean areRelated(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
+      return getRelation(session, aNode, type, bNode, EXCLUDE_DELETED).size() > 0;
    }
 
    @Override
-   public <T extends RelationNode> T getParent(OrcsSession session, GraphData graph, RelationNode child) throws OseeCoreException {
-      ResultSet<T> toReturn = getRelated(session, graph, DEFAULT_HIERARCHY, child, IS_CHILD);
+   public <T extends RelationNode> T getParent(OrcsSession session, RelationNode child) throws OseeCoreException {
+      ResultSet<T> toReturn = getRelated(session, DEFAULT_HIERARCHY, child, IS_CHILD);
       return toReturn.getOneOrNull();
    }
 
    @Override
-   public <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, GraphData graph, RelationNode parent) throws OseeCoreException {
-      return getRelated(session, graph, DEFAULT_HIERARCHY, parent, IS_PARENT);
+   public <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent) throws OseeCoreException {
+      return getRelated(session, DEFAULT_HIERARCHY, parent, IS_PARENT);
    }
 
    @Override
-   public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      List<Relation> links = getRelations(session, graph, type, node, side, EXCLUDE_DELETED);
+   public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
+      List<Relation> links = getRelations(session, type, node, side, EXCLUDE_DELETED);
       List<T> result = null;
       if (links.isEmpty()) {
          result = Collections.emptyList();
       } else {
          RelationSide otherSide = side.oppositeSide();
+         GraphData graph = node.getGraph();
          result = resolver.resolve(session, graph, links, otherSide);
          if (result.size() > 1) {
             OrderManager orderManager = orderFactory.createOrderManager(node);
@@ -169,61 +171,61 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public String getRationale(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
-      ResultSet<Relation> result = getRelation(session, graph, aNode, type, bNode, EXCLUDE_DELETED);
+   public String getRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
+      ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       return result.getExactlyOne().getRationale();
    }
 
    @Override
-   public void setRationale(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
-      ResultSet<Relation> result = getRelation(session, graph, aNode, type, bNode, EXCLUDE_DELETED);
+   public void setRationale(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
+      ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       Relation relation = result.getExactlyOne();
       relation.setRationale(rationale);
    }
 
    ///////////////////////// RELATE NODES ///////////////////
    @Override
-   public void addChild(OrcsSession session, GraphData graph, RelationNode parent, RelationNode child) throws OseeCoreException {
-      unrelateFromAll(session, graph, DEFAULT_HIERARCHY, child, IS_CHILD);
-      relate(session, graph, parent, DEFAULT_HIERARCHY, child);
+   public void addChild(OrcsSession session, RelationNode parent, RelationNode child) throws OseeCoreException {
+      unrelateFromAll(session, DEFAULT_HIERARCHY, child, IS_CHILD);
+      relate(session, parent, DEFAULT_HIERARCHY, child);
    }
 
    @Override
-   public void addChildren(OrcsSession session, GraphData graph, RelationNode parent, List<? extends RelationNode> children) throws OseeCoreException {
+   public void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children) throws OseeCoreException {
       for (RelationNode child : children) {
-         addChild(session, graph, parent, child);
+         addChild(session, parent, child);
       }
    }
 
    @Override
-   public void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
-      relate(session, graph, aNode, type, bNode, emptyString(), RelationOrderBaseTypes.PREEXISTING);
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
+      relate(session, aNode, type, bNode, emptyString(), RelationOrderBaseTypes.PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
-      relate(session, graph, aNode, type, bNode, rationale, RelationOrderBaseTypes.PREEXISTING);
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale) throws OseeCoreException {
+      relate(session, aNode, type, bNode, rationale, RelationOrderBaseTypes.PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException {
-      relate(session, graph, aNode, type, bNode, emptyString(), sortType);
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, IRelationSorterId sortType) throws OseeCoreException {
+      relate(session, aNode, type, bNode, emptyString(), sortType);
    }
 
    @Override
-   public void relate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException {
-      checkOnGraph(graph, aNode, bNode);
+   public void relate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, String rationale, IRelationSorterId sortType) throws OseeCoreException {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
+      GraphData graph = getGraph(aNode, bNode);
 
       validity.checkRelationTypeValid(type, aNode, SIDE_A);
       validity.checkRelationTypeValid(type, bNode, SIDE_B);
 
       // Check we can create the type on other side of each node
-      checkMultiplicityCanAdd(session, graph, type, aNode, SIDE_B);
-      checkMultiplicityCanAdd(session, graph, type, bNode, SIDE_A);
+      checkMultiplicityCanAdd(session, type, aNode, SIDE_B);
+      checkMultiplicityCanAdd(session, type, bNode, SIDE_A);
 
-      Relation relation = getRelation(session, graph, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
+      Relation relation = getRelation(session, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
       if (relation == null) {
          relation = relationFactory.createRelation(aNode, type, bNode);
@@ -237,34 +239,40 @@ public class RelationManagerImpl implements RelationManager {
       }
       if (updated) {
          relation.setDirty();
-         order(session, graph, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
+         order(session, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
       }
    }
 
-   private void checkMultiplicityCanAdd(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      int currentCount = getRelatedCount(session, graph, type, node, side);
+   private GraphData getGraph(RelationNode aNode, RelationNode bNode) {
+      checkBranch(aNode, bNode);
+      return aNode.getGraph().getTransaction() > bNode.getGraph().getTransaction() ? aNode.getGraph() : bNode.getGraph();
+   }
+
+   private void checkMultiplicityCanAdd(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
+      int currentCount = getRelatedCount(session, type, node, side);
       validity.checkRelationTypeMultiplicity(type, node, side, currentCount + 1);
    }
 
    ///////////////////////// UNRELATE NODES ///////////////////
    @Override
-   public void unrelate(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
-      Relation relation = getRelation(session, graph, aNode, type, bNode, EXCLUDE_DELETED).getOneOrNull();
+   public void unrelate(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
+      Relation relation = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED).getOneOrNull();
       boolean modified = false;
       if (relation != null) {
          relation.delete();
          modified = true;
       }
       if (modified) {
-         order(session, graph, type, aNode, SIDE_A, OrderOp.REMOVE_FROM_ORDER, Collections.singleton(bNode));
+         order(session, type, aNode, SIDE_A, OrderOp.REMOVE_FROM_ORDER, Collections.singleton(bNode));
       }
    }
 
    @Override
-   public void unrelateFromAll(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      List<Relation> relations = getRelations(session, graph, type, node, side, EXCLUDE_DELETED);
+   public void unrelateFromAll(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
+      List<Relation> relations = getRelations(session, type, node, side, EXCLUDE_DELETED);
 
       RelationSide otherSide = side.oppositeSide();
+      GraphData graph = node.getGraph();
       resolver.resolve(session, graph, relations, otherSide);
 
       boolean modified = false;
@@ -277,25 +285,26 @@ public class RelationManagerImpl implements RelationManager {
          modified = true;
       }
       if (modified) {
-         order(session, graph, type, node, side, OrderOp.REMOVE_FROM_ORDER, otherNodes);
+         order(session, type, node, side, OrderOp.REMOVE_FROM_ORDER, otherNodes);
       }
    }
 
    @Override
-   public void unrelateFromAll(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException {
-      unrelate(session, graph, node, true);
+   public void unrelateFromAll(OrcsSession session, RelationNode node) throws OseeCoreException {
+      unrelate(session, node, true);
    }
 
-   private void unrelate(OrcsSession session, GraphData graph, RelationNode node, boolean reorderRelations) throws OseeCoreException {
+   private void unrelate(OrcsSession session, RelationNode node, boolean reorderRelations) throws OseeCoreException {
       checkNotNull(node, "node");
       if (node.isDeleteAllowed()) {
 
-         List<Relation> relations = getRelations(session, graph, node, EXCLUDE_DELETED);
+         GraphData graph = node.getGraph();
+         List<Relation> relations = getRelations(session, node, EXCLUDE_DELETED);
          resolver.resolve(session, graph, relations, RelationSide.values());
 
-         ResultSet<RelationNode> children = getChildren(session, graph, node);
+         ResultSet<RelationNode> children = getChildren(session, node);
          for (RelationNode child : children) {
-            unrelate(session, graph, child, false);
+            unrelate(session, child, false);
          }
 
          try {
@@ -317,7 +326,7 @@ public class RelationManagerImpl implements RelationManager {
                      IRelationType type = entry.getKey();
                      RelationSide side = entry.getValue();
 
-                     List<Relation> sideLinks = getRelations(session, graph, type, node, side, EXCLUDE_DELETED);
+                     List<Relation> sideLinks = getRelations(session, type, node, side, EXCLUDE_DELETED);
                      List<RelationNode> nodes = resolver.resolve(session, graph, sideLinks, side);
 
                      IRelationTypeSide asTypeSide = asTypeSide(type, side);
@@ -340,9 +349,9 @@ public class RelationManagerImpl implements RelationManager {
       }
    }
 
-   private ResultSet<Relation> getRelation(OrcsSession session, GraphData graph, RelationNode aNode, IRelationType type, RelationNode bNode, DeletionFlag inludeDeleted) throws OseeCoreException {
+   private ResultSet<Relation> getRelation(OrcsSession session, RelationNode aNode, IRelationType type, RelationNode bNode, DeletionFlag inludeDeleted) throws OseeCoreException {
+      GraphData graph = getGraph(aNode, bNode);
       checkNotNull(session, "session");
-      checkOnGraph(graph, aNode, bNode);
       checkNotNull(type, "relationType");
 
       ensureRelationsInitialized(session, graph, aNode);
@@ -363,20 +372,21 @@ public class RelationManagerImpl implements RelationManager {
       return ResultSets.singleton(relation);
    }
 
-   private List<Relation> getRelations(OrcsSession session, GraphData graph, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException {
+   private List<Relation> getRelations(OrcsSession session, IRelationType type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) throws OseeCoreException {
       checkNotNull(session, "session");
-      checkOnGraph(graph, node);
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
+      checkNotNull(node, "node");
 
+      GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
       return adjacencies.getList(type, includeDeleted, node, side);
    }
 
-   private List<Relation> getRelations(OrcsSession session, GraphData graph, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException {
+   private List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) throws OseeCoreException {
       checkNotNull(session, "session");
-      checkOnGraph(graph, node);
+      GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
       return adjacencies.getList(includeDeleted);
@@ -387,11 +397,11 @@ public class RelationManagerImpl implements RelationManager {
       REMOVE_FROM_ORDER;
    }
 
-   private void order(OrcsSession session, GraphData graph, IRelationType type, RelationNode node1, RelationSide side, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
-      order(session, graph, type, node1, side, RelationOrderBaseTypes.PREEXISTING, op, node2);
+   private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
+      order(session, type, node1, side, RelationOrderBaseTypes.PREEXISTING, op, node2);
    }
 
-   private void order(OrcsSession session, GraphData graph, IRelationType type, RelationNode node1, RelationSide side, IRelationSorterId sorterId, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
+   private void order(OrcsSession session, IRelationType type, RelationNode node1, RelationSide side, IRelationSorterId sorterId, OrderOp op, Collection<? extends RelationNode> node2) throws OseeCoreException {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
@@ -402,7 +412,7 @@ public class RelationManagerImpl implements RelationManager {
       }
       List<Identifiable<String>> relatives = Collections.emptyList();
       if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
-         ResultSet<RelationNode> arts = getRelated(session, graph, type, node1, side);
+         ResultSet<RelationNode> arts = getRelated(session, type, node1, side);
          relatives = new LinkedList<Identifiable<String>>();
          for (RelationNode art : arts) {
             relatives.add(art);
