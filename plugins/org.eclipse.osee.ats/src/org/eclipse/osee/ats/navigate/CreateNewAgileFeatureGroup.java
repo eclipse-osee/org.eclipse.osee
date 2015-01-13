@@ -68,8 +68,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                   NewAgileFeatureGroup newGroup = new NewAgileFeatureGroup();
                   newGroup.setName(ed.getEntry());
                   newGroup.setTeamUuid(((Artifact) dialog.getSelectedFirst()).getArtId());
-                  NewAgileFeatureGroup team =
-                     teamApi.createFeatureGroup(((Artifact) dialog.getSelectedFirst()).getArtId(), newGroup);
+                  NewAgileFeatureGroup team = teamApi.createFeatureGroup(newGroup);
                   AtsUtil.openArtifact(team.getGuid(), OseeCmEditor.CmPcrEditor);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

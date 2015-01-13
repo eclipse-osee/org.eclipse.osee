@@ -20,6 +20,7 @@ public class NewAgileTeam {
 
    private String name;
    private String guid;
+   private long uuid;
 
    public String getName() {
       return name;
@@ -35,6 +36,17 @@ public class NewAgileTeam {
 
    public void setGuid(String guid) {
       this.guid = guid;
+   }
+
+   public long getUuid() {
+      return uuid;
+   }
+
+   /**
+    * Provided for deserialization. Setting will not apply to new artifact.
+    */
+   public void setUuid(long uuid) {
+      this.uuid = uuid;
    }
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.agile;
 
+import java.util.Iterator;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -21,6 +22,8 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -112,4 +115,41 @@ public class AgileService implements IAgileService {
    public IAgileFeatureGroup getAgileFeatureGroup(Object artifact) {
       return new AgileFeatureGroup(logger, atsServer, (ArtifactReadable) artifact);
    }
+
+   @Override
+   public void deleteAgileFeatureGroup(long uuid) {
+      ArtifactReadable featureGroup = atsServer.getArtifactByUuid(uuid);
+      if (!featureGroup.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+         throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
+      }
+      TransactionBuilder transaction =
+         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), featureGroup,
+            "Delete Agile Feature Group");
+      transaction.deleteArtifact(featureGroup);
+      transaction.commit();
+   }
+
+   @Override
+   public void deleteAgileTeam(long uuid) {
+      ArtifactReadable team = atsServer.getArtifactByUuid(uuid);
+      if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
+         throw new OseeArgumentException("UUID %d is not a valid Agile", uuid);
+      }
+      TransactionBuilder transaction =
+         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), team,
+            "Delete Agile Team");
+      deleteRecurse(transaction, team.getChildren());
+      transaction.deleteArtifact(team);
+      transaction.commit();
+   }
+
+   private void deleteRecurse(TransactionBuilder transaction, ResultSet<ArtifactReadable> resultSet) {
+      Iterator<ArtifactReadable> iterator = resultSet.iterator();
+      while (iterator.hasNext()) {
+         ArtifactReadable art = iterator.next();
+         deleteRecurse(transaction, art.getChildren());
+         transaction.deleteArtifact(art);
+      }
+   }
+
 }

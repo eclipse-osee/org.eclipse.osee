@@ -23,4 +23,8 @@ public interface IAgileService {
 
    IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid);
 
+   void deleteAgileFeatureGroup(long teamUuid);
+
+   void deleteAgileTeam(long uuid);
+
 }

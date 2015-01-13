@@ -17,6 +17,9 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.agile.AgileUtil;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -119,6 +122,21 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          IAtsProgram program = (IAtsProgram) atsObject;
          writer.writeStringField("Namespace", program.getNamespace());
          writer.writeBooleanField("Active", program.isActive());
+      } else if (atsObject instanceof IAgileTeam) {
+         IAgileTeam program = (IAgileTeam) atsObject;
+         writer.writeBooleanField("Active", program.isActive());
+         writer.writeArrayFieldStart("featureGroups");
+         for (ArtifactReadable child : artifact.getChildren()) {
+            if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
+               for (ArtifactReadable subChild : child.getChildren()) {
+                  if (subChild.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+                     addArtifactIdentity(writer, subChild);
+                  }
+               }
+            }
+         }
+         writer.writeEndArray();
+
       }
       if (!identityView) {
          addAttributeData(writer, attributeTypes, artifact);

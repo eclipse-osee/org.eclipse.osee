@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>OSEE Agile</title>
+<link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css"
+	href="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css" />
+<link href="agile.css" rel="stylesheet">
+</head>
+<body ng-app="AgileApp">
+
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#/config">OSEE Agile</a>
+			</div>
+			<div class="collapse navbar-collapse"
+				ng-controller="HeaderController">
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-class="{ active: isActive('/config')}"><a
+						href="#/home">Home</a></li>
+					<li ng-class="{ active: isActive('/config')}"><a
+						href="#/config">Config</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div ng-view></div>
+
+	<script>
+		function HeaderController($scope, $location) {
+			$scope.isActive = function(viewLocation) {
+				return viewLocation === $location.path();
+			};
+		}
+	</script>
+
+	<script src="/lib/js/jquery-2.0.3.min.js"></script>
+	<script src="/lib/js/angular.min.js"></script>
+	<script src="/lib/js/angular-route.min.js"></script>
+	<script src="/lib/js/angular-resource.min.js"></script>
+	<script
+		src="http://cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+	<script src="/lib/js/bootstrap.min.js"></script>
+	<script src="/lib/js/ui-bootstrap-tpls-0.11.0.min.js"></script>
+	<script src="app.js"></script>
+	<script src="agileFactory.js"></script>
+	<script src="configCtrl.js"></script>
+</body>
+</html>

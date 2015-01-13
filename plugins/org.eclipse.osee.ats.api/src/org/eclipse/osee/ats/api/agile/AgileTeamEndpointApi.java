@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
 /**
@@ -30,11 +33,27 @@ public interface AgileTeamEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public NewAgileTeam createTeam(NewAgileTeam newTeam) throws Exception;
 
-   @Path("{teamUuid}/feature")
+   @Path("feature")
    @POST
    @IdentityView
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public NewAgileFeatureGroup createFeatureGroup(@PathParam("teamUuid") long teamUuid, NewAgileFeatureGroup newFeatureGroup) throws Exception;
+   public NewAgileFeatureGroup createFeatureGroup(NewAgileFeatureGroup newFeatureGroup) throws Exception;
+
+   @Path("{teamUuid}/feature")
+   @GET
+   @IdentityView
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<IAgileFeatureGroup> getFeatureGroups(long teamUuid) throws Exception;
+
+   @Path("feature/{featureUuid}")
+   @DELETE
+   @IdentityView
+   public Response deleteFeatureGroup(long featureUuid) throws Exception;
+
+   @Path("{teamUuid}")
+   @DELETE
+   @IdentityView
+   Response deleteTeam(long teamUuid) throws Exception;
 
 }
