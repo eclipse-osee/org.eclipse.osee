@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IPartListener;
@@ -65,8 +64,6 @@ public class OseeUiEarlyStartup implements IStartup {
                return true;
             }
          });
-
-         workbench.addWorkbenchListener(new ArtifactSaveNotificationHandler());
 
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
