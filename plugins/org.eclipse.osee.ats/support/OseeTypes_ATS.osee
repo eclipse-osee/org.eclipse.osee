@@ -6,6 +6,12 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
 
 artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	uuid  0x68D469C51DA01041
+	attribute "ats.Description"
+}
+
+artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
+	uuid  0x07C6AA0E42EE7661
+	attribute "ats.Description"
 }
 
 artifactType "Work Definition" extends "Artifact" {
@@ -21,6 +27,7 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 
 abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Artifact" {
 	uuid  0x0000000000000323
+	attribute "ats.Actionable"
 }
 
 artifactType "Program" extends "ats.Ats Config Artifact" {
@@ -72,7 +79,6 @@ artifactType "Action" extends "ats.Ats Artifact" {
 abstract artifactType "ats.Ats Config Artifact" extends "Artifact" {
 	uuid 0x0000000000000321
 	attribute "ats.Active"
-	attribute "ats.Actionable"
 }
 
 artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {

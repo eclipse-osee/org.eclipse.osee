@@ -23,6 +23,7 @@ public enum AtsImage implements KeyedImage {
    ACTIONABLE_ITEM("AI.gif"),
    AGILE_SPRINT("agileSprint.gif"),
    AGILE_TEAM("agileTeam.gif"),
+   AGILE_FEATURE_GROUP("agileFeatureGroup.gif"),
    ART_VIEW("artView.gif"),
    ATS("atsPerspective.gif"),
    CENTER("center.gif"),

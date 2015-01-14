@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -33,5 +34,7 @@ public interface IAtsConfigItemFactory {
    IAtsProgram getProgram(Object artifact);
 
    IAgileTeam getAgileTeam(Object artifact);
+
+   IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
 
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.agile;
 
+import org.eclipse.osee.ats.api.agile.AgileUtil;
+import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -17,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -56,6 +59,22 @@ public class AgileService implements IAgileService {
       return getAgileTeam(agileArt);
    }
 
+   @Override
+   public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid) {
+      ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
+      TransactionBuilder transaction =
+         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), userArt,
+            "Create new Agile Feature Group");
+      ArtifactReadable featureGroupArt =
+         (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, name, guid);
+
+      ArtifactReadable agileTeamArt = getOrCreateTopFeatureGroupFolder(transaction, teamUuid, userArt);
+      transaction.addChildren(agileTeamArt, featureGroupArt);
+
+      transaction.commit();
+      return getAgileFeatureGroup(featureGroupArt);
+   }
+
    @SuppressWarnings("unchecked")
    private ArtifactReadable getOrCreateTopAgileFolder(TransactionBuilder tx, ArtifactReadable userArt) {
       ArtifactId agileFolder =
@@ -71,4 +90,26 @@ public class AgileService implements IAgileService {
       return (ArtifactReadable) agileFolder;
    }
 
+   private ArtifactReadable getOrCreateTopFeatureGroupFolder(TransactionBuilder tx, long teamUuid, ArtifactReadable userArt) {
+      ArtifactReadable teamFolder =
+         atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andLocalId(
+            new Long(teamUuid).intValue()).getResults().getAtMostOneOrNull();
+      ArtifactReadable featureGroupFolder = null;
+      for (ArtifactReadable child : teamFolder.getChildren()) {
+         if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
+            featureGroupFolder = child;
+         }
+      }
+      if (featureGroupFolder == null) {
+         featureGroupFolder =
+            (ArtifactReadable) tx.createArtifact(CoreArtifactTypes.Folder, AgileUtil.FEATURE_GROUP_FOLDER_NAME);
+         tx.addChildren(teamFolder, featureGroupFolder);
+      }
+      return featureGroupFolder;
+   }
+
+   @Override
+   public IAgileFeatureGroup getAgileFeatureGroup(Object artifact) {
+      return new AgileFeatureGroup(logger, atsServer, (ArtifactReadable) artifact);
+   }
 }

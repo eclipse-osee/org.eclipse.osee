@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2014 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,11 @@ package org.eclipse.osee.ats.api.agile;
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileService {
+public class AgileUtil {
 
-   IAgileTeam getAgileTeam(Object artifact);
+   public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
 
-   IAgileTeam createAgileTeam(String name, String guid);
-
-   IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
-
-   IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid);
+   private AgileUtil() {
+   }
 
 }
