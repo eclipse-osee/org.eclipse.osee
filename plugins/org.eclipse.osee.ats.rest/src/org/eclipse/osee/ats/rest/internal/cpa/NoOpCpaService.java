@@ -65,7 +65,7 @@ public class NoOpCpaService implements IAtsCpaService {
    }
 
    @Override
-   public String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String originatingPcrId, XResultData rd) {
+   public String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String versionUuid, String originatingPcrId, XResultData rd) {
       return null;
    }
 

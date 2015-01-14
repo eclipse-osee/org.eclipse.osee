@@ -37,8 +37,8 @@ public interface IAtsCpaService {
    Collection<CpaBuild> getBuilds(String programUuid);
 
    /**
-    * Duplicate originatingPcrId for programUuid and return duplicatedPcrId
+    * Duplicate originatingPcrId for programUuid,versionUuid and return duplicatedPcrId
     */
-   String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String originatingPcrId, XResultData rd);
+   String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String versionUuid, String originatingPcrId, XResultData rd);
 
 }

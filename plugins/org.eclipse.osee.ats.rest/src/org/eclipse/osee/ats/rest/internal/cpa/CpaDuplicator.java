@@ -65,7 +65,9 @@ public class CpaDuplicator {
                   rd.logErrorWithFormat("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
                } else {
                   String originatingPcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.OriginatingPcrId);
-                  duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), originatingPcrId, rd);
+                  duplicatePcrId =
+                     cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), duplicate.getVersionUuid(),
+                        originatingPcrId, rd);
                   if (Strings.isValid(duplicatePcrId)) {
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.DuplicatedPcrId, duplicatePcrId);
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.ApplicableToProgram, "Yes");

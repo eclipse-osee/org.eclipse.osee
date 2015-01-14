@@ -127,7 +127,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    }
 
    /**
-    * { "programUuid": "3472723", "uuids": [ "CPA41337" ], "userId": "727536" }
+    * { "programUuid": "3472723", "buildUuid": "363445", "uuids": [ "CPA41337" ], "userId": "727536" }
     */
    @POST
    @Consumes(MediaType.APPLICATION_JSON)

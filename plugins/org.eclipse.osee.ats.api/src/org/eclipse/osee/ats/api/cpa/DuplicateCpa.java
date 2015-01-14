@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DuplicateCpa {
 
    private String programUuid;
+   private String versionUuid;
    private String cpaUuid;
    private String userId;
    private boolean completeCpa;
@@ -53,6 +54,14 @@ public class DuplicateCpa {
 
    public void setCompleteCpa(boolean completeCpa) {
       this.completeCpa = completeCpa;
+   }
+
+   public String getVersionUuid() {
+      return versionUuid;
+   }
+
+   public void setVersionUuid(String versionUuid) {
+      this.versionUuid = versionUuid;
    }
 
 }
