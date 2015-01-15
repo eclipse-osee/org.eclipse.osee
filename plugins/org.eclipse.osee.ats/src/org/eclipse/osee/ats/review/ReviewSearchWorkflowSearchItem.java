@@ -227,7 +227,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    }
 
    public IAtsUser getSelectedUser() throws OseeCoreException {
-      if (assigneeCombo == null) {
+      if (assigneeCombo == null || assigneeCombo.getUser() == null) {
          return null;
       }
       return AtsClientService.get().getUserServiceClient().getUserFromOseeUser(assigneeCombo.getUser());

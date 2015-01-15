@@ -112,7 +112,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    public User getSelectedUser() {
-      if (assigneeCombo == null) {
+      if (assigneeCombo == null || assigneeCombo.getUser() == null) {
          return null;
       }
       return assigneeCombo.getUser();
