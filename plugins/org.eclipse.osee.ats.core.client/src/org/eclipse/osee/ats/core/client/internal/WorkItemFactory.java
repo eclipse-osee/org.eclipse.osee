@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -18,6 +19,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -29,6 +32,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Donald G. Dunne
  */
 public class WorkItemFactory implements IAtsWorkItemFactory {
+
+   private final IAtsClient atsClient;
+
+   public WorkItemFactory(IAtsClient atsClient) {
+      this.atsClient = atsClient;
+   }
 
    @Override
    public IAtsTeamWorkflow getTeamWf(Object artifact) throws OseeCoreException {
@@ -68,20 +77,31 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
 
    @Override
    public IAtsGoal getGoal(Object artifact) throws OseeCoreException {
-      IAtsGoal review = null;
+      IAtsGoal goal = null;
       if (artifact instanceof IAtsGoal) {
-         review = (IAtsGoal) artifact;
+         goal = (IAtsGoal) artifact;
       }
-      return review;
+      return goal;
+   }
+
+   @Override
+   public IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException {
+      IAgileSprint sprint = null;
+      if (artifact instanceof IAgileSprint) {
+         sprint = (IAgileSprint) artifact;
+      } else {
+         sprint = new AgileSprint(atsClient, (Artifact) artifact);
+      }
+      return sprint;
    }
 
    @Override
    public IAtsAction getAction(Object artifact) {
-      IAtsAction review = null;
+      IAtsAction action = null;
       if (artifact instanceof IAtsAction) {
-         review = (IAtsAction) artifact;
+         action = (IAtsAction) artifact;
       }
-      return review;
+      return action;
    }
 
    @Override

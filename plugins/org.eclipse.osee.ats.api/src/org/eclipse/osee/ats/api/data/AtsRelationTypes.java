@@ -23,6 +23,9 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = ActionToWorkflow_Action.getOpposite();
    
+   public static final IRelationTypeSide AgileSprint_Sprint = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x0DB6D78253FE8AB1L, "AgileSprint");
+   public static final IRelationTypeSide AgileSprint_Item = AgileSprint_Sprint.getOpposite();
+   
    public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017AL, "Port");
    public static final IRelationTypeSide Port_To = Port_From.getOpposite();
    

@@ -14,6 +14,10 @@ artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
 	attribute "ats.Description"
 }
 
+artifactType "Agile Sprint" extends "ats.State Machine" {
+	uuid 0x7E213FC7506C5E43
+}
+
 artifactType "Work Definition" extends "Artifact" {
 	uuid 0x000000000000003E
 	attribute "ats.DSL Sheet"
@@ -1301,6 +1305,16 @@ relationType "TeamActionableItem" {
 	sideAArtifactType "Team Definition"
 	sideBName "Actionable Item"
 	sideBArtifactType "Actionable Item"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
+}
+
+relationType "AgileSprint" {
+	uuid 0x0DB6D78253FE8AB1
+	sideAName "Sprint"
+	sideAArtifactType "Agile Sprint"
+	sideBName "Item"
+	sideBArtifactType "Team Workflow"
 	defaultOrderType Unordered
 	multiplicity ONE_TO_MANY
 }

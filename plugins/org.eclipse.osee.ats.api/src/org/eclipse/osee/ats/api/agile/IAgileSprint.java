@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+
 /**
  * @author Donald G. Dunne
  */
-public class AgileUtil {
+public interface IAgileSprint extends IAtsConfigObject, IAtsWorkItem {
 
-   public static final String SPRINT_FOLDER_NAME = "Sprints";
-   public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
-
-   private AgileUtil() {
-   }
+   public long getTeamUuid();
 
 }

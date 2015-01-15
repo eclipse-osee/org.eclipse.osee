@@ -316,6 +316,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          XNavigateItem releaseItems = new XNavigateItem(parent, "Agile", FrameworkImage.VERSION);
          new CreateNewAgileTeam(releaseItems);
          new CreateNewAgileFeatureGroup(releaseItems);
+         new CreateNewAgileSprint(releaseItems);
          items.add(releaseItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Agile section");

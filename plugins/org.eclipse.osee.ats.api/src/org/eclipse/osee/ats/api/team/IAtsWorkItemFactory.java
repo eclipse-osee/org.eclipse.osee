@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -36,5 +37,7 @@ public interface IAtsWorkItemFactory {
    IAtsAction getAction(Object artifact);
 
    IAtsWorkItem getWorkItemByAtsId(String atsId);
+
+   IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException;
 
 }

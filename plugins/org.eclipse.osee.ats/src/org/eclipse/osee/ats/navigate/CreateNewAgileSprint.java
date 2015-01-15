@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
-import org.eclipse.osee.ats.api.agile.NewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.NewAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -39,10 +39,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 /**
  * @author Donald G. Dunne
  */
-public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
+public class CreateNewAgileSprint extends XNavigateItemAction {
 
-   public CreateNewAgileFeatureGroup(XNavigateItem parent) {
-      super(parent, "Create new Agile Feature Group", AtsImage.AGILE_TEAM);
+   public CreateNewAgileSprint(XNavigateItem parent) {
+      super(parent, "Create new Agile Sprint", AtsImage.AGILE_TEAM);
    }
 
    @Override
@@ -60,19 +60,19 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
             new ArtifactLabelProvider());
       if (dialog.open() == 0) {
 
-         EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Feature Group name");
+         EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Sprint name");
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
                   AgileTeamEndpointApi teamApi = AtsJaxRsService.get().getAgileTeam();
-                  NewAgileFeatureGroup newGroup = new NewAgileFeatureGroup();
-                  newGroup.setName(ed.getEntry());
-                  newGroup.setTeamUuid(((Artifact) dialog.getSelectedFirst()).getArtId());
-                  NewAgileFeatureGroup group = teamApi.createFeatureGroup(newGroup);
-                  Artifact groupArt =
-                     ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
-                  groupArt.getParent().reloadAttributesAndRelations();
-                  AtsUtil.openArtifact(group.getGuid(), OseeCmEditor.CmPcrEditor);
+                  NewAgileSprint newSprint = new NewAgileSprint();
+                  newSprint.setName(ed.getEntry());
+                  newSprint.setTeamUuid(((Artifact) dialog.getSelectedFirst()).getArtId());
+                  NewAgileSprint sprint = teamApi.createSprint(newSprint);
+                  Artifact sprintArt =
+                     ArtifactQuery.getArtifactFromId(new Long(sprint.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
+                  sprintArt.getParent().reloadAttributesAndRelations();
+                  AtsUtil.openArtifact(sprint.getGuid(), OseeCmEditor.CmPcrEditor);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

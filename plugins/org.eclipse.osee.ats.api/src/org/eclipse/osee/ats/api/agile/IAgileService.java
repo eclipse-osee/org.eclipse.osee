@@ -27,4 +27,8 @@ public interface IAgileService {
 
    void deleteAgileTeam(long uuid);
 
+   IAgileSprint getAgileSprint(Object artifact);
+
+   IAgileSprint createAgileSprint(long teamUuid, String name, String guid);
+
 }

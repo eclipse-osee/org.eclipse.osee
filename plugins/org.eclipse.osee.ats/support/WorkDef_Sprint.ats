@@ -1,0 +1,40 @@
+workDefinition "WorkDef_Sprint" {
+   id "WorkDef_Sprint"
+   startState "InWork"
+
+   widgetDefinition "Title" {
+      attributeName "Name"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Description" {
+      attributeName "ats.Description"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 3
+      to "InWork" OverrideAttributeValidation
+   }
+
+   state "InWork" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Completed" AsDefault
+      layout {
+         widget "Title" 
+         widget "Description"
+      }
+   }
+
+   state "Completed" {
+      type Completed
+      ordinal 2
+      to "InWork" OverrideAttributeValidation
+      rule AddDecisionValidateBlockingReview
+   }
+}

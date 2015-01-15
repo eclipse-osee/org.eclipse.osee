@@ -189,6 +189,8 @@ public final class AtsWorkDefinitionSheetProviders {
          "support/WorkDef_Team_Simple.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Goal",
          getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Sprint", getSupportFile(Activator.PLUGIN_ID,
+         "support/WorkDef_Sprint.ats")));
       for (IAtsWorkDefinitionSheetProvider provider : getProviders()) {
          sheets.addAll(provider.getWorkDefinitionSheets());
       }

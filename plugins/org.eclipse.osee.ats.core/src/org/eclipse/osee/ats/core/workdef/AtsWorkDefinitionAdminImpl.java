@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
@@ -285,6 +286,9 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
                } else if (workItem instanceof IAtsGoal) {
                   match = getWorkDefinition(GoalWorkflowDefinitionId);
                   match.addTrace("WorkDefinitionFactory - GoalWorkflowDefinitionId");
+               } else if (workItem instanceof IAgileSprint) {
+                  match = getWorkDefinition(SprintWorkflowDefinitionId);
+                  match.addTrace("WorkDefinitionFactory - SprintWorkflowDefinitionId");
                } else if (workItem instanceof IAtsPeerToPeerReview) {
                   match = getWorkDefinition(PeerToPeerDefaultWorkflowDefinitionId);
                   match.addTrace("WorkDefinitionFactory - PeerToPeerWorkflowDefinitionId");

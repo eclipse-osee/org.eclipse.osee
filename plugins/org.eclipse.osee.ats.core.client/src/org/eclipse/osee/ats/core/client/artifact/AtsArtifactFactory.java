@@ -38,7 +38,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
       super(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
-         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal);
+         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint);
       try {
          for (IArtifactType teamWorkflowTypeName : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
             registerAsResponsible(teamWorkflowTypeName);
@@ -61,6 +61,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
          toReturn = new PeerToPeerReviewArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
          toReturn = new GoalArtifact(guid, branch, artifactType);
+      } else if (artifactType.equals(AtsArtifactTypes.AgileSprint)) {
+         toReturn = new SprintArtifact(guid, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Action)) {
          toReturn = new ActionArtifact(guid, branch, artifactType);
       } else {

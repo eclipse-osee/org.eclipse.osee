@@ -144,9 +144,9 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IVersionFactory getVersionFactory();
 
-   IAtsQueryService getQueryService();
-
    Artifact getArtifactByGuid(String guid) throws OseeCoreException;
 
    Artifact getArtifactByAtsId(String id);
+
+   IAtsQueryService getQueryService();
 }

@@ -190,7 +190,7 @@ public class AtsClientImpl implements IAtsClient {
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
-      workItemFactory = new WorkItemFactory();
+      workItemFactory = new WorkItemFactory(this);
       versionFactory = new VersionFactory(versionService);
 
       readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory,

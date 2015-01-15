@@ -27,6 +27,7 @@ public interface IAtsWorkDefinitionAdmin {
 
    public static final String TaskWorkflowDefinitionId = "WorkDef_Task_Default";
    public static final String GoalWorkflowDefinitionId = "WorkDef_Goal";
+   public static final String SprintWorkflowDefinitionId = "WorkDef_Sprint";
    public static final String PeerToPeerDefaultWorkflowDefinitionId = "WorkDef_Review_PeerToPeer";
    public static final String DecisionWorkflowDefinitionId = "WorkDef_Review_Decision";
    public static final String TeamWorkflowDefaultDefinitionId = "WorkDef_Team_Default";

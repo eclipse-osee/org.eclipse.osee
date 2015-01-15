@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.navigate;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
 import org.eclipse.osee.ats.api.agile.NewAgileTeam;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsJaxRsService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -20,6 +21,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -45,6 +48,9 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                NewAgileTeam newTeam = new NewAgileTeam();
                newTeam.setName(ed.getEntry());
                NewAgileTeam team = teamApi.createTeam(newTeam);
+               Artifact teamArt =
+                  ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
+               teamArt.getParent().reloadAttributesAndRelations();
                AtsUtil.openArtifact(team.getGuid(), OseeCmEditor.CmPcrEditor);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

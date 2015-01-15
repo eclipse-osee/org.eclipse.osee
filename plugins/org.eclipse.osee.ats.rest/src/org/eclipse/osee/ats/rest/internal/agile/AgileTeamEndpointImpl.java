@@ -24,8 +24,10 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.NewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.NewAgileSprint;
 import org.eclipse.osee.ats.api.agile.NewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
@@ -45,6 +47,10 @@ public class AgileTeamEndpointImpl extends AbstractConfigResource implements Agi
    public AgileTeamEndpointImpl(IAtsServer atsServer) {
       super(AtsArtifactTypes.AgileTeam, atsServer);
    }
+
+   /********************************
+    ** Agile Team
+    ***********************************/
 
    @Override
    @POST
@@ -69,6 +75,20 @@ public class AgileTeamEndpointImpl extends AbstractConfigResource implements Agi
       created.setUuid(team.getId());
       return created;
    }
+
+   @Override
+   @Path("{teamUuid}")
+   @DELETE
+   @IdentityView
+   public Response deleteTeam(@PathParam("teamUuid") long teamUuid) throws Exception {
+      atsServer.getAgileService().deleteAgileTeam(teamUuid);
+      return Response.ok().build();
+
+   }
+
+   /********************************
+    ** Agile Team Feature
+    ***********************************/
 
    @Override
    @Path("{teamUuid}/feature")
@@ -131,14 +151,37 @@ public class AgileTeamEndpointImpl extends AbstractConfigResource implements Agi
 
    }
 
+   /********************************
+    ** Agile Sprint
+    ***********************************/
    @Override
-   @Path("{teamUuid}")
-   @DELETE
+   @Path("sprint")
+   @POST
    @IdentityView
-   public Response deleteTeam(@PathParam("teamUuid") long teamUuid) throws Exception {
-      atsServer.getAgileService().deleteAgileTeam(teamUuid);
-      return Response.ok().build();
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewAgileSprint createSprint(NewAgileSprint newSprint) throws Exception {
+      // validate title
+      if (!Strings.isValid(newSprint.getName())) {
+         throw new OseeArgumentException("name is not valid");
+      }
+      if (newSprint.getTeamUuid() <= 0) {
+         throw new OseeArgumentException("teamUuid is not valid");
+      }
 
+      String guid = newSprint.getGuid();
+      if (guid == null) {
+         guid = GUID.create();
+      }
+
+      IAgileSprint sprint =
+         atsServer.getAgileService().createAgileSprint(newSprint.getTeamUuid(), newSprint.getName(), guid);
+      NewAgileSprint created = new NewAgileSprint();
+      created.setGuid(sprint.getGuid());
+      created.setName(sprint.getName());
+      created.setUuid(sprint.getId());
+      created.setTeamUuid(sprint.getTeamUuid());
+      return created;
    }
 
 }

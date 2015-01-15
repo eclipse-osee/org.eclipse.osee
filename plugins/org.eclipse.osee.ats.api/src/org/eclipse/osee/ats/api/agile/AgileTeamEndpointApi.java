@@ -56,4 +56,11 @@ public interface AgileTeamEndpointApi {
    @IdentityView
    Response deleteTeam(long teamUuid) throws Exception;
 
+   @Path("sprint")
+   @POST
+   @IdentityView
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewAgileSprint createSprint(NewAgileSprint newSprint) throws Exception;
+
 }

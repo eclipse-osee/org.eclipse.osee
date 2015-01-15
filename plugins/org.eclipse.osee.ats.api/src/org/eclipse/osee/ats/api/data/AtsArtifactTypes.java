@@ -38,6 +38,7 @@ public final class AtsArtifactTypes {
    
    public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(0x68D469C51DA01041L, "Agile Team");
    public static final IArtifactType AgileFeatureGroup = TokenFactory.createArtifactType(0x07C6AA0E42EE7661L, "Agile Feature Group");
+   public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(0x7E213FC7506C5E43L, "Agile Sprint");
 
    // @formatter:on
 

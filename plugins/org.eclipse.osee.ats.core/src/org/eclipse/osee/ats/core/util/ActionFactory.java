@@ -252,6 +252,7 @@ public class ActionFactory implements IAtsActionFactory {
       return getWorkDefinitionName(parentTeamDef);
    }
 
+   @Override
    public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
