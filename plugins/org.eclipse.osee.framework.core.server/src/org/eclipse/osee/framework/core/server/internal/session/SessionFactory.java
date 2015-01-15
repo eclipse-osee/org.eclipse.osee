@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
-import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
 import org.eclipse.osee.framework.core.server.internal.util.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -33,12 +32,10 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public final class SessionFactory implements IOseeTypeFactory {
-   private final BuildTypeIdentifier typeIdentifier;
    private final Log logger;
    private final JdbcService jdbcService;
 
-   public SessionFactory(Log logger, JdbcService jdbcService, BuildTypeIdentifier typeIdentifier) {
-      this.typeIdentifier = typeIdentifier;
+   public SessionFactory(Log logger, JdbcService jdbcService) {
       this.logger = logger;
       this.jdbcService = jdbcService;
    }
@@ -69,7 +66,6 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setSqlProperties(properties);
 
       sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));
-      sessionGrant.setClientBuildDesination(typeIdentifier.getBuildDesignation(session.getClientVersion()));
       return sessionGrant;
    }
 

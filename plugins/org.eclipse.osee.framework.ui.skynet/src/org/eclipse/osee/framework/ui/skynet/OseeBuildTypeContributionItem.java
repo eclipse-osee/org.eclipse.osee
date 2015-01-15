@@ -25,7 +25,7 @@ public class OseeBuildTypeContributionItem extends OseeStatusContributionItem {
 
    private static final String ID = "osee.build.type";
 
-   private static String TOOLTIP = "Version [%s]\nBuild Type[%s]\nDouble-Click for details";
+   private static String TOOLTIP = "Version [%s]\nDouble-Click for details";
 
    public OseeBuildTypeContributionItem() {
       super(ID);
@@ -50,17 +50,7 @@ public class OseeBuildTypeContributionItem extends OseeStatusContributionItem {
 
    @Override
    protected String getEnabledToolTip() {
-      return String.format(TOOLTIP, getClientVersion(), getBuildDesignation());
-   }
-
-   private String getBuildDesignation() {
-      String designation = "N/A";
-      try {
-         designation = ClientSessionManager.getClientBuildDesignation();
-      } catch (OseeCoreException ex) {
-         // Do Nothing
-      }
-      return designation;
+      return String.format(TOOLTIP, getClientVersion());
    }
 
    private String getClientVersion() {

@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.preferences;
 import java.util.logging.Level;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,17 +101,6 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       builder.append("<table class=\"oseeTable\" width=\"100%\">");
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Info", "Status"}));
 
-      String buildType = "N/A";
-      boolean wasSuccessful = false;
-      try {
-         buildType = ClientSessionManager.getClientBuildDesignation();
-         wasSuccessful = true;
-      } catch (OseeCoreException ex) {
-         // Do Nothing;
-      } catch (NullPointerException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
       try {
          builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty("user.dir") + "</td></tr>");
       } catch (NullPointerException ex) {
@@ -134,9 +121,6 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          builder.append("<tr><td><b>OSEE Application Server</b></td><td colspan=2><font color=\"red\"><b>WARNING: " + ex.getLocalizedMessage() + "</b></font></td></tr>");
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-
-      builder.append(AHTML.addRowMultiColumnTable("<b>OSEE Client Build Type</b>", buildType,
-         wasSuccessful ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
 
       try {
          for (IHealthStatus status : OseeLog.getStatus()) {

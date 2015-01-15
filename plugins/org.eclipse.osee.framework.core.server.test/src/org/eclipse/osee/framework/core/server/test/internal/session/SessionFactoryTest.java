@@ -10,18 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.test.internal.session;
 
+import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.server.internal.session.Session;
 import org.eclipse.osee.framework.core.server.internal.session.SessionFactory;
-import org.eclipse.osee.framework.core.server.test.mocks.MockBuildTypeIdentifier;
-import org.eclipse.osee.framework.core.server.test.mocks.MockLog;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.logger.Log;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mock;
 
 /**
  * Test Case for {@link Session}
@@ -31,6 +34,11 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class SessionFactoryTest {
 
+   @Mock
+   private Log logger;
+   @Mock
+   private JdbcService jdbcService;
+
    private final String guid;
    private final String userId;
    private final Date creationDate;
@@ -38,8 +46,7 @@ public class SessionFactoryTest {
    private final String clientMachineName;
    private final String clientAddress;
    private final int clientPort;
-   private final MockBuildTypeIdentifier typeIdentifier = new MockBuildTypeIdentifier();
-   private final SessionFactory factory = new SessionFactory(new MockLog(), null, typeIdentifier);
+   private final SessionFactory factory;
 
    public SessionFactoryTest(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
       super();
@@ -50,6 +57,12 @@ public class SessionFactoryTest {
       this.clientMachineName = clientMachineName;
       this.clientAddress = clientAddress;
       this.clientPort = clientPort;
+      this.factory = new SessionFactory(logger, jdbcService);
+   }
+
+   @Before
+   public void setup() {
+      initMocks(this);
    }
 
    @Test

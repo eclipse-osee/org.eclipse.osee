@@ -15,10 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-BuildTypeIdentifierTest.class, //
-   SessionTestSuite.class, //
-})
+@Suite.SuiteClasses({SessionTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

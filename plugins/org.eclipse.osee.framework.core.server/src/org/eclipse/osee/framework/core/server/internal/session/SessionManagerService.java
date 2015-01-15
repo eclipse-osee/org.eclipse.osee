@@ -20,9 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier;
-import org.eclipse.osee.framework.core.server.internal.BuildTypeIdentifier.BuildTypeDataProvider;
-import org.eclipse.osee.framework.core.server.internal.util.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -32,8 +29,6 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public final class SessionManagerService implements ISessionManager {
-
-   private static final String BUILD_DATA_KEY = "osee.build.designation";
 
    private Log logger;
    private JdbcService jdbcService;
@@ -60,16 +55,7 @@ public final class SessionManagerService implements ISessionManager {
    public void start() throws OseeCoreException {
       final JdbcClient jdbcClient = jdbcService.getClient();
 
-      BuildTypeIdentifier identifier = new BuildTypeIdentifier(new BuildTypeDataProvider() {
-
-         @Override
-         public String getData() {
-            return OseeInfo.getValue(jdbcClient, BUILD_DATA_KEY);
-         }
-
-      });
-
-      SessionFactory sessionFactory = new SessionFactory(logger, jdbcService, identifier);
+      SessionFactory sessionFactory = new SessionFactory(logger, jdbcService);
       ISessionQuery sessionQuery = new DatabaseSessionQuery(jdbcClient);
       DatabaseSessionAccessor accessor = new DatabaseSessionAccessor(sessionFactory, sessionQuery, jdbcClient);
 

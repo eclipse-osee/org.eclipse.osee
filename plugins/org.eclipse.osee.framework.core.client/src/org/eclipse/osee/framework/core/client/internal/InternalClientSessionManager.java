@@ -124,8 +124,7 @@ public class InternalClientSessionManager {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeExceptions.wrapAndThrow(ex);
          }
-         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s BuildType:[%s]", oseeSession,
-            oseeSessionGrant.getClientBuildDesignation()));
+         OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.INFO, "%s", oseeSession));
       }
    }
 

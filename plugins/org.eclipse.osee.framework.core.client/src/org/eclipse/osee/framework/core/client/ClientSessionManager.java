@@ -47,10 +47,6 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getOseeSession();
    }
 
-   public static String getClientBuildDesignation() throws OseeAuthenticationRequiredException {
-      return getSessionGrant().getClientBuildDesignation();
-   }
-
    public static boolean isUserCreationRequired() throws OseeAuthenticationRequiredException {
       return getSessionGrant().isCreationRequired();
    }
