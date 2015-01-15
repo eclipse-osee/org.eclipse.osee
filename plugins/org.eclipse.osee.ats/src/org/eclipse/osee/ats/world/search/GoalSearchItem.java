@@ -94,7 +94,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
 
-         for (Artifact goalArt : GoalManager.getGoals(art, true)) {
+         for (Artifact goalArt : new GoalManager().getMembers(art, true)) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) goalArt;
             // don't include if userArt specified and userArt not assignee
             if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {

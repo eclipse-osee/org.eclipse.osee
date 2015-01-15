@@ -14,9 +14,9 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
+import org.eclipse.osee.ats.editor.IMemberProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -30,19 +30,21 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class RemoveFromGoalAction extends Action {
+public class RemoveFromCollectorAction extends Action {
 
-   private final GoalArtifact goalArt;
+   private final CollectorArtifact collectorArt;
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
-   private final RemovedFromGoalHandler handler;
+   private final RemovedFromCollectorHandler handler;
+   private final IMemberProvider memberProvider;
 
-   public static interface RemovedFromGoalHandler {
-      void removedFromGoal(Collection<? extends Artifact> removed);
+   public static interface RemovedFromCollectorHandler {
+      void removedFromCollector(Collection<? extends Artifact> removed);
    }
 
-   public RemoveFromGoalAction(GoalArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts, RemovedFromGoalHandler handler) {
-      super("Remove from Goal");
-      this.goalArt = goalArt;
+   public RemoveFromCollectorAction(IMemberProvider memberProvider, CollectorArtifact collectorArt, ISelectedAtsArtifacts selectedAtsArtifacts, RemovedFromCollectorHandler handler) {
+      super(String.format("Remove from %s", memberProvider.getItemName()));
+      this.memberProvider = memberProvider;
+      this.collectorArt = collectorArt;
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       this.handler = handler;
    }
@@ -60,14 +62,14 @@ public class RemoveFromGoalAction extends Action {
             AWorkbench.popup("No items selected");
             return;
          }
-         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from Goal", String.format(
-            "Remove the selected %d artifact%s from the Goal [%s]?", selected.size(), selected.size() > 1 ? "s" : "",
-            goalArt))) {
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from " + memberProvider.getItemName(),
+            String.format("Remove the selected %d artifact%s from the %s [%s]?", selected.size(),
+               selected.size() > 1 ? "s" : "", memberProvider.getItemName(), collectorArt))) {
             for (Artifact art : selected) {
-               goalArt.deleteRelation(AtsRelationTypes.Goal_Member, art);
+               collectorArt.deleteRelation(memberProvider.getMemberRelationTypeSide(), art);
             }
-            goalArt.persist("Remove from Goal");
-            handler.removedFromGoal(selected);
+            collectorArt.persist("Remove from " + memberProvider.getItemName());
+            handler.removedFromCollector(selected);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

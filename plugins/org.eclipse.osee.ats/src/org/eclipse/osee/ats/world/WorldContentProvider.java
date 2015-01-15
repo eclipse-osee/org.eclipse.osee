@@ -22,9 +22,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
@@ -94,6 +94,13 @@ public class WorldContentProvider implements ITreeContentProvider {
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }
+            if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
+               List<Artifact> arts =
+                  artifact.getRelatedArtifacts(AtsRelationTypes.AgileSprint_Item, DeletionFlag.EXCLUDE_DELETED);
+               relatedArts.addAll(arts);
+               AtsBulkLoad.bulkLoadArtifacts(relatedArts);
+               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.AgileSprint_Item)]);
+            }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.cast(artifact);
                List<Artifact> arts = new ArrayList<Artifact>();
@@ -128,7 +135,10 @@ public class WorldContentProvider implements ITreeContentProvider {
                return ReviewManager.cast(artifact).getParentAWA();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               return GoalManager.cast(artifact).getParentAWA();
+               return ((GoalArtifact) artifact).getParentAWA();
+            }
+            if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
+               return ((SprintArtifact) artifact).getParentAWA();
             }
          } catch (Exception ex) {
             // do nothing
@@ -172,6 +182,9 @@ public class WorldContentProvider implements ITreeContentProvider {
          return true;
       }
       if (workflow instanceof GoalArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member) > 0) {
+         return true;
+      }
+      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.AgileSprint_Item) > 0) {
          return true;
       }
       return false;

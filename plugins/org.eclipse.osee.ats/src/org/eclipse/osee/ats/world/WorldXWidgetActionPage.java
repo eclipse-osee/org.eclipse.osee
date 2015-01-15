@@ -478,7 +478,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          protected IStatus run(IProgressMonitor monitor) {
             try {
                final Set<Artifact> goals = new HashSet<Artifact>();
-               GoalManager.getGoals(artifacts, goals, true);
+               new GoalManager().getMembers(artifacts, goals, true);
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {

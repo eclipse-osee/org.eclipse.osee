@@ -43,7 +43,8 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 public class AtsUtilClient {
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
-      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
+      AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
+      AtsArtifactTypes.Version);
    private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(

@@ -1314,8 +1314,8 @@ relationType "AgileSprint" {
 	sideAName "Sprint"
 	sideAArtifactType "Agile Sprint"
 	sideBName "Item"
-	sideBArtifactType "Team Workflow"
-	defaultOrderType Unordered
+	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
 	multiplicity ONE_TO_MANY
 }
 

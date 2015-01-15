@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class SprintArtifact extends AbstractWorkflowArtifact implements IAgileSprint {
+public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    public SprintArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
@@ -39,7 +39,7 @@ public class SprintArtifact extends AbstractWorkflowArtifact implements IAgileSp
 
    @Override
    public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
-      List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.Goal_Goal);
+      List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.AgileSprint_Sprint);
       if (parents.isEmpty()) {
          return null;
       }
@@ -55,16 +55,6 @@ public class SprintArtifact extends AbstractWorkflowArtifact implements IAgileSp
       return null;
    }
 
-   public List<Artifact> getMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.AgileSprint_Item);
-   }
-
-   public void addMember(Artifact artifact) throws OseeCoreException {
-      if (!getMembers().contains(artifact)) {
-         addRelation(RelationOrderBaseTypes.USER_DEFINED, AtsRelationTypes.Goal_Member, artifact);
-      }
-   }
-
    @Override
    public boolean isActive() {
       return getSoleAttributeValue(AtsAttributeTypes.Active, true);
@@ -73,6 +63,11 @@ public class SprintArtifact extends AbstractWorkflowArtifact implements IAgileSp
    @Override
    public long getTeamUuid() {
       return getArtId();
+   }
+
+   @Override
+   public IRelationTypeSide getMembersRelationType() {
+      return AtsRelationTypes.AgileSprint_Item;
    }
 
 }

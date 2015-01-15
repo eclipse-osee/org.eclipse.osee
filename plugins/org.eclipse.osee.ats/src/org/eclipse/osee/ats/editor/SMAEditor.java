@@ -26,15 +26,18 @@ import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
+import org.eclipse.osee.ats.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.goal.GoalMemberProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.VisitedItems;
@@ -194,7 +197,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    private void createMembersTab() throws PartInitException {
       if (awa instanceof GoalArtifact) {
-         membersTab = new SMAMembersTab(this, (GoalArtifact) awa);
+         membersTab = new SMAMembersTab(this, new GoalMemberProvider((GoalArtifact) awa));
+         addPage(membersTab);
+      } else if (awa instanceof SprintArtifact) {
+         membersTab = new SMAMembersTab(this, new SprintMemberProvider((SprintArtifact) awa));
          addPage(membersTab);
       }
    }
@@ -694,7 +700,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
             if (page.equals(workFlowTab)) {
                provider = getDefaultSelectionProvider();
             } else if (page.equals(membersTab)) {
-               if (membersTab != null && membersTab.getGoalMembersSection() != null) {
+               if (membersTab != null && membersTab.getMembersSection() != null) {
                   provider = membersTab.getWorldXViewer();
                }
             } else if (page.equals(taskTabXWidgetActionPage)) {

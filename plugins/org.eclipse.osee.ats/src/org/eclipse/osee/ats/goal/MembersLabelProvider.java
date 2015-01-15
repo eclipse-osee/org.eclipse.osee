@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.goal;
 
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.FavoritesManager;
@@ -22,18 +22,18 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 /**
  * @author Donald G. Dunne
  */
-public class GoalLabelProvider extends ArtifactLabelProvider {
+public class MembersLabelProvider extends ArtifactLabelProvider {
 
    @Override
    public String getText(Object element) {
-      GoalArtifact goal = (GoalArtifact) element;
+      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
       try {
-         if (FavoritesManager.isFavorite(goal, AtsClientService.get().getUserService().getCurrentUser())) {
-            return "(Favorite) " + goal.toString();
-         } else if (goal.isAssigneeMe()) {
-            return "(Assignee) " + goal.toString();
+         if (FavoritesManager.isFavorite(awa, AtsClientService.get().getUserService().getCurrentUser())) {
+            return "(Favorite) " + awa.toString();
+         } else if (awa.isAssigneeMe()) {
+            return "(Assignee) " + awa.toString();
          }
-         return goal.toString();
+         return awa.toString();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return "Exception: " + ex.getLocalizedMessage();

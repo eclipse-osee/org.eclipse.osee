@@ -23,13 +23,13 @@ import org.eclipse.swt.widgets.Control;
 public class GoalCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
 
    public GoalCheckTreeDialog(Collection<? extends Artifact> artifacts) {
-      super("Select Goals", "Select Goals", artifacts, new ArrayTreeContentProvider(), new GoalLabelProvider());
+      super("Select Goals", "Select Goals", artifacts, new ArrayTreeContentProvider(), new MembersLabelProvider());
    }
 
    @Override
    protected Control createDialogArea(Composite container) {
       Control control = super.createDialogArea(container);
-      getTreeViewer().setSorter(new GoalViewerSorter());
+      getTreeViewer().setSorter(new MembersViewerSorter());
       return control;
    }
 

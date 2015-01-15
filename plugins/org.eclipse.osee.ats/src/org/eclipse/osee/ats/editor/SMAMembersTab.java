@@ -32,21 +32,22 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.FilterData;
 import org.eclipse.nebula.widgets.xviewer.customize.SortingData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.goal.GoalXViewerFactory;
-import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
-import org.eclipse.osee.ats.goal.RemoveFromGoalAction.RemovedFromGoalHandler;
-import org.eclipse.osee.ats.goal.SetGoalOrderAction;
+import org.eclipse.osee.ats.goal.RemoveFromCollectorAction;
+import org.eclipse.osee.ats.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
+import org.eclipse.osee.ats.goal.SetCollectorOrderAction;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
@@ -57,6 +58,7 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -69,7 +71,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -78,6 +79,8 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -98,7 +101,6 @@ import org.eclipse.ui.progress.UIJob;
  * @author Donald G. Dunne
  */
 public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
-   private final GoalArtifact goalArtifact;
    private IManagedForm managedForm;
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
@@ -108,11 +110,12 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private final SMAEditor editor;
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private final ReloadJobChangeAdapter reloadAdapter;
+   private final IMemberProvider provider;
 
-   public SMAMembersTab(SMAEditor editor, GoalArtifact goalArtifact) {
-      super(editor, ID, "Members");
+   public SMAMembersTab(SMAEditor editor, IMemberProvider provider) {
+      super(editor, ID, provider.getItemName());
       this.editor = editor;
-      this.goalArtifact = goalArtifact;
+      this.provider = provider;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
    }
 
@@ -152,8 +155,9 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          if (!scrolledForm.getText().equals(displayableTitle)) {
             scrolledForm.setText(displayableTitle);
          }
-         if (!ArtifactImageManager.getImage(goalArtifact).equals(scrolledForm.getImage())) {
-            scrolledForm.setImage(ArtifactImageManager.getImage(goalArtifact));
+         KeyedImage image = provider.getImageKey();
+         if (!ImageManager.getImage(image).equals(scrolledForm.getImage())) {
+            scrolledForm.setImage(ImageManager.getImage(image));
          }
       }
    }
@@ -258,13 +262,17 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(worldComposite)) {
          worldComposite =
-            new WorldComposite("workflow.edtor.members.tab", editor, new GoalXViewerFactory(
-               (GoalArtifact) editor.getAwa()), bodyComp, SWT.BORDER, false);
+            new WorldComposite("workflow.edtor.members.tab", editor,
+               provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
 
-         new GoalDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
+         new MembersDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
 
          WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
-         labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
+         if (editor.getAwa().isOfType(AtsArtifactTypes.Goal)) {
+            labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
+         } else {
+            labelProvider.setParentSprint((SprintArtifact) editor.getAwa());
+         }
 
          worldComposite.getWorldXViewer().addMenuActionProvider(this);
          getSite().setSelectionProvider(worldComposite.getWorldXViewer());
@@ -284,7 +292,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       if (isTableDisposed()) {
          return;
       }
-      Job job = new Job("Load Goal Members") {
+      Job job = new Job(String.format("Load %s Members", provider.getItemName())) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -292,20 +300,21 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                return Status.OK_STATUS;
             }
             try {
-               final List<Artifact> artifacts = goalArtifact.getMembers();
+               final List<Artifact> artifacts = provider.getMembers();
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
                      if (isTableDisposed()) {
                         return;
                      }
-                     worldComposite.load("Members", artifacts, (CustomizeData) null, TableLoadOption.None);
+                     worldComposite.load(provider.getItemName(), artifacts, (CustomizeData) null, TableLoadOption.None);
                   }
 
                });
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
-               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Exception loading Goal Members", ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Exception loading %s",
+                  provider.getItemName()), ex);
             }
             return Status.OK_STATUS;
          }
@@ -319,7 +328,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    private void jumptoScrollLocation() {
       //       Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(goalArtifact.getGuid());
+      Integer selection = guidToScrollLocation.get(provider.getGuid());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -341,7 +350,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         guidToScrollLocation.put(goalArtifact.getGuid(), selection);
+         guidToScrollLocation.put(provider.getGuid(), selection);
       }
    }
 
@@ -355,7 +364,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(goalArtifact.getGuid());
+               Integer selection = guidToScrollLocation.get(provider.getGuid());
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;
@@ -398,7 +407,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private void updateShown() {
       List<Artifact> members;
       try {
-         members = goalArtifact.getMembers();
+         members = provider.getMembers();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return;
@@ -412,7 +421,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       loadedArtifacts.removeAll(toRemoveFromLoaded);
       worldComposite.removeItems(loadedArtifacts);
       worldComposite.getXViewer().remove(loadedArtifacts);
-      worldComposite.getXViewer().refresh(goalArtifact);
+      worldComposite.getXViewer().refresh(provider.getArtifact());
    }
 
    private void refreshToolbar() {
@@ -427,7 +436,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       scrolledForm.updateToolBar();
    }
 
-   public WorldComposite getGoalMembersSection() {
+   public WorldComposite getMembersSection() {
       return worldComposite;
    }
 
@@ -451,7 +460,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts) {
-      if (relModifiedArts.contains(goalArtifact)) {
+      if (relModifiedArts.contains(provider.getArtifact())) {
          refresh();
       }
    }
@@ -461,12 +470,11 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       return editor.isDisposed();
    }
 
-   private class GoalDragAndDrop extends WorldViewDragAndDrop {
+   private class MembersDragAndDrop extends WorldViewDragAndDrop {
 
-      private static final String ATS_COLUMN_GOAL_ORDER = "ats.column.goalOrder";
       private boolean isFeedbackAfter = false;
 
-      public GoalDragAndDrop(WorldComposite worldComposite, String viewId) {
+      public MembersDragAndDrop(WorldComposite worldComposite, String viewId) {
          super(worldComposite, viewId);
       }
 
@@ -505,18 +513,18 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          return getSortingData().getSortingIds();
       }
 
-      private boolean isSortedByGoalOrder() throws OseeCoreException {
+      private boolean isSortedByCollectorsOrder() throws OseeCoreException {
          List<String> sortingIds = getSortingIds();
-         return (sortingIds.size() == 1 && sortingIds.contains(ATS_COLUMN_GOAL_ORDER));
+         return (sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName()));
       }
 
-      private boolean isGoalFiltered() throws OseeCoreException {
+      private boolean isFiltered() throws OseeCoreException {
          String filterText = getFilterText();
          return Strings.isValid(filterText);
       }
 
       private boolean isDropValid() throws OseeCoreException {
-         return !isGoalFiltered() && isSortedByGoalOrder();
+         return !isFiltered() && isSortedByCollectorsOrder();
       }
 
       @Override
@@ -554,20 +562,31 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
             if (dropValid && ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
 
                Collections.reverse(droppedArtifacts);
-               List<Artifact> members = goalArtifact.getMembers();
+               List<Artifact> members = provider.getMembers();
+               Result result = provider.isAddValid(droppedArtifacts);
+               if (result.isFalse()) {
+                  if (MessageDialog.openQuestion(Displays.getActiveShell(), "Drop Error", result.getText())) {
+                     for (Artifact dropped : droppedArtifacts) {
+                        dropped.deleteRelations(provider.getMemberRelationTypeSide().getOpposite());
+                     }
+                  } else {
+                     return;
+                  }
+               }
                for (Artifact dropped : droppedArtifacts) {
                   if (!members.contains(dropped)) {
-                     goalArtifact.addMember(dropped);
+                     provider.addMember(dropped);
                      int index = isFeedbackAfter ? members.indexOf(dropTarget) + 1 : members.indexOf(dropTarget);
                      worldComposite.insert(dropped, index);
                      worldComposite.update();
                   }
                   if (dropTarget != null) {
-                     goalArtifact.setRelationOrder(AtsRelationTypes.Goal_Member, dropTarget, isFeedbackAfter, dropped);
+                     provider.getArtifact().setRelationOrder(provider.getMemberRelationTypeSide(), dropTarget,
+                        isFeedbackAfter, dropped);
                   }
                }
-               goalArtifact.persist(SMAMembersTab.class.getSimpleName());
-               worldComposite.getXViewer().refresh(goalArtifact);
+               provider.getArtifact().persist(SMAMembersTab.class.getSimpleName());
+               worldComposite.getXViewer().refresh(provider.getArtifact());
                if (dropTarget != null) {
                   worldComposite.getXViewer().update(dropTarget, null);
                }
@@ -581,28 +600,29 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    }
 
-   Action setGoalOrderAction, removeFromGoalAction;
+   Action setCollectorOrderAction, removeFromCollectorAction;
 
    private void createActions() {
-      setGoalOrderAction = new SetGoalOrderAction((GoalArtifact) editor.getAwa(), this);
-      RemovedFromGoalHandler handler = new RemovedFromGoalHandler() {
+      setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getAwa(), this);
+      RemovedFromCollectorHandler handler = new RemovedFromCollectorHandler() {
 
          @Override
-         public void removedFromGoal(Collection<? extends Artifact> removed) {
+         public void removedFromCollector(Collection<? extends Artifact> removed) {
             worldComposite.removeItems(removed);
             worldComposite.getXViewer().remove(removed);
-            worldComposite.getXViewer().refresh(goalArtifact);
+            worldComposite.getXViewer().refresh(provider.getArtifact());
          }
 
       };
-      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), this, handler);
+      removeFromCollectorAction =
+         new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getAwa(), this, handler);
    }
 
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = worldComposite.getXViewer().getMenuManager();
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setGoalOrderAction);
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromGoalAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setCollectorOrderAction);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromCollectorAction);
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
    }
 

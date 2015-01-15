@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.column;
+package org.eclipse.osee.ats.agile;
 
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -16,9 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.goal.GoalXViewerFactory;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
@@ -37,17 +35,17 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
+public class SprintOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
 
-   public static GoalOrderColumn instance = new GoalOrderColumn();
+   public static SprintOrderColumn instance = new SprintOrderColumn();
 
-   public static GoalOrderColumn getInstance() {
+   public static SprintOrderColumn getInstance() {
       return instance;
    }
 
-   private GoalOrderColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 45, SWT.LEFT, false,
-         SortDataType.Integer, true, "Order of item within displayed goal.  Editing this field changes order.");
+   private SprintOrderColumn() {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".sprintOrder", "Sprint Order", 45, SWT.LEFT, false,
+         SortDataType.Integer, true, "Order of item within displayed sprint.  Editing this field changes order.");
    }
 
    /**
@@ -55,8 +53,8 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public GoalOrderColumn copy() {
-      GoalOrderColumn newXCol = new GoalOrderColumn();
+   public SprintOrderColumn copy() {
+      SprintOrderColumn newXCol = new SprintOrderColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -66,11 +64,12 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
       try {
          if (element instanceof Artifact && getXViewer().getLabelProvider() instanceof WorldLabelProvider) {
             WorldLabelProvider worldLabelProvider = (WorldLabelProvider) getXViewer().getLabelProvider();
-            GoalArtifact parentGoalArtifact = worldLabelProvider.getParentGoalArtifact();
-            if (parentGoalArtifact != null) {
-               return new GoalManager().getMemberOrder(parentGoalArtifact, (Artifact) element);
+            SprintArtifact parentSprintArtifact = worldLabelProvider.getParentSprintArtifact();
+
+            if (parentSprintArtifact != null) {
+               return new SprintManager().getMemberOrder(parentSprintArtifact, (Artifact) element);
             }
-            return new GoalManager().getMemberOrder((Artifact) element);
+            return new SprintManager().getMemberOrder((Artifact) element);
          }
       } catch (OseeCoreException ex) {
          LogUtil.getCellExceptionString(ex);
@@ -83,21 +82,22 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
       try {
          XViewer xViewer = getXViewer();
          IXViewerFactory xViewerFactory = xViewer.getXViewerFactory();
-         GoalArtifact parentGoalArtifact = null;
-         if (xViewerFactory instanceof GoalXViewerFactory) {
-            parentGoalArtifact = ((GoalXViewerFactory) xViewerFactory).getSoleGoalArtifact();
+         SprintArtifact parentSprintArtifact = null;
+         if (xViewerFactory instanceof SprintXViewerFactory) {
+            parentSprintArtifact = ((SprintXViewerFactory) xViewerFactory).getSoleSprintArtifact();
          }
-         if (parentGoalArtifact == null) {
-            parentGoalArtifact = getParentGoalArtifact(treeItem);
+         if (parentSprintArtifact == null) {
+            parentSprintArtifact = getParentSprintArtifact(treeItem);
          }
-         GoalArtifact changedGoal = null;
-         if (parentGoalArtifact != null) {
-            changedGoal = new GoalManager().promptChangeMemberOrder(parentGoalArtifact, (Artifact) treeItem.getData());
+         SprintArtifact changedSprint = null;
+         if (parentSprintArtifact != null) {
+            changedSprint =
+               new SprintManager().promptChangeMemberOrder(parentSprintArtifact, (Artifact) treeItem.getData());
          } else {
-            changedGoal = new GoalManager().promptChangeGoalOrder((Artifact) treeItem.getData());
+            changedSprint = new SprintManager().promptChangeSprintOrder((Artifact) treeItem.getData());
          }
-         if (changedGoal != null) {
-            xViewer.refresh(changedGoal);
+         if (changedSprint != null) {
+            xViewer.refresh(changedSprint);
             xViewer.update(treeItem.getData(), null);
          }
          return true;
@@ -107,10 +107,10 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
       }
    }
 
-   public static GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
+   public static SprintArtifact getParentSprintArtifact(TreeItem treeItem) {
       if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && Artifacts.isOfType(
-         treeItem.getParentItem().getData(), AtsArtifactTypes.Goal)) {
-         return (GoalArtifact) treeItem.getParentItem().getData();
+         treeItem.getParentItem().getData(), AtsArtifactTypes.AgileSprint)) {
+         return (SprintArtifact) treeItem.getParentItem().getData();
       }
       return null;
    }

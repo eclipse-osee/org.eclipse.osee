@@ -21,7 +21,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -185,7 +184,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    private void setTooltips() {
       try {
-         if (!GoalManager.isGoalArtifact(activeAwa) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
+         if (!activeAwa.isOfType(AtsArtifactTypes.Goal) && !PeerToPeerReviewManager.isStandAlongReview(activeAwa)) {
             ActionArtifact actionArt = activeAwa.getParentActionArtifact();
             if (actionArt != null) {
                for (TeamWorkFlowArtifact teamArt : actionArt.getTeams()) {

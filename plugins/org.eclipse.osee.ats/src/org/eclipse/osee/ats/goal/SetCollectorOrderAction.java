@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.goal;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
+import org.eclipse.osee.ats.editor.IMemberProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -25,26 +24,27 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class SetGoalOrderAction extends Action {
+public class SetCollectorOrderAction extends Action {
 
-   private final GoalArtifact goalArt;
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private final IMemberProvider memberProvider;
 
-   public SetGoalOrderAction(GoalArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super("Set Goal Order");
-      this.goalArt = goalArt;
+   public SetCollectorOrderAction(IMemberProvider memberProvider, CollectorArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super(String.format("Set %s Order", memberProvider.getItemName()));
+      this.memberProvider = memberProvider;
       this.selectedAtsArtifacts = selectedAtsArtifacts;
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.GOAL);
+      return ImageManager.getImageDescriptor(memberProvider.getImageKey());
    }
 
    @Override
    public void run() {
       try {
-         GoalManager.promptChangeGoalOrder(goalArt, this.selectedAtsArtifacts.getSelectedAtsArtifacts());
+         memberProvider.promptChangeOrder(memberProvider.getArtifact(),
+            this.selectedAtsArtifacts.getSelectedAtsArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

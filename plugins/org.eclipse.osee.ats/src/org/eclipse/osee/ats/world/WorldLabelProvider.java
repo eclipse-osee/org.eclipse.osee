@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,6 +32,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    private final WorldXViewer worldXViewer;
    protected Font font;
    private GoalArtifact parentGoalArtifact;
+   private SprintArtifact parentSprintArtifact;
 
    public WorldLabelProvider(WorldXViewer worldXViewer) {
       super(worldXViewer);
@@ -129,5 +131,13 @@ public class WorldLabelProvider extends XViewerLabelProvider {
 
    public GoalArtifact getParentGoalArtifact() {
       return parentGoalArtifact;
+   }
+
+   public void setParentSprint(SprintArtifact parentSprintArtifact) {
+      this.parentSprintArtifact = parentSprintArtifact;
+   }
+
+   public SprintArtifact getParentSprintArtifact() {
+      return parentSprintArtifact;
    }
 }

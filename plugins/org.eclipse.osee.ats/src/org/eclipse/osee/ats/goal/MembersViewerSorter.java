@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.goal;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.FavoritesManager;
@@ -24,27 +24,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class GoalViewerSorter extends ViewerSorter {
+public class MembersViewerSorter extends ViewerSorter {
 
    @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
-      if (o1 instanceof GoalArtifact && o2 instanceof GoalArtifact) {
+      if (o1 instanceof AbstractWorkflowArtifact && o2 instanceof AbstractWorkflowArtifact) {
          try {
-            GoalArtifact g1 = (GoalArtifact) o1;
-            GoalArtifact g2 = (GoalArtifact) o2;
-            boolean g1Fav = FavoritesManager.isFavorite(g1, AtsClientService.get().getUserService().getCurrentUser());
-            boolean g2Fav = FavoritesManager.isFavorite(g2, AtsClientService.get().getUserService().getCurrentUser());
+            AbstractWorkflowArtifact awa1 = (AbstractWorkflowArtifact) o1;
+            AbstractWorkflowArtifact awa2 = (AbstractWorkflowArtifact) o2;
+            boolean g1Fav = FavoritesManager.isFavorite(awa1, AtsClientService.get().getUserService().getCurrentUser());
+            boolean g2Fav = FavoritesManager.isFavorite(awa2, AtsClientService.get().getUserService().getCurrentUser());
             if (g1Fav && g2Fav) {
-               return compare(g1, g2);
+               return compare(awa1, awa2);
             } else if (g1Fav && !g2Fav) {
                return -1;
             } else if (g2Fav && !g1Fav) {
                return 1;
             }
-            boolean g1Assignee = g1.isAssigneeMe();
-            boolean g2Assignee = g2.isAssigneeMe();
+            boolean g1Assignee = awa1.isAssigneeMe();
+            boolean g2Assignee = awa2.isAssigneeMe();
             if (g1Assignee && g2Assignee) {
-               return compare(g1, g2);
+               return compare(awa1, awa2);
             } else if (g1Assignee && !g2Assignee) {
                return -1;
             } else if (g2Assignee && !g1Assignee) {
