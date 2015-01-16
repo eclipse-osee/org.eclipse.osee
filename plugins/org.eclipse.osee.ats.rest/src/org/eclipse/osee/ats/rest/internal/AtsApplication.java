@@ -17,7 +17,6 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.agile.AgileTeamEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.build.report.resources.BuildTraceReportResource;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
@@ -78,7 +77,6 @@ public class AtsApplication extends Application {
       singletons.add(new ProgramResource(atsServer));
       singletons.add(new ActionableItemResource(atsServer));
 
-      singletons.add(new BuildTraceReportResource(logger, registry, orcsApi));
       singletons.add(new ActionResource(atsServer, orcsApi));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));
@@ -88,7 +86,6 @@ public class AtsApplication extends Application {
       singletons.add(new AtsEndpointImpl(atsServer, logger, registry, cpaRegistry));
 
       singletons.add(new ActionUiResource(atsServer, logger));
-      System.out.println("ATS - Application started - " + System.getProperty("OseeApplicationServer"));
    }
 
    public void stop() {
