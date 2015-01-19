@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.column.ImplementersColumn;
@@ -90,17 +91,17 @@ public class TaskMetrics extends AbstractBlam {
          List<IAtsObject> versionArtifacts = versionsWidget.getSelected();
 
          if (!versionArtifacts.isEmpty()) {
-            Set<Artifact> teamWorkflows = new HashSet<Artifact>();
+            Set<IAtsTeamWorkflow> teamWorkflows = new HashSet<IAtsTeamWorkflow>();
             for (IAtsObject version : versionArtifacts) {
-               teamWorkflows.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
+               teamWorkflows.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
                   (IAtsVersion) version));
             }
 
-            for (Artifact art : teamWorkflows) {
+            for (IAtsTeamWorkflow team : teamWorkflows) {
                monitor.worked(1 / teamWorkflows.size());
-               if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               if (((Artifact) team.getStoreObject()).isOfType(AtsArtifactTypes.TeamWorkflow)) {
 
-                  TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) art;
+                  TeamWorkFlowArtifact workflow = (TeamWorkFlowArtifact) team;
 
                   if (teamCombo.getSelectedTeamDefintions().contains(workflow.getTeamDefinition())) {
                      for (Artifact task : workflow.getTaskArtifacts()) {

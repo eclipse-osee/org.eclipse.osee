@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -39,6 +40,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -66,7 +68,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
     * @return corresponding Artifact or null if not found
     */
    @Override
-   Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   Artifact getArtifact(Object object) throws OseeCoreException;
 
    AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) throws OseeCoreException;
 
@@ -87,9 +89,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    void invalidateAllCaches();
 
    IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException;
-
-   @Override
-   IAtsVersionAdmin getVersionService() throws OseeStateException;
 
    @Override
    IAtsUserService getUserService() throws OseeStateException;
@@ -134,9 +133,20 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    Artifact getArtifact(String guid);
 
+   @Override
+   IAtsClientVersionService getVersionService();
+
+   @Override
+   IAtsWorkItemFactory getWorkItemFactory();
+
+   @Override
+   IAtsConfigItemFactory getConfigItemFactory();
+
    IVersionFactory getVersionFactory();
 
    IAtsQueryService getQueryService();
 
-   IAtsWorkItemFactory getWorkItemFactory();
+   Artifact getArtifactByGuid(String guid) throws OseeCoreException;
+
+   Artifact getArtifactByAtsId(String id);
 }

@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -498,9 +499,9 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    private void loadReqTaskMap() throws Exception {
       for (IAtsVersion version : versions) {
-         for (TeamWorkFlowArtifact workflow : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
+         for (IAtsTeamWorkflow workflow : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
             version)) {
-            loadTasksFromWorkflow(workflow);
+            loadTasksFromWorkflow((TeamWorkFlowArtifact) workflow.getStoreObject());
          }
       }
    }

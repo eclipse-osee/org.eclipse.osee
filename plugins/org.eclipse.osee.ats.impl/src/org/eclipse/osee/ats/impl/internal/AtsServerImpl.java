@@ -72,6 +72,7 @@ import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
+import org.eclipse.osee.ats.impl.internal.workitem.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
@@ -191,7 +192,7 @@ public class AtsServerImpl implements IAtsServer {
 
       teamWorkflowProvider = new TeamWorkflowProvider();
       attributeResolverService = new AtsAttributeResolverServiceImpl();
-      relationResolver = new AtsRelationResolverServiceImpl();
+      relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
@@ -221,6 +222,8 @@ public class AtsServerImpl implements IAtsServer {
 
       agileService = new AgileService(logger, this);
       atsQueryService = new AtsQueryServiceIimpl(this);
+      versionService =
+         new AtsVersionServiceImpl(getServices());
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
@@ -264,14 +267,19 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
+   public ArtifactReadable getArtifact(Object object) throws OseeCoreException {
       checkStarted();
       ArtifactReadable result = null;
-      if (atsObject.getStoreObject() != null) {
-         result = (ArtifactReadable) atsObject.getStoreObject();
-      } else {
-         result =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getAtMostOneOrNull();
+      if (object instanceof ArtifactReadable) {
+         result = (ArtifactReadable) object;
+      } else if (object instanceof IAtsObject) {
+         IAtsObject atsObject = (IAtsObject) object;
+         if (atsObject.getStoreObject() != null) {
+            result = (ArtifactReadable) atsObject.getStoreObject();
+         } else {
+            result =
+               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getAtMostOneOrNull();
+         }
       }
       return result;
    }

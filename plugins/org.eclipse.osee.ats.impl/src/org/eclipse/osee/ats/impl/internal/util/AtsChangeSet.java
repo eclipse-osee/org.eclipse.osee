@@ -184,4 +184,16 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       return artifact;
    }
+
+   @Override
+   public void unrelateAll(Object object, IRelationTypeSide relationType) {
+      ArtifactReadable artifact = getArtifact(object);
+      getTransaction().unrelateFromAll(relationType, artifact);
+   }
+
+   @Override
+   public void setRelation(Object object1, IRelationTypeSide relationType, Object object2) {
+      unrelateAll(object1, relationType);
+      relate(object1, relationType, object2);
+   }
 }

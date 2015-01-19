@@ -22,4 +22,6 @@ public interface IRelationResolver {
 
    boolean areRelated(Object object1, IRelationTypeSide relationType, Object object2);
 
+   Object getRelatedOrNull(Object object, IRelationTypeSide relationType);
+
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -19,5 +18,5 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface IArtifactProvider {
 
-   ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   ArtifactReadable getArtifact(Object object) throws OseeCoreException;
 }

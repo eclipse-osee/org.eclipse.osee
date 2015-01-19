@@ -54,9 +54,7 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       if (artifact instanceof IAtsVersion) {
          version = (IAtsVersion) artifact;
       } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
-         Artifact artifact2 = (Artifact) artifact;
-         version =
-            atsClient.getVersionFactory().createVersion(artifact2.getName(), artifact2.getGuid(), artifact2.getArtId());
+         version = (IAtsVersion) atsClient.getConfigObject((Artifact) artifact);
       }
       return version;
    }
@@ -66,6 +64,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof IAtsTeamDefinition) {
          teamDef = (IAtsTeamDefinition) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
+         teamDef = (IAtsTeamDefinition) atsClient.getConfigObject((Artifact) artifact);
       }
       return teamDef;
    }
@@ -75,6 +75,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
       IAtsActionableItem ai = null;
       if (artifact instanceof IAtsActionableItem) {
          ai = (IAtsActionableItem) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
+         ai = (IAtsActionableItem) atsClient.getConfigObject((Artifact) artifact);
       }
       return ai;
    }

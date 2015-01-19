@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -56,8 +57,8 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
-import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
 import org.eclipse.osee.ats.core.client.branch.internal.AtsBranchServiceImpl;
+import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
@@ -107,6 +108,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -122,7 +124,7 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsWorkDefinitionService workDefService;
    private IAtsWorkItemArtifactService workItemArtifactProvider;
    private final AtsConfigProxy configProxy = new AtsConfigProxy();
-   private IAtsVersionAdmin versionService;
+   private IAtsClientVersionService versionService;
    private IAtsArtifactStore artifactStore;
    private CacheProvider<AtsArtifactConfigCache> configCacheProvider;
    private IAtsWorkDefinitionAdmin workDefAdmin;
@@ -182,11 +184,13 @@ public class AtsClientImpl implements IAtsClient {
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
       earnedValueService = new AtsEarnedValueImpl();
 
+      configItemFactory = new ConfigItemFactory(this);
       AtsVersionCache versionCache = new AtsVersionCache(configCacheProvider);
-      versionService = new AtsVersionServiceImpl(configCacheProvider, artifactStore, versionCache);
+      versionService = new AtsVersionServiceImpl(this, configCacheProvider, versionCache);
 
       actionableItemFactory = new ActionableItemFactory();
       teamDefFactory = new TeamDefinitionFactory();
+      workItemFactory = new WorkItemFactory();
       versionFactory = new VersionFactory(versionService);
 
       readers.put(AtsArtifactTypes.ActionableItem, new ActionableItemArtifactReader(actionableItemFactory,
@@ -212,9 +216,7 @@ public class AtsClientImpl implements IAtsClient {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      workItemFactory = new WorkItemFactory();
 
-      configItemFactory = new ConfigItemFactory(this);
       actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService);
       sequenceProvider = new ISequenceProvider() {
 
@@ -367,7 +369,7 @@ public class AtsClientImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsVersionAdmin getVersionService() throws OseeStateException {
+   public IAtsClientVersionService getVersionService() throws OseeStateException {
       return versionService;
    }
 
@@ -451,18 +453,23 @@ public class AtsClientImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
+   public Artifact getArtifact(Object object) throws OseeCoreException {
       Artifact results = null;
-      if (atsObject.getStoreObject() != null) {
-         results = (Artifact) atsObject.getStoreObject();
-      } else {
-         if (atsObject instanceof Artifact) {
-            results = (Artifact) atsObject;
+      if (object instanceof Artifact) {
+         results = (Artifact) object;
+      } else if (object instanceof IAtsObject) {
+         IAtsObject atsObject = (IAtsObject) object;
+         if (atsObject.getStoreObject() != null) {
+            results = (Artifact) atsObject.getStoreObject();
          } else {
-            try {
-               results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
+            if (atsObject instanceof Artifact) {
+               results = (Artifact) atsObject;
+            } else {
+               try {
+                  results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
+               } catch (ArtifactDoesNotExist ex) {
+                  // do nothing
+               }
             }
          }
       }
@@ -636,6 +643,7 @@ public class AtsClientImpl implements IAtsClient {
       return actionFactory;
    }
 
+   @Override
    public IAtsConfigItemFactory getConfigItemFactory() {
       return configItemFactory;
    }
@@ -677,6 +685,37 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsWorkItemFactory getWorkItemFactory() {
       return workItemFactory;
+   }
+
+   @Override
+   public Artifact getArtifactById(String id) {
+      Artifact result = null;
+      if (GUID.isValid(id)) {
+         result = getArtifactByGuid(id);
+      }
+      if (result == null && Strings.isNumeric(id)) {
+         result = getArtifact(Long.valueOf(id));
+      }
+      if (result == null) {
+         result = getArtifactByAtsId(id);
+      }
+      return result;
+   }
+
+   @Override
+   public Artifact getArtifactByAtsId(String id) {
+      Artifact result = null;
+      try {
+         result = ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, id, AtsUtilCore.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   @Override
+   public Artifact getArtifactByGuid(String guid) throws OseeCoreException {
+      return getArtifact(guid);
    }
 
 }

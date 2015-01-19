@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -244,4 +245,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       getArtifact(object1).addRelation(relationSide, getArtifact(object2));
    }
 
+   @Override
+   public void unrelateAll(Object object, IRelationTypeSide relationType) {
+      getArtifact(object).deleteRelations(relationType);
+   }
+
+   @Override
+   public void setRelation(Object object1, IRelationTypeSide relationType, Object object2) {
+      Artifact artifact = getArtifact(object1);
+      Artifact artifact2 = getArtifact(object2);
+      artifact.setRelations(relationType, Collections.singleton(artifact2));
+   }
 }

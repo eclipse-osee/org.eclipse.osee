@@ -10,32 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.store;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.IAtsVersionAdmin;
+import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
-import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -47,39 +40,26 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Donald G Dunne
  */
-public class AtsVersionServiceImpl implements IAtsVersionAdmin {
+public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl implements IAtsClientVersionService {
 
    private final CacheProvider<AtsArtifactConfigCache> cacheProvider;
-   private final IAtsArtifactStore artifactStore;
    private final AtsVersionCache versionCache;
-   private final IVersionFactory versionFactory;
+   private final IAtsClient atsClient;
 
-   public AtsVersionServiceImpl(CacheProvider<AtsArtifactConfigCache> configCacheProvider, IAtsArtifactStore artifactStore, AtsVersionCache versionCache) {
-      super();
+   public AtsVersionServiceImpl(IAtsClient atsClient, CacheProvider<AtsArtifactConfigCache> configCacheProvider, AtsVersionCache versionCache) {
+      super(atsClient.getServices());
+      this.atsClient = atsClient;
       this.cacheProvider = configCacheProvider;
-      this.artifactStore = artifactStore;
       this.versionCache = versionCache;
-      this.versionFactory = new VersionFactory(this);
    }
 
    @Override
-   public IAtsVersion getTargetedVersion(Object object) throws OseeCoreException {
-      IAtsVersion version = null;
-      if (object instanceof AbstractWorkflowArtifact) {
-         TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
-         if (teamArt != null) {
-            version = getTargetedVersionByTeamWf(teamArt);
-         }
-      }
-      return version;
-   }
-
-   private IAtsVersion getTargetedVersionByTeamWf(TeamWorkFlowArtifact teamWf) throws OseeCoreException {
+   public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IAtsVersion version = versionCache.getVersion(teamWf);
       if (version == null) {
-         if (teamWf.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
+         if (getArtifact(teamWf).getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
             List<Artifact> verArts =
-               teamWf.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+               getArtifact(teamWf).getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (verArts.size() > 1) {
                OseeLog.log(Activator.class, Level.SEVERE,
                   "Multiple targeted versions for artifact " + teamWf.toStringWithId());
@@ -93,12 +73,12 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
       return version;
    }
 
-   @Override
-   public void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      removeTargetedVersion(teamWf, false);
+   private Artifact getArtifact(IAtsObject object) {
+      return (Artifact) object.getStoreObject();
    }
 
-   private void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException {
+   @Override
+   public void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException {
       if (store) {
          TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
          teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
@@ -146,39 +126,6 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
       }
    }
 
-   /**
-    * @return true if this is a TeamWorkflow and the version it's been targeted for has been released
-    */
-   @Override
-   public boolean isReleased(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      boolean released = false;
-      IAtsVersion verArt = getTargetedVersion(teamWf);
-      if (verArt != null) {
-         released = verArt.isReleased();
-      }
-      return released;
-   }
-
-   @Override
-   public boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      boolean locked = false;
-      IAtsVersion verArt = getTargetedVersion(teamWf);
-      if (verArt != null) {
-         locked = verArt.isVersionLocked();
-      }
-      return locked;
-   }
-
-   @Override
-   public boolean hasTargetedVersion(Object object) throws OseeCoreException {
-      return getTargetedVersion(object) != null;
-   }
-
-   private <T extends IAtsConfigObject> T loadFromStore(Artifact art) throws OseeCoreException {
-      AtsArtifactConfigCache atsConfigCache = cacheProvider.get();
-      return artifactStore.load(atsConfigCache, art);
-   }
-
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException {
       Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
@@ -195,62 +142,6 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException {
-      IAtsTeamDefinition result = null;
-      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
-      if (verArt != null) {
-         Artifact teamDefArt = null;
-         try {
-            teamDefArt = verArt.getRelatedArtifact(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
-         } catch (ArtifactDoesNotExist ex) {
-            if (!verArt.isDeleted() && verArt.isInDb()) {
-               OseeLog.logf(Activator.class, Level.SEVERE, "Version [%s] has no related team defininition",
-                  verArt.toStringWithId());
-            }
-         }
-         if (teamDefArt != null) {
-            result = loadFromStore(teamDefArt);
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public IAtsVersion getById(Identity<String> id) throws OseeCoreException {
-      IAtsVersion version = null;
-      Artifact verArt = ArtifactQuery.getArtifactFromId(id.getGuid(), AtsUtilCore.getAtsBranch());
-      if (verArt != null) {
-         version = loadFromStore(verArt);
-      }
-      return version;
-   }
-
-   @Override
-   public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) throws OseeCoreException {
-      Collection<IAtsTeamWorkflow> toReturn = new LinkedList<IAtsTeamWorkflow>();
-      Collection<TeamWorkFlowArtifact> tmWfs = getTargetedForTeamWorkflowArtifacts(version);
-      for (TeamWorkFlowArtifact tmWf : tmWfs) {
-         IAtsTeamWorkflow atsTmWf = loadFromStore(tmWf);
-         toReturn.add(atsTmWf);
-      }
-      return toReturn;
-   }
-
-   @Override
-   public Collection<TeamWorkFlowArtifact> getTargetedForTeamWorkflowArtifacts(IAtsVersion verArt) throws OseeCoreException {
-      Artifact artifact = cacheProvider.get().getArtifact(verArt);
-      List<TeamWorkFlowArtifact> teamWorkflows;
-      if (artifact != null) {
-         teamWorkflows =
-            artifact.getRelatedArtifactsOfType(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
-               TeamWorkFlowArtifact.class);
-      } else {
-         teamWorkflows = Collections.emptyList();
-      }
-      return teamWorkflows;
-   }
-
-   @Override
    public void invalidateVersionCache() {
       versionCache.invalidateCache();
    }
@@ -262,13 +153,10 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
 
    @Override
    public Branch getBranch(IAtsVersion version) {
-      Artifact artifact = cacheProvider.get().getArtifact(version);
       Branch branch = null;
-      if (artifact != null) {
-         long branchUuid = Long.valueOf(artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
-         if (branchUuid > 0) {
-            branch = BranchManager.getBranch(branchUuid);
-         }
+      long branchUuid = getBranchId(version);
+      if (branchUuid > 0) {
+         branch = BranchManager.getBranch(branchUuid);
       }
       return branch;
    }
@@ -295,7 +183,7 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
 
    @Override
    public IAtsVersion createVersion(String title, String guid, long uuid) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(title, guid, uuid);
+      IAtsVersion item = atsClient.getVersionFactory().createVersion(title, guid, uuid);
       AtsArtifactConfigCache cache = cacheProvider.get();
       cache.cache(item);
       return item;
@@ -303,15 +191,10 @@ public class AtsVersionServiceImpl implements IAtsVersionAdmin {
 
    @Override
    public IAtsVersion createVersion(String name) throws OseeCoreException {
-      IAtsVersion item = versionFactory.createVersion(name);
+      IAtsVersion item = atsClient.getVersionFactory().createVersion(name);
       AtsArtifactConfigCache cache = cacheProvider.get();
       cache.cache(item);
       return item;
-   }
-
-   @Override
-   public IVersionFactory getVersionFactory() {
-      return versionFactory;
    }
 
 }

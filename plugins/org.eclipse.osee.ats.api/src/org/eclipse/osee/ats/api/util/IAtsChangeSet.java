@@ -67,4 +67,8 @@ public interface IAtsChangeSet {
 
    AtsNotificationCollector getNotifications();
 
+   void unrelateAll(Object object, IRelationTypeSide relationType);
+
+   void setRelation(Object object1, IRelationTypeSide relationType, Object object2);
+
 }

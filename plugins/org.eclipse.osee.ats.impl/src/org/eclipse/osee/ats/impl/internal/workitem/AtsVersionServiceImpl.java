@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal;
+package org.eclipse.osee.ats.impl.internal.workitem;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
 
 /**
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
-public interface IArtifactProvider {
+public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl {
 
-   Artifact getArtifact(Object object) throws OseeCoreException;
+   public AtsVersionServiceImpl(IAtsServices services) {
+      super(services);
+   }
+
 }

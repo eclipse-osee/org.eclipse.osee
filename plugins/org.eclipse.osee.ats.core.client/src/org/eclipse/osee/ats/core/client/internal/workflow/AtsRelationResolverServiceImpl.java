@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -55,6 +56,20 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       Artifact useArt2 = getArtifact(object2);
       if (useArt1 != null && useArt2 != null) {
          related = useArt1.isRelated(relationType, useArt2);
+      }
+      return related;
+   }
+
+   @Override
+   public Object getRelatedOrNull(Object object, IRelationTypeSide relationType) {
+      Object related = null;
+      Artifact artifact = getArtifact(object);
+      if (artifact != null) {
+         try {
+            related = artifact.getRelatedArtifact(relationType);
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
       }
       return related;
    }

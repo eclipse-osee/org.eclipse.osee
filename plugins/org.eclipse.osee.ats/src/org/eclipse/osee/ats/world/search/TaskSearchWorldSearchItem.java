@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -139,7 +140,10 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
-         for (Artifact art : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(verArt)) {
+         Collection<IAtsTeamWorkflow> targetedForTeamWorkflows =
+            AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt);
+         Collection<Artifact> workflowArts = Collections.castAll(targetedForTeamWorkflows);
+         for (Artifact art : workflowArts) {
             if (teamDefs.isEmpty()) {
                workflows.add(art);
             }

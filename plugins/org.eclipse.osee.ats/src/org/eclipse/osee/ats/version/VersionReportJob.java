@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -70,8 +71,9 @@ public class VersionReportJob extends Job {
       }
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title + getReleasedString(verArt), verArt.getName()));
-      sb.append(getTeamWorkflowReport(
-         AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(verArt), null, monitor));
+      Collection<TeamWorkFlowArtifact> targetedForTeamWorkflows =
+         Collections.castAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt));
+      sb.append(getTeamWorkflowReport(targetedForTeamWorkflows, null, monitor));
       return sb.toString();
    }
 

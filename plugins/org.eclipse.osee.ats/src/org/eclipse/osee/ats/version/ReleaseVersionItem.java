@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -75,9 +75,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (TeamWorkFlowArtifact team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
-               verArt)) {
-               if (!team.isCancelled() && !team.isCompleted()) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
+               if (!team.getStateMgr().getStateType().isCancelled() && !team.getStateMgr().getStateType().isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
                }

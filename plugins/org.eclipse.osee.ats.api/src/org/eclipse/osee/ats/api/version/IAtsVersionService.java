@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,25 +28,20 @@ public interface IAtsVersionService {
 
    Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) throws OseeCoreException;
 
-   IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException;
-
-   IAtsVersion setTargetedVersionAndStore(IAtsTeamWorkflow teamWf, IAtsVersion build) throws OseeCoreException;
-
    IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException;
 
-   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException;
+   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) throws OseeCoreException;
 
    boolean isReleased(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   void removeTargetedVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException;
 
    IAtsVersion getById(Identity<String> id) throws OseeCoreException;
 
-   IAtsVersion createVersion(String title, String guid, long uuid);
+   Long getBranchId(IAtsVersion version);
 
-   IAtsVersion createVersion(String name);
+   IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException;
 
-   IVersionFactory getVersionFactory();
 }

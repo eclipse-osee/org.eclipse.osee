@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
+import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class VersionArtifactReader extends AbstractAtsArtifactReader<IAtsVersion> {
 
-   private final IAtsVersionService versionService;
+   private final IAtsClientVersionService versionService;
 
-   public VersionArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsVersionService versionService) {
+   public VersionArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsClientVersionService versionService) {
       super(actionableItemFactory, teamDefFactory, versionFactory);
       this.versionService = versionService;
    }

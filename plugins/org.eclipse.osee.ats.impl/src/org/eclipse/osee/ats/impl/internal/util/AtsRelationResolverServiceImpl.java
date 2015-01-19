@@ -14,13 +14,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsRelationResolverServiceImpl implements IRelationResolver {
+
+   private final IAtsServer atsServer;
+
+   public AtsRelationResolverServiceImpl(IAtsServer atsServer) {
+      this.atsServer = atsServer;
+   }
 
    @Override
    public Collection<Object> getRelated(Object object, IRelationTypeSide relationType) {
@@ -38,6 +46,20 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       boolean related = false;
       if ((object1 instanceof ArtifactReadable) && (object2 instanceof ArtifactReadable)) {
          related = ((ArtifactReadable) object1).areRelated(relationType, (ArtifactReadable) object2);
+      }
+      return related;
+   }
+
+   @Override
+   public Object getRelatedOrNull(Object object, IRelationTypeSide relationType) {
+      Object related = null;
+      ArtifactReadable artifact = atsServer.getArtifact(object);
+      if (artifact != null) {
+         try {
+            related = artifact.getRelated(relationType);
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
       }
       return related;
    }

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -87,8 +88,10 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          return EMPTY_SET;
       }
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
-         getTeamDefinition().getNextReleaseVersion()));
+      List<Artifact> castAll =
+         Collections.castAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+            getTeamDefinition().getNextReleaseVersion()));
+      arts.addAll(castAll);
       if (isCancelled()) {
          return EMPTY_SET;
       }

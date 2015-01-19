@@ -35,6 +35,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -565,17 +566,17 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       monitor.subTask("Loading tasks");
 
       for (IAtsVersion version : versions) {
-         Collection<TeamWorkFlowArtifact> targetedForTeamArtifacts =
-            AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(version);
+         Collection<IAtsTeamWorkflow> targetedForTeamArtifacts =
+            AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(version);
          double increment = 100.0 / targetedForTeamArtifacts.size();
          double progress = 0;
-         for (TeamWorkFlowArtifact workflow : targetedForTeamArtifacts) {
+         for (IAtsTeamWorkflow workflow : targetedForTeamArtifacts) {
             progress += increment;
             monitor.worked((int) Math.min(1.0, progress));
             if (progress > 1.0) {
                progress = 0;
             }
-            loadTasksFromWorkflow(workflow);
+            loadTasksFromWorkflow((TeamWorkFlowArtifact) workflow.getStoreObject());
          }
       }
    }

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -62,10 +63,9 @@ public class VersionTeamMetrics {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
          for (IAtsVersion verArt : verTeamDef.getVersions()) {
-            for (TeamWorkFlowArtifact team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
-               verArt)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
                Date origDate = team.getCreatedDate();
-               teamWorkflowToOrigDate.put(team, origDate);
+               teamWorkflowToOrigDate.put((TeamWorkFlowArtifact) team.getStoreObject(), origDate);
             }
          }
       }

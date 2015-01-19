@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.internal.Activator;
@@ -46,7 +47,7 @@ public class VersionMetrics {
       sb.append("\n");
       try {
          sb.append("Workflows: ");
-         sb.append(AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(verArt).size());
+         sb.append(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt).size());
          sb.append(" Problem: ");
          sb.append(getTeamWorkFlows(ChangeType.Problem).size());
          sb.append(" Improve: ");
@@ -98,10 +99,10 @@ public class VersionMetrics {
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (TeamWorkFlowArtifact team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
-         verArt)) {
-         if (changeTypes.contains(ChangeTypeUtil.getChangeType(team))) {
-            teams.add(team);
+      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) team.getStoreObject();
+         if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt))) {
+            teams.add(teamArt);
          }
       }
       return teams;

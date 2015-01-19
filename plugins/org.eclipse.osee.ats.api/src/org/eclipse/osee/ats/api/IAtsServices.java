@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse  License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.api;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -30,23 +32,23 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsServices {
 
-   public IRelationResolver getRelationResolver();
+   IRelationResolver getRelationResolver();
 
-   public IAttributeResolver getAttributeResolver();
+   IAttributeResolver getAttributeResolver();
 
-   public IAtsUserService getUserService();
+   IAtsUserService getUserService();
 
-   public IAtsWorkItemService getWorkItemService();
+   IAtsWorkItemService getWorkItemService();
 
-   public IAtsReviewService getReviewService();
+   IAtsReviewService getReviewService();
 
-   public IAtsBranchService getBranchService();
+   IAtsBranchService getBranchService();
 
-   public IAtsWorkDefinitionService getWorkDefService();
+   IAtsWorkDefinitionService getWorkDefService();
 
-   public IAtsVersionService getVersionService();
+   IAtsVersionService getVersionService();
 
-   Object getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   Object getArtifact(Object object) throws OseeCoreException;
 
    void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
 
@@ -55,5 +57,11 @@ public interface IAtsServices {
    String getAtsId(IAtsAction action);
 
    Collection<IArtifactType> getArtifactTypes();
+
+   IAtsWorkItemFactory getWorkItemFactory();
+
+   Object getArtifactById(String id);
+
+   IAtsConfigItemFactory getConfigItemFactory();
 
 }

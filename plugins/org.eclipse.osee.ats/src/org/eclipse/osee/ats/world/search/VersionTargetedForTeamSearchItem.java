@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -83,15 +84,15 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : AtsClientService.get().getVersionService().getTargetedForTeamWorkflowArtifacts(
+      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
          getSearchVersionArtifact())) {
          if (returnAction) {
-            ActionArtifact parentAction = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
+            ActionArtifact parentAction = ((TeamWorkFlowArtifact) team.getStoreObject()).getParentActionArtifact();
             if (parentAction != null) {
                arts.add(parentAction);
             }
          } else {
-            arts.add(art);
+            arts.add((TeamWorkFlowArtifact) team.getStoreObject());
          }
       }
       if (isCancelled()) {

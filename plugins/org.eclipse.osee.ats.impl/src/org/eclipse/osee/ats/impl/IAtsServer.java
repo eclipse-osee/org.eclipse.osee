@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.impl;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -48,10 +47,11 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
+   @Override
    IAtsWorkItemFactory getWorkItemFactory() throws OseeCoreException;
 
    @Override
-   ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
+   ArtifactReadable getArtifact(Object object) throws OseeCoreException;
 
    IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
@@ -76,6 +76,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    ArtifactReadable getArtifactByAtsId(String id);
 
+   @Override
    ArtifactReadable getArtifactById(String id);
 
    QueryBuilder getQuery();
