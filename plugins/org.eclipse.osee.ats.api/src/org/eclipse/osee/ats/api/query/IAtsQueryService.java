@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.query;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 
+/**
+ * @author Donald G. Dunne
+ */
 public interface IAtsQueryService {
 
-   IAtsQuery createQuery(Collection<? extends IAtsWorkItem> workItems);
+   IAtsQuery createQuery();
 
+   IAtsWorkItemFilter createFilter(List<IAtsWorkItem> workItems);
 }

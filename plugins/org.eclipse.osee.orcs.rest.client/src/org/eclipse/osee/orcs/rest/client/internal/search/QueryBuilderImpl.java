@@ -249,4 +249,9 @@ public class QueryBuilderImpl implements QueryBuilder {
       return getSearchResult(RequestType.IDS).getIds();
    }
 
+   @Override
+   public QueryBuilder getQueryBuilder() {
+      return this;
+   }
+
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -91,23 +91,21 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          workItems.add((IAtsWorkItem) art);
       }
 
-      IAtsQuery query =
-         AtsClientService.get().createQuery(workItems).withOrValue(AtsAttributeTypes.LegacyPcrId, pcrIds).withOrValue(
-            AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(AtsArtifactTypes.TeamWorkflow);
+      IAtsWorkItemFilter filter =
+         AtsClientService.get().getQueryService().createFilter(workItems).withOrValue(AtsAttributeTypes.LegacyPcrId,
+            pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(AtsArtifactTypes.TeamWorkflow);
 
-      List<Artifact> artifacts = Collections.castAll(query.getItems());
+      List<Artifact> results = new ArrayList<Artifact>();
       if (returnActions) {
-         List<Artifact> actions = new ArrayList<Artifact>();
-         for (Artifact artifact : artifacts) {
-            if (artifact instanceof AbstractWorkflowArtifact) {
-               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               actions.add(awa.getParentActionArtifact());
-            }
+         for (IAtsWorkItem workItem : filter.getItems()) {
+            results.add(((AbstractWorkflowArtifact) workItem.getStoreObject()).getParentActionArtifact());
          }
-         return actions;
       } else {
-         return artifacts;
+         for (IAtsWorkItem workItem : filter.getItems()) {
+            results.add(((AbstractWorkflowArtifact) workItem.getStoreObject()));
+         }
       }
+      return results;
 
    }
 

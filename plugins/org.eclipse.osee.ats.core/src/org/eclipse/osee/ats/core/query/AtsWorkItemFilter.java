@@ -8,21 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal.query;
+package org.eclipse.osee.ats.core.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,20 +30,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public class AtsQuery implements IAtsQuery {
+public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    private final Collection<? extends IAtsWorkItem> items;
    private final IAtsWorkItemService workItemService;
-   private final IAtsWorkItemArtifactService workItemArtifactProvider;
 
-   public AtsQuery(Collection<? extends IAtsWorkItem> workItems, IAtsWorkItemService workItemService, IAtsWorkItemArtifactService teamDefService) {
+   public AtsWorkItemFilter(IAtsWorkItemService workItemService) {
+      this(null, workItemService);
+   }
+
+   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, IAtsWorkItemService workItemService) {
       this.items = workItems;
       this.workItemService = workItemService;
-      this.workItemArtifactProvider = teamDefService;
    }
 
    @Override
-   public IAtsQuery isOfType(IArtifactType... artifactType) throws OseeCoreException {
+   public IAtsWorkItemFilter isOfType(IArtifactType... artifactType) throws OseeCoreException {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          for (IArtifactType matchType : artifactType) {
@@ -60,18 +62,18 @@ public class AtsQuery implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery union(IAtsQuery... atsQuery) throws OseeCoreException {
+   public IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) throws OseeCoreException {
       Set<IAtsWorkItem> items = new HashSet<IAtsWorkItem>();
-      for (IAtsQuery query : atsQuery) {
+      for (IAtsWorkItemFilter query : atsQuery) {
          items.addAll(query.getItems());
       }
       return this;
    }
 
    @Override
-   public IAtsQuery fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
-         IAtsTeamDefinition itemTeamDef = workItemArtifactProvider.getTeamDefinition(workItem);
+         IAtsTeamDefinition itemTeamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
          if (!itemTeamDef.getGuid().equals(teamDef.getGuid())) {
             items.remove(workItem);
          }
@@ -80,7 +82,7 @@ public class AtsQuery implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery isStateType(StateType... stateType) throws OseeCoreException {
+   public IAtsWorkItemFilter isStateType(StateType... stateType) throws OseeCoreException {
       List<StateType> types = new ArrayList<StateType>();
       for (StateType type : stateType) {
          types.add(type);
@@ -98,13 +100,19 @@ public class AtsQuery implements IAtsQuery {
       return this;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   public Collection<? extends IAtsWorkItem> getItems() {
-      return items;
+   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
+      Set<T> workItems = new HashSet<T>();
+      Iterator<? extends IAtsWorkItem> iterator = items.iterator();
+      while (iterator.hasNext()) {
+         workItems.add((T) iterator.next());
+      }
+      return workItems;
    }
 
    @Override
-   public IAtsQuery withOrValue(IAttributeType attributeType, Collection<? extends Object> matchValues) throws OseeCoreException {
+   public IAtsWorkItemFilter withOrValue(IAttributeType attributeType, Collection<? extends Object> matchValues) throws OseeCoreException {
       if (matchValues != null && !matchValues.isEmpty()) {
          for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
             Collection<Object> currAttrValues = workItemService.getAttributeValues(workItem, attributeType);

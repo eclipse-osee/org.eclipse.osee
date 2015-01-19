@@ -207,4 +207,6 @@ public interface QueryBuilder {
     * @return artifact search ids
     */
    List<Integer> getIds();
+
+   QueryBuilder getQueryBuilder();
 }

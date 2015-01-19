@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -30,7 +29,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
-import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
@@ -65,7 +64,7 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
-import org.eclipse.osee.ats.core.client.internal.query.AtsQuery;
+import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceIimpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWriter;
@@ -154,6 +153,7 @@ public class AtsClientImpl implements IAtsClient {
    private IRelationResolver relationResolver;
    private IAtsProgramService programService;
    private IAtsTeamDefinitionService teamDefinitionService;
+   private IAtsQueryService atsQueryService;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -379,11 +379,6 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IAtsUserService getUserService() throws OseeStateException {
       return userService;
-   }
-
-   @Override
-   public IAtsQuery createQuery(Collection<? extends IAtsWorkItem> workItems) {
-      return new AtsQuery(workItems, workItemService, workItemArtifactProvider);
    }
 
    private AtsArtifactConfigCache getConfigCache() throws OseeCoreException {
@@ -669,6 +664,19 @@ public class AtsClientImpl implements IAtsClient {
          // do nothing
       }
       return result;
+   }
+
+   @Override
+   public IAtsQueryService getQueryService() {
+      if (atsQueryService == null) {
+         atsQueryService = new AtsQueryServiceIimpl(this);
+      }
+      return atsQueryService;
+   }
+
+   @Override
+   public IAtsWorkItemFactory getWorkItemFactory() {
+      return workItemFactory;
    }
 
 }

@@ -14,28 +14,25 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsQuery {
+public interface IAtsWorkItemFilter {
 
-   IAtsQuery isOfType(Class<? extends IAtsWorkItem> clazz) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType) throws OseeCoreException;
 
-   IAtsQuery fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) throws OseeCoreException;
 
-   IAtsQuery isStateType(StateType... stateType) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
 
-   <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
+   public abstract IAtsWorkItemFilter isStateType(StateType... stateType) throws OseeCoreException;
 
-   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values) throws OseeCoreException;
+   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
-   IAtsQuery andAtsIds(Collection<String> atsIds);
-
-   IAtsQuery andLegacyIds(Collection<String> legacyIds);
-
-   IAtsWorkItemFilter andFilter() throws OseeCoreException;
+   public abstract IAtsWorkItemFilter withOrValue(IAttributeType attributeType, Collection<? extends Object> values) throws OseeCoreException;
 
 }

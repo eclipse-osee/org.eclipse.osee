@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
@@ -60,6 +61,7 @@ import org.eclipse.osee.ats.impl.internal.notify.AtsNotificationEventProcessor;
 import org.eclipse.osee.ats.impl.internal.notify.AtsNotifierServiceImpl;
 import org.eclipse.osee.ats.impl.internal.notify.IAtsNotifierServer;
 import org.eclipse.osee.ats.impl.internal.notify.WorkItemNotificationProcessor;
+import org.eclipse.osee.ats.impl.internal.query.AtsQueryServiceIimpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
@@ -125,6 +127,7 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsTeamDefinitionService atsTeamDefinitionService;
    private JdbcClient jdbcClient;
    private IAgileService agileService;
+   private IAtsQueryService atsQueryService;
 
    private volatile boolean emailEnabled = true;
    private volatile boolean started = false;
@@ -217,6 +220,7 @@ public class AtsServerImpl implements IAtsServer {
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
       agileService = new AgileService(logger, this);
+      atsQueryService = new AtsQueryServiceIimpl(this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
@@ -525,6 +529,11 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IAgileService getAgileService() {
       return agileService;
+   }
+
+   @Override
+   public IAtsQueryService getQueryService() {
+      return atsQueryService;
    }
 
 }
