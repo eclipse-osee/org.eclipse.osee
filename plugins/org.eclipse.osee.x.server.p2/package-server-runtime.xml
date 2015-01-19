@@ -176,7 +176,6 @@ osee.log.default=INFO
 		<attribute name="filepath" />
 		<attribute name="serverport" />
 		<attribute name="launcher" />
-		<attribute name="session.timeout" default="3600" />
 		<attribute name="serverMaxMem" default="1024m" />
 		<attribute name="executable" default="true" />
 		<attribute name="extraVMArgs" default=" " />
@@ -185,7 +184,6 @@ osee.log.default=INFO
 			<echo file="@{filepath}" append="false">java -server \
 -Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
--Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=@{session.timeout} \
 -Dcm.config.uri=&quot;@{cm.cfg.uri}&quot; \
 @{extraVMArgs} \
 -jar plugins/@{launcher} -console -consoleLog
