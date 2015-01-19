@@ -131,7 +131,6 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsQueryService atsQueryService;
 
    private volatile boolean emailEnabled = true;
-   private volatile boolean started = false;
 
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
@@ -229,35 +228,24 @@ public class AtsServerImpl implements IAtsServer {
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
 
       System.out.println("ATS - AtsServerImpl started");
-      started = true;
    }
 
    public void stop() {
-      started = false;
       jdbcClient = null;
-   }
-
-   private void checkStarted() {
-      if (!started) {
-         throw new OseeStateException("AtsServer did not start");
-      }
    }
 
    @Override
    public OrcsApi getOrcsApi() throws OseeCoreException {
-      checkStarted();
       return orcsApi;
    }
 
    @Override
    public IAtsWorkItemFactory getWorkItemFactory() throws OseeCoreException {
-      checkStarted();
       return workItemFactory;
    }
 
    @Override
    public IAtsWorkDefinitionService getWorkDefService() throws OseeCoreException {
-      checkStarted();
       return workDefService;
    }
 
@@ -268,7 +256,6 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifact(Object object) throws OseeCoreException {
-      checkStarted();
       ArtifactReadable result = null;
       if (object instanceof ArtifactReadable) {
          result = (ArtifactReadable) object;
@@ -286,7 +273,6 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public IAtsWorkItemService getWorkItemService() throws OseeStateException {
-      checkStarted();
       return workItemService;
    }
 
@@ -302,7 +288,6 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifactByGuid(String guid) throws OseeCoreException {
-      checkStarted();
       return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
    }
 
@@ -323,7 +308,6 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public IAtsConfig getConfig() throws OseeStateException {
-      checkStarted();
       return config;
    }
 
