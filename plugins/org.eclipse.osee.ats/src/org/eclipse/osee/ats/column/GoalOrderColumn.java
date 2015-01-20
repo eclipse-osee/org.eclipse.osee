@@ -39,15 +39,23 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
 
-   public static GoalOrderColumn instance = new GoalOrderColumn();
+   public static GoalOrderColumn instance = new GoalOrderColumn(false);
+   public static GoalOrderColumn backlogInstance = new GoalOrderColumn(true);
 
    public static GoalOrderColumn getInstance() {
       return instance;
    }
+   private boolean backlog = false;
 
-   private GoalOrderColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrder", "Goal Order", 45, SWT.LEFT, false,
-         SortDataType.Integer, true, "Order of item within displayed goal.  Editing this field changes order.");
+   public static GoalOrderColumn getBacklogInstance() {
+      return backlogInstance;
+   }
+
+   private GoalOrderColumn(boolean backlog) {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + (backlog ? ".backlogOrder" : ".goalOrder"),
+         (backlog ? "Backlog Order" : "Goal Order"), 45, SWT.LEFT, false, SortDataType.Integer, true,
+         "Order of item within displayed " + (backlog ? "Backlog" : "Goal") + ".  Editing this field changes order.");
+      this.backlog = backlog;
    }
 
    /**
@@ -56,7 +64,7 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
     */
    @Override
    public GoalOrderColumn copy() {
-      GoalOrderColumn newXCol = new GoalOrderColumn();
+      GoalOrderColumn newXCol = new GoalOrderColumn(backlog);
       super.copy(this, newXCol);
       return newXCol;
    }

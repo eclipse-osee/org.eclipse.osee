@@ -1309,12 +1309,42 @@ relationType "TeamActionableItem" {
 	multiplicity ONE_TO_MANY
 }
 
-relationType "AgileSprint" {
+relationType "AgileSprintToItem" {
 	uuid 0x0DB6D78253FE8AB1
-	sideAName "Sprint"
+	sideAName "Agile Sprint"
 	sideAArtifactType "Agile Sprint"
-	sideBName "Item"
+	sideBName "ATS Item"
 	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
+}
+
+relationType "AgileTeamToAtsTeam" {
+	uuid 0x7CED0706F811126C 
+	sideAName "Agile Team"
+	sideAArtifactType "Agile Team"
+	sideBName "ATS Team"
+	sideBArtifactType "Team Definition"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
+}
+
+relationType "AgileTeamToBacklog" {
+	uuid 0x7A5A06AAB20398F2  
+	sideAName "Agile Team"
+	sideAArtifactType "Agile Team"
+	sideBName "Backlog"
+	sideBArtifactType "Goal"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_ONE
+}
+
+relationType "AgileTeamToSprint" {
+	uuid 0x61C047A5D52830F5  
+	sideAName "Agile Team"
+	sideAArtifactType "Agile Team"
+	sideBName "Sprint"
+	sideBArtifactType "Agile Sprint"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity ONE_TO_MANY
 }

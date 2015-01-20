@@ -63,4 +63,11 @@ public interface AgileTeamEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public NewAgileSprint createSprint(NewAgileSprint newSprint) throws Exception;
 
+   @Path("backlog")
+   @POST
+   @IdentityView
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewAgileBacklog createBacklog(NewAgileBacklog newBacklog) throws Exception;
+
 }

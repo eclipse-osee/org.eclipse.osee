@@ -23,8 +23,17 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = ActionToWorkflow_Action.getOpposite();
    
-   public static final IRelationTypeSide AgileSprint_Sprint = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x0DB6D78253FE8AB1L, "AgileSprint");
-   public static final IRelationTypeSide AgileSprint_Item = AgileSprint_Sprint.getOpposite();
+   public static final IRelationTypeSide AgileTeamToAtsTeam_AgileTeam = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x7CED0706F811126CL, "AgileTeamToAtsTeam");
+   public static final IRelationTypeSide AgileTeamToAtsTeam_AtsTeam = AgileTeamToAtsTeam_AgileTeam.getOpposite();
+   
+   public static final IRelationTypeSide AgileTeamToBacklog_AgileTeam = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x7A5A06AAB20398F2L, "AgileTeamToBacklog");
+   public static final IRelationTypeSide AgileTeamToBacklog_Backlog = AgileTeamToBacklog_AgileTeam.getOpposite();
+   
+   public static final IRelationTypeSide AgileTeamToSprint_AgileTeam = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x61C047A5D52830F5L, "AgileTeamToSprint");
+   public static final IRelationTypeSide AgileTeamToSprint_Sprint = AgileTeamToSprint_AgileTeam.getOpposite();
+   
+   public static final IRelationTypeSide AgileSprintToItem_Sprint= TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x0DB6D78253FE8AB1L, "AgileSprintToItems");
+   public static final IRelationTypeSide AgileSprintToItem_AtsItem = AgileSprintToItem_Sprint.getOpposite();
    
    public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017AL, "Port");
    public static final IRelationTypeSide Port_To = Port_From.getOpposite();

@@ -30,7 +30,7 @@ public class SetCollectorOrderAction extends Action {
    private final IMemberProvider memberProvider;
 
    public SetCollectorOrderAction(IMemberProvider memberProvider, CollectorArtifact goalArt, ISelectedAtsArtifacts selectedAtsArtifacts) {
-      super(String.format("Set %s Order", memberProvider.getItemName()));
+      super(String.format("Set %s Order", memberProvider.getCollectorName()));
       this.memberProvider = memberProvider;
       this.selectedAtsArtifacts = selectedAtsArtifacts;
    }

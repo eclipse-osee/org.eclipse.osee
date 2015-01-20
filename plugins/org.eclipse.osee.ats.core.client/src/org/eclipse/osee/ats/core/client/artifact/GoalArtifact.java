@@ -38,15 +38,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
    @Override
    public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
-      List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.Goal_Goal);
-      if (parents.isEmpty()) {
-         return null;
-      }
-      if (parents.size() == 1) {
-         return (AbstractWorkflowArtifact) parents.iterator().next();
-      }
-      // TODO Two parent goals, what do here?
-      return (AbstractWorkflowArtifact) parents.iterator().next();
+      return null;
    }
 
    @Override

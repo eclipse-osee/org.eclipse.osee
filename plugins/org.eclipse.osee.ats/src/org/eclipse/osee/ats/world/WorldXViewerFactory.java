@@ -13,6 +13,12 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+
+import org.eclipse.osee.ats.agile.SprintColumn;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
@@ -146,6 +152,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ResolutionColumn.getInstance(),
       GroupsColumn.getInstance(),
       GoalsColumn.getInstance(),
+      SprintColumn.getInstance(),
       EstimatedReleaseDateColumn.getInstance(),
       EstimatedCompletionDateColumn.getInstance(),
       ReleaseDateColumn.getInstance(),

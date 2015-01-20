@@ -183,7 +183,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow instanceof GoalArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member) > 0) {
          return true;
       }
-      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.AgileSprint_Item) > 0) {
+      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.AgileSprintToItem_AtsItem) > 0) {
          return true;
       }
       return false;

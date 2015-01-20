@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.AddNoteAction;
 import org.eclipse.osee.ats.actions.CopyActionDetailsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -38,6 +39,7 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
+import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
@@ -81,6 +83,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -178,7 +181,11 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
          managedForm.getForm().setText(displayableTitle);
-         managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
+         if (AgileUtilClient.isBacklog(awa)) {
+            managedForm.getForm().setImage(ImageManager.getImage(AtsImage.AGILE_BACKLOG));
+         } else {
+            managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
+         }
       }
    }
 

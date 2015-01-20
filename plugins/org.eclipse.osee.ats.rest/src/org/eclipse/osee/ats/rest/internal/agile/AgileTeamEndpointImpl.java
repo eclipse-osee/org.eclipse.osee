@@ -23,9 +23,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.agile.NewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.NewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.NewAgileSprint;
 import org.eclipse.osee.ats.api.agile.NewAgileTeam;
@@ -51,28 +53,28 @@ public class AgileTeamEndpointImpl extends AbstractConfigResource implements Agi
    /********************************
     ** Agile Team
     ***********************************/
-
    @Override
    @POST
    @IdentityView
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public NewAgileTeam createTeam(NewAgileTeam newTeam) throws Exception {
+   public NewAgileTeam createTeam(NewAgileTeam team) throws Exception {
       // validate title
-      if (!Strings.isValid(newTeam.getName())) {
+      if (!Strings.isValid(team.getName())) {
          throw new OseeArgumentException("name is not valid");
       }
 
-      String guid = newTeam.getGuid();
+      String guid = team.getGuid();
       if (guid == null) {
          guid = GUID.create();
       }
 
-      IAgileTeam team = atsServer.getAgileService().createAgileTeam(newTeam.getName(), guid);
+      IAgileTeam updatedTeam = atsServer.getAgileService().createUpdateAgileTeam(team);
       NewAgileTeam created = new NewAgileTeam();
       created.setGuid(team.getGuid());
       created.setName(team.getName());
-      created.setUuid(team.getId());
+      created.setUuid(updatedTeam.getId());
+      created.getAtsTeamUuids().addAll(team.getAtsTeamUuids());
       return created;
    }
 
@@ -181,6 +183,39 @@ public class AgileTeamEndpointImpl extends AbstractConfigResource implements Agi
       created.setName(sprint.getName());
       created.setUuid(sprint.getId());
       created.setTeamUuid(sprint.getTeamUuid());
+      return created;
+   }
+
+   /********************************
+    ** Agile Backlog
+    ***********************************/
+   @Override
+   @Path("backlog")
+   @POST
+   @IdentityView
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewAgileBacklog createBacklog(NewAgileBacklog newBacklog) throws Exception {
+      // validate title
+      if (!Strings.isValid(newBacklog.getName())) {
+         throw new OseeArgumentException("name is not valid");
+      }
+      if (newBacklog.getTeamUuid() <= 0) {
+         throw new OseeArgumentException("teamUuid is not valid");
+      }
+
+      String guid = newBacklog.getGuid();
+      if (guid == null) {
+         guid = GUID.create();
+      }
+
+      IAgileBacklog backlog =
+         atsServer.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid);
+      NewAgileBacklog created = new NewAgileBacklog();
+      created.setGuid(backlog.getGuid());
+      created.setName(backlog.getName());
+      created.setUuid(backlog.getId());
+      created.setTeamUuid(backlog.getTeamUuid());
       return created;
    }
 

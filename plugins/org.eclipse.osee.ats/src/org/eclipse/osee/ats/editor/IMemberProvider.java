@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public interface IMemberProvider {
 
-   String getItemName();
+   String getCollectorName();
 
    KeyedImage getImageKey();
 
@@ -46,4 +46,6 @@ public interface IMemberProvider {
    void promptChangeOrder(Artifact artifact, List<Artifact> selectedAtsArtifacts);
 
    Result isAddValid(List<Artifact> artifacts);
+
+   String getMembersName();
 }

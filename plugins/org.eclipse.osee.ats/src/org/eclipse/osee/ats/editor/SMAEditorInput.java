@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
@@ -56,12 +57,22 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (!super.equals(obj)) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj) {
+         return true;
+      }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
       SMAEditorInput other = (SMAEditorInput) obj;
-      if (artUuid != other.artUuid) return false;
-      if (branchUuid != other.branchUuid) return false;
+      if (artUuid != other.artUuid) {
+         return false;
+      }
+      if (branchUuid != other.branchUuid) {
+         return false;
+      }
       return true;
    }
 
@@ -104,13 +115,24 @@ public class SMAEditorInput extends BaseArtifactEditorInput implements IPersista
    public String getName() {
       String name = title;
       if (getArtifact() != null && !getArtifact().isDeleted()) {
-         name = ((AbstractWorkflowArtifact) getArtifact()).getEditorTitle();
+         if (isBacklog()) {
+            name = "Backlog: " + getArtifact().getName();
+         } else {
+            name = ((AbstractWorkflowArtifact) getArtifact()).getEditorTitle();
+         }
       }
       return name;
    }
 
+   boolean isBacklog() {
+      return AgileUtilClient.isBacklog(getArtifact());
+   }
+
    @Override
    public ImageDescriptor getImageDescriptor() {
+      if (AgileUtilClient.isBacklog(getArtifact())) {
+         return ImageManager.getImageDescriptor(AtsImage.AGILE_BACKLOG);
+      }
       return ImageManager.getImageDescriptor(AtsImage.TEAM_WORKFLOW);
    }
 

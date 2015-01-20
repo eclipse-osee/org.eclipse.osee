@@ -113,7 +113,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private final IMemberProvider provider;
 
    public SMAMembersTab(SMAEditor editor, IMemberProvider provider) {
-      super(editor, ID, provider.getItemName());
+      super(editor, ID, provider.getMembersName());
       this.editor = editor;
       this.provider = provider;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
@@ -173,7 +173,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    public void refreshData() {
       if (Widgets.isAccessible(bodyComp)) {
          List<IOperation> ops = AtsBulkLoad.getConfigLoadingOperations();
-         IOperation operation = Operations.createBuilder("Load Members Tab").addAll(ops).build();
+         IOperation operation =
+            Operations.createBuilder("Load " + provider.getMembersName() + " Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, reloadAdapter);
       }
    }
@@ -292,7 +293,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
       if (isTableDisposed()) {
          return;
       }
-      Job job = new Job(String.format("Load %s Members", provider.getItemName())) {
+      String getLoadingString = String.format("Loading %s %s", provider.getCollectorName(), provider.getMembersName());
+      Job job = new Job(getLoadingString) {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -301,11 +303,26 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
             }
             try {
                final List<Artifact> artifacts = provider.getMembers();
-               worldComposite.load(provider.getItemName(), artifacts, (CustomizeData) null, TableLoadOption.None);
+               try {
+                  AtsBulkLoad.bulkLoadArtifacts(artifacts);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     if (isTableDisposed()) {
+                        return;
+                     }
+                     worldComposite.load(provider.getCollectorName(), artifacts, (CustomizeData) null,
+                        TableLoadOption.None);
+                  }
+
+               });
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Exception loading %s",
-                  provider.getItemName()), ex);
+                  provider.getCollectorName()), ex);
             }
             return Status.OK_STATUS;
          }

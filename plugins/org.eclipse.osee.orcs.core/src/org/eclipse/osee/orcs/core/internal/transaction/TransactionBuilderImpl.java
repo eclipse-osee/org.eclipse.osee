@@ -13,6 +13,8 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -300,6 +302,27 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          OseeExceptions.wrapAndThrow(ex);
       }
       return tx;
+   }
+
+   @Override
+   public void setRelations(ArtifactReadable artifact, IRelationTypeSide relationSide, Set<ArtifactReadable> artifacts) throws OseeCoreException {
+      Set<ArtifactReadable> currentlyRelated = new HashSet<ArtifactReadable>();
+      for (ArtifactReadable related : artifact.getRelated(relationSide)) {
+         currentlyRelated.add(related);
+      }
+      // Remove relations that have been removed
+      for (ArtifactReadable related : currentlyRelated) {
+         if (!artifacts.contains(related)) {
+            unrelate(artifact, relationSide, related);
+         }
+      }
+      // Add new relations if don't exist
+      for (ArtifactId related : artifacts) {
+         if (!currentlyRelated.contains(related)) {
+            relate(artifact, relationSide, related);
+         }
+      }
+
    }
 
 }

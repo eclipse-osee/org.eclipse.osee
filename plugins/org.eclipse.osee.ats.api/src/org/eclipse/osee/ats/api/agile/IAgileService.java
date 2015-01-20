@@ -17,7 +17,7 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeam(Object artifact);
 
-   IAgileTeam createAgileTeam(String name, String guid);
+   IAgileTeam createUpdateAgileTeam(NewAgileTeam team);
 
    IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
 
@@ -30,5 +30,9 @@ public interface IAgileService {
    IAgileSprint getAgileSprint(Object artifact);
 
    IAgileSprint createAgileSprint(long teamUuid, String name, String guid);
+
+   IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid);
+
+   IAgileBacklog getAgileBacklog(Object artifact);
 
 }

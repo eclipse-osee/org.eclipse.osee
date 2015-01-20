@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.action.Action;
+import org.eclipse.osee.ats.impl.internal.agile.AgileBacklog;
 import org.eclipse.osee.ats.impl.internal.agile.AgileSprint;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -98,6 +100,18 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
          }
       }
       return sprint;
+   }
+
+   @Override
+   public IAgileBacklog getAgileBacklog(Object artifact) throws OseeCoreException {
+      IAgileBacklog backlog = null;
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable artRead = (ArtifactReadable) artifact;
+         if (artRead.isOfType(AtsArtifactTypes.Goal)) {
+            backlog = new AgileBacklog(logger, atsServer, (ArtifactReadable) artifact);
+         }
+      }
+      return backlog;
    }
 
    @Override

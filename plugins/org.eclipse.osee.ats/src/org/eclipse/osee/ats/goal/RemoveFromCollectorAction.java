@@ -42,7 +42,7 @@ public class RemoveFromCollectorAction extends Action {
    }
 
    public RemoveFromCollectorAction(IMemberProvider memberProvider, CollectorArtifact collectorArt, ISelectedAtsArtifacts selectedAtsArtifacts, RemovedFromCollectorHandler handler) {
-      super(String.format("Remove from %s", memberProvider.getItemName()));
+      super(String.format("Remove from %s", memberProvider.getCollectorName()));
       this.memberProvider = memberProvider;
       this.collectorArt = collectorArt;
       this.selectedAtsArtifacts = selectedAtsArtifacts;
@@ -62,13 +62,13 @@ public class RemoveFromCollectorAction extends Action {
             AWorkbench.popup("No items selected");
             return;
          }
-         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from " + memberProvider.getItemName(),
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Remove from " + memberProvider.getCollectorName(),
             String.format("Remove the selected %d artifact%s from the %s [%s]?", selected.size(),
-               selected.size() > 1 ? "s" : "", memberProvider.getItemName(), collectorArt))) {
+               selected.size() > 1 ? "s" : "", memberProvider.getCollectorName(), collectorArt))) {
             for (Artifact art : selected) {
                collectorArt.deleteRelation(memberProvider.getMemberRelationTypeSide(), art);
             }
-            collectorArt.persist("Remove from " + memberProvider.getItemName());
+            collectorArt.persist("Remove from " + memberProvider.getCollectorName());
             handler.removedFromCollector(selected);
          }
       } catch (OseeCoreException ex) {

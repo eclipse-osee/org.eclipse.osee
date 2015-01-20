@@ -36,8 +36,13 @@ public class SprintMemberProvider implements IMemberProvider {
    }
 
    @Override
-   public String getItemName() {
+   public String getCollectorName() {
       return "Sprint";
+   }
+
+   @Override
+   public String getMembersName() {
+      return "Items";
    }
 
    @Override
@@ -82,7 +87,7 @@ public class SprintMemberProvider implements IMemberProvider {
 
    @Override
    public IRelationTypeSide getMemberRelationTypeSide() {
-      return AtsRelationTypes.AgileSprint_Item;
+      return AtsRelationTypes.AgileSprintToItem_AtsItem;
    }
 
    @Override
@@ -94,13 +99,13 @@ public class SprintMemberProvider implements IMemberProvider {
    public Result isAddValid(List<Artifact> artifacts) {
       StringBuilder builder = new StringBuilder();
       for (Artifact art : artifacts) {
-         List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprint_Sprint);
+         List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint);
          if (relatedSprints.size() > 1 || !relatedSprints.iterator().next().equals(getArtifact())) {
             builder.append(art.getArtifactTypeName());
             builder.append(" ");
             builder.append(art.toStringWithId());
             builder.append(" already belongs to ");
-            builder.append(art.getRelatedArtifactsCount(AtsRelationTypes.AgileSprint_Sprint));
+            builder.append(art.getRelatedArtifactsCount(AtsRelationTypes.AgileSprintToItem_Sprint));
             builder.append(" Sprint(s)\n");
          }
       }

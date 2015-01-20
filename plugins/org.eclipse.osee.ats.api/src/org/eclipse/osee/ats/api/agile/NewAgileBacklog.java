@@ -10,21 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class NewAgileTeam {
+public class NewAgileBacklog {
 
    private String name;
    private String guid;
    private long uuid;
-   private List<Long> atsTeamUuids = new ArrayList<Long>();
-   private long backlogUuid = 0;
+   private long teamUuid;
 
    public String getName() {
       return name;
@@ -53,20 +50,12 @@ public class NewAgileTeam {
       this.uuid = uuid;
    }
 
-   public List<Long> getAtsTeamUuids() {
-      return atsTeamUuids;
+   public long getTeamUuid() {
+      return teamUuid;
    }
 
-   public void setAtsTeamUuids(List<Long> atsTeamUuids) {
-      this.atsTeamUuids = atsTeamUuids;
-   }
-
-   public long getBacklogUuid() {
-      return backlogUuid;
-   }
-
-   public void setBacklogUuid(long backlogUuid) {
-      this.backlogUuid = backlogUuid;
+   public void setTeamUuid(long teamUuid) {
+      this.teamUuid = teamUuid;
    }
 
 }

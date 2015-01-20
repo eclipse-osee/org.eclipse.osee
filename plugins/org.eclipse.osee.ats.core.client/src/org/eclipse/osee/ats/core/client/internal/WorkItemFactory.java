@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.client.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -93,6 +95,17 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
          sprint = new AgileSprint(atsClient, (Artifact) artifact);
       }
       return sprint;
+   }
+
+   @Override
+   public IAgileBacklog getAgileBacklog(Object artifact) throws OseeCoreException {
+      IAgileBacklog backlog = null;
+      if (artifact instanceof IAgileBacklog) {
+         backlog = (IAgileBacklog) artifact;
+      } else {
+         backlog = new AgileBacklog(atsClient, (Artifact) artifact);
+      }
+      return backlog;
    }
 
    @Override

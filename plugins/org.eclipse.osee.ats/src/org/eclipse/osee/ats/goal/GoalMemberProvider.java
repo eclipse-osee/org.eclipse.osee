@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.goal;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.agile.AgileUtilClient;
+import org.eclipse.osee.ats.agile.BacklogXViewerFactory;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
@@ -37,12 +39,26 @@ public class GoalMemberProvider implements IMemberProvider {
    }
 
    @Override
-   public String getItemName() {
+   public String getCollectorName() {
+      if (isBacklog()) {
+         return "Sprint";
+      }
+      return "Goal";
+   }
+
+   @Override
+   public String getMembersName() {
+      if (isBacklog()) {
+         return "Items";
+      }
       return "Members";
    }
 
    @Override
    public KeyedImage getImageKey() {
+      if (isBacklog()) {
+         return AtsImage.AGILE_BACKLOG;
+      }
       return AtsImage.GOAL;
    }
 
@@ -68,6 +84,9 @@ public class GoalMemberProvider implements IMemberProvider {
 
    @Override
    public IXViewerFactory getXViewerFactory(Artifact awa) {
+      if (isBacklog()) {
+         return new BacklogXViewerFactory((GoalArtifact) awa);
+      }
       return new GoalXViewerFactory((GoalArtifact) awa);
    }
 
@@ -78,6 +97,9 @@ public class GoalMemberProvider implements IMemberProvider {
 
    @Override
    public String getColumnName() {
+      if (isBacklog()) {
+         return "ats.column.backlogOrder";
+      }
       return "ats.column.goalOrder";
    }
 
@@ -94,6 +116,10 @@ public class GoalMemberProvider implements IMemberProvider {
    @Override
    public Result isAddValid(List<Artifact> artifacts) {
       return Result.TrueResult;
+   }
+
+   private boolean isBacklog() {
+      return AgileUtilClient.isBacklog(getArtifact());
    }
 
 }

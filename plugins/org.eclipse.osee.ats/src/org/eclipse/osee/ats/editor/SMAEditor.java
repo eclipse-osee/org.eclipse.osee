@@ -684,6 +684,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
       Image image = null;
       if (getSMAEditorInput().isReload()) {
          image = ImageManager.getImage(AtsImage.TEAM_WORKFLOW);
+      } else if (getSMAEditorInput().isBacklog()) {
+         image = ImageManager.getImage(AtsImage.AGILE_BACKLOG);
       } else {
          image = ArtifactImageManager.getImage(awa);
       }

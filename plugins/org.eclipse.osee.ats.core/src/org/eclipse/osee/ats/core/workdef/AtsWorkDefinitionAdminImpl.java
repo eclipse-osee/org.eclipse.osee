@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -284,6 +285,9 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
                   IAtsTeamDefinition teamDef = ((IAtsTeamWorkflow) workItem).getTeamDefinition();
                   match = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                } else if (workItem instanceof IAtsGoal) {
+                  match = getWorkDefinition(GoalWorkflowDefinitionId);
+                  match.addTrace("WorkDefinitionFactory - GoalWorkflowDefinitionId");
+               } else if (workItem instanceof IAgileBacklog) {
                   match = getWorkDefinition(GoalWorkflowDefinitionId);
                   match.addTrace("WorkDefinitionFactory - GoalWorkflowDefinitionId");
                } else if (workItem instanceof IAgileSprint) {

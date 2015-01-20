@@ -49,7 +49,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
 
    @Override
    public IRelationTypeSide getMembersRelationTypeSide() {
-      return AtsRelationTypes.AgileSprint_Item;
+      return AtsRelationTypes.AgileSprintToItem_AtsItem;
    }
 
    @Override
