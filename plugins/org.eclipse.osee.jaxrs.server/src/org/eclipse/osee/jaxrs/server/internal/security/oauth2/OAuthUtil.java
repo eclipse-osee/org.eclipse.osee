@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsUtils;
+import org.eclipse.osee.jaxrs.server.internal.security.util.CustomSecurityContextImpl;
 
 /**
  * @author Roberto E. Escobar
@@ -146,21 +146,7 @@ public final class OAuthUtil {
    }
 
    public static SecurityContext newSecurityContext(final OseePrincipal principal) {
-      return new SecurityContext() {
-         @Override
-         public boolean isUserInRole(String role) {
-            Collection<String> roles = principal.getRoles();
-            if (roles == null) {
-               roles = Collections.emptyList();
-            }
-            return roles.contains(role);
-         }
-
-         @Override
-         public OseePrincipal getUserPrincipal() {
-            return principal;
-         }
-      };
+      return new CustomSecurityContextImpl(principal);
    }
 
    private static final String SUBJECT_USERNAME = "username";

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
+import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeOAuthContext;
 import org.eclipse.osee.framework.jdk.core.type.OseePermission;
@@ -35,64 +37,108 @@ public class OseeOAuthContextProvider implements ContextProvider<OseeOAuthContex
       org.apache.cxf.rs.security.oauth2.common.OAuthContext cxt =
          message.getContent(org.apache.cxf.rs.security.oauth2.common.OAuthContext.class);
       if (cxt != null) {
-         toReturn = new OAuthContextImpl(cxt);
+         toReturn = newOAuthContext(cxt);
+      } else {
+         SecurityContext sc = message.get(SecurityContext.class);
+         Principal userPrincipal = sc.getUserPrincipal();
+         OseePrincipal owner = null;
+         if (userPrincipal instanceof OseePrincipal) {
+            owner = (OseePrincipal) userPrincipal;
+         }
+         toReturn = newOAuthContext(owner, null);
       }
       return toReturn;
    }
 
-   private static final class OAuthContextImpl implements OseeOAuthContext {
+   private static OseeOAuthContext newOAuthContext(final OseePrincipal owner, final OseePrincipal client) {
+      return new OseeOAuthContext() {
 
-      private final org.apache.cxf.rs.security.oauth2.common.OAuthContext ctx;
-
-      public OAuthContextImpl(org.apache.cxf.rs.security.oauth2.common.OAuthContext ctx) {
-         super();
-         this.ctx = ctx;
-      }
-
-      @Override
-      public OseePrincipal getOwner() {
-         UserSubject subject = ctx.getSubject();
-         return subject != null ? OAuthUtil.newOseePrincipal(subject) : null;
-      }
-
-      @Override
-      public OseePrincipal getClient() {
-         UserSubject subject = ctx.getClientSubject();
-         return subject != null ? OAuthUtil.newOseePrincipal(subject) : null;
-      }
-
-      @Override
-      public List<OseePermission> getPermissions() {
-         List<OseePermission> perms = Collections.emptyList();
-         List<OAuthPermission> permissions = ctx.getPermissions();
-         if (permissions != null && !permissions.isEmpty()) {
-            perms = new ArrayList<OseePermission>();
-            for (OAuthPermission permission : permissions) {
-               perms.add(newPermission(permission));
-            }
+         @Override
+         public OseePrincipal getOwner() {
+            return owner;
          }
-         return perms;
-      }
 
-      @Override
-      public String getTokenGrantType() {
-         return ctx.getTokenGrantType();
-      }
+         @Override
+         public OseePrincipal getClient() {
+            return client;
+         }
 
-      @Override
-      public String getClientId() {
-         return ctx.getClientId();
-      }
+         @Override
+         public String getTokenGrantType() {
+            return "N/A";
+         }
 
-      @Override
-      public String getTokenKey() {
-         return ctx.getTokenKey();
-      }
+         @Override
+         public String getClientId() {
+            return "N/A";
+         }
 
-      @Override
-      public String getTokenAudience() {
-         return ctx.getTokenAudience();
-      }
+         @Override
+         public String getTokenKey() {
+            return "N/A";
+         }
+
+         @Override
+         public String getTokenAudience() {
+            return "N/A";
+         }
+
+         @Override
+         public List<OseePermission> getPermissions() {
+            return Collections.emptyList();
+         }
+
+      };
+   }
+
+   private static OseeOAuthContext newOAuthContext(final org.apache.cxf.rs.security.oauth2.common.OAuthContext ctx) {
+      return new OseeOAuthContext() {
+
+         @Override
+         public OseePrincipal getOwner() {
+            UserSubject subject = ctx.getSubject();
+            return subject != null ? OAuthUtil.newOseePrincipal(subject) : null;
+         }
+
+         @Override
+         public OseePrincipal getClient() {
+            UserSubject subject = ctx.getClientSubject();
+            return subject != null ? OAuthUtil.newOseePrincipal(subject) : null;
+         }
+
+         @Override
+         public List<OseePermission> getPermissions() {
+            List<OseePermission> perms = Collections.emptyList();
+            List<OAuthPermission> permissions = ctx.getPermissions();
+            if (permissions != null && !permissions.isEmpty()) {
+               perms = new ArrayList<OseePermission>();
+               for (OAuthPermission permission : permissions) {
+                  perms.add(newPermission(permission));
+               }
+            }
+            return perms;
+         }
+
+         @Override
+         public String getTokenGrantType() {
+            return ctx.getTokenGrantType();
+         }
+
+         @Override
+         public String getClientId() {
+            return ctx.getClientId();
+         }
+
+         @Override
+         public String getTokenKey() {
+            return ctx.getTokenKey();
+         }
+
+         @Override
+         public String getTokenAudience() {
+            return ctx.getTokenAudience();
+         }
+      };
    }
 
    private static OseePermission newPermission(OAuthPermission permission) {
