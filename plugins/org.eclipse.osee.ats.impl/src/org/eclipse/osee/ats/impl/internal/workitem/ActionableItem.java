@@ -82,22 +82,22 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public void setParentActionableItem(IAtsActionableItem parentActionableItem) {
-      getLogger().error("Error ActionableItem.setParentActionableItem not implemented");
+      throw new UnsupportedOperationException("Error ActionableItem.setParentActionableItem not implemented");
    }
 
    @Override
    public void setTeamDefinition(IAtsTeamDefinition teamDef) {
-      getLogger().error("Error ActionableItem.setTeamDefinition not implemented");
+      throw new UnsupportedOperationException("Error ActionableItem.setTeamDefinition not implemented");
    }
 
    @Override
    public void setActionable(boolean actionable) {
-      getLogger().error("Error ActionableItem.setActionable not implemented");
+      throw new UnsupportedOperationException("Error ActionableItem.setActionable not implemented");
    }
 
    @Override
    public void setActive(boolean active) {
-      getLogger().error("Error ActionableItem.setActive not implemented");
+      throw new UnsupportedOperationException("Error ActionableItem.setActive not implemented");
    }
 
    @Override

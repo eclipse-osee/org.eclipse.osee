@@ -135,7 +135,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setAllowCommitBranch(boolean allowCommitBranch) {
-      getLogger().error("TeamDefinition.setAllowCommitBranch not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setAllowCommitBranch not implemented");
    }
 
    @Override
@@ -162,7 +162,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setAllowCreateBranch(boolean allowCreateBranch) {
-      getLogger().error("TeamDefinition.setAllowCreateBranch not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setAllowCreateBranch not implemented");
    }
 
    @Override
@@ -189,12 +189,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setBaselineBranchUuid(long uuid) {
-      getLogger().error("TeamDefinition.setBaselineBranchUuid not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setBaselineBranchUuid not implemented");
    }
 
    @Override
    public void setBaselineBranchUuid(String uuid) {
-      getLogger().error("TeamDefinition.setBaselineBranchUuid not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setBaselineBranchUuid not implemented");
    }
 
    @Override
@@ -321,7 +321,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setWorkflowDefinition(String workflowDefinitionName) {
-      getLogger().error("TeamDefinition.setWorkflowDefinition not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setWorkflowDefinition not implemented");
    }
 
    @Override
@@ -336,12 +336,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setRelatedTaskWorkDefinition(String name) {
-      getLogger().error("TeamDefinition.setRelatedTaskWorkDefinition not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setRelatedTaskWorkDefinition not implemented");
    }
 
    @Override
    public void initialize(String fullname, String description, Collection<IAtsUser> leads, Collection<IAtsUser> members, Collection<IAtsActionableItem> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) {
-      getLogger().error("TeamDefinition.setActionable not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented");
    }
 
    @Override
@@ -351,12 +351,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition) {
-      getLogger().error("TeamDefinition.setRelatedPeerWorkDefinition not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setRelatedPeerWorkDefinition not implemented");
    }
 
    @Override
    public void addRule(String rule) {
-      getLogger().error("TeamDefinition.addRule not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.addRule not implemented");
    }
 
    @Override
@@ -384,7 +384,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public void removeRule(String rule) {
-      getLogger().error("TeamDefinition.setActionable not implemented");
+      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented");
    }
 
 }

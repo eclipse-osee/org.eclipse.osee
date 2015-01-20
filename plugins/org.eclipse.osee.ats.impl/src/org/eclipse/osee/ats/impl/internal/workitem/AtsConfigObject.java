@@ -51,7 +51,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public void setFullName(String fullName) {
-      logger.error("TeamDefinition.setFullName not implemented yet");
+      throw new UnsupportedOperationException("TeamDefinition.setFullName not implemented yet");
    }
 
    public abstract String getTypeName();
@@ -61,7 +61,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public void setActionable(boolean actionable) {
-      logger.error("TeamDefinition.setActionable not implemented yet");
+      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented yet");
    }
 
    public boolean isActionable() {
@@ -80,7 +80,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public void setActive(boolean active) {
-      logger.error("TeamDefinition.setActive not implemented yet");
+      throw new UnsupportedOperationException("TeamDefinition.setActive not implemented yet");
    }
 
    @Override

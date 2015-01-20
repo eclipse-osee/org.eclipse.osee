@@ -266,6 +266,7 @@ public class Version extends AtsObject implements IAtsVersion {
       }
    }
 
+   @Override
    public boolean isActive() {
       return active;
    }

@@ -88,7 +88,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void setAtsId(String atsId, IAtsChangeSet changes) throws OseeCoreException {
-      throw new OseeStateException("Not implemented");
+      throw new UnsupportedOperationException("Not implemented");
    }
 
    @Override
