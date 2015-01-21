@@ -19,10 +19,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
@@ -45,13 +44,9 @@ public class ChangeXViewer extends XViewer {
       if (getSelectedChanges().isEmpty()) {
          return;
       }
-
       Change change = getSelectedChanges().iterator().next();
       Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
-
-      if (artifact != null) {
-         RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
-      }
+      ArtifactDoubleClick.open(artifact);
    }
 
    private class KeySelectedListener implements KeyListener {

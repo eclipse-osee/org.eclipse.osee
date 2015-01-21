@@ -20,10 +20,13 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -31,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -268,10 +272,19 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedArtifacts().isEmpty()) {
+      ArrayList<Artifact> artifacts = getSelectedArtifacts();
+      if (artifacts.isEmpty()) {
          return;
       }
-      RendererManager.openInJob(getSelectedArtifacts(), PresentationType.DEFAULT_OPEN);
+      Artifact artifact = artifacts.iterator().next();
+      PresentationType type = ArtifactDoubleClick.getPresentationType(artifact);
+      PermissionEnum perEnum = ArtifactDoubleClick.getPermissionEnum(artifact);
+      if (AccessControlManager.hasPermission(artifacts, perEnum)) {
+         RendererManager.openInJob(getSelectedArtifacts(), type);
+      } else {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+            "The user " + UserManager.getUser() + " does not have " + perEnum + " access to " + artifact);
+      }
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {

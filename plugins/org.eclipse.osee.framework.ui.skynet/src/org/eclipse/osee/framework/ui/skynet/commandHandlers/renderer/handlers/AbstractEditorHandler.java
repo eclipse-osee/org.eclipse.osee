@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
 /**
@@ -36,6 +37,10 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return !artifacts.isEmpty() && AccessControlManager.hasPermission(artifacts, getPermissionLevel());
+      if (!artifacts.isEmpty()) {
+         PermissionEnum perEnum = ArtifactDoubleClick.getPermissionEnum(artifacts.iterator().next());
+         return AccessControlManager.hasPermission(artifacts, perEnum);
+      }
+      return false;
    }
 }

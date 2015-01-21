@@ -19,9 +19,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
@@ -47,7 +46,8 @@ public class ResultsXViewer extends XViewer {
          if (getSelectedRows().size() > 0) {
             Object data = getSelectedRows().iterator().next().getData();
             if (data instanceof Artifact) {
-               RendererManager.openInJob((Artifact) data, PresentationType.DEFAULT_OPEN);
+               Artifact artifact = (Artifact) data;
+               ArtifactDoubleClick.open(artifact);
             }
          }
       } else {

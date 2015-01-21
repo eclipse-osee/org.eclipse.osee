@@ -35,10 +35,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -151,7 +150,9 @@ public class EarnedValueWorkPacakgeReportBlam extends AbstractBlam {
                   openArt =
                      ArtifactQuery.getArtifactFromId(result.getWorkPackage().getGuid(), AtsUtilCore.getAtsBranch());
                }
-               RendererManager.openInJob(openArt, PresentationType.DEFAULT_OPEN);
+               if (openArt != null) {
+                  ArtifactDoubleClick.open(openArt);
+               }
             }
          }
       }

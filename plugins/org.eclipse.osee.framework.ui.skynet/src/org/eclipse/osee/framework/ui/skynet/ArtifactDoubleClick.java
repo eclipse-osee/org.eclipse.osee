@@ -46,15 +46,34 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
       } else {
          Artifact artifact = artifacts.iterator().next();
          try {
-            if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-               RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
-            } else {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-                  "The user " + UserManager.getUser() + " does not have read access to " + artifact);
-            }
+            open(artifact);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }
+
+   public static void open(Artifact artifact) {
+      PresentationType type = getPresentationType(artifact);
+      PermissionEnum permissionEnum = getPermissionEnum(artifact);
+      if (AccessControlManager.hasPermission(artifact, permissionEnum)) {
+         RendererManager.openInJob(artifact, type);
+      } else {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+            "The user " + UserManager.getUser() + " does not have " + permissionEnum + " access to " + artifact);
+      }
+   }
+
+   public static PermissionEnum getPermissionEnum(Artifact artifact) {
+      return artifact.isReadOnly() ? PermissionEnum.READ : PermissionEnum.WRITE;
+   }
+
+   public static PresentationType getPresentationType(Artifact artifact) {
+      return artifact.isReadOnly() ? PresentationType.DEFAULT_OPEN : edit(artifact);
+   }
+
+   private static PresentationType edit(Artifact artifact) {
+      return (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) ? PresentationType.GENERALIZED_EDIT : PresentationType.SPECIALIZED_EDIT;
+   }
+
 }
