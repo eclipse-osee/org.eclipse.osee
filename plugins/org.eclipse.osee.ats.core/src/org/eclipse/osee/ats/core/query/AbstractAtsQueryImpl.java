@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.core.query;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -30,6 +32,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -39,6 +43,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    protected final HashCollection<IAttributeType, String> andAttr = new HashCollection<IAttributeType, String>();
+   protected final HashCollection<IAttributeType, QueryOption> andAttrOptions =
+      new HashCollection<IAttributeType, QueryOption>();
+   protected final HashMap<IRelationTypeSide, IAtsObject> andRels = new HashMap<IRelationTypeSide, IAtsObject>();
    protected IAtsTeamDefinition teamDef;
    protected StateType[] stateType;
    private final IAtsWorkItemService workItemService;
@@ -67,10 +74,19 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values) throws OseeCoreException {
+   public IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... options) throws OseeCoreException {
       for (Object value : values) {
          andAttr.put(attributeType, String.valueOf(value));
       }
+      for (QueryOption option : options) {
+         andAttrOptions.put(attributeType, option);
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsQuery andRelated(IAtsObject object, IRelationTypeSide relation) {
+      andRels.put(relation, object);
       return this;
    }
 
@@ -109,6 +125,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          artifactTypes.add(AtsArtifactTypes.AbstractWorkflowArtifact);
       }
       return artifactTypes;
+   }
+
+   protected QueryOption[] getQueryOptions(IAttributeType key) {
+      Collection<QueryOption> values = andAttrOptions.getValues(key);
+      if (values != null) {
+         return values.toArray(new QueryOption[values.size()]);
+      }
+      return new QueryOption[0];
    }
 
 }

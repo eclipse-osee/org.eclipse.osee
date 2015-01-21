@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.program;
 
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
 /**
@@ -18,4 +19,8 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 public interface IAtsProgramService {
 
    IAtsTeamDefinition getTeamDefinition(IAtsProgram atsProgram);
+
+   IAtsProgram getProgram(IAtsWorkItem workItem);
+
+   IAtsProgram getProgramByGuid(String guid);
 }

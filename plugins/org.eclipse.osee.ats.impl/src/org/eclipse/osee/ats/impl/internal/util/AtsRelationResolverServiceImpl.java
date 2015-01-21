@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.impl.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -35,6 +36,11 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       List<Object> results = new ArrayList<Object>();
       if (object instanceof ArtifactReadable) {
          for (ArtifactReadable art : ((ArtifactReadable) object).getRelated(relationType)) {
+            results.add(art);
+         }
+      } else if (object instanceof IAtsObject) {
+         IAtsObject iAtsObject = (IAtsObject) object;
+         for (ArtifactReadable art : ((ArtifactReadable) iAtsObject.getStoreObject()).getRelated(relationType)) {
             results.add(art);
          }
       }

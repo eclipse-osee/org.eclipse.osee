@@ -63,7 +63,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = (IAtsVersion) versions.iterator().next();
+            version = services.getConfigItemFactory().getVersion(versions.iterator().next());
          }
       }
       return version;

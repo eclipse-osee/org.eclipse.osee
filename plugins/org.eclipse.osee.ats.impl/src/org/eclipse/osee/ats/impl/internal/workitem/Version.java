@@ -188,7 +188,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public long getBaselineBranchUuid() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, 0L);
+      return Long.parseLong(artifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, "-1"));
    }
 
    @Override

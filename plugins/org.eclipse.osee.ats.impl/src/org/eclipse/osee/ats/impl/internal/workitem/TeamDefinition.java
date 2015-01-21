@@ -86,7 +86,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       try {
          for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
             IAtsTeamDefinition childTeamDef = getAtsServer().getConfigItemFactory().getTeamDef(childArt);
-            children.add(childTeamDef);
+            if (childTeamDef != null) {
+               children.add(childTeamDef);
+            }
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getChildrenTeamDefinitions");

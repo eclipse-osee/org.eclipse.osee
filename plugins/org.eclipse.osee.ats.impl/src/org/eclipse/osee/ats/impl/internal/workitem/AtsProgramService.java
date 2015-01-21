@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
+import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -17,6 +20,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -24,6 +30,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class AtsProgramService implements IAtsProgramService {
 
    private final IAtsServer atsServer;
+   private final Cache<IAtsTeamDefinition, IAtsProgram> cache = CacheBuilder.newBuilder().expireAfterAccess(1,
+      TimeUnit.HOURS).build();
 
    public AtsProgramService(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -40,6 +48,27 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       return teamDef;
+   }
+
+   @Override
+   public IAtsProgram getProgram(IAtsWorkItem wi) {
+      IAtsTeamDefinition teamDefinition = wi.getParentTeamWorkflow().getTeamDefinition();
+      IAtsProgram program = cache.getIfPresent(teamDefinition);
+      if (program == null) {
+         IAtsTeamDefinition topTeamDef = teamDefinition.getTeamDefinitionHoldingVersions();
+         QueryBuilder query = atsServer.getQuery();
+         query.and(AtsAttributeTypes.TeamDefinition, topTeamDef.getGuid()).andIsOfType(AtsArtifactTypes.Program);
+         ArtifactReadable programArt = query.getResults().getOneOrNull();
+         program = atsServer.getConfigItemFactory().getProgram(programArt);
+         cache.put(teamDefinition, program);
+      }
+      return program;
+   }
+
+   @Override
+   public IAtsProgram getProgramByGuid(String guid) {
+      ArtifactReadable prgArt = atsServer.getArtifactById(guid);
+      return atsServer.getConfigItemFactory().getProgram(prgArt);
    }
 
 }

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -70,7 +72,13 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       // attributes
       if (!andAttr.isEmpty()) {
          for (Entry<IAttributeType, Collection<String>> entry : andAttr.entrySet()) {
-            query.and(entry.getKey(), entry.getValue());
+            query.and(entry.getKey(), entry.getValue(), getQueryOptions(entry.getKey()));
+         }
+      }
+
+      if (!andRels.isEmpty()) {
+         for (Entry<IRelationTypeSide, IAtsObject> entry : andRels.entrySet()) {
+            query.andRelatedTo(entry.getKey(), (ArtifactReadable) entry.getValue().getStoreObject());
          }
       }
 

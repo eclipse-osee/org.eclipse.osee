@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -71,7 +72,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       // attributes
       if (!andAttr.isEmpty()) {
          for (Entry<IAttributeType, Collection<String>> entry : andAttr.entrySet()) {
-            query.and(entry.getKey(), entry.getValue());
+            QueryOption[] opts = getQueryOptions(entry.getKey());
+            query.and(entry.getKey(), entry.getValue(), opts);
          }
       }
 

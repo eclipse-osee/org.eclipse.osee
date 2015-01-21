@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.program.internal;
 
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -40,6 +41,16 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       return teamDef;
+   }
+
+   @Override
+   public IAtsProgram getProgram(IAtsWorkItem workItem) {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+   @Override
+   public IAtsProgram getProgramByGuid(String guid) {
+      throw new UnsupportedOperationException("Not implemented yet");
    }
 
 }

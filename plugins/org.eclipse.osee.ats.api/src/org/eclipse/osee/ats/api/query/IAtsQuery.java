@@ -11,10 +11,13 @@
 package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -30,9 +33,11 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
-   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values) throws OseeCoreException;
+   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... options) throws OseeCoreException;
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
+
+   IAtsQuery andRelated(IAtsObject object, IRelationTypeSide relation);
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 

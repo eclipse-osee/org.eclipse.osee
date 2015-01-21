@@ -40,8 +40,9 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       if (teamDefinition == null) {
-         getAtsServer().getConfig().getSoleByGuid(artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""),
-            IAtsTeamDefinition.class);
+         teamDefinition =
+            getAtsServer().getConfig().getSoleByGuid(
+               artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""), IAtsTeamDefinition.class);
       }
       return teamDefinition;
    }
