@@ -17,7 +17,7 @@ import java.sql.Connection;
  */
 public interface JdbcConnectionFactory {
 
-   Connection getConnection(JdbcConnectionInfo dbInfo) throws Exception;
+   Connection getConnection(JdbcConnectionInfo dbInfo);
 
    String getDriver();
 }

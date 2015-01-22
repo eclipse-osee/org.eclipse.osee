@@ -47,7 +47,10 @@ public class CreateSchemaTx extends JdbcTransaction {
       dbInit.dropTables(schemas, userSchema, dbSchema);
 
       JdbcDbType dbType = client.getDatabaseType();
-      if (dbType == JdbcDbType.postgresql || dbType == JdbcDbType.h2) {
+      if (dbType == JdbcDbType.postgresql // 
+         || dbType == JdbcDbType.h2 // 
+         || dbType == JdbcDbType.hsql //
+      ) {
          try {
             dbInit.dropSchema(schemas);
          } catch (Exception ex) {

@@ -41,6 +41,16 @@ public final class JdbcUtil {
       // Utility class
    }
 
+   public static boolean isValidExtraParam(String key) {
+      return Strings.isValid(key) //
+         && !key.startsWith(JdbcConstants.NAMESPACE) //
+         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__ID) //
+         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__OSGI_BINDING) //
+         && !key.equalsIgnoreCase("objectClass") //
+         && !key.equalsIgnoreCase("component.id") //
+         && !key.equalsIgnoreCase("component.name");
+   }
+
    public static void setInputParametersForStatement(PreparedStatement statement, Object... data) throws JdbcException {
       setInputParametersForStatement(statement, 1, data);
    }
@@ -134,6 +144,12 @@ public final class JdbcUtil {
          public Properties getProperties() {
             return dbProps;
          }
+
+         @Override
+         public String toString() {
+            return "JdbcConnectionInfo [id=" + getId() + ", driver=" + getDriver() + ", uri=" + getUri() + ", props=" + getProperties();
+         }
+
       };
    }
 

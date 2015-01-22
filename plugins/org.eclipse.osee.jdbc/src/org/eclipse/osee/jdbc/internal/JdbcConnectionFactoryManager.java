@@ -14,6 +14,7 @@ import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
@@ -31,11 +32,7 @@ public class JdbcConnectionFactoryManager {
 
    public MetaData getMetaData(JdbcConnectionInfo dbInfo) {
       JdbcConnectionFactory proxiedFactory = getFactory(dbInfo.getDriver());
-      try {
-         return getMetaData(proxiedFactory, dbInfo);
-      } catch (Exception ex) {
-         throw JdbcException.newJdbcException(ex);
-      }
+      return getMetaData(proxiedFactory, dbInfo);
    }
 
    public JdbcConnectionFactory getFactory(String driver) {
@@ -47,7 +44,7 @@ public class JdbcConnectionFactoryManager {
       return factory;
    }
 
-   private MetaData getMetaData(JdbcConnectionFactory proxiedFactory, JdbcConnectionInfo dbInfo) throws Exception {
+   private MetaData getMetaData(JdbcConnectionFactory proxiedFactory, JdbcConnectionInfo dbInfo) {
       MetaData metaData = new MetaData();
       Connection connection = null;
       try {
@@ -55,9 +52,15 @@ public class JdbcConnectionFactoryManager {
          DatabaseMetaData metadata = connection.getMetaData();
          metaData.setTxIsolationLevelSupported(metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
          metaData.setValidationQuery(JdbcDbType.getValidationSql(metadata));
+      } catch (SQLException ex) {
+         throw JdbcException.newJdbcException(ex);
       } finally {
          if (connection != null) {
-            connection.close();
+            try {
+               connection.close();
+            } catch (SQLException ex) {
+               throw JdbcException.newJdbcException(ex);
+            }
          }
       }
       return metaData;
@@ -94,13 +97,17 @@ public class JdbcConnectionFactoryManager {
       }
 
       @Override
-      public Connection getConnection(JdbcConnectionInfo dbInfo) throws Exception {
+      public Connection getConnection(JdbcConnectionInfo dbInfo) {
          try {
             Class.forName(driver);
          } catch (Exception ex) {
-            throw newJdbcException("Unable to find connection factory with driver [%s]", driver);
+            throw newJdbcException(ex, "Unable to find connection factory with driver [%s]", driver);
          }
-         return DriverManager.getConnection(dbInfo.getUri(), dbInfo.getProperties());
+         try {
+            return DriverManager.getConnection(dbInfo.getUri(), dbInfo.getProperties());
+         } catch (Exception ex) {
+            throw newJdbcException(ex, "Unable to get connection for db - [%s]", dbInfo);
+         }
       }
 
       @Override

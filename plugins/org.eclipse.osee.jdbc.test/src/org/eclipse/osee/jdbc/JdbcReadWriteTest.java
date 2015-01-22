@@ -36,6 +36,7 @@ import org.junit.rules.TemporaryFolder;
  */
 public class JdbcReadWriteTest {
 
+   // Although index is not needed for test, include it to test index creation during schema initialization
    private static final String SCHEMA_DEF = //
       "<TableConfig>\n" + //
       "<Table name=\"BOOKS\" schema=\"TEST\" tablespace=\"TEST_DATA\">\n" + //
@@ -43,6 +44,7 @@ public class JdbcReadWriteTest {
       "<Column id=\"TITLE\" defaultValue=\"not null\" limits=\"22\" type=\"VARCHAR\" />\n" + //
       "<Column id=\"AUTHOR\" defaultValue=\"not null\" limits=\"22\" type=\"VARCHAR\" />\n" + //
       "<Constraint schema=\"TEST\" id=\"TEST_BOOKS__I_PK\" type=\"PRIMARY KEY\" appliesTo=\"id\" />\n" + //
+      "<Index id=\"BOOKS__T_IDX\" tablespace=\"TEST_DATA\"><AppliesTo id=\"TITLE\" /></Index>\n" + //
       "</Table>\n" + //
       "</TableConfig>";
 

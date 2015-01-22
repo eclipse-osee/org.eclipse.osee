@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.internal.JdbcUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -74,6 +75,14 @@ public class JdbcServerConfig {
       return dbPath;
    }
 
+   public String getDbUsername() {
+      return (String) properties.get(DB_USERNAME_KEY);
+   }
+
+   public String getDbPassword() {
+      return (String) properties.get(DB_PASSWORD_KEY);
+   }
+
    public String getDbName() {
       String dbName = dbPath;
       if (Strings.isValid(dbName)) {
@@ -100,7 +109,9 @@ public class JdbcServerConfig {
    }
 
    public Properties getProperties() {
-      return properties;
+      Properties unmodifiable = new Properties();
+      unmodifiable.putAll(properties);
+      return unmodifiable;
    }
 
    public String getServerImplClassName() {
@@ -217,9 +228,7 @@ public class JdbcServerConfig {
 
       for (Entry<String, Object> entry : src.entrySet()) {
          String key = entry.getKey();
-         if (!key.startsWith(JdbcConstants.SERVER_NAMESPACE) && //
-         !key.equals(JdbcConstants.JDBC_SERVICE__ID) && //
-         !key.equals(JdbcConstants.JDBC_SERVICE__OSGI_BINDING)) {
+         if (JdbcUtil.isValidExtraParam(key)) {
             Object value = entry.getValue();
             if (value != null) {
                addDbParam(key, String.valueOf(value));

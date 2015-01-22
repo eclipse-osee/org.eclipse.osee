@@ -81,6 +81,12 @@ public final class JdbcServerBuilder extends JdbcServerConfig {
          int port = JdbcUtil.getRandomPort();
          cfg.setDbListenPort(port);
       }
+
+      if (JdbcConstants.DEFAULT_JDBC_SERVER__IMPL_CLASSNAME.equals(cfg.getServerImplClassName())) {
+         if (!cfg.getProperties().containsKey("hsqldb.tx")) {
+            cfg.addDbParam("hsqldb.tx", "MVCC");
+         }
+      }
       return JdbcServerFactory.newJbdcServer(cfg, loggingEnabled, logger);
    }
 

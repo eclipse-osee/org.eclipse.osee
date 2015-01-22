@@ -169,7 +169,11 @@ public class PooledDataSourceFetcher implements Callable<DataSource> {
                   // Do nothing on close exception;
                }
             }
-            throw new SQLException(ex);
+            if (ex instanceof SQLException) {
+               throw (SQLException) ex;
+            } else {
+               throw new SQLException(ex);
+            }
          }
          return connection;
       }

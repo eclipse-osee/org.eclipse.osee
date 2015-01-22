@@ -32,8 +32,31 @@ import org.eclipse.osee.jdbc.internal.schema.data.TableElement.ColumnFields;
  */
 public class HyperSqlManager extends SqlManagerImpl {
 
+   // System level schema
+   private static final String PUBLIC_SCHEMA = "PUBLIC";
+
    public HyperSqlManager(JdbcWriter client, SqlDataType sqlDataType) {
       super(client, sqlDataType);
+   }
+
+   private boolean isSystemSchema(String schema) {
+      return PUBLIC_SCHEMA.equalsIgnoreCase(schema);
+   }
+
+   @Override
+   public void createSchema(String schema) throws OseeCoreException {
+      if (!isSystemSchema(schema)) {
+         String sql = String.format("%s SCHEMA \"%s\" AUTHORIZATION DBA", CREATE_STRING, schema);
+         client.runPreparedUpdate(sql);
+      }
+   }
+
+   @Override
+   public void dropSchema(String schema) throws OseeCoreException {
+      if (!isSystemSchema(schema)) {
+         String sql = String.format("%s SCHEMA IF EXISTS \"%s\" CASCADE", DROP_STRING, schema);
+         client.runPreparedUpdate(sql);
+      }
    }
 
    private String handleColumnCreationSection(Map<String, ColumnMetadata> columns) {

@@ -489,7 +489,21 @@ public final class JdbcClientImpl implements JdbcClient {
 
       executeCallable(new LoadUserSchemasCallable(this, userSpecifiedConfig, resources, options));
       executeCallable(new ExtractSchemaCallable(this, userSpecifiedConfig.keySet(), currentDatabaseConfig));
-      runTransaction(new CreateSchemaTx(this, userSpecifiedConfig, currentDatabaseConfig));
+
+      // Execute outside of transaction since SCHEMA changes have to be persisted as we go
+      JdbcConnectionImpl connection = getConnection();
+      try {
+         CreateSchemaTx tx = new CreateSchemaTx(this, userSpecifiedConfig, currentDatabaseConfig);
+         try {
+            tx.handleTxWork(connection);
+         } catch (Exception ex) {
+            tx.handleTxException(ex);
+         } finally {
+            tx.handleTxFinally();
+         }
+      } finally {
+         connection.close();
+      }
    }
 
    private void executeCallable(Callable<?> callable) {

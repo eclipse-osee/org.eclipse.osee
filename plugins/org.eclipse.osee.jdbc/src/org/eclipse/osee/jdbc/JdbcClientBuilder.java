@@ -82,19 +82,28 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
    }
 
    public JdbcClient build() {
-      JdbcClientConfig config = copy();
+      JdbcClientConfig cfg = copy();
 
-      if (!Strings.isValid(config.getDbDriver())) {
-         JdbcDriverType type = JdbcDriverType.fromUri(config.getDbUri());
+      if (!Strings.isValid(cfg.getDbDriver())) {
+         JdbcDriverType type = JdbcDriverType.fromUri(cfg.getDbUri());
          if (type != null) {
             dbDriver(type.getDriver());
          }
       }
-      JdbcConnectionProvider connectionProvider = getConnectionProvider(config.getPoolConfig());
+
+      if (JdbcDriverType.hsql.getDriver().equals(getDbDriver())) {
+         if (!cfg.getDbProps().containsKey("hsqldb.tx")) {
+            cfg.addDbParam("hsqldb.tx", "MVCC");
+         }
+         cfg.setDbAppendPropsToUri(true);
+      }
+
+      JdbcConnectionProvider connectionProvider = getConnectionProvider(cfg.getPoolConfig());
       JdbcSequenceProvider sequenceProvider = new JdbcSequenceProvider();
       JdbcConnectionInfo dbInfo =
-         JdbcUtil.newConnectionInfo(getDbDriver(), getDbUri(), getDbProps(), isDbAppendPropsToUri());
-      return new JdbcClientImpl(config, connectionProvider, sequenceProvider, dbInfo);
+         JdbcUtil.newConnectionInfo(cfg.getDbDriver(), cfg.getDbUri(), cfg.getDbProps(),
+            cfg.isDbAppendPropsToUri());
+      return new JdbcClientImpl(cfg, connectionProvider, sequenceProvider, dbInfo);
    }
 
    private JdbcConnectionProvider getConnectionProvider(JdbcPoolConfig poolConfig) {
@@ -281,6 +290,10 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
       return this;
    }
 
+   public JdbcClientBuilder fromType(JdbcDriverType type, String db, int port) {
+      return fromType(type, db, null, port);
+   }
+
    public JdbcClientBuilder fromType(JdbcDriverType type, String db, String host, int port) {
       dbDriver(type.getDriver());
 
@@ -292,13 +305,21 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
 
       switch (type) {
          case hsql:
-            dbParam("hsqldb.tx", "MVCC");
             dbParamsInUri(true);
-            dbUsername("public");
+            if (!getDbProps().containsKey("hsqldb.tx")) {
+               dbParam("hsqldb.tx", "MVCC");
+            }
+            if (!Strings.isValid(getDbUsername())) {
+               dbUsername("public");
+            }
             break;
          case oracle_thin:
-            dbParam("SetBigStringTryClob", "true");
-            dbParam("includeSynonyms", "true");
+            if (!getDbProps().containsKey("SetBigStringTryClob")) {
+               dbParam("SetBigStringTryClob", "true");
+            }
+            if (!getDbProps().containsKey("includeSynonyms")) {
+               dbParam("includeSynonyms", "true");
+            }
             break;
          default:
             break;

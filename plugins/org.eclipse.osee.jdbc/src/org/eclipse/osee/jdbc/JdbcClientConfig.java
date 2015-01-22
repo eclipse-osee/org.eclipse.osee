@@ -29,6 +29,7 @@ import static org.eclipse.osee.jdbc.internal.JdbcUtil.getBoolean;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import org.eclipse.osee.jdbc.internal.JdbcUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -72,7 +73,9 @@ public class JdbcClientConfig {
    }
 
    public Properties getDbProps() {
-      return new Properties(dbProps);
+      Properties unmodifiable = new Properties();
+      unmodifiable.putAll(dbProps);
+      return unmodifiable;
    }
 
    public JdbcPoolConfig getPoolConfig() {
@@ -138,9 +141,7 @@ public class JdbcClientConfig {
 
       for (Entry<String, Object> entry : src.entrySet()) {
          String key = entry.getKey();
-         if (!key.startsWith(JdbcConstants.NAMESPACE) && //
-         !key.equals(JdbcConstants.JDBC_SERVICE__ID) && //
-         !key.equals(JdbcConstants.JDBC_SERVICE__OSGI_BINDING)) {
+         if (JdbcUtil.isValidExtraParam(key)) {
             Object value = entry.getValue();
             if (value != null) {
                addDbParam(key, String.valueOf(value));

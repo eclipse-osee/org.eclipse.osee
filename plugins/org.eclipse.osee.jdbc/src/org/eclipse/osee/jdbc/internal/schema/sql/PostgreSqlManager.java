@@ -37,6 +37,16 @@ public class PostgreSqlManager extends SqlManagerImpl {
       super(client, sqlDataType);
    }
 
+   @Override
+   public void createSchema(String schema) throws OseeCoreException {
+      super.createSchema(schema.toLowerCase());
+   }
+
+   @Override
+   public void dropSchema(String schema) throws OseeCoreException {
+      super.dropSchema(schema.toLowerCase());
+   }
+
    private String handleColumnCreationSection(Map<String, ColumnMetadata> columns) {
       List<String> lines = new ArrayList<String>();
       Set<String> keys = columns.keySet();

@@ -103,14 +103,14 @@ public class SchemaSqlUtil {
    }
 
    public void createSchema(Set<String> schemas) throws OseeCoreException {
-      for (String schemaId : schemas) {
-         sqlManager.createSchema(schemaId.toLowerCase());
+      for (String schema : schemas) {
+         sqlManager.createSchema(schema);
       }
    }
 
    public void dropSchema(Set<String> schemas) throws OseeCoreException {
-      for (String schemaId : schemas) {
-         sqlManager.dropSchema(schemaId.toLowerCase());
+      for (String schema : schemas) {
+         sqlManager.dropSchema(schema);
       }
    }
 

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc.internal;
 
-import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.Map;
@@ -30,12 +29,7 @@ public class SimpleConnectionProvider implements JdbcConnectionProvider {
    @Override
    public JdbcConnectionImpl getConnection(JdbcConnectionInfo dbInfo) throws JdbcException {
       JdbcConnectionFactory factory = manager.getFactory(dbInfo.getDriver());
-      Connection connection = null;
-      try {
-         connection = factory.getConnection(dbInfo);
-      } catch (Exception ex) {
-         throw newJdbcException(ex);
-      }
+      Connection connection = factory.getConnection(dbInfo);
       return new JdbcConnectionImpl(connection);
    }
 

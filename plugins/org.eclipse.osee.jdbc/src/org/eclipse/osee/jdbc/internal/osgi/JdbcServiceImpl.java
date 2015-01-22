@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
 import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcConstants.JdbcDriverType;
 import org.eclipse.osee.jdbc.JdbcLogger;
 import org.eclipse.osee.jdbc.JdbcServer;
 import org.eclipse.osee.jdbc.JdbcServerBuilder;
@@ -72,7 +73,21 @@ public class JdbcServiceImpl implements JdbcService {
          if (hasServerConfig(props)) {
             JdbcServerConfig serverConfig = server.getConfig();
             if (!Strings.isValid(builder.getDbUri())) {
-               builder = JdbcClientBuilder.hsql(serverConfig.getDbName(), serverConfig.getDbPort());
+               builder = builder.fromType(JdbcDriverType.hsql, serverConfig.getDbName(), serverConfig.getDbPort());
+            }
+
+            if (!Strings.isValid(builder.getDbUsername())) {
+               String serverUsername = serverConfig.getDbUsername();
+               if (Strings.isValid(serverUsername)) {
+                  builder.dbUsername(serverUsername);
+               }
+            }
+
+            if (!Strings.isValid(builder.getDbPassword())) {
+               String serverPassword = serverConfig.getDbPassword();
+               if (Strings.isValid(serverPassword)) {
+                  builder.dbPassword(serverPassword);
+               }
             }
          }
          clientRef.set(builder.build());
@@ -84,9 +99,22 @@ public class JdbcServiceImpl implements JdbcService {
    private JdbcServer newServer(Map<String, Object> props) {
       JdbcServer newServer = null;
       if (hasServerConfig(props)) {
-         newServer = JdbcServerBuilder.newBuilder(props)//
-         .logger(asJdbcLogger(logger))//
-         .build();
+         JdbcServerBuilder builder = JdbcServerBuilder.newBuilder(props)//
+         .logger(asJdbcLogger(logger));
+
+         if (!Strings.isValid(builder.getDbUsername())) {
+            String username = JdbcUtil.get(props, JdbcConstants.JDBC__CONNECTION_USERNAME, null);
+            if (Strings.isValid(username)) {
+               builder.dbUsername(username);
+            }
+         }
+         if (!Strings.isValid(builder.getDbPassword())) {
+            String password = JdbcUtil.get(props, JdbcConstants.JDBC__CONNECTION_PASSWORD, null);
+            if (Strings.isValid(password)) {
+               builder.dbPassword(password);
+            }
+         }
+         newServer = builder.build();
       }
       JdbcServer oldServer = serverRef.getAndSet(newServer);
       if (oldServer != null) {
