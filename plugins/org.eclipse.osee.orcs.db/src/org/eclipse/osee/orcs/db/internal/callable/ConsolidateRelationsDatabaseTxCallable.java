@@ -230,6 +230,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       boolean ignore = !netModType.isDeleted() && modificationType.isDeleted();
       ignore |= netModType == modificationType;
       ignore |= netModType == ModificationType.MODIFIED && modificationType == ModificationType.NEW;
+      ignore |= netModType == ModificationType.INTRODUCED && modificationType == ModificationType.NEW;
       return ignore || netModType == ModificationType.ARTIFACT_DELETED && modificationType == ModificationType.DELETED;
    }
 
