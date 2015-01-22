@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.artifact;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -50,7 +49,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public boolean isActive() {
-      return getSoleAttributeValue(AtsAttributeTypes.Active, true);
+      return getStateMgr().getStateType().isInWork();
    }
 
    @Override

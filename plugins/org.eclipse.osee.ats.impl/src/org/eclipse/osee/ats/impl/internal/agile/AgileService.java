@@ -25,10 +25,12 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -84,6 +86,7 @@ public class AgileService implements IAgileService {
          agileTeamArt =
             (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, team.getName(), team.getGuid());
       }
+      transaction.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, team.isActive());
       ArtifactReadable topAgileFolder = getOrCreateTopAgileFolder(transaction, userArt);
       if (!topAgileFolder.equals(agileTeamArt.getParent())) {
          transaction.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
@@ -188,14 +191,27 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid) {
+      JaxAgileFeatureGroup feature = new JaxAgileFeatureGroup();
+      feature.setName(name);
+      feature.setGuid(guid);
+      feature.setTeamUuid(teamUuid);
+      feature.setActive(true);
+      return createAgileFeatureGroup(feature);
+   }
+
+   @Override
+   public IAgileFeatureGroup createAgileFeatureGroup(JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
       TransactionBuilder transaction =
          atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), userArt,
             "Create new Agile Feature Group");
       ArtifactReadable featureGroupArt =
-         (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, name, guid);
+         (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
+            newFeatureGroup.getGuid());
+      transaction.setSoleAttributeValue(featureGroupArt, AtsAttributeTypes.Active, newFeatureGroup.isActive());
 
-      ArtifactReadable agileTeamArt = getOrCreateTopFeatureGroupFolder(transaction, teamUuid, userArt);
+      ArtifactReadable agileTeamArt =
+         getOrCreateTopFeatureGroupFolder(transaction, newFeatureGroup.getTeamUuid(), userArt);
       transaction.addChildren(agileTeamArt, featureGroupArt);
 
       transaction.commit();

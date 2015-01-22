@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.impl.internal.agile;
 
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItem;
 import org.eclipse.osee.logger.Log;
@@ -28,7 +27,7 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
 
    @Override
    public boolean isActive() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+      return getStateMgr().getStateType().isInWork();
    }
 
    @Override

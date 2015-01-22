@@ -29,6 +29,7 @@ angular.module('AgileApp').factory('AgileFactory',
 			factory.addNewTeam = function(teamName) {
 				var toPost = {};
 				toPost.name = teamName;
+				toPost.active = true;
 				return teamResource.save(toPost);
 
 			}
@@ -44,6 +45,7 @@ angular.module('AgileApp').factory('AgileFactory',
 				var toPost = {};
 				toPost.teamUuid = team.uuid;
 				toPost.name = featureGroupName;
+				toPost.active = true;
 				return teamFeatureResource.save(toPost);
 			}
 

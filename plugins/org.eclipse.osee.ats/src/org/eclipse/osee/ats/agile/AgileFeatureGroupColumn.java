@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
+import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -116,7 +117,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       SprintItems items = new SprintItems(awas);
 
       if (items.isNoBacklogDetected()) {
-         AWorkbench.popup("Workflow(s) must belong to a Backlog to set their Sprint.");
+         AWorkbench.popup("Workflow(s) must belong to a Backlog to set their Feature Group.");
          return false;
       }
       if (items.isMultipleBacklogsDetected()) {
@@ -125,19 +126,23 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       }
 
       AgileEndpointApi agileApi = AtsJaxRsService.get().getAgile();
-      List<JaxAgileFeatureGroup> featureGroups;
+      List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<JaxAgileFeatureGroup>();
       long teamUuid = items.getCommonBacklog().getTeamUuid();
       try {
-         featureGroups = agileApi.getFeatureGroups(teamUuid);
+         for (JaxAgileFeatureGroup feature : agileApi.getFeatureGroups(items.getCommonBacklog().getTeamUuid())) {
+            if (feature.isActive()) {
+               activeFeatureGroups.add(feature);
+            }
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
 
       FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Version", new ArrayTreeContentProvider(),
-            new StringLabelProvider());
-      dialog.setInput(featureGroups);
+         new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Feature Group(s)",
+            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameSorter());
+      dialog.setInput(activeFeatureGroups);
       Collection<IAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
       if (!selectedFeatureGroups.isEmpty()) {
          dialog.setInitialSelections(selectedFeatureGroups);

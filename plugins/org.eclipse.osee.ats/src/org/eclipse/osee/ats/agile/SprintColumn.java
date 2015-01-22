@@ -23,7 +23,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -127,8 +126,9 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
       Set<IAgileSprint> activeSprints = new HashSet<IAgileSprint>();
       for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         if (sprintArt.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {
-            activeSprints.add(AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt));
+         IAgileSprint agileSprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt);
+         if (agileSprint.isActive()) {
+            activeSprints.add(agileSprint);
          }
       }
 

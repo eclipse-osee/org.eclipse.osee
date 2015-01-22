@@ -47,6 +47,11 @@ public interface AgileEndpointApi {
    public List<JaxAgileFeatureGroup> getFeatureGroups(@PathParam("teamUuid") long teamUuid);
 
    @GET
+   @Path("teams/{teamUuid}/features/{featureUuid}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAgileFeatureGroup getFeatureGroup(long teamUuid, long featureUuid);
+
+   @GET
    @Path("teams/{teamUuid}/backlog")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAgileBacklog getBacklog(@PathParam("teamUuid") long teamUuid);
@@ -85,6 +90,12 @@ public interface AgileEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateItem(@PathParam("itemId") long itemId, JaxAgileItem newItem);
+
+   @PUT
+   @Path("items")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response updateItems(JaxAgileItem newItem);
 
    @DELETE
    @Path("teams/{teamUuid}/features/{featureUuid}")

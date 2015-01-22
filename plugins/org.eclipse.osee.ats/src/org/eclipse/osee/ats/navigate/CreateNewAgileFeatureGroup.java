@@ -69,6 +69,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                   AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(ed.getEntry());
+                  newGroup.setActive(true);
                   int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
                   newGroup.setTeamUuid(teamUuid);
                   Response response = teamApi.createFeatureGroup(new Long(teamUuid), newGroup);

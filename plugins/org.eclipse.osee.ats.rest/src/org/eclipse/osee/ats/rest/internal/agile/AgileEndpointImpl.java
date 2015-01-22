@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.rest.internal.agile;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -106,13 +105,14 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       created.setGuid(updatedTeam.getGuid());
       created.setName(updatedTeam.getName());
       created.setUuid(updatedTeam.getId());
+      created.setActive(updatedTeam.isActive());
       created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
       created.setBacklogUuid(updatedTeam.getBacklogUuid());
       return created;
    }
 
    @Override
-   public Response deleteTeam(@PathParam("teamUuid") long teamUuid) {
+   public Response deleteTeam(long teamUuid) {
       atsServer.getAgileService().deleteAgileTeam(teamUuid);
       return Response.ok().build();
    }
@@ -134,6 +134,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
                   newGroup.setName(group.getName());
                   newGroup.setUuid(group.getId());
                   newGroup.setGuid(group.getGuid());
+                  newGroup.setActive(group.isActive());
                   newGroup.setTeamUuid(group.getTeamUuid());
                   groups.add(newGroup);
                }
@@ -147,10 +148,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response createFeatureGroup(long teamUuid, JaxAgileFeatureGroup newFeatureGroup) {
       // validate title
       if (!Strings.isValid(newFeatureGroup.getName())) {
-         throw new OseeArgumentException("name is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newFeatureGroup.getTeamUuid() <= 0) {
-         throw new OseeArgumentException("teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
       String guid = newFeatureGroup.getGuid();
@@ -165,11 +166,25 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       created.setGuid(team.getGuid());
       created.setName(team.getName());
       created.setUuid(team.getId());
+      created.setActive(team.isActive());
       created.setTeamUuid(team.getTeamUuid());
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("feature").path(String.valueOf(created.getUuid())).build();
       return Response.created(location).entity(created).build();
+   }
+
+   @Override
+   public JaxAgileFeatureGroup getFeatureGroup(long teamUuid, long featureUuid) {
+      IAgileFeatureGroup feature =
+         atsServer.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
+      JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
+      created.setGuid(feature.getGuid());
+      created.setName(feature.getName());
+      created.setUuid(feature.getId());
+      created.setTeamUuid(feature.getTeamUuid());
+      created.setActive(feature.isActive());
+      return created;
    }
 
    @Override
@@ -185,10 +200,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response createSprint(long teamUuid, JaxAgileSprint newSprint) {
       // validate title
       if (!Strings.isValid(newSprint.getName())) {
-         throw new OseeArgumentException("name is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newSprint.getTeamUuid() <= 0) {
-         throw new OseeArgumentException("teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
       String guid = newSprint.getGuid();
@@ -209,6 +224,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileSprint created = new JaxAgileSprint();
       created.setGuid(sprint.getGuid());
       created.setName(sprint.getName());
+      created.setActive(sprint.isActive());
       created.setUuid(sprint.getId());
       created.setTeamUuid(sprint.getTeamUuid());
       return created;
@@ -233,10 +249,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response createBacklog(long teamUuid, JaxAgileBacklog newBacklog) {
       // validate title
       if (!Strings.isValid(newBacklog.getName())) {
-         throw new OseeArgumentException("name is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newBacklog.getTeamUuid() <= 0) {
-         throw new OseeArgumentException("teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
       String guid = newBacklog.getGuid();
@@ -268,6 +284,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileBacklog result = new JaxAgileBacklog();
       result.setActive(backlog.isActive());
       result.setGuid(backlog.getGuid());
+      result.setActive(backlog.isActive());
       result.setName(backlog.getName());
       result.setUuid(backlog.getId());
       return result;
@@ -277,12 +294,28 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Agile Item
     ***********************************/
    @Override
-   public Response updateItem(long teamUuid, JaxAgileItem newItem) {
+   public Response updateItem(long itemUuid, JaxAgileItem newItem) {
       // validate uuid
       if (newItem.getUuids().isEmpty()) {
-         throw new OseeArgumentException("uuids is not valid");
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "itemUuid is not valid");
       }
 
+      JaxAgileItem sprint = atsServer.getAgileService().updateItem(newItem);
+      JaxAgileItem item = new JaxAgileItem();
+      item.getUuids().addAll(sprint.getUuids());
+      item.getFeatures().addAll(sprint.getFeatures());
+      item.setSprintUuid(sprint.getSprintUuid());
+
+      UriBuilder builder = uriInfo.getRequestUriBuilder();
+      URI location = builder.path("team").path(String.valueOf(item.getSprintUuid())).build();
+      return Response.created(location).entity(item).build();
+   }
+
+   /********************************
+    ** Agile Item
+    ***********************************/
+   @Override
+   public Response updateItems(JaxAgileItem newItem) {
       JaxAgileItem sprint = atsServer.getAgileService().updateItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
       item.getUuids().addAll(sprint.getUuids());

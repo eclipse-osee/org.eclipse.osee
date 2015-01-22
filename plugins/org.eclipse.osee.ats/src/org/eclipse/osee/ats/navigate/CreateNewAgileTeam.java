@@ -49,6 +49,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
                JaxAgileTeam newTeam = new JaxAgileTeam();
                newTeam.setName(ed.getEntry());
+               newTeam.setActive(true);
                Response response = teamApi.createTeam(newTeam);
                Object entity = response.readEntity(JaxAgileTeam.class);
                if (entity != null) {

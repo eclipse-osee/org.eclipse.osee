@@ -50,4 +50,6 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeamById(long teamUuid);
 
+   IAgileFeatureGroup createAgileFeatureGroup(JaxAgileFeatureGroup newFeatureGroup);
+
 }
