@@ -38,7 +38,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       "select txs.*, idj.id1 as net_gamma_id from osee_join_export_import idj, osee_txs txs where idj.query_id = ? and idj.id2 = txs.gamma_id order by net_gamma_id, transaction_id, id2";
 
    private static final String UPDATE_TXS_GAMMAS =
-      "update osee_txs set gamma_id = ?, mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
+      "update osee_txs set gamma_id = ?, mod_type = ?, tx_current = ? where branch_id = ? and transaction_id = ? and gamma_id = ?";
 
    private static final String DELETE_TXS =
       "delete from osee_txs where branch_id = ? and transaction_id = ? and gamma_id = ?";
@@ -68,6 +68,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    long previousNetGammaId;
    long previousObsoleteGammaId;
    int previousTransactionId;
+   long previousBranchId;
    ModificationType netModType;
    TxChange netTxCurrent;
 
@@ -91,6 +92,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
       previousNetGammaId = -1;
       previousTransactionId = -1;
+      previousBranchId = -1;
       chStmt = getJdbcClient().getStatement();
       gammaJoin = joinFactory.createExportImportJoinQuery();
 
@@ -164,6 +166,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
             long netGammaId = chStmt.getLong("net_gamma_id");
             int modType = chStmt.getInt("mod_type");
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
+            long branchId = chStmt.getLong("branch_id");
 
             if (isNextAddressing(netGammaId, transactionId)) {
                if (updateAddressing) {
@@ -171,6 +174,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
                      previousNetGammaId,
                      netModType.getValue(),
                      netTxCurrent.getValue(),
+                     previousBranchId,
                      previousTransactionId,
                      previousObsoleteGammaId});
                }
@@ -178,10 +182,11 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
                previousNetGammaId = netGammaId;
                previousObsoleteGammaId = obsoleteGammaId;
                previousTransactionId = transactionId;
+               previousBranchId = branchId;
                netModType = ModificationType.getMod(modType);
                netTxCurrent = txCurrent;
             } else {
-               addressingToDelete.add(new Object[] {chStmt.getLong("branch_id"), transactionId, obsoleteGammaId});
+               addressingToDelete.add(new Object[] {branchId, transactionId, obsoleteGammaId});
                computeNetAddressing(ModificationType.getMod(modType), txCurrent);
             }
 
