@@ -21,6 +21,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -80,7 +81,7 @@ public final class JdbcStatementImpl implements JdbcStatement {
       try {
          allowReuse();
          preparedStatement = connection.prepareStatement(query, resultSetType, resultSetConcurrency);
-         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
+         preparedStatement.setFetchSize(Math.min(fetchSize, JdbcConstants.JDBC__MAX_FETCH_SIZE));
          JdbcUtil.setInputParametersForStatement(preparedStatement, data);
          rSet = preparedStatement.executeQuery();
       } catch (SQLException ex) {
