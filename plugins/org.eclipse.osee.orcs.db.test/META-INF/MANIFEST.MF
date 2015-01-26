@@ -20,4 +20,4 @@ Import-Package: org.eclipse.osee.framework.core.data,
 Require-Bundle: org.eclipse.osee.framework.core,
  org.junit,
  org.mockito;bundle-version="1.9.0",
- org.hamcrest.core
+ org.hamcrest.core 
