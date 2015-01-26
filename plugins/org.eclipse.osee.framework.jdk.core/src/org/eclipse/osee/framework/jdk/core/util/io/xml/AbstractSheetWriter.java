@@ -19,11 +19,11 @@ import java.util.Collection;
  */
 public abstract class AbstractSheetWriter implements ISheetWriter {
    private boolean startRow;
-   private int defaultCellIndex;
+   private int implicitCellIndex;
 
    public AbstractSheetWriter() {
       startRow = true;
-      defaultCellIndex = 0;
+      implicitCellIndex = 0;
    }
 
    /**
@@ -50,10 +50,13 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
       endRow();
    }
 
+   /*
+    * when calling writeCell with an index, the implicit index will be set to one greater than the given index
+    */
    @Override
    public void writeCell(Object data, int cellIndex) throws IOException {
       startRowIfNecessary();
-      defaultCellIndex = cellIndex + 1;
+      implicitCellIndex = cellIndex + 1;
       writeCellText(data, cellIndex);
    }
 
@@ -61,13 +64,16 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
    public void endRow() throws IOException {
       startRowIfNecessary();
       startRow = true;
-      defaultCellIndex = 0;
+      implicitCellIndex = 0;
       writeEndRow();
    }
 
+   /*
+    * every time you call writeCell, the implicit index will be incremented
+    */
    @Override
    public void writeCell(Object cellData) throws IOException {
-      writeCell(cellData, defaultCellIndex);
+      writeCell(cellData, implicitCellIndex);
    }
 
    protected abstract void startRow() throws IOException;

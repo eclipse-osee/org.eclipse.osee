@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -74,11 +75,14 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    private final BufferedWriter out;
    private boolean inSheet;
    private final String emptyStringRepresentation;
-   private int previousCellIndex;
+   private int previouslyWrittenCellIndex;
 
    private boolean applyStyle = false;
    private final Map<Integer, String> mStyleMap;
    private final Map<Integer, Integer> mColSpanMap = new HashMap<Integer, Integer>();
+
+   private String[] rowBuffer;
+   private int numColumns = -1;
 
    private double rowHeight;
 
@@ -129,15 +133,20 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    }
 
    public void startSheet(String worksheetName, ExcelColumn... columns) throws IOException {
+      if (inSheet) {
+         throw new OseeCoreException("Cannot start a new sheet until the current sheet is closed");
+      }
       if (worksheetName.length() > 31) {
          worksheetName = worksheetName.substring(0, 31);
       }
+      numColumns = columns.length;
+
       out.write(" <Worksheet ss:Name=\"");
       out.write(worksheetName);
       out.write("\">\n");
 
       out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"");
-      out.write(String.valueOf(columns.length));
+      out.write(String.valueOf(numColumns));
       out.write("\">\n");
 
       for (ExcelColumn column : columns) {
@@ -145,6 +154,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       }
 
       if (columns[0].getName() != null) {
+
+         rowBuffer = new String[numColumns];
          for (ExcelColumn column : columns) {
             writeCell(column.getName());
          }
@@ -159,6 +170,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       out.write("  </Table>\n");
       out.write(" </Worksheet>\n");
       inSheet = false;
+      numColumns = -1;
    }
 
    @Override
@@ -180,74 +192,87 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
          out.write(String.format(" ss:AutoFitHeight=\"0\" ss:Height=\"%f\"", rowHeight));
       }
       out.write(">\n");
-      previousCellIndex = -1;
+
+      rowBuffer = new String[numColumns];
+
+      previouslyWrittenCellIndex = -1;
    }
 
    @Override
    public void writeEndRow() throws IOException {
+      for (int i = 0; i < numColumns; ++i) {
+         if (rowBuffer[i] != null && rowBuffer[i].length() > 0) {
+            out.write(rowBuffer[i]);
+         }
+      }
       out.write("   </Row>\n");
+      rowBuffer = null;
    }
 
    @Override
    public void writeCellText(Object cellData, int cellIndex) throws IOException {
       if (cellData == null) {
-         previousCellIndex = -1; // the next cell will need to use an explicit index
+         rowBuffer[cellIndex] = null;
+      } else if (cellIndex >= numColumns) {
+         throw new OseeCoreException("ExcelWriter out of bounds: %d, index %d", numColumns, cellIndex);
       } else {
+         StringBuilder sb = new StringBuilder();
 
-         out.write("    <Cell");
+         sb.append("    <Cell");
 
          //Cell styles
          if (cellData instanceof Date) {
-            out.write(" ss:StyleID=\"OseeDate\"");
+            sb.append(" ss:StyleID=\"OseeDate\"");
          } else if (applyStyle) {
-            applyStyleToCell(cellIndex);
+            applyStyleToCell(sb, cellIndex);
          }
 
-         if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped
-            out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
+         if (previouslyWrittenCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped
+            sb.append(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
-         previousCellIndex = cellIndex;
+         previouslyWrittenCellIndex = cellIndex;
 
          if (cellData instanceof String) {
             String cellDataStr = (String) cellData;
             if (!cellDataStr.equals("") && cellDataStr.charAt(0) == '=') {
                String value = cellDataStr.replaceAll("\"", "&quot;");
-               out.write(" ss:Formula=\"" + value + "\">");
+               sb.append(" ss:Formula=\"" + value + "\">");
             } else {
-               out.write("><Data ss:Type=\"String\">");
+               sb.append("><Data ss:Type=\"String\">");
                if (cellDataStr.equals("")) {
-                  out.write(emptyStringRepresentation);
+                  sb.append(emptyStringRepresentation);
                } else {
                   if (cellDataStr.length() > 32767) {
-                     out.write(blobMessage);
+                     sb.append(blobMessage);
                   } else {
-                     Xml.writeWhileHandlingCdata(out, cellDataStr);
+                     Xml.writeWhileHandlingCdata(sb, cellDataStr);
                   }
                }
-               out.write("</Data>");
+               sb.append("</Data>");
                if (cellDataStr.length() > 32767) {
-                  out.write("<EmbeddedClob>");
-                  Xml.writeWhileHandlingCdata(out, cellDataStr);
-                  out.write("</EmbeddedClob>");
+                  sb.append("<EmbeddedClob>");
+                  Xml.writeWhileHandlingCdata(sb, cellDataStr);
+                  sb.append("</EmbeddedClob>");
                }
             }
          } else if (cellData instanceof Number) {
             Number cellDataNum = (Number) cellData;
-            out.write("><Data ss:Type=\"Number\">");
-            Xml.writeWhileHandlingCdata(out, cellDataNum.toString());
-            out.write("</Data>");
+            sb.append("><Data ss:Type=\"Number\">");
+            Xml.writeWhileHandlingCdata(sb, cellDataNum.toString());
+            sb.append("</Data>");
          } else if (cellData instanceof Date) {
             Date cellDataDate = (Date) cellData;
-            out.write("><Data ss:Type=\"DateTime\">");
+            sb.append("><Data ss:Type=\"DateTime\">");
             String dateString = DateUtil.get(cellDataDate, "yyyy-MM-dd") + "T00:00:00.000";
-            Xml.writeWhileHandlingCdata(out, dateString);
-            out.write("</Data>");
+            Xml.writeWhileHandlingCdata(sb, dateString);
+            sb.append("</Data>");
          } else {
-            out.write("><Data ss:Type=\"String\">");
-            Xml.writeWhileHandlingCdata(out, cellData.toString());
-            out.write("</Data>");
+            sb.append("><Data ss:Type=\"String\">");
+            Xml.writeWhileHandlingCdata(sb, cellData.toString());
+            sb.append("</Data>");
          }
-         out.write("</Cell>\n");
+         sb.append("</Cell>\n");
+         rowBuffer[cellIndex] = sb.toString();
       }
    }
 
@@ -286,15 +311,15 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       this.rowHeight = rowHeight;
    }
 
-   private void applyStyleToCell(int cellIndex) throws IOException {
+   private void applyStyleToCell(StringBuilder sb, int cellIndex) {
       String applyThisStyle = mStyleMap.remove(cellIndex);
       if (applyThisStyle != null) {
-         out.write(" ss:StyleID=\"" + applyThisStyle + "\"");
+         sb.append(" ss:StyleID=\"" + applyThisStyle + "\"");
       }
 
       Integer colSpanWidth = mColSpanMap.remove(cellIndex);
       if (colSpanWidth != null) {
-         out.write(" ss:MergeAcross=\"" + colSpanWidth + "\"");
+         sb.append(" ss:MergeAcross=\"" + colSpanWidth + "\"");
       }
       applyStyle = mStyleMap.size() > 0 || mColSpanMap.size() > 0;
    }

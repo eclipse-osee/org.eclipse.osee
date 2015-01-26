@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util.io.xml;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,10 +56,110 @@ public final class ExcelXmlWriterTest {
       buildSampleExcelXmlFile(BROKEN_TAGS_STYLE);
    }
 
+   @Test(expected = OseeCoreException.class)
+   public void testWritingTooManyColumns() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 2);
+      excelWriter.writeCell("one");
+      excelWriter.writeCell("two");
+      excelWriter.writeCell("three");
+      excelWriter.endRow();
+   }
+
+   @Test
+   public void testOverwritingCells() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 2);
+      excelWriter.writeCell("11111111", 0);
+      excelWriter.writeCell("22222222", 1);
+      excelWriter.writeCell("33333333", 0);
+      excelWriter.writeCell("44444444");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(result.contains("33333333"));
+      assertTrue(result.contains("44444444"));
+      assertFalse(result.contains("11111111"));
+      assertFalse(result.contains("22222222"));
+   }
+
+   @Test
+   public void testIncorrectCellWritingOrder() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 8);
+      excelWriter.writeCell("11111111", 7);
+      excelWriter.writeCell("22222222", 4);
+      excelWriter.writeCell("33333333", 1);
+      excelWriter.writeCell("44444444");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(result.indexOf("33333333") < result.indexOf("44444444"));
+      assertTrue(result.indexOf("22222222") < result.indexOf("11111111"));
+   }
+
+   @Test(expected = OseeCoreException.class)
+   public void testDoubleSheetStart() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 8);
+      excelWriter.startSheet("test2", 8);
+   }
+
+   @Test(expected = OseeCoreException.class)
+   public void testWritingHighCellIndex() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 2);
+      excelWriter.writeCell("one", 2);
+      excelWriter.endRow();
+   }
+
+   @Test
+   public void testWritingNullCell() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 5);
+      excelWriter.writeCell("one", 2);
+      excelWriter.writeCell(null);
+      excelWriter.writeCell("two");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      assertTrue(countCells(resultBuffer.toString()) == 2);
+   }
+
+   @Test
+   public void testOverwritingWithNull() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 5);
+      excelWriter.writeCell("111111");
+      excelWriter.writeCell("222222");
+      excelWriter.writeCell("333333");
+      excelWriter.writeCell(null, 1);
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(!result.contains("222222"));
+      assertTrue(countCells(result) == 2);
+   }
+
+   private int countCells(String xml) {
+      // expects an excel xml file with one excel row in it
+      int ct = 0;
+      String subset = xml.substring(xml.indexOf("<Row>"), xml.indexOf("/Row"));
+      int index = subset.indexOf("/Cell", 0);
+      while (index > 0) {
+         ct++;
+         index = subset.indexOf("/Cell", index + 4);
+      }
+      return ct;
+   }
+
    private void buildSampleExcelXmlFile(String style) throws IOException {
       //start
       excelWriter = new ExcelXmlWriter(resultBuffer, style);
-      excelWriter.startSheet(getClass().getName(), 10);
+      excelWriter.startSheet(getClass().getName(), 2);
       excelWriter.writeRow("Column1", "Column2");
       excelWriter.writeRow("TestData1", "TestData2");
 
