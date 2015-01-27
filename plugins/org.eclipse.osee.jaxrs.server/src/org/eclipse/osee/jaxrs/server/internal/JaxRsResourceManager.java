@@ -244,6 +244,7 @@ public final class JaxRsResourceManager implements BundleListener {
       urlPath = JaxRsUtils.normalize(urlPath);
 
       String pathToMatch = String.format("%s%s", alias, urlPath);
+      pathToMatch = pathToMatch.replaceAll("//", "/");
       paths.add(pathToMatch);
 
       Resource resource = new ResourceImpl(bundle.getSymbolicName(), url);
