@@ -30,6 +30,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType Component = TokenFactory.createArtifactType(0x0000000000000039L, "Component");
    public static final IArtifactType Design = TokenFactory.createArtifactType(0x000000000000015AL, "Design");
    public static final IArtifactType DirectSoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000016L, "Direct Software Requirement");
+   public static final IArtifactType Feature = TokenFactory.createArtifactType(0x0000000000000057L, "Feature");
    public static final IArtifactType Folder = TokenFactory.createArtifactType(0x000000000000000BL, "Folder");
    public static final IArtifactType GeneralData = TokenFactory.createArtifactType(0x000000000000000CL, "General Data");
    public static final IArtifactType GeneralDocument = TokenFactory.createArtifactType(0x000000000000000EL, "General Document");

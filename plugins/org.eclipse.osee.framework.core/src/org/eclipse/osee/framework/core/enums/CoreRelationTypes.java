@@ -35,6 +35,9 @@ public final class CoreRelationTypes {
    public static final IRelationTypeSide Executes__Test_Plan_Element = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000015EL, "Executes");
    public static final IRelationTypeSide Executes__Test_Procedure = Executes__Test_Plan_Element.getOpposite();
    
+   public static final IRelationTypeSide Related_Feature__Feature = TokenFactory.createRelationTypeSide(SIDE_A, 0x0000000000000058L, "Related Feature");
+   public static final IRelationTypeSide Related_Feature__Requirement = Related_Feature__Feature.getOpposite();
+   
    public static final IRelationTypeSide Requirement_Trace__Higher_Level = TokenFactory.createRelationTypeSide(SIDE_A, 0x200000000000015FL, "Requirement Trace");
    public static final IRelationTypeSide Requirement_Trace__Lower_Level = Requirement_Trace__Higher_Level.getOpposite();
    
