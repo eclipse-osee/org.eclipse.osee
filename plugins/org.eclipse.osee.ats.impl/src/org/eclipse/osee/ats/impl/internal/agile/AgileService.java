@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsChangeSet;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -102,10 +101,9 @@ public class AgileService implements IAgileService {
             AtsArtifactToken.TopAgileFolder).getResults().getAtMostOneOrNull();
       if (agileFolder == null) {
          agileFolder = tx.createArtifact(AtsArtifactToken.TopAgileFolder);
-         ArtifactReadable defaultHierarchyRoot =
-            atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(
-               CoreArtifactTokens.DefaultHierarchyRoot).getResults().getExactlyOne();
-         tx.addChildren(defaultHierarchyRoot, agileFolder);
+         ArtifactReadable rootArtifact =
+            atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
+         tx.addChildren(rootArtifact, agileFolder);
       }
       return (ArtifactReadable) agileFolder;
    }

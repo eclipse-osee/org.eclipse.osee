@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -354,6 +355,13 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
          addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
       }
       return queryData;
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public T andIsHeirarchicalRootArtifact() {
+      andIds(CoreArtifactTokens.DefaultHierarchyRoot);
+      return (T) this;
    }
 
 }

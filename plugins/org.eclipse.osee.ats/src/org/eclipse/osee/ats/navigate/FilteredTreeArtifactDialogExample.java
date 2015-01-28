@@ -12,9 +12,8 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.List;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -36,8 +35,7 @@ public class FilteredTreeArtifactDialogExample extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      Artifact rootArtifact =
-         ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, AtsUtilCore.getAtsBranch());
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtilCore.getAtsBranch());
       List<Artifact> children = rootArtifact.getChildren();
       FilteredTreeArtifactDialog dialog =
          new FilteredTreeArtifactDialog("My Title", "Message", children, new ArtifactTreeContentProvider(),

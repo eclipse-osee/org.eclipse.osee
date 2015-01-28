@@ -213,4 +213,8 @@ public interface ArtifactQueryBuilder<T> {
     */
    T followRelation(IRelationTypeSide relationTypeSide);
 
+   /**
+    * @return DefaultHeirarchicalRootArtifact
+    */
+   T andIsHeirarchicalRootArtifact();
 }

@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -82,7 +82,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    private Collection<Artifact> getGroups() {
       List<Artifact> groups = new ArrayList<Artifact>();
       for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
-         if (!art.getName().equals(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME)) {
+         if (!art.isOfType(CoreArtifactTypes.RootArtifact)) {
             groups.add(art);
          }
       }

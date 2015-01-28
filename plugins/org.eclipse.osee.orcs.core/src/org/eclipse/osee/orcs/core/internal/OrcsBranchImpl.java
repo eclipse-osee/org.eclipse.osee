@@ -157,4 +157,5 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
+
 }

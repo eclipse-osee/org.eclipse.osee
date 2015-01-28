@@ -16,12 +16,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -77,7 +77,6 @@ public class UniversalGroup {
    }
 
    public static Artifact getTopUniversalGroupArtifact(IOseeBranch branch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup,
-         OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, branch);
+      return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 }

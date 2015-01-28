@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -30,8 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Ryan D. Brooks
  */
 public final class OseeSystemArtifacts {
-   public static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
-   public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
 
    public static Artifact getGlobalPreferenceArtifact() throws OseeCoreException {
       return getCachedArtifact(CoreArtifactTypes.GlobalPreferences, CoreArtifactTypes.GlobalPreferences.getName(),
@@ -39,7 +38,7 @@ public final class OseeSystemArtifacts {
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(IOseeBranch branch) throws OseeCoreException {
-      return getCachedArtifact(CoreArtifactTypes.RootArtifact, DEFAULT_HIERARCHY_ROOT_NAME, branch);
+      return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, branch);
    }
 
    public static Artifact createGlobalPreferenceArtifact() throws OseeCoreException {

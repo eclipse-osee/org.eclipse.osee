@@ -61,7 +61,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreBranches.SYSTEM_ROOT).persist(
             getClass().getSimpleName());
-         ArtifactTypeManager.addArtifact(CoreArtifactTokens.GroupRoot, CoreBranches.SYSTEM_ROOT).persist(
+         ArtifactTypeManager.addArtifact(CoreArtifactTokens.UniversalGroupRoot, CoreBranches.SYSTEM_ROOT).persist(
             getClass().getSimpleName());
 
          BranchManager.createTopLevelBranch(CoreBranches.COMMON);

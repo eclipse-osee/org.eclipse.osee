@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -64,14 +63,11 @@ public class ArtifactsResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
-      QueryFactory factory = orcsApi.getQueryFactory(null);
-      ResultSet<ArtifactReadable> results =
-         factory.fromBranch(branch).andNameEquals(DEFAULT_HIERARCHY_ROOT_NAME).getResults();
-      ArtifactReadable rootArtifact = results.getExactlyOne();
+      ArtifactReadable rootArtifact =
+         orcsApi.getQueryFactory(null).fromBranch(branch).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 
       ResultSet<ArtifactReadable> arts = rootArtifact.getChildren();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }
-   private static final String DEFAULT_HIERARCHY_ROOT_NAME = "Default Hierarchy Root";
 }
