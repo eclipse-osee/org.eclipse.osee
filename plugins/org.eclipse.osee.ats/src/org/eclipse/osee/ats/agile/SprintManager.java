@@ -30,11 +30,11 @@ public class SprintManager extends MembersManager<SprintArtifact> {
     * change sprint, error if member of two sprints
     */
    public SprintArtifact promptChangeSprintOrder(Artifact artifact) throws OseeCoreException {
-      if (!isHasMember(artifact)) {
+      if (!isHasCollector(artifact)) {
          AWorkbench.popup(String.format("No Sprint set for artifact [%s]", artifact));
          return null;
       }
-      Collection<Artifact> sprints = getMembers(artifact, false);
+      Collection<Artifact> sprints = getCollectors(artifact, false);
       SprintArtifact sprint = null;
       if (sprints.size() == 1) {
          sprint = (SprintArtifact) sprints.iterator().next();

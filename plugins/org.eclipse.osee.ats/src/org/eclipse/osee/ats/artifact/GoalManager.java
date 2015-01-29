@@ -40,11 +40,11 @@ public class GoalManager extends MembersManager<GoalArtifact> {
     * change goal, prompt if member of two goals
     */
    public GoalArtifact promptChangeGoalOrder(Artifact artifact) throws OseeCoreException {
-      if (!isHasMember(artifact)) {
+      if (!isHasCollector(artifact)) {
          AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
          return null;
       }
-      Collection<Artifact> goals = getMembers(artifact, false);
+      Collection<Artifact> goals = getCollectors(artifact, false);
       GoalArtifact goal = null;
       if (goals.size() == 1) {
          goal = (GoalArtifact) goals.iterator().next();

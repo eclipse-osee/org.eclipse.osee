@@ -44,7 +44,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
 
    public abstract IArtifactType getArtifactType();
 
-   public boolean isHasMember(Artifact artifact) throws OseeCoreException {
+   public boolean isHasCollector(Artifact artifact) throws OseeCoreException {
       return artifact.getRelatedArtifactsCount(getMembersRelationTypeSide().getOpposite()) > 0;
    }
 
@@ -55,13 +55,35 @@ public abstract class MembersManager<T extends CollectorArtifact> {
       return promptChangeMemberOrder(memberArt, Arrays.asList(artifact));
    }
 
+   public void getCollectors(Artifact artifact, Set<Artifact> collectors, boolean recurse) throws OseeCoreException {
+      getCollectors(Arrays.asList(artifact), collectors, recurse);
+   }
+
+   public Collection<Artifact> getCollectors(Artifact artifact, boolean recurse) throws OseeCoreException {
+      Set<Artifact> collectors = new HashSet<Artifact>();
+      getCollectors(artifact, collectors, recurse);
+      return collectors;
+   }
+
+   public void getCollectors(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse) throws OseeCoreException {
+      for (Artifact art : artifacts) {
+         if (art.isOfType(getArtifactType())) {
+            goals.add(art);
+         }
+         goals.addAll(art.getRelatedArtifacts(getMembersRelationTypeSide().getOpposite()));
+         if (recurse && art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).getParentAWA() != null) {
+            getCollectors(((AbstractWorkflowArtifact) art).getParentAWA(), goals, recurse);
+         }
+      }
+   }
+
    /**
     * change member order for artifacts within given member
     */
    public T promptChangeMemberOrder(T memberArt, List<Artifact> artifacts) throws OseeCoreException {
       StringBuilder currentOrder = new StringBuilder("Current Order: ");
       for (Artifact artifact : artifacts) {
-         if (artifacts.size() == 1 && !isHasMember(artifact) || memberArt == null) {
+         if (artifacts.size() == 1 && !isHasCollector(artifact) || memberArt == null) {
             AWorkbench.popup(String.format("No %s set for artifact [%s]", getItemName(), artifact));
             return null;
          }
@@ -104,12 +126,12 @@ public abstract class MembersManager<T extends CollectorArtifact> {
       if (artifact.isOfType(getArtifactType())) {
          return "";
       }
-      if (!isHasMember(artifact)) {
+      if (!isHasCollector(artifact)) {
          return "";
       }
-      Collection<Artifact> members = getMembers(artifact, false);
-      if (members.size() > 1) {
-         List<Artifact> membersSorted = new ArrayList<Artifact>(members);
+      Collection<Artifact> collectors = getCollectors(artifact, false);
+      if (collectors.size() > 1) {
+         List<Artifact> membersSorted = new ArrayList<Artifact>(collectors);
          Collections.sort(membersSorted);
          StringBuffer sb = new StringBuffer();
          for (Artifact member : membersSorted) {
@@ -117,7 +139,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          }
          return sb.toString();
       }
-      Artifact member = members.iterator().next();
+      Artifact member = collectors.iterator().next();
       return getMemberOrder((T) member, artifact);
    }
 
@@ -130,32 +152,6 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          return String.valueOf(members.indexOf(member) + 1);
       } catch (Exception ex) {
          return LogUtil.getCellExceptionString(ex);
-      }
-   }
-
-   public Collection<Artifact> getMembers(Artifact artifact, boolean recurse) throws OseeCoreException {
-      Set<Artifact> members = new HashSet<Artifact>();
-      getMembers(artifact, members, recurse);
-      return members;
-   }
-
-   public void getMembers(Artifact artifact, Set<Artifact> members, boolean recurse) throws OseeCoreException {
-      getMembers(Arrays.asList(artifact), members, recurse);
-   }
-
-   public void getMembers(Collection<Artifact> artifacts, Set<Artifact> members, boolean recurse) throws OseeCoreException {
-      for (Artifact art : artifacts) {
-         if (art.isOfType(getArtifactType())) {
-            members.add(art);
-         }
-         for (Artifact art2 : art.getRelatedArtifacts(getMembersRelationTypeSide())) {
-            if (art2.isOfType(getArtifactType())) {
-               members.add(art2);
-            }
-         }
-         if (recurse && art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).getParentAWA() != null) {
-            getMembers(((AbstractWorkflowArtifact) art).getParentAWA(), members, recurse);
-         }
       }
    }
 
