@@ -10,109 +10,111 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import java.util.LinkedList;
-import java.util.List;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
  * 
  * @author Ryan D. Brooks
  */
-public class PurgeUnusedBackingDataAndTransactions extends AbstractDatastoreTxCallable<Void> {
+public class PurgeUnusedBackingDataAndTransactions {
 
    private static final String NOT_ADDRESSESED_GAMMAS =
-      "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
+      "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id union all select 1 from osee_txs_archived txs2 where t1.gamma_id = txs2.gamma_id)";
 
    private static final String EMPTY_TRANSACTIONS =
-      "select branch_id, transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
+      "select branch_id, transaction_id from osee_tx_details txd where not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id union all select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id)";
 
-   private static final String NONEXISTENT_GAMMAS = "SELECT gamma_id FROM %s txs WHERE " + //
-   "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id) " + //
-   "AND NOT EXISTS (SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id) " + //
-   "AND NOT EXISTS (SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
+   private static final String NONEXISTENT_GAMMAS = "SELECT branch_id, gamma_id FROM %s txs WHERE " + //
+   "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id union all " + //
+   "SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id union all " + //
+   "SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
 
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
+   private static final String DELETE_GAMMAS_BY_BRANCH = "DELETE FROM %s WHERE branch_id = ? and gamma_id = ?";
+
    private static final String DELETE_EMPTY_TRANSACTIONS =
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
+   private final JdbcClient jdbcClient;
 
-   public PurgeUnusedBackingDataAndTransactions(Log logger, OrcsSession session, JdbcClient jdbcClient) {
-      super(logger, session, jdbcClient);
+   public PurgeUnusedBackingDataAndTransactions(JdbcClient jdbcClient) {
+      this.jdbcClient = jdbcClient;
    }
 
-   private void processNotAddressedGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
-      List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
+   private int purgeNotAddressedGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
+      OseePreparedStatement notAddressedGammas;
 
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
-         chStmt.runPreparedQuery(sql);
+         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, sql);
+         notAddressedGammas = jdbcClient.getBatchStatement(connection, String.format(DELETE_GAMMAS, tableName));
+
          while (chStmt.next()) {
-            notAddressedGammas.add(new Object[] {chStmt.getLong("gamma_id")});
-            getLogger().info("Not Addressed Gamma - [%s]", chStmt.getLong("gamma_id"));
+            notAddressedGammas.addToBatch(chStmt.getLong("gamma_id"));
          }
       } finally {
          chStmt.close();
       }
 
-      if (!notAddressedGammas.isEmpty()) {
-         getJdbcClient().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), notAddressedGammas);
-      }
+      return notAddressedGammas.execute();
    }
 
-   private void processAddressedButNonexistentGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
-      List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
+   private int purgeAddressedButNonexistentGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
+      OseePreparedStatement nonexistentGammas;
 
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String sql = String.format(NONEXISTENT_GAMMAS, tableName);
+         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, sql);
+         nonexistentGammas =
+            jdbcClient.getBatchStatement(connection, String.format(DELETE_GAMMAS_BY_BRANCH, tableName));
 
-         chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
-            nonexistentGammas.add(new Object[] {chStmt.getInt("gamma_id")});
-            getLogger().info("Non-Existent Gamma - [%s]", chStmt.getLong("gamma_id"));
+            nonexistentGammas.addToBatch(chStmt.getLong("branch_id"), chStmt.getLong("gamma_id"));
          }
       } finally {
          chStmt.close();
       }
 
-      if (!nonexistentGammas.isEmpty()) {
-         getJdbcClient().runBatchUpdate(connection, String.format(DELETE_GAMMAS, tableName), nonexistentGammas);
-      }
+      return nonexistentGammas.execute();
    }
 
-   private void processEmptyTransactions(JdbcConnection connection) throws OseeCoreException {
-      List<Object[]> emptyTransactions = new LinkedList<Object[]>();
+   private int purgeEmptyTransactions(JdbcConnection connection) throws OseeCoreException {
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
+      OseePreparedStatement emptyTransactions;
 
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
-         chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
+         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, EMPTY_TRANSACTIONS);
+         emptyTransactions = jdbcClient.getBatchStatement(connection, DELETE_EMPTY_TRANSACTIONS);
+
          while (chStmt.next()) {
-            emptyTransactions.add(new Object[] {chStmt.getLong("branch_id"), chStmt.getInt("transaction_id")});
-            getLogger().info("Empty Tx - [%s]", chStmt.getInt("transaction_id"));
+            int txId = chStmt.getInt("transaction_id");
+            emptyTransactions.addToBatch(chStmt.getLong("branch_id"), txId);
          }
       } finally {
          chStmt.close();
       }
 
-      if (!emptyTransactions.isEmpty()) {
-         getJdbcClient().runBatchUpdate(connection, DELETE_EMPTY_TRANSACTIONS, emptyTransactions);
-      }
+      return emptyTransactions.execute();
    }
 
-   @Override
-   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
-      processNotAddressedGammas(connection, "osee_attribute");
-      processNotAddressedGammas(connection, "osee_artifact");
-      processNotAddressedGammas(connection, "osee_relation_link");
-      processAddressedButNonexistentGammas(connection, "osee_txs");
-      processAddressedButNonexistentGammas(connection, "osee_txs_archived");
-      processEmptyTransactions(connection);
-      return null;
+   public int[] purge(JdbcConnection connection) throws OseeCoreException {
+      int[] counts = new int[6];
+      int i = 0;
+
+      counts[i++] = purgeNotAddressedGammas(connection, "osee_artifact");
+      counts[i++] = purgeNotAddressedGammas(connection, "osee_attribute");
+      counts[i++] = purgeNotAddressedGammas(connection, "osee_relation_link");
+      counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs");
+      counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs_archived");
+      counts[i++] = purgeEmptyTransactions(connection);
+
+      return counts;
    }
 }

@@ -37,6 +37,12 @@ public class TxPruneCommand extends AbstractDatastoreConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      return new PurgeUnusedBackingDataAndTransactions(getLogger(), getSession(), getJdbcClient());
+      return new Callable<Void>() {
+         @Override
+         public Void call() throws Exception {
+            new PurgeUnusedBackingDataAndTransactions(getJdbcClient());
+            return null;
+         }
+      };
    }
 }
