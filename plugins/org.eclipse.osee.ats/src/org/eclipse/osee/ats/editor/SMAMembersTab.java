@@ -442,6 +442,9 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public WorldXViewer getWorldXViewer() {
+      if (worldComposite == null) {
+         return null;
+      }
       return worldComposite.getWorldXViewer();
    }
 
