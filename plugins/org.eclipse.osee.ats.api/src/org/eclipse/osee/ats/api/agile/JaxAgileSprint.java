@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -19,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxAgileSprint extends AbstractAgileObject {
 
    private long teamUuid;
+   private List<String> names;
 
    public long getTeamUuid() {
       return teamUuid;
@@ -26,6 +29,17 @@ public class JaxAgileSprint extends AbstractAgileObject {
 
    public void setTeamUuid(long teamUuid) {
       this.teamUuid = teamUuid;
+   }
+
+   public List<String> getNames() {
+      if (names == null) {
+         names = new ArrayList<String>();
+      }
+      return names;
+   }
+
+   public void setNames(List<String> names) {
+      this.names = names;
    }
 
 }

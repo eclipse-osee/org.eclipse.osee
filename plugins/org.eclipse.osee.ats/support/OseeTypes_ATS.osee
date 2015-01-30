@@ -161,6 +161,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Workflow Definition"
 	attribute "ats.Work Package Guid"
 	attribute "ats.Id"
+	attribute "ats.Unplanned Work"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -228,6 +229,15 @@ artifactType "Configuration" extends "Artifact" {
 
 attributeType "ats.ATS Configured Branch" extends StringAttribute {
 	uuid 0x1000555100000FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Unplanned Work" extends BooleanAttribute {
+	uuid 0x219973F5F43E2BE5
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
