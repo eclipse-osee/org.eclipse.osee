@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.agile;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
@@ -28,12 +27,9 @@ import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.world.AtsWorldEditorItems;
-import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ats.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
 /**
@@ -79,18 +75,10 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
             registerColumns(newCol);
          }
       }
-      // Register any columns from other plugins
-      try {
-         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (XViewerColumn xCol : item.getXViewerColumns()) {
-               registerColumns(xCol);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      registerAllAttributeColumns();
-      WorldXViewerFactory.registerStateColumns(this);
+      WorldXViewerUtil.registerAtsAttributeColumns(this);
+      WorldXViewerUtil.registerPluginColumns(this);
+      WorldXViewerUtil.registerStateColumns(this);
+      WorldXViewerUtil.registerConfigurationsColumns(this);
    }
 
    @Override

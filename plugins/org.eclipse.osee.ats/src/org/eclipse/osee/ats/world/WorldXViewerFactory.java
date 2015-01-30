@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
@@ -94,9 +88,7 @@ import org.eclipse.osee.ats.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewReviewerColumn;
 import org.eclipse.osee.ats.column.StartDateColumn;
-import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.column.StateCompletedColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
@@ -115,20 +107,12 @@ import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageNameColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageTypeColumnUI;
-import org.eclipse.osee.ats.config.AtsConfigurationUtil;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
-import org.eclipse.swt.SWT;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
 
@@ -248,58 +232,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public WorldXViewerFactory() {
       super(NAMESPACE);
       registerColumns(WorldViewColumns);
-      // Register all ats.* attribute columns
-      try {
-         for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
-            if (attributeType.getName().startsWith("ats.")) {
-               registerColumns(getAttributeColumn(attributeType));
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-
-      // Register any columns from other plugins
-      try {
-         for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (XViewerColumn xCol : item.getXViewerColumns()) {
-               registerColumns(xCol);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      registerStateColumns(this);
-      registerConfigurationsColumns();
-   }
-
-   private void registerConfigurationsColumns() {
-      List<AtsAttributeValueColumn> columns = AtsConfigurationUtil.getConfigurations().getViews().getAttrColumns();
-      for (AtsAttributeValueColumn column : columns) {
-         registerColumns(new XViewerAtsAttributeValueColumn(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()),
-            column.getWidth(), getSwtAlign(column.getAlign()), column.isVisible(),
-            SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription()));
-      }
-   }
-
-   private int getSwtAlign(ColumnAlign align) {
-      if (align == ColumnAlign.Left) {
-         return SWT.LEFT;
-      } else if (align == ColumnAlign.Center) {
-         return SWT.CENTER;
-      } else if (align == ColumnAlign.Right) {
-         return SWT.RIGHT;
-      }
-      return 0;
-   }
-
-   public static void registerStateColumns(XViewerFactory factory) {
-      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
-         factory.registerColumns(new StateAssigneesColumn(stateName));
-      }
-      for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
-         factory.registerColumns(new StateCompletedColumn(stateName));
-      }
+      WorldXViewerUtil.registerOtherColumns(this);
    }
 
    @Override
