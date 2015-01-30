@@ -74,8 +74,8 @@ app.provider('Report', function() {
 app.provider('ExportSet', function() {
 	    this.$get = ['$resource',
 	        function($resource) {
-	            var CopySet = $resource('/dispo/program/:programId/admin/export', {}, {});
-	            return CopySet;
+	            var ExportSet = $resource('/dispo/program/:programId/admin/export', {}, {});
+	            return ExportSet;
 	        }
 	    ];
 	});

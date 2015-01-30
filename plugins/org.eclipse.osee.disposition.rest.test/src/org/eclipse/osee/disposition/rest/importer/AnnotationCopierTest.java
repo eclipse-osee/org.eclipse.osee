@@ -18,7 +18,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
-import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.json.JSONArray;
@@ -158,10 +158,10 @@ public class AnnotationCopierTest {
       destItem.setDiscrepanciesList(destDiscrepancies);
       OperationReport report = new OperationReport();
 
-      AnnotationCopier copier = new AnnotationCopier(connector);
+      DispoSetCopier copier = new DispoSetCopier(connector);
       List<DispoItem> toModify =
-         copier.copyEntireSet(Collections.singletonList(destItem), Collections.singletonList((DispoItem) sourceItem),
-            true, report);
+         copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
+            Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
@@ -212,10 +212,10 @@ public class AnnotationCopierTest {
       destItem.setDiscrepanciesList(destDiscrepancies);
 
       OperationReport report = new OperationReport();
-      AnnotationCopier copier = new AnnotationCopier(connector);
+      DispoSetCopier copier = new DispoSetCopier(connector);
       List<DispoItem> toModify =
-         copier.copyEntireSet(Collections.singletonList(destItem), Collections.singletonList((DispoItem) sourceItem),
-            true, report);
+         copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
+            Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();

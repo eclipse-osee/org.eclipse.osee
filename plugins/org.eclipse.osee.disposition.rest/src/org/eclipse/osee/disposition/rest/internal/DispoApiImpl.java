@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
@@ -30,9 +31,9 @@ import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
-import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
@@ -190,7 +191,7 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private boolean editDispoItems(DispoProgram program, List<DispoItem> dispoItems, boolean resetRerunFlag) {
+   private boolean editDispoItems(DispoProgram program, Collection<DispoItem> dispoItems, boolean resetRerunFlag) {
       boolean wasUpdated = false;
 
       ArtifactReadable author = getQuery().findUser();
@@ -478,24 +479,33 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source) {
-      AnnotationCopier copier = new AnnotationCopier(dispoConnector);
-      List<DispoItemData> destinationItems = new ArrayList<DispoItemData>();
+   public String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params) {
+      List<DispoItem> sourceItems = getDispoItems(program, source.getGuid());
+      Map<String, DispoItemData> namesToDestItems = new HashMap<String, DispoItemData>();
       for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
          DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
-         destinationItems.add(itemData);
+         namesToDestItems.put(itemData.getName(), itemData);
       }
-      List<DispoItem> toEdit = Collections.emptyList();
+      Map<String, DispoItem> namesToToEditItems = new HashMap<String, DispoItem>();
       OperationReport report = new OperationReport();
-      try {
-         toEdit = copier.copyEntireSet(destinationItems, getDispoItems(program, source.getGuid()), true, report);
-      } catch (JSONException ex) {
-         report.addOtherMessage(ex.getMessage());
+
+      DispoSetCopier copier = new DispoSetCopier(dispoConnector);
+      if (!params.getAnnotationParam().isNone()) {
+         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, report);
+         for (DispoItem item : copyResults) {
+            namesToToEditItems.put(item.getName(), item);
+         }
       }
-      if (!toEdit.isEmpty()) {
-         editDispoItems(program, toEdit, false);
+
+      copier.copyCategories(namesToDestItems, sourceItems, namesToToEditItems, params.getCategoryParam());
+      copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
+      copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
+
+      if (!namesToToEditItems.isEmpty()) {
+         editDispoItems(program, namesToToEditItems.values(), false);
       }
 
       return generateReportArt(program, getQuery().findUser(), report, "Copy Dispositions");
    }
+
 }

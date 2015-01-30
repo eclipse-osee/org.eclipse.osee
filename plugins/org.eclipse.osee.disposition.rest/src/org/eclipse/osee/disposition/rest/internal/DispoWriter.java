@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
@@ -34,7 +35,7 @@ public interface DispoWriter {
 
    void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data, boolean resetRerunFlag);
+   void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag);
 
    String createDispoReport(DispoProgram program, ArtifactReadable author, String contens, String operationTitle);
 }

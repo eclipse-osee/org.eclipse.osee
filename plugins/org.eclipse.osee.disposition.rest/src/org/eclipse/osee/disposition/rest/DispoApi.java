@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
@@ -55,7 +56,7 @@ public interface DispoApi {
 
    boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
-   String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source);
+   String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params);
 
    // Deletes
 

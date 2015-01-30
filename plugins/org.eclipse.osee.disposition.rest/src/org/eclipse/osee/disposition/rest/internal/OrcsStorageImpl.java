@@ -374,8 +374,8 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public void updateDispoItems(ArtifactReadable author, DispoProgram program, List<DispoItem> data, boolean resetRerunFlag) {
-      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Edit Multiple Dispo Items");
+   public void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag) {
+      TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Copy Categories");
 
       for (DispoItem newItem : data) {
          ArtifactReadable dispoItemArt = findDispoArtifact(program, newItem.getGuid(), DispoConstants.DispoItem);

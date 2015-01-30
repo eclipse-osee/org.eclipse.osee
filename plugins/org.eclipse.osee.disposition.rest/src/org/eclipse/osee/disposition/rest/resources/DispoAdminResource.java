@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
@@ -71,7 +73,7 @@ public class DispoAdminResource {
    @Path("/export")
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) throws FileNotFoundException {
+   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
@@ -91,14 +93,15 @@ public class DispoAdminResource {
    }
 
    @Path("/copy")
-   @GET
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet) {
+   public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
 
-      String reportUrl = dispoApi.copyDispoSet(program, destination, source);
+      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
       DispoSetData responseSet = new DispoSetData();
       responseSet.setOperationStatus(reportUrl);
 

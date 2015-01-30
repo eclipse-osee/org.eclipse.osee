@@ -210,11 +210,17 @@
 		            }
 		        };
 		        
-		        $scope.copySet = function(destination, source)	 {
-		            CopySet.get({
+		        $scope.copySet = function(inputs)	 {
+		        	var copySetOp = new CopySet;
+		        	copySetOp.annotationParam = inputs.annotationParam;
+		        	copySetOp.categoryParam = inputs.categoryParam;
+		        	copySetOp.assigneeParam = inputs.assigneeParam;
+		        	copySetOp.noteParam = inputs.noteParam;
+		        	
+		        	copySetOp.$save({
 		                programId: $scope.programSelection,
-		                destinationSet: destination,
-		                sourceSet: source,
+		                destinationSet: inputs.destinationSet,
+		                sourceSet: inputs.sourceSet,
 		            }, function(data) {
 		            	var reportUrl = data.operationStatus;
 			            window.open(reportUrl);
@@ -267,18 +273,32 @@
 		            });
 
 		            modalInstance.result.then(function(inputs) {
-		                $scope.copySet(inputs.destinationSet, inputs.sourceSet);
+		                $scope.copySet(inputs);
 		            });
 		        }
 		        
 		        
 		        var CopySetModalCtrl = function($scope, $modalInstance, sets) {
 		            $scope.setsLocal = angular.copy(sets);
+		            $scope.annotationOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}];
+		            $scope.categoryOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}, { value: 2, text: 'ONLY COPY IF DEST IS EMPTY'}, { value: 3, text: 'MERGE DEST AND SOURCE'}];
+		            $scope.assigneeOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}, { value: 2, text: 'ONLY COPY IF DEST IS UNASSIGNED'}];
+		            $scope.noteOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}, { value: 2, text: 'ONLY COPY IF DEST IS EMPTY'}, { value: 3, text: 'MERGE DEST AND SOURCE'}];
+		            
+		            $scope.annotationParam = 0;
+		            $scope.categoryParam = 0;
+		            $scope.assigneeParam = 0;
+		            $scope.noteParam = 0;
 
 		            $scope.ok = function() {
 		                var inputs = {};
 		                inputs.destinationSet = this.destinationSet;
 		                inputs.sourceSet = this.sourceSet;
+		                inputs.annotationParam = this.annotationParam;
+		                inputs.categoryParam = this.categoryParam;
+		                inputs.noteParam = this.noteParam;
+		                inputs.assigneeParam = this.assigneeParam;
+		                
 		                $modalInstance.close(inputs);
 		            };
 

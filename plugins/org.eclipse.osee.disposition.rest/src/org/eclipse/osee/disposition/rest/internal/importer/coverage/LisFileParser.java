@@ -33,7 +33,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
-import org.eclipse.osee.disposition.rest.internal.importer.AnnotationCopier;
+import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.Result;
@@ -113,15 +113,16 @@ public class LisFileParser implements DispoImporterApi {
 
       // This is a reimport so we'll need to copy all the annotations
       if (!exisitingItems.isEmpty()) {
-         AnnotationCopier copier = new AnnotationCopier(dispoConnector);
-         try {
-            List<DispoItemData> itemsFromImport = new ArrayList<DispoItemData>();
-            itemsFromImport.addAll(values);
+         DispoSetCopier copier = new DispoSetCopier(dispoConnector);
+         List<DispoItemData> itemsFromImport = new ArrayList<DispoItemData>();
+         itemsFromImport.addAll(values);
 
-            toReturn = copier.copyEntireSet(itemsFromImport, exisitingItems.values(), false, report);
-         } catch (JSONException ex) {
-            //
+         Map<String, DispoItemData> nameToItem = new HashMap<String, DispoItemData>();
+         for (DispoItemData item : itemsFromImport) {
+            nameToItem.put(item.getName(), item);
          }
+
+         toReturn = copier.copyAllDispositions(nameToItem, exisitingItems.values(), false, report);
       } else {
          toReturn = new ArrayList<DispoItem>();
          toReturn.addAll(values);
