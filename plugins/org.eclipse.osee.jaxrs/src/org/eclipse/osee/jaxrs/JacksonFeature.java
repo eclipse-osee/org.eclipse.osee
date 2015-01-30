@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,11 @@ public class JacksonFeature implements Feature {
 
    private static JacksonJsonProvider newJacksonJsonProvider() {
       ObjectMapper objectMapper = new ObjectMapper();
+
+      objectMapper.setDateFormat(new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a"));
+      objectMapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
+      objectMapper.configure(SerializationConfig.Feature.WRAP_EXCEPTIONS, true);
+      objectMapper.configure(SerializationConfig.Feature.WRITE_EMPTY_JSON_ARRAYS, true);
       objectMapper.configure(SerializationConfig.Feature.CAN_OVERRIDE_ACCESS_MODIFIERS, true);
       objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_FIELDS, true);
       objectMapper.configure(SerializationConfig.Feature.AUTO_DETECT_GETTERS, true);
