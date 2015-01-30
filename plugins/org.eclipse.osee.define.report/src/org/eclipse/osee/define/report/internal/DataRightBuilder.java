@@ -80,6 +80,9 @@ public class DataRightBuilder {
       DataRightEntry currentArtifact = iterator.next();
       while (currentArtifact != null) {
          String classification = currentArtifact.getClassification();
+         if (!Strings.isValid(classification)) {
+            classification = "DEFAULT";
+         }
 
          boolean isNextDifferent = false;
          boolean needsPageBreak = true;
@@ -107,9 +110,6 @@ public class DataRightBuilder {
             isNextDifferent = true;
          }
 
-         if (!Strings.isValid(classification)) {
-            classification = "DEFAULT";
-         }
          DataRight dataRight = classificationsToDataRight.get(classification);
          if (dataRight == null) {
             classification = "Unspecified";
