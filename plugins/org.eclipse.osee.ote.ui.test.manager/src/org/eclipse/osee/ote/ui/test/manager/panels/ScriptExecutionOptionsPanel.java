@@ -24,6 +24,7 @@ public class ScriptExecutionOptionsPanel extends Composite {
    private Button batchModeCheck;
    private Button abortScriptOnFirstFail;
    private Button pauseScriptOnFail;
+   private Button printFailToConsole;
 
    public ScriptExecutionOptionsPanel(Composite parent, int style) {
       super(parent, style);
@@ -52,6 +53,9 @@ public class ScriptExecutionOptionsPanel extends Composite {
       pauseScriptOnFail.setText("Pause script on fail");
       pauseScriptOnFail.setToolTipText("Each script failure will cause a promptPause to occur.");
 
+      printFailToConsole = new Button(parent, SWT.CHECK);
+      printFailToConsole.setText("Print failures to console");
+      printFailToConsole.setToolTipText("Prints each failure to the console as the script runs.");
    }
 
    public boolean isKeepOldCopiesEnabled() {
@@ -86,4 +90,11 @@ public class ScriptExecutionOptionsPanel extends Composite {
       pauseScriptOnFail.setSelection(isEnabled);
    }
 
+   public boolean isPrintFailToConsole(){
+      return printFailToConsole.getSelection();
+   }
+   
+   public void setPrintFailToConsole(boolean isEnabled){
+      printFailToConsole.setSelection(isEnabled);
+   }
 }

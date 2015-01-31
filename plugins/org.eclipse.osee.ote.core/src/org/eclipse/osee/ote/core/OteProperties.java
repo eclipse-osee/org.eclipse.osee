@@ -23,6 +23,7 @@ public class OteProperties extends OseeProperties {
    private static final String OSEE_OTE_BATCH = "osee.ote.batch";
    private static final String OSEE_OTE_LOG_FILE_PATH = "osee.ote.logfilepath";
    private static final String OSEE_PAUSE_ON_FAIL = "ote.pause.on.fail";
+   private static final String OSEE_PRINT_FAIL_TO_CONSOLE = "ote.print.fail.to.console";
 
    private OteProperties() {
       super();
@@ -50,6 +51,10 @@ public class OteProperties extends OseeProperties {
 
    public static boolean isPauseOnFailEnabled(){
       return System.getProperty(OSEE_PAUSE_ON_FAIL) != null ? true : false;
+   }
+   
+   public static boolean isPrintFailToConsoleEnabled(){
+      return System.getProperty(OSEE_PRINT_FAIL_TO_CONSOLE) != null ? true : false;
    }
    /**
     * A string representation of all the property setting specified by this class

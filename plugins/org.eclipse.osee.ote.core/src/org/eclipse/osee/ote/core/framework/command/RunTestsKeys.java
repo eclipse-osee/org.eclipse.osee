@@ -23,6 +23,7 @@ public enum RunTestsKeys {
    spare1,
    batchFailAbortMode,
    batchmode,
-   batchFailPauseMode;
+   batchFailPauseMode,
+   printFailToConsoleMode;
    
 }

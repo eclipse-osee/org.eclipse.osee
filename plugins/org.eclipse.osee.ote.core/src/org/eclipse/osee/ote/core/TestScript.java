@@ -178,6 +178,7 @@ public abstract class TestScript implements ITimeout {
    private final TestPromptImpl promptImpl;
    private ITestRunListenerProvider listenerProvider;
    private boolean shouldPauseOnFail;
+   private boolean printFailToConsole;
 
    public TestScript(TestEnvironment environment, IUserSession callback, ScriptTypeEnum scriptType, boolean isBatchable) {
       constructed.incrementAndGet();
@@ -198,6 +199,7 @@ public abstract class TestScript implements ITimeout {
       }
       this.testPointTally = new TestPointTally(this.getClass().getName());
       shouldPauseOnFail = OteProperties.isPauseOnFailEnabled();
+      printFailToConsole = OteProperties.isPrintFailToConsoleEnabled();
    }
 
    public void abort() {
@@ -309,13 +311,24 @@ public abstract class TestScript implements ITimeout {
 
    public void pauseScriptOnFail(int testPoint) throws InterruptedException{
       if (shouldPauseOnFail){
-      promptPause("Test point " + testPoint + " failed.\n");
+         promptPause("Test point " + testPoint + " failed.\n");
       }
    }
    
    public void pauseScriptOnFail(int testPoint, String name, String expected, String actual, String stackTrace) throws InterruptedException{
       if (shouldPauseOnFail){
-      promptPause("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
+         promptPause("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
+      }
+   }
+   
+   public void printFailure(int testPoint) throws InterruptedException{
+      if (printFailToConsole){
+         prompt("Test point " + testPoint + " failed.\n");
+      }
+   }
+   public void printFailure(int testPoint, String name, String expected, String actual, String stackTrace) throws InterruptedException{
+      if (printFailToConsole){
+         prompt("TP " + testPoint + ": " + name + "\nExpected: " + expected + "\nActual:      " + actual + "\n\n" + stackTrace );
       }
    }
    

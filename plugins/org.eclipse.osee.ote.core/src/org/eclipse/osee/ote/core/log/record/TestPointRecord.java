@@ -107,9 +107,11 @@ public class TestPointRecord extends TestRecord {
                     }
                  }
                  script.pauseScriptOnFail(point, name, exp, act, stack.toString()); 
+                 script.printFailure(point, name, exp, act, stack.toString());
               }
               else {
                  script.pauseScriptOnFail(point);
+                 script.printFailure(point);
               }
            } catch (InterruptedException e) {
               e.printStackTrace();
