@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest.internal.util;
+package org.eclipse.osee.ats.impl.config;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

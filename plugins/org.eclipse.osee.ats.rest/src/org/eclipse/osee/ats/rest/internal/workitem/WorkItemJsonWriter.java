@@ -49,7 +49,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.rest.internal.util.JsonFactory.create();
+      jsonFactory = org.eclipse.osee.ats.impl.config.JsonFactory.create();
    }
 
    public void stop() {

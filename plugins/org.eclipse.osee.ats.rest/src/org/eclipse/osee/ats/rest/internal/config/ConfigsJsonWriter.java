@@ -33,7 +33,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.rest.internal.util.JsonFactory.create();
+      jsonFactory = org.eclipse.osee.ats.impl.config.JsonFactory.create();
    }
 
    public void stop() {
