@@ -182,6 +182,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
 
          } else if (data != null) {
+            data = data.replaceAll(WordTemplateProcessor.PGNUMTYPE_START_1, "");
             wordMl.addWordMl(data);
          }
          wordMl.resetListValue();

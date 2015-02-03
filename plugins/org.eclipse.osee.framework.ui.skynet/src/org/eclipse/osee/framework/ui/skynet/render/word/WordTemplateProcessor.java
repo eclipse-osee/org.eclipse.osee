@@ -78,6 +78,8 @@ public class WordTemplateProcessor {
    private static final String EXTENSION_PROCESSOR = "Extension_Processor";
    private static final String KEY = "Key";
 
+   public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
+
    private static final Pattern outlineTypePattern = Pattern.compile("<((\\w+:)?(OutlineType))>(.*?)</\\1>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern outlineNumberPattern = Pattern.compile("<((\\w+:)?(Number))>(.*?)</\\1>",
@@ -194,6 +196,7 @@ public class WordTemplateProcessor {
          OseeExceptions.wrapAndThrow(ex);
       }
 
+      template = template.replaceAll(PGNUMTYPE_START_1, "");
       this.outlineNumber =
          outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
       template = wordMl.setHeadingNumbers(this.outlineNumber, template, outlineType);
@@ -275,6 +278,7 @@ public class WordTemplateProcessor {
 
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, response);
+
          }
       }
       // maintain a list of artifacts that have been processed so we do not
