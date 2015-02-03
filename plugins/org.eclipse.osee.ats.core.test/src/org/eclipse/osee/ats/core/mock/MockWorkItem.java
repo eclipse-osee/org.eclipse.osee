@@ -234,4 +234,9 @@ public class MockWorkItem implements IAtsWorkItem {
       return 456;
    }
 
+   @Override
+   public boolean isReview() {
+      return false;
+   }
+
 }

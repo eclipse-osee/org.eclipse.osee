@@ -42,6 +42,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    boolean isTask();
 
+   boolean isReview();
+
    boolean isTeamWorkflow();
 
    IAtsUser getCreatedBy();

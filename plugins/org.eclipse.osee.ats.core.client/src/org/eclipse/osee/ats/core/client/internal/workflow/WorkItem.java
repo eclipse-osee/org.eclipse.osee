@@ -110,7 +110,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       return atsClient.getWorkItemFactory().getTeamWf(teamArt);
    }
 
-   private boolean isReview() {
+   @Override
+   public boolean isReview() {
       return this instanceof IAtsAbstractReview;
    }
 
