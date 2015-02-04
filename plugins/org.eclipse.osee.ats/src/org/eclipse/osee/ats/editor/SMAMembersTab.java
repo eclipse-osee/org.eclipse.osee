@@ -301,6 +301,11 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
             }
             try {
                final List<Artifact> artifacts = provider.getMembers();
+               try {
+                  AtsBulkLoad.bulkLoadArtifacts(artifacts);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {

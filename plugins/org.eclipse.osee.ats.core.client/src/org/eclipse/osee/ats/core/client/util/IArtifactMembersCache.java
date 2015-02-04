@@ -8,19 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.artifact;
+package org.eclipse.osee.ats.core.client.util;
 
 import java.util.List;
+import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
-/**
- * @author Donald G. Dunne
- */
-public interface HasMembers {
+public interface IArtifactMembersCache<T extends CollectorArtifact> {
 
-   List<Artifact> getMembers() throws OseeCoreException;
+   List<Artifact> getMembers(T artifact) throws OseeCoreException;
 
-   void addMember(Artifact artifact) throws OseeCoreException;
+   void decache(T artifact);
+
+   void invalidate();
 
 }

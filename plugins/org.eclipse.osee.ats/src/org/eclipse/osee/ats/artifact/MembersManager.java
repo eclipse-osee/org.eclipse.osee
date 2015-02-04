@@ -144,12 +144,14 @@ public abstract class MembersManager<T extends CollectorArtifact> {
    }
 
    public String getMemberOrder(T memberArt, Artifact member) throws OseeCoreException {
-      List<Artifact> members = memberArt.getMembers();
-      if (!members.contains(member)) {
-         return "";
-      }
       try {
-         return String.valueOf(members.indexOf(member) + 1);
+         List<Artifact> members = memberArt.getMembers();
+         int location = members.indexOf(member);
+         if (location == -1) {
+            return "";
+         } else {
+            return String.valueOf(location + 1);
+         }
       } catch (Exception ex) {
          return LogUtil.getCellExceptionString(ex);
       }

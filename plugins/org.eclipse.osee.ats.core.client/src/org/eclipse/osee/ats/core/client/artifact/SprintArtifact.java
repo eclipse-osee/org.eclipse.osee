@@ -15,10 +15,10 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    public SprintArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      super(guid, branch, artifactType);
+      super(guid, branch, artifactType, AtsRelationTypes.AgileSprint_Item);
    }
 
    @Override
@@ -66,8 +66,8 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public IRelationTypeSide getMembersRelationType() {
-      return AtsRelationTypes.AgileSprint_Item;
+   public List<Artifact> getMembers() throws OseeCoreException {
+      return AtsClientService.get().getSprintMembersCache().getMembers(this);
    }
 
 }

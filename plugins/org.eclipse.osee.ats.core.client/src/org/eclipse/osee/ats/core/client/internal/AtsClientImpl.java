@@ -57,6 +57,8 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.branch.internal.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.config.ActionableItemFactory;
@@ -87,6 +89,7 @@ import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
@@ -156,6 +159,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsProgramService programService;
    private IAtsTeamDefinitionService teamDefinitionService;
    private IAtsQueryService atsQueryService;
+   private ArtifactMembersCache<GoalArtifact> goalMembersCache;
+   private ArtifactMembersCache<SprintArtifact> sprintMembersCache;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -325,6 +330,12 @@ public class AtsClientImpl implements IAtsClient {
       invalidateConfigCache();
       invalidateWorkDefinitionCache();
       versionService.invalidateVersionCache();
+      if (goalMembersCache != null) {
+         goalMembersCache.invalidate();
+      }
+      if (sprintMembersCache != null) {
+         sprintMembersCache.invalidate();
+      }
    }
 
    @Override
@@ -716,6 +727,22 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public Artifact getArtifactByGuid(String guid) throws OseeCoreException {
       return getArtifact(guid);
+   }
+
+   @Override
+   public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
+      if (goalMembersCache == null) {
+         goalMembersCache = new ArtifactMembersCache<GoalArtifact>();
+      }
+      return goalMembersCache;
+   }
+
+   @Override
+   public IArtifactMembersCache<SprintArtifact> getSprintMembersCache() {
+      if (sprintMembersCache == null) {
+         sprintMembersCache = new ArtifactMembersCache<SprintArtifact>();
+      }
+      return sprintMembersCache;
    }
 
 }

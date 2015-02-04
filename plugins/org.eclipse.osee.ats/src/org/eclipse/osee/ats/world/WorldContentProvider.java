@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,18 +88,17 @@ public class WorldContentProvider implements ITreeContentProvider {
                return ActionManager.getTeams((artifact)).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               List<Artifact> arts =
-                  artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
+               List<Artifact> arts = AtsClientService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
-               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
+               return arts.toArray(new Artifact[arts.size()]);
             }
             if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
                List<Artifact> arts =
-                  artifact.getRelatedArtifacts(AtsRelationTypes.AgileSprint_Item, DeletionFlag.EXCLUDE_DELETED);
+                  AtsClientService.get().getSprintMembersCache().getMembers((SprintArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
-               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.AgileSprint_Item)]);
+               return arts.toArray(new Artifact[arts.size()]);
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.cast(artifact);
