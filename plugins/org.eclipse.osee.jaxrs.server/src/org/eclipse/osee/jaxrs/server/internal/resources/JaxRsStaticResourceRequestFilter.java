@@ -107,13 +107,23 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
    }
 
    private boolean hasExtension(String path) {
-      String extension = Lib.getExtension(path);
+      String extension = null;
+      if (Strings.isValid(path)) {
+         int index = path.lastIndexOf("/");
+         String toProcess = path;
+         if (index > 0 && index + 1 < path.length()) {
+            toProcess = path.substring(index + 1);
+         }
+         extension = Lib.getExtension(toProcess);
+      }
       return Strings.isValid(extension);
    }
 
    private String addExtension(String path, MediaType mediaType) {
       String extension = mediaType.getSubtype();
-      if (extension.contains("+")) {
+      if ("plain".equals(extension)) {
+         extension = "txt";
+      } else if (extension.contains("+")) {
          int index = extension.lastIndexOf("+");
          if (index > 0 && index + 1 < extension.length()) {
             extension = extension.substring(index + 1);
