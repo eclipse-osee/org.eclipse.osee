@@ -1,17 +1,25 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="/lib/css/bootstrap.min.css"></link>
-   <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-   <meta charset="UTF-8">
-   <meta name="author" content="Donald G. Dunne" />
-   <title>ATS - New Action</title>
-	<script src="/ats/lib/atsCore.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    
+    <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+    
+    <title>ATS - New Action</title>
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
-
 <div class="container">
-   <div><h2>ATS - Create new ATS Action</h2><div>
+   <div>
+      <h2>ATS - Create new ATS Action</h2>
+   </div>
 
    <form id="oseeAppForm" class="well">      
       <label>Title</label>&nbsp;<input type="text" style="width:800px;" id="ats_title" name="title"/><br/>
@@ -44,6 +52,7 @@
    </form>
 </div>
 
+<script src="/ats/lib/atsCore.js"></script>
 <script>
    function createAction() {
       post_with_parms("/ats/action", getParams());
@@ -73,6 +82,5 @@
    var button3 = document.getElementById("clearButton");
    button3.addEventListener("click", clearTestData);
 </script>
-
 </body>
 </html>
