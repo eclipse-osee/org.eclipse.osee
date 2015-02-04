@@ -22,6 +22,7 @@ public class PeerToPeerReviewState extends StateTypeAdapter {
    public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", StateType.Working);
    public static PeerToPeerReviewState Meeting = new PeerToPeerReviewState("Meeting", StateType.Working);
    public static PeerToPeerReviewState Completed = new PeerToPeerReviewState("Completed", StateType.Completed);
+   public static PeerToPeerReviewState Cancelled = new PeerToPeerReviewState("Completed", StateType.Cancelled);
 
    private PeerToPeerReviewState(String pageName, StateType StateType) {
       super(PeerToPeerReviewState.class, pageName, StateType);
