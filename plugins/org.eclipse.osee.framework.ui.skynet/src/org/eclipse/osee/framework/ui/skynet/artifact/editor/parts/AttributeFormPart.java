@@ -124,15 +124,17 @@ public class AttributeFormPart extends AbstractFormPart {
    }
 
    public static void computeXTextSize(XText xText) {
-      int height = xText.getStyledText().getLineCount() * xText.getStyledText().getLineHeight();
-      GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
-      if (xText.isFillVertically() && height < 60) {
-         formTextGd.heightHint = 60;
-      } else {
-         formTextGd.heightHint = height;
+      if (Widgets.isAccessible(xText.getStyledText())) {
+         int height = xText.getStyledText().getLineCount() * xText.getStyledText().getLineHeight();
+         GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
+         if (xText.isFillVertically() && height < 60) {
+            formTextGd.heightHint = 60;
+         } else {
+            formTextGd.heightHint = height;
+         }
+         formTextGd.widthHint = 200;
+         xText.getStyledText().setLayoutData(formTextGd);
       }
-      formTextGd.widthHint = 200;
-      xText.getStyledText().setLayoutData(formTextGd);
    }
 
    public void createContents(Composite composite) {
