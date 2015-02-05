@@ -18,7 +18,11 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({JaxRsClientInternalTestSuite.class, JaxRsClientBuilderTest.class, JaxRsClientTest.class})
+@Suite.SuiteClasses({
+   JaxRsClientInternalTestSuite.class,
+   JaxRsClientBuilderTest.class,
+   JaxRsClientTest.class,
+   JaxRsClientToServerTest.class})
 public class JaxRsClientTestSuite {
    // Test Suite
 }

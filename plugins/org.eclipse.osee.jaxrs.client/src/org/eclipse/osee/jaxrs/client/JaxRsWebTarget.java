@@ -76,4 +76,11 @@ public interface JaxRsWebTarget extends Configurable<JaxRsWebTarget> {
     */
    public Invocation.Builder request(MediaType... acceptedResponseTypes);
 
+   /**
+    * Convert to a web-proxy class (class containing JAX-RS annotations)
+    * 
+    * @return web-proxy object
+    */
+   public <T> T newProxy(Class<T> clazz);
+
 }

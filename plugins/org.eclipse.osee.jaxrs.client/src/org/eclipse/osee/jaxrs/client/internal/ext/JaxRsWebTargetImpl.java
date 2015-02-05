@@ -17,6 +17,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -124,6 +125,12 @@ public class JaxRsWebTargetImpl implements JaxRsWebTarget {
          webClient = ((WebTargetImpl) target).getWebClient();
       }
       return webClient;
+   }
+
+   @Override
+   public <T> T newProxy(Class<T> clazz) {
+      WebClient webClient = getWebClient();
+      return JAXRSClientFactory.fromClient(webClient, clazz);
    }
 
 }
