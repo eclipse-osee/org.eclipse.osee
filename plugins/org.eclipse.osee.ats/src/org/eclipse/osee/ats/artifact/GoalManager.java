@@ -91,4 +91,10 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    public IArtifactType getArtifactType() {
       return AtsArtifactTypes.Goal;
    }
+
+   @Override
+   public String getMemberOrder(GoalArtifact goalArt, Artifact member) throws OseeCoreException {
+      return AtsClientService.get().getGoalMembersCache().getMemberOrder(goalArt, member);
+   }
+
 }

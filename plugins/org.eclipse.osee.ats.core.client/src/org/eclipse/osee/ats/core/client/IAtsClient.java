@@ -155,6 +155,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
-   IArtifactMembersCache<SprintArtifact> getSprintMembersCache();
+   IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
 }

@@ -584,9 +584,6 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                for (Artifact dropped : droppedArtifacts) {
                   if (!members.contains(dropped)) {
                      provider.addMember(dropped);
-                     int index = isFeedbackAfter ? members.indexOf(dropTarget) + 1 : members.indexOf(dropTarget);
-                     worldComposite.insert(dropped, index);
-                     worldComposite.update();
                   }
                   if (dropTarget != null) {
                      provider.getArtifact().setRelationOrder(provider.getMemberRelationTypeSide(), dropTarget,
@@ -594,10 +591,6 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                   }
                }
                provider.getArtifact().persist(SMAMembersTab.class.getSimpleName());
-               worldComposite.getXViewer().refresh(provider.getArtifact());
-               if (dropTarget != null) {
-                  worldComposite.getXViewer().update(dropTarget, null);
-               }
             } else if (!dropValid) {
                AWorkbench.popup("Drag/Drop is disabled when table is filtered or sorted.\n\nSwitch to default table customization and try again.");
             }

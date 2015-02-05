@@ -159,8 +159,8 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsProgramService programService;
    private IAtsTeamDefinitionService teamDefinitionService;
    private IAtsQueryService atsQueryService;
-   private ArtifactMembersCache<GoalArtifact> goalMembersCache;
-   private ArtifactMembersCache<SprintArtifact> sprintMembersCache;
+   private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
+   private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -333,8 +333,8 @@ public class AtsClientImpl implements IAtsClient {
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
       }
-      if (sprintMembersCache != null) {
-         sprintMembersCache.invalidate();
+      if (sprintItemsCache != null) {
+         sprintItemsCache.invalidate();
       }
    }
 
@@ -732,17 +732,17 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
-         goalMembersCache = new ArtifactMembersCache<GoalArtifact>();
+         goalMembersCache = new ArtifactCollectorsCache<GoalArtifact>();
       }
       return goalMembersCache;
    }
 
    @Override
-   public IArtifactMembersCache<SprintArtifact> getSprintMembersCache() {
-      if (sprintMembersCache == null) {
-         sprintMembersCache = new ArtifactMembersCache<SprintArtifact>();
+   public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
+      if (sprintItemsCache == null) {
+         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>();
       }
-      return sprintMembersCache;
+      return sprintItemsCache;
    }
 
 }

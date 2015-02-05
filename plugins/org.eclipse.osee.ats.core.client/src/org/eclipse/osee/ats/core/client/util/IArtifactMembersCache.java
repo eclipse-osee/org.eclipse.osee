@@ -23,4 +23,6 @@ public interface IArtifactMembersCache<T extends CollectorArtifact> {
 
    void invalidate();
 
+   String getMemberOrder(T memberArt, Artifact member);
+
 }

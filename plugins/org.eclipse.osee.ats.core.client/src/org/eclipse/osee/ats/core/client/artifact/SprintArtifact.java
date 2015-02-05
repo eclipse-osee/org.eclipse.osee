@@ -67,7 +67,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public List<Artifact> getMembers() throws OseeCoreException {
-      return AtsClientService.get().getSprintMembersCache().getMembers(this);
+      return AtsClientService.get().getSprintItemsCache().getMembers(this);
    }
 
 }

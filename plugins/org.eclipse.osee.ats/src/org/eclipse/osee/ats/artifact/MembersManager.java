@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
 /**
@@ -130,31 +129,14 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          return "";
       }
       Collection<Artifact> collectors = getCollectors(artifact, false);
-      if (collectors.size() > 1) {
-         List<Artifact> membersSorted = new ArrayList<Artifact>(collectors);
-         Collections.sort(membersSorted);
-         StringBuffer sb = new StringBuffer();
-         for (Artifact member : membersSorted) {
-            sb.append(String.format("%s-[%s] ", getMemberOrder((T) member, artifact), member));
-         }
-         return sb.toString();
+      List<Artifact> collectorsSorted = new ArrayList<Artifact>(collectors);
+      Collections.sort(collectorsSorted);
+      StringBuffer sb = new StringBuffer();
+      for (Artifact member : collectorsSorted) {
+         sb.append(String.format("%s-[%s] ", getMemberOrder((T) member, artifact), member));
       }
-      Artifact member = collectors.iterator().next();
-      return getMemberOrder((T) member, artifact);
+      return sb.toString();
    }
 
-   public String getMemberOrder(T memberArt, Artifact member) throws OseeCoreException {
-      try {
-         List<Artifact> members = memberArt.getMembers();
-         int location = members.indexOf(member);
-         if (location == -1) {
-            return "";
-         } else {
-            return String.valueOf(location + 1);
-         }
-      } catch (Exception ex) {
-         return LogUtil.getCellExceptionString(ex);
-      }
-   }
-
+   public abstract String getMemberOrder(T memberArt, Artifact member) throws OseeCoreException;
 }

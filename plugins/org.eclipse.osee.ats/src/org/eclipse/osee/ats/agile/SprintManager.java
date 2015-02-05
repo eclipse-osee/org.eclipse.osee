@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,6 +60,11 @@ public class SprintManager extends MembersManager<SprintArtifact> {
    @Override
    public IArtifactType getArtifactType() {
       return AtsArtifactTypes.AgileSprint;
+   }
+
+   @Override
+   public String getMemberOrder(SprintArtifact sprintArt, Artifact member) throws OseeCoreException {
+      return AtsClientService.get().getSprintItemsCache().getMemberOrder(sprintArt, member);
    }
 
 }

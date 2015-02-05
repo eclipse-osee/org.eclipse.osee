@@ -95,7 +95,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             }
             if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
                List<Artifact> arts =
-                  AtsClientService.get().getSprintMembersCache().getMembers((SprintArtifact) artifact);
+                  AtsClientService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);
