@@ -73,7 +73,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
    }
 
    private static PresentationType edit(Artifact artifact) {
-      return (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) ? PresentationType.GENERALIZED_EDIT : PresentationType.SPECIALIZED_EDIT;
+      return (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) ? PresentationType.GENERAL_REQUESTED : PresentationType.SPECIALIZED_EDIT;
    }
 
 }
