@@ -26,7 +26,6 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.eclipse.osee.logback.config" />
-								<plugin id="org.eclipse.osee.web" />
 							</excludes>
 						</configuration>
 					</execution>
