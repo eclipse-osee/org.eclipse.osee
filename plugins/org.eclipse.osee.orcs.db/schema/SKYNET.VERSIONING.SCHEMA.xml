@@ -30,7 +30,6 @@
 		<Column id="ART_ID" description="unique identifier of this artifact" />
 		<Column id="ART_TYPE_ID" description="this artifact&apos;s type - foreign key to osee_artifact_type.art_type_id " />
 		<Column id="GUID" description="Global Unique IDentifier of this artifact" />
-		<Column id="HUMAN_READABLE_ID" description="a human understandble unique identifier of this artifact" />
 	</TableDescription>
 
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
