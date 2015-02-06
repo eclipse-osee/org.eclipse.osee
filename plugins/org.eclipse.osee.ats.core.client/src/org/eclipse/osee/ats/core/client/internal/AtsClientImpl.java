@@ -218,7 +218,7 @@ public class AtsClientImpl implements IAtsClient {
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
             attributeResolverService);
       branchService = new AtsBranchServiceImpl(this);
-      reviewService = new AtsReviewServiceImpl(this);
+      reviewService = new AtsReviewServiceImpl(this, this);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);

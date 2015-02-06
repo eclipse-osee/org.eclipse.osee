@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.review;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -21,6 +23,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
@@ -34,8 +37,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class AtsReviewServiceImpl implements IAtsReviewService {
 
    private final IArtifactProvider artifactProvider;
+   private final IAtsClient atsClient;
 
-   public AtsReviewServiceImpl(IArtifactProvider artifactProvider) {
+   public AtsReviewServiceImpl(IAtsClient atsClient, IArtifactProvider artifactProvider) {
+      this.atsClient = atsClient;
       this.artifactProvider = artifactProvider;
    }
 
@@ -68,6 +73,15 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public boolean isStandAloneReview(IAtsAbstractReview review) {
       return ((AbstractReviewArtifact) review).isStandAloneReview();
+   }
+
+   @Override
+   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
+      List<IAtsAbstractReview> reviews = new ArrayList<IAtsAbstractReview>();
+      for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) teamWf.getStoreObject())) {
+         reviews.add(atsClient.getWorkItemFactory().getReview(reviewArt));
+      }
+      return reviews;
    }
 
 }

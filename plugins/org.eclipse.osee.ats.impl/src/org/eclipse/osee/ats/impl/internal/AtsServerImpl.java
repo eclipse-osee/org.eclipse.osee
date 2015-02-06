@@ -186,7 +186,7 @@ public class AtsServerImpl implements IAtsServer {
 
       workItemService = new AtsWorkItemServiceImpl(this, this);
       branchService = new AtsBranchServiceImpl(getServices(), orcsApi);
-      reviewService = new AtsReviewServiceImpl(this, workItemService);
+      reviewService = new AtsReviewServiceImpl(this, this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 
       teamWorkflowProvider = new TeamWorkflowProvider();
@@ -199,8 +199,7 @@ public class AtsServerImpl implements IAtsServer {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      atsStoreFactory =
-         new AtsStoreFactoryImpl(attributeResolverService, orcsApi, atsStateFactory, atsLogFactory, this);
+      atsStoreFactory = new AtsStoreFactoryImpl(attributeResolverService, this, atsStateFactory, atsLogFactory, this);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
       sequenceProvider = new ISequenceProvider() {
@@ -221,8 +220,7 @@ public class AtsServerImpl implements IAtsServer {
 
       agileService = new AgileService(logger, this);
       atsQueryService = new AtsQueryServiceIimpl(this);
-      versionService =
-         new AtsVersionServiceImpl(getServices());
+      versionService = new AtsVersionServiceImpl(getServices());
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));

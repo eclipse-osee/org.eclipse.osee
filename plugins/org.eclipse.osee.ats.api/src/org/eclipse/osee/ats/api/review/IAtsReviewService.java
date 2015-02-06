@@ -39,4 +39,6 @@ public interface IAtsReviewService {
 
    boolean isStandAloneReview(IAtsAbstractReview review);
 
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf);
+
 }

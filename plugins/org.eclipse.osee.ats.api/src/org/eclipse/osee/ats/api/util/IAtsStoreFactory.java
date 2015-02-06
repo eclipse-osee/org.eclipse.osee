@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 
 public interface IAtsStoreFactory {
 
    IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user);
+
+   List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows);
 
 }

@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -22,9 +25,11 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.workitem.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -33,8 +38,10 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    private final IArtifactProvider artifactProvider;
    private final IAtsWorkItemService workItemService;
+   private final IAtsServer atsServer;
 
-   public AtsReviewServiceImpl(IArtifactProvider artifactProvider, IAtsWorkItemService workItemService) {
+   public AtsReviewServiceImpl(IAtsServer atsServer, IArtifactProvider artifactProvider, IAtsWorkItemService workItemService) {
+      this.atsServer = atsServer;
       this.artifactProvider = artifactProvider;
       this.workItemService = workItemService;
    }
@@ -71,6 +78,16 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public boolean isStandAloneReview(IAtsAbstractReview review) {
       return artifactProvider.getArtifact(review).getAttributeCount(AtsAttributeTypes.ActionableItem) > 0;
+   }
+
+   @Override
+   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
+      List<IAtsAbstractReview> reviews = new ArrayList<IAtsAbstractReview>();
+
+      for (ArtifactReadable reviewArt : ((ArtifactReadable) teamWf.getStoreObject()).getRelated(AtsRelationTypes.TeamWorkflowToReview_Review)) {
+         reviews.add(atsServer.getWorkItemFactory().getReview(reviewArt));
+      }
+      return reviews;
    }
 
 }
