@@ -1984,5 +1984,13 @@
       <Operation
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExampleOutputBlam">
       </Operation>
+   </extension>
+   <extension
+         id="PurgeAttributesBlam"
+         name="PurgeAttributesBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeAttributesBlam">
+      </Operation>
    </extension> 
 </plugin>
