@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -65,15 +66,21 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             String[] typesToPurge = params.getArray("types");
 
             console.writeln();
-            console.writeln(!forcePurge ? "Attribute Types" : "Purging attribute types:");
 
             Set<IAttributeType> types = getTypes(typesToPurge);
             boolean found = !types.isEmpty();
 
-            if (forcePurge && found) {
-               orcsTypes.purgeAttributesByAttributeType(types).call();
+            if (found) {
+               console.writeln(!forcePurge ? String.format("Attribute Types: [%s]", types) : String.format(
+                  "Purging attribute types: [%s]", types));
+
+               if (forcePurge && found) {
+                  orcsTypes.purgeAttributesByAttributeType(types).call();
+               }
+               console.writeln((found && !forcePurge) ? "To >DELETE Attribute DATA!< add \"force=TRUE\" to confirm." : "Operation finished.");
+            } else {
+               console.writeln("No types found.  Aborting...");
             }
-            console.writeln((found && !forcePurge) ? "To >DELETE Attribute DATA!< add --force to confirm." : "Operation finished.");
             return null;
          }
 
@@ -82,7 +89,12 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             Set<IAttributeType> toReturn = new HashSet<IAttributeType>();
             for (String uuid : typesToPurge) {
                try {
-                  Long typeId = HexUtil.toLong(uuid);
+                  Long typeId = -1L;
+                  if (Strings.isNumeric(uuid)) {
+                     typeId = Long.valueOf(uuid);
+                  } else {
+                     typeId = HexUtil.toLong(uuid);
+                  }
                   IAttributeType type = attributeTypes.getByUuid(typeId);
                   console.writeln("Type [%s] found. Guid: [0x%X]", type.getName(), type.getGuid());
                   toReturn.add(type);
