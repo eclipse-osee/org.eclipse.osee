@@ -129,6 +129,9 @@ public class JaxRsWebTargetImpl implements JaxRsWebTarget {
 
    @Override
    public <T> T newProxy(Class<T> clazz) {
+      // This is here to force a webClient to store its configuration
+      target.request();
+
       WebClient webClient = getWebClient();
       return JAXRSClientFactory.fromClient(webClient, clazz);
    }

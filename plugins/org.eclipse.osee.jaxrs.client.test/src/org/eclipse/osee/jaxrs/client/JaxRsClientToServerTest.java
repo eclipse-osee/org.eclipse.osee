@@ -133,6 +133,34 @@ public class JaxRsClientToServerTest {
       assertEquals(3, actual.getValue());
    }
 
+   @Test
+   public void testClientProxyWithReader() {
+      JaxRsWebTarget target = JaxRsClient.newClient().target(httpAddress).register(MyObjectReader.class);
+
+      ComplexObjectEndpoint proxy = target.newProxy(ComplexObjectEndpoint.class);
+
+      MyObject actual = proxy.get();
+      assertEquals(0, actual.getValue());
+
+      actual = proxy.incrementAndGet();
+      assertEquals(1, actual.getValue());
+
+      actual = proxy.get();
+      assertEquals(1, actual.getValue());
+
+      actual = proxy.incrementAndGet();
+      assertEquals(2, actual.getValue());
+
+      actual = target.request().get(MyObject.class);
+      assertEquals(2, actual.getValue());
+
+      actual = target.request().post(null, MyObject.class);
+      assertEquals(3, actual.getValue());
+
+      actual = target.request().get(MyObject.class);
+      assertEquals(3, actual.getValue());
+   }
+
    public static interface IntegerEndpoint {
 
       @GET
