@@ -172,7 +172,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
                String.class);
          writer.write(result);
       } catch (Exception ex) {
-         JaxRsExceptions.asOseeException(ex);
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 
