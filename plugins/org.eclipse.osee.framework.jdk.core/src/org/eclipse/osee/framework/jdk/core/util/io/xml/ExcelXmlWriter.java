@@ -211,10 +211,10 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    @Override
    public void writeCellText(Object cellData, int cellIndex) throws IOException {
-      if (cellData == null) {
-         rowBuffer[cellIndex] = null;
-      } else if (cellIndex >= numColumns) {
+      if (cellIndex >= numColumns) {
          throw new OseeCoreException("ExcelWriter out of bounds: %d, index %d", numColumns, cellIndex);
+      } else if (cellData == null) {
+         rowBuffer[cellIndex] = null;
       } else {
          StringBuilder sb = new StringBuilder();
 
