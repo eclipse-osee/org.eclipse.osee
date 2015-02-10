@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import java.io.StringWriter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +35,11 @@ import org.mockito.stubbing.Answer;
  */
 public class ExcelOutputHandlerTest {
 
+   private static final String OUTPUT_SCRIPT = "output.script";
+   private static final String OUTPUT_DEBUG = "output.debug";
+
    //@formatter:off
-   private final String[] headings = {
+   private static final String[] headings = {
       "Heading 1",
       "Heading 2",
       "Heading 3",
@@ -46,7 +49,7 @@ public class ExcelOutputHandlerTest {
       "Heading 7",
       "Heading 8"};
 
-   private final String[] values = { 
+   private static final String[] values = { 
       "one", 
       "two", 
       "three", 
@@ -56,28 +59,30 @@ public class ExcelOutputHandlerTest {
       "seven", 
       "eight"};
 
-   private final String[] groups = { 
+   private static final String[] groups = { 
       "group 1", 
       "group 2", 
       "group 3", 
       "group 4", 
       "group 5"};
 
-   private final String[] innerName = {
+   private static final String[] innerName = {
       "name", 
       "value"};
 
    @Mock private ScriptContext context;
    //@formatter:on
 
-   private final Map<String, Object> top = new HashMap<String, Object>();
-   private static String OUTPUT_SCRIPT = "output.script";
-   private static String OUTPUT_DEBUG = "output.debug";
-   private final StringWriter resultBuffer = new StringWriter();
+   private Map<String, Object> top;
+   private StringWriter resultBuffer;
 
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
+
+      top = new LinkedHashMap<String, Object>();
+      resultBuffer = new StringWriter();
+
       when(context.getAttribute(OUTPUT_DEBUG)).thenAnswer(answer("true"));
       when(context.getAttribute(OUTPUT_SCRIPT)).thenAnswer(answer("true"));
       when(context.getWriter()).thenAnswer(answer(resultBuffer));
@@ -107,8 +112,9 @@ public class ExcelOutputHandlerTest {
       buildResultData(context);
       String result = resultBuffer.toString();
       assertTrue(countCells(result) == headings.length);
+      assertTrue(result.contains(innerName[1]));
       for (int i = 0; i < values.length; ++i) {
-         assertTrue(result.contains("value, " + values[i]));
+         assertTrue(result.contains(values[i]));
       }
    }
 
@@ -167,7 +173,7 @@ public class ExcelOutputHandlerTest {
    private Object[] buildSetData() {
       Object[] data = new Object[values.length];
       for (int i = 0; i < values.length; ++i) {
-         Map<String, Object> element = new HashMap<String, Object>();
+         Map<String, Object> element = new LinkedHashMap<String, Object>();
          element.put("data", values[i]);
          element.put(innerName[0], innerName[1]);
          Set<Map<String, Object>> dataset = new LinkedHashSet<Map<String, Object>>();
@@ -199,12 +205,12 @@ public class ExcelOutputHandlerTest {
    }
 
    private void buildTestStructure(Object[] data, boolean deeper) {
-      Map<String, Object> groupContainer = new HashMap<String, Object>();
+      Map<String, Object> groupContainer = new LinkedHashMap<String, Object>();
       for (int j = groups.length - 1; j >= 0; --j) {
-         Map<String, Object> inner = new HashMap<String, Object>();
+         Map<String, Object> inner = new LinkedHashMap<String, Object>();
          for (int i = headings.length - 1; i >= 0; --i) {
             if (i == 2 && deeper) {
-               Map<String, Object> bottom = new HashMap<String, Object>();
+               Map<String, Object> bottom = new LinkedHashMap<String, Object>();
                bottom.put(innerName[0], data[i]);
                inner.put(headings[i], bottom);
             } else {
