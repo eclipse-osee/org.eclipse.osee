@@ -7,19 +7,19 @@
    <body>
       <div class="container-fluid" id="content">
             <div class="row">
-                <div id="refresh" class="span1">
+                <div id="refresh" class="col-md-1">
                    <button  ng-show="items.length>0" class="btn btn-primary active" ng-click="updateSet()">Refresh</button>
                 </div>   
-                <div class="span3">
+                <div class="col-md-2">
                   ATS Version:
                   <select class="form-control" ng-show="programs" ng-model="programSelection" ng-disabled="isSearchView" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
                </div>
-                <div class="span3">
+                <div class="col-md-2">
                   Set:
                   <select ng-show="programSelection != null" class="form-control" ng-show="sets" ng-disabled="isSearchView" ng-model="setSelection" ng-change="updateSet()" ng-options="obj.guid as obj.name for obj in sets">
                   </select>
                </div>
-                <div id="multItemEditDiv" class="span5">
+                <div id="multItemEditDiv" class="col-md-5">
                     <div ng-show="items.length>0" class="btn-group">
                      <button class="btn btn-primary active" ng-click="toggleEditItems()">Edit Multiple Items</button>
                      <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showAssigneeModal()">Assignee</button>
@@ -27,7 +27,7 @@
                      <button type="button" class="btn btn-default" ng-show="editItems" ng-disabled="selectedItems.length == 0" ng-click="showNeedsRerunModal()">Needs Rerun</button>
                   </div>
                </div>
-                <div id="search" class="span1 offset1">
+                <div id="search" class="col-md-1 col-md-offset-1">
                    <button class="btn btn-primary active" ng-show="items.length>0 && !isSearchView" ng-click="showAdvSearchModal()">Adv Search</button>
                    <button class="btn btn-primary active" ng-show="items.length>0 && isSearchView" ng-click="showAdvSearchModal()">Searching: {{ searchValue }}</button>
                 </div> 

@@ -198,6 +198,11 @@ textarea {
  
  #search {
 	margin-top: 20px;
+	margin-right: 0px;
+ }
+ 
+ .modal.fade.ng-isolate-scope.needsRerunModal.in {
+      background-color: rgba(0, 0, 0, 0.5);
  }
  
  #loadingModal {
