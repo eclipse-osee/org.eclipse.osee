@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AbstractDbTxOperation;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -108,6 +109,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
          for (Artifact artifact : artifactsToPurge) {
             ArtifactCache.deCache(artifact);
+            RelationManager.deCache(artifact);
             artifact.internalSetDeleted();
             for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                rel.markAsPurged();

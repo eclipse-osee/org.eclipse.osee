@@ -1060,6 +1060,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       if (!isHistorical()) {
          this.modType = ModificationType.DELETED;
          ArtifactCache.deCache(this);
+         RelationManager.deCache(this);
 
          for (Attribute<?> attribute : getAttributes()) {
             attribute.internalSetModType(ModificationType.DELETED, true, false);
