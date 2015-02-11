@@ -20,17 +20,17 @@ public class NoopAtsDatabaseConversion implements IAtsDatabaseConversion {
 
    @Override
    public String getName() {
-      return "NoopAtsDatabaseConversion";
+      return "No-Op Ats Database Conversion";
    }
 
    @Override
    public void run(XResultData data, boolean reportOnly) {
-      //
+      data.log("Nothing to Do");
    }
 
    @Override
    public String getDescription() {
-      return "NoopAtsDatabaseConversion";
+      return "This is an empty Ats Database Conversion task.";
    }
 
 }
