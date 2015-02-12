@@ -70,9 +70,8 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
 
    private OrcsScriptOutputHandler getOutputHandler(ScriptContext context) {
       OrcsScriptOutputHandler handler = null;
-      String mediaType = (String) context.getAttribute("MediaType");
-      // default to JSON
-      if (mediaType != null && "application/vnd.ms-excel".equals(mediaType)) {
+      String output = (String) context.getAttribute("output.mime-type");
+      if (Strings.isValid(output) && "excel-xml".equalsIgnoreCase(output)) {
          handler = new ExcelOutputHandler(context);
       } else {
          handler = new JsonOutputHandler(context);

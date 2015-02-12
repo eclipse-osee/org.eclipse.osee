@@ -15,7 +15,7 @@
       <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="formApp" ng-controller="formController">
+<body ng-app="ScriptConsoleApp" ng-controller="FormController as cntrl">
 
    <div class="container">
       <div class="page-header">
@@ -32,63 +32,43 @@
          </table>
       </div>
 
-      <form class="form-horizontal" role="form" enctype="application/x-www-form-urlencoded" ng-submit="processForm()">
+      <form class="form-horizontal" role="form" ng-submit="cntrl.processForm()">
          <div class="form-group">
             <label for="script">Console</label>
-            <textarea class="form-control" rows="6" placeholder="start from ...;" ng-model="formData.script"
+            <textarea class="form-control" rows="6" placeholder="start from ...;" ng-model="cntrl.formData.script"
                title="Type ORCS Script in text area. Click button to execute."></textarea>
          </div>
          <div class="form-group">
             <label for="parameters">Parameters</label>
-            <textarea class="form-control" rows="2" placeholder="key1=value1" ng-model="formData.parameters"
+            <textarea class="form-control" rows="2" placeholder="key1=value1" ng-model="cntrl.formData.parameters"
                title="Type ORCS Script parameters in the text area. Click button to execute."></textarea>
          </div>
          <div class="form-group">
             <div class="col-sm-offset-0 col-sm-10">
+               <div>
+                  <div class="checkbox">
+                     <label><input type="checkbox" ng-model="cntrl.formData.excel" >Excel</label>
+                     <label>Filename: <input type="text" ng-model="cntrl.formData.filename"></label>
+                  </div>                   
+               </div>
                <div class="checkbox">
-                  <label><input type="checkbox" ng-model="formData.debug">Debug</label>
+                  <label><input type="checkbox" ng-model="cntrl.formData.debug">Debug</label>
                </div>
             </div>
          </div>
          <div class="container">
             <div class="form-group">
-               <button type="submit" class="btn btn-primary" ng-model="formData.orcsScriptExecutionType" value="execute">Execute</button>
+               <button type="submit" class="btn btn-primary" ng-model="cntrl.formData.orcsScriptExecutionType" value="execute">Execute</button>
             </div>
          </div>
       </form>
-
-      <div class="container-fluid well" ng-show="message">
-         <textarea rows="30" class="form-control">{{ message }}</textarea>
+      <div class="container-fluid well" ng-show="cntrl.message" >
+         <textarea rows="30" class="form-control">{{ cntrl.message }}</textarea>
       </div>
    </div>
 
 <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
-<script src="/ajax/libs/angularjs/1.2.28/angular-resource.min.js"></script>
-<script>
-	var formApp = angular.module('formApp', []);
-
-	function formController($scope, $http) {
-		$scope.formData = {};
-		$scope.message = '';
-		$scope.processForm = function() {
-			$http({
-				method : 'POST',
-				url : '../',
-				data : $.param($scope.formData),
-				headers : {
-					'Content-Type' : 'application/x-www-form-urlencoded',
-					'Accept' : 'application/json'
-				}
-			}).success(function(data, status, headers, config) {
-				console.log(data);
-				$scope.message = angular.toJson(data, true);
-			}).error(function(data, status, headers, config) {
-				console.log(data);
-				$scope.message = 'error -  status: ' + status + ' ' + data;
-			});
-		};
-	}
-</script>   
+<script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
+<script src="js/script_console_app.js"></script>
 </body>
 </html>
