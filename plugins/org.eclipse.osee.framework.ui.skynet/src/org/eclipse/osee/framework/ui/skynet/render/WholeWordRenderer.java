@@ -158,11 +158,13 @@ public class WholeWordRenderer extends WordRenderer {
 
       startFtr.reset(content);
       endFtr.reset(content);
-      if (startFtr.find() && endFtr.find()) {
-         ChangeSet cs = new ChangeSet(content);
-         cs.replace(startFtr.end(), endFtr.start(), footer);
-         toReturn = cs.applyChangesToSelf().toString();
+      ChangeSet cs = new ChangeSet(content);
+      while (startFtr.find()) {
+         if (endFtr.find()) {
+            cs.replace(startFtr.end(), endFtr.start(), footer);
+         }
       }
+      toReturn = cs.applyChangesToSelf().toString();
       return toReturn;
    }
 }
