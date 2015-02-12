@@ -152,7 +152,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -173,6 +173,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             LinkType linkType = (LinkType) getOption("linkType");
             data = WordMlLinkHandler.link(linkType, artifact, data);
             data = WordUtil.reassignBookMarkID(data);
+            data = data.concat(footer);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
@@ -187,7 +188,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
          wordMl.resetListValue();
       } else {
-         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, attributeElement);
+         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, attributeElement,
+            footer);
       }
    }
 

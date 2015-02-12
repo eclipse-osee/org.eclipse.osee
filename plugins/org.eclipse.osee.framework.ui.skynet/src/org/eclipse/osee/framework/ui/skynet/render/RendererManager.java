@@ -128,9 +128,9 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, Object... options) throws OseeCoreException {
+   public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Object... options) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
-         producer, attributeElement);
+         producer, attributeElement, footer);
    }
 
    public static Collection<IAttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {

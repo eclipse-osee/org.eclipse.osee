@@ -25,9 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 @XmlRootElement
 public class DataRightResult {
-   private static final String NEW_PAGE_TEMPLATE =
-      "<w:p><w:pPr><w:spacing w:after=\"0\"/><w:sectPr>%s</w:sectPr></w:pPr></w:p>";
-   private static final String SAME_PAGE_TEMPLATE = "<w:sectPr>%s</w:sectPr>";
 
    @XmlTransient
    private List<DataRightAnchor> dataRightAnchors;
@@ -66,32 +63,33 @@ public class DataRightResult {
    public String getContent(String guid, PageOrientation orientation) {
 
       checkInitialized();
-      String toReturn = null;
+      String footer = null;
+
+      // account for orientation
+      String portrait = String.format(ReportConstants.PAGE_ADDS, ReportConstants.PORTRAIT_ORIENT);
+      String landscape = String.format(ReportConstants.PAGE_ADDS, ReportConstants.LANDSCAPE_ORIENT);
+      String page_adds = orientation.isLandscape() ? landscape : portrait;
 
       DataRightAnchor anchor = guidToAnchor.get(guid);
       if (anchor != null) {
-         boolean needsPageBreak = anchor.isNeedsPageBreak();
-         boolean isNextDifferent = anchor.isNextDifferent();
-
-         String partialFooter = "";
-         DataRightId key = anchor.getDataRightId();
-         if (key != null) {
-            DataRight dataRight = dataRightIdToDataRight.get(key);
-            if (dataRight != null) {
-               partialFooter = normalize(dataRight.getContent());
+         boolean isSetDataRightFooter = anchor.isSetDataRightFooter();
+         boolean isContinuous = anchor.isContinuous();
+         if (isSetDataRightFooter) {
+            // set footer section since next footer differs
+            DataRightId key = anchor.getDataRightId();
+            if (key != null) {
+               DataRight dataRight = dataRightIdToDataRight.get(key);
+               if (dataRight != null) {
+                  footer = normalize(dataRight.getContent());
+                  footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, footer + page_adds);
+               }
             }
-         }
-         if (orientation.isLandscape()) {
-            toReturn = partialFooter;
-         } else if (isNextDifferent || needsPageBreak) {
-            if (needsPageBreak) {
-               toReturn = String.format(NEW_PAGE_TEMPLATE, partialFooter);
-            } else {
-               toReturn = String.format(SAME_PAGE_TEMPLATE, partialFooter);
-            }
+         } else if (!isContinuous) {
+            // set page break since next footer differs;
+            footer = String.format(ReportConstants.NEW_PAGE_TEMPLATE, page_adds);
          }
       }
-      return Strings.isValid(toReturn) ? toReturn : "";
+      return Strings.isValid(footer) ? footer : "";
    }
 
    private String normalize(String partialFooter) {

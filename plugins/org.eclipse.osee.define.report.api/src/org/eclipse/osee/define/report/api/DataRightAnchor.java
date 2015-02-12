@@ -20,16 +20,8 @@ public class DataRightAnchor {
 
    private String id;
    private DataRightId dataRightId;
-   private boolean needsPageBreak;
-   private boolean isNextDifferent;
-
-   public boolean isNextDifferent() {
-      return isNextDifferent;
-   }
-
-   public void setNextDifferent(boolean isNextDifferent) {
-      this.isNextDifferent = isNextDifferent;
-   }
+   private boolean isSetDataRightFooter = false;
+   private boolean isContinuous = false;
 
    public String getId() {
       return id;
@@ -47,12 +39,20 @@ public class DataRightAnchor {
       this.dataRightId = rightId;
    }
 
-   public boolean isNeedsPageBreak() {
-      return needsPageBreak;
+   public boolean isSetDataRightFooter() {
+      return isSetDataRightFooter;
    }
 
-   public void setNeedsPageBreak(boolean needsPageBreak) {
-      this.needsPageBreak = needsPageBreak;
+   public void setSetDataRightFooter(boolean isSetDataRightFooter) {
+      this.isSetDataRightFooter = isSetDataRightFooter;
+   }
+
+   public boolean isContinuous() {
+      return isContinuous;
+   }
+
+   public void setContinuous(boolean isContinuous) {
+      this.isContinuous = isContinuous;
    }
 
 }

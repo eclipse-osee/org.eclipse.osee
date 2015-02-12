@@ -77,37 +77,28 @@ public class DataRightBuilder {
    }
 
    private void findMatchForAll(Iterator<DataRightEntry> iterator, Collection<DataRightAnchor> anchors, Map<String, DataRight> classificationsToDataRight) {
-      DataRightEntry currentArtifact = iterator.next();
-      while (currentArtifact != null) {
+      DataRightEntry previousArtifact = null;
+      while (iterator.hasNext()) {
+         DataRightEntry currentArtifact = iterator.next();
          String classification = currentArtifact.getClassification();
-         if (!Strings.isValid(classification)) {
-            classification = "DEFAULT";
-         }
+         boolean isSetDataRightFooter = false;
 
-         boolean isNextDifferent = false;
-         boolean needsPageBreak = true;
-         DataRightEntry nextArt = null;
-         if (iterator.hasNext()) {
-            nextArt = iterator.next();
-         }
-         if (nextArt != null) {
-            boolean isNextLandscape = nextArt.getOrientation().isLandscape();
-            String nextClassification = nextArt.getClassification();
-
-            if (isNextLandscape) {
-               needsPageBreak = true;
+         if (previousArtifact == null) {
+            isSetDataRightFooter = true;
+         } else {
+            String previousArtClassification = previousArtifact.getClassification();
+            if (!classification.equals(previousArtClassification)) {
+               isSetDataRightFooter = true;
             } else {
-               if (!classification.equalsIgnoreCase(nextClassification)) {
-                  isNextDifferent = true;
-                  needsPageBreak = true;
-               } else {
-                  needsPageBreak = false;
+               DataRightAnchor previousArtAnchor = getAnchor(previousArtifact.getGuid(), anchors);
+               if (previousArtAnchor != null) {
+                  previousArtAnchor.setContinuous(true);
                }
             }
-         } else {
-            // last art doesn't need a page break
-            needsPageBreak = false;
-            isNextDifferent = true;
+         }
+
+         if (!Strings.isValid(classification)) {
+            classification = "DEFAULT";
          }
 
          DataRight dataRight = classificationsToDataRight.get(classification);
@@ -117,14 +108,22 @@ public class DataRightBuilder {
          }
 
          DataRightAnchor anchor = new DataRightAnchor();
-         anchor.setNextDifferent(isNextDifferent);
-         anchor.setNeedsPageBreak(needsPageBreak);
+         anchor.setSetDataRightFooter(isSetDataRightFooter);
          anchor.setId(currentArtifact.getGuid());
          anchor.setDataRightId(dataRight.getId());
          anchors.add(anchor);
 
-         currentArtifact = nextArt;
+         previousArtifact = currentArtifact;
       }
+   }
+
+   private DataRightAnchor getAnchor(String guid, Collection<DataRightAnchor> anchors) {
+      for (DataRightAnchor anchor : anchors) {
+         if (anchor.getId().equals(guid)) {
+            return anchor;
+         }
+      }
+      return null;
    }
 
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {

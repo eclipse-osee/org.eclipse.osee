@@ -127,7 +127,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormat();
       boolean allAttrs = getBooleanOption("allAttrs");
@@ -323,4 +323,5 @@ public class DefaultArtifactRenderer implements IRenderer {
    public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException {
       return options.getArtifacts(key);
    }
+
 }

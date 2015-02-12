@@ -83,7 +83,7 @@ public interface IRenderer {
 
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) throws OseeCoreException;
 
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException;
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException;
 
    public String renderAttributeAsString(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) throws OseeCoreException;
 
