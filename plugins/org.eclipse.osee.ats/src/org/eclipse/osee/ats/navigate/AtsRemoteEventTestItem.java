@@ -139,8 +139,10 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
 
       // Make current user assignee for convenience to developer
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - set assignee");
       teamArt.getStateMgr().addAssignee(AtsClientService.get().getUserService().getCurrentUser());
-      teamArt.persist(getClass().getSimpleName());
+      changes.add(teamArt);
+      changes.execute();
 
       validateActionAtStart(actionArt);
 
