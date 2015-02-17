@@ -1744,3 +1744,39 @@ relationType "Related Feature" {
 	defaultOrderType Lexicographical_Ascending
 	multiplicity MANY_TO_MANY
 }
+
+artifactType "Breaker" extends "Artifact" {
+   uuid 0x0000AB6700000034
+   attribute "Display Text"
+   attribute "Description"
+   attribute "Circuit Breaker ID"
+   attribute "Require Confirmation"
+}
+
+attributeType "Display Text" extends StringAttribute {
+	uuid 0x0000AB6700000035
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "unset"
+	mediaType "text/plain"
+}
+
+
+attributeType "Circuit Breaker ID" extends IntegerAttribute {
+	uuid 0x0000AB6700000036
+        dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+ 	defaultValue "0"
+  	mediaType "text/plain"
+}
+
+attributeType "Require Confirmation" extends BooleanAttribute {
+	uuid 0x0000AB6700000037
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	defaultValue "false"
+	mediaType "text/plain"
+}
