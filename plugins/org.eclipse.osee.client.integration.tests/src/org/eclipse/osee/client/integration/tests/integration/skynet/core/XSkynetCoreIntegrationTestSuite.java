@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
    AttributePurgeTest.class,
    BranchEventLoopbackTest.class,
    BranchEventTest.class,
+   BranchFavoriteTest.class,
    BranchManagerTest.class,
    BranchPurgeTest.class,
    BranchStateTest.class,

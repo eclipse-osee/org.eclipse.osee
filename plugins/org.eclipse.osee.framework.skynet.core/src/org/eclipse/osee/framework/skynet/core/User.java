@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -90,6 +91,7 @@ public class User extends Artifact {
    }
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
+      Conditions.checkNotNull(favoriteBranch, "Branch");
       HashSet<Long> branchUuids = new HashSet<Long>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
@@ -97,6 +99,7 @@ public class User extends Artifact {
       }
 
       boolean found = false;
+      @SuppressWarnings("deprecation")
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
@@ -104,21 +107,23 @@ public class User extends Artifact {
          try {
             uuid = Long.valueOf(attribute.getValue());
          } catch (Exception ex) {
-            // do nothing
+            continue;
          }
          if (!branchUuids.contains(uuid)) {
             attribute.delete();
-         } else if (favoriteBranch.getUuid() == uuid) {
+         } else if (favoriteBranch.getUuid().equals(uuid)) {
             attribute.delete();
             found = true;
-            break;
+            // Do not break here in case there are multiples of same branch uuid
          }
       }
 
       if (!found) {
          addAttribute(CoreAttributeTypes.FavoriteBranch, String.valueOf(favoriteBranch.getUuid()));
       }
+
       setSetting(CoreAttributeTypes.FavoriteBranch.getName(), String.valueOf(favoriteBranch.getUuid()));
+      saveSettings();
    }
 
    public boolean isFavoriteBranch(IOseeBranch branch) throws OseeCoreException {
