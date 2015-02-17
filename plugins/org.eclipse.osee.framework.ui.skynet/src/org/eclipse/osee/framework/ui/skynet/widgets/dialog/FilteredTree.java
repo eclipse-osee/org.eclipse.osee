@@ -29,7 +29,10 @@ public class FilteredTree extends org.eclipse.ui.dialogs.FilteredTree {
       super(parent, treeStyle, filter, useNewLook);
    }
 
-   static {
+   /**
+    * Ensure images have been initialized before FilteredTree construction
+    */
+   {
       ImageDescriptor imageDescriptor = ImageManager.getImageDescriptor(FrameworkImage.CLEAR_CO);
       JFaceResources.getImageRegistry().put(CLEAR_ICON, imageDescriptor);
       JFaceResources.getImageRegistry().put(DISABLED_CLEAR_ICON, imageDescriptor);
