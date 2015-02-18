@@ -23,9 +23,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
-import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -54,6 +51,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    private boolean expandChecked = false;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
+   private Set<Artifact> selectables;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -70,8 +68,9 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
-   public FilteredCheckboxTreeDialog(String title, Set<Artifact> artifacts) {
-      this(title, title, new ArtifactContentProvider(), new ArtifactLabelProvider(), new ArtifactViewerSorter());
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, Set<Artifact> artifacts, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
+      this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter);
+      this.selectables = artifacts;
    }
 
    public void setShowSelectButtons(boolean showSelectButtons) {
@@ -111,7 +110,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    }
 
    protected FilterableCheckboxTreeViewer getCheckboxTreeViewer() {
-      return (FilterableCheckboxTreeViewer) treeViewer.getViewer();
+      return treeViewer.getCheckboxTreeViewer();
    }
 
    public Object[] getResult() {
@@ -152,11 +151,19 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
             updateStatusLabel();
          }
       });
+
+      if (selectables != null && !selectables.isEmpty()) {
+         setInput(selectables);
+         for (Artifact selectable : selectables) {
+            treeViewer.getCheckboxTreeViewer().getOrCreateItem(selectable);
+         }
+      }
+
       if (input != null) {
          treeViewer.getViewer().setInput(input);
       }
       if (initialSelections != null) {
-         getCheckboxTreeViewer().setCheckedElements(initialSelections.toArray());
+         treeViewer.setInitalChecked(initialSelections);
       }
       updateStatusLabel();
 

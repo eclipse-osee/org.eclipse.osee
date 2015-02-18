@@ -17,12 +17,9 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,8 +28,6 @@ import org.eclipse.swt.widgets.Control;
  * @author Donald G. Dunne
  */
 public class FilteredCheckboxTreeArtifactDialog extends FilteredCheckboxTreeDialog {
-
-   private Collection<? extends Artifact> selectable;
 
    public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable) {
       this(title, message, selectable, new ArrayTreeContentProvider(), new ArtifactLabelProvider());
@@ -43,8 +38,7 @@ public class FilteredCheckboxTreeArtifactDialog extends FilteredCheckboxTreeDial
    }
 
    public FilteredCheckboxTreeArtifactDialog(String title, String message, Collection<? extends Artifact> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
-      super(title, message, contentProvider, labelProvider, new ArtifactNameSorter());
-      this.selectable = selectable;
+      super(title, message, new HashSet<Artifact>(selectable), contentProvider, labelProvider, new ArtifactNameSorter());
    }
 
    public FilteredCheckboxTreeArtifactDialog(String title, Collection<? extends Artifact> selectable) {
@@ -66,26 +60,12 @@ public class FilteredCheckboxTreeArtifactDialog extends FilteredCheckboxTreeDial
 
    @Override
    protected Control createDialogArea(Composite container) {
-      Control comp = super.createDialogArea(container);
-      try {
-         getTreeViewer().getViewer().setInput(selectable);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return comp;
+      return super.createDialogArea(container);
    }
 
    @Override
    protected Result isComplete() {
       return super.isComplete();
-   }
-
-   public Collection<? extends Artifact> getSelectable() {
-      return selectable;
-   }
-
-   public void setSelectable(Collection<Artifact> selectable) {
-      this.selectable = selectable;
    }
 
 }
