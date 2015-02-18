@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -41,6 +42,17 @@ public final class JdbcUtil {
       // Utility class
    }
 
+   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement, O... data) throws JdbcException {
+      setInputParametersForStatement(preparedStatement, 1, data);
+   }
+
+   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement, int intialIndex, O... data) throws JdbcException {
+      int preparedIndex = intialIndex;
+      for (Object dataValue : data) {
+         setInputParameterForStatement(preparedStatement, dataValue, preparedIndex++);
+      }
+   }
+
    public static boolean isValidExtraParam(String key) {
       return Strings.isValid(key) //
          && !key.startsWith(JdbcConstants.NAMESPACE) //
@@ -51,56 +63,49 @@ public final class JdbcUtil {
          && !key.equalsIgnoreCase("component.name");
    }
 
-   public static void setInputParametersForStatement(PreparedStatement statement, Object... data) throws JdbcException {
-      setInputParametersForStatement(statement, 1, data);
-   }
-
-   public static void setInputParametersForStatement(PreparedStatement statement, int paramIndexStart, Object... data) throws JdbcException {
+   public static <O extends Object> void setInputParameterForStatement(PreparedStatement statement, O dataValue, int preparedIndex) throws JdbcException {
       try {
-         int preparedIndex = paramIndexStart;
-         for (Object dataValue : data) {
+         if (dataValue instanceof String) {
             checkStringDataLength(dataValue);
-            if (dataValue == null) {
-               throw newJdbcException("instead of passing null for a input parameter, pass the corresponding SQL3DataType");
-            } else if (dataValue instanceof SQL3DataType) {
-               int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
-               if (dataTypeNumber == java.sql.Types.BLOB) {
-                  // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
-                  //  "content" is of type bytea but expression is of type oid"
-                  statement.setBytes(preparedIndex, null);
-               } else {
-                  statement.setNull(preparedIndex, dataTypeNumber);
-               }
-            } else if (dataValue instanceof ByteArrayInputStream) {
-               statement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
-                  ((ByteArrayInputStream) dataValue).available());
-            } else if (dataValue instanceof Date) {
-               java.util.Date javaDate = (java.util.Date) dataValue;
-               java.sql.Timestamp date = new java.sql.Timestamp(javaDate.getTime());
-               statement.setTimestamp(preparedIndex, date);
-            } else if (dataValue instanceof BigInteger) {
-               BigInteger bigInt = (BigInteger) dataValue;
-               statement.setLong(preparedIndex, bigInt.longValue());
-            } else if (dataValue instanceof BigDecimal) {
-               BigDecimal bigDec = (BigDecimal) dataValue;
-               statement.setLong(preparedIndex, bigDec.longValue());
+         }
+
+         if (dataValue == null) {
+            throw newJdbcException("instead of passing null for an input parameter, pass the corresponding SQL3DataType");
+         } else if (dataValue instanceof SQL3DataType) {
+            int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
+            if (dataTypeNumber == java.sql.Types.BLOB) {
+               // TODO Need to check this - for PostgreSql, setNull for BLOB with the new JDBC driver gives the error "column
+               //  "content" is of type bytea but expression is of type oid"
+               statement.setBytes(preparedIndex, null);
             } else {
-               statement.setObject(preparedIndex, dataValue);
+               statement.setNull(preparedIndex, dataTypeNumber);
             }
-            preparedIndex++;
+         } else if (dataValue instanceof ByteArrayInputStream) {
+            statement.setBinaryStream(preparedIndex, (ByteArrayInputStream) dataValue,
+               ((ByteArrayInputStream) dataValue).available());
+         } else if (dataValue instanceof Date) {
+            java.util.Date javaDate = (java.util.Date) dataValue;
+            java.sql.Timestamp date = new java.sql.Timestamp(javaDate.getTime());
+            statement.setTimestamp(preparedIndex, date);
+         } else if (dataValue instanceof BigInteger) {
+            BigInteger bigInt = (BigInteger) dataValue;
+            statement.setLong(preparedIndex, bigInt.longValue());
+         } else if (dataValue instanceof BigDecimal) {
+            BigDecimal bigDec = (BigDecimal) dataValue;
+            statement.setLong(preparedIndex, bigDec.longValue());
+         } else {
+            statement.setObject(preparedIndex, dataValue);
          }
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }
    }
 
-   public static void checkStringDataLength(Object dataValue) {
-      if (dataValue instanceof String) {
-         int length = ((String) dataValue).length();
-         if (length > JDBC__MAX_VARCHAR_LENGTH) {
-            throw newJdbcException("SQL data value length must be <= %d not %d\nValue: %s", JDBC__MAX_VARCHAR_LENGTH,
-               length, dataValue);
-         }
+   private static void checkStringDataLength(Object dataValue) {
+      int length = ((String) dataValue).length();
+      if (length > JDBC__MAX_VARCHAR_LENGTH) {
+         throw newJdbcException("SQL data value length must be <= %d not %d\nValue: %s", JDBC__MAX_VARCHAR_LENGTH,
+            length, dataValue);
       }
    }
 
@@ -221,5 +226,29 @@ public final class JdbcUtil {
    public static Set<String> getBindings(Map<String, Object> data) {
       Set<String> bindings = (Set<String>) data.get(JdbcConstants.JDBC_SERVICE__OSGI_BINDING);
       return bindings != null ? bindings : Collections.<String> emptySet();
+   }
+
+   public static int calculateBatchUpdateResults(int[] updates) throws JdbcException {
+      int returnCount = 0;
+      for (int update : updates) {
+         if (update >= 0) {
+            returnCount += update;
+         } else if (Statement.EXECUTE_FAILED == update) {
+            throw newJdbcException("Batch update failed");
+         } else if (Statement.SUCCESS_NO_INFO == update) {
+            returnCount++;
+         }
+      }
+      return returnCount;
+   }
+
+   public static void close(PreparedStatement stmt) {
+      if (stmt != null) {
+         try {
+            stmt.close();
+         } catch (SQLException ex) {
+            // do nothing
+         }
+      }
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc.internal;
 
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_TX_ROW_COUNT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.CallableStatement;
@@ -17,7 +18,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -36,6 +36,7 @@ import org.eclipse.osee.jdbc.JdbcSchemaOptions;
 import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.jdbc.internal.schema.data.SchemaData;
 import org.eclipse.osee.jdbc.internal.schema.ops.CreateSchemaTx;
@@ -120,7 +121,7 @@ public final class JdbcClientImpl implements JdbcClient {
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       } finally {
-         close(preparedStatement);
+         JdbcUtil.close(preparedStatement);
       }
       return updateCount;
    }
@@ -144,14 +145,14 @@ public final class JdbcClientImpl implements JdbcClient {
             needExecute = true;
             if (count > 2000) {
                int[] updates = preparedStatement.executeBatch();
-               returnCount += calculateBatchUpdateResults(updates);
+               returnCount += JdbcUtil.calculateBatchUpdateResults(updates);
                count = 0;
                needExecute = false;
             }
          }
          if (needExecute) {
             int[] updates = preparedStatement.executeBatch();
-            returnCount += calculateBatchUpdateResults(updates);
+            returnCount += JdbcUtil.calculateBatchUpdateResults(updates);
          }
 
       } catch (SQLException ex) {
@@ -162,7 +163,7 @@ public final class JdbcClientImpl implements JdbcClient {
          }
          throw newJdbcException(nestedEx, "sql update failed: \n%s\n%s", query, getBatchErrorMessage(dataList));
       } finally {
-         close(preparedStatement);
+         JdbcUtil.close(preparedStatement);
       }
       return returnCount;
    }
@@ -197,30 +198,6 @@ public final class JdbcClientImpl implements JdbcClient {
       }
       details.append("]\n");
       return details.toString();
-   }
-
-   private static void close(PreparedStatement stmt) {
-      if (stmt != null) {
-         try {
-            stmt.close();
-         } catch (SQLException ex) {
-            // do nothing
-         }
-      }
-   }
-
-   private static int calculateBatchUpdateResults(int[] updates) throws JdbcException {
-      int returnCount = 0;
-      for (int update : updates) {
-         if (update >= 0) {
-            returnCount += update;
-         } else if (Statement.EXECUTE_FAILED == update) {
-            throw newJdbcException("Batch update failed");
-         } else if (Statement.SUCCESS_NO_INFO == update) {
-            returnCount++;
-         }
-      }
-      return returnCount;
    }
 
    @Override
@@ -381,7 +358,7 @@ public final class JdbcClientImpl implements JdbcClient {
          } catch (SQLException ex) {
             throw newJdbcException(ex);
          } finally {
-            close(stmt);
+            JdbcUtil.close(stmt);
          }
       } finally {
          connection.close();
@@ -407,8 +384,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void runTransaction(JdbcTransaction dbWork) throws JdbcException {
-      JdbcConnectionImpl connection = getConnection();
+   public void runTransaction(JdbcConnection jdbcConnection, JdbcTransaction dbWork) throws JdbcException {
+      JdbcConnectionImpl connection = (JdbcConnectionImpl) jdbcConnection;
       boolean initialAutoCommit = true;
       Exception saveException = null;
       try {
@@ -457,6 +434,12 @@ public final class JdbcClientImpl implements JdbcClient {
             throw newJdbcException(saveException);
          }
       }
+   }
+
+   @Override
+   public void runTransaction(JdbcTransaction dbWork) throws JdbcException {
+      runTransaction(getConnection(), dbWork);
+
    }
 
    private void setConstraintChecking(JdbcConnection connection, boolean enable) throws JdbcException {
@@ -531,4 +514,28 @@ public final class JdbcClientImpl implements JdbcClient {
       return toReturn;
    }
 
+   @Override
+   public OseePreparedStatement getBatchStatement(String query) {
+      return getBatchStatement(getConnection(), query, JDBC__MAX_TX_ROW_COUNT);
+   }
+
+   @Override
+   public OseePreparedStatement getBatchStatement(String query, int batchIncrementSize) {
+      return getBatchStatement(getConnection(), query, batchIncrementSize);
+   }
+
+   @Override
+   public OseePreparedStatement getBatchStatement(JdbcConnection connection, String query) {
+      return getBatchStatement(connection, query, JDBC__MAX_TX_ROW_COUNT);
+   }
+
+   @Override
+   public OseePreparedStatement getBatchStatement(JdbcConnection connection, String query, int batchIncrementSize) {
+      try {
+         PreparedStatement preparedStatement = ((JdbcConnectionImpl) connection).prepareStatement(query);
+         return new OseePreparedStatement(preparedStatement, batchIncrementSize);
+      } catch (SQLException ex) {
+         throw newJdbcException(ex);
+      }
+   }
 }

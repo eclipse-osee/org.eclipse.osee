@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
@@ -32,6 +33,10 @@ public interface JdbcClient {
    List<IVariantData> runQuery(String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
+
+   OseePreparedStatement getBatchStatement(String query) throws SQLException;
+
+   OseePreparedStatement getBatchStatement(String query, int batchIncrementSize) throws SQLException;
 
    int runPreparedUpdate(String query, Object... data);
 
@@ -60,11 +65,17 @@ public interface JdbcClient {
 
    int runBatchUpdate(JdbcConnection connection, String query, Iterable<Object[]> dataList);
 
+   OseePreparedStatement getBatchStatement(JdbcConnection connection, String query);
+
+   OseePreparedStatement getBatchStatement(JdbcConnection connection, String query, int batchIncrementSize);
+
    <T> T runPreparedQueryFetchObject(JdbcConnection connection, T defaultValue, String query, Object... data);
 
    //////////////////////////////////////////////////
 
    void runTransaction(JdbcTransaction transaction);
+
+   void runTransaction(JdbcConnection connection, JdbcTransaction dbWork) throws JdbcException;
 
    void initSchema(JdbcSchemaOptions options, JdbcSchemaResource... schemaResources);
 
