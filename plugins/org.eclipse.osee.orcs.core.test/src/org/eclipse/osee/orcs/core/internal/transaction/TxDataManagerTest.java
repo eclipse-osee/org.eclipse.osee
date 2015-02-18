@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Category;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_CHILD;
 import static org.junit.Assert.assertEquals;
@@ -553,6 +554,23 @@ public class TxDataManagerTest {
       Iterator<? extends RelationNode> iterator = nodeCaptor.getValue().iterator();
       assertEquals(artifact2, iterator.next());
       assertEquals(artifact3, iterator.next());
+   }
+
+   @Test
+   public void testSetRelations() throws OseeCoreException {
+      when(txData.getWriteable(readable1)).thenReturn(artifact1);
+      when(txData.getWriteable(readable2)).thenReturn(artifact2);
+      when(txData.getWriteable(readable3)).thenReturn(artifact3);
+      when(txData.getGraph()).thenReturn(graph);
+
+      ResultSet<Artifact> related = ResultSets.singleton(artifact3);
+      when(relationManager.<Artifact> getRelated(session, DEFAULT_HIERARCHY, artifact1, SIDE_A)).thenReturn(related);
+      when(txData.getWriteable(artifact3)).thenReturn(artifact3);
+
+      txDataManager.setRelations(txData, readable1, DEFAULT_HIERARCHY, Arrays.asList(readable2));
+
+      verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
+      verify(relationManager).unrelate(session, artifact1, DEFAULT_HIERARCHY, artifact3);
    }
 
    @Test

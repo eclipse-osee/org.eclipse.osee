@@ -384,10 +384,9 @@ public class TransactionBuilderImplTest {
       verify(txDataManager).addChildren(txData, expectedAuthor, list);
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void TestAddChildrenAsList() throws OseeCoreException {
-      Iterable<? extends ArtifactId> children = Collections.EMPTY_LIST;
+      Iterable<? extends ArtifactId> children = Collections.emptyList();
       factory.addChildren(expectedAuthor, children);
       verify(txDataManager).addChildren(txData, expectedAuthor, children);
    }
@@ -402,6 +401,14 @@ public class TransactionBuilderImplTest {
    public void testRelateWithOrder() throws OseeCoreException {
       factory.relate(node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
       verify(txDataManager).relate(txData, node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
+   }
+
+   @Test
+   public void testSetRelations() throws OseeCoreException {
+      Iterable<? extends ArtifactId> artBs = Collections.emptyList();
+      factory.setRelations(node1, DEFAULT_HIERARCHY, artBs);
+
+      verify(txDataManager).setRelations(txData, node1, DEFAULT_HIERARCHY, artBs);
    }
 
    @Test

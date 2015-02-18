@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -713,6 +714,58 @@ public class OrcsTransactionTest {
       assertEquals("D component", iterator2.next().getName());
       assertEquals("C component", iterator2.next().getName());
       assertEquals("B component", iterator2.next().getName());
+   }
+
+   @Test
+   public void testSetRelations() throws OseeCoreException {
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "A component");
+      ArtifactId art2 = tx1.createArtifact(Component, "B component");
+      ArtifactId art3 = tx1.createArtifact(Component, "C component");
+      ArtifactId art4 = tx1.createArtifact(Component, "D component");
+      tx1.addChildren(art1, art2);
+      tx1.commit();
+
+      ArtifactReadable artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("A component", artifact1.getName());
+
+      ResultSet<ArtifactReadable> children = artifact1.getChildren();
+      assertEquals(1, children.size());
+
+      Iterator<ArtifactReadable> iterator = children.iterator();
+      ArtifactReadable artifact2 = children.iterator().next();
+
+      assertEquals("B component", artifact2.getName());
+      assertEquals(artifact1, artifact2.getParent());
+      assertEquals(art2, artifact2);
+
+      TransactionBuilder tx2 = createTx();
+      tx2.setRelations(art1, Default_Hierarchical__Child, Arrays.asList(art3, art4));
+      tx2.commit();
+
+      artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("A component", artifact1.getName());
+
+      children = artifact1.getChildren();
+      assertEquals(2, children.size());
+
+      iterator = children.iterator();
+      ArtifactReadable artifact3 = iterator.next();
+      ArtifactReadable artifact4 = iterator.next();
+
+      assertEquals("C component", artifact3.getName());
+      assertEquals("D component", artifact4.getName());
+
+      assertEquals(artifact1, artifact3.getParent());
+      assertEquals(artifact1, artifact4.getParent());
+
+      assertEquals(art3, artifact3);
+      assertEquals(art4, artifact4);
+
+      artifact2 = query.fromBranch(CoreBranches.COMMON).andIds(art2).getResults().getExactlyOne();
+      assertEquals("B component", artifact2.getName());
+      assertNull(artifact2.getParent());
+      assertEquals(art2, artifact2);
    }
 
    @Test

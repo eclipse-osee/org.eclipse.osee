@@ -42,6 +42,7 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -329,6 +330,25 @@ public class TxDataManager {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, sortType);
+   }
+
+   public void setRelations(TxData txData, ArtifactId artA, IRelationType type, Iterable<? extends ArtifactId> artBs) throws OseeCoreException {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Set<Artifact> asArtifactBs = Sets.newLinkedHashSet(getForWrite(txData, artBs));
+
+      OrcsSession session = txData.getSession();
+      ResultSet<Artifact> related = relationManager.getRelated(session, type, asArtifactA, RelationSide.SIDE_A);
+      Set<Artifact> relatedArtBs = Sets.newLinkedHashSet(getForWrite(txData, related));
+
+      // Add relations if they are not related
+      for (Artifact asArtifactB : Sets.difference(asArtifactBs, relatedArtBs)) {
+         relationManager.relate(session, asArtifactA, type, asArtifactB);
+      }
+
+      // Remove relations that are not in items to relate
+      for (Artifact asArtifactB : Sets.difference(relatedArtBs, asArtifactBs)) {
+         relationManager.unrelate(session, asArtifactA, type, asArtifactB);
+      }
    }
 
    public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) throws OseeCoreException {

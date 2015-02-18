@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.transaction;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -118,6 +117,8 @@ public interface TransactionBuilder {
 
    void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, IRelationSorterId sortType) throws OseeCoreException;
 
+   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) throws OseeCoreException;
+
    void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
 
    void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException;
@@ -125,7 +126,5 @@ public interface TransactionBuilder {
    void unrelateFromAll(ArtifactId art) throws OseeCoreException;
 
    void unrelateFromAll(IRelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
-
-   void setRelations(ArtifactReadable artifact, IRelationTypeSide typeSide, Set<ArtifactReadable> artifacts) throws OseeCoreException;
 
 }
