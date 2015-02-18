@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.agile;
 
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.workflow.WorkItem;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,12 +27,12 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
    @Override
    public boolean isActive() {
-      return false;
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.Active, true);
    }
 
    @Override
    public long getTeamUuid() {
-      return 0;
+      return artifact.getParent().getArtId();
    }
 
 }

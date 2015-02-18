@@ -61,10 +61,10 @@ public class AtsObjectTest {
    @Test
    public void testHashCode() {
       AtsObject obj = new AtsObject("hello", "GUID", 465);
-      Assert.assertEquals(2199208, obj.hashCode());
+      Assert.assertEquals(68174952, obj.hashCode());
 
       obj = new AtsObject("hello", "", 456);
-      Assert.assertEquals(31, obj.hashCode());
+      Assert.assertEquals(456, obj.hashCode());
    }
 
 }
