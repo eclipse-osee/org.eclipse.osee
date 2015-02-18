@@ -13,15 +13,13 @@ package org.eclipse.osee.ats.task;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.actions.DeleteTasksAction;
-import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -43,6 +41,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -104,7 +103,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    Action editAssigneeAction;
-   Action addNewTaskAction, deleteTasksAction;
+   Action addNewTaskAction;
 
    @Override
    public void createMenuActions() {
@@ -119,17 +118,7 @@ public class TaskXViewer extends WorldXViewer {
             taskComposite.handleNewTask();
          }
       };
-
-      TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
-
-         @Override
-         public List<TaskArtifact> getSelectedArtifacts() {
-            return taskComposite.getSelectedTaskArtifactItems();
-         }
-      };
-
-      deleteTasksAction = new DeleteTasksAction(taskProvider);
-
+      addNewTaskAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_TASK));
    }
 
    @Override
@@ -164,9 +153,6 @@ public class TaskXViewer extends WorldXViewer {
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, new Separator());
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, addNewTaskAction);
       addNewTaskAction.setEnabled(isTasksEditable() && newTaskSelectionEnabled);
-
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_OPEN, deleteTasksAction);
-      deleteTasksAction.setEnabled(isTasksEditable() && getSelectedTaskArtifacts().size() > 0);
 
    }
 
