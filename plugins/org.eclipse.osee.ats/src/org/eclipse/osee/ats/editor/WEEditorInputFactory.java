@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
@@ -52,7 +51,7 @@ public class WEEditorInputFactory implements IElementFactory {
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
          artUuid = input.getArtifact().getArtId();
          branchUuid = input.getArtifact().getBranchUuid();
-         title = ((AbstractWorkflowArtifact) input.getArtifact()).getEditorTitle();
+         title = input.getName();
       }
       if (artUuid > 0 && branchUuid > 0 && Strings.isValid(title)) {
          memento.putString(BRANCH_KEY, String.valueOf(branchUuid));

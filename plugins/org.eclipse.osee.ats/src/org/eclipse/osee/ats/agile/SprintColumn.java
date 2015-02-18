@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -104,47 +103,18 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
    public static boolean promptChangeSprint(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
       // verify that all awas belong to the same backlog
-      Artifact backlogArt = null;
-      Set<Artifact> selectedSprints = new HashSet<Artifact>();
-      boolean commonSelectedSprint = true;
-      boolean noBacklogDetected = false;
-      for (Artifact artifact : awas) {
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-            try {
-               Artifact relatedBacklogArt = AgileUtilClient.getRelatedBacklogArt(awa);
-               if (relatedBacklogArt == null) {
-                  noBacklogDetected = true;
-               } else if (backlogArt == null) {
-                  backlogArt = relatedBacklogArt;
-               } else if (!backlogArt.equals(relatedBacklogArt)) {
-                  throw new OseeArgumentException("Can not change Sprint for workflows in different Backlogs");
-               }
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
-               noBacklogDetected = true;
-            }
+      SprintItems items = new SprintItems(awas);
 
-            if (commonSelectedSprint) {
-               try {
-                  Artifact sprintArt = awa.getRelatedArtifact(AtsRelationTypes.AgileSprintToItem_Sprint);
-                  selectedSprints.add(sprintArt);
-               } catch (ArtifactDoesNotExist ex) {
-                  // do nothing
-                  commonSelectedSprint = false;
-               }
-            }
-         }
-      }
-      if (noBacklogDetected) {
+      if (items.isNoBacklogDetected()) {
          AWorkbench.popup("Workflow(s) must belong to a Backlog to set their Sprint.");
          return false;
       }
-      if (backlogArt == null) {
+      if (items.isMultipleBacklogsDetected()) {
          AWorkbench.popup("All workflows must belong to same Backlog.");
          return false;
       }
 
+      Artifact backlogArt = (Artifact) items.getCommonBacklog().getStoreObject();
       Artifact agileTeamArt = null;
       try {
          agileTeamArt = backlogArt.getRelatedArtifact(AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
@@ -170,8 +140,8 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       SprintFilteredListDialog dialog = new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
       Window.setDefaultImage(ImageManager.getImage(AtsImage.AGILE_SPRINT));
       dialog.setInput(activeSprints);
-      if (commonSelectedSprint && selectedSprints.size() == 1) {
-         dialog.setInitialSelections(Arrays.asList(selectedSprints.iterator().next()));
+      if (items.isCommonSelectedSprint() && items.getMultipleSprints().size() == 1) {
+         dialog.setInitialSelections(Arrays.asList(items.getMultipleSprints().iterator().next()));
       }
       if (dialog.open() == 0) {
          IAgileSprint selectedSprint = dialog.getSelectedFirst();

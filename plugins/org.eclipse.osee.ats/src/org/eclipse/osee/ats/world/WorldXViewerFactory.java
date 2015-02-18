@@ -17,6 +17,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 
 import org.eclipse.osee.ats.agile.SprintColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.ats.agile.AgileFeatureGroupColumn;
+import org.eclipse.osee.ats.agile.SprintColumn;
+import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
@@ -234,7 +238,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       new GuidColumn(false),
       ParentTopTeamColumnUI.getInstance(),
       ActionableItemOwner.getInstance(),
-      AtsIdColumn.getInstance()};
+      AtsIdColumn.getInstance(),
+      AgileFeatureGroupColumn.getInstance(),
+      SprintOrderColumn.getInstance()};
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
