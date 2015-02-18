@@ -1678,12 +1678,6 @@
      </DatabaseHealthOperation>
   </extension>
     <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.ArtifactIdWithoutVersionsCheck">
-       </DatabaseHealthOperation>
-  </extension>
-    <extension
           point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
        <ArtifactImageProvider
              class="org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider">

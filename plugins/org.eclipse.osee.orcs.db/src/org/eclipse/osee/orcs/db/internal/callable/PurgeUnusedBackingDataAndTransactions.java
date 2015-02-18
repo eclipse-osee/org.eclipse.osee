@@ -44,6 +44,15 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    private static final String DELETE_EMPTY_TRANSACTIONS =
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
+
+   private static final String GET_INVALID_ART_REFERENCES =
+      "select item.gamma_id from %s item where not exists (select 1 from osee_artifact art where art.art_id = item.%s)";
+
+   private static final String GET_INVALID_ART_REFERENCES_ACL =
+      "select item.art_id from osee_artifact_acl item where not exists (select 1 from osee_artifact art where art.art_id = item.art_id)";
+
+   private static final String DELETE_ACL = "DELETE FROM osee_artifact_acl WHERE art_id = ?";
+
    private final JdbcClient jdbcClient;
 
    public PurgeUnusedBackingDataAndTransactions(JdbcClient jdbcClient) {
@@ -51,22 +60,8 @@ public class PurgeUnusedBackingDataAndTransactions {
    }
 
    private int purgeNotAddressedGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
-      JdbcStatement chStmt = jdbcClient.getStatement(connection);
-      OseePreparedStatement notAddressedGammas;
-
-      try {
-         String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
-         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, sql);
-         notAddressedGammas = jdbcClient.getBatchStatement(connection, String.format(DELETE_GAMMAS, tableName));
-
-         while (chStmt.next()) {
-            notAddressedGammas.addToBatch(chStmt.getLong("gamma_id"));
-         }
-      } finally {
-         chStmt.close();
-      }
-
-      return notAddressedGammas.execute();
+      String selectSql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
+      return purgeGammas(connection, selectSql, tableName);
    }
 
    private int purgeAddressedButNonexistentGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
@@ -109,15 +104,32 @@ public class PurgeUnusedBackingDataAndTransactions {
    }
 
    public int deleteObsoleteTags(JdbcConnection connection) {
+      return purgeGammas(connection, OBSOLETE_TAGS, "osee_search_tags");
+   }
+
+   private int purgeInvalidArtfactReferences(JdbcConnection connection, String table, String artColumn) {
+      String selectSql = String.format(GET_INVALID_ART_REFERENCES, table, artColumn);
+      return purgeGammas(connection, selectSql, table);
+   }
+
+   private int purgeInvalidArtfactReferencesAcl(JdbcConnection connection) {
+      return purgeData(connection, GET_INVALID_ART_REFERENCES_ACL, DELETE_ACL, "art_id");
+   }
+
+   private int purgeGammas(JdbcConnection connection, String selectSql, String table) {
+      return purgeData(connection, selectSql, String.format(DELETE_GAMMAS, table), "gamma_id");
+   }
+
+   private int purgeData(JdbcConnection connection, String selectSql, String purgeSQL, String purgeColumn) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       OseePreparedStatement dropGammas;
 
       try {
-         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, OBSOLETE_TAGS);
-         dropGammas = jdbcClient.getBatchStatement(connection, String.format(DELETE_GAMMAS, "osee_search_tags"));
+         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, selectSql);
+         dropGammas = jdbcClient.getBatchStatement(connection, purgeSQL);
 
          while (chStmt.next()) {
-            dropGammas.addToBatch(chStmt.getLong("gamma_id"));
+            dropGammas.addToBatch(chStmt.getLong(purgeColumn));
          }
       } finally {
          chStmt.close();
@@ -126,12 +138,16 @@ public class PurgeUnusedBackingDataAndTransactions {
    }
 
    public int[] purge(JdbcConnection connection) throws OseeCoreException {
-      int[] counts = new int[6];
+      int[] counts = new int[11];
       int i = 0;
 
       counts[i++] = purgeNotAddressedGammas(connection, "osee_artifact");
       counts[i++] = purgeNotAddressedGammas(connection, "osee_attribute");
       counts[i++] = purgeNotAddressedGammas(connection, "osee_relation_link");
+      counts[i++] = purgeInvalidArtfactReferences(connection, "osee_relation_link", "a_art_id");
+      counts[i++] = purgeInvalidArtfactReferences(connection, "osee_relation_link", "b_art_id");
+      counts[i++] = purgeInvalidArtfactReferences(connection, "osee_attribute", "art_id");
+      counts[i++] = purgeInvalidArtfactReferencesAcl(connection);
       counts[i++] = deleteObsoleteTags(connection);
       counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs");
       counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs_archived");
