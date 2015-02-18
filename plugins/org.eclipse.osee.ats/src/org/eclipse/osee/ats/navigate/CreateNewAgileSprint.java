@@ -12,9 +12,10 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
-import org.eclipse.osee.ats.api.agile.NewAgileSprint;
+import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -64,15 +66,23 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileTeamEndpointApi teamApi = AtsJaxRsService.get().getAgileTeam();
-                  NewAgileSprint newSprint = new NewAgileSprint();
+                  AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+                  JaxAgileSprint newSprint = new JaxAgileSprint();
                   newSprint.setName(ed.getEntry());
-                  newSprint.setTeamUuid(((Artifact) dialog.getSelectedFirst()).getArtId());
-                  NewAgileSprint sprint = teamApi.createSprint(newSprint);
-                  Artifact sprintArt =
-                     ArtifactQuery.getArtifactFromId(new Long(sprint.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
-                  sprintArt.getParent().reloadAttributesAndRelations();
-                  AtsUtil.openArtifact(sprint.getGuid(), OseeCmEditor.CmPcrEditor);
+                  int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
+                  newSprint.setTeamUuid(teamUuid);
+                  Response response = teamApi.createSprint(new Long(teamUuid), newSprint);
+                  Object entity = response.readEntity(JaxAgileSprint.class);
+                  if (entity != null) {
+                     JaxAgileSprint sprint = (JaxAgileSprint) entity;
+                     Artifact sprintArt =
+                        ArtifactQuery.getArtifactFromId(new Long(sprint.getUuid()).intValue(),
+                           AtsUtilCore.getAtsBranch());
+                     sprintArt.getParent().reloadAttributesAndRelations();
+                     AtsUtil.openArtifact(sprint.getGuid(), OseeCmEditor.CmPcrEditor);
+                  } else {
+                     AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
+                  }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

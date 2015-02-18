@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
-import org.eclipse.osee.ats.api.agile.NewAgileTeam;
+import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsJaxRsService;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -44,14 +46,20 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
       if (ed.open() == 0) {
          if (Strings.isValid(ed.getEntry())) {
             try {
-               AgileTeamEndpointApi teamApi = AtsJaxRsService.get().getAgileTeam();
-               NewAgileTeam newTeam = new NewAgileTeam();
+               AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+               JaxAgileTeam newTeam = new JaxAgileTeam();
                newTeam.setName(ed.getEntry());
-               NewAgileTeam team = teamApi.createTeam(newTeam);
-               Artifact teamArt =
-                  ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
-               teamArt.getParent().reloadAttributesAndRelations();
-               AtsUtil.openArtifact(team.getGuid(), OseeCmEditor.CmPcrEditor);
+               Response response = teamApi.createTeam(newTeam);
+               Object entity = response.readEntity(JaxAgileTeam.class);
+               if (entity != null) {
+                  JaxAgileTeam team = (JaxAgileTeam) entity;
+                  Artifact teamArt =
+                     ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
+                  teamArt.getParent().reloadAttributesAndRelations();
+                  AtsUtil.openArtifact(team.getGuid(), OseeCmEditor.CmPcrEditor);
+               } else {
+                  AWorkbench.popup("Error Creating Team", response.toString());
+               }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

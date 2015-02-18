@@ -256,4 +256,17 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       Artifact artifact2 = getArtifact(object2);
       artifact.setRelations(relationType, Collections.singleton(artifact2));
    }
+
+   @Override
+   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
+      Artifact artifact = getArtifact(object);
+      Set<Artifact> artifacts = new HashSet<Artifact>(objects.size());
+      for (Object obj : objects) {
+         Artifact art = getArtifact(obj);
+         if (art != null) {
+            artifacts.add(art);
+         }
+      }
+      artifact.setRelations(null, relationSide, artifacts);
+   }
 }

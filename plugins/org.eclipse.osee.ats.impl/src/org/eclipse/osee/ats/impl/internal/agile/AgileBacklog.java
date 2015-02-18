@@ -33,7 +33,7 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
    @Override
    public long getTeamUuid() {
-      return artifact.getLocalId();
+      return artifact.getParent().getLocalId();
    }
 
 }

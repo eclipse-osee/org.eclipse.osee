@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -104,5 +105,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    IAgileService getAgileService();
 
    IAtsQueryService getQueryService();
+   
+   Collection<ArtifactReadable> getArtifacts(List<Long> uuids);
 
 }

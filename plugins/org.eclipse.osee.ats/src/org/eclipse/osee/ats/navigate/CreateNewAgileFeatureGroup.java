@@ -12,9 +12,10 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
-import org.eclipse.osee.ats.api.agile.NewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -64,15 +66,23 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileTeamEndpointApi teamApi = AtsJaxRsService.get().getAgileTeam();
-                  NewAgileFeatureGroup newGroup = new NewAgileFeatureGroup();
+                  AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+                  JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(ed.getEntry());
-                  newGroup.setTeamUuid(((Artifact) dialog.getSelectedFirst()).getArtId());
-                  NewAgileFeatureGroup group = teamApi.createFeatureGroup(newGroup);
-                  Artifact groupArt =
-                     ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
-                  groupArt.getParent().reloadAttributesAndRelations();
-                  AtsUtil.openArtifact(group.getGuid(), OseeCmEditor.CmPcrEditor);
+                  int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
+                  newGroup.setTeamUuid(teamUuid);
+                  Response response = teamApi.createFeatureGroup(new Long(teamUuid), newGroup);
+                  Object entity = response.readEntity(JaxAgileFeatureGroup.class);
+                  if (entity != null) {
+                     JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
+                     Artifact groupArt =
+                        ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
+                           AtsUtilCore.getAtsBranch());
+                     groupArt.getParent().reloadAttributesAndRelations();
+                     AtsUtil.openArtifact(group.getGuid(), OseeCmEditor.CmPcrEditor);
+                  } else {
+                     AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
+                  }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

@@ -16,7 +16,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.agile.AgileTeamEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
@@ -69,7 +68,6 @@ public class AtsApplication extends Application {
 
       // Agile resources
       singletons.add(new AgileEndpointImpl(atsServer));
-      singletons.add(new AgileTeamEndpointImpl(atsServer));
 
       // Config resources
       singletons.add(new VersionResource(atsServer));

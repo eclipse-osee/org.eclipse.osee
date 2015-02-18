@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class NewAgileTeam extends AbstractAgileObject {
+public class JaxAgileTeam extends AbstractAgileObject {
 
    private List<Long> atsTeamUuids = new ArrayList<Long>();
    private long backlogUuid = 0;

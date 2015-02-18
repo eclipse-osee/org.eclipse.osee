@@ -35,6 +35,9 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide AgileSprintToItem_Sprint= TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x0DB6D78253FE8AB1L, "AgileSprintToItems");
    public static final IRelationTypeSide AgileSprintToItem_AtsItem = AgileSprintToItem_Sprint.getOpposite();
    
+   public static final IRelationTypeSide AgileFeatureToItem_FeatureGroup = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x5380F48A35225D71L, "AgileFeatureToItem");
+   public static final IRelationTypeSide AgileFeatureToItem_AtsItem = AgileFeatureToItem_FeatureGroup.getOpposite();
+   
    public static final IRelationTypeSide Port_From = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000017AL, "Port");
    public static final IRelationTypeSide Port_To = Port_From.getOpposite();
    

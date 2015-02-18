@@ -1309,6 +1309,16 @@ relationType "TeamActionableItem" {
 	multiplicity ONE_TO_MANY
 }
 
+relationType "AgileFeatureToItem" {
+	uuid 0x5380F48A35225D71 
+	sideAName "Agile Feature Group"
+	sideAArtifactType "Agile Feature Group"
+	sideBName "ATS Item"
+	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
+}
+
 relationType "AgileSprintToItem" {
 	uuid 0x0DB6D78253FE8AB1
 	sideAName "Agile Sprint"

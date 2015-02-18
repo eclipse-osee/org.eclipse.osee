@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAgileTeam extends IAtsConfigObject {
-   // do nothing
+
+   public List<Long> getAtsTeamUuids();
+
+   public long getBacklogUuid();
+
 }

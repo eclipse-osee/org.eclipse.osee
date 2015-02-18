@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.rest.internal;
 
 import org.eclipse.osee.ats.api.AtsJaxRsApi;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.agile.AgileTeamEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
@@ -38,7 +36,6 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
    private AtsConfigEndpointImpl atsConfigEndpointImpl;
    private AtsCpaEndpointApi atsCpaEndpointApi;
    private AgileEndpointApi agileEndpointApi;
-   private AgileTeamEndpointApi agileTeamEndpointApi;
    private final CpaServiceRegistry cpaRegistry;
    private ActionResource atsActionEndpointImpl;
 
@@ -87,15 +84,6 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
          agileEndpointApi = new AgileEndpointImpl(atsServer);
       }
       return agileEndpointApi;
-
-   }
-
-   @Override
-   public AgileTeamEndpointApi getAgileTeam() {
-      if (agileTeamEndpointApi == null) {
-         agileTeamEndpointApi = new AgileTeamEndpointImpl(atsServer);
-      }
-      return agileTeamEndpointApi;
 
    }
 

@@ -71,4 +71,6 @@ public interface IAtsChangeSet {
 
    void setRelation(Object object1, IRelationTypeSide relationType, Object object2);
 
+   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects);
+
 }

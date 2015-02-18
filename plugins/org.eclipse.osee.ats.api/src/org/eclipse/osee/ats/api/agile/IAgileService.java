@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
@@ -17,7 +20,7 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeam(Object artifact);
 
-   IAgileTeam createUpdateAgileTeam(NewAgileTeam team);
+   IAgileTeam createUpdateAgileTeam(JaxAgileTeam team);
 
    IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
 
@@ -34,5 +37,17 @@ public interface IAgileService {
    IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid);
 
    IAgileBacklog getAgileBacklog(Object artifact);
+
+   JaxAgileItem updateItem(JaxAgileItem newItem);
+
+   Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids);
+
+   IAgileBacklog getBacklogForTeam(long teamUuid);
+
+   Collection<IAgileSprint> getSprintsForTeam(long teamUuid);
+
+   Collection<IAgileTeam> getTeams();
+
+   IAgileTeam getAgileTeamById(long teamUuid);
 
 }

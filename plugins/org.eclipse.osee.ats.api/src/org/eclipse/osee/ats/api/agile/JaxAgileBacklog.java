@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class NewAgileBacklog extends AbstractAgileObject {
+public class JaxAgileBacklog extends AbstractAgileObject {
 
    private long teamUuid;
 

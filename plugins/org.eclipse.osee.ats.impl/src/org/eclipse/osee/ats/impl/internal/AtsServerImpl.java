@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.impl.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -82,6 +84,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -368,6 +371,18 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public ArtifactReadable getArtifactByUuid(long uuid) {
       return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andLocalId(new Long(uuid).intValue()).getResults().getOneOrNull();
+   }
+
+   @Override
+   public Collection<ArtifactReadable> getArtifacts(List<Long> uuids) {
+      Collection<Integer> uuidInts = Collections.castAll(uuids);
+      Collection<ArtifactReadable> artifacts = new LinkedList<ArtifactReadable>();
+      Iterator<ArtifactReadable> iterator =
+         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andLocalIds(uuidInts).getResults().iterator();
+      while (iterator.hasNext()) {
+         artifacts.add(iterator.next());
+      }
+      return artifacts;
    }
 
    @Override

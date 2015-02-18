@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api;
 
 import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.agile.AgileTeamEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.cpa.AtsCpaEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
@@ -37,8 +36,5 @@ public interface AtsJaxRsApi {
 
    @Path("agile")
    public AgileEndpointApi getAgile();
-
-   @Path("agile/team")
-   public AgileTeamEndpointApi getAgileTeam();
 
 }

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.agile;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsConfigObject;
 import org.eclipse.osee.logger.Log;
@@ -30,4 +33,25 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       return "Agile Team";
    }
 
+   @Override
+   public List<Long> getAtsTeamUuids() {
+      List<Long> uuids = new ArrayList<Long>();
+      for (ArtifactReadable atsTeam : artifact.getRelated(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+         uuids.add(new Long(atsTeam.getLocalId()));
+      }
+      return uuids;
+   }
+
+   @Override
+   public long getBacklogUuid() {
+      long backlogUuid = -1;
+      try {
+         ArtifactReadable backlogArt =
+            artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
+         backlogUuid = backlogArt.getLocalId();
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return backlogUuid;
+   }
 }

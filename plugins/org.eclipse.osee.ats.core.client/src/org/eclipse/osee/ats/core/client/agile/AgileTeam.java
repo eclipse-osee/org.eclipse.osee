@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.agile;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigObject;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,6 +30,28 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    @Override
    public String getTypeName() {
       return artifact.getArtifactTypeName();
+   }
+
+   @Override
+   public List<Long> getAtsTeamUuids() {
+      List<Long> uuids = new ArrayList<Long>();
+      for (Artifact atsTeam : artifact.getRelatedArtifacts(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+         uuids.add(new Long(atsTeam.getArtId()));
+      }
+      return uuids;
+   }
+
+   @Override
+   public long getBacklogUuid() {
+      long backlogUuid = -1;
+      Artifact backlogArt = null;
+      try {
+         backlogArt = artifact.getRelatedArtifact(AtsRelationTypes.AgileTeamToBacklog_Backlog);
+         backlogUuid = backlogArt.getArtId();
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return backlogUuid;
    }
 
 }

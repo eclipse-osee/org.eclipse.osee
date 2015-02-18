@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
@@ -173,6 +176,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
       getTransaction().relate(getArtifact(object1), relationSide, getArtifact(object2));
+      add(object1);
    }
 
    private ArtifactReadable getArtifact(Object object) {
@@ -189,11 +193,37 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void unrelateAll(Object object, IRelationTypeSide relationType) {
       ArtifactReadable artifact = getArtifact(object);
       getTransaction().unrelateFromAll(relationType, artifact);
+      add(object);
    }
 
    @Override
    public void setRelation(Object object1, IRelationTypeSide relationType, Object object2) {
       unrelateAll(object1, relationType);
       relate(object1, relationType, object2);
+      add(object1);
+   }
+
+   @Override
+   public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
+      if (!relationSide.getSide().isSideA()) {
+         throw new UnsupportedOperationException("Can only set relations from A to B side");
+      }
+      ArtifactReadable artifact = getArtifact(object);
+      Set<ArtifactReadable> artifacts = new HashSet<ArtifactReadable>(objects.size());
+      for (Object obj : objects) {
+         ArtifactReadable art = getArtifact(obj);
+         if (art != null) {
+            artifacts.add(art);
+         }
+      }
+      if (!relationSide.getSide().isSideA()) {
+         getTransaction().setRelations(artifact, relationSide, artifacts);
+      }
+      add(object);
+   }
+
+   public void unrelate(Object object1, IRelationTypeSide relationType, Object object2) {
+      getTransaction().unrelate(getArtifact(object1), relationType, getArtifact(object2));
+      add(object1);
    }
 }
