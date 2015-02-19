@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -52,15 +51,6 @@ public class LoadUserSchemasCallable implements Callable<Void> {
       this.options = options;
    }
 
-   private DatabaseMetaData getMetaData() throws OseeCoreException {
-      JdbcConnection connection = client.getConnection();
-      try {
-         return connection.getMetaData();
-      } finally {
-         connection.close();
-      }
-   }
-
    private Set<JdbcSchemaResource> getValidSchemas() {
       Set<JdbcSchemaResource> schemasToParse = new LinkedHashSet<JdbcSchemaResource>();
       for (JdbcSchemaResource resource : schemaResources) {
@@ -78,8 +68,9 @@ public class LoadUserSchemasCallable implements Callable<Void> {
       parser.parse(getValidSchemas(), schemas);
 
       if (!options.isUseFileSpecifiedSchemas()) {
+         JdbcConnection connection = client.getConnection();
          try {
-            DatabaseMetaData meta = getMetaData();
+            DatabaseMetaData meta = connection.getMetaData();
             if (meta != null) {
                String userName = meta.getUserName();
                if (Strings.isValid(userName)) {
@@ -94,6 +85,8 @@ public class LoadUserSchemasCallable implements Callable<Void> {
             }
          } catch (SQLException ex) {
             throw newJdbcException(ex);
+         } finally {
+            connection.close();
          }
       }
 
