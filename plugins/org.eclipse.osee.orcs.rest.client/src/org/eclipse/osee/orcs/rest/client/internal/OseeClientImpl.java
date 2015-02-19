@@ -156,7 +156,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public void executeScript(String script, Properties properties, boolean debug, Writer writer) {
+   public void executeScript(String script, Properties properties, boolean debug, MediaType mediaType, Writer writer) {
       String props = null;
       try {
          if (properties != null && !properties.isEmpty()) {
@@ -171,9 +171,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
             form.param("parameters", props);
          }
          URI uri = UriBuilder.fromUri(baseUri).path("script").build();
-         String result =
-            JaxRsClient.newClient().target(uri).request(MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form),
-               String.class);
+         String result = JaxRsClient.newClient().target(uri).request(mediaType).post(Entity.form(form), String.class);
          writer.write(result);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);

@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Properties;
+import javax.ws.rs.core.MediaType;
 import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -253,7 +254,7 @@ public class OseeClientQueryTest {
 
       StringWriter writer = new StringWriter();
       Properties properties = new Properties();
-      createClient.executeScript(script, properties, false, writer);
+      createClient.executeScript(script, properties, false, MediaType.APPLICATION_JSON_TYPE, writer);
 
       assertEquals(expected, normalize(writer.toString()));
    }

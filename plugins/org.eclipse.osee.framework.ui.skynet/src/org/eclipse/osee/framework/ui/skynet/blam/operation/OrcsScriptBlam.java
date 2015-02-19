@@ -10,18 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Roberto E. Escobar
@@ -39,13 +46,36 @@ public class OrcsScriptBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String script = variableMap.getString("Console");
       String params = variableMap.getString("Parameters");
+      String filename = variableMap.getString("Filename");
       boolean debug = variableMap.getBoolean("Debug");
+      boolean excel = variableMap.getBoolean("Excel");
       if (Strings.isValid(script)) {
-         StringWriter writer = new StringWriter();
-         OseeClient oseeClient = ServiceUtil.getOseeClient();
-         Properties props = getParameters(params);
-         oseeClient.executeScript(script, props, debug, writer);
-         log(writer.toString());
+         Writer writer = null;
+         MediaType mediaType = null;
+         File outfile = null;
+
+         if (excel) {
+            mediaType = MediaType.APPLICATION_XML_TYPE;
+            outfile = OseeData.getFile(filename + Lib.getDateTimeString() + ".xml");
+            writer = new FileWriter(outfile);
+         } else {
+            mediaType = MediaType.APPLICATION_JSON_TYPE;
+            writer = new StringWriter();
+         }
+         try {
+            OseeClient oseeClient = ServiceUtil.getOseeClient();
+            Properties props = getParameters(params);
+            oseeClient.executeScript(script, props, debug, mediaType, writer);
+            if (excel) {
+               log("Excel XML file produced: ");
+               log(outfile.getCanonicalPath());
+               Program.launch(outfile.getCanonicalPath());
+            } else {
+               log(writer.toString());
+            }
+         } finally {
+            Lib.close(writer);
+         }
       } else {
          log("Console was empty - Type script in console.");
       }
@@ -63,8 +93,10 @@ public class OrcsScriptBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Debug\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"Console\" defaultValue=\"");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Debug\" beginComposite=\"6\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Filename\" endComposite=\"true\" horizontalLabel=\"true\" />");
+      builder.append("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"Console\"  defaultValue=\"");
       builder.append(SCRIPT_DSL_ID);
       builder.append("\" fill=\"vertically\"/>");
       builder.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"Parameters\" />");

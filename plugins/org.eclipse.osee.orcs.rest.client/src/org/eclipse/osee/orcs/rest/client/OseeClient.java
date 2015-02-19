@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.client;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Properties;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
@@ -30,7 +31,7 @@ public interface OseeClient {
 
    boolean isApplicationServerAlive();
 
-   void executeScript(String script, Properties properties, boolean debug, Writer writer);
+   void executeScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
 
    Collection<String> getIdeClientSupportedVersions();
 
