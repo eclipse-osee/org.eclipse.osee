@@ -28,7 +28,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
 
 		<module>../../plugins/org.eclipse.osee.activity</module>
-		<module>../../plugins/org.eclipse.osee.activity.server</module>
 
 		<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
 		<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>

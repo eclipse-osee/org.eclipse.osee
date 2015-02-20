@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.activity.server.internal.jaxrs.ActivityLogRequestFilter"/>
+   <implementation class="org.eclipse.osee.activity.internal.jaxrs.ActivityLogRequestFilter"/>
    <service>
       <provide interface="java.lang.Object"/>
       <provide interface="javax.ws.rs.container.ContainerRequestFilter"/>
