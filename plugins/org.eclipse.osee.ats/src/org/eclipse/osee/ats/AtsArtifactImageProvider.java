@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -24,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 
 /**
@@ -75,6 +78,22 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          }
       }
 
+      if (artifact instanceof GoalArtifact) {
+         GoalArtifact goalArt = (GoalArtifact) artifact;
+         KeyedImage keyedImage = AtsImage.GOAL;
+         if (AgileUtilClient.isBacklog(goalArt)) {
+            keyedImage = AtsImage.AGILE_BACKLOG;
+         }
+         if (SubscribeManager.isSubscribed(goalArt, AtsClientService.get().getUserService().getCurrentUser())) {
+            // was 8,6
+            return ArtifactImageManager.setupImage(keyedImage, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
+         }
+         if (FavoritesManager.isFavorite(goalArt, AtsClientService.get().getUserService().getCurrentUser())) {
+            // was 7,0
+            return ArtifactImageManager.setupImage(keyedImage, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
+         }
+         return ArtifactImageManager.setupImage(keyedImage);
+      }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
          if (SubscribeManager.isSubscribed(stateMachine, AtsClientService.get().getUserService().getCurrentUser())) {

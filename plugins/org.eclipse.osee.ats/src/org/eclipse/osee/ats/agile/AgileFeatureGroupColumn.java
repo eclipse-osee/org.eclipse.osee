@@ -214,12 +214,12 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          List<Artifact> arts = new ArrayList<Artifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
-            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               awas.add((TeamWorkFlowArtifact) art);
+            if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+               awas.add((AbstractWorkflowArtifact) art);
                arts.add(art);
             }
          }
