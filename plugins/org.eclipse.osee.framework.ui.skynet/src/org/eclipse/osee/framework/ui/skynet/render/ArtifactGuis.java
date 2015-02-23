@@ -15,12 +15,12 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -28,42 +28,39 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 public final class ArtifactGuis {
 
+   private static final String OTHER_EDIT_SQL =
+      "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
+   private static final String EDIT_MESSAGE =
+      "%d of the %d artifacts about to be edited have already been modified on the following branches:";
    private static final int BRANCH_NAME_LENGTH = 50;
 
    private ArtifactGuis() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
    }
 
-   private static final String OTHER_EDIT_SQL =
-      "select br.branch_id, att.gamma_id, att.attr_id, txs.tx_current, txs.transaction_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current = 1 and  br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id)";
-
-   private static final String EDIT_MESSAGE =
-      "%d of the %d artifacts about to be edited have already been modified on the following branches:%s\n\nDo you still wish to proceed?";
-
    public static boolean checkOtherEdit(Collection<Artifact> artifacts) throws OseeCoreException {
       Conditions.checkNotNull(artifacts, "artifacts to check");
       Conditions.checkExpressionFailOnTrue(artifacts.isEmpty(), "Must have at least one artifact for checking");
 
-      int modifiedCount = 0;
+      StringBuilder message = new StringBuilder();
       Set<String> otherBranches = new HashSet<String>();
+      int modifiedCount = artifactsModified(artifacts, otherBranches);
+      if (modifiedCount > 0) {
+         message.append(String.format(EDIT_MESSAGE, modifiedCount, artifacts.size()));
+         message.append(otherBranches);
+         return confirmEdit(message.toString());
+      }
+      return true;
+   }
+
+   private static int artifactsModified(Collection<Artifact> artifacts, Set<String> otherBranches) {
+      int modifiedCount = 0;
       for (Artifact artifact : artifacts) {
-         boolean wasModified = addBranchesWhereArtifactHasBeenModified(artifact, otherBranches);
-         if (wasModified) {
+         if (addBranchesWhereArtifactHasBeenModified(artifact, otherBranches)) {
             modifiedCount++;
          }
       }
-
-      if (modifiedCount > 0) {
-         StringBuilder branchMessage = new StringBuilder();
-         for (String branchName : otherBranches) {
-            branchMessage.append("\n\t");
-            branchMessage.append(branchName);
-         }
-
-         String message = String.format(EDIT_MESSAGE, modifiedCount, artifacts.size(), branchMessage);
-         return confirmEdit(message);
-      }
-      return true;
+      return modifiedCount;
    }
 
    private static boolean confirmEdit(final String message) {
@@ -92,15 +89,16 @@ public final class ArtifactGuis {
                branch.getParentBranch().getUuid(), BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
-               int modifiedAttrId = chStmt.getInt("attr_id");
-               long modifiedGammaId = chStmt.getInt("gamma_id");
                long modifiedOnBranchId = chStmt.getLong("branch_id");
-
-               Attribute<?> attribute = artifact.getAttributeById(modifiedAttrId, false);
-               if (attribute == null || attribute.getGammaId() != modifiedGammaId) {
-                  otherBranches.add(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
-                  wasModified = true;
-               }
+               int modType = chStmt.getInt("mod_type");
+               StringBuilder branches = new StringBuilder();
+               branches.append("\n\t");
+               branches.append("(");
+               branches.append(ModificationType.getMod(modType).getDisplayName());
+               branches.append(")-");
+               branches.append(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
+               otherBranches.add(branches.toString());
+               wasModified = true;
             }
          } finally {
             chStmt.close();
