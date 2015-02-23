@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileTeam extends IAtsConfigObject {
+public interface IAgileTeam extends IAtsConfigObject, IAgileObject {
 
    public List<Long> getAtsTeamUuids();
 

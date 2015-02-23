@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileBacklog extends IAtsWorkItem, IAgileObject {
-
-   public long getTeamUuid();
-
-   public boolean isActive();
-
+public interface IAgileObject {
+   // do nothing
 }
