@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -100,6 +101,19 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
          }
       }
       return sprint;
+   }
+
+   @Override
+   public IAgileItem getAgileItem(Object artifact) {
+      IAgileItem item = null;
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable artRead = (ArtifactReadable) artifact;
+         if (artRead.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            item =
+               new org.eclipse.osee.ats.impl.internal.agile.AgileItem(logger, atsServer, (ArtifactReadable) artifact);
+         }
+      }
+      return item;
    }
 
    @Override

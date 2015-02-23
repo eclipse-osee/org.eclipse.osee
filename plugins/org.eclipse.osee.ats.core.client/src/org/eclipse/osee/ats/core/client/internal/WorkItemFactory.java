@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.agile.AgileBacklog;
+import org.eclipse.osee.ats.core.client.agile.AgileItem;
 import org.eclipse.osee.ats.core.client.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -122,6 +124,17 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
       Artifact artifact =
          ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId, AtsUtilCore.getAtsBranch());
       return getWorkItem(artifact);
+   }
+
+   @Override
+   public IAgileItem getAgileItem(Object artifact) {
+      IAgileItem item = null;
+      if (artifact instanceof IAgileItem) {
+         item = (IAgileItem) artifact;
+      } else {
+         item = new AgileItem(atsClient, (Artifact) artifact);
+      }
+      return item;
    }
 
 }

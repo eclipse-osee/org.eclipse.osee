@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -42,5 +43,7 @@ public interface IAtsWorkItemFactory {
    IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException;
 
    IAgileBacklog getAgileBacklog(Object artifact);
+
+   IAgileItem getAgileItem(Object art);
 
 }
