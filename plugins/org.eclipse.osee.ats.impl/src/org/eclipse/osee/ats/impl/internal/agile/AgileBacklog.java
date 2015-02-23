@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.impl.internal.agile;
 
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItem;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -32,7 +34,16 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
    @Override
    public long getTeamUuid() {
-      return artifact.getParent().getLocalId();
+      long result = 0;
+      try {
+         ArtifactReadable agileTeam = artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_AgileTeam).getOneOrNull();
+         if (agileTeam != null) {
+            result = agileTeam.getLocalId();
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
    }
 
 }

@@ -17,6 +17,7 @@ public class AgileUtil {
 
    public static final String SPRINT_FOLDER_NAME = "Sprints";
    public static String FEATURE_GROUP_FOLDER_NAME = "Feature Groups";
+   public static long EMPTY_VALUE = -1;
 
    private AgileUtil() {
    }

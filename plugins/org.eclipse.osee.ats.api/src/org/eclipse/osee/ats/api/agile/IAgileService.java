@@ -40,6 +40,8 @@ public interface IAgileService {
 
    JaxAgileItem updateItem(JaxAgileItem newItem);
 
+   IAgileBacklog getAgileBacklog(IAgileTeam team);
+
    Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids);
 
    IAgileBacklog getBacklogForTeam(long teamUuid);
@@ -51,5 +53,21 @@ public interface IAgileService {
    IAgileTeam getAgileTeamById(long teamUuid);
 
    IAgileFeatureGroup createAgileFeatureGroup(JaxAgileFeatureGroup newFeatureGroup);
+
+   IAgileBacklog updateAgileBacklog(JaxAgileBacklog backlog);
+
+   IAgileTeam getAgileTeam(long uuid);
+
+   IAgileBacklog getAgileBacklog(long uuid);
+
+   Collection<IAgileFeatureGroup> getAgileFeatureGroups(IAgileTeam team);
+
+   Collection<IAgileSprint> getAgileSprints(IAgileTeam team);
+
+   Collection<IAgileItem> getItems(IAgileBacklog backlog);
+
+   Collection<IAgileFeatureGroup> getFeatureGroups(IAgileItem aItem);
+
+   IAgileSprint getSprint(IAgileItem item);
 
 }

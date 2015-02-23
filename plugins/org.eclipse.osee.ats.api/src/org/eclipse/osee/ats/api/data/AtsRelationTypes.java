@@ -23,6 +23,9 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = ActionToWorkflow_Action.getOpposite();
    
+   public static final IRelationTypeSide AgileTeamToFeatureGroup_AgileTeam = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x0ECF8D3CF97C9112L, "AgileTeamToFeatureGroup");
+   public static final IRelationTypeSide AgileTeamToFeatureGroup_FeatureGroup = AgileTeamToFeatureGroup_AgileTeam.getOpposite();
+   
    public static final IRelationTypeSide AgileTeamToAtsTeam_AgileTeam = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x7CED0706F811126CL, "AgileTeamToAtsTeam");
    public static final IRelationTypeSide AgileTeamToAtsTeam_AtsTeam = AgileTeamToAtsTeam_AgileTeam.getOpposite();
    

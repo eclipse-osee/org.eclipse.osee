@@ -21,9 +21,11 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileUtil;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
@@ -32,7 +34,10 @@ import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -108,6 +113,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       created.setActive(updatedTeam.isActive());
       created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
       created.setBacklogUuid(updatedTeam.getBacklogUuid());
+      created.setDescription(updatedTeam.getDescription());
       return created;
    }
 
@@ -255,13 +261,28 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
-      String guid = newBacklog.getGuid();
-      if (guid == null) {
-         guid = GUID.create();
+      // create new backlog
+      IAgileBacklog backlog = null;
+      if (newBacklog.getUuid() == 0) {
+         if (!Strings.isValid(newBacklog.getName())) {
+            new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
+         }
+
+         String guid = newBacklog.getGuid();
+         if (guid == null) {
+            guid = GUID.create();
+         }
+         ArtifactReadable teamArt = atsServer.getArtifactByUuid(newBacklog.getTeamUuid());
+         if (!teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
+            new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
+               AtsUtilCore.toStringWithId(teamArt));
+         }
+
+         backlog = atsServer.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid);
+      } else {
+         backlog = atsServer.getAgileService().updateAgileBacklog(newBacklog);
       }
 
-      IAgileBacklog backlog =
-         atsServer.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid);
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("team").path(String.valueOf(created.getTeamUuid())).build();
@@ -278,6 +299,32 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          return toJaxBacklog(backlog);
       }
       return null;
+   }
+
+   @Override
+   public List<AgileItem> getBacklogItems(long teamUuid) {
+      List<AgileItem> items = new LinkedList<AgileItem>();
+      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamUuid);
+      IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
+      if (backlog != null) {
+         int x = 1;
+         for (IAgileItem aItem : atsServer.getAgileService().getItems(backlog)) {
+            AgileItem item = new AgileItem();
+            item.setName(aItem.getName());
+            item.setFeatureGroups(Collections.toString("; ", atsServer.getAgileService().getFeatureGroups(aItem)));
+            item.setUuid(aItem.getId());
+            item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
+            item.setAtsId(aItem.getAtsId());
+            item.setState(aItem.getStateMgr().getCurrentStateName());
+            item.setOrder(x++);
+            IAgileSprint sprint = atsServer.getAgileService().getSprint(aItem);
+            if (sprint != null) {
+               item.setSprint(sprint.getName());
+            }
+            items.add(item);
+         }
+      }
+      return items;
    }
 
    private JaxAgileBacklog toJaxBacklog(IAgileBacklog backlog) {
@@ -311,9 +358,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return Response.created(location).entity(item).build();
    }
 
-   /********************************
-    ** Agile Item
-    ***********************************/
    @Override
    public Response updateItems(JaxAgileItem newItem) {
       JaxAgileItem sprint = atsServer.getAgileService().updateItem(newItem);

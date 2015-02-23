@@ -17,9 +17,9 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.agile.AgileUtil;
+import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -123,20 +123,34 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer.writeStringField("Namespace", program.getNamespace());
          writer.writeBooleanField("Active", program.isActive());
       } else if (atsObject instanceof IAgileTeam) {
-         IAgileTeam program = (IAgileTeam) atsObject;
-         writer.writeBooleanField("Active", program.isActive());
+         IAgileTeam team = (IAgileTeam) atsObject;
+         writer.writeBooleanField("Active", team.isActive());
+         writer.writeStringField("Description", team.getDescription());
          writer.writeArrayFieldStart("featureGroups");
-         for (ArtifactReadable child : artifact.getChildren()) {
-            if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
-               for (ArtifactReadable subChild : child.getChildren()) {
-                  if (subChild.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
-                     addArtifactIdentity(writer, subChild);
-                  }
-               }
-            }
+         Collection<IAgileFeatureGroup> featureGroups = atsServer.getAgileService().getAgileFeatureGroups(team);
+         for (IAgileFeatureGroup group : featureGroups) {
+            writer.writeStartObject();
+            writer.writeNumberField("uuid", group.getId());
+            writer.writeStringField("Name", group.getName());
+            writer.writeBooleanField("active", group.isActive());
+            writer.writeEndObject();
          }
          writer.writeEndArray();
-
+         writer.writeArrayFieldStart("sprints");
+         Collection<IAgileSprint> agileSprints = atsServer.getAgileService().getAgileSprints(team);
+         for (IAgileSprint sprint : agileSprints) {
+            writer.writeStartObject();
+            writer.writeNumberField("uuid", sprint.getId());
+            writer.writeStringField("Name", sprint.getName());
+            writer.writeBooleanField("active", sprint.isActive());
+            writer.writeEndObject();
+         }
+         writer.writeEndArray();
+         ArtifactReadable teamArt = atsServer.getArtifactByUuid(team.getId());
+         ArtifactReadable backlogArt =
+            teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
+         writer.writeStringField("Backlog Uuid", (backlogArt != null ? String.valueOf(backlogArt.getLocalId()) : ""));
+         writer.writeStringField("Backlog", (backlogArt != null ? String.valueOf(backlogArt.getName()) : ""));
       }
       if (!identityView) {
          addAttributeData(writer, attributeTypes, artifact);
