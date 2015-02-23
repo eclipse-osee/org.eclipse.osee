@@ -107,7 +107,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    private IUserToken getOseeUser(final UserDef dslUserDef) {
-      return TokenFactory.createUserToken(Lib.generateUuidAsInt(), GUID.create(),
+      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(),
          Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),

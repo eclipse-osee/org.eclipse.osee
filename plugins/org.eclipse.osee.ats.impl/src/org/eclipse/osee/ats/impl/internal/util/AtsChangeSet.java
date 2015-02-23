@@ -173,6 +173,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+      return getTransaction().createArtifact(artifactType, name, guid, uuid);
+   }
+
+   @Override
    public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
       getTransaction().relate(getArtifact(object1), relationSide, getArtifact(object2));
       add(object1);

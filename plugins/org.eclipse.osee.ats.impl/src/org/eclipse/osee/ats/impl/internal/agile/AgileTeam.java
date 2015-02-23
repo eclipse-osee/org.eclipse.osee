@@ -54,7 +54,9 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       try {
          ArtifactReadable backlogArt =
             artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
-         backlogUuid = backlogArt.getLocalId();
+         if (backlogArt != null) {
+            backlogUuid = backlogArt.getLocalId();
+         }
       } catch (Exception ex) {
          // do nothing
       }

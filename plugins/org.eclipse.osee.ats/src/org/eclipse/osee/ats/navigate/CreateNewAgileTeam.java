@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsJaxRsService;
@@ -47,9 +48,8 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
          if (Strings.isValid(ed.getEntry())) {
             try {
                AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
-               JaxAgileTeam newTeam = new JaxAgileTeam();
+               JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
                newTeam.setName(ed.getEntry());
-               newTeam.setActive(true);
                Response response = teamApi.createTeam(newTeam);
                Object entity = response.readEntity(JaxAgileTeam.class);
                if (entity != null) {

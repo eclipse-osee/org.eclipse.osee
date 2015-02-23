@@ -16,16 +16,34 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxAgileSprint extends AbstractAgileObject {
+public class AbstractJaxNewAgileObject {
 
-   private long teamUuid;
+   private String name;
+   private String guid;
+   private Long uuid;
 
-   public long getTeamUuid() {
-      return teamUuid;
+   public String getName() {
+      return name;
    }
 
-   public void setTeamUuid(long teamUuid) {
-      this.teamUuid = teamUuid;
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
+
+   public Long getUuid() {
+      return uuid;
+   }
+
+   public void setUuid(Long uuid) {
+      this.uuid = uuid;
    }
 
 }

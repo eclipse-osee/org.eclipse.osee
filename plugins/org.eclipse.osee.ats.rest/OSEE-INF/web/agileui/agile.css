@@ -1,0 +1,66 @@
+#loadingModal {
+	margin-bottom: 0px;
+}
+
+.ngViewport.ng-scope>.ngCanvas {
+	width: 100% !important;
+}
+
+.ngViewport.ng-scope>.ngCanvas>.ng-scope {
+	width: 100% !important;
+	border-bottom-width: 0px !important;
+}
+
+#backlogContainer {
+	width: 100% !important;
+}
+
+#backlogHeader {
+	height: 55px;
+}
+
+#backlogTable {
+	width: 100% !important;
+}
+
+#configDiv {
+	width: 100% !important;
+	overflow: hidden;
+}
+
+#sprintDiv {
+	width: 500px;
+	float: left;
+}
+
+#sprintHeading {
+	height: 40px;
+}
+
+#sprintConfigTable {
+	width: 100% !important;
+}
+
+#featureDiv {
+	margin-left: 520px;
+}
+
+#featureHeading {
+	height: 40px;
+}
+
+#featureGroupConfigTable {
+	width: 100% !important;
+}
+
+#teamDiv {
+	width: 50% !important;
+}
+
+#teamHeading {
+	height: 40px;
+}
+
+#teamTable {
+	width: 100% !important;
+}

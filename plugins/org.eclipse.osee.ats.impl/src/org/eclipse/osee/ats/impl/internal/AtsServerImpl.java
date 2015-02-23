@@ -82,6 +82,7 @@ import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -289,12 +290,26 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifactByGuid(String guid) throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
+      ArtifactReadable artifact = null;
+      try {
+         artifact =
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return artifact;
    }
 
    @Override
    public ArtifactReadable getArtifactByAtsId(String id) {
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId, id).getResults().getOneOrNull();
+      ArtifactReadable artifact = null;
+      try {
+         artifact =
+            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId, id).getResults().getOneOrNull();
+      } catch (ItemDoesNotExist ex) {
+         // do nothing
+      }
+      return artifact;
    }
 
    @Override

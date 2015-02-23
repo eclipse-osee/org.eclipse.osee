@@ -18,7 +18,7 @@
       <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="AgileApp">
+<body ng-app="AgileApp" resize>
 
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
@@ -29,19 +29,21 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#/config">OSEE Agile</a>
+				<a class="navbar-brand" href="#/main">OSEE Agile</a>
 			</div>
 			<div class="collapse navbar-collapse"
 				ng-controller="HeaderController">
 				<ul class="nav navbar-nav navbar-right">
-					<li ng-class="{ active: isActive('/config')}"><a
-						href="#/home">Home</a></li>
-					<li ng-class="{ active: isActive('/config')}"><a
-						href="#/config">Config</a></li>
+					<li ng-class="{ active: isActive('/team')}"><a href="#/home">Home</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
+
+	<script type="text/ng-template" id="loadingModal.html">
+        <div id="loadingModal" class="alert alert-info">Loading...</div>
+   </script>
+
 
 	<div ng-view></div>
 
@@ -63,5 +65,7 @@
 	<script src="app.js"></script>
 	<script src="agileFactory.js"></script>
 	<script src="configCtrl.js"></script>
+	<script src="teamCtrl.js"></script>
+	<script src="backlogCtrl.js"></script>
 </body>
 </html>

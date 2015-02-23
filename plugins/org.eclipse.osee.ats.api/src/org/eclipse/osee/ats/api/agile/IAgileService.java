@@ -20,11 +20,11 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeam(Object artifact);
 
-   IAgileTeam createUpdateAgileTeam(JaxAgileTeam team);
+   IAgileTeam updateAgileTeam(JaxAgileTeam team);
 
    IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
 
-   IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid);
+   IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid);
 
    void deleteAgileFeatureGroup(long teamUuid);
 
@@ -32,9 +32,9 @@ public interface IAgileService {
 
    IAgileSprint getAgileSprint(Object artifact);
 
-   IAgileSprint createAgileSprint(long teamUuid, String name, String guid);
+   IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid);
 
-   IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid);
+   IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid);
 
    IAgileBacklog getAgileBacklog(Object artifact);
 
@@ -69,5 +69,9 @@ public interface IAgileService {
    Collection<IAgileFeatureGroup> getFeatureGroups(IAgileItem aItem);
 
    IAgileSprint getSprint(IAgileItem item);
+
+   void deleteSprint(long sprintUuid);
+
+   IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam);
 
 }

@@ -57,7 +57,7 @@ public interface AgileEndpointApi {
    public JaxAgileBacklog getBacklog(@PathParam("teamUuid") long teamUuid);
 
    @GET
-   @Path("teams/{teamUuid}/backlog/item")
+   @Path("teams/{teamUuid}/backlog/items")
    @Produces(MediaType.APPLICATION_JSON)
    List<AgileItem> getBacklogItems(@PathParam("teamUuid") long teamUuid);
 
@@ -70,25 +70,37 @@ public interface AgileEndpointApi {
    @Path("teams")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createTeam(JaxAgileTeam newTeam);
+   public Response createTeam(JaxNewAgileTeam newTeam);
+
+   @PUT
+   @Path("teams")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response updateTeam(JaxAgileTeam team);
 
    @POST
    @Path("teams/{teamUuid}/features")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createFeatureGroup(@PathParam("teamUuid") long teamUuid, JaxAgileFeatureGroup newFeatureGroup);
+   public Response createFeatureGroup(@PathParam("teamUuid") long teamUuid, JaxNewAgileFeatureGroup newFeatureGroup);
 
    @POST
    @Path("teams/{teamUuid}/sprints")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createSprint(@PathParam("teamUuid") long teamUuid, JaxAgileSprint newSprint);
+   public Response createSprint(@PathParam("teamUuid") long teamUuid, JaxNewAgileSprint newSprint);
 
    @POST
    @Path("teams/{teamUuid}/backlog")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createBacklog(@PathParam("teamUuid") long teamUuid, JaxAgileBacklog newBacklog);
+   public Response createBacklog(@PathParam("teamUuid") long teamUuid, JaxNewAgileBacklog newBacklog);
+
+   @PUT
+   @Path("teams/{teamUuid}/backlog")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   Response updateBacklog(long teamUuid, JaxAgileBacklog newBacklog);
 
    @PUT
    @Path("items/{itemId}")
@@ -105,6 +117,10 @@ public interface AgileEndpointApi {
    @DELETE
    @Path("teams/{teamUuid}/features/{featureUuid}")
    public Response deleteFeatureGroup(@PathParam("teamUuid") long teamUuid, @PathParam("featureUuid") long featureUuid);
+
+   @DELETE
+   @Path("teams/{teamUuid}/sprints/{sprintUuid}")
+   public Response deleteSprint(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @DELETE
    @Path("teams/{teamUuid}")

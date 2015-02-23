@@ -71,7 +71,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
    }
 
    protected IUserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return TokenFactory.createUserToken(Lib.generateUuidAsInt(), GUID.create(), userName, userEmail, userId,
+      return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId,
          isActive, false, isCreationRequired);
    }
 }

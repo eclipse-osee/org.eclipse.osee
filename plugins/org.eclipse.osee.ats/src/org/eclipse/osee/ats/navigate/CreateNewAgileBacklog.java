@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -67,7 +68,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
             if (Strings.isValid(ed.getEntry())) {
                try {
                   AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
-                  JaxAgileBacklog newBacklog = new JaxAgileBacklog();
+                  JaxNewAgileBacklog newBacklog = new JaxNewAgileBacklog();
                   newBacklog.setName(ed.getEntry());
                   int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
                   newBacklog.setTeamUuid(teamUuid);

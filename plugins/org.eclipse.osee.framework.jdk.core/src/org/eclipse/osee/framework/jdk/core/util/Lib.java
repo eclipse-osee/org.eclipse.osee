@@ -1703,12 +1703,13 @@ public final class Lib {
       return next;
    }
 
-   public static Long generateUuidAsInt() {
-      long next = 0;
-      while (next <= 0) {
-         next = RANDOM.nextInt();
-      }
-      return next;
+   /**
+    * This will go away once database takes long for artId
+    * 
+    * @return unique > 0 int
+    */
+   public static Long generateArtifactIdAsInt() {
+      return (long) RANDOM.nextInt(Integer.MAX_VALUE) + 1;
    }
 
    /**

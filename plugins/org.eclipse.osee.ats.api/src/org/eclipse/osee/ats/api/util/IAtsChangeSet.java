@@ -63,6 +63,8 @@ public interface IAtsChangeSet {
 
    Object createArtifact(IArtifactType artifactType, String name, String guid);
 
+   Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid);
+
    void relate(Object object1, IRelationTypeSide relationSide, Object object2);
 
    AtsNotificationCollector getNotifications();

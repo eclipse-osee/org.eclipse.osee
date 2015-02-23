@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -70,19 +71,29 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileTeam getAgileTeamById(long teamUuid) {
-      return getAgileTeam(getArtifact(teamUuid));
+      IAgileTeam team = null;
+      ArtifactReadable artifact = getArtifact(teamUuid);
+      if (artifact != null) {
+         team = getAgileTeam(artifact);
+      }
+      return team;
    }
 
    @Override
-   public IAgileTeam createUpdateAgileTeam(JaxAgileTeam team) {
-      return AgileFactory.createUpdateAgileTeam(logger, atsServer, team);
+   public IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam) {
+      return AgileFactory.createAgileTeam(logger, atsServer, newTeam);
+   }
+
+   @Override
+   public IAgileTeam updateAgileTeam(JaxAgileTeam team) {
+      return AgileFactory.updateAgileTeam(logger, atsServer, team);
    }
 
    @Override
    public void deleteAgileTeam(long uuid) {
       ArtifactReadable team = atsServer.getArtifactByUuid(uuid);
       if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
-         throw new OseeArgumentException("UUID %d is not a valid Agile", uuid);
+         throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
       }
       TransactionBuilder transaction =
          atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), team,
@@ -132,8 +143,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid) {
-      return AgileFactory.createAgileFeatureGroup(logger, atsServer, teamUuid, name, guid);
+   public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid) {
+      return AgileFactory.createAgileFeatureGroup(logger, atsServer, teamUuid, name, guid, uuid);
    }
 
    @Override
@@ -173,8 +184,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileSprint createAgileSprint(long teamUuid, String name, String guid) {
-      return AgileFactory.createAgileSprint(logger, atsServer, teamUuid, name, guid);
+   public IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid) {
+      return AgileFactory.createAgileSprint(logger, atsServer, teamUuid, name, guid, uuid);
    }
 
    private ArtifactReadable getArtifact(long teamUuid) {
@@ -222,7 +233,7 @@ public class AgileService implements IAgileService {
       }
       return new AgileBacklog(logger, atsServer, backlogArt);
    }
-   
+
    @Override
    public IAgileBacklog getAgileBacklog(long uuid) {
       IAgileBacklog backlog = null;
@@ -234,9 +245,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid) {
-
-      return AgileFactory.createAgileBacklog(logger, atsServer, teamUuid, name, guid);
+   public IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid) {
+      return AgileFactory.createAgileBacklog(logger, atsServer, teamUuid, name, guid, uuid);
    }
 
    @Override
@@ -294,6 +304,18 @@ public class AgileService implements IAgileService {
          sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
       }
       return sprint;
+   }
+
+   @Override
+   public void deleteSprint(long sprintUuid) {
+      ArtifactReadable sprint = atsServer.getArtifactByUuid(sprintUuid);
+      if (sprint != null) {
+         TransactionBuilder transaction =
+            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), sprint,
+               "Delete Agile Sprint");
+         transaction.deleteArtifact(sprint);
+         transaction.commit();
+      }
    }
 
 }
