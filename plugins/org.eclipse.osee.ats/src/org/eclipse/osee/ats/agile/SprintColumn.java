@@ -124,25 +124,15 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          AWorkbench.popup("No Agile Team for Agile Backlog [%s]", backlogArt.toStringWithId());
       }
 
-      Set<IAgileSprint> activeSprints = new HashSet<IAgileSprint>();
-      for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         IAgileSprint agileSprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt);
-         if (agileSprint.isActive()) {
-            activeSprints.add(agileSprint);
-         }
-      }
+      Set<IAgileSprint> activeSprints = getActiveSprints(agileTeamArt);
 
       if (activeSprints.isEmpty()) {
          AWorkbench.popup("No Active Sprints available for the Agile Team [%s]", agileTeamArt.toStringWithId());
          return false;
       }
 
-      SprintFilteredListDialog dialog = new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
-      Window.setDefaultImage(ImageManager.getImage(AtsImage.AGILE_SPRINT));
-      dialog.setInput(activeSprints);
-      if (items.isCommonSelectedSprint() && items.getMultipleSprints().size() == 1) {
-         dialog.setInitialSelections(Arrays.asList(items.getMultipleSprints().iterator().next()));
-      }
+      SprintFilteredListDialog dialog = createDialog(items, activeSprints);
+
       if (dialog.open() == 0) {
          IAgileSprint selectedSprint = dialog.getSelectedFirst();
          for (Artifact awa : awas) {
@@ -157,6 +147,27 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
          return true;
       }
       return false;
+   }
+
+   private static SprintFilteredListDialog createDialog(SprintItems items, Set<IAgileSprint> activeSprints) {
+      SprintFilteredListDialog dialog = new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
+      Window.setDefaultImage(ImageManager.getImage(AtsImage.AGILE_SPRINT));
+      dialog.setInput(activeSprints);
+      if (items.isCommonSelectedSprint() && items.getMultipleSprints().size() == 1) {
+         dialog.setInitialSelections(Arrays.asList(items.getMultipleSprints().iterator().next()));
+      }
+      return dialog;
+   }
+
+   private static Set<IAgileSprint> getActiveSprints(Artifact agileTeamArt) {
+      Set<IAgileSprint> activeSprints = new HashSet<IAgileSprint>();
+      for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+         IAgileSprint agileSprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt);
+         if (agileSprint.isActive()) {
+            activeSprints.add(agileSprint);
+         }
+      }
+      return activeSprints;
    }
 
    @Override
