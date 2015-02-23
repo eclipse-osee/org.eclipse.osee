@@ -22,6 +22,7 @@ public class JaxAgileTeam extends AbstractAgileObject {
 
    private List<Long> atsTeamUuids = new ArrayList<Long>();
    private long backlogUuid = 0;
+   private String description = "";
 
    public List<Long> getAtsTeamUuids() {
       return atsTeamUuids;
@@ -37,6 +38,14 @@ public class JaxAgileTeam extends AbstractAgileObject {
 
    public void setBacklogUuid(long backlogUuid) {
       this.backlogUuid = backlogUuid;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
    }
 
 }

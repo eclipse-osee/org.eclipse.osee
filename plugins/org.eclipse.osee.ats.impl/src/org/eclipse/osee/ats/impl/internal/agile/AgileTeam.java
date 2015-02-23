@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.impl.internal.agile;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsConfigObject;
@@ -40,6 +41,11 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
          uuids.add(new Long(atsTeam.getLocalId()));
       }
       return uuids;
+   }
+
+   @Override
+   public String getDescription() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    @Override
