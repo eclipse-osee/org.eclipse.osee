@@ -741,7 +741,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
       if (sprintItemsCache == null) {
-         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>(AtsRelationTypes.AgileSprint_Item);
+         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>(AtsRelationTypes.AgileSprintToItem_AtsItem);
       }
       return sprintItemsCache;
    }
