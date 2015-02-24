@@ -18,9 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,16 +38,21 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IArtifactMembersCache<T> {
 
    private static Map<Integer, List<Artifact>> cache;
-   private static DoubleKeyHashMap<Integer, Integer, String> goalMemberOrderMap;
+   private static DoubleKeyHashMap<Integer, Integer, String> collectorMemberOrderMap;
    private static Set<Integer> registered;
    private static volatile boolean initialized = false;
+   private final IRelationTypeSide memberRelationType;
+
+   public ArtifactCollectorsCache(IRelationTypeSide memberRelationType) {
+      this.memberRelationType = memberRelationType;
+   }
 
    private void initializeStructures() {
       if (!initialized) {
          initialized = true;
          cache = new HashMap<Integer, List<Artifact>>();
          registered = new HashSet<Integer>();
-         goalMemberOrderMap = new DoubleKeyHashMap<Integer, Integer, String>();
+         collectorMemberOrderMap = new DoubleKeyHashMap<Integer, Integer, String>();
       }
    }
 
@@ -80,7 +85,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
       registerForEvents(collector);
       List<Artifact> members = cache.get(collector.getArtId());
       if (members == null) {
-         members = collector.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
+         members = collector.getRelatedArtifacts(memberRelationType, DeletionFlag.EXCLUDE_DELETED);
          synchronized (cache) {
             cache.put(collector.getArtId(), members);
             fillOrderCache(collector, members);
@@ -96,7 +101,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
          synchronized (cache) {
             cache.remove(collectorArt.getArtId());
          }
-         synchronized (goalMemberOrderMap) {
+         synchronized (collectorMemberOrderMap) {
             clearOrderCache(collectorArt);
          }
       }
@@ -108,8 +113,8 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
          synchronized (cache) {
             cache.clear();
          }
-         synchronized (goalMemberOrderMap) {
-            goalMemberOrderMap.clear();
+         synchronized (collectorMemberOrderMap) {
+            collectorMemberOrderMap.clear();
          }
       }
    }
@@ -117,20 +122,20 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    @Override
    public String getMemberOrder(T collectorArt, Artifact member) throws OseeCoreException {
       initializeStructures();
-      if (goalMemberOrderMap.getSubHash(collectorArt.getArtId()) == null) {
+      if (collectorMemberOrderMap.getSubHash(collectorArt.getArtId()) == null) {
          fillOrderCache(collectorArt, getMembers(collectorArt));
       }
-      String order = goalMemberOrderMap.get(collectorArt.getArtId(), member.getArtId());
+      String order = collectorMemberOrderMap.get(collectorArt.getArtId(), member.getArtId());
       return order == null ? "" : order;
    }
 
    private void fillOrderCache(T collectorArt, List<Artifact> members) {
       initializeStructures();
-      synchronized (goalMemberOrderMap) {
+      synchronized (collectorMemberOrderMap) {
          clearOrderCache(collectorArt);
          int x = 1;
          for (Artifact artifact : members) {
-            goalMemberOrderMap.put(collectorArt.getArtId(), artifact.getArtId(), String.valueOf(x++));
+            collectorMemberOrderMap.put(collectorArt.getArtId(), artifact.getArtId(), String.valueOf(x++));
          }
       }
    }
@@ -138,11 +143,11 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    private void clearOrderCache(T collectorArt) {
       if (initialized) {
          List<Integer> memberIds = new ArrayList<Integer>();
-         Map<Integer, String> subHash = goalMemberOrderMap.getSubHash(collectorArt.getArtId());
+         Map<Integer, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getArtId());
          if (subHash != null) {
             memberIds.addAll(subHash.keySet());
             for (Integer memberId : memberIds) {
-               goalMemberOrderMap.remove(collectorArt.getArtId(), memberId);
+               collectorMemberOrderMap.remove(collectorArt.getArtId(), memberId);
             }
          }
       }

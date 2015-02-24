@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -732,7 +733,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
-         goalMembersCache = new ArtifactCollectorsCache<GoalArtifact>();
+         goalMembersCache = new ArtifactCollectorsCache<GoalArtifact>(AtsRelationTypes.Goal_Member);
       }
       return goalMembersCache;
    }
@@ -740,7 +741,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
       if (sprintItemsCache == null) {
-         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>();
+         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>(AtsRelationTypes.AgileSprint_Item);
       }
       return sprintItemsCache;
    }
