@@ -18,11 +18,15 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 
 /**
- * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions
+ * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions.
+ * Additionally purge search tags referencing non-existent gammas.
  * 
  * @author Ryan D. Brooks
  */
 public class PurgeUnusedBackingDataAndTransactions {
+
+   private static final String OBSOLETE_TAGS =
+      "select gamma_id from osee_search_tags tag where not exists (select 1 from osee_attribute att where tag.gamma_id = att.gamma_id)";
 
    private static final String NOT_ADDRESSESED_GAMMAS =
       "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id union all select 1 from osee_txs_archived txs2 where t1.gamma_id = txs2.gamma_id)";
@@ -104,6 +108,23 @@ public class PurgeUnusedBackingDataAndTransactions {
       return emptyTransactions.execute();
    }
 
+   public int deleteObsoleteTags(JdbcConnection connection) {
+      JdbcStatement chStmt = jdbcClient.getStatement(connection);
+      OseePreparedStatement dropGammas;
+
+      try {
+         chStmt.runPreparedQuery(JDBC__MAX_FETCH_SIZE, OBSOLETE_TAGS);
+         dropGammas = jdbcClient.getBatchStatement(connection, String.format(DELETE_GAMMAS, "osee_search_tags"));
+
+         while (chStmt.next()) {
+            dropGammas.addToBatch(chStmt.getLong("gamma_id"));
+         }
+      } finally {
+         chStmt.close();
+      }
+      return dropGammas.execute();
+   }
+
    public int[] purge(JdbcConnection connection) throws OseeCoreException {
       int[] counts = new int[6];
       int i = 0;
@@ -111,6 +132,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       counts[i++] = purgeNotAddressedGammas(connection, "osee_artifact");
       counts[i++] = purgeNotAddressedGammas(connection, "osee_attribute");
       counts[i++] = purgeNotAddressedGammas(connection, "osee_relation_link");
+      counts[i++] = deleteObsoleteTags(connection);
       counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs");
       counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs_archived");
       counts[i++] = purgeEmptyTransactions(connection);
