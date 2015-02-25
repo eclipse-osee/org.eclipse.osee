@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PatternFilter;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -29,12 +29,19 @@ public class FilteredTree extends org.eclipse.ui.dialogs.FilteredTree {
       super(parent, treeStyle, filter, useNewLook);
    }
 
-   /**
-    * Ensure images have been initialized before FilteredTree construction
-    */
-   {
-      ImageDescriptor imageDescriptor = ImageManager.getImageDescriptor(FrameworkImage.CLEAR_CO);
-      JFaceResources.getImageRegistry().put(CLEAR_ICON, imageDescriptor);
-      JFaceResources.getImageRegistry().put(DISABLED_CLEAR_ICON, imageDescriptor);
+   @Override
+   protected Composite createFilterControls(Composite parent) {
+      ImageDescriptor descriptor =
+         AbstractUIPlugin.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID, "$nl$/icons/full/etool16/clear_co.gif"); //$NON-NLS-1$
+      if (descriptor != null) {
+         JFaceResources.getImageRegistry().put(CLEAR_ICON, descriptor);
+      }
+      descriptor =
+         AbstractUIPlugin.imageDescriptorFromPlugin(PlatformUI.PLUGIN_ID, "$nl$/icons/full/dtool16/clear_co.gif"); //$NON-NLS-1$
+      if (descriptor != null) {
+         JFaceResources.getImageRegistry().put(DISABLED_CLEAR_ICON, descriptor);
+      }
+      return super.createFilterControls(parent);
    }
+
 }
