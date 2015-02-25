@@ -51,7 +51,6 @@ import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -456,12 +455,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      }
                   }
                }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
-                  }
-               });
+               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -479,12 +473,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                final Set<Artifact> goals = new HashSet<Artifact>();
                new GoalManager().getCollectors(artifacts, goals, true);
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
-                  }
-               });
+               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -511,12 +500,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      }
                   }
                }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
-                  }
-               });
+               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -542,12 +526,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      arts.addAll(((AbstractTaskableArtifact) art).getTaskArtifacts());
                   }
                }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
-                  }
-               });
+               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -573,12 +552,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));
                   }
                }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
-                  }
-               });
+               worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

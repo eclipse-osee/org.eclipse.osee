@@ -301,21 +301,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
             }
             try {
                final List<Artifact> artifacts = provider.getMembers();
-               try {
-                  AtsBulkLoad.bulkLoadArtifacts(artifacts);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     if (isTableDisposed()) {
-                        return;
-                     }
-                     worldComposite.load(provider.getItemName(), artifacts, (CustomizeData) null, TableLoadOption.None);
-                  }
-
-               });
+               worldComposite.load(provider.getItemName(), artifacts, (CustomizeData) null, TableLoadOption.None);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Exception loading %s",

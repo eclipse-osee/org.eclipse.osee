@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -36,10 +41,17 @@ public class RefreshAction extends Action {
 
    @Override
    public void run() {
-      try {
-         iRefreshActionHandler.refreshActionHandler();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      Jobs.startJob(new Job("Refresh") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               iRefreshActionHandler.refreshActionHandler();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      }, true);
    }
 }

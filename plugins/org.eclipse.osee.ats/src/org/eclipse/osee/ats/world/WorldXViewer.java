@@ -50,7 +50,6 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -209,7 +208,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Reset Action off Children");
+               transaction =
+                  TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt);
                   rollup.resetAttributesOffChildren();
@@ -609,11 +609,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             arts.add((Artifact) obj);
          }
       }
-      try {
-         AtsBulkLoad.bulkLoadArtifacts(arts);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
       setInput(arts);
    }
 
@@ -684,4 +679,5 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          editor.onDirtied();
       }
    }
+
 }

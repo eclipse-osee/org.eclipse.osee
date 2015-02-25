@@ -16,6 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -37,10 +41,12 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
@@ -129,24 +135,49 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       return worldXViewer.getControl();
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOption) {
-      load(name, arts, null, tableLoadOption);
+   public void load(final String name, final Collection<? extends Artifact> arts, TableLoadOption... tableLoadOptions) {
+      load(name, arts, null, tableLoadOptions);
    }
 
-   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, final TableLoadOption... tableLoadOptions) {
+
+      Set<TableLoadOption> loadOptions = Collections.asHashSet(tableLoadOptions);
+      boolean forcePend = loadOptions.contains(TableLoadOption.ForcePend);
+      if (!forcePend && Displays.isDisplayThread()) {
+         Jobs.startJob(new Job("World Composite - Load") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               try {
+                  load(name, arts, customizeData, tableLoadOptions);
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+               return Status.OK_STATUS;
+            }
+         }, true);
+         return;
+      }
+
+      worldArts.clear();
+      otherArts.clear();
+      for (Artifact art : arts) {
+         if (AtsUtil.isAtsArtifact(art)) {
+            worldArts.add(art);
+         } else {
+            otherArts.add(art);
+         }
+      }
+      try {
+         AtsBulkLoad.bulkLoadArtifacts(worldArts);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
             if (Widgets.isAccessible(worldXViewer.getTree())) {
-               worldArts.clear();
-               otherArts.clear();
-               for (Artifact art : arts) {
-                  if (AtsUtil.isAtsArtifact(art)) {
-                     worldArts.add(art);
-                  } else {
-                     otherArts.add(art);
-                  }
-               }
                if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
                   customizeData)) {
                   setCustomizeData(customizeData);
@@ -155,11 +186,6 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
                   setTableTitle("No Results Found - " + name, true);
                } else {
                   setTableTitle(name, false);
-               }
-               try {
-                  AtsBulkLoad.bulkLoadArtifacts(worldArts);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
                worldXViewer.setInput(worldArts);
                worldXViewer.updateStatusLabel();
