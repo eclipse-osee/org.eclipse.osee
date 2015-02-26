@@ -14,16 +14,19 @@ import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__CONTEXT_
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__CONTEXT_SESSION_INACTIVE_INTERVAL;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_HOST;
+import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_HOST;
+import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_NIO_AUTO_DETECT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_NIO_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__MULTIPLE_SLASH_TO_SINGLE;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__OTHER_INFO;
+import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SERVER_NAME;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYPASSWORD;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYSTORE;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYSTORETYPE;
@@ -36,16 +39,19 @@ import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__CONTEXT_PATH;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__CONTEXT_SESSION_INACTIVE_INTERVAL;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_HOST;
+import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_HOST;
+import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_NIO_AUTO_DETECT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_NIO_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__MULTIPLE_SLASH_TO_SINGLE;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__OTHER_INFO;
+import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__SERVER_NAME;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__SSL_KEYPASSWORD;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__SSL_KEYSTORE;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__SSL_KEYSTORETYPE;
@@ -61,23 +67,27 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
 public class JettyConfig {
 
+   private String serverName;
    private boolean nonBlockinIoEnabled;
    private boolean autoDetectNioSupport;
 
    private boolean isHttpEnabled;
    private int httpPort = -1;
    private String httpHost;
+   private boolean isHttpForwarded;
    private boolean useRandomHttpPort;
 
    private boolean isHttpsEnabled;
    private int httpsPort = -1;
    private String httpsHost;
+   private boolean isHttpsForwarded;
    private boolean useRandomHttpsPort;
 
    private String sslKeystore;
@@ -104,6 +114,7 @@ public class JettyConfig {
 
    private void reset() {
       otherProps.clear();
+      setServerName(DEFAULT_JETTY__SERVER_NAME);
       setAutoDetectNioSupport(DEFAULT_JETTY__HTTP_NIO_AUTO_DETECT);
       setNonBlockinIoEnabled(DEFAULT_JETTY__HTTP_NIO_ENABLED);
 
@@ -114,11 +125,13 @@ public class JettyConfig {
       setHttpEnabled(DEFAULT_JETTY__HTTP_ENABLED);
       setHttpHost(DEFAULT_JETTY__HTTP_HOST);
       setHttpPort(DEFAULT_JETTY__HTTP_PORT);
+      setHttpForwarded(DEFAULT_JETTY__HTTP_IS_FORWARDED);
       setUseRandomHttpPort(DEFAULT_JETTY__HTTP_USE_RANDOM_PORT);
 
       setHttpsEnabled(DEFAULT_JETTY__HTTPS_ENABLED);
       setHttpsHost(DEFAULT_JETTY__HTTPS_HOST);
       setHttpsPort(DEFAULT_JETTY__HTTPS_PORT);
+      setHttpsForwarded(DEFAULT_JETTY__HTTPS_IS_FORWARDED);
       setUseRandomHttpsPort(DEFAULT_JETTY__HTTPS_USE_RANDOM_PORT);
 
       setSslKeypassword(DEFAULT_JETTY__SSL_KEYPASSWORD);
@@ -135,6 +148,8 @@ public class JettyConfig {
    }
 
    void readProperties(Map<String, Object> src) {
+      setServerName(get(src, JETTY__SERVER_NAME, DEFAULT_JETTY__SERVER_NAME));
+
       setAutoDetectNioSupport(getBoolean(src, JETTY__HTTP_NIO_AUTO_DETECT, DEFAULT_JETTY__HTTP_NIO_AUTO_DETECT));
       setNonBlockinIoEnabled(getBoolean(src, JETTY__HTTP_NIO_ENABLED, DEFAULT_JETTY__HTTP_NIO_ENABLED));
 
@@ -146,11 +161,13 @@ public class JettyConfig {
       setHttpEnabled(getBoolean(src, JETTY__HTTP_ENABLED, DEFAULT_JETTY__HTTP_ENABLED));
       setHttpHost(get(src, JETTY__HTTP_HOST, DEFAULT_JETTY__HTTP_HOST));
       setHttpPort(getInt(src, JETTY__HTTP_PORT, DEFAULT_JETTY__HTTP_PORT));
+      setHttpForwarded(getBoolean(src, JETTY__HTTP_IS_FORWARDED, DEFAULT_JETTY__HTTP_IS_FORWARDED));
       setUseRandomHttpPort(getBoolean(src, JETTY__HTTP_USE_RANDOM_PORT, DEFAULT_JETTY__HTTP_USE_RANDOM_PORT));
 
       setHttpsEnabled(getBoolean(src, JETTY__HTTPS_ENABLED, DEFAULT_JETTY__HTTPS_ENABLED));
       setHttpsHost(get(src, JETTY__HTTPS_HOST, DEFAULT_JETTY__HTTPS_HOST));
       setHttpsPort(getInt(src, JETTY__HTTPS_PORT, DEFAULT_JETTY__HTTPS_PORT));
+      setHttpsForwarded(getBoolean(src, JETTY__HTTPS_IS_FORWARDED, DEFAULT_JETTY__HTTPS_IS_FORWARDED));
       setUseRandomHttpsPort(getBoolean(src, JETTY__HTTPS_USE_RANDOM_PORT, DEFAULT_JETTY__HTTPS_USE_RANDOM_PORT));
 
       setSslKeypassword(get(src, JETTY__SSL_KEYPASSWORD, DEFAULT_JETTY__SSL_KEYPASSWORD));
@@ -179,16 +196,22 @@ public class JettyConfig {
    }
 
    protected void copy(JettyConfig other) {
+      this.serverName = other.serverName;
       this.nonBlockinIoEnabled = other.nonBlockinIoEnabled;
       this.autoDetectNioSupport = other.autoDetectNioSupport;
+
       this.isHttpEnabled = other.isHttpEnabled;
       this.httpPort = other.httpPort;
       this.httpHost = other.httpHost;
+      this.isHttpForwarded = other.isHttpForwarded;
       this.useRandomHttpPort = other.useRandomHttpPort;
+
       this.isHttpsEnabled = other.isHttpsEnabled;
       this.httpsPort = other.httpsPort;
       this.httpsHost = other.httpsHost;
+      this.isHttpsForwarded = other.isHttpsForwarded;
       this.useRandomHttpsPort = other.useRandomHttpsPort;
+
       this.sslKeystore = other.sslKeystore;
       this.sslPassword = other.sslPassword;
       this.sslKeypassword = other.sslKeypassword;
@@ -212,6 +235,14 @@ public class JettyConfig {
 
    /////////////////////////////////////////////// GETTERS
 
+   public String getServerName() {
+      return serverName;
+   }
+
+   public boolean hasServerName() {
+      return Strings.isValid(getServerName());
+   }
+
    public boolean isHttpEnabled() {
       return isHttpEnabled;
    }
@@ -224,6 +255,10 @@ public class JettyConfig {
       return httpHost;
    }
 
+   public boolean isHttpForwarded() {
+      return isHttpForwarded;
+   }
+
    public boolean isHttpsEnabled() {
       return isHttpsEnabled;
    }
@@ -234,6 +269,10 @@ public class JettyConfig {
 
    public String getHttpsHost() {
       return httpsHost;
+   }
+
+   public boolean isHttpsForwarded() {
+      return isHttpsForwarded;
    }
 
    public boolean isNonBlockinIoEnabled() {
@@ -312,6 +351,10 @@ public class JettyConfig {
 
    //////////////////////////////////////// SETTERS
 
+   void setServerName(String serverName) {
+      this.serverName = serverName;
+   }
+
    void setAutoDetectNioSupport(boolean autoDetectNioSupport) {
       this.autoDetectNioSupport = autoDetectNioSupport;
    }
@@ -332,6 +375,10 @@ public class JettyConfig {
       this.httpHost = httpHost;
    }
 
+   void setHttpForwarded(boolean isHttpForwarded) {
+      this.isHttpForwarded = isHttpForwarded;
+   }
+
    void setHttpsEnabled(boolean isHttpsEnabled) {
       this.isHttpsEnabled = isHttpsEnabled;
    }
@@ -342,6 +389,10 @@ public class JettyConfig {
 
    void setHttpsHost(String httpsHost) {
       this.httpsHost = httpsHost;
+   }
+
+   void setHttpsForwarded(boolean isHttpsForwarded) {
+      this.isHttpsForwarded = isHttpsForwarded;
    }
 
    void setSslKeystore(String sslKeystore) {
@@ -414,7 +465,7 @@ public class JettyConfig {
 
    @Override
    public String toString() {
-      return "JettyConfig [nonBlockinIoEnabled=" + nonBlockinIoEnabled + ", autoDetectNioSupport=" + autoDetectNioSupport + ", isHttpEnabled=" + isHttpEnabled + ", httpPort=" + httpPort + ", httpHost=" + httpHost + ", useRandomHttpPort=" + useRandomHttpPort + ", isHttpsEnabled=" + isHttpsEnabled + ", httpsPort=" + httpsPort + ", httpsHost=" + httpsHost + ", useRandomHttpsPort=" + useRandomHttpsPort + ", sslKeystore=" + sslKeystore + ", sslPassword=" + sslPassword + ", sslKeypassword=" + sslKeypassword + ", sslProtocol=" + sslProtocol + ", sslKeystoretype=" + sslKeystoretype + ", sslNeedClientAuth=" + sslNeedClientAuth + ", sslWantClientAuth=" + sslWantClientAuth + ", contextPath=" + contextPath + ", contextPathMultipleSlashToSingle=" + contextPathMultipleSlashToSingle + ", contextSessioninactiveinterval=" + contextSessioninactiveinterval + ", otherInfo=" + otherInfo + ", workingDirectory=" + workingDirectory + ", otherProps=" + otherProps + "]";
+      return "JettyConfig [nonBlockinIoEnabled=" + nonBlockinIoEnabled + ", autoDetectNioSupport=" + autoDetectNioSupport + ", isHttpEnabled=" + isHttpEnabled + ", httpPort=" + httpPort + ", httpHost=" + httpHost + ", isHttpForwarded=" + isHttpForwarded + ", useRandomHttpPort=" + useRandomHttpPort + ", isHttpsEnabled=" + isHttpsEnabled + ", httpsPort=" + httpsPort + ", httpsHost=" + httpsHost + ", isHttpsForwarded=" + isHttpsForwarded + ", useRandomHttpsPort=" + useRandomHttpsPort + ", sslKeystore=" + sslKeystore + ", sslPassword=" + sslPassword + ", sslKeypassword=" + sslKeypassword + ", sslProtocol=" + sslProtocol + ", sslKeystoretype=" + sslKeystoretype + ", sslNeedClientAuth=" + sslNeedClientAuth + ", sslWantClientAuth=" + sslWantClientAuth + ", contextPath=" + contextPath + ", contextPathMultipleSlashToSingle=" + contextPathMultipleSlashToSingle + ", contextSessioninactiveinterval=" + contextSessioninactiveinterval + ", otherInfo=" + otherInfo + ", workingDirectory=" + workingDirectory + ", otherProps=" + otherProps + "]";
    }
 
 }

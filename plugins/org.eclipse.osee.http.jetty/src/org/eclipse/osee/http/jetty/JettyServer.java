@@ -107,6 +107,11 @@ public abstract class JettyServer {
          return this;
       }
 
+      public Builder serverName(String serverName) {
+         setServerName(serverName);
+         return this;
+      }
+
       public Builder autoDetectNioSupport(boolean autoDetect) {
          setAutoDetectNioSupport(autoDetect);
          return this;
@@ -137,6 +142,11 @@ public abstract class JettyServer {
          return this;
       }
 
+      public Builder httpForwarded(boolean isForwarded) {
+         setHttpForwarded(isForwarded);
+         return this;
+      }
+
       public Builder httpsEnabled(boolean httpsEnabled) {
          setHttpsEnabled(httpsEnabled);
          return this;
@@ -149,6 +159,11 @@ public abstract class JettyServer {
 
       public Builder httpsPort(int port) {
          setHttpsPort(port);
+         return this;
+      }
+
+      public Builder httpsForwarded(boolean isForwarded) {
+         setHttpsForwarded(isForwarded);
          return this;
       }
 
