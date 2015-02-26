@@ -14,10 +14,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.http.jetty.internal.jdbc.JdbcHttpSessionSchemaResource;
+import org.eclipse.osee.http.jetty.internal.jdbc.JdbcHttpSessionMigrationResource;
 import org.eclipse.osee.http.jetty.internal.session.JdbcJettySessionManagerFactory;
 import org.eclipse.osee.http.jetty.util.CookieStoringHttpClientFilter;
 import org.eclipse.osee.http.jetty.util.PostCountingServlet;
@@ -25,7 +26,8 @@ import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
-import org.eclipse.osee.jdbc.JdbcSchemaOptions;
+import org.eclipse.osee.jdbc.JdbcMigrationOptions;
+import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.jdbc.JdbcServer;
 import org.eclipse.osee.jdbc.JdbcServerBuilder;
 import org.eclipse.osee.jdbc.JdbcServerConfig;
@@ -75,7 +77,8 @@ public class JettyJdbcSessionServerTest {
 
       JdbcServerConfig config = jdbcServer.getConfig();
       JdbcClient jdbcClient = JdbcClientBuilder.hsql(config.getDbName(), config.getDbPort()).build();
-      jdbcClient.initSchema(new JdbcSchemaOptions("OSEE", "OSEE", true), new JdbcHttpSessionSchemaResource());
+      JdbcMigrationResource sessionMigration = new JdbcHttpSessionMigrationResource();
+      jdbcClient.migrate(new JdbcMigrationOptions(true, true), Arrays.asList(sessionMigration));
 
       String clusterName = "jetty.cluster." + testName;
 

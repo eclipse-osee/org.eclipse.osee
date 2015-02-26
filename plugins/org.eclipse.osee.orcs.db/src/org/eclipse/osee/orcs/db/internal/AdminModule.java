@@ -15,8 +15,8 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcSchemaOptions;
-import org.eclipse.osee.jdbc.JdbcSchemaResource;
+import org.eclipse.osee.jdbc.JdbcMigrationOptions;
+import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -58,16 +58,16 @@ public class AdminModule {
             boolean useFileSpecifiedSchemas =
                getOption(parameters, DataStoreConfigConstants.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
 
-            Supplier<Iterable<JdbcSchemaResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
+            Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
-            JdbcSchemaOptions options = new JdbcSchemaOptions(tableDataSpace, indexDataSpace, useFileSpecifiedSchemas);
+            JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
             return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, branchStore,
                preferences, schemaProvider, options);
          }
 
          @Override
          public Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session) {
-            Supplier<Iterable<JdbcSchemaResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
+            Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
             return new FetchDatastoreInfoCallable(logger, session, jdbcClient, schemaProvider, preferences);
          }
 

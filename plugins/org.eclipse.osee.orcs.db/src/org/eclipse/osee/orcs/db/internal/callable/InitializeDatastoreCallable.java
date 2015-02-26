@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcSchemaOptions;
-import org.eclipse.osee.jdbc.JdbcSchemaResource;
+import org.eclipse.osee.jdbc.JdbcMigrationOptions;
+import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
@@ -46,12 +46,12 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
 
    private final SystemPreferences preferences;
-   private final Supplier<Iterable<JdbcSchemaResource>> schemaProvider;
-   private final JdbcSchemaOptions options;
+   private final Supplier<Iterable<JdbcMigrationResource>> schemaProvider;
+   private final JdbcMigrationOptions options;
    private final IdentityManager identityService;
    private final BranchDataStore branchStore;
 
-   public InitializeDatastoreCallable(OrcsSession session, Log logger, JdbcClient jdbcClient, IdentityManager identityService, BranchDataStore branchStore, SystemPreferences preferences, Supplier<Iterable<JdbcSchemaResource>> schemaProvider, JdbcSchemaOptions options) {
+   public InitializeDatastoreCallable(OrcsSession session, Log logger, JdbcClient jdbcClient, IdentityManager identityService, BranchDataStore branchStore, SystemPreferences preferences, Supplier<Iterable<JdbcMigrationResource>> schemaProvider, JdbcMigrationOptions options) {
       super(logger, session, jdbcClient);
       this.identityService = identityService;
       this.branchStore = branchStore;
@@ -65,7 +65,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
       Conditions.checkExpressionFailOnTrue(getJdbcClient().getConfig().isProduction(),
          "Error - attempting to initialize a production datastore.");
 
-      getJdbcClient().initSchema(options, schemaProvider.get());
+      getJdbcClient().migrate(options, schemaProvider.get());
 
       String attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
       getLogger().info("Deleting application server binary data [%s]...", attributeDataPath);

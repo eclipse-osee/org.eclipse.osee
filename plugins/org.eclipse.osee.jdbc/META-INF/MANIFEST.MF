@@ -14,6 +14,9 @@ Import-Package: org.apache.commons.dbcp,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.logger;resolution:=optional,
+ org.flywaydb.core,
+ org.flywaydb.core.api,
+ org.flywaydb.core.api.resolver,
  org.hsqldb;resolution:=optional,
  org.hsqldb.jdbc;resolution:=optional,
  org.hsqldb.persist;resolution:=optional,
@@ -24,3 +27,4 @@ Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
 DynamicImport-Package: *
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.equinox.registry

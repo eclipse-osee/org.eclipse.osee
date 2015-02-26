@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.jdbc;
 
 import java.net.URL;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface DataStoreInfo {
+public interface JdbcMigrationResource {
 
-   Map<String, String> getProperties();
+   boolean isApplicable(JdbcClientConfig config);
 
-   Set<URL> getConfigurationPaths();
+   URL getLocation();
 
 }

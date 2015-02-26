@@ -19,29 +19,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
+import org.eclipse.osee.jdbc.JdbcMigrationOptions;
+import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.jdbc.JdbcProcessor;
-import org.eclipse.osee.jdbc.JdbcSchemaOptions;
-import org.eclipse.osee.jdbc.JdbcSchemaResource;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.jdbc.SQL3DataType;
-import org.eclipse.osee.jdbc.internal.schema.data.SchemaData;
-import org.eclipse.osee.jdbc.internal.schema.ops.CreateSchemaTx;
-import org.eclipse.osee.jdbc.internal.schema.ops.ExtractSchemaCallable;
-import org.eclipse.osee.jdbc.internal.schema.ops.LoadUserSchemasCallable;
 
 /**
  * @author Roberto E. Escobar
@@ -52,6 +45,7 @@ public final class JdbcClientImpl implements JdbcClient {
    private final JdbcConnectionProvider connectionProvider;
    private final JdbcSequenceProvider sequenceProvider;
    private final JdbcConnectionInfo dbInfo;
+   private final JdbcMigration migration;
 
    private volatile JdbcDbType dbType;
 
@@ -61,6 +55,7 @@ public final class JdbcClientImpl implements JdbcClient {
       this.connectionProvider = connectionProvider;
       this.sequenceProvider = sequenceProvider;
       this.dbInfo = dbInfo;
+      this.migration = new JdbcMigration(this);
    }
 
    @Override
@@ -461,43 +456,6 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void initSchema(JdbcSchemaOptions options, JdbcSchemaResource... resources) throws JdbcException {
-      initSchema(options, Arrays.asList(resources));
-   }
-
-   @Override
-   public void initSchema(JdbcSchemaOptions options, Iterable<JdbcSchemaResource> resources) throws JdbcException {
-      Map<String, SchemaData> userSpecifiedConfig = new HashMap<String, SchemaData>();
-      Map<String, SchemaData> currentDatabaseConfig = new HashMap<String, SchemaData>();
-
-      executeCallable(new LoadUserSchemasCallable(this, userSpecifiedConfig, resources, options));
-      executeCallable(new ExtractSchemaCallable(this, userSpecifiedConfig.keySet(), currentDatabaseConfig));
-
-      // Execute outside of transaction since SCHEMA changes have to be persisted as we go
-      JdbcConnectionImpl connection = getConnection();
-      try {
-         CreateSchemaTx tx = new CreateSchemaTx(this, userSpecifiedConfig, currentDatabaseConfig);
-         try {
-            tx.handleTxWork(connection);
-         } catch (Exception ex) {
-            tx.handleTxException(ex);
-         } finally {
-            tx.handleTxFinally();
-         }
-      } finally {
-         connection.close();
-      }
-   }
-
-   private void executeCallable(Callable<?> callable) {
-      try {
-         callable.call();
-      } catch (Exception ex) {
-         throw JdbcException.newJdbcException(ex);
-      }
-   }
-
-   @Override
    public long getNextSequence(String sequenceName) {
       return sequenceProvider.getNextSequence(this, sequenceName);
    }
@@ -512,6 +470,11 @@ public final class JdbcClientImpl implements JdbcClient {
       List<IVariantData> toReturn = new ArrayList<IVariantData>();
       runQuery(new JdbcVariantDataProcessor(toReturn), query, data);
       return toReturn;
+   }
+
+   @Override
+   public void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources) {
+      migration.migrate(options, schemaResources);
    }
 
    @Override

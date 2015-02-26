@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
@@ -29,7 +27,6 @@ import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -63,12 +60,7 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
             OrcsMetaData metaData = callable.call();
             StringWriter writer = new StringWriter();
 
-            if (urlPath.contains("schema")) {
-               writeConfigResource(writer, metaData);
-            } else {
-               writeDatabaseInfo(writer, metaData);
-               writeConfigResource(writer, metaData);
-            }
+            writeDatabaseInfo(writer, metaData);
             sendMessage(response, HttpURLConnection.HTTP_OK, writer.toString(), null);
 
          } catch (Exception ex) {
@@ -103,7 +95,6 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
 
             StringWriter writer = new StringWriter();
             writeDatabaseInfo(writer, metaData);
-            writeConfigResource(writer, metaData);
 
             sendMessage(response, HttpURLConnection.HTTP_ACCEPTED, writer.toString(), null);
          } catch (Exception ex) {
@@ -132,20 +123,6 @@ public class ConfigurationServlet extends UnsecuredOseeHttpServlet {
          writer.write("</datastore>\n");
       } catch (Exception ex) {
          getLogger().error(ex, "Error transferring data store config properties");
-      }
-   }
-
-   private void writeConfigResource(Writer writer, OrcsMetaData metaData) {
-      for (IResource resource : metaData.getConfigurationResources()) {
-         InputStream inputStream = null;
-         try {
-            inputStream = new BufferedInputStream(resource.getContent());
-            writer.write(Lib.inputStreamToString(inputStream));
-         } catch (Exception ex) {
-            getLogger().error(ex, "Error transferring data store config resource");
-         } finally {
-            Lib.close(inputStream);
-         }
       }
    }
 

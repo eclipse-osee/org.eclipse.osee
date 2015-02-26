@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs;
 
-import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
  * @author Roberto E. Escobar
@@ -21,5 +19,4 @@ public interface OrcsMetaData {
 
    Map<String, String> getProperties();
 
-   List<IResource> getConfigurationResources();
 }

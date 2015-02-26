@@ -91,18 +91,10 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
          }
       }
 
-      if (JdbcDriverType.hsql.getDriver().equals(getDbDriver())) {
-         if (!cfg.getDbProps().containsKey("hsqldb.tx")) {
-            cfg.addDbParam("hsqldb.tx", "MVCC");
-         }
-         cfg.setDbAppendPropsToUri(true);
-      }
-
       JdbcConnectionProvider connectionProvider = getConnectionProvider(cfg.getPoolConfig());
       JdbcSequenceProvider sequenceProvider = new JdbcSequenceProvider();
       JdbcConnectionInfo dbInfo =
-         JdbcUtil.newConnectionInfo(cfg.getDbDriver(), cfg.getDbUri(), cfg.getDbProps(),
-            cfg.isDbAppendPropsToUri());
+         JdbcUtil.newConnectionInfo(cfg.getDbDriver(), cfg.getDbUri(), cfg.getDbProps(), cfg.isDbAppendPropsToUri());
       return new JdbcClientImpl(cfg, connectionProvider, sequenceProvider, dbInfo);
    }
 
@@ -306,9 +298,6 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
       switch (type) {
          case hsql:
             dbParamsInUri(true);
-            if (!getDbProps().containsKey("hsqldb.tx")) {
-               dbParam("hsqldb.tx", "MVCC");
-            }
             if (!Strings.isValid(getDbUsername())) {
                dbUsername("public");
             }

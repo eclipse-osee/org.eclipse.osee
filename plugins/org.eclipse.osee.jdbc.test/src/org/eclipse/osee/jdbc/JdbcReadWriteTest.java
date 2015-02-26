@@ -11,23 +11,21 @@
 package org.eclipse.osee.jdbc;
 
 import static org.junit.Assert.assertEquals;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link JdbcClient, JdbcServer}
@@ -35,18 +33,6 @@ import org.junit.rules.TemporaryFolder;
  * @author Roberto E. Escobar
  */
 public class JdbcReadWriteTest {
-
-   // Although index is not needed for test, include it to test index creation during schema initialization
-   private static final String SCHEMA_DEF = //
-      "<TableConfig>\n" + //
-      "<Table name=\"BOOKS\" schema=\"TEST\" tablespace=\"TEST_DATA\">\n" + //
-      "<Column id=\"ID\" defaultValue=\"not null\" type=\"INTEGER\" />\n" + //
-      "<Column id=\"TITLE\" defaultValue=\"not null\" limits=\"22\" type=\"VARCHAR\" />\n" + //
-      "<Column id=\"AUTHOR\" defaultValue=\"not null\" limits=\"22\" type=\"VARCHAR\" />\n" + //
-      "<Constraint schema=\"TEST\" id=\"TEST_BOOKS__I_PK\" type=\"PRIMARY KEY\" appliesTo=\"id\" />\n" + //
-      "<Index id=\"BOOKS__T_IDX\" tablespace=\"TEST_DATA\"><AppliesTo id=\"TITLE\" /></Index>\n" + //
-      "</Table>\n" + //
-      "</TableConfig>";
 
    private static final Object[][] DB_DATA = new Object[][] {
       {1, "The Odyssey", "Homer"},
@@ -60,9 +46,11 @@ public class JdbcReadWriteTest {
    private JdbcServer server;
    private int dbPort;
    private String dbName;
+   private JdbcClient client;
 
    @Before
    public void setUp() throws IOException {
+      MockitoAnnotations.initMocks(this);
       File newFile = folder.newFile("hsql.db.read.write.test");
 
       server = JdbcServerBuilder.hsql(newFile.toURI().toASCIIString())//
@@ -74,6 +62,8 @@ public class JdbcReadWriteTest {
       dbPort = config.getDbPort();
 
       server.start();
+
+      client = JdbcClientBuilder.hsql(dbName, dbPort).build();
    }
 
    @After
@@ -83,8 +73,20 @@ public class JdbcReadWriteTest {
 
    @Test
    public void testCreateReadAndWrite() {
-      final JdbcClient client = JdbcClientBuilder.hsql(dbName, dbPort).build();
-      client.initSchema(JdbcSchemaOptions.defaultOptions(), newSchema(SCHEMA_DEF));
+      JdbcMigrationResource migrationResource = new JdbcMigrationResource() {
+
+         @Override
+         public boolean isApplicable(JdbcClientConfig config) {
+            return true;
+         }
+
+         @Override
+         public URL getLocation() {
+            return getClass().getResource("migration");
+         }
+      };
+
+      client.migrate(new JdbcMigrationOptions(true, true), Collections.singleton(migrationResource));
       client.runBatchUpdate("insert into books (id, title, author) values (?,?,?)", Arrays.asList(DB_DATA));
 
       List<Book> books = new ArrayList<Book>();
@@ -175,28 +177,4 @@ public class JdbcReadWriteTest {
       return row;
    }
 
-   private static JdbcSchemaResource newSchema(final String schemaDef) {
-      return new JdbcSchemaResource() {
-
-         @Override
-         public boolean isApplicable(JdbcClientConfig config) {
-            return true;
-         }
-
-         @Override
-         public InputStream getContent() {
-            try {
-               return new ByteArrayInputStream(schemaDef.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-               throw new OseeCoreException(ex);
-            }
-         }
-
-         @Override
-         public URI getLocation() {
-            return null;
-         }
-
-      };
-   }
 }

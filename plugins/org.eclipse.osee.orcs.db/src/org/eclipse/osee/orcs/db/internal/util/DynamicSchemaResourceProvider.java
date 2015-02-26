@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.jdbc.JdbcSchemaResource;
+import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -25,7 +25,7 @@ import com.google.common.base.Supplier;
 /**
  * @author Roberto E. Escobar
  */
-public class DynamicSchemaResourceProvider implements Supplier<Iterable<JdbcSchemaResource>> {
+public class DynamicSchemaResourceProvider implements Supplier<Iterable<JdbcMigrationResource>> {
 
    private final Log logger;
 
@@ -35,17 +35,17 @@ public class DynamicSchemaResourceProvider implements Supplier<Iterable<JdbcSche
    }
 
    @Override
-   public Iterable<JdbcSchemaResource> get() {
-      List<JdbcSchemaResource> resources = new ArrayList<JdbcSchemaResource>();
+   public Iterable<JdbcMigrationResource> get() {
+      List<JdbcMigrationResource> resources = new ArrayList<JdbcMigrationResource>();
 
       Bundle bundle = FrameworkUtil.getBundle(this.getClass());
       BundleContext context = bundle.getBundleContext();
       try {
-         Collection<ServiceReference<JdbcSchemaResource>> references =
-            context.getServiceReferences(JdbcSchemaResource.class, null);
+         Collection<ServiceReference<JdbcMigrationResource>> references =
+            context.getServiceReferences(JdbcMigrationResource.class, null);
 
-         for (ServiceReference<JdbcSchemaResource> ref : references) {
-            JdbcSchemaResource resource = context.getService(ref);
+         for (ServiceReference<JdbcMigrationResource> ref : references) {
+            JdbcMigrationResource resource = context.getService(ref);
             resources.add(resource);
          }
 

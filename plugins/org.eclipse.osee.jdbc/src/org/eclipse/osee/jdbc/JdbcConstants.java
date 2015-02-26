@@ -93,7 +93,7 @@ public final class JdbcConstants {
    public static final String DEFAULT_JDBC__CONNECTION_URI = null;
    public static final boolean DEFAULT_JDBC__CONNECTION_APPEND_PROPS_TO_URI = false;
    public static final String DEFAULT_JDBC__CONNECTION_USERNAME = null;
-   public static final String DEFAULT_JDBC__CONNECTION_PASSWORD = null;
+   public static final String DEFAULT_JDBC__CONNECTION_PASSWORD = "";
    
    public static final boolean DEFAULT_JDBC_POOL__ENABLED = true;
    public static final String DEFAULT_JDBC_POOL__CONFIG_FILE_URI = null;

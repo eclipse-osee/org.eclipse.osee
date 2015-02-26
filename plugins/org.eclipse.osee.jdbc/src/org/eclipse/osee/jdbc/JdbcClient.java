@@ -77,9 +77,7 @@ public interface JdbcClient {
 
    void runTransaction(JdbcConnection connection, JdbcTransaction dbWork) throws JdbcException;
 
-   void initSchema(JdbcSchemaOptions options, JdbcSchemaResource... schemaResources);
-
-   void initSchema(JdbcSchemaOptions options, Iterable<JdbcSchemaResource> schemaResources);
+   void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources);
 
    long getNextSequence(String sequenceName);
 
