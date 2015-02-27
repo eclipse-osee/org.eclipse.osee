@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class AtsAttributeValueColumn {
+   private String name;
    private String namespace;
    private long attrTypeId;
    private String attrTypeName;
@@ -24,6 +25,9 @@ public class AtsAttributeValueColumn {
    private ColumnAlign align;
    private boolean visible;
    private String sortDataType;
+   private String booleanOnTrueShow;
+   private String booleanOnFalseShow;
+   private String booleanNotSetShow;
    private boolean columnMultiEdit;
    private String description;
 
@@ -97,6 +101,38 @@ public class AtsAttributeValueColumn {
 
    public void setAttrTypeName(String attrTypeName) {
       this.attrTypeName = attrTypeName;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getBooleanOnTrueShow() {
+      return booleanOnTrueShow;
+   }
+
+   public void setBooleanOnTrueShow(String booleanOnTrueShow) {
+      this.booleanOnTrueShow = booleanOnTrueShow;
+   }
+
+   public String getBooleanOnFalseShow() {
+      return booleanOnFalseShow;
+   }
+
+   public void setBooleanOnFalseShow(String booleanOnFalseShow) {
+      this.booleanOnFalseShow = booleanOnFalseShow;
+   }
+
+   public String getBooleanNotSetShow() {
+      return booleanNotSetShow;
+   }
+
+   public void setBooleanNotSetShow(String booleanNotSetShow) {
+      this.booleanNotSetShow = booleanNotSetShow;
    }
 
 }

@@ -45,8 +45,13 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn {
 
+   String booleanOnTrueShow = null;
+   String booleanOnFalseShow = null;
+   String booleanNotSetShow = null;
+
    public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable, description);
+      super(attributeType, attributeType.getName(), attributeType.getUnqualifiedName(), width, align, show,
+         sortDataType, multiColumnEditable, description);
    }
 
    public XViewerAtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -75,6 +80,18 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
+         if (isBooleanShow() && column.getSortDataType() == SortDataType.Boolean) {
+            if (element instanceof AbstractWorkflowArtifact) {
+               Boolean value = ((AbstractWorkflowArtifact) element).getSoleAttributeValue(getAttributeType(), null);
+               if (value == null && booleanNotSetShow != null) {
+                  return booleanNotSetShow;
+               } else if (value && booleanOnTrueShow != null) {
+                  return booleanOnTrueShow;
+               } else if (!value && booleanOnFalseShow != null) {
+                  return booleanOnFalseShow;
+               }
+            }
+         }
          if (element instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
          }
@@ -92,6 +109,10 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          return LogUtil.getCellExceptionString(ex);
       }
       return null;
+   }
+
+   private boolean isBooleanShow() {
+      return booleanOnFalseShow != null || booleanOnTrueShow != null || booleanNotSetShow != null;
    }
 
    @Override
@@ -138,7 +159,34 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    public XViewerAtsAttributeValueColumn copy() {
       XViewerAtsAttributeValueColumn newXCol = new XViewerAtsAttributeValueColumn();
       copy(this, newXCol);
+      newXCol.setBooleanNotSetShow(getBooleanNotSetShow());
+      newXCol.setBooleanOnFalseShow(getBooleanOnFalseShow());
+      newXCol.setBooleanOnTrueShow(getBooleanOnTrueShow());
       return newXCol;
+   }
+
+   public String getBooleanOnTrueShow() {
+      return booleanOnTrueShow;
+   }
+
+   public void setBooleanOnTrueShow(String booleanOnTrueShow) {
+      this.booleanOnTrueShow = booleanOnTrueShow;
+   }
+
+   public String getBooleanOnFalseShow() {
+      return booleanOnFalseShow;
+   }
+
+   public void setBooleanOnFalseShow(String booleanOnFalseShow) {
+      this.booleanOnFalseShow = booleanOnFalseShow;
+   }
+
+   public String getBooleanNotSetShow() {
+      return booleanNotSetShow;
+   }
+
+   public void setBooleanNotSetShow(String booleanNotSetShow) {
+      this.booleanNotSetShow = booleanNotSetShow;
    }
 
 }

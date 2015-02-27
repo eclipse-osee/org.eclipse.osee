@@ -65,6 +65,21 @@
             "sortDataType": "String",
             "visible": false,
             "width": 60
+        },
+        {
+            "align": "Left",
+            "attrTypeId": 2421093774890249189,
+            "name": "Unplanned Work",
+            "attrTypeName": "ats.Unplanned Work",
+            "columnMultiEdit": true,
+            "description": "",
+            "namespace": "org.eclipse.osee.ats.WorldXViewer",
+            "sortDataType": "Boolean",
+            "booleanOnTrueShow": "UnPlanned",
+            "booleanOnFalseShow": "",
+            "booleanNotSetShow": "",
+            "visible": false,
+            "width": 20
         }
     ]
 }

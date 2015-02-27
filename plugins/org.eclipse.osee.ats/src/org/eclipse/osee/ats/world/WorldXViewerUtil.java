@@ -71,10 +71,15 @@ public class WorldXViewerUtil {
       List<AtsAttributeValueColumn> columns = AtsConfigurationUtil.getConfigurations().getViews().getAttrColumns();
       for (AtsAttributeValueColumn column : columns) {
          try {
-            factory.registerColumns(new XViewerAtsAttributeValueColumn(
-               AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getWidth(),
-               getSwtAlign(column.getAlign()), column.isVisible(), SortDataType.valueOf(column.getSortDataType()),
-               column.isColumnMultiEdit(), column.getDescription()));
+            AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
+            XViewerAtsAttributeValueColumn valueColumn =
+               new XViewerAtsAttributeValueColumn(attrType, column.getWidth(), getSwtAlign(column.getAlign()),
+                  column.isVisible(), SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(),
+                  column.getDescription());
+            valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
+            valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
+            valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());
+            factory.registerColumns(valueColumn);
 
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
