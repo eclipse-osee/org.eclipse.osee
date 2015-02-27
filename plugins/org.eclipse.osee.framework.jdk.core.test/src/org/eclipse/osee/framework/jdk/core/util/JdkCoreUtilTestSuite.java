@@ -22,15 +22,16 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AnnotationTestSuite.class,
-   DateIteratorTest.class,
    IoTestSuite.class,
    XmlTestSuite.class,
    CollectionsTest.class,
    CompareTest.class,
+   DateIteratorTest.class,
    EncryptUtilityTest.class,
    GUIDTest.class,
    HashCollectionTest.class,
    HexUtilTest.class,
+   ProcessesTest.class,
    ReservedCharactersTest.class,
    StringsTest.class,
    UrlQueryTest.class})
