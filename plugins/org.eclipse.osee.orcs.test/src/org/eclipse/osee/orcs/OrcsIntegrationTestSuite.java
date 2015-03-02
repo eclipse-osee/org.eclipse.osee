@@ -17,6 +17,7 @@ import org.eclipse.osee.orcs.api.OrcsBranchTest;
 import org.eclipse.osee.orcs.api.OrcsPortingTest;
 import org.eclipse.osee.orcs.api.OrcsQueryTest;
 import org.eclipse.osee.orcs.api.OrcsRelationLoadingTest;
+import org.eclipse.osee.orcs.api.OrcsScriptScopeTest;
 import org.eclipse.osee.orcs.api.OrcsScriptTest;
 import org.eclipse.osee.orcs.api.OrcsTransactionTest;
 import org.eclipse.osee.orcs.api.OrcsTxQueryTest;
@@ -35,6 +36,7 @@ import org.junit.runners.Suite;
    OrcsPortingTest.class,
    OrcsQueryTest.class,
    OrcsRelationLoadingTest.class,
+   OrcsScriptScopeTest.class,
    OrcsScriptTest.class,
    OrcsTransactionTest.class,
    OrcsTxQueryTest.class})

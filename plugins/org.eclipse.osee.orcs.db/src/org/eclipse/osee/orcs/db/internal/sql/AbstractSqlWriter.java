@@ -272,11 +272,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return toReturn;
    }
 
-   public void nextAliasLevel() {
-      getAliasManager().nextLevel();
+   public int nextAliasLevel() {
+      return getAliasManager().nextLevel();
    }
 
-   protected SqlAliasManager getAliasManager() {
+   public SqlAliasManager getAliasManager() {
       return aliasManager;
    }
 

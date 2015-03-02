@@ -87,6 +87,11 @@ public class SqlAliasManager {
       return aliasValue;
    }
 
+   public void putAlias(int level, AliasEntry table, ObjectType type, String alias) {
+      String prefix = table.getPrefix();
+      putAlias(level, prefix, type, alias);
+   }
+
    private void putAlias(int level, String key, ObjectType type, String alias) {
       AliasSet dataSet = null;
       if (level < usedAliases.size()) {
@@ -99,8 +104,8 @@ public class SqlAliasManager {
       dataSet.putAlias(key, type, alias);
    }
 
-   public void nextLevel() {
-      level++;
+   public int nextLevel() {
+      return ++level;
    }
 
    public void reset() {

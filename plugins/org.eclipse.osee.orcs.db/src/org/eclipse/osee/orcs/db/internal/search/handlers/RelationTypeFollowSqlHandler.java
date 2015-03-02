@@ -13,10 +13,12 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
+import org.eclipse.osee.orcs.db.internal.sql.SqlAliasManager;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -53,11 +55,18 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
       relAlias1 = writer.addTable(TableEnum.RELATION_TABLE);
       txsAlias1 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
 
+      String branchAlias = writer.getFirstAlias(TableEnum.BRANCH_TABLE);
+
       // Set to next Level
-      writer.nextAliasLevel();
+      int newLevel = writer.nextAliasLevel();
 
       artAlias2 = writer.addTable(TableEnum.ARTIFACT_TABLE);
       txsAlias2 = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+
+      if (Strings.isValid(branchAlias)) {
+         SqlAliasManager aliasManager = writer.getAliasManager();
+         aliasManager.putAlias(newLevel, TableEnum.BRANCH_TABLE, ObjectType.BRANCH, branchAlias);
+      }
    }
 
    @Override
