@@ -571,24 +571,25 @@ public final class Lib {
     * @return file extension
     */
    public static String getExtension(String filepath) {
-      filepath = filepath.trim();
-      String separatorRegEx = File.separator;
-      if (Lib.isWindows()) {
-         separatorRegEx = "\\\\";
-      }
-      String[] pathsArray = filepath.split(separatorRegEx);
+      String toReturn = "";
 
-      String fileName = pathsArray[0];
-      if (pathsArray.length > 0) {
-         fileName = pathsArray[pathsArray.length - 1];
-      }
+      if (Strings.isValid(filepath)) {
+         String toProcess = filepath.trim();
 
-      int index = fileName.lastIndexOf('.');
-      if (index >= 0 && index + 1 < fileName.length()) {
-         return fileName.substring(index + 1);
-      } else {
-         return "";
+         toProcess = toProcess.replaceAll("\\\\", "/");
+         String[] pathsArray = toProcess.split("/");
+
+         String fileName = pathsArray[0];
+         if (pathsArray.length > 0) {
+            fileName = pathsArray[pathsArray.length - 1];
+         }
+
+         int index = fileName.lastIndexOf('.');
+         if (index >= 0 && index + 1 < fileName.length()) {
+            toReturn = fileName.substring(index + 1);
+         }
       }
+      return toReturn;
    }
 
    /**
