@@ -72,3 +72,4 @@ Import-Package: com.google.common.cache;version="[11.0.0,15.0.0)",
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.jaxrs.server.security
+Bundle-ActivationPolicy: lazy

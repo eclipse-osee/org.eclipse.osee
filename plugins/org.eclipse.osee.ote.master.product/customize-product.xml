@@ -40,6 +40,12 @@
 			<var name="productPath" value="${products-directory}/${product-name}/@{os}/@{ws}/@{arch}" />
 			<var name="productConfigPath" value="${productPath}/configuration" />
 			<var name="productPluginPath" value="${productPath}/plugins" />
+			<var name="productEtcPath" value="${productPath}/etc" />
+			
+			<mkdir dir="${productEtcPath}" />
+			<copy todir="${productEtcPath}">
+				<fileset dir="${etc-content-directory}" />
+			</copy>
 
 			<!-- Add JRE 
 			<if>

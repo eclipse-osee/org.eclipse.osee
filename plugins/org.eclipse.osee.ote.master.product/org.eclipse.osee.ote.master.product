@@ -10,7 +10,8 @@
       <programArgs>-console</programArgs>
       <vmArgs>-Dorg.osgi.service.http.port=8008
 -Ddequinox.ds.debug=true
--Ddequinox.ds.print=true</vmArgs>
+-Ddequinox.ds.print=true
+-Dcm.config.uri=&quot;etc/ote.server.config.json&quot;</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -37,11 +38,10 @@
    </features>
 
    <configurations>
-      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.http.servlet" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.osee.jaxrs.server" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.cm" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
    </configurations>
 
 </product>
