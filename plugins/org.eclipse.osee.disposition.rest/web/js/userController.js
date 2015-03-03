@@ -127,6 +127,10 @@ app.controller('userController', [
             }
         });
         
+        $scope.saveLastFocused = function saveLastFocused(element) {
+            $scope.lastFocused = element;
+        }
+        
         $scope.toggleEditItems = function toggleEditItems() {
         	var size = $scope.selectedItems.length;
         	$scope.gridOptions.selectAll(false);
