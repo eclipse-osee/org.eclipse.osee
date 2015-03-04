@@ -1,9 +1,8 @@
 {
     "config": [
          {
-                 "service.pid": "org.eclipse.osee.http.jetty.internal.osgi.JettyHttpService",
-                 "jetty.server.context.session.inactive.interval": 3600,
-                 "jetty.server.session.manager.factory": "IN_MEMORY"
+                 "service.pid": "org.eclipse.osee.http.jetty.internal.osgi.InMemoryJettyHttpService",
+                 "jetty.server.context.session.inactive.interval": 3600
          }
     ]
 }

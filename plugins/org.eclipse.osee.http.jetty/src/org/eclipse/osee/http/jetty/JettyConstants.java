@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.http.jetty;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 /**
  * @author Roberto E. Escobar
  */
@@ -111,27 +109,5 @@ public final class JettyConstants {
    // OSGi HTTP Service suggest these JVM properties for setting the default ports
    public static final String ORG_OSGI_SERVICE_HTTP_PORT = "org.osgi.service.http.port";
    public static final String ORG_OSGI_SERVICE_HTTP_PORT_SECURE = "org.osgi.service.http.port.secure";
-
-   public static final String JETTY_SESSION_MANAGER_FACTORY = qualify("session.manager.factory");
-   public static final String DEFAULT_JETTY_SESSION_MANAGER_FACTORY = SessionManagerType.IN_MEMORY.name();
-
-   public static enum SessionManagerType {
-      IN_MEMORY,
-      JDBC,
-      UNKNOWN;
-
-      public static SessionManagerType fromString(String value) {
-         SessionManagerType toReturn = SessionManagerType.UNKNOWN;
-         if (Strings.isValid(value)) {
-            for (SessionManagerType type : SessionManagerType.values()) {
-               if (type.name().equalsIgnoreCase(value)) {
-                  toReturn = type;
-                  break;
-               }
-            }
-         }
-         return toReturn;
-      }
-   }
 
 }

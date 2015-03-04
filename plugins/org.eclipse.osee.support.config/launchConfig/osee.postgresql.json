@@ -17,15 +17,15 @@
                         "orcs.jdbc.service",
                         "account.jdbc.service",
                         "oauth.jdbc.service",
-                        "app.server.jdbc.service"
+                        "app.server.jdbc.service",
+                        "jetty.jdbc.service"
                     ]
                 }
             ]
         },
         {
-    		   "service.pid": "org.eclipse.osee.http.jetty.internal.osgi.JettyHttpService",
+    		   "service.pid": "org.eclipse.osee.http.jetty.internal.osgi.JdbcJettyHttpService",
     		   "jetty.server.context.session.inactive.interval": 3600,
-    		   "jetty.server.session.manager.factory": "JDBC",
     		   "jetty.jdbc.cluster.name" : "OSEE",
     		   "jetty.jdbc.save.interval.secs" : 30
     	  } 

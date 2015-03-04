@@ -136,6 +136,15 @@ public class ConfigManagerImpl implements UriWatcherListener {
    }
 
    private void configureServices(Map<String, Dictionary<String, Object>> newConfigs) {
+      Iterable<String> removed =
+         org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(services.keySet(), newConfigs.keySet());
+      for (String id : removed) {
+         ServiceConfig component = services.remove(id);
+         if (component != null) {
+            component.stop();
+         }
+      }
+
       for (Entry<String, Dictionary<String, Object>> entry : newConfigs.entrySet()) {
          String serviceId = entry.getKey();
          ServiceConfig component = services.get(serviceId);
@@ -144,15 +153,6 @@ public class ConfigManagerImpl implements UriWatcherListener {
             services.put(serviceId, component);
          }
          component.update(entry.getValue());
-      }
-
-      Iterable<String> removed =
-         org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(services.keySet(), newConfigs.keySet());
-      for (String id : removed) {
-         ServiceConfig component = services.remove(id);
-         if (component != null) {
-            component.stop();
-         }
       }
    }
 
