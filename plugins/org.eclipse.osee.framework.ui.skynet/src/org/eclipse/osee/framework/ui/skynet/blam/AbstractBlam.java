@@ -156,15 +156,21 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public void log(String... row) {
-      logger.log(row);
+      if (logger != null) {
+         logger.log(row);
+      }
    }
 
    public void log(Throwable th) {
-      logger.log(th);
+      if (logger != null) {
+         logger.log(th);
+      }
    }
 
    public void logf(String format, Object... args) {
-      logger.logf(format, args);
+      if (logger != null) {
+         logger.logf(format, args);
+      }
    }
 
    public void execute(OperationLogger logger, VariableMap variableMap, IJobChangeListener jobChangeListener) {
