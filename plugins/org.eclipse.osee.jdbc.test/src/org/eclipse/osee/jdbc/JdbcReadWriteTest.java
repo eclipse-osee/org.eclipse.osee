@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.junit.After;
 import org.junit.Before;
@@ -83,6 +84,11 @@ public class JdbcReadWriteTest {
          @Override
          public URL getLocation() {
             return getClass().getResource("migration");
+         }
+
+         @Override
+         public void addPlaceholders(Map<String, String> placeholders) {
+            // do nothing
          }
       };
 

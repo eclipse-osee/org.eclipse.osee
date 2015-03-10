@@ -11,20 +11,14 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.net.URL;
-import org.eclipse.osee.jdbc.JdbcClientConfig;
-import org.eclipse.osee.jdbc.JdbcMigrationResource;
+import org.eclipse.osee.jdbc.AbstractJdbcMigrationResource;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OAuthMigrationResource implements JdbcMigrationResource {
+public class OAuthMigrationResource extends AbstractJdbcMigrationResource {
 
    private static final String SCHEMA_PATH = "migration/";
-
-   @Override
-   public boolean isApplicable(JdbcClientConfig config) {
-      return true;
-   }
 
    @Override
    public URL getLocation() {

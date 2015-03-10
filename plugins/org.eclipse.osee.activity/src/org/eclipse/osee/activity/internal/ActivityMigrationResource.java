@@ -11,23 +11,18 @@
 package org.eclipse.osee.activity.internal;
 
 import java.net.URL;
-import org.eclipse.osee.jdbc.JdbcClientConfig;
-import org.eclipse.osee.jdbc.JdbcMigrationResource;
+import org.eclipse.osee.jdbc.AbstractJdbcMigrationResource;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ActivityMigrationResource implements JdbcMigrationResource {
+public class ActivityMigrationResource extends AbstractJdbcMigrationResource {
 
    private static final String SCHEMA_PATH = "migration/";
-
-   @Override
-   public boolean isApplicable(JdbcClientConfig config) {
-      return true;
-   }
 
    @Override
    public URL getLocation() {
       return getClass().getResource(SCHEMA_PATH);
    }
+
 }

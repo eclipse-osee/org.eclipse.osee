@@ -11,20 +11,33 @@
 package org.eclipse.osee.orcs.db.internal.resource;
 
 import java.net.URL;
-import org.eclipse.osee.jdbc.JdbcClientConfig;
-import org.eclipse.osee.jdbc.JdbcMigrationResource;
+import java.util.Map;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.jdbc.AbstractJdbcMigrationResource;
+import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
-public class OseeDatastoreMigrationResource implements JdbcMigrationResource {
+public class OseeDatastoreMigrationResource extends AbstractJdbcMigrationResource {
 
    private static final String FILE_PATH = "migration/";
-
-   @Override
-   public boolean isApplicable(JdbcClientConfig config) {
-      return true;
-   }
+   private static final String TX_SEQ_PLACEHOLDER = "osee.tx_seq";
+   private static final String SYS_ROOT_TYPE_PLACEHOLDER = "osee.sys_root_type";
+   private static final String SYS_ROOT_STATE_PLACEHOLDER = "osee.sys_root_state";
+   private static final String SYS_ROOT_NAME_PLACEHOLDER = "osee.sys_root_name";
+   private static final String SYS_ROOT_ID_PLACEHOLDER = "osee.sys_root_id";
 
    @Override
    public URL getLocation() {
       return getClass().getResource(FILE_PATH);
+   }
+
+   @Override
+   public void addPlaceholders(Map<String, String> placeholders) {
+      placeholders.put(TX_SEQ_PLACEHOLDER, IdentityManager.TRANSACTION_ID_SEQ);
+      placeholders.put(SYS_ROOT_TYPE_PLACEHOLDER, String.valueOf(BranchType.SYSTEM_ROOT.getValue()));
+      placeholders.put(SYS_ROOT_STATE_PLACEHOLDER, String.valueOf(BranchState.MODIFIED.getValue()));
+      placeholders.put(SYS_ROOT_NAME_PLACEHOLDER, CoreBranches.SYSTEM_ROOT.getName());
+      placeholders.put(SYS_ROOT_ID_PLACEHOLDER, String.valueOf(CoreBranches.SYSTEM_ROOT.getUuid()));
    }
 }

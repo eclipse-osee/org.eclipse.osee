@@ -20,7 +20,6 @@ import org.eclipse.osee.jdbc.JdbcMigrationResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.SystemPreferences;
-import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
@@ -49,7 +48,7 @@ public class AdminModule {
       this.typesDataStore = typesDataStore;
    }
 
-   public DataStoreAdmin createDataStoreAdmin(final BranchDataStore branchStore) {
+   public DataStoreAdmin createDataStoreAdmin() {
       return new DataStoreAdmin() {
          @Override
          public Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters) {
@@ -61,8 +60,8 @@ public class AdminModule {
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
             JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
-            return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, branchStore,
-               preferences, schemaProvider, options);
+            return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, preferences,
+               schemaProvider, options);
          }
 
          @Override

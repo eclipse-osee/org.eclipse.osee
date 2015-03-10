@@ -8,21 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.http.jetty.internal.jdbc;
+package org.eclipse.osee.jdbc;
 
-import java.net.URL;
-import org.eclipse.osee.jdbc.AbstractJdbcMigrationResource;
+import java.util.Map;
 
 /**
- * @author Roberto E. Escobar
+ * @author John Misinco
  */
-public class JdbcHttpSessionMigrationResource extends AbstractJdbcMigrationResource {
-
-   private static final String SCHEMA_PATH = "migration/";
+public abstract class AbstractJdbcMigrationResource implements JdbcMigrationResource {
 
    @Override
-   public URL getLocation() {
-      return getClass().getResource(SCHEMA_PATH);
+   public boolean isApplicable(JdbcClientConfig config) {
+      return true;
+   }
+
+   @Override
+   public void addPlaceholders(Map<String, String> placeholders) {
+      // do nothing
    }
 
 }

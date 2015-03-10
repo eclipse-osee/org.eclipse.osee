@@ -11,6 +11,7 @@
 package org.eclipse.osee.jdbc;
 
 import java.net.URL;
+import java.util.Map;
 
 /**
  * @author Roberto E. Escobar
@@ -20,5 +21,7 @@ public interface JdbcMigrationResource {
    boolean isApplicable(JdbcClientConfig config);
 
    URL getLocation();
+
+   void addPlaceholders(Map<String, String> placeholders);
 
 }

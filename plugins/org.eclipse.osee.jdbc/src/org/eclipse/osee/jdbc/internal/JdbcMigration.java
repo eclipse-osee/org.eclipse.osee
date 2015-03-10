@@ -42,19 +42,21 @@ public class JdbcMigration {
    public void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> migrations) {
       try {
          ArrayList<String> allPaths = new ArrayList<String>();
-         for (JdbcMigrationResource migration : migrations) {
-            URL location = migration.getLocation();
-            location = FileLocator.toFileURL(location);
-            String formated = String.format(LOCATION_TEMPLATE, location.getFile());
-            allPaths.add(formated);
-         }
          if (options.isBaselineOnMigration()) {
             baselineOnMigrate();
          }
 
          Flyway fly = newFlyway();
+         Map<String, String> placeholders = fly.getPlaceholders();
+         for (JdbcMigrationResource migration : migrations) {
+            migration.addPlaceholders(placeholders);
+            URL location = migration.getLocation();
+            location = FileLocator.toFileURL(location);
+            String formated = String.format(LOCATION_TEMPLATE, location.getFile());
+            allPaths.add(formated);
+         }
          fly.setLocations(allPaths.toArray(new String[allPaths.size()]));
-         before(fly.getPlaceholders());
+         before(placeholders);
          if (options.isClean()) {
             fly.clean();
          }
