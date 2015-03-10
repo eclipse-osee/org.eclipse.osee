@@ -115,7 +115,7 @@ public class GraphDataImplTest {
       when(artifact.getBranch()).thenReturn(branch);
       when(artifactData.getLocalId()).thenReturn(10);
 
-      graph.addNode(artifact);
+      graph.addNode(artifact, false);
       assertEquals(artifact, graph.getNode(10));
       assertEquals(artifact, graph.getNode(artifactData));
    }
@@ -126,7 +126,7 @@ public class GraphDataImplTest {
       when(container.getBranch()).thenReturn(branch);
       when(attributeData.getLocalId()).thenReturn(11);
 
-      graph.addNode(container);
+      graph.addNode(container, false);
       assertEquals(container, graph.getNode(11));
       assertEquals(container, graph.getNode(attributeData));
    }
@@ -143,10 +143,10 @@ public class GraphDataImplTest {
       when(container1.getBranch()).thenReturn(branch);
       when(container2.getBranch()).thenReturn(branch);
 
-      graph.addNode(artifact1);
-      graph.addNode(artifact2);
-      graph.addNode(container1);
-      graph.addNode(container2);
+      graph.addNode(artifact1, false);
+      graph.addNode(artifact2, false);
+      graph.addNode(container1, false);
+      graph.addNode(container2, false);
 
       verify(artifact1).getLocalId();
       verify(artifact2).getLocalId();
@@ -176,10 +176,10 @@ public class GraphDataImplTest {
       when(container1.getBranch()).thenReturn(branch);
       when(container2.getBranch()).thenReturn(branch);
 
-      graph.addNode(artifact1);
-      graph.addNode(artifact2);
-      graph.addNode(container1);
-      graph.addNode(container2);
+      graph.addNode(artifact1, false);
+      graph.addNode(artifact2, false);
+      graph.addNode(container1, false);
+      graph.addNode(container2, false);
 
       verify(artifact1).getLocalId();
       verify(artifact2).getLocalId();
@@ -209,10 +209,10 @@ public class GraphDataImplTest {
       when(container1.getBranch()).thenReturn(branch);
       when(container2.getBranch()).thenReturn(branch);
 
-      graph.addNode(artifact1);
-      graph.addNode(artifact2);
-      graph.addNode(container1);
-      graph.addNode(container2);
+      graph.addNode(artifact1, false);
+      graph.addNode(artifact2, false);
+      graph.addNode(container1, false);
+      graph.addNode(container2, false);
 
       verify(artifact1).getLocalId();
       verify(artifact2).getLocalId();

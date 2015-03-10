@@ -23,23 +23,33 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -65,10 +75,15 @@ public class RelationManagerTest {
    @Mock private Log logger;
    @Mock private RelationTypes types;
    @Mock private RelationFactory relationFactory;
+   @Mock private ExternalArtifactManager proxyManager;
+   @Mock private QueryFactory factory;
+   @Mock private QueryModuleProvider provider;
+   @Mock private ProxyProvider proxy;
    
    @Mock private RelationNodeLoader loader;
    @Mock private OrcsSession session;
    @Mock private GraphData graph;
+   @Mock private IOseeBranch branch;
    
    @Mock private RelationNode node1;
    @Mock private RelationNode node2;
@@ -77,11 +92,19 @@ public class RelationManagerTest {
    @Mock private RelationNode node5;
    @Mock private RelationNode node6;
    
+   @Mock private RelationNodeAdjacencies adjancies1;
+   @Mock private RelationNodeAdjacencies adjancies2;
+   
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    @Mock private Relation relation4;
    @Mock private IRelationType relationType;
+   
+   @Mock private RelationData data1;
+   @Mock private RelationData data2;
+   @Mock private RelationData data3;
+   @Mock private RelationData data4;
    
    @Captor private ArgumentCaptor<Collection<Integer>> captor;
    // @formatter:on
@@ -89,6 +112,7 @@ public class RelationManagerTest {
    private RelationManager manager;
    private Map<Integer, RelationNode> mockDb;
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Before
    public void setUp() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
@@ -96,7 +120,7 @@ public class RelationManagerTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader);
+      manager = RelationManagerFactory.createRelationManager(logger, types, relationFactory, loader, provider, proxy);
 
       when(loader.loadNodes(eq(session), eq(graph), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenAnswer(
          new LoaderAnswer());
@@ -122,6 +146,14 @@ public class RelationManagerTest {
       when(node5.getGraph()).thenReturn(graph);
       when(node6.getGraph()).thenReturn(graph);
 
+      when(node1.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+      when(node2.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+      when(node3.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+
+      when(node1.getOrderData()).thenReturn("");
+      when(node2.getOrderData()).thenReturn("");
+      when(node3.getOrderData()).thenReturn("");
+
       mockDb = new HashMap<Integer, RelationNode>();
       mockDb.put(11, node1);
       mockDb.put(22, node2);
@@ -134,21 +166,29 @@ public class RelationManagerTest {
       when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation1.getRationale()).thenReturn("rationale on relation1");
+      when(relation1.getOrcsData()).thenReturn(data1);
+      when(relation1.getOrcsData().getLocalId()).thenReturn(10);
 
       when(relation2.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation2.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(33);
       when(relation2.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation2.getRationale()).thenReturn("rationale on relation2");
+      when(relation2.getOrcsData()).thenReturn(data2);
+      when(relation2.getOrcsData().getLocalId()).thenReturn(11);
 
       when(relation3.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(44);
       when(relation3.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(11);
       when(relation3.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation3.getRationale()).thenReturn("rationale on relation3");
+      when(relation3.getOrcsData()).thenReturn(data3);
+      when(relation3.getOrcsData().getLocalId()).thenReturn(12);
 
       when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(55);
       when(relation4.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation4.getRationale()).thenReturn("rationale on relation4");
+      when(relation4.getOrcsData()).thenReturn(data4);
+      when(relation4.getOrcsData().getLocalId()).thenReturn(13);
 
       setupAdjacencies(node1, relation1, relation2, relation3, relation4);
       setupAdjacencies(node2, relation1);
@@ -160,6 +200,9 @@ public class RelationManagerTest {
       when(types.getByUuid(DEFAULT_HIERARCHY.getGuid())).thenReturn(relationType);
       when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
       when(types.getDefaultOrderTypeGuid(relationType)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
+      when(types.getAll()).thenReturn(
+         new ArrayList(Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child,
+            CoreRelationTypes.Default_Hierarchical__Parent)));
    }
 
    private void setupAdjacencies(RelationNode node, Relation... relations) throws OseeCoreException {
@@ -262,6 +305,28 @@ public class RelationManagerTest {
       assertFalse(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node5));
    }
 
+   @Test
+   public void testIntroduce() throws OseeCoreException {
+      when(
+         types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
+            CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
+      when(types.getMultiplicity(CoreRelationTypes.Default_Hierarchical__Parent)).thenReturn(
+         RelationTypeMultiplicity.ONE_TO_MANY);
+      when(relationFactory.introduce(branch, data1)).thenReturn(relation1);
+
+      manager.introduce(session, branch, node2, node3);
+      RelationNodeAdjacencies node2Adj = node2.getGraph().getAdjacencies(node2);
+      RelationNodeAdjacencies node3Adj = node3.getGraph().getAdjacencies(node3);
+
+      Collection<Relation> node2Rel = node2Adj.getAll();
+      Collection<Relation> node3Rel = node3Adj.getAll();
+
+      Relation rel2 = node2Rel.iterator().next();
+      Relation rel3 = node3Rel.iterator().next();
+
+      assertTrue(rel2.equals(rel3));
+
+   }
    private class LoaderAnswer implements Answer<Iterable<RelationNode>> {
 
       @SuppressWarnings("unchecked")

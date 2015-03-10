@@ -126,6 +126,8 @@ public class GraphBuilderImplTest {
    public void testGetNodeOrAdjanciesNull() throws OseeCoreException {
       when(graphData.getNode(artifactData)).thenReturn(null);
       when(artifactFactory.createArtifact(session, artifactData)).thenReturn(artifact);
+      when(artifact.getOrcsData()).thenReturn(artifactData);
+      when(artifactData.isUseBackingData()).thenReturn(false);
 
       when(graphData.getNode(60)).thenReturn(null);
       when(graphData.getNode(relationData)).thenReturn(null);
@@ -135,7 +137,7 @@ public class GraphBuilderImplTest {
       builder.onLoadDescription(description);
 
       builder.onData(artifactData);
-      verify(graphData).addNode(artifact);
+      verify(graphData).addNode(artifact, false);
       verify(artifactFactory).createArtifact(session, artifactData);
       verify(relationFactory, times(1)).createRelationContainer();
 

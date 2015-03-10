@@ -23,6 +23,7 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    private int artIdA = RelationalConstants.ART_ID_SENTINEL;
    private int artIdB = RelationalConstants.ART_ID_SENTINEL;
    private String rationale = RelationalConstants.DEFAULT_RATIONALE;
+   private boolean useBackingData = false;
 
    public RelationDataImpl(VersionData version) {
       super(version);
@@ -112,6 +113,16 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    @Override
    public String toString() {
       return "RelationData [artIdA=" + artIdA + ", artIdB=" + artIdB + ", rationale=" + rationale + " " + super.toString() + "]";
+   }
+
+   @Override
+   public boolean isUseBackingData() {
+      return useBackingData;
+   }
+
+   @Override
+   public void setUseBackingData(boolean useBackingData) {
+      this.useBackingData = useBackingData;
    }
 
 }

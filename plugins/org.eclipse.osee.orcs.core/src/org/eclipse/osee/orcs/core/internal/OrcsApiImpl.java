@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory.BranchProviderFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
@@ -49,6 +50,7 @@ import org.eclipse.osee.orcs.core.internal.graph.impl.GraphFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.indexer.IndexerModule;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManagerFactory;
@@ -58,6 +60,7 @@ import org.eclipse.osee.orcs.core.internal.script.OrcsScriptCompiler;
 import org.eclipse.osee.orcs.core.internal.script.ScriptEngines;
 import org.eclipse.osee.orcs.core.internal.script.impl.OrcsScriptCompilerImpl;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.core.internal.session.OrcsSessionImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TransactionFactoryImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxCallableFactory;
@@ -95,6 +98,8 @@ public class OrcsApiImpl implements OrcsApi {
    private TxDataManager txDataManager;
    private TxCallableFactory txCallableFactory;
    private ScriptEngineManager manager;
+
+   ExternalArtifactManager proxyManager;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -167,9 +172,28 @@ public class OrcsApiImpl implements OrcsApi {
       GraphBuilderFactory graphBuilderFactory =
          new GraphBuilderFactory(logger, artifactFactory, attributeFactory, relationFactory);
 
+      QueryModuleProvider queryModuleProvider = new QueryModuleProvider() {
+
+         @Override
+         public QueryFactory getQueryFactory(OrcsSession session) {
+            return queryModule.createQueryFactory(session);
+         }
+
+      };
+
+      ProxyProvider proxyProvider = new ProxyProvider() {
+
+         @Override
+         public Artifact getInternalArtifact(ArtifactReadable external) {
+            return proxyManager.asInternalArtifact(external);
+         }
+
+      };
+
       RelationNodeLoader nodeLoader = new RelationNodeLoaderImpl(module.getDataLoaderFactory(), graphBuilderFactory);
       RelationManager relationManager =
-         RelationManagerFactory.createRelationManager(logger, orcsTypes.getRelationTypes(), relationFactory, nodeLoader);
+         RelationManagerFactory.createRelationManager(logger, orcsTypes.getRelationTypes(), relationFactory,
+            nodeLoader, queryModuleProvider, proxyProvider);
 
       GraphProvider graphProvider = new GraphProvider() {
 
@@ -179,7 +203,7 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
 
-      ExternalArtifactManager proxyManager = new ExternalArtifactManagerImpl(relationManager);
+      proxyManager = new ExternalArtifactManagerImpl(relationManager);
 
       TransactionProvider txProvider = new TransactionProvider() {
 
@@ -252,7 +276,7 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory(ApplicationContext context) {
       OrcsSession session = getSession(context);
-      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory);
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule);
    }
 
    @Override

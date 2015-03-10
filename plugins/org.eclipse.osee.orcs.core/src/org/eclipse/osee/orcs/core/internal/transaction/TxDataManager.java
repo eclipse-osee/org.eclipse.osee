@@ -32,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
+import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -178,7 +179,7 @@ public class TxDataManager {
 
    private Artifact copyArtifactForWrite(TxData txData, Artifact source) throws OseeCoreException {
       Artifact artifact = artifactFactory.clone(txData.getSession(), source);
-      txData.getGraph().addNode(artifact);
+      txData.getGraph().addNode(artifact, artifact.getOrcsData().isUseBackingData());
       relationManager.cloneRelations(txData.getSession(), source, artifact);
       return artifact;
    }
@@ -260,12 +261,36 @@ public class TxDataManager {
       return asExternalArtifact(txData, copy);
    }
 
-   public ArtifactReadable introduceArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   public ArtifactReadable introduceArtifact(TxData txData, IOseeBranch fromBranch, ArtifactReadable source, ArtifactReadable destination) throws OseeCoreException {
       checkChangesAllowed(txData);
-      checkAreOnDifferentBranches(txData, fromBranch);
-      Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
-      Artifact artifact = artifactFactory.introduceArtifact(txData.getSession(), source, txData.getBranch());
-      return asExternalArtifact(txData, artifact);
+      Artifact src = getSourceArtifact(txData, fromBranch, source);
+      Artifact dest = null;
+      if (destination == null) {
+         dest =
+            artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), src.getArtifactType(),
+               src.getGuid());
+         dest.setGraph(loader.createGraph(txData.getSession(), txData.getBranch()));
+      } else {
+         dest = getSourceArtifact(txData, fromBranch, destination);
+      }
+      artifactFactory.introduceArtifact(txData.getSession(), src, dest, txData.getBranch());
+      relationManager.introduce(txData.getSession(), txData.getBranch(), src, dest);
+      addNodeAndAdjacencies(txData, dest);
+      return asExternalArtifact(txData, dest);
+   }
+
+   public ArtifactReadable replaceWithVersion(TxData txData, IOseeBranch fromBranch, ArtifactReadable readable, ArtifactReadable destination) throws OseeCoreException {
+      return introduceArtifact(txData, fromBranch, readable, destination);
+   }
+
+   private void addNodeAndAdjacencies(TxData txData, Artifact dest) {
+      checkAndAdd(txData, dest);
+      GraphData graph = txData.getGraph();
+      GraphData destGraph = ((RelationNode) dest).getGraph();
+      GraphAdjacencies adjacencies = destGraph.getAdjacencies(dest);
+      if (adjacencies != null) {
+         graph.addAdjacencies(dest, adjacencies);
+      }
    }
 
    private ArtifactReadable asExternalArtifact(TxData txData, Artifact artifact) throws OseeCoreException {
@@ -285,13 +310,7 @@ public class TxDataManager {
       Conditions.checkExpressionFailOnTrue(isDifferent,
          "Another instance of writeable detected - writeable tracking would be inconsistent");
 
-      txData.getGraph().addNode(artifact);
-   }
-
-   private void checkAreOnDifferentBranches(TxData txData, IOseeBranch sourceBranch) throws OseeCoreException {
-      boolean isOnSameBranch = txData.getBranch().equals(sourceBranch);
-      Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
-         txData.getBranch());
+      txData.getGraph().addNode(artifact, artifact.getOrcsData().isUseBackingData());
    }
 
    public void deleteArtifact(TxData txData, ArtifactId sourceArtifact) throws OseeCoreException {

@@ -142,7 +142,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    private boolean isReplaceWithVersion() {
-      return getModificationType() == ModificationType.REPLACED_WITH_VERSION;
+      return (getModificationType() == ModificationType.REPLACED_WITH_VERSION) || artifactData.isUseBackingData();
    }
 
    private boolean hasDirtyArtifactType() {

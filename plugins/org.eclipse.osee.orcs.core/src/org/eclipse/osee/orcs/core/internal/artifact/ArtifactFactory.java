@@ -17,8 +17,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -76,22 +77,39 @@ public class ArtifactFactory {
       return copy;
    }
 
-   public Artifact introduceArtifact(OrcsSession session, Artifact source, IOseeBranch ontoBranch) throws OseeCoreException {
-      Conditions.checkExpressionFailOnTrue(ontoBranch.equals(source.getBranch()),
-         "Source artifact is on the same branch as [%s]", ontoBranch);
+   public Artifact introduceArtifact(OrcsSession session, Artifact source, Artifact destination, IOseeBranch ontoBranch) throws OseeCoreException {
+      destination = processIntroduceArtifact(session, source, destination, ontoBranch);
+      processIntroduceAttributes(source, destination, ontoBranch);
+      destination.setLoaded(true);
+      return destination;
+   }
 
-      ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
-      Artifact introducedArt = createArtifact(session, artifactData);
-      Collection<? extends IAttributeType> typeToCopy =
-         getAllowedTypes(introducedArt, source.getExistingAttributeTypes());
-      for (IAttributeType attributeType : typeToCopy) {
-         for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
-            AttributeData data = getAttributeData(attributeSource);
-            attributeFactory.introduceAttribute(data, ontoBranch, introducedArt);
+   private void processIntroduceAttributes(Artifact source, Artifact destination, IOseeBranch ontoBranch) {
+      Collection<Attribute<Object>> introduceAttributes = source.getAttributes(DeletionFlag.INCLUDE_DELETED);
+      removeAttributes(source, destination);
+      //introduce the existing attributes
+      for (Attribute<Object> attr : introduceAttributes) {
+         if (destination.isAttributeTypeValid(attr.getAttributeType())) {
+            attributeFactory.introduceAttribute(attr.getOrcsData(), ontoBranch, destination);
          }
       }
-      introducedArt.setLoaded(true);
-      return introducedArt;
+   }
+
+   private Artifact processIntroduceArtifact(OrcsSession session, Artifact source, Artifact destination, IOseeBranch ontoBranch) {
+      ArtifactData artifactData = factory.introduce(ontoBranch, source.getOrcsData());
+      destination.setOrcsData(artifactData);
+      return destination;
+   }
+
+   private void removeAttributes(Artifact introduce, Artifact destination) {
+      for (Attribute<Object> destAttribute : destination.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
+         try {
+            introduce.getAttributeById(destAttribute);
+         } catch (AttributeDoesNotExist ex) {
+            // remove new attributes 
+            destAttribute.delete();
+         }
+      }
    }
 
    public Artifact clone(OrcsSession session, Artifact source) throws OseeCoreException {

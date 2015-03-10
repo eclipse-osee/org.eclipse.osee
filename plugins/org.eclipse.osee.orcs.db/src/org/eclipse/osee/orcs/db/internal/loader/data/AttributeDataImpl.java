@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class AttributeDataImpl extends OrcsVersionedObjectImpl implements AttributeData {
 
    private int artifactId = RelationalConstants.ART_ID_SENTINEL;
+   private boolean useBackingData = false;
 
    private DataProxy proxy;
 
@@ -85,5 +86,15 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    @Override
    public String toString() {
       return "AttributeData [artifactId=" + artifactId + " " + super.toString() + ", proxy=" + proxy + "]";
+   }
+
+   @Override
+   public boolean isUseBackingData() {
+      return useBackingData;
+   }
+
+   @Override
+   public void setUseBackingData(boolean useBackingData) {
+      this.useBackingData = useBackingData;
    }
 }

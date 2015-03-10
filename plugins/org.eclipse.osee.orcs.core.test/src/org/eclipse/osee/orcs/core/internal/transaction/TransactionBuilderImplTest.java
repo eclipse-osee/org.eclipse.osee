@@ -27,6 +27,8 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -45,17 +47,23 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -79,12 +87,18 @@ public class TransactionBuilderImplTest {
    @Mock private OrcsSession session;
    @Mock private TxDataManager txDataManager;
    @Mock private TxCallableFactory txCallableFactory;
+   @Mock private QueryFactory queryFactory;
+   @Mock private QueryBuilder builder;
+   @Mock private QueryModule query;
    
+   @Mock private IOseeBranch branch;
    
    @Mock private ArtifactReadable expectedAuthor;
+   @Mock private ArtifactReadable expectedDestination;
    @Mock private ArtifactReadable node1;
    @Mock private ArtifactReadable node2;
    @Mock private Artifact artifact;
+   @Mock private Artifact artifact2;
    @SuppressWarnings("rawtypes")
    @Mock private AttributeReadable attrId;
    @SuppressWarnings("rawtypes")
@@ -102,10 +116,11 @@ public class TransactionBuilderImplTest {
    public void init() throws OseeCoreException {
       initMocks(this);
       guid = GUID.create();
-      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData);
+      factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query);
 
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);
       when(artifact.getAttributeById(attrId)).thenReturn(attribute);
+      when(query.createQueryFactory(session)).thenReturn(queryFactory);
    }
 
    @Test
@@ -178,12 +193,32 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
+   public void testIntroduceArtifactBranchException() throws OseeCoreException {
+      when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
+      when(txData.getBranch()).thenReturn(expectedBranch);
+
+      thrown.expect(OseeArgumentException.class);
+      thrown.expectMessage("Source branch is same branch as transaction branch[" + expectedBranch + "]");
+      factory.introduceArtifact(expectedBranch, expectedAuthor);
+   }
+
+   @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
+      when(txData.getBranch()).thenReturn(branch);
 
-      factory.introduceArtifact(expectedAuthor);
+      when(query.createQueryFactory(null)).thenReturn(queryFactory);
+      when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
+      when(queryFactory.fromBranch(branch)).thenReturn(builder);
+      when(builder.includeDeletedArtifacts()).thenReturn(builder);
+      when(builder.andGuid(anyString())).thenReturn(builder);
 
-      verify(txDataManager).introduceArtifact(txData, expectedBranch, expectedAuthor);
+      ResultSet<ArtifactReadable> source = ResultSets.singleton(expectedAuthor);
+      when(builder.getResults()).thenReturn(source);
+
+      factory.introduceArtifact(expectedBranch, expectedAuthor);
+
+      verify(txDataManager).introduceArtifact(txData, expectedBranch, expectedAuthor, expectedAuthor);
    }
 
    @Test

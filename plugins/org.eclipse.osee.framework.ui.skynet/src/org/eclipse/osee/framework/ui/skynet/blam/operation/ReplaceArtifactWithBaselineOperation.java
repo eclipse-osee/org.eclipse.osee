@@ -12,19 +12,23 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
 /**
  * @author Jeff C. Phillips
@@ -46,31 +50,35 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       if (!monitor.isCanceled() && Conditions.notNull(changeReportChanges, artifacts)) {
          monitor.beginTask("Reverting artifact(s)", artifacts.size());
          if (!artifacts.isEmpty()) {
+            OseeClient client = ServiceUtil.getOseeClient();
+            TransactionEndpoint txBuilder = client.getTransactionEndpoint();
             Artifact firstArtifact = artifacts.iterator().next();
-            IOseeBranch branch = firstArtifact.getBranch();
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(branch, ReplaceArtifactWithBaselineOperation.class.getSimpleName());
-
             TransactionRecord txRecord = firstArtifact.getFullBranch().getBaseTransaction();
+            IOseeBranch branch = firstArtifact.getBranch();
+
             for (Artifact artifact : artifacts) {
                monitor.subTask("Reverting: " + artifact.getName());
                monitor.worked(1);
                Artifact sourceArtifact =
                   ArtifactQuery.checkHistoricalArtifactFromId(artifact.getArtId(), txRecord,
                      DeletionFlag.INCLUDE_DELETED);
-               if (sourceArtifact != null) {
-                  transaction.addArtifact(new IntroduceArtifactOperation(branch).introduce(sourceArtifact));
-               } else {
-                  artifact.delete();
-                  transaction.addArtifact(artifact);
+               try {
+                  if (sourceArtifact != null) {
+                     String userId = ClientSessionManager.getCurrentUserToken().getUserId();
+                     User user = UserManager.getUserByUserId(userId);
+                     txBuilder.replaceWithBaselineTxVersion(user.getGuid(), branch.getUuid(), txRecord.getId(),
+                        sourceArtifact.getArtId(), ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+                     monitor.done();
+                  } else {
+                     artifact.deleteAndPersist();
+                  }
+               } catch (Exception ex) {
+                  throw JaxRsExceptions.asOseeException(ex);
                }
-               monitor.done();
             }
-            monitor.subTask(String.format("Persisting %s artifact(s)", artifacts.size()));
-            transaction.execute();
             persistAndReloadArtifacts();
+            monitor.done();
          }
-         monitor.done();
       }
    }
 

@@ -140,8 +140,14 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
 
    @Override
    public Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+      return getAttributeById(attributeId, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
       Attribute<Object> attribute = null;
-      Optional<Attribute<Object>> tryFind = Iterables.tryFind(getAttributes(), OrcsPredicates.attributeId(attributeId));
+      Optional<Attribute<Object>> tryFind =
+         Iterables.tryFind(getAttributes(includeDeleted), OrcsPredicates.attributeId(attributeId));
       if (tryFind.isPresent()) {
          attribute = tryFind.get();
       } else {

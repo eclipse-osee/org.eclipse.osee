@@ -14,6 +14,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -77,14 +79,20 @@ public class AttributeFactory {
       return destinationAttribute;
    }
 
-   public <T> Attribute<T> introduceAttribute(AttributeData source, IOseeBranch ontoBranch, AttributeContainer destination) throws OseeCoreException {
-      Attribute<T> introducedAttribute = null;
+   public <T> Attribute<Object> introduceAttribute(AttributeData source, IOseeBranch ontoBranch, AttributeManager destination) throws OseeCoreException {
+      AttributeData attributeData = dataFactory.introduce(ontoBranch, source);
       // In order to reflect attributes they must exist in the data store
+      Attribute<Object> destinationAttribute = null;
       if (source.getVersion().isInStorage()) {
-         AttributeData attributeData = dataFactory.introduce(ontoBranch, source);
-         introducedAttribute = createAttribute(destination, attributeData, true, false);
+         try {
+            destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
+            Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(destination);
+            destinationAttribute.internalInitialize(cache, artifactRef, attributeData, true, false);
+         } catch (AttributeDoesNotExist ex) {
+            destinationAttribute = createAttribute(destination, attributeData);
+         }
       }
-      return introducedAttribute;
+      return destinationAttribute;
    }
 
    private ResourceNameResolver createResolver(Attribute<?> attribute) {

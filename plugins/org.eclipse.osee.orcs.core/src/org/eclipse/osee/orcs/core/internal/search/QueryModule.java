@@ -38,6 +38,10 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
 
+   public static interface QueryModuleProvider {
+      QueryFactory getQueryFactory(OrcsSession session);
+   }
+
    public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache, ExternalArtifactManager proxyManager) {
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);

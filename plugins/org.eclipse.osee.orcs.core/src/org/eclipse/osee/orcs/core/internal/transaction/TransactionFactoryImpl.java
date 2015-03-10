@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
@@ -31,12 +32,14 @@ public class TransactionFactoryImpl implements TransactionFactory {
    private final OrcsSession session;
    private final TxDataManager txDataManager;
    private final TxCallableFactory txCallableFactory;
+   private final QueryModule query;
 
-   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory) {
+   public TransactionFactoryImpl(OrcsSession session, TxDataManager txDataManager, TxCallableFactory txCallableFactory, QueryModule query) {
       super();
       this.session = session;
       this.txDataManager = txDataManager;
       this.txCallableFactory = txCallableFactory;
+      this.query = query;
    }
 
    @Override
@@ -57,7 +60,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       Conditions.checkNotNullOrEmpty(comment, "comment");
 
       TxData txData = txDataManager.createTxData(session, branch);
-      TransactionBuilderImpl orcsTxn = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData);
+      TransactionBuilderImpl orcsTxn = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;

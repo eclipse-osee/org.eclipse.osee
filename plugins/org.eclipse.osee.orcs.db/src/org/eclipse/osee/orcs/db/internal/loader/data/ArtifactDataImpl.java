@@ -20,6 +20,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements ArtifactData {
 
    private String guid = RelationalConstants.DEFAULT_GUID;
+   private boolean useBackingData = false;
 
    public ArtifactDataImpl(VersionData version) {
       super(version);
@@ -68,6 +69,16 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
    @Override
    public String toString() {
       return "ArtifactData [guid=" + guid + ", " + super.toString() + "]";
+   }
+
+   @Override
+   public boolean isUseBackingData() {
+      return useBackingData;
+   }
+
+   @Override
+   public void setUseBackingData(boolean useBackingData) {
+      this.useBackingData = useBackingData;
    }
 
 }

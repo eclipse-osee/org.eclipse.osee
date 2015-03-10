@@ -61,7 +61,7 @@ public class ReplaceWithBaselineVersionDialog extends TitleAreaDialog {
       attribute.setEnabled(attrEnabled);
 
       Button artifact = new Button(composite, SWT.RADIO);
-      artifact.setText("Replace Artifact Attributes");
+      artifact.setText("Replace Artifact");
       artifact.setEnabled(attrEnabled || artEnabled);
 
       composite.setLayout(new GridLayout());

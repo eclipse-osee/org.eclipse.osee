@@ -61,9 +61,9 @@ public interface TransactionBuilder {
 
    ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactId introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
+   ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException;
+   ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException;
 
    // ATTRIBUTE
 

@@ -11,11 +11,13 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationManagerImpl;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationResolverImpl;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderParser;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterProvider;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
 /**
@@ -27,7 +29,7 @@ public final class RelationManagerFactory {
       // Static Factory
    }
 
-   public static RelationManager createRelationManager(Log logger, RelationTypes relationTypes, RelationFactory relationFactory, RelationNodeLoader loader) {
+   public static RelationManager createRelationManager(Log logger, RelationTypes relationTypes, RelationFactory relationFactory, RelationNodeLoader loader, QueryModuleProvider provider, ProxyProvider proxy) {
       OrderParser orderParser = new OrderParser(relationTypes);
       SorterProvider sorterProvider = new SorterProvider(relationTypes);
       OrderManagerFactory orderManagerFactory = new OrderManagerFactory(orderParser, sorterProvider);
@@ -35,6 +37,6 @@ public final class RelationManagerFactory {
       RelationResolver resolver = new RelationResolverImpl(loader);
       RelationTypeValidity validity = new RelationTypeValidity(relationTypes);
 
-      return new RelationManagerImpl(logger, validity, resolver, relationFactory, orderManagerFactory);
+      return new RelationManagerImpl(logger, validity, resolver, relationFactory, orderManagerFactory, provider, proxy);
    }
 }

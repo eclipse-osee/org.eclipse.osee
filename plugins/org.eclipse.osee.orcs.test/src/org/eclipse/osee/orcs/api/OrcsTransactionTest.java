@@ -242,7 +242,7 @@ public class OrcsTransactionTest {
 
       TransactionBuilder transaction =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
-      transaction.introduceArtifact(user);
+      transaction.introduceArtifact(COMMON, user);
       transaction.commit();
 
       ArtifactReadable introduced =
@@ -258,7 +258,7 @@ public class OrcsTransactionTest {
       TransactionBuilder tx = createTx();
 
       thrown.expect(OseeArgumentException.class);
-      tx.introduceArtifact(user);
+      tx.introduceArtifact(COMMON, user);
    }
 
    @Test

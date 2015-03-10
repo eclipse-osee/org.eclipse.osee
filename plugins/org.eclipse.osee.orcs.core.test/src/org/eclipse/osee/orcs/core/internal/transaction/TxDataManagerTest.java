@@ -57,6 +57,7 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,6 +86,7 @@ public class TxDataManagerTest {
    
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private ArtifactFactory artifactFactory;
+   @Mock private QueryFactory queryFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
    @Mock private BranchProvider provider;
@@ -217,6 +219,10 @@ public class TxDataManagerTest {
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       Artifact actual = txDataManager.getForWrite(txData, artifactId1);
 
       verify(txData).getWriteable(artifactId1);
@@ -232,6 +238,11 @@ public class TxDataManagerTest {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
       verify(txData).getWriteable(readable1);
@@ -246,25 +257,31 @@ public class TxDataManagerTest {
       when(readable1.getBranch()).thenReturn(CoreBranches.COMMON);
       when(txData.getWriteable(readable1)).thenReturn(null);
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
+      when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
 
-      ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
-      when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
       verify(artifact1).getBranch();
-      verify(loader).loadArtifacts(eq(session), eq(graph), idCaptor.capture());
 
-      assertEquals(readable1, idCaptor.getValue().iterator().next());
-      assertEquals(artifact1, actual);
+      assertEquals(artifact2, actual);
    }
 
    @Test
    public void testGetForWriteArtifact() throws OseeCoreException {
       when(txData.getWriteable(artifact1)).thenReturn(null);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
 
@@ -281,6 +298,11 @@ public class TxDataManagerTest {
 
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact2);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
 
@@ -302,6 +324,12 @@ public class TxDataManagerTest {
       ResultSet<Artifact> loaded = ResultSets.newResultSet(artifacts);
       when(loader.loadArtifacts(eq(session), eq(graph), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(artifact3.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       Iterable<Artifact> actual = txDataManager.getForWrite(txData, ids);
 
       verify(loader).loadArtifacts(eq(session), eq(graph), idCaptor.capture());
@@ -319,6 +347,10 @@ public class TxDataManagerTest {
    public void testGetForWriteDuringWrite() throws OseeCoreException {
       when(txData.add(artifact1)).thenReturn(artifact3);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact1);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Another instance of writeable detected - writeable tracking would be inconsistent");
@@ -360,6 +392,10 @@ public class TxDataManagerTest {
       when(artifactFactory.createArtifact(session, branch, DirectSoftwareRequirement, guid)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       ArtifactReadable actual =
          txDataManager.createArtifact(txData, DirectSoftwareRequirement, "Direct SW requirement", guid);
 
@@ -374,6 +410,11 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, readable1);
 
@@ -391,6 +432,11 @@ public class TxDataManagerTest {
       when(readable1.getBranch()).thenReturn(branch);
       when(txData.getWriteable(readable1)).thenReturn(null);
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
@@ -421,6 +467,9 @@ public class TxDataManagerTest {
       List<? extends IAttributeType> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));
 
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
       when(txData.getWriteable(sourceArtifact)).thenReturn(null);
@@ -444,6 +493,11 @@ public class TxDataManagerTest {
       when(artifactFactory.copyArtifact(session, artifact1, types, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       ArtifactReadable actual = txDataManager.copyArtifact(txData, branch, artifactId1);
 
       verify(txData).getWriteable(artifactId1);
@@ -454,17 +508,6 @@ public class TxDataManagerTest {
    }
 
    @Test
-   public void testIntroduceArtifactExceptionSameBranch() throws OseeCoreException {
-      when(txData.isCommitInProgress()).thenReturn(false);
-      when(txData.getTxState()).thenReturn(TxState.NEW_TX);
-      when(txData.getBranch()).thenReturn(branch);
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(String.format("Source branch is same branch as transaction branch[%s]", branch));
-      txDataManager.introduceArtifact(txData, branch, artifactId1);
-   }
-
-   @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
@@ -472,21 +515,31 @@ public class TxDataManagerTest {
 
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
       when(loader.loadArtifacts(eq(session), eq(COMMON), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
-      when(artifactFactory.introduceArtifact(session, artifact1, branch)).thenReturn(artifact2);
+      when(artifactFactory.introduceArtifact(session, artifact1, artifact1, branch)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
+      when(artifact1.getGraph()).thenReturn(graph);
+      when(graph.getAdjacencies(artifact1)).thenReturn(adjacencies);
 
-      ArtifactReadable actual = txDataManager.introduceArtifact(txData, COMMON, artifactId1);
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
-      verify(loader).loadArtifacts(eq(session), eq(COMMON), idCaptor.capture());
-      assertEquals(artifactId1, idCaptor.getValue().iterator().next());
-      verify(artifactFactory).introduceArtifact(session, artifact1, branch);
-      verify(proxyManager).asExternalArtifact(session, artifact2);
-      assertEquals(readable2, actual);
+      ArtifactReadable actual = txDataManager.introduceArtifact(txData, COMMON, readable1, readable2);
+
+      verify(artifactFactory).introduceArtifact(session, artifact1, artifact1, branch);
+      verify(proxyManager).asExternalArtifact(session, artifact1);
+      assertEquals(readable1, actual);
    }
 
    @Test
    public void testDeleteArtifact() throws OseeCoreException {
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact2);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       txDataManager.deleteArtifact(txData, artifact1);
 
@@ -500,6 +553,10 @@ public class TxDataManagerTest {
       when(txData.getAllWriteables()).thenReturn(writeables);
       when(artifact1.isDirty()).thenReturn(true);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       TransactionData changeData = txDataManager.createChangeData(txData);
       assertNotNull(changeData);
    }
@@ -510,6 +567,11 @@ public class TxDataManagerTest {
 
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact3);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact3.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       txDataManager.setRationale(txData, readable1, DEFAULT_HIERARCHY, readable2, rationale);
 
@@ -522,6 +584,11 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getGraph()).thenReturn(graph);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
       verify(relationManager).relate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
@@ -532,6 +599,11 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getGraph()).thenReturn(graph);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       txDataManager.relate(txData, readable1, DEFAULT_HIERARCHY, readable2, LEXICOGRAPHICAL_DESC);
 
@@ -546,6 +618,12 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getWriteable(readable3)).thenReturn(artifact3);
       when(txData.getGraph()).thenReturn(graph);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(artifact3.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       txDataManager.addChildren(txData, readable1, children);
 
@@ -563,6 +641,12 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable3)).thenReturn(artifact3);
       when(txData.getGraph()).thenReturn(graph);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(artifact3.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       ResultSet<Artifact> related = ResultSets.singleton(artifact3);
       when(relationManager.<Artifact> getRelated(session, DEFAULT_HIERARCHY, artifact1, SIDE_A)).thenReturn(related);
       when(txData.getWriteable(artifact3)).thenReturn(artifact3);
@@ -579,6 +663,11 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable2)).thenReturn(artifact2);
       when(txData.getGraph()).thenReturn(graph);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(artifact2.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       txDataManager.unrelate(txData, readable1, DEFAULT_HIERARCHY, readable2);
 
       verify(relationManager).unrelate(session, artifact1, DEFAULT_HIERARCHY, artifact2);
@@ -589,6 +678,10 @@ public class TxDataManagerTest {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getGraph()).thenReturn(graph);
 
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
+
       txDataManager.unrelateFromAll(txData, DEFAULT_HIERARCHY, readable1, IS_CHILD);
 
       verify(relationManager).unrelateFromAll(session, DEFAULT_HIERARCHY, artifact1, IS_CHILD);
@@ -598,6 +691,10 @@ public class TxDataManagerTest {
    public void testUnrelateFromAll() throws OseeCoreException {
       when(txData.getWriteable(readable1)).thenReturn(artifact1);
       when(txData.getGraph()).thenReturn(graph);
+
+      ArtifactData data = Mockito.mock(ArtifactData.class);
+      when(artifact1.getOrcsData()).thenReturn(data);
+      when(data.isUseBackingData()).thenReturn(false);
 
       txDataManager.unrelateFromAll(txData, readable1);
 

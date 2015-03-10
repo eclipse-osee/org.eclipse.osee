@@ -62,7 +62,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public void addNode(GraphNode node) throws OseeCoreException {
+   public void addNode(GraphNode node, boolean useBackingData) throws OseeCoreException {
       boolean sameBranches = getBranchUuid() == node.getBranchUuid();
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
@@ -70,7 +70,7 @@ public class GraphDataImpl implements GraphData {
       }
 
       GraphData oldGraph = node.getGraph();
-      if (!this.equals(oldGraph)) {
+      if (!this.equals(oldGraph) || useBackingData) {
          if (oldGraph != null) {
             oldGraph.removeNode(node);
          }

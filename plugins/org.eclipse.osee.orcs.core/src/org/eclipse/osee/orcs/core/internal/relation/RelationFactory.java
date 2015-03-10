@@ -53,4 +53,11 @@ public class RelationFactory {
       RelationData data = relationDataFactory.clone(src.getOrcsData());
       return createRelation(data);
    }
+
+   public Relation introduce(IOseeBranch branch, RelationData data) {
+      RelationData source = relationDataFactory.introduce(branch, data);
+
+      return createRelation(source);
+   }
+
 }

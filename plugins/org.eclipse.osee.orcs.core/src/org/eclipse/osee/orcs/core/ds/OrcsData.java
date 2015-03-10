@@ -38,4 +38,8 @@ public interface OrcsData extends HasLocalId<Integer>, HasVersion {
    boolean hasTypeUuidChange();
 
    boolean hasModTypeChange();
+
+   public boolean isUseBackingData();
+
+   public void setUseBackingData(boolean useBackingData);
 }

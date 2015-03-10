@@ -74,4 +74,6 @@ public interface AttributeManager extends AttributeContainer {
    <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
    Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException;
+
+   Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException;
 }

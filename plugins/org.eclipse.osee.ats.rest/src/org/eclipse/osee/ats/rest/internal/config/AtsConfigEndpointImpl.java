@@ -164,7 +164,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                introToken.getName()).getResults().getAtMostOneOrNull();
       }
       Conditions.checkNotNull(introArt, "No artifact found for token " + introToken);
-      ArtifactId artifact = tx.introduceArtifact(introArt);
+      ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
       if (relateToToken != null) {
          relateToArt =
             orcsApi.getQueryFactory(null).fromBranch(newBranch).andIds(relateToToken).getResults().getAtMostOneOrNull();

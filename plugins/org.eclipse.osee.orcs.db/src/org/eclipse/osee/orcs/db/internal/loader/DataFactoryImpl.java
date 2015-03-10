@@ -79,6 +79,7 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public AttributeData introduce(IOseeBranch destination, AttributeData source) throws OseeCoreException {
       AttributeData newVersion = objectFactory.createCopy(source);
+      newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
       return newVersion;
    }
@@ -103,6 +104,7 @@ public class DataFactoryImpl implements DataFactory {
    @Override
    public ArtifactData introduce(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
       ArtifactData newVersion = objectFactory.createCopy(source);
+      newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
       return newVersion;
    }
@@ -115,6 +117,14 @@ public class DataFactoryImpl implements DataFactory {
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
          bArt.getLocalId(), rationale);
+   }
+
+   @Override
+   public RelationData introduce(IOseeBranch destination, RelationData source) {
+      RelationData newVersion = objectFactory.createCopy(source);
+      newVersion.setUseBackingData(true);
+      updateDataForIntroduce(destination, newVersion);
+      return newVersion;
    }
 
    @Override
@@ -146,10 +156,8 @@ public class DataFactoryImpl implements DataFactory {
    private void updateDataForIntroduce(IOseeBranch destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
       version.setBranchId(destination.getUuid());
-      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);
+      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       // do not clear gammaId for introduce case so we reuse the same version
-      data.setModType(ModificationType.INTRODUCED);
    }
 }

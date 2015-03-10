@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -178,7 +177,7 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
 
             @Override
             public void run() {
-               MessageDialog.openInformation(Displays.getActiveShell(), "Replace with Baseline Version...",
+               AWorkbench.popup("Replace with Baseline Version...",
                   "The operation successfully completed, please refresh any associated change reports.");
             }
          });

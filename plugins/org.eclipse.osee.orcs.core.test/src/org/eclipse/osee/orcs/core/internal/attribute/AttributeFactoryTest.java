@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -60,6 +61,7 @@ public class AttributeFactoryTest {
    
    @Mock private IAttributeType attributeType;
    @Mock private Attribute<Object> attribute;
+   @Mock private Attribute<Object> destinationAttribute;
 
    @Mock private AttributeManager container;
    @Mock private DataProxy proxy;
@@ -169,7 +171,6 @@ public class AttributeFactoryTest {
       assertNull(actual);
    }
 
-   @SuppressWarnings({"rawtypes", "unchecked"})
    @Test
    public void testIntroduceAttribute() throws OseeCoreException {
       AttributeData introducedAttributeData = mock(AttributeData.class);
@@ -181,19 +182,14 @@ public class AttributeFactoryTest {
       when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
-      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
-      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
+      when(container.getAttributeById(attributeData, DeletionFlag.INCLUDE_DELETED)).thenReturn(destinationAttribute);
 
       Attribute<Object> actual = factory.introduceAttribute(attributeData, branch, container);
       assertNotNull(actual);
 
       verify(dataFactory).introduce(branch, attributeData);
 
-      verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(introducedAttributeData), eq(true),
-         eq(false));
-      verify(container).add(attributeType, attribute);
-      assertEquals(container, refCapture.getValue().get());
+      assertEquals(actual, destinationAttribute);
    }
 
    @Test

@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
@@ -65,6 +66,7 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -97,6 +99,8 @@ public class RelationManagerImplTest {
   
    @Mock private RelationFactory relationFactory;
    @Mock private OrcsSession session;
+   @Mock private QueryModuleProvider provider;
+   @Mock private ProxyProvider proxy;
    
    @Mock private GraphData graph;
    
@@ -137,7 +141,7 @@ public class RelationManagerImplTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      manager = new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory);
+      manager = new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider, proxy);
 
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);

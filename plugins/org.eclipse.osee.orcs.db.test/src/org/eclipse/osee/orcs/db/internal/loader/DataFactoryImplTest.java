@@ -281,12 +281,12 @@ public class DataFactoryImplTest {
       assertEquals(570, actualVer.getBranchId());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getTransactionId());
-      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getStripeId());
+      assertEquals(artData.getVersion().getStripeId(), actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
       assertEquals(555, actual.getLocalId().intValue());
-      assertEquals(ModificationType.INTRODUCED, actual.getModType());
+      assertEquals(artData.getModType(), actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(777L, actual.getBaseTypeUuid());
@@ -302,12 +302,12 @@ public class DataFactoryImplTest {
       assertEquals(570, actualVer.getBranchId());
       assertEquals(222L, actualVer.getGammaId());
       assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getTransactionId());
-      assertEquals(RelationalConstants.TRANSACTION_SENTINEL, actualVer.getStripeId());
+      assertEquals(attrData.getVersion().getStripeId(), actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
       assertEquals(false, actualVer.isInStorage());
 
       assertEquals(555, actual.getLocalId().intValue());
-      assertEquals(ModificationType.INTRODUCED, actual.getModType());
+      assertEquals(attrData.getModType(), actual.getModType());
       assertEquals(666L, actual.getTypeUuid());
       assertEquals(ModificationType.NEW, actual.getBaseModType());
       assertEquals(777L, actual.getBaseTypeUuid());

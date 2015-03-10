@@ -31,6 +31,10 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    private final Function<ArtifactReadable, Artifact> readableToArtifact;
    private final RelationManager relationManager;
 
+   public static interface ProxyProvider {
+      Artifact getInternalArtifact(ArtifactReadable external);
+   }
+
    public ExternalArtifactManagerImpl(RelationManager relationManager) {
       super();
       this.relationManager = relationManager;

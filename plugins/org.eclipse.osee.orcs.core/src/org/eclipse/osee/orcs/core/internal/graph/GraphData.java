@@ -29,7 +29,7 @@ public interface GraphData extends HasBranch, HasTransaction {
 
    <T extends GraphNode> T getNode(Integer id);
 
-   void addNode(GraphNode node) throws OseeCoreException;
+   void addNode(GraphNode node, boolean useBackingData) throws OseeCoreException;
 
    <T extends GraphNode> T removeNode(HasLocalId<Integer> node);
 

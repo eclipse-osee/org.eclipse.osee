@@ -23,4 +23,6 @@ public interface RelationDataFactory {
    RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException;
 
    RelationData clone(RelationData source) throws OseeCoreException;
+
+   RelationData introduce(IOseeBranch branch, RelationData source) throws OseeCoreException;
 }

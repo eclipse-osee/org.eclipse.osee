@@ -24,8 +24,11 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.relation.RelationUtil;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeId;
@@ -41,12 +44,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    private final TxCallableFactory txFactory;
    private final TxDataManager txManager;
    private final TxData txData;
+   private final QueryModule query;
 
-   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData) {
+   public TransactionBuilderImpl(TxCallableFactory txFactory, TxDataManager dataManager, TxData txData, QueryModule query) {
       super();
       this.txFactory = txFactory;
       this.txManager = dataManager;
       this.txData = txData;
+      this.query = query;
    }
 
    private Artifact getForWrite(ArtifactId artifactId) throws OseeCoreException {
@@ -113,13 +118,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId introduceArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      return introduceArtifact(sourceArtifact.getBranch(), sourceArtifact);
+   public ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
+      checkAreOnDifferentBranches(txData, fromBranch);
+      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
+      Conditions.checkNotNull(source, "Source Artifact");
+      ArtifactReadable destination =
+         getArtifactReadable(txData.getSession(), query, txData.getBranch(), sourceArtifact);
+      return txManager.introduceArtifact(txData, fromBranch, source, destination);
    }
 
    @Override
-   public ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
-      return txManager.introduceArtifact(txData, fromBranch, artifactId);
+   public ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
+      return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
    }
 
    @Override
@@ -305,6 +315,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          OseeExceptions.wrapAndThrow(ex);
       }
       return tx;
+   }
+
+   private void checkAreOnDifferentBranches(TxData txData, IOseeBranch sourceBranch) throws OseeCoreException {
+      boolean isOnSameBranch = txData.getBranch().equals(sourceBranch);
+      Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
+         txData.getBranch());
+   }
+
+   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, IOseeBranch branch, ArtifactId id) {
+      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(id.getGuid()).getResults().getOneOrNull();
    }
 
 }

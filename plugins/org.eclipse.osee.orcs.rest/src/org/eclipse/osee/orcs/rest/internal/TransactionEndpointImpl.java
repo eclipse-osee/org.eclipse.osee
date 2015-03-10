@@ -23,6 +23,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
@@ -30,11 +31,14 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.CompareResults;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -78,6 +82,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    private TransactionFactory newTxFactory() {
       return orcsApi.getTransactionFactory(newContext());
+   }
+
+   private QueryFactory newQueryFactory() {
+      return orcsApi.getQueryFactory(newContext());
    }
 
    private TransactionReadable getTxById(int txId) {
@@ -136,6 +144,29 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          }
       }
       return asResponse(modified);
+   }
+
+   @Override
+   public Response replaceWithBaselineTxVersion(String userId, long branchId, int txId, int artId, String comment) {
+      boolean introduced = false;
+      ArtifactReadable userReadable =
+         newQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();
+      ArtifactReadable baselineArtifact =
+         newQueryFactory().fromBranch(branchId).fromTransaction(txId).andLocalId(artId).getResults().getOneOrNull();
+
+      if (userReadable != null && baselineArtifact != null) {
+         TransactionBuilder tx = newTxFactory().createTransaction(branchId, userReadable, comment);
+         ArtifactReadable destination =
+            newQueryFactory().fromBranch(branchId).includeDeletedArtifacts().andLocalId(artId).getResults().getOneOrNull();
+         tx.replaceWithVersion(baselineArtifact, destination);
+         tx.commit();
+         introduced = true;
+      } else {
+         throw new OseeWebApplicationException(Status.BAD_REQUEST,
+            "%s Error - The user and baseline artifact were not found.", comment);
+      }
+
+      return asResponse(introduced);
    }
 
    private void checkAllTxsFound(String opName, List<Integer> txIds, ResultSet<TransactionReadable> result) {

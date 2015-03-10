@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
+import org.eclipse.osee.orcs.core.internal.proxy.impl.ExternalArtifactManagerImpl.ProxyProvider;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
@@ -53,8 +55,11 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTypeValidity;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
+import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManager;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderManagerFactory;
+import org.eclipse.osee.orcs.core.internal.search.QueryModule.QueryModuleProvider;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -67,14 +72,18 @@ public class RelationManagerImpl implements RelationManager {
    private final RelationResolver resolver;
    private final RelationFactory relationFactory;
    private final OrderManagerFactory orderFactory;
+   private final QueryModuleProvider provider;
+   private final ProxyProvider proxy;
 
-   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory) {
+   public RelationManagerImpl(Log logger, RelationTypeValidity validity, RelationResolver resolver, RelationFactory relationFactory, OrderManagerFactory orderFactory, QueryModuleProvider queryProvider, ProxyProvider proxyProvider) {
       super();
       this.logger = logger;
       this.validity = validity;
       this.resolver = resolver;
       this.relationFactory = relationFactory;
       this.orderFactory = orderFactory;
+      this.provider = queryProvider;
+      this.proxy = proxyProvider;
    }
 
    @Override
@@ -441,5 +450,58 @@ public class RelationManagerImpl implements RelationManager {
             }
          }
       }
+   }
+
+   @Override
+   public void introduce(OrcsSession session, IOseeBranch branch, RelationNode source, RelationNode destination) throws OseeCoreException {
+      ensureRelationsInitialized(session, source.getGraph(), source);
+
+      Collection<? extends IRelationType> validRelationTypes = getValidRelationTypes(session, destination);
+      RelationNodeAdjacencies sourceAdjacencies = source.getGraph().getAdjacencies(source);
+      RelationNodeAdjacencies destinationAdjacencies = destination.getGraph().getAdjacencies(destination);
+      if (sourceAdjacencies != null) {
+         for (Relation sourceRel : sourceAdjacencies.getAll()) {
+            if (validRelationTypes.contains(sourceRel.getRelationType())) {
+               Relation destinationRel =
+                  findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData().getLocalId());
+               Relation introduceRelation = relationFactory.introduce(branch, sourceRel.getOrcsData());
+               if (destinationRel == null) {
+                  ArtifactReadable readable = doesRelatedArtifactExist(session, introduceRelation, destination, branch);
+                  if (readable != null) {
+                     RelationNode node = proxy.getInternalArtifact(readable);
+                     relate(session, destination, sourceRel.getRelationType(), node);
+                  }
+               } else {
+                  destinationRel.setOrcsData(introduceRelation.getOrcsData());
+                  destinationRel.setDirty();
+               }
+            }
+         }
+      }
+      // relation order
+      String orderData = source.getOrderData();
+      if (!orderData.isEmpty()) {
+         destination.storeOrderData(OrderChange.Forced, source.getOrderData());
+      }
+   }
+
+   private ArtifactReadable doesRelatedArtifactExist(OrcsSession session, Relation rel, RelationNode destination, IOseeBranch branch) {
+      // need to check if the related artifact exists
+      int artIdA = rel.getOrcsData().getArtIdA();
+      int artIdB = rel.getOrcsData().getArtIdB();
+      int checkArtId = destination.getLocalId() == artIdA ? artIdB : artIdA;
+      // need to check if artifact to relate to exists 
+      ArtifactReadable readable =
+         provider.getQueryFactory(session).fromBranch(branch).andLocalId(checkArtId).getResults().getOneOrNull();
+      return readable;
+   }
+
+   private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer localId) {
+      for (Relation rel : adjacencies.getAll()) {
+         if (localId.equals(rel.getOrcsData().getLocalId())) {
+            return rel;
+         }
+      }
+      return null;
    }
 }

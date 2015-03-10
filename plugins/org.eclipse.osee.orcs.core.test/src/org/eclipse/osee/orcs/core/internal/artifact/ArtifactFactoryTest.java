@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -78,6 +78,7 @@ public class ArtifactFactoryTest {
    @Mock private Attribute<Object> attribute;
    @Mock private AttributeData attributeData;
    @Mock private Artifact source;
+   @Mock private Artifact destination;
    @Mock private OrcsSession session;
    
    @Mock private ArtifactData otherArtifactData;
@@ -164,15 +165,6 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testIntroduceArtifactBranchException() throws OseeCoreException {
-      when(source.getBranch()).thenReturn(branch);
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Source artifact is on the same branch as [" + branch + "]");
-      artifactFactory.introduceArtifact(session, source, branch);
-   }
-
-   @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       Branch otherBranch = mock(Branch.class);
 
@@ -182,22 +174,16 @@ public class ArtifactFactoryTest {
       when(dataFactory.introduce(branch, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
-      when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
+      when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
       when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
+      when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
+      when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
+      Artifact actual = artifactFactory.introduceArtifact(session, source, destination, branch);
 
-      Artifact actual = artifactFactory.introduceArtifact(session, source, branch);
-
-      verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
-      verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
-      verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
-
-      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(branch), implCapture.capture());
-
-      Assert.assertTrue(implCapture.getValue().isLoaded());
-      Assert.assertTrue(actual == implCapture.getValue());
+      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(branch), eq(destination));
+      Assert.assertTrue(actual == destination);
    }
 
    @Test
