@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
@@ -140,16 +142,21 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
    }
 
    public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, final TableLoadOption... tableLoadOptions) {
+      load(name, arts, customizeData, null, tableLoadOptions);
+   }
+
+   public void load(final String name, final Collection<? extends Artifact> arts, final CustomizeData customizeData, final Artifact expandToArtifact, final TableLoadOption... tableLoadOptions) {
 
       Set<TableLoadOption> loadOptions = Collections.asHashSet(tableLoadOptions);
       boolean forcePend = loadOptions.contains(TableLoadOption.ForcePend);
+      final Artifact fExpandToArtifact = expandToArtifact;
       if (!forcePend && Displays.isDisplayThread()) {
          Jobs.startJob(new Job("World Composite - Load") {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                try {
-                  load(name, arts, customizeData, tableLoadOptions);
+                  load(name, arts, customizeData, fExpandToArtifact, tableLoadOptions);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -195,6 +202,11 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
                   RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
                }
                worldXViewer.getTree().setFocus();
+               if (expandToArtifact != null) {
+                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(expandToArtifact));
+                  worldXViewer.expandToLevel(expandToArtifact, 1);
+                  worldXViewer.setSelection(newSelection);
+               }
             }
          }
       });

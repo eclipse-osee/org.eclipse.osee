@@ -23,15 +23,24 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    private final String name;
    private final Collection<? extends Artifact> artifacts;
+   private final Artifact expandToArtifact;
 
    public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts) {
       this(name, artifacts, null, TableLoadOption.None);
    }
 
    public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+      this(name, artifacts, customizeData, null, tableLoadOption);
+   }
+
+   /**
+    * @param expandToArtifact if given, expand World Editor and highlight this item
+    */
+   public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, Artifact expandToArtifact, TableLoadOption... tableLoadOption) {
       super(customizeData, tableLoadOption);
       this.name = name;
       this.artifacts = artifacts;
+      this.expandToArtifact = expandToArtifact;
    }
 
    @Override
@@ -41,12 +50,16 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
-      worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
+      worldEditor.getWorldComposite().load(name, artifacts, customizeData, expandToArtifact, getTableLoadOptions());
    }
 
    @Override
    public String getName() {
       return name;
+   }
+
+   public Artifact getExpandToArtifact() {
+      return expandToArtifact;
    }
 
 }

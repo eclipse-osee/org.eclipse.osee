@@ -14,7 +14,6 @@ import java.util.Arrays;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -37,22 +36,16 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      if (sma.isTeamWorkflow()) {
-         ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-         if (actionArt != null) {
-            WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(),
-               Arrays.asList(actionArt)));
-         } else {
-            WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
-               Arrays.asList(sma)));
-            throw new OseeStateException("No Parent Action; Opening Team Workflow");
-         }
-         return;
+      ActionArtifact actionArt = sma.getParentActionArtifact();
+      if (actionArt != null) {
+         WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(), Arrays.asList(actionArt),
+            null, sma));
       } else {
-         WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + ": " + sma.getAtsId(),
-            Arrays.asList(sma)));
-         return;
+         WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
+            Arrays.asList(sma), null, sma));
+         throw new OseeStateException("No Parent Action; Opening Team Workflow");
       }
+      return;
    }
 
    @Override
