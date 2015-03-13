@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core Test
 Bundle-SymbolicName: org.eclipse.osee.ats.core.test
-Bundle-Version: 0.20.0.qualifier
+Bundle-Version: 0.20.1.qualifier
 Fragment-Host: org.eclipse.osee.ats.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit,
