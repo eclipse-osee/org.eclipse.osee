@@ -108,7 +108,7 @@ public final class RendererManager {
    }
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY)) {
+      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
          presentationType = GENERAL_REQUESTED;
       }
       IRenderer bestRendererPrototype = null;

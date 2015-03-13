@@ -19,11 +19,15 @@ import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -31,7 +35,8 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    private static String CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN =
       "change.report.close.editors.on.shutdown";
    private static String ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR = "artifact.editor.include.attribute.tab";
-   private Button artifactEditButton;
+   private Button artifactEditorButton;
+   private Button editButton;
    private Button closeChangeReportEditorsOnShutdown;
    private Button includeAttributeTabOnArtifactEditor;
 
@@ -49,15 +54,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      // TODO Temporary until editor opening can be configured by users
-      artifactEditButton = new Button(composite, SWT.CHECK);
-      artifactEditButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-      artifactEditButton.setText("Default Presentation opens in Artifact Editor if applicable");
-      try {
-         artifactEditButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+      setDefaultPresentation(composite);
 
       closeChangeReportEditorsOnShutdown = new Button(composite, SWT.CHECK);
       closeChangeReportEditorsOnShutdown.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
@@ -88,6 +85,62 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       return composite;
    }
 
+   private void setDefaultPresentation(Composite composite) {
+      // TODO Temporary until editor opening can be configured by users
+      Group group = new Group(composite, SWT.NULL);
+      group.setText("Default Presentation (if applicable)");
+      group.setLayout(new RowLayout(SWT.VERTICAL));
+      artifactEditorButton = new Button(group, SWT.CHECK);
+      artifactEditorButton.setText("Artifact Editor");
+      artifactEditorButton.addSelectionListener(new SelectionListener() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (artifactEditorButton.getSelection()) {
+               editButton.setEnabled(false);
+               editButton.setSelection(false);
+            } else {
+               editButton.setEnabled(true);
+            }
+         }
+
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+            //
+         }
+      });
+
+      editButton = new Button(group, SWT.CHECK);
+      editButton.setText("Edit Mode");
+      editButton.addSelectionListener(new SelectionListener() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (editButton.getSelection()) {
+               artifactEditorButton.setEnabled(false);
+               artifactEditorButton.setSelection(false);
+            } else {
+               artifactEditorButton.setEnabled(true);
+            }
+         }
+
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+            //
+         }
+      });
+
+      try {
+         if (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
+            artifactEditorButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT));
+         } else if (UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT)) {
+            editButton.setSelection(UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
    /**
     * initialize the preference store to use with the workbench
     */
@@ -109,7 +162,9 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    @Override
    public boolean performOk() {
       try {
-         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY, String.valueOf(artifactEditButton.getSelection()));
+         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT,
+            String.valueOf(artifactEditorButton.getSelection()));
+         UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT, String.valueOf(editButton.getSelection()));
 
          boolean result = closeChangeReportEditorsOnShutdown.getSelection();
          UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));

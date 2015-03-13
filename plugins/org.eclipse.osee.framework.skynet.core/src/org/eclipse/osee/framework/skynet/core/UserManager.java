@@ -32,7 +32,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public final class UserManager {
 
-   public static String DOUBLE_CLICK_SETTING_KEY = "onDoubleClickOpenUsingArtifactEditor";
+   public static String DOUBLE_CLICK_SETTING_KEY_ART_EDIT = "onDoubleClickOpenUsingArtifactEditor";
+   public static String DOUBLE_CLICK_SETTING_KEY_EDIT = "onDoubleClickOpenUsingEditMode";
 
    private static final LazyObject<UserAdmin> provider = new LazyObject<UserAdmin>() {
 

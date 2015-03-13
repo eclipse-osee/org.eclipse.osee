@@ -92,7 +92,7 @@ public class RendererManagerTest {
    }
 
    private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option) throws OseeCoreException {
-      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY, String.valueOf(option == On));
+      UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT, String.valueOf(option == On));
 
       if (clazz == null) {
          try {
