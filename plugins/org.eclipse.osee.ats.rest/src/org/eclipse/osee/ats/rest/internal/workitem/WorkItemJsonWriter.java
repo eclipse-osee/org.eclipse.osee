@@ -25,6 +25,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
@@ -115,6 +116,9 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("State", atsServer.getWorkItemService().getCurrentStateName(workItem));
          writer.writeStringField("CreatedDate", DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYY));
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
+         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+         String version = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
+         writer.writeStringField("TargetedVersion", version);
       }
       writer.writeEndObject();
    }
