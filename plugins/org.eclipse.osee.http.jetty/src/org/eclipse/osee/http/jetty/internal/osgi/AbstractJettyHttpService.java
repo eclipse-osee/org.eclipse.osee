@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.http.jetty.JettyHttpService;
+import org.eclipse.osee.http.jetty.JettyConfig;
 import org.eclipse.osee.http.jetty.JettyLogger;
 import org.eclipse.osee.http.jetty.JettyServer;
 import org.eclipse.osee.http.jetty.JettyServer.Builder;
@@ -29,7 +31,7 @@ import org.osgi.framework.Constants;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractJettyHttpService {
+public abstract class AbstractJettyHttpService implements JettyHttpService {
 
    private static final String DIR_PREFIX = "pid_";
    private final AtomicReference<JettyServer> reference = new AtomicReference<JettyServer>();
@@ -56,6 +58,12 @@ public abstract class AbstractJettyHttpService {
       if (server != null) {
          server.stop();
       }
+   }
+
+   @Override
+   public JettyConfig getConfig() {
+      JettyServer jettyServer = reference.get();
+      return jettyServer != null ? jettyServer.getConfig() : null;
    }
 
    public void update(BundleContext bundleContext, Map<String, Object> props) {
