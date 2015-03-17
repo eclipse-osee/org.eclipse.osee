@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -39,7 +40,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,13 +84,10 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public StateType getCurrentStateType() {
-      if (getCurrentStateName().equals(TeamState.Completed.getName())) {
-         return StateType.Completed;
-      } else if (getCurrentStateName().equals(TeamState.Cancelled.getName())) {
-         return StateType.Cancelled;
-      } else {
-         return StateType.Working;
-      }
+      StateType type =
+         StateType.valueOf(services.getAttributeResolver().getSoleAttributeValue(workItem,
+            AtsAttributeTypes.CurrentStateType, "Working"));
+      return type;
    }
 
    @Override
