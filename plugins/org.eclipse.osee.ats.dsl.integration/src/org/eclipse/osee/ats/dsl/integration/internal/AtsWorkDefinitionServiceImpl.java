@@ -35,14 +35,14 @@ import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.logger.Log;
 
 /**
  * Provides new and stored Work Definitions
- *
+ * 
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
@@ -50,6 +50,11 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    private IAtsWorkDefinitionStore workDefStore;
    private IAttributeResolver attrResolver;
    private IAtsUserService userService;
+   private Log logger;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setAtsWorkDefinitionStore(IAtsWorkDefinitionStore workDefStore) {
       this.workDefStore = workDefStore;
@@ -64,10 +69,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    }
 
    public void start() throws OseeCoreException {
-      Conditions.checkNotNull(workDefStore, "IAtsWorkDefinitionStore");
-      Conditions.checkNotNull(attrResolver, "IAttributeResolver");
-      Conditions.checkNotNull(userService, "IAtsWorkDefinitionStore");
-      System.out.println("ATS - AtsWorkDefinitionServiceImpl started");
+      logger.info("AtsWorkDefinitionServiceImpl started");
    }
 
    @Override

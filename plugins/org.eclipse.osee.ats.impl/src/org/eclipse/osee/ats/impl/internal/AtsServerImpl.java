@@ -228,7 +228,7 @@ public class AtsServerImpl implements IAtsServer {
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
 
-      System.out.println("ATS - AtsServerImpl started");
+      logger.info("ATS Application started");
    }
 
    public void stop() {

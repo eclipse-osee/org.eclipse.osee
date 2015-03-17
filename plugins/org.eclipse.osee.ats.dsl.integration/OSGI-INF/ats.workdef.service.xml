@@ -7,4 +7,5 @@
    <reference bind="setAtsWorkDefinitionStore" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore" name="IAtsWorkDefinitionStore" policy="static"/>
    <reference bind="setAttributeResolver" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAttributeResolver" name="IAttributeResolver" policy="static"/>
    <reference bind="setAtsUserService" cardinality="1..1" interface="org.eclipse.osee.ats.api.user.IAtsUserService" name="IAtsUserService" policy="static"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
 </scr:component>

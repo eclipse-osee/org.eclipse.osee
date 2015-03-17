@@ -50,7 +50,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(orcsApi, "OrcsApi");
-      System.out.println("ATS - AtsAttributeResolverServiceImpl started");
+      logger.info("AtsAttributeResolverServiceImpl started");
    }
 
    public void stop() {

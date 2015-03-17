@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -40,6 +41,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class AtsUserServiceImpl extends AbstractAtsUserService {
 
    private OrcsApi orcsApi;
+   private Log logger;
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -47,7 +53,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
 
    public void start() throws OseeCoreException {
       Conditions.checkNotNull(orcsApi, "OrcsApi");
-      System.out.println("ATS - AtsUserService started");
+      logger.info("AtsUserService started");
    }
 
    public void stop() {
