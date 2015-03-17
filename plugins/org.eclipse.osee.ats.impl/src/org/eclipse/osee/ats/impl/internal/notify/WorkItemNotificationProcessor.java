@@ -29,7 +29,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -82,7 +84,7 @@ public class WorkItemNotificationProcessor {
                IAtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
-                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
+                     logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (!fromUser.equals(originator)) {
                      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                         getFromUser(event),
@@ -96,8 +98,8 @@ public class WorkItemNotificationProcessor {
                   }
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Originator for workItem [%s] and event [%s]", workItem.toStringWithId(),
-                  event.toString());
+               logger.error(ex, "Error processing Originator for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Assigned)) {
@@ -123,8 +125,8 @@ public class WorkItemNotificationProcessor {
                         workItem.getName())));
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
-                  event.toString());
+               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
@@ -142,26 +144,27 @@ public class WorkItemNotificationProcessor {
                         workItem.getStateMgr().getCurrentStateName())));
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex,
-                  "Error processing Subscribed for workItem [%s] and event [%s]", workItem.toStringWithId(),
-                  event.toString());
+               logger.error(ex, "Error processing Subscribed for workItem [%s] and event [%s]",
+                  workItem.toStringWithId(), event.toString());
             }
          }
-         if (types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed) && (!workItem.isTask() && (workItem.getStateDefinition().getStateType().isCompleted() || workItem.getStateDefinition().getStateType().isCancelled()))) {
-            try {
+         try {
+            IAtsStateDefinition stateDefinition = workItem.getStateDefinition();
+            StateType stateType = stateDefinition.getStateType();
+            if (types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed) && (!workItem.isTask() && (stateType.isCompleted() || stateType.isCancelled()))) {
                IAtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (isOriginatorDifferentThanCancelledOrCompletedBy(workItem, fromUser, originator)) {
-                     if (workItem.getStateDefinition().getStateType().isCompleted()) {
+                     if (stateType.isCompleted()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
                            workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
                               "[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
                               workItem.getStateMgr().getCurrentStateName())));
                      }
-                     if (workItem.getStateDefinition().getStateType().isCancelled()) {
+                     if (stateType.isCancelled()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
                            workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
@@ -172,11 +175,10 @@ public class WorkItemNotificationProcessor {
                      }
                   }
                }
-            } catch (OseeCoreException ex) {
-               logger.error(ex,
-                  "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
             }
+         } catch (Exception ex) {
+            logger.error(ex, "Error processing Completed or Cancelled for workItem [%s] and event [%s]",
+               workItem.toStringWithId(), event.toString());
          }
          if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsAbstractReview) {
             try {
@@ -197,8 +199,7 @@ public class WorkItemNotificationProcessor {
                         workItem.getArtifactTypeName(), workItem.getName())));
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex,
-                  "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
+               logger.error(ex, "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
                   workItem.toStringWithId(), event.toString());
             }
          }
@@ -234,8 +235,8 @@ public class WorkItemNotificationProcessor {
                      }
                   }
                } catch (OseeCoreException ex) {
-                  logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]", workItem.toStringWithId(),
-                     event.toString());
+                  logger.error(ex, "Error processing SubscribedTeamOrAi for workItem [%s] and event [%s]",
+                     workItem.toStringWithId(), event.toString());
                }
             }
          }
