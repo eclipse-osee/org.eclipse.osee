@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,15 +22,28 @@ import org.apache.cxf.rs.security.oauth2.services.ImplicitGrantService;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.ClientLogoUriResolver;
 
 /**
- * @author Roberto E. Escobar
+ * @author Angel Avila
  */
 public class ImplicitGrantEndpoint extends ImplicitGrantService {
 
    private final ClientLogoUriResolver clientLogoUriResolver;
+   private boolean useRegisteredRedirectUriIfPossible = true;
 
    public ImplicitGrantEndpoint(ClientLogoUriResolver clientLogoUriResolver) {
       super();
       this.clientLogoUriResolver = clientLogoUriResolver;
+   }
+
+   /**
+    * If a client does not include a redirect_uri parameter but has an exactly one pre-registered redirect_uri then use
+    * that redirect_uri
+    * 
+    * @param value allows to use a single registered redirect_uri if set to true (default)
+    */
+   @Override
+   public void setUseRegisteredRedirectUriIfPossible(boolean value) {
+      this.useRegisteredRedirectUriIfPossible = value;
+      super.setUseRegisteredRedirectUriIfPossible(value);
    }
 
    /**
@@ -50,4 +63,26 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
       return secData;
    }
 
+   @Override
+   protected String validateRedirectUri(Client client, String redirectUri) {
+      List<String> uris = client.getRedirectUris();
+      if (redirectUri != null) {
+         boolean foundMatch = false;
+         for (String uriRegex : uris) {
+            if (redirectUri.matches(uriRegex)) {
+               foundMatch = true;
+               break;
+            }
+         }
+         if (!foundMatch) {
+            redirectUri = null;
+         }
+      } else if (uris.size() == 1 && useRegisteredRedirectUriIfPossible) {
+         redirectUri = uris.get(0);
+      }
+      if (redirectUri == null && uris.size() == 0 && !canRedirectUriBeEmpty(client)) {
+         reportInvalidRequestError("Client Redirect Uri is invalid");
+      }
+      return redirectUri;
+   }
 }

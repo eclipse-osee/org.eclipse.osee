@@ -43,6 +43,7 @@ import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceStore;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifier;
 import org.apache.cxf.rs.security.oauth2.tokens.hawk.NonceVerifierImpl;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsConstants;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
 import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegistry;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.ClientProviderImpl;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters.OAuthEncryption;
@@ -84,6 +85,7 @@ public class OAuth2ServerProvider {
 
    private Log logger;
    private JaxRsApplicationRegistry registry;
+   private JaxRsResourceManager resourceManager;
    private JaxRsAuthenticator authenticator;
    private JaxRsSessionProvider sessionProvider;
    private JaxRsOAuthStorage storage;
@@ -96,6 +98,10 @@ public class OAuth2ServerProvider {
 
    public void setJaxRsApplicationRegistry(JaxRsApplicationRegistry registry) {
       this.registry = registry;
+   }
+
+   public void setJaxRsResourceManager(JaxRsResourceManager resourceManager) {
+      this.resourceManager = resourceManager;
    }
 
    public void setJaxRsAuthenticator(JaxRsAuthenticator authenticator) {
@@ -145,7 +151,7 @@ public class OAuth2ServerProvider {
       OAuthEncryption serializer = new OAuthEncryption();
       dataProvider = new OAuth2DataProvider(clientProvider, subjectProvider, serializer, storage);
 
-      filter = new OAuth2RequestFilter(logger, subjectProvider);
+      filter = new OAuth2RequestFilter(logger, resourceManager, subjectProvider);
       bind(filter, dataProvider);
 
       endpoints = new HashSet<Object>();

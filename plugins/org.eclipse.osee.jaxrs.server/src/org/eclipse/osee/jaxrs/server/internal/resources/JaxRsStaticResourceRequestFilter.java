@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Priority;
@@ -32,10 +31,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
 
@@ -64,7 +61,7 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
       Request request = requestContext.getRequest();
       String method = request.getMethod();
       if (GET_METHOD.equals(method) || HEAD_METHOD.equals(method)) {
-         Resource resource = findResource(requestContext);
+         Resource resource = manager.findResource(requestContext);
          if (resource != null) {
             MultivaluedMap<String, String> headers = requestContext.getHeaders();
             List<MediaType> mediaTypes = requestContext.getAcceptableMediaTypes();
@@ -72,73 +69,6 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
             requestContext.abortWith(response);
          }
       }
-   }
-
-   private Resource findResource(ContainerRequestContext requestContext) {
-      UriInfo uriInfo = requestContext.getUriInfo();
-      String path = uriInfo.getAbsolutePath().getPath();
-
-      Resource resource = manager.getResource(path);
-      if (resource == null) {
-         if (!hasExtension(path)) {
-            List<MediaType> mediaTypes = getMediaTypesToSearch(requestContext);
-            for (MediaType mediaType : mediaTypes) {
-               String resourcePath = addExtension(path, mediaType);
-               if (Strings.isValid(resourcePath)) {
-                  resource = manager.getResource(resourcePath);
-                  if (resource != null) {
-                     break;
-                  }
-               }
-            }
-         }
-      }
-      return resource;
-   }
-
-   private List<MediaType> getMediaTypesToSearch(ContainerRequestContext requestContext) {
-      List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
-      MediaType mediaType = requestContext.getMediaType();
-      if (mediaType != null) {
-         acceptableMediaTypes.add(mediaType);
-      }
-      acceptableMediaTypes.addAll(requestContext.getAcceptableMediaTypes());
-      return acceptableMediaTypes;
-   }
-
-   private boolean hasExtension(String path) {
-      String extension = null;
-      if (Strings.isValid(path)) {
-         int index = path.lastIndexOf("/");
-         String toProcess = path;
-         if (index > 0 && index + 1 < path.length()) {
-            toProcess = path.substring(index + 1);
-         }
-         extension = Lib.getExtension(toProcess);
-      }
-      return Strings.isValid(extension);
-   }
-
-   private String addExtension(String path, MediaType mediaType) {
-      String extension = mediaType.getSubtype();
-      if ("plain".equals(extension)) {
-         extension = "txt";
-      } else if (extension.contains("+")) {
-         int index = extension.lastIndexOf("+");
-         if (index > 0 && index + 1 < extension.length()) {
-            extension = extension.substring(index + 1);
-         }
-      } else if (extension.contains(".")) {
-         extension = Lib.getExtension(extension);
-      }
-      String toReturn = null;
-      if (Strings.isValid(extension)) {
-         StringBuilder builder = new StringBuilder(path);
-         builder.append(".");
-         builder.append(extension);
-         toReturn = builder.toString();
-      }
-      return toReturn;
    }
 
    private Response newResponse(ServletContext servletContext, MultivaluedMap<String, String> headers, List<MediaType> acceptableMediaTypes, Resource resource) throws IOException {

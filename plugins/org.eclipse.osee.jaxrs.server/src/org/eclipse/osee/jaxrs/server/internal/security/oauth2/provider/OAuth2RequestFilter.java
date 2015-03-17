@@ -27,6 +27,8 @@ import org.apache.cxf.rs.security.oauth2.filters.OAuthRequestFilter;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
+import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import org.eclipse.osee.logger.Log;
 
@@ -43,15 +45,17 @@ import org.eclipse.osee.logger.Log;
 public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private final Log logger;
+   private final JaxRsResourceManager resourceManager;
    private final SubjectProvider subjectProvider;
 
    private volatile boolean useUserSubject;
    private volatile URI redirectURI;
    private volatile boolean ignoreBasePath;
 
-   public OAuth2RequestFilter(Log logger, SubjectProvider subjectProvider) {
+   public OAuth2RequestFilter(Log logger, JaxRsResourceManager resourceManager, SubjectProvider subjectProvider) {
       super();
       this.logger = logger;
+      this.resourceManager = resourceManager;
       this.subjectProvider = subjectProvider;
    }
 
@@ -69,12 +73,27 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
       this.ignoreBasePath = ignoreBasePath;
    }
 
+   private boolean isPathSecure(ContainerRequestContext context) {
+      boolean result = false;
+      Resource resource = resourceManager.findResource(context);
+      if (resource != null) {
+         result = resource.isSecure();
+      } else {
+         //TODO Probably a JAX-RS endpoint -- use annotations;
+         result = true;
+      }
+      return result;
+   }
+
    @Override
    public void filter(ContainerRequestContext context) {
-      if (isResourceOwnerRequest(context)) {
-         handleResourceOwnerRequest(context);
-      } else {
-         super.filter(context);
+      boolean isSecurePath = isPathSecure(context);
+      if (isSecurePath) {
+         if (isResourceOwnerRequest(context)) {
+            handleResourceOwnerRequest(context);
+         } else {
+            super.filter(context);
+         }
       }
    }
 
@@ -100,10 +119,10 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
             try {
                doBasicAuthentication(mc, authorizationHeader);
             } catch (Exception ex) {
-               jaxRsResponse = getAuthenticationException(ex, msg);
+               jaxRsResponse = getAuthenticationException(ex, msg, context);
             }
          } else {
-            jaxRsResponse = getAuthorizationRequired(msg);
+            jaxRsResponse = getAuthorizationRequired(msg, context);
          }
          // Abort processing if we already have a response
          if (jaxRsResponse != null) {
@@ -112,14 +131,14 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
       }
    }
 
-   private Response getAuthorizationRequired(Message msg) {
+   private Response getAuthorizationRequired(Message msg, ContainerRequestContext context) {
       logger.debug("authorizationRequiredResponse called");
-      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg);
+      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg, context);
    }
 
-   private Response getAuthenticationException(Exception ex, Message msg) {
+   private Response getAuthenticationException(Exception ex, Message msg, ContainerRequestContext context) {
       logger.error(ex, "Authorization error [%s]", msg.toString());
-      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg);
+      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg, context);
    }
 
    private void doBasicAuthentication(MessageContext mc, String header) {

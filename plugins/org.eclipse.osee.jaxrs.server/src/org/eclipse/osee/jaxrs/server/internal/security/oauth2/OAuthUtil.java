@@ -21,10 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.impl.HttpHeadersImpl;
@@ -82,7 +84,7 @@ public final class OAuthUtil {
       return builder.toString();
    }
 
-   public static URI computeRedirectUri(URI redirectURI, boolean ignoreBasePath, Message m) {
+   public static URI computeRedirectUri(URI redirectURI, boolean ignoreBasePath, Message m, ContainerRequestContext context) {
       URI finalRedirectURI = null;
       if (redirectURI != null) {
          if (!redirectURI.isAbsolute()) {
@@ -94,7 +96,13 @@ public final class OAuthUtil {
                   endpointAddress = endpointAddress.substring(0, index);
                }
             }
-            finalRedirectURI = UriBuilder.fromUri(endpointAddress).path(redirectURI.toString()).build();
+
+            UriInfo uriInfo = context.getUriInfo();
+            URI requestUrl = uriInfo.getRequestUri();
+            String continueURL = requestUrl.toASCIIString();
+
+            finalRedirectURI =
+               UriBuilder.fromUri(endpointAddress).path(redirectURI.toString()).queryParam("continueTo", continueURL).build();
          } else {
             finalRedirectURI = redirectURI;
          }
@@ -102,11 +110,11 @@ public final class OAuthUtil {
       return finalRedirectURI;
    }
 
-   public static Response newAuthorizationRequiredResponse(URI redirectURI, boolean ignoreBasePath, String realmName, Message m) {
+   public static Response newAuthorizationRequiredResponse(URI redirectURI, boolean ignoreBasePath, String realmName, Message m, ContainerRequestContext context) {
       HttpHeaders headers = new HttpHeadersImpl(m);
       if (redirectURI != null && JaxRsUtils.isHtmlSupported(headers.getAcceptableMediaTypes())) {
-         URI finalRedirectURI = computeRedirectUri(redirectURI, ignoreBasePath, m);
-         return Response.status(Response.Status.TEMPORARY_REDIRECT).header(HttpHeaders.LOCATION, finalRedirectURI).build();
+         URI finalRedirectURI = computeRedirectUri(redirectURI, ignoreBasePath, m, context);
+         return Response.temporaryRedirect(finalRedirectURI).build();
       } else {
          ResponseBuilder builder = Response.status(Response.Status.UNAUTHORIZED);
          StringBuilder sb = new StringBuilder();
@@ -207,16 +215,23 @@ public final class OAuthUtil {
 
    public static UserSubject newSubject(SecurityContext securityContext) {
       Principal principal = securityContext.getUserPrincipal();
-      String name = principal != null ? principal.getName() : "UNKNOWN";
-      List<String> roleNames = Collections.emptyList();
-      if (securityContext instanceof LoginSecurityContext) {
-         roleNames = new ArrayList<String>();
-         Set<Principal> roles = ((LoginSecurityContext) securityContext).getUserRoles();
-         for (Principal p : roles) {
-            roleNames.add(p.getName());
+      UserSubject subject;
+      if (principal instanceof OseePrincipal) {
+         OseePrincipal oseePrincipal = (OseePrincipal) principal;
+         subject = OAuthUtil.newUserSubject(oseePrincipal);
+      } else {
+         String name = principal != null ? principal.getName() : "UNKNOWN";
+         List<String> roleNames = Collections.emptyList();
+         if (securityContext instanceof LoginSecurityContext) {
+            roleNames = new ArrayList<String>();
+            Set<Principal> roles = ((LoginSecurityContext) securityContext).getUserRoles();
+            for (Principal p : roles) {
+               roleNames.add(p.getName());
+            }
          }
+         subject = new UserSubject(name, roleNames);
       }
-      return new UserSubject(name, roleNames);
+      return subject;
    }
 
    public static void saveSecurityContext(MessageContext mc, SecurityContext securityContext) {

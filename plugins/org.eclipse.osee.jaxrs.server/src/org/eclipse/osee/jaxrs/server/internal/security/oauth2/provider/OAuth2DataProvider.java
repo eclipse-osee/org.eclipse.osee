@@ -298,10 +298,28 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       long clientId = getClientId(client);
       long subjectId = getSubjectId(subject);
       OAuthToken accessToken = storage.getPreauthorizedToken(clientId, subjectId, grantType);
-
       ServerAccessToken token = null;
-      if (accessToken != null && accessToken.getType() != OAuthTokenType.REFRESH_TOKEN && accessToken.getType() != OAuthTokenType.UNKNOW_TOKEN) {
-         token = serializer.decryptAccessToken(this, accessToken.getTokenKey(), getSecretKey());
+
+      if (accessToken != null) {
+         switch (accessToken.getType()) {
+            case BEARER_TOKEN:
+            case HAWK_TOKEN:
+               token = serializer.decryptAccessToken(this, accessToken.getTokenKey(), getSecretKey());
+               break;
+            case REFRESH_TOKEN:
+               Iterable<OAuthToken> accessTokens = storage.getAccessTokensByRefreshToken(accessToken.getTokenKey());
+               for (OAuthToken entry : accessTokens) {
+                  boolean isExpired = OAuthUtils.isExpired(entry.getIssuedAt(), entry.getExpiresIn());
+                  if (!isExpired && entry.getGrantType().equals(grantType)) {
+                     token = serializer.decryptAccessToken(this, entry.getTokenKey(), getSecretKey());
+                  }
+                  break;
+               }
+               break;
+            default:
+               // Do nothing
+               break;
+         }
       }
       return token;
    }

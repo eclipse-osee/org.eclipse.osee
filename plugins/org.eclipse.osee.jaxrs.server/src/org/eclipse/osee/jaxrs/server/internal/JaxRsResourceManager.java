@@ -21,6 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osgi.util.ManifestElement;
@@ -57,10 +61,12 @@ public final class JaxRsResourceManager implements BundleListener {
 
       URL getUrl();
 
+      boolean isSecure();
    }
 
    private static final String OSEE_WEB_RESOURCE_HDR = "Osee-JaxRs-Resource";
    private static final String OSEE_WEB_RESOURCE_HDR__PATH_ATTRIBUTE = "path";
+   private static final String OSEE_WEB_RESOURCE_HDR__SECURE_ATTRIBUTE = "secure";
 
    private Map<String, Resource> pathToResource;
    private Map<Bundle, Set<String>> bundleToKey;
@@ -104,6 +110,73 @@ public final class JaxRsResourceManager implements BundleListener {
    public Resource getResource(String path) {
       String toMatch = JaxRsUtils.normalize(path);
       return pathToResource.get(toMatch);
+   }
+
+   public Resource findResource(ContainerRequestContext requestContext) {
+      UriInfo uriInfo = requestContext.getUriInfo();
+      String path = uriInfo.getAbsolutePath().getPath();
+
+      Resource resource = getResource(path);
+      if (resource == null) {
+         if (!hasExtension(path)) {
+            List<MediaType> mediaTypes = getMediaTypesToSearch(requestContext);
+            for (MediaType mediaType : mediaTypes) {
+               String resourcePath = addExtension(path, mediaType);
+               if (Strings.isValid(resourcePath)) {
+                  resource = getResource(resourcePath);
+                  if (resource != null) {
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return resource;
+   }
+
+   private boolean hasExtension(String path) {
+      String extension = null;
+      if (Strings.isValid(path)) {
+         int index = path.lastIndexOf("/");
+         String toProcess = path;
+         if (index > 0 && index + 1 < path.length()) {
+            toProcess = path.substring(index + 1);
+         }
+         extension = Lib.getExtension(toProcess);
+      }
+      return Strings.isValid(extension);
+   }
+
+   private String addExtension(String path, MediaType mediaType) {
+      String extension = mediaType.getSubtype();
+      if ("plain".equals(extension)) {
+         extension = "txt";
+      } else if (extension.contains("+")) {
+         int index = extension.lastIndexOf("+");
+         if (index > 0 && index + 1 < extension.length()) {
+            extension = extension.substring(index + 1);
+         }
+      } else if (extension.contains(".")) {
+         extension = Lib.getExtension(extension);
+      }
+      String toReturn = null;
+      if (Strings.isValid(extension)) {
+         StringBuilder builder = new StringBuilder(path);
+         builder.append(".");
+         builder.append(extension);
+         toReturn = builder.toString();
+      }
+      return toReturn;
+   }
+
+   private List<MediaType> getMediaTypesToSearch(ContainerRequestContext requestContext) {
+      List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+      MediaType mediaType = requestContext.getMediaType();
+      if (mediaType != null) {
+         acceptableMediaTypes.add(mediaType);
+      }
+      acceptableMediaTypes.addAll(requestContext.getAcceptableMediaTypes());
+      return acceptableMediaTypes;
    }
 
    public void accept(JaxRsResourceVisitor visitor) {
@@ -184,6 +257,11 @@ public final class JaxRsResourceManager implements BundleListener {
          for (ManifestElement element : elements) {
             String resource = element.getValue();
             String aliasAttribute = element.getAttribute(OSEE_WEB_RESOURCE_HDR__PATH_ATTRIBUTE);
+            String secureAttribute = element.getAttribute(OSEE_WEB_RESOURCE_HDR__SECURE_ATTRIBUTE);
+            boolean secure = false;
+            if (Strings.isValid(secureAttribute)) {
+               secure = Boolean.parseBoolean(secureAttribute);
+            }
             if (isValidEntry(bundle, headerValue, resource, aliasAttribute)) {
                List<URL> resourceUrls = findUrls(bundle, headerValue, true, resource);
                if (resourceUrls != null && !resourceUrls.isEmpty()) {
@@ -193,7 +271,7 @@ public final class JaxRsResourceManager implements BundleListener {
                      bundleToKey.put(bundle, paths);
                   }
                   for (URL url : resourceUrls) {
-                     addResource(paths, bundle, resource, aliasAttribute, url);
+                     addResource(paths, bundle, resource, aliasAttribute, url, secure);
                   }
                } else {
                   logger.warn("No resource urls found for resource path [%s] in bundle[%s] with header[%s].", resource,
@@ -226,7 +304,7 @@ public final class JaxRsResourceManager implements BundleListener {
       return resourceUrls;
    }
 
-   private void addResource(Set<String> paths, Bundle bundle, String resourceBase, String alias, URL url) {
+   private void addResource(Set<String> paths, Bundle bundle, String resourceBase, String alias, URL url, boolean secure) {
       int index = resourceBase.lastIndexOf('/');
       String path = index != -1 ? resourceBase.substring(0, index) : "/";
       String resourceName = index != -1 ? resourceBase.substring(index + 1) : resourceBase;
@@ -247,7 +325,7 @@ public final class JaxRsResourceManager implements BundleListener {
       pathToMatch = pathToMatch.replaceAll("//", "/");
       paths.add(pathToMatch);
 
-      Resource resource = new ResourceImpl(bundle.getSymbolicName(), url);
+      Resource resource = new ResourceImpl(bundle.getSymbolicName(), url, secure);
       Resource oldResource = pathToResource.put(pathToMatch, resource);
       if (oldResource != null && !oldResource.getUrl().equals(url)) {
          logger.error("Resource collision detected for path[%s] between 1:[%s] and 2:[%s]. resource-2 will be used.",
@@ -258,11 +336,13 @@ public final class JaxRsResourceManager implements BundleListener {
    private static final class ResourceImpl implements Resource {
       private final String bundleName;
       private final URL url;
+      private final boolean secure;
 
-      public ResourceImpl(String bundleName, URL url) {
+      public ResourceImpl(String bundleName, URL url, boolean secure) {
          super();
          this.bundleName = bundleName;
          this.url = url;
+         this.secure = secure;
       }
 
       @Override
@@ -271,9 +351,15 @@ public final class JaxRsResourceManager implements BundleListener {
       }
 
       @Override
+      public boolean isSecure() {
+         return secure;
+      }
+
+      @Override
       public String toString() {
          return "resource [bundleName=" + bundleName + ", url=" + url + "]";
       }
+
    }
 
 }
