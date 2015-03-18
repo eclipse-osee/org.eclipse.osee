@@ -188,7 +188,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    private void updateDirectoryFileSelection() {
       directoryFileSelector.setDirectorySelected(true);
       if (currentResourceSelection != null) {
-         String text;
+         String text = null;
          if (!currentResourceSelection.isEmpty()) {
             IResource selected = currentResourceSelection.iterator().next();
             directoryFileSelector.setDirectorySelected(selected.getType() != IResource.FILE);
@@ -200,10 +200,14 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
                sb.append(resource.getLocation().toString());
                sb.append(DirectoryOrFileSelector.FILE_SEPARATOR);
             }
-            sb.setLength(sb.length() - DirectoryOrFileSelector.FILE_SEPARATOR.length());
-            text = sb.toString();
+            if (sb.length() > 0) {
+               sb.setLength(sb.length() - DirectoryOrFileSelector.FILE_SEPARATOR.length());
+               text = sb.toString();
+            }
          }
-         directoryFileSelector.setText(text);
+         if (Strings.isValid(text)) {
+            directoryFileSelector.setText(text);
+         }
       }
    }
 

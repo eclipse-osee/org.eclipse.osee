@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -34,65 +34,73 @@ public final class HierarchyHandler {
    private static final Matcher subsystemMatcher = Pattern.compile("(\\w*)\\.ss").matcher("");
    private final Map<String, Artifact> folderNameToArtifact = new HashMap<String, Artifact>(50);
    private final SkynetTransaction transaction;
+   private final IOseeBranch branch;
+   private Artifact root;
 
    public HierarchyHandler(SkynetTransaction transaction) {
       this.transaction = transaction;
+      this.branch = transaction.getBranch();
    }
 
    public void addArtifact(Artifact testUnit) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(!testUnit.getBranch().equals(branch),
+         "Artifact [%s] must be on branch [%s]", testUnit.toString(), branch.toString());
       Artifact folder = null;
 
-      Branch branch = testUnit.getFullBranch();
       if (testUnit.isOfType(CoreArtifactTypes.TestCase)) {
-         folder = getOrCreateTestCaseFolder(branch);
+         folder = getOrCreateTestCaseFolder();
       } else if (testUnit.isOfType(CoreArtifactTypes.TestSupport)) {
-         folder = getOrCreateTestSupportFolder(branch);
+         folder = getOrCreateTestSupportFolder();
       } else if (testUnit.isOfType(CoreArtifactTypes.CodeUnit)) {
-         folder = getOrCreateCodeUnitFolder(branch, testUnit.getName());
+         folder = getOrCreateCodeUnitFolder(testUnit.getName());
       } else {
-         folder = getOrCreateUnknownTestUnitFolder(branch);
+         folder = getOrCreateUnknownTestUnitFolder();
       }
 
       addChildIfNotRelated(folder, testUnit);
    }
 
-   private Artifact getOrCreateUnknownTestUnitFolder(Branch branch) throws OseeCoreException {
-      return getOrCreateTestUnitsFolder(branch, "Unknown Test Unit Type", true);
+   private Artifact getOrCreateUnknownTestUnitFolder() throws OseeCoreException {
+      return getOrCreateTestUnitsFolder("Unknown Test Unit Type", true);
    }
 
-   private Artifact getOrCreateTestSupportFolder(Branch branch) throws OseeCoreException {
-      return getOrCreateTestUnitsFolder(branch, Requirements.TEST_SUPPORT_UNITS, true);
+   private Artifact getOrCreateTestSupportFolder() throws OseeCoreException {
+      return getOrCreateTestUnitsFolder(Requirements.TEST_SUPPORT_UNITS, true);
    }
 
-   private Artifact getOrCreateTestCaseFolder(Branch branch) throws OseeCoreException {
-      return getOrCreateTestUnitsFolder(branch, "Test Cases", true);
+   private Artifact getOrCreateTestCaseFolder() throws OseeCoreException {
+      return getOrCreateTestUnitsFolder("Test Cases", true);
    }
 
-   private Artifact getOrCreateCodeUnitFolder(Branch branch, String codeUnitName) throws OseeCoreException {
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      Artifact toReturn = getOrCreateFolder(branch, "Code Units", root);
+   private Artifact getRoot() {
+      if (root == null) {
+         root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
+      }
+      return root;
+   }
+
+   private Artifact getOrCreateCodeUnitFolder(String codeUnitName) throws OseeCoreException {
+      Artifact root = getRoot();
+      Artifact toReturn = getOrCreateFolder("Code Units", root);
 
       String subSystem;
       subsystemMatcher.reset(codeUnitName);
       if (subsystemMatcher.find()) {
          subSystem = subsystemMatcher.group(1);
          subSystem = subSystem.toUpperCase();
-         toReturn = getOrCreateFolder(branch, subSystem, toReturn);
+         toReturn = getOrCreateFolder(subSystem, toReturn);
       }
 
       return toReturn;
    }
 
-   private Artifact getOrCreateTestUnitsFolder(Branch branch, String subfolderName, boolean includesSubfolder) throws OseeCoreException {
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      Artifact testFolder = getOrCreateFolder(branch, "Test", root);
-      addChildIfNotRelated(root, testFolder);
-      Artifact testUnitFolder = getOrCreateFolder(branch, "Test Units", testFolder);
-      addChildIfNotRelated(testFolder, testUnitFolder);
+   private Artifact getOrCreateTestUnitsFolder(String subfolderName, boolean includesSubfolder) throws OseeCoreException {
+      Artifact root = getRoot();
+      Artifact testFolder = getOrCreateFolder("Test", root);
+      Artifact testUnitFolder = getOrCreateFolder("Test Units", testFolder);
 
       if (subfolderName != null && includesSubfolder) {
-         Artifact subFolder = getOrCreateFolder(branch, subfolderName, testFolder);
-         addChildIfNotRelated(testFolder, subFolder);
+         Artifact subFolder = getOrCreateFolder(subfolderName, testUnitFolder);
          return subFolder;
       }
       return testUnitFolder;
@@ -105,19 +113,14 @@ public final class HierarchyHandler {
    }
 
    private void addChildIfNotRelated(Artifact parentFolder, Artifact childFolder) {
-      Collection<Artifact> toCheck = new LinkedList<Artifact>();
-      if (parentFolder.isOfType(CoreArtifactTypes.RootArtifact)) {
-         toCheck.addAll(parentFolder.getChildren());
-      } else {
-         toCheck.addAll(parentFolder.getDescendants());
-      }
-      if (!toCheck.contains(childFolder)) {
+      boolean related = parentFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, childFolder);
+      if (!related) {
          parentFolder.addChild(childFolder);
          persistHelper(parentFolder);
       }
    }
 
-   private Artifact getOrCreateFolder(Branch branch, String folderName, Artifact parentFolder) throws OseeCoreException {
+   private Artifact getOrCreateFolder(String folderName, Artifact parentFolder) throws OseeCoreException {
       Artifact toReturn = folderNameToArtifact.get(folderName);
       if (toReturn == null) {
          List<Artifact> relatedFolders =
@@ -125,9 +128,8 @@ public final class HierarchyHandler {
          if (relatedFolders.size() == 1) {
             toReturn = relatedFolders.iterator().next();
          } else if (relatedFolders.size() > 1) {
-            List<Artifact> descendants = parentFolder.getDescendants();
             for (Artifact folder : relatedFolders) {
-               if (descendants.contains(folder)) {
+               if (parentFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, folder)) {
                   toReturn = folder;
                   break;
                }
@@ -135,7 +137,7 @@ public final class HierarchyHandler {
          }
          if (toReturn == null) {
             toReturn = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, folderName);
-            addChildIfNotRelated(parentFolder, toReturn);
+            parentFolder.addChild(toReturn);
             toReturn.persist(transaction);
          }
          folderNameToArtifact.put(folderName, toReturn);

@@ -68,6 +68,9 @@ public class UriResourceContentFinder {
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
       try {
          for (URI source : sources) {
+            if (monitor.isCanceled()) {
+               break;
+            }
             IFileStore fileStore = EFS.getStore(source);
             if (isFileWithMultiplePaths) {
                processFileWithPaths(monitor, fileStore);

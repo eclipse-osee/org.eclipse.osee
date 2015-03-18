@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -209,12 +208,20 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          hasChange = true;
       }
 
+      //          * populate traces in osee not in scripts
+      //          * 1. add all relations for Uses and Verifies to collection
+      //          * 2. remove from collection as tracemarks are processed
+      //          * 3. all leftovers get un-related
+
+      removeExistingTraceability(traceUnitArtifact);
+
       for (TraceMark traceMark : traceUnit.getTraceMarks()) {
          if (monitor.isCanceled()) {
             break;
          }
 
          Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
+
          if (requirementArtifact != null) {
             IRelationTypeSide relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
             if (relationType == null) {
@@ -239,9 +246,6 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       if (hasChange || artifactWasCreated) {
          handler.addArtifact(traceUnitArtifact);
-         if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
-            TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
-         }
          traceUnitArtifact.persist(transaction);
       }
    }
@@ -263,6 +267,15 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return null;
    }
 
+   private void removeExistingTraceability(Artifact traceUnitArtifact) {
+      if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
+         traceUnitArtifact.deleteRelations(CoreRelationTypes.Uses__Requirement);
+         traceUnitArtifact.deleteRelations(CoreRelationTypes.Verification__Requirement);
+      } else if (traceUnitArtifact.isOfType(CoreArtifactTypes.CodeUnit)) {
+         traceUnitArtifact.deleteRelations(CoreRelationTypes.CodeRequirement_Requirement);
+      }
+   }
+
    private Artifact getRequirementArtifact(String traceMark, RequirementData requirementData) {
       Artifact toReturn = requirementData.getRequirementFromTraceMark(traceMark);
       if (toReturn == null) {
@@ -272,6 +285,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             toReturn = requirementData.getRequirementFromTraceMark(structuredRequirement.getFirst());
          }
       }
+
       return toReturn;
    }
 
@@ -298,22 +312,6 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          }
       };
       Jobs.runInJob("Trace Unit to Artifact Report", runnable, Activator.class, Activator.PLUGIN_ID);
-   }
-
-   private static final class TestRunHandler {
-
-      public static void linkWithTestUnit(SkynetTransaction transaction, Artifact testCase) throws OseeCoreException {
-         if (testCase != null && testCase.isOfType(CoreArtifactTypes.TestCase)) {
-            List<Artifact> testRuns =
-               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.TestRun, testCase.getName(),
-                  transaction.getBranch());
-
-            for (Artifact testRun : testRuns) {
-               testRun.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testCase.getGuid());
-               testRun.persist(transaction);
-            }
-         }
-      }
    }
 
    private final class ResultEditorProvider implements IResultsEditorProvider {
