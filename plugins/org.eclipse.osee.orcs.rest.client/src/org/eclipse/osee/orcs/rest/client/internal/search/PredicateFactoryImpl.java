@@ -96,6 +96,12 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
+   public Predicate createAttributeNotExistsSearch(Collection<? extends IAttributeType> attributeTypes) {
+      List<String> typeIds = getLongIds(attributeTypes);
+      return new Predicate(SearchMethod.NOT_EXISTS_TYPE, Arrays.asList("attrType"), typeIds);
+   }
+
+   @Override
    public Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes) {
       List<String> typeIds = getLongIds(relationTypes);
       return new Predicate(SearchMethod.EXISTS_TYPE, Arrays.asList("relType"), typeIds);

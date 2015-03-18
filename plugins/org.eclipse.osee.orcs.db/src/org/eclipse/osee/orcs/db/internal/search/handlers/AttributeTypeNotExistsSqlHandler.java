@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 
@@ -25,6 +26,7 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    private CriteriaAttributeTypeNotExists criteria;
 
+   private String artAlias;
    private String txsAlias;
 
    @Override
@@ -36,62 +38,41 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
    public void addTables(AbstractSqlWriter writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
-         writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
       }
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       IAttributeType type = criteria.getType();
 
+      writer.writeEquals(artAlias, txsAlias, "gamma_id");
+      writer.writeAndLn();
+      writer.write(writer.getTxBranchFilter(txsAlias));
+      writer.writeAndLn();
+
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       writer.write(TableEnum.ATTRIBUTE_TABLE.getName());
       writer.write(" attr, ");
       writer.write(TableEnum.TXS_TABLE.getName());
-      writer.write(" txs WHERE attr.attr_type_id = ?");
+      writer.write(" txs WHERE attr.attr_type_id = ? ");
       writer.addParameter(type.getGuid());
-
-      List<String> aliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       writer.writeAndLn();
-      int aSize = aliases.size();
-      for (int index = 0; index < aSize; index++) {
-         String artAlias = aliases.get(index);
 
-         writer.write("attr.art_id = ");
-         writer.write(artAlias);
-         writer.write(".art_id");
-
-         if (index + 1 < aSize) {
-            writer.writeAndLn();
-         }
-      }
-      writer.writeAndLn();
-      writer.write("attr.gamma_id = txs.gamma_id");
+      writer.writeEquals("attr", "txs", "gamma_id");
       writer.writeAndLn();
       writer.write(writer.getTxBranchFilter("txs"));
+      writer.writeAndLn();
+      writer.writeEquals("attr", artAlias, "art_id");
       writer.write(")");
-      writer.writeAndLn();
-
-      for (int index = 0; index < aSize; index++) {
-         String artAlias = aliases.get(index);
-         writer.write(artAlias);
-         writer.write(".gamma_id = ");
-         writer.write(txsAlias);
-         writer.write(".gamma_id");
-         if (index + 1 < aSize) {
-            writer.writeAndLn();
-         }
-      }
-      writer.writeAndLn();
-      writer.write(writer.getTxBranchFilter(txsAlias));
 
       return true;
    }
 
    @Override
    public int getPriority() {
-      return SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS.ordinal();
+      return SqlHandlerPriority.ATTRIBUTE_TYPE_NOT_EXISTS.ordinal();
    }
 
 }

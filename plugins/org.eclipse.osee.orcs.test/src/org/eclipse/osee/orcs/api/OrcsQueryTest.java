@@ -100,6 +100,13 @@ public class OrcsQueryTest {
    }
 
    @Test
+   public void testAttributeNotExists() {
+      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      builder.andNotExists(CoreAttributeTypes.Afha);
+      assertEquals(26, builder.getCount());
+   }
+
+   @Test
    public void testQueryByIds() throws OseeCoreException {
       QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuid("AkA2AmNuEDDL4VolM9AA");
       assertEquals(1, builder.getCount());

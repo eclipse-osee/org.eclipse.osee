@@ -330,6 +330,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       });
 
       addToSearchTypeList(new AttributeExistsFilter(attributeControls, attributeTypeList));
+      addToSearchTypeList(new AttributeNotExistsFilter(attributeControls, attributeTypeList));
    }
 
    private void addFilterControls(Composite mainComposite) {

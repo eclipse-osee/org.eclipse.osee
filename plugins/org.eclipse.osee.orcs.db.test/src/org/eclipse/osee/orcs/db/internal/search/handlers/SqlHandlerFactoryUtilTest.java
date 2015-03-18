@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactType;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeOther;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
@@ -71,6 +72,7 @@ public class SqlHandlerFactoryUtilTest {
       criteria.add(new CriteriaArtifactType(null, null, true));
       criteria.add(new CriteriaRelationTypeExists(null));
       criteria.add(new CriteriaAttributeTypeExists(null));
+      criteria.add(new CriteriaAttributeTypeNotExists(null));
       criteria.add(new CriteriaAttributeOther(null, null));
       criteria.add(new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
       criteria.add(new CriteriaRelatedTo(null, null));
@@ -81,7 +83,7 @@ public class SqlHandlerFactoryUtilTest {
       CriteriaSet criteriaSet = createCriteria(criteria);
       List<SqlHandler<?>> handlers = factory.createHandlers(criteriaSet);
 
-      Assert.assertEquals(10, handlers.size());
+      Assert.assertEquals(11, handlers.size());
 
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
       assertHandler(iterator.next(), ArtifactIdsSqlHandler.class, SqlHandlerPriority.ARTIFACT_ID);
@@ -92,6 +94,8 @@ public class SqlHandlerFactoryUtilTest {
          tagProcessor);
       assertHandler(iterator.next(), ArtifactTypeSqlHandler.class, SqlHandlerPriority.ARTIFACT_TYPE);
       assertHandler(iterator.next(), AttributeTypeExistsSqlHandler.class, SqlHandlerPriority.ATTRIBUTE_TYPE_EXISTS);
+      assertHandler(iterator.next(), AttributeTypeNotExistsSqlHandler.class,
+         SqlHandlerPriority.ATTRIBUTE_TYPE_NOT_EXISTS);
       assertHandler(iterator.next(), RelationTypeExistsSqlHandler.class, SqlHandlerPriority.RELATION_TYPE_EXISTS);
       assertHandler(iterator.next(), RelatedToSqlHandler.class, SqlHandlerPriority.RELATED_TO_ART_IDS);
       assertHandler(iterator.next(), AllArtifactsSqlHandler.class, SqlHandlerPriority.ALL_ARTIFACTS);

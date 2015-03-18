@@ -40,6 +40,8 @@ public interface PredicateFactory {
 
    Predicate createAttributeExistsSearch(Collection<? extends IAttributeType> attributeTypes);
 
+   Predicate createAttributeNotExistsSearch(Collection<? extends IAttributeType> attributeTypes);
+
    Predicate createRelationExistsSearch(Collection<? extends IRelationType> relationTypes);
 
    Predicate createRelationNotExistsSearch(Collection<? extends IRelationType> relationTypes);
