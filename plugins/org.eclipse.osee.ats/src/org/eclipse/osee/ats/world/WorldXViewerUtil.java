@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -68,7 +69,15 @@ public class WorldXViewerUtil {
    }
 
    public static void registerConfigurationsColumns(XViewerFactory factory) {
+      List<XViewerAtsAttributeValueColumn> configColumns = getConfigurationColumns();
+      for (XViewerAtsAttributeValueColumn col : configColumns) {
+         factory.registerColumns(col);
+      }
+   }
+
+   public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
       List<AtsAttributeValueColumn> columns = AtsConfigurationUtil.getConfigurations().getViews().getAttrColumns();
+      List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<XViewerAtsAttributeValueColumn>();
       for (AtsAttributeValueColumn column : columns) {
          try {
             AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
@@ -79,12 +88,13 @@ public class WorldXViewerUtil {
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
             valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());
-            factory.registerColumns(valueColumn);
+            configColumns.add(valueColumn);
 
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
+      return configColumns;
    }
 
    private static int getSwtAlign(ColumnAlign align) {
@@ -105,6 +115,23 @@ public class WorldXViewerUtil {
       for (String stateName : AtsWorkDefinitionSheetProviders.getAllValidStateNames()) {
          factory.registerColumns(new StateCompletedColumn(stateName));
       }
+   }
+
+   public static XViewerColumn getConfigColumn(String columnId, List<XViewerAtsAttributeValueColumn> configCols) {
+      for (XViewerAtsAttributeValueColumn col : configCols) {
+         if (col.getId().equals(columnId)) {
+            return col;
+         }
+      }
+      return null;
+   }
+
+   public static void addColumn(SkynetXViewerFactory factory, XViewerColumn taskCol, int width, List<XViewerColumn> sprintCols) {
+      XViewerColumn newCol = taskCol.copy();
+      newCol.setShow(true);
+      newCol.setWidth(width);
+      factory.registerColumns(newCol);
+      sprintCols.add(newCol);
    }
 
 }

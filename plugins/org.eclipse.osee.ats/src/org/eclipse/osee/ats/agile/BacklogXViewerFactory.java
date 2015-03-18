@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.agile;
 
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -22,12 +22,13 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
+import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
-import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
@@ -39,39 +40,37 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class BacklogXViewerFactory extends SkynetXViewerFactory {
 
    private GoalArtifact soleBacklogArtifact;
-   @SuppressWarnings("unchecked")
-   public static final List<? extends XViewerColumn> BacklogViewerVisibleColumns = Arrays.asList(
-      GoalOrderColumn.getBacklogInstance(), TitleColumn.getInstance(), TypeColumn.getInstance(),
-      StateColumn.getInstance(), PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
-      AssigneeColumnUI.getInstance(), new AtsIdColumn(true), CreatedDateColumn.getInstance(),
-      TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
-   public static Integer[] widths = new Integer[] {
-      GoalOrderColumn.getBacklogInstance().getWidth(),
-      250,
-      60,
-      60,
-      20,
-      20,
-      100,
-      50,
-      50,
-      50,
-      80};
 
    public BacklogXViewerFactory(GoalArtifact soleBacklogArtifact) {
       super("org.eclipse.osee.ats.BacklogXViewer");
       this.soleBacklogArtifact = soleBacklogArtifact;
-      int widthIndex = 0;
-      // Create new column from world columns but set show and width for task
-      for (XViewerColumn taskCol : BacklogViewerVisibleColumns) {
-         XViewerColumn newCol = taskCol.copy();
-         newCol.setShow(true);
-         newCol.setWidth(widths[widthIndex++]);
-         registerColumns(newCol);
+
+      List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
+      List<XViewerColumn> backlogCols = new LinkedList<XViewerColumn>();
+
+      // Add default Backlog columns
+      WorldXViewerUtil.addColumn(this, GoalOrderColumn.getBacklogInstance(), 45, backlogCols);
+      WorldXViewerUtil.addColumn(this, PointsColumn.getInstance(), 20, backlogCols);
+      WorldXViewerUtil.addColumn(this, TitleColumn.getInstance(), 300, backlogCols);
+      WorldXViewerUtil.addColumn(this, StateColumn.getInstance(), 74, backlogCols);
+      WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, backlogCols);
+      WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, backlogCols);
+      WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, backlogCols);
+      WorldXViewerUtil.addColumn(this, TargetedVersionColumn.getInstance(), 50, backlogCols);
+      WorldXViewerUtil.addColumn(this, SprintColumn.getInstance(), 100, backlogCols);
+      XViewerColumn unPlannedWorkColumn = WorldXViewerUtil.getConfigColumn("ats.Unplanned Work", configCols);
+      if (unPlannedWorkColumn != null) {
+         WorldXViewerUtil.addColumn(this, unPlannedWorkColumn, 20, backlogCols);
+         configCols.remove(unPlannedWorkColumn);
       }
+      WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, backlogCols);
+      WorldXViewerUtil.addColumn(this, NotesColumn.getInstance(), 116, backlogCols);
+      WorldXViewerUtil.addColumn(this, CreatedDateColumn.getInstance(), 82, backlogCols);
+      WorldXViewerUtil.addColumn(this, new AtsIdColumn(true), 50, backlogCols);
+
       // Add remaining columns from world columns
       for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
-         if (!BacklogViewerVisibleColumns.contains(worldCol)) {
+         if (!backlogCols.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);
             registerColumns(newCol);
@@ -80,7 +79,10 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerUtil.registerAtsAttributeColumns(this);
       WorldXViewerUtil.registerPluginColumns(this);
       WorldXViewerUtil.registerStateColumns(this);
-      WorldXViewerUtil.registerConfigurationsColumns(this);
+      // Add remaining Configuration Columns
+      for (XViewerAtsAttributeValueColumn col : configCols) {
+         registerColumns(col);
+      }
    }
 
    @Override
