@@ -15,12 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   BranchCommitRequestTest.class,
-   BranchCommitResponseTest.class,
-   CacheUpdateRequestTest.class,
-   PurgeBranchRequestTest.class,
-   TransactionCacheUpdateResponseTest.class,})
+@Suite.SuiteClasses({CacheUpdateRequestTest.class, TransactionCacheUpdateResponseTest.class,})
 /**
  * @author Roberto E. Escobar
  */

@@ -12,11 +12,8 @@ package org.eclipse.osee.framework.core.message.test.mocks;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.message.BranchCreationRequest;
-import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
@@ -30,7 +27,6 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class MockRequestFactory {
 
@@ -75,26 +71,4 @@ public final class MockRequestFactory {
       return new CacheUpdateRequest(cacheEnum, guids);
    }
 
-   public static BranchCreationRequest createBranchCreateRequest(int index) {
-      BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
-      String branchName = "branch_" + index;
-      int parentBranchId = index;
-      int associatedArtifactId = index * 3;
-      int sourceTransactionId = index * 7;
-      long branchUuid = Lib.generateUuid();
-
-      int authorId = index * 7;
-
-      String creationComment = "creation_comment_" + index;
-
-      int mergeFromAddressingQueryId = -1;
-      int destinationBranchId = -1;
-
-      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchName, branchUuid,
-         associatedArtifactId, authorId, creationComment, mergeFromAddressingQueryId, destinationBranchId);
-   }
-
-   public static Object createBranchCreateResponse(int index) {
-      return new BranchCreationResponse(index);
-   }
 }

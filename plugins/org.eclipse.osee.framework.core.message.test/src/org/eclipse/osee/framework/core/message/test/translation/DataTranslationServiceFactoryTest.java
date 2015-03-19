@@ -15,13 +15,7 @@ import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;
 import org.eclipse.osee.framework.core.message.internal.translation.ArtifactTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.AttributeTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCommitRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCommitResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.CacheUpdateRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
@@ -54,15 +48,6 @@ public class DataTranslationServiceFactoryTest {
       DataTranslationService srvc = new DataTranslationService();
       srvc.setModelFactory(new MockModelFactoryService());
       srvc.start();
-
-      checkExists(srvc, BranchCreationRequestTranslator.class, CoreTranslatorId.BRANCH_CREATION_REQUEST);
-      checkExists(srvc, BranchCreationResponseTranslator.class, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
-
-      checkExists(srvc, BranchCommitRequestTranslator.class, CoreTranslatorId.BRANCH_COMMIT_REQUEST);
-      checkExists(srvc, BranchCommitResponseTranslator.class, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
-
-      checkExists(srvc, ChangeReportRequestTranslator.class, CoreTranslatorId.CHANGE_REPORT_REQUEST);
-      checkExists(srvc, ChangeReportResponseTranslator.class, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
       checkExists(srvc, CacheUpdateRequestTranslator.class, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
       checkExists(srvc, ArtifactTypeCacheUpdateResponseTranslator.class,

@@ -11,16 +11,8 @@
 package org.eclipse.osee.framework.core.message.test.mocks;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.message.BranchCommitRequest;
-import org.eclipse.osee.framework.core.message.BranchCommitResponse;
-import org.eclipse.osee.framework.core.message.BranchCreationRequest;
-import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
-import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
-import org.eclipse.osee.framework.core.message.ChangeBranchStateRequest;
-import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
-import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -116,25 +108,6 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(BranchCommitRequest expected, BranchCommitRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getUserArtId(), actual.getUserArtId());
-         Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
-         Assert.assertEquals(expected.getSourceBranchId(), actual.getSourceBranchId());
-         Assert.assertEquals(expected.getDestinationBranchId(), actual.getDestinationBranchId());
-      }
-   }
-
-   public static void assertEquals(BranchCommitResponse expected, BranchCommitResponse actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getTransactionId(), actual.getTransactionId());
-      }
-   }
-
    public static void assertEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
@@ -167,31 +140,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getName(), actual.getName());
          Assert.assertEquals(expected.getStorageState(), actual.getStorageState());
          Assert.assertEquals(expected.isDirty(), actual.isDirty());
-      }
-   }
-
-   public static void assertEquals(BranchCreationRequest expected, BranchCreationRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getAssociatedArtifactId(), actual.getAssociatedArtifactId());
-         Assert.assertEquals(expected.getAuthorId(), actual.getAuthorId());
-         Assert.assertEquals(expected.getBranchUuid(), actual.getBranchUuid());
-         Assert.assertEquals(expected.getBranchName(), actual.getBranchName());
-         Assert.assertEquals(expected.getCreationComment(), actual.getCreationComment());
-         Assert.assertEquals(expected.getMergeDestinationBranchId(), actual.getMergeDestinationBranchId());
-         Assert.assertEquals(expected.getParentBranchId(), actual.getParentBranchId());
-         Assert.assertEquals(expected.getMergeAddressingQueryId(), actual.getMergeAddressingQueryId());
-         Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
-         Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
-      }
-   }
-
-   public static void assertEquals(BranchCreationResponse expected, BranchCreationResponse actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
       }
    }
 
@@ -232,45 +180,10 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
-      }
-   }
-
    public static void assertEquals(TableData expected, TableData actual) {
       Assert.assertEquals(expected.getTitle(), actual.getTitle());
       Assert.assertFalse(Compare.isDifferent(expected.getColumns(), actual.getColumns()));
       Assert.assertFalse(Compare.isDifferent(expected.getRows(), actual.getRows()));
-   }
-
-   public static void assertEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
-         Assert.assertEquals(expected.getType(), actual.getType());
-      }
-   }
-
-   public static void assertEquals(ChangeBranchArchiveStateRequest expected, ChangeBranchArchiveStateRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
-         Assert.assertEquals(expected.getState(), actual.getState());
-      }
-   }
-
-   public static void assertEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
-         Assert.assertEquals(expected.getState(), actual.getState());
-      }
    }
 
    public static void assertEquals(DatastoreInitRequest expected, DatastoreInitRequest actual) {

@@ -17,17 +17,6 @@ import org.eclipse.osee.framework.core.translation.ITranslatorId;
  * @author Roberto E. Escobar
  */
 public enum CoreTranslatorId implements ITranslatorId {
-   BRANCH_COMMIT_REQUEST,
-   BRANCH_COMMIT_RESPONSE,
-   PURGE_BRANCH_REQUEST,
-
-   CHANGE_BRANCH_TYPE,
-   CHANGE_BRANCH_STATE,
-   CHANGE_BRANCH_ARCHIVE_STATE,
-
-   CHANGE_REPORT_REQUEST,
-   CHANGE_REPORT_RESPONSE,
-
    OSEE_DATASTORE_INIT_REQUEST,
 
    OSEE_IMPORT_MODEL_REQUEST,
@@ -40,8 +29,6 @@ public enum CoreTranslatorId implements ITranslatorId {
    OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE,
 
    TRANSACTION_RECORD,
-   BRANCH_CREATION_REQUEST,
-   BRANCH_CREATION_RESPONSE,
    TABLE_DATA,
 
    STATUS_RESPONSE;

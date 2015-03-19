@@ -15,22 +15,13 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   BranchCommitRequestTranslatorTest.class,
-   BranchCommitResponseTranslatorTest.class,
-   BranchCreationRequestTranslatorTest.class,
-   BranchCreationResponseTranslatorTest.class,
    CacheUpdateRequestTranslatorTest.class,
-   ChangeReportResponseTranslatorTest.class,
    DatastoreInitRequestTranslatorTest.class,
    DataTranslationServiceFactoryTest.class,
    DataTranslationServiceTest.class,
    OseeImportModelRequestTranslatorTest.class,
    OseeImportModelResponseTranslatorTest.class,
-   TableDataTranslatorTest.class,
-   PurgeBranchRequestTranslatorTest.class,
-   BranchChangeTypeRequestTranslatorTest.class,
-   BranchChangeStateRequestTranslatorTest.class,
-   BranchChangeArchivedStateRequestTranslatorTest.class})
+   TableDataTranslatorTest.class})
 /**
  * @author Roberto E. Escobar
  */

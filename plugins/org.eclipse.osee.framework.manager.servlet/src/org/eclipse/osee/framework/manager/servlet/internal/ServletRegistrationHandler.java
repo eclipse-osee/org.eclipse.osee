@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
-import org.eclipse.osee.framework.manager.servlet.BranchManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.ConfigurationServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.OseeCacheServlet;
@@ -120,8 +119,6 @@ public class ServletRegistrationHandler {
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), "index");
       register(new BranchExchangeServlet(logger, sessionManager, resourceManager, orcsApi),
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
-      register(new BranchManagerServlet(logger, sessionManager, translationService, orcsApi),
-         OseeServerContext.BRANCH_CONTEXT);
       register(new SearchEngineTaggerServlet(logger, sessionManager, orcsApi), OseeServerContext.SEARCH_TAGGING_CONTEXT);
       register(new SessionManagementServlet(logger, sessionManager, authenticationManager, activityLog),
          OseeServerContext.SESSION_CONTEXT);
