@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -39,8 +40,8 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
    public void loadDsl() throws OseeCoreException {
       String accessModel = getModelFromStorage();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      IOperation operation = new OseeTypesExportOperation(outputStream);
-      Operations.executeWorkAndCheckStatus(operation);
+      IOperation op = ArtifactTypeManager.newExportTypesOp(outputStream);
+      Operations.executeWorkAndCheckStatus(op);
       try {
          outputStream.write(accessModel.getBytes("utf-8"));
          oseeDsl = OseeDslResourceUtil.loadModel(locationUri, outputStream.toString("utf-8")).getModel();

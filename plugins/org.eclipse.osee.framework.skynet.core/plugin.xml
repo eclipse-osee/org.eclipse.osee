@@ -263,5 +263,10 @@
            classname="org.eclipse.osee.framework.skynet.core.artifact.checks.AssociatedArtifactCheck">
      </ArtifactCheck>
   </extension>
-        
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.OseeTypesHandler">
+      <OseeTypesHandler
+            classname="org.eclipse.osee.framework.skynet.core.internal.XtextOseeTypesHandler">
+      </OseeTypesHandler>
+   </extension>        
 </plugin>

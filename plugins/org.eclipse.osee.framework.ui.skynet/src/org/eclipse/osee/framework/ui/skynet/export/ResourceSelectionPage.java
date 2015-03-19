@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.wizards;
+package org.eclipse.osee.framework.ui.skynet.export;
 
 import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

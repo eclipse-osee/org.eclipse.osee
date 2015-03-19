@@ -2,22 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.exportWizards">
-      <wizard
-            category="org.eclipse.osee.framework.ui.skynet.export"
-            class="org.eclipse.osee.framework.core.dsl.ui.integration.wizards.OseeTypesExportWizard"
-            icon="images/gears.gif"
-            id="org.eclipse.osee.framework.types.bridge.osee.types.export"
-            name="Osee Types Export">
-      </wizard>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.OseeTypesHandler">
-      <OseeTypesHandler
-            classname="org.eclipse.osee.framework.core.dsl.ui.integration.operations.XtextOseeTypesHandler">
-      </OseeTypesHandler>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer
             classname="org.eclipse.osee.framework.core.dsl.ui.integration.internal.OseeDslRenderer">

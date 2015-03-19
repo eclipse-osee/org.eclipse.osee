@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.wizards;
+package org.eclipse.osee.framework.ui.skynet.export;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
-import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesExportOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -38,7 +38,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
 
    public OseeTypesExportWizard() {
       super();
-      // setDialogSettings(Activator.getInstance().getDialogSettings());
+      setDialogSettings(Activator.getInstance().getDialogSettings());
       setWindowTitle("OSEE Types Export Wizard");
       setNeedsProgressMonitor(true);
       setHelpAvailable(true);
@@ -53,7 +53,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
       try {
          fos = new FileOutputStream(file);
          final OutputStream outputStream = new BufferedOutputStream(fos);
-         IOperation op = new OseeTypesExportOperation(outputStream);
+         IOperation op = ArtifactTypeManager.newExportTypesOp(outputStream);
          Operations.executeAsJob(op, true, Job.LONG, new JobChangeAdapter() {
             @Override
             public void done(IJobChangeEvent event) {
@@ -61,7 +61,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
             }
          });
       } catch (FileNotFoundException ex) {
-         OseeLog.log(DslUiIntegrationConstants.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          Lib.close(fos);
       }

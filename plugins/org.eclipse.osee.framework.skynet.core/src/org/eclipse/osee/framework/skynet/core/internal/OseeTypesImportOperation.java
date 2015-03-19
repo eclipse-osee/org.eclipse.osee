@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
+package org.eclipse.osee.framework.skynet.core.internal;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -16,17 +16,13 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
-import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
@@ -37,13 +33,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 public class OseeTypesImportOperation extends AbstractOperation {
    private final IOseeCachingService cacheService;
    private final URI model;
-   private final boolean createTypeChangeReport;
 
-   public OseeTypesImportOperation(IOseeCachingService cacheService, URI model, boolean createTypeChangeReport) {
-      super("Import Osee Types Model", DslUiIntegrationConstants.PLUGIN_ID);
+   public OseeTypesImportOperation(IOseeCachingService cacheService, URI model) {
+      super("Import Osee Types Model", Activator.PLUGIN_ID);
       this.cacheService = cacheService;
       this.model = model;
-      this.createTypeChangeReport = createTypeChangeReport;
    }
 
    private String getModel(URL url) throws IOException {
@@ -70,7 +64,7 @@ public class OseeTypesImportOperation extends AbstractOperation {
       Map<String, String> parameters = new HashMap<String, String>();
 
       OseeImportModelRequest modelRequest =
-         new OseeImportModelRequest(getName(model), getModel(model.toURL()), createTypeChangeReport, false);
+         new OseeImportModelRequest(getName(model), getModel(model.toURL()), false, false);
 
       OseeImportModelResponse response =
          HttpClientMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,
@@ -83,13 +77,6 @@ public class OseeTypesImportOperation extends AbstractOperation {
          cacheService.getRelationTypeCache().reloadCache();
       }
 
-      if (createTypeChangeReport) {
-         openTabReport(response.getReportData());
-      }
-
    }
 
-   private void openTabReport(List<TableData> tableData) {
-      Operations.executeAsJob(new CreateEditorReportOperation("Un-Persisted Osee Types", tableData), true);
-   }
 }
