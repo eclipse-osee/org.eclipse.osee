@@ -59,6 +59,16 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    CompareResults compareBranches(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-uuid2") long branchUuid2);
 
+   @GET
+   @Path("{branch-uuid}/txs")
+   @Produces({MediaType.APPLICATION_JSON})
+   List<Transaction> getAllBranchTxs(@PathParam("branch-uuid") long branchUuid);
+
+   @GET
+   @Path("{branch-uuid}/txs/{tx-id}")
+   @Produces({MediaType.APPLICATION_JSON})
+   Transaction getBranchTx(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId);
+
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
@@ -80,6 +90,12 @@ public interface BranchEndpoint {
    @Path("{branch-uuid}/archive")
    Response archiveBranch(@PathParam("branch-uuid") long branchUuid);
 
+   @POST
+   @Path("{branch-uuid}/txs")
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   Response writeTx(@PathParam("branch-uuid") long branchUuid, NewTransaction data);
+
    @PUT
    @Path("{branch-uuid}/name/{branch-name}")
    Response setBranchName(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-name") String newName);
@@ -95,6 +111,10 @@ public interface BranchEndpoint {
    @PUT
    @Path("{branch-uuid}/associated-artifact/{art-id}")
    Response associateBranchToArtifact(@PathParam("branch-uuid") long branchUuid, @PathParam("art-id") int artifactId);
+
+   @PUT
+   @Path("{branch-uuid}/txs/{tx-id}/comment/{tx-comment}")
+   Response setTxComment(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId, @PathParam("tx-comment") String comment);
 
    @DELETE
    @Path("{branch-uuid}")
@@ -114,4 +134,12 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    Response unarchiveBranch(@PathParam("branch-uuid") long branchUuid);
 
+   @DELETE
+   @Path("{branch-uuid}/txs")
+   @Consumes({MediaType.APPLICATION_JSON})
+   Response deleteTxs(@PathParam("branch-uuid") long branchUuid, DeleteTransaction deleteTxs);
+
+   @DELETE
+   @Path("{branch-uuid}/txs/{tx-id}")
+   Response deleteTx(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId);
 }

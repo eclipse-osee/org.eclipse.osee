@@ -15,8 +15,10 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
+import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -47,10 +50,16 @@ import org.eclipse.osee.orcs.rest.model.Branch;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.CompareResults;
+import org.eclipse.osee.orcs.rest.model.DeleteTransaction;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
+import org.eclipse.osee.orcs.rest.model.NewTransaction;
+import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -122,6 +131,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return results.getExactlyOne();
    }
 
+   private TransactionReadable getTxByBranchAndId(long branchUuid, int txId) {
+      ResultSet<TransactionReadable> results = newTxQuery().andBranchIds(branchUuid).andTxId(txId).getResults();
+      return results.getExactlyOne();
+   }
+
+   private TransactionFactory newTxFactory() {
+      return orcsApi.getTransactionFactory(newContext());
+   }
+
    @Override
    public List<Branch> getBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
@@ -155,6 +173,18 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public Branch getBranch(long branchUuid) {
       BranchReadable branch = getBranchById(branchUuid);
       return asBranch(branch);
+   }
+
+   @Override
+   public List<Transaction> getAllBranchTxs(long branchUuid) {
+      ResultSet<TransactionReadable> results = newTxQuery().andBranchIds(branchUuid).getResults();
+      return asTransactions(results);
+   }
+
+   @Override
+   public Transaction getBranchTx(long branchUuid, int txId) {
+      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
+      return asTransaction(tx);
    }
 
    @Override
@@ -271,6 +301,22 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public Response writeTx(long branchUuid, NewTransaction data) {
+      String comment = data.getComment();
+      ArtifactReadable userArtifact = null;
+
+      TransactionFactory txFactory = newTxFactory();
+      TransactionBuilder txBuilder = txFactory.createTransaction(branchUuid, userArtifact, comment);
+
+      //TODO: Integrate data with TxBuilder
+
+      TransactionReadable tx = txBuilder.commit();
+
+      URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx.getGuid());
+      return Response.created(location).entity(asTransaction(tx)).build();
+   }
+
+   @Override
    public Response setBranchName(long branchUuid, String newName) {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
@@ -321,6 +367,18 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public Response setTxComment(long branchUuid, int txId, String comment) {
+      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
+      boolean modified = false;
+      if (Compare.isDifferent(tx.getComment(), comment)) {
+         TransactionFactory txFactory = newTxFactory();
+         txFactory.setTransactionComment(tx, comment);
+         modified = true;
+      }
+      return asResponse(modified);
+   }
+
+   @Override
    public Response purgeBranch(long branchUuid, boolean recurse) {
       boolean modified = false;
       BranchReadable branch = getBranchById(branchUuid);
@@ -357,6 +415,33 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (branch.getAssociatedArtifactId() != -1) {
          Callable<?> op = getBranchOps().unassociateBranch(branch);
+         executeCallable(op);
+         modified = true;
+      }
+      return asResponse(modified);
+   }
+
+   @Override
+   public Response deleteTxs(long branchUuid, DeleteTransaction deleteTxs) {
+      boolean modified = false;
+      if (!deleteTxs.isEmpty()) {
+         ResultSet<TransactionReadable> results =
+            newTxQuery().andBranchIds(branchUuid).andTxIds(deleteTxs.getTransactions()).getResults();
+         if (!results.isEmpty()) {
+            Callable<?> op = newTxFactory().purgeTransaction(Lists.newLinkedList(results));
+            executeCallable(op);
+            modified = true;
+         }
+      }
+      return asResponse(modified);
+   }
+
+   @Override
+   public Response deleteTx(long branchUuid, int txId) {
+      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
+      boolean modified = false;
+      if (tx != null) {
+         Callable<?> op = newTxFactory().purgeTransaction(Collections.singleton(tx));
          executeCallable(op);
          modified = true;
       }
