@@ -131,7 +131,7 @@ public class OseeModelServlet extends SecureOseeHttpServlet {
 
          OseeImportModelResponse modelResponse = new OseeImportModelResponse();
 
-         getOrcsTypes().loadTypes(resource, isInitializing(req)).call();
+         getOrcsTypes().loadTypes(resource).call();
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");

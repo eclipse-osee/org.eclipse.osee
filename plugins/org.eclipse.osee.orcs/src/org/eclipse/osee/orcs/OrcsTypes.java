@@ -35,7 +35,7 @@ public interface OrcsTypes {
 
    EnumTypes getEnumTypes();
 
-   Callable<Void> loadTypes(IResource resource, boolean isInitializing);
+   Callable<Void> loadTypes(IResource resource);
 
    Callable<Void> writeTypes(OutputStream outputStream);
 

@@ -90,7 +90,7 @@ public class OrcsTypesImpl implements OrcsTypes {
    }
 
    @Override
-   public Callable<Void> loadTypes(final IResource resource, final boolean isInitializing) {
+   public Callable<Void> loadTypes(final IResource resource) {
       return new CancellableCallable<Void>() {
          @Override
          public Void call() throws Exception {

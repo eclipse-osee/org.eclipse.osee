@@ -299,7 +299,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       };
 
       getLogger().info("Updating Type Model with [%s]", typesResource.getLocation());
-      orcsTypes.loadTypes(typesResource, true).call();
+      orcsTypes.loadTypes(typesResource).call();
       getLogger().info("Type Model Import complete");
    }
    private final class CommitImportSavePointsTx extends AbstractDatastoreTxCallable<Boolean> {
