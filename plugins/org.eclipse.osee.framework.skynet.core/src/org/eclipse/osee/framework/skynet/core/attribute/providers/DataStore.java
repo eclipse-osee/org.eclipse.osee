@@ -15,13 +15,13 @@ import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DataStore {
-   private final AbstractResourceProcessor resourceProcessor;
+   private final AttributeResourceProcessor resourceProcessor;
    private String locator;
    private byte[] rawContent;
    private String contentType;
@@ -29,7 +29,7 @@ public class DataStore {
    private String extension;
    private boolean needToReadFromRemote;
 
-   public DataStore(AbstractResourceProcessor resourceProcessor) {
+   public DataStore(AttributeResourceProcessor resourceProcessor) {
       super();
       this.resourceProcessor = resourceProcessor;
       clear();
@@ -58,7 +58,7 @@ public class DataStore {
    }
 
    public byte[] getContent() throws OseeCoreException {
-      if (isLocatorValid() != false && needToReadFromRemote) {
+      if (needToReadFromRemote && isLocatorValid()) {
          resourceProcessor.acquire(this);
          needToReadFromRemote = false;
       }

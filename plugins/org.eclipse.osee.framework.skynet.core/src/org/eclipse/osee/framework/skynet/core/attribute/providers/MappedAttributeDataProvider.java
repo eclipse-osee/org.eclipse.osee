@@ -10,31 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 
 /**
  * @author Roberto E. Escobar
  */
 public class MappedAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider {
+
    private String localUri;
    private String remoteUri;
    private IFile backingFile;
@@ -63,6 +67,11 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       }
    }
 
+   private ResourcesEndpoint getResourcesEndpoint() {
+      OseeClient client = ServiceUtil.getOseeClient();
+      return client.getResourcesEndpoint();
+   }
+
    private String getOutfileName() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       //TestRunOperator operator = new TestRunOperator(getAttribute().getArtifact());
@@ -84,19 +93,32 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
          if (isFromLocalWorkspace()) {
             InputStream inputStream = null;
             try {
+               ResourcesEndpoint endpoint = getResourcesEndpoint();
+
                URI sourceUri = new URI(localUri);
                inputStream = sourceUri.toURL().openStream();
                byte[] compressed = Lib.compressStream(inputStream, getOutfileName());
-               URL url = AttributeURL.getStorageURL(storageId, getAttribute().getArtifact().getGuid(), "zip");
-               URI uri = HttpProcessor.save(url, new ByteArrayInputStream(compressed), "applization/zip", "ISO-8859-1");
-               if (uri != null) {
-                  this.remoteUri = uri.toASCIIString();
-                  this.localUri = null;
+
+               String resourceId = String.valueOf(storageId);
+               boolean overwriteAllowed = false;
+               boolean compressOnSave = false;
+
+               String resourceName = String.format("%s.zip", getAttribute().getArtifact().getGuid());
+               try {
+                  Response response =
+                     endpoint.saveResource(new ByteArrayInputStream(compressed),
+                        BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
+                        compressOnSave);
+                  String location = BinaryContentUtils.getAttributeLocation(response);
+                  if (location != null) {
+                     this.remoteUri = location;
+                     this.localUri = null;
+                  }
+               } catch (Exception ex) {
+                  throw JaxRsExceptions.asOseeException(ex);
                }
             } finally {
-               if (inputStream != null) {
-                  inputStream.close();
-               }
+               Lib.close(inputStream);
             }
          }
       } catch (OseeCoreException ex) {
@@ -110,13 +132,19 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    public void purge() throws OseeCoreException {
       try {
          if (isRemoteUriValid()) {
-            URL url = AttributeURL.getAcquireURL(remoteUri);
-            String response = HttpProcessor.delete(url);
-            if (response != null && response.equals("Deleted: " + remoteUri)) {
-               remoteUri = null;
-               if (isBackingFileValid()) {
-                  backingFile.delete(true, null);
+            String path = BinaryContentUtils.asResourcePath(remoteUri);
+
+            ResourcesEndpoint endpoint = getResourcesEndpoint();
+            try {
+               Response response = endpoint.deleteResource(path);
+               if (Status.OK.getStatusCode() == response.getStatus()) {
+                  remoteUri = null;
+                  if (isBackingFileValid()) {
+                     backingFile.delete(true, null);
+                  }
                }
+            } catch (Exception ex) {
+               throw JaxRsExceptions.asOseeException(ex);
             }
          }
       } catch (Exception ex) {
@@ -156,16 +184,25 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       return false;
    }
 
-   private IFile requestRemoteFile() throws Exception {
+   private IFile requestRemoteFile() {
       IFile file = null;
-      ByteArrayOutputStream downloadStream = new ByteArrayOutputStream();
-      URL url = AttributeURL.getAcquireURL(remoteUri);
-      AcquireResult results = HttpProcessor.acquire(url, downloadStream);
-      if (results.wasSuccessful()) {
-         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(downloadStream.toByteArray()));
-         ZipEntry entry = zipInputStream.getNextEntry();
 
+      String path = BinaryContentUtils.asResourcePath(remoteUri);
+
+      ResourcesEndpoint endpoint = getResourcesEndpoint();
+      InputStream inputStream = null;
+      try {
+         Response resource = endpoint.getResource(path, false, false);
+         InputStream entity = resource.readEntity(InputStream.class);
+
+         inputStream = new BufferedInputStream(entity);
+         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+         ZipEntry entry = zipInputStream.getNextEntry();
          file = OseeData.getIFile(entry.getName(), zipInputStream, true);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      } finally {
+         Lib.close(inputStream);
       }
       return file;
    }

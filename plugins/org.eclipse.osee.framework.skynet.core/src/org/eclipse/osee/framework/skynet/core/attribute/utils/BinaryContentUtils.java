@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.skynet.core.attribute.utils;
 import java.io.UnsupportedEncodingException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -24,6 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  * @author Roberto E. Escobar
  */
 public class BinaryContentUtils {
+
+   public static final String ATTRIBUTE_RESOURCE_PROTOCOL = "attr";
+   private static final String ATTR_RESOURCES_CONTEXT = "/resources/attr/";
+   private static final int ATTR_RESOURCES_CONTEXT_LENGTH = ATTR_RESOURCES_CONTEXT.length();
 
    private final static int MAX_NAME_SIZE = 60;
 
@@ -73,4 +79,24 @@ public class BinaryContentUtils {
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
       return guid;
    }
+
+   public static String asResourcePath(String locator) {
+      String toReturn = locator;
+      if (Strings.isValid(toReturn)) {
+         toReturn = toReturn.replaceAll("://", "/");
+      }
+      return toReturn;
+   }
+
+   public static String getAttributeLocation(Response response) {
+      String toReturn = response.getHeaderString(HttpHeaders.LOCATION);
+      if (Strings.isValid(toReturn)) {
+         int index = toReturn.indexOf(ATTR_RESOURCES_CONTEXT);
+         if (index > 0 && index + ATTR_RESOURCES_CONTEXT_LENGTH < toReturn.length()) {
+            toReturn = String.format("attr://%s", toReturn.substring(index + ATTR_RESOURCES_CONTEXT_LENGTH));
+         }
+      }
+      return toReturn;
+   }
+
 }

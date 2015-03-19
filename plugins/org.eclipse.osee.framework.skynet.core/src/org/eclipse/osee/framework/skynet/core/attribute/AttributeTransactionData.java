@@ -12,14 +12,15 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 
 /**
  * @author Jeff C. Phillips
@@ -73,11 +74,21 @@ public class AttributeTransactionData extends BaseTransactionData {
    protected void internalOnRollBack() throws OseeCoreException {
       if (!attribute.isUseBackingData() && Strings.isValid(daoToSql.getUri())) {
          try {
-            HttpProcessor.delete(AttributeURL.getDeleteURL(daoToSql.getUri()));
+            OseeClient client = ServiceUtil.getOseeClient();
+            ResourcesEndpoint endpoint = client.getResourcesEndpoint();
+            endpoint.deleteResource(asPath(daoToSql.getUri()));
          } catch (Exception ex) {
             OseeExceptions.wrapAndThrow(ex);
          }
       }
+   }
+
+   private String asPath(String uri) {
+      String toReturn = uri;
+      if (Strings.isValid(toReturn)) {
+         toReturn = toReturn.replaceAll("://", "/");
+      }
+      return toReturn;
    }
 
    @Override

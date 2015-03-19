@@ -19,8 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
-import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
+import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeResourceProcessor;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.BinaryContentUtils;
 
 /**
@@ -32,8 +31,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
 
    public UriAttributeDataProvider(Attribute<?> attribute) {
       super(attribute);
-      AbstractResourceProcessor abstractResourceProcessor = new AttributeResourceProcessor(attribute);
-      this.dataStore = new DataStore(abstractResourceProcessor);
+      this.dataStore = new DataStore(new AttributeResourceProcessor(attribute));
       this.displayable = "";
    }
 
