@@ -58,9 +58,15 @@ public interface OrcsBranch {
 
    /////////////////////////////////////////////////////////////////////////
 
-   Callable<Void> changeBranchState(IOseeBranch branch, BranchState newState);
+   Callable<Void> changeBranchState(IOseeBranch branch, BranchState branchState);
 
    Callable<Void> changeBranchType(IOseeBranch branch, BranchType branchType);
+
+   Callable<Void> changeBranchName(IOseeBranch branch, String name);
+
+   Callable<Void> associateBranchToArtifact(IOseeBranch branch, ArtifactReadable associatedArtifact);
+
+   Callable<Void> unassociateBranch(IOseeBranch branch);
 
    Callable<Void> deleteBranch(IOseeBranch branch);
 

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -100,13 +101,29 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> changeBranchState(IOseeBranch branch, BranchState newState) {
-      return branchStore.changeBranchState(session, branch, newState);
+   public Callable<Void> changeBranchState(IOseeBranch branch, BranchState branchState) {
+      return branchStore.changeBranchState(session, branch, branchState);
    }
 
    @Override
    public Callable<Void> changeBranchType(IOseeBranch branch, BranchType branchType) {
       return branchStore.changeBranchType(session, branch, branchType);
+   }
+
+   @Override
+   public Callable<Void> changeBranchName(IOseeBranch branch, String branchName) {
+      return branchStore.changeBranchName(session, branch, branchName);
+   }
+
+   @Override
+   public Callable<Void> associateBranchToArtifact(IOseeBranch branch, ArtifactReadable associatedArtifact) {
+      Conditions.checkNotNull(associatedArtifact, "associatedArtifact");
+      return branchStore.changeBranchAssociatedArtId(session, branch, associatedArtifact.getLocalId());
+   }
+
+   @Override
+   public Callable<Void> unassociateBranch(IOseeBranch branch) {
+      return branchStore.changeBranchAssociatedArtId(session, branch, -1);
    }
 
    @Override

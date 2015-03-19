@@ -20,6 +20,8 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -41,6 +43,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 /**
@@ -53,17 +56,20 @@ public class OrcsBranchTest {
    @Rule
    public TestRule osgi = integrationRule(this);
 
+   @Rule
+   public TestName testName = new TestName();
+
    @OsgiService
    private OrcsApi orcsApi;
 
-   private OrcsBranch branchInterface;
+   private OrcsBranch branchOps;
    private QueryFactory query;
    private TransactionFactory txFactory;
 
    @Before
    public void setUp() throws Exception {
       ApplicationContext context = null;
-      branchInterface = orcsApi.getBranchOps(context);
+      branchOps = orcsApi.getBranchOps(context);
       query = orcsApi.getQueryFactory(context);
       txFactory = orcsApi.getTransactionFactory(context);
    }
@@ -79,7 +85,7 @@ public class OrcsBranchTest {
       ArtifactReadable author = getSystemUser();
 
       ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
-      Callable<BranchReadable> callable = branchInterface.createCopyTxBranch(branch, author, tx, null);
+      Callable<BranchReadable> callable = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       assertNotNull(callable);
       BranchReadable priorBranch = callable.call();
@@ -103,7 +109,7 @@ public class OrcsBranchTest {
       IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
 
       ITransaction tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
-      Callable<BranchReadable> postCallable = branchInterface.createCopyTxBranch(postbranch, author, tx1, null);
+      Callable<BranchReadable> postCallable = branchOps.createCopyTxBranch(postbranch, author, tx1, null);
 
       assertNotNull(postCallable);
       BranchReadable postBranch = postCallable.call();
@@ -122,7 +128,7 @@ public class OrcsBranchTest {
       // get the list of changes from the original branch
       TransactionReadable priorTx = query.transactionQuery().andTxId(PRIOR_TX_ID).getResults().getExactlyOne();
       TransactionReadable sourceTx = query.transactionQuery().andTxId(SOURCE_TX_ID).getResults().getExactlyOne();
-      Callable<List<ChangeItem>> callable = branchInterface.compareBranch(priorTx, sourceTx);
+      Callable<List<ChangeItem>> callable = branchOps.compareBranch(priorTx, sourceTx);
       List<ChangeItem> priorItems = callable.call();
 
       // create the branch with the copied transaction
@@ -131,12 +137,12 @@ public class OrcsBranchTest {
       ArtifactReadable author = getSystemUser();
 
       ITransaction tx = TokenFactory.createTransaction(SOURCE_TX_ID);
-      Callable<BranchReadable> callableBranch = branchInterface.createCopyTxBranch(branch, author, tx, null);
+      Callable<BranchReadable> callableBranch = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
       BranchReadable postBranch = callableBranch.call();
 
-      callable = branchInterface.compareBranch(postBranch);
+      callable = branchOps.compareBranch(postBranch);
       List<ChangeItem> newItems = callable.call();
       compareBranchChanges(priorItems, newItems);
    }
@@ -148,7 +154,7 @@ public class OrcsBranchTest {
       // set up the initial branch
       IOseeBranch branch = TokenFactory.createBranch("BaseBranch");
 
-      Callable<BranchReadable> callableBranch = branchInterface.createTopLevelBranch(branch, author);
+      Callable<BranchReadable> callableBranch = branchOps.createTopLevelBranch(branch, author);
       BranchReadable base = callableBranch.call();
       // put some changes on the base branch
       TransactionBuilder tx = txFactory.createTransaction(base, author, "add some changes");
@@ -158,8 +164,7 @@ public class OrcsBranchTest {
       // create working branch off of base to make some changes
       // set up the child branch
       IOseeBranch branchName = TokenFactory.createBranch("ChildBranch");
-      Callable<BranchReadable> callableChildBranch =
-         branchInterface.createWorkingBranch(branchName, author, base, null);
+      Callable<BranchReadable> callableChildBranch = branchOps.createWorkingBranch(branchName, author, base, null);
 
       BranchReadable childBranch = callableChildBranch.call();
 
@@ -173,19 +178,75 @@ public class OrcsBranchTest {
       tx2.createArtifact(CoreArtifactTypes.Folder, "childBranch folder");
       tx2.commit();
 
-      List<ChangeItem> expectedChanges = branchInterface.compareBranch(childBranch).call();
+      List<ChangeItem> expectedChanges = branchOps.compareBranch(childBranch).call();
 
       // create a disjoint working branch from common
 
       IOseeBranch commonName = TokenFactory.createBranch("ChildFromCommonBranch");
       Callable<BranchReadable> callableBranchFromCommon =
-         branchInterface.createWorkingBranch(commonName, author, CoreBranches.COMMON, null);
+         branchOps.createWorkingBranch(commonName, author, CoreBranches.COMMON, null);
       BranchReadable commonChildBranch = callableBranchFromCommon.call();
 
-      branchInterface.commitBranch(author, childBranch, commonChildBranch).call();
+      branchOps.commitBranch(author, childBranch, commonChildBranch).call();
 
-      List<ChangeItem> actualChanges = branchInterface.compareBranch(commonChildBranch).call();
+      List<ChangeItem> actualChanges = branchOps.compareBranch(commonChildBranch).call();
       ensureExpectedAreInActual(expectedChanges, actualChanges);
+   }
+
+   @Test
+   public void testBranchUpdateFields() throws Exception {
+      String branchName = testName.getMethodName();
+
+      IOseeBranch branch = TokenFactory.createBranch(branchName);
+
+      branchOps.createBaselineBranch(branch, getSystemUser(), CoreBranches.SYSTEM_ROOT, null).call();
+
+      BranchReadable actual = getBranch(branch);
+      Long id = actual.getUuid();
+      assertBranch(actual, id, branchName, BranchState.CREATED, BranchType.BASELINE, -1);
+
+      branchName = "another-name";
+      branchOps.changeBranchName(branch, branchName).call();
+
+      actual = getBranch(branch);
+      assertBranch(actual, id, branchName, BranchState.CREATED, BranchType.BASELINE, -1);
+
+      BranchState branchState = BranchState.DELETED;
+      branchOps.changeBranchState(branch, branchState).call();
+
+      actual = getBranch(branch);
+      assertBranch(actual, id, branchName, branchState, BranchType.BASELINE, -1);
+
+      BranchType branchType = BranchType.WORKING;
+      branchOps.changeBranchType(branch, branchType).call();
+
+      actual = getBranch(branch);
+      assertBranch(actual, id, branchName, branchState, branchType, -1);
+
+      ArtifactReadable assocArtifact = getSystemUser();
+      branchOps.associateBranchToArtifact(branch, assocArtifact).call();
+
+      actual = getBranch(branch);
+      assertBranch(actual, id, branchName, branchState, branchType, assocArtifact.getLocalId());
+
+      branchOps.unassociateBranch(branch).call();
+
+      actual = getBranch(branch);
+      assertBranch(actual, id, branchName, branchState, branchType, -1);
+   }
+
+   private void assertBranch(BranchReadable branch, Long id, String name, BranchState state, BranchType type, int assocArtId) {
+      assertEquals(id, branch.getGuid());
+      assertEquals(id, branch.getUuid());
+
+      assertEquals(name, branch.getName());
+      assertEquals(state, branch.getBranchState());
+      assertEquals(type, branch.getBranchType());
+      assertEquals(assocArtId, branch.getAssociatedArtifactId());
+   }
+
+   private BranchReadable getBranch(IOseeBranch branch) {
+      return query.branchQuery().andIds(branch).getResults().getExactlyOne();
    }
 
    private void ensureExpectedAreInActual(List<ChangeItem> expected, List<ChangeItem> actual) {

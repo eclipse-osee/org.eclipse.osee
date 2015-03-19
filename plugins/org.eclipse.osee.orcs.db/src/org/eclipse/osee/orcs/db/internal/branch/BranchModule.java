@@ -36,8 +36,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.callable.ArchiveUnarchiveBranchCallable;
 import org.eclipse.osee.orcs.db.internal.callable.BranchCopyTxCallable;
-import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchStateCallable;
-import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchTypeCallable;
+import org.eclipse.osee.orcs.db.internal.callable.ChangeBranchFieldCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CheckBranchExchangeIntegrityCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CommitBranchDatabaseCallable;
 import org.eclipse.osee.orcs.db.internal.callable.CompareDatabaseCallable;
@@ -128,13 +127,23 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState) {
-            return new ChangeBranchStateCallable(logger, session, jdbcClient, branch, newState);
+         public Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState branchState) {
+            return ChangeBranchFieldCallable.newBranchState(logger, session, jdbcClient, branch, branchState);
          }
 
          @Override
-         public Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType newType) {
-            return new ChangeBranchTypeCallable(logger, session, jdbcClient, branch, newType);
+         public Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType branchType) {
+            return ChangeBranchFieldCallable.newBranchType(logger, session, jdbcClient, branch, branchType);
+         }
+
+         @Override
+         public Callable<Void> changeBranchName(OrcsSession session, IOseeBranch branch, String branchName) {
+            return ChangeBranchFieldCallable.newBranchName(logger, session, jdbcClient, branch, branchName);
+         }
+
+         @Override
+         public Callable<Void> changeBranchAssociatedArtId(OrcsSession session, IOseeBranch branch, int assocArtId) {
+            return ChangeBranchFieldCallable.newAssocArtId(logger, session, jdbcClient, branch, assocArtId);
          }
 
          @Override

@@ -47,9 +47,13 @@ public interface BranchDataStore {
 
    Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
 
-   Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState newState);
+   Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState branchState);
 
-   Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType newType);
+   Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType branchType);
+
+   Callable<Void> changeBranchName(OrcsSession session, IOseeBranch branch, String branchName);
+
+   Callable<Void> changeBranchAssociatedArtId(OrcsSession session, IOseeBranch branch, int assocArtId);
 
    Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op);
 
