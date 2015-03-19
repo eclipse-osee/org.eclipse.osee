@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange;
 
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -106,7 +104,7 @@ public class ExportItemFactory {
       int gammaJoinId = createGammaJoin(getDbService(), joinId, options);
 
       items.add(new ManifestExportItem(logger, preferences, items, options));
-      items.add(new MetadataExportItem(logger, items, getMetaData(getDbService())));
+      items.add(new MetadataExportItem(logger, items, getDbService()));
       items.add(new OseeTypeModelExportItem(logger, getOrcsTypes()));
 
       addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
@@ -216,14 +214,5 @@ public class ExportItemFactory {
          toReturn = Long.valueOf(transactionNumber);
       }
       return toReturn;
-   }
-
-   private static DatabaseMetaData getMetaData(JdbcClient jdbcClient) throws OseeCoreException {
-      JdbcConnection connection = jdbcClient.getConnection();
-      try {
-         return connection.getMetaData();
-      } finally {
-         connection.close();
-      }
    }
 }

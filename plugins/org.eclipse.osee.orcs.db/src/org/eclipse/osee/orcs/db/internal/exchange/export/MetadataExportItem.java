@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.SQL3DataType;
 import org.eclipse.osee.logger.Log;
@@ -30,24 +32,30 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
  */
 public class MetadataExportItem extends AbstractXmlExportItem {
    private final List<AbstractExportItem> exportItems;
-   private final DatabaseMetaData metaData;
+   private final JdbcClient jdbcClient;
 
-   public MetadataExportItem(Log logger, List<AbstractExportItem> exportItems, DatabaseMetaData metaData) {
+   public MetadataExportItem(Log logger, List<AbstractExportItem> exportItems, JdbcClient jdbcClient) {
       super(logger, ExportItem.EXPORT_DB_SCHEMA);
       this.exportItems = exportItems;
-      this.metaData = metaData;
+      this.jdbcClient = jdbcClient;
    }
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);
       try {
-         String[] tableTypes = getTypes(metaData);
-         String schema = getSchema(metaData);
-         for (AbstractExportItem item : exportItems) {
-            if (!item.equals(this) && Strings.isValid(item.getSource())) {
-               processMetaData(appendable, metaData, schema, tableTypes, item.getSource());
+         JdbcConnection connection = jdbcClient.getConnection();
+         try {
+            DatabaseMetaData metaData = connection.getMetaData();
+            String[] tableTypes = getTypes(metaData);
+            String schema = getSchema(metaData);
+            for (AbstractExportItem item : exportItems) {
+               if (!item.equals(this) && Strings.isValid(item.getSource())) {
+                  processMetaData(appendable, metaData, schema, tableTypes, item.getSource());
+               }
             }
+         } finally {
+            connection.close();
          }
       } finally {
          ExportImportXml.closeXmlNode(appendable, ExportImportXml.METADATA);
