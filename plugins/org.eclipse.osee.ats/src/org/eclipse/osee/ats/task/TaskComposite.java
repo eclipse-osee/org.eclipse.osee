@@ -53,7 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -130,19 +130,29 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       return iXTaskViewer;
    }
 
-   public void add(Collection<TaskArtifact> newTasks) {
+   private void add(Collection<TaskArtifact> newTasks) {
       this.taskArts.addAll(newTasks);
       if (getTaskXViewer().getInput() != this.taskArts) {
          getTaskXViewer().setInput(this.taskArts);
       }
-      taskXViewer.refresh();
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            taskXViewer.refresh();
+         }
+      });
    }
 
    public void loadTable() throws OseeCoreException {
-      if (Widgets.isAccessible(taskXViewer.getTree())) {
-         this.taskArts.clear();
-         add(iXTaskViewer.getTaskArtifacts());
-      }
+      this.taskArts.clear();
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            add(iXTaskViewer.getTaskArtifacts());
+         }
+      });
    }
 
    public TaskArtifact handleNewTask() {
