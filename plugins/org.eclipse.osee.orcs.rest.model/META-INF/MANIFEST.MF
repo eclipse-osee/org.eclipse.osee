@@ -6,8 +6,7 @@ Bundle-Version: 0.21.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.orcs.rest.model,
- org.eclipse.osee.orcs.rest.model.search.artifact,
- org.eclipse.osee.orcs.rest.model.search.branch
+ org.eclipse.osee.orcs.rest.model.search.artifact
 Import-Package: javax.annotation.security;version="1.2.0",
  javax.ws.rs;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",

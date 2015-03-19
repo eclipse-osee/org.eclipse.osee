@@ -8,16 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model.search.branch;
+package org.eclipse.osee.orcs.rest.model;
 
+import java.util.Collections;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
  * @author John Misinco
  */
-public class BranchQueryOptions {
+@XmlRootElement
+public class BranchQueryData {
 
    private List<Long> branchUuids;
    private List<BranchType> branchTypes;
@@ -30,7 +33,7 @@ public class BranchQueryOptions {
    private Long isAncestorOf = -1L;
 
    public List<Long> getBranchIds() {
-      return branchUuids;
+      return branchUuids != null ? branchUuids : Collections.<Long> emptyList();
    }
 
    public void setBranchIds(List<Long> branchUuids) {
@@ -38,7 +41,7 @@ public class BranchQueryOptions {
    }
 
    public List<BranchType> getBranchTypes() {
-      return branchTypes;
+      return branchTypes != null ? branchTypes : Collections.<BranchType> emptyList();
    }
 
    public void setBranchTypes(List<BranchType> branchTypes) {
@@ -46,7 +49,7 @@ public class BranchQueryOptions {
    }
 
    public List<BranchState> getBranchStates() {
-      return branchStates;
+      return branchStates != null ? branchStates : Collections.<BranchState> emptyList();
    }
 
    public void setBranchStates(List<BranchState> branchStates) {
@@ -90,7 +93,7 @@ public class BranchQueryOptions {
    }
 
    public Long getIsChildOf() {
-      return isChildOf;
+      return isChildOf != null ? isChildOf : -1L;
    }
 
    public void setIsAncestorOf(Long isAncestorOf) {
@@ -98,7 +101,7 @@ public class BranchQueryOptions {
    }
 
    public Long getIsAncestorOf() {
-      return isAncestorOf;
+      return isAncestorOf != null ? isAncestorOf : -1L;
    }
 
 }

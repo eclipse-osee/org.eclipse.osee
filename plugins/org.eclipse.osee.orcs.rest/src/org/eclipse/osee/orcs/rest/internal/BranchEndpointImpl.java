@@ -20,6 +20,7 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -51,6 +53,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.Branch;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 import org.eclipse.osee.orcs.rest.model.CompareResults;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.NewTransaction;
@@ -150,6 +153,60 @@ public class BranchEndpointImpl implements BranchEndpoint {
       .includeDeleted()//
       .getResults();
       return asBranches(results);
+   }
+
+   @Override
+   public List<Branch> getBranches(BranchQueryData options) {
+      ResultSet<BranchReadable> results = searchBranches(options);
+      return asBranches(results);
+   }
+
+   @Override
+   public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf) {
+      BranchQueryData options = new BranchQueryData();
+      if (Strings.isValid(branchUuids)) {
+         List<Long> branchUuidVals = new LinkedList<Long>();
+         for (String branchUuid : branchUuids.split(",")) {
+            branchUuidVals.add(Long.parseLong(branchUuid));
+         }
+         options.setBranchIds(branchUuidVals);
+      }
+
+      if (Strings.isValid(branchTypes)) {
+         List<BranchType> branchTypeVals = new LinkedList<BranchType>();
+         for (String branchType : branchTypes.split(",")) {
+            branchTypeVals.add(BranchType.valueOf(branchType.toUpperCase()));
+         }
+         options.setBranchTypes(branchTypeVals);
+      }
+
+      if (Strings.isValid(branchStates)) {
+         List<BranchState> branchStateVals = new LinkedList<BranchState>();
+         for (String branchState : branchStates.split(",")) {
+            branchStateVals.add(BranchState.valueOf(branchState.toUpperCase()));
+         }
+         options.setBranchStates(branchStateVals);
+      }
+
+      options.setIncludeDeleted(deleted);
+      options.setIncludeArchived(archived);
+
+      if (Strings.isValid(nameEquals)) {
+         options.setNameEquals(nameEquals);
+      }
+
+      if (Strings.isValid(namePattern)) {
+         options.setNamePattern(namePattern);
+      }
+
+      if (childOf != null) {
+         options.setIsChildOf(childOf);
+      }
+
+      if (ancestorOf != null) {
+         options.setIsAncestorOf(ancestorOf);
+      }
+      return getBranches(options);
    }
 
    @Override
@@ -456,5 +513,58 @@ public class BranchEndpointImpl implements BranchEndpoint {
                opName, txIds, branchUuid, difference);
          }
       }
+   }
+
+   private ResultSet<BranchReadable> searchBranches(BranchQueryData options) {
+      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      if (Conditions.hasValues(options.getBranchIds())) {
+         query.andUuids(options.getBranchIds());
+      }
+
+      List<BranchState> branchStates = options.getBranchStates();
+      if (Conditions.hasValues(branchStates)) {
+         query.andStateIs(branchStates.toArray(new BranchState[branchStates.size()]));
+      }
+
+      List<BranchType> branchTypes = options.getBranchTypes();
+      if (Conditions.hasValues(branchTypes)) {
+         query.andIsOfType(branchTypes.toArray(new BranchType[branchTypes.size()]));
+      }
+
+      List<Long> branchUuids = options.getBranchIds();
+      if (Conditions.hasValues(branchUuids)) {
+         query.andUuids(branchUuids);
+      }
+
+      if (options.isIncludeArchived()) {
+         query.includeArchived();
+      }
+
+      if (options.isIncludeDeleted()) {
+         query.includeDeleted();
+      }
+
+      String nameEquals = options.getNameEquals();
+      if (Strings.isValid(nameEquals)) {
+         query.andNameEquals(nameEquals);
+      }
+
+      String namePattern = options.getNamePattern();
+      if (Strings.isValid(namePattern)) {
+         query.andNamePattern(namePattern);
+      }
+
+      Long ancestorOf = options.getIsAncestorOf();
+      if (ancestorOf > 0) {
+         IOseeBranch ancestorOfToken = TokenFactory.createBranch(ancestorOf, "queryAncestorOf");
+         query.andIsAncestorOf(ancestorOfToken);
+      }
+
+      Long childOf = options.getIsChildOf();
+      if (childOf > 0) {
+         IOseeBranch childOfToken = TokenFactory.createBranch(ancestorOf, "queryChildOf");
+         query.andIsAncestorOf(childOfToken);
+      }
+      return query.getResults();
    }
 }

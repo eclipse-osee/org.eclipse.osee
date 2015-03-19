@@ -39,6 +39,30 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<Branch> getBranches();
 
+   /**
+    * Perform a branch query based on query parameter input
+    * 
+    * @param branchUuids comma separated list of branch uuids
+    * @param branchTypes comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchType BranchType}
+    * @param branchStates comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchState BranchState}
+    * @param deleted to include deleted branches in the search
+    * @param archived to include archived branches in the search
+    * @param childOf branch uuid of the parent to search children of
+    * @param ancestorOf branch uuid of ancestor to search decendents of
+    * @param pretty if the returned JSON should be pretty printed
+    */
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getBranches(@DefaultValue("") @QueryParam("branchUuids") String branchUuids, //
+      @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
+      @DefaultValue("") @QueryParam("branchStates") String branchStates, //
+      @QueryParam("deleted") boolean deleted, //
+      @QueryParam("archived") boolean archived, //
+      @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
+      @DefaultValue("") @QueryParam("namePattern") String namePattern, //
+      @QueryParam("childOf") Long childOf, //
+      @QueryParam("ancestorOf") Long ancestorOf);
+
    @GET
    @Path("baseline")
    @Produces(MediaType.APPLICATION_JSON)
@@ -68,6 +92,11 @@ public interface BranchEndpoint {
    @Path("{branch-uuid}/txs/{tx-id}")
    @Produces({MediaType.APPLICATION_JSON})
    Transaction getBranchTx(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId);
+
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getBranches(BranchQueryData query);
 
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
