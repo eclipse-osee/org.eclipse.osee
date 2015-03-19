@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
  */
 public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
-   private final Map<Integer, BranchData> idToImportFileBranchData;
+   private final Map<Long, BranchData> idToImportFileBranchData;
    private JdbcConnection connection;
 
    public static BranchDataSaxHandler createWithCacheAll(Log logger, JdbcClient service) {
@@ -49,7 +49,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    private BranchDataSaxHandler(Log logger, JdbcClient service, boolean isCacheAll, int cacheLimit) {
       super(logger, service, isCacheAll, cacheLimit);
-      this.idToImportFileBranchData = new HashMap<Integer, BranchData>();
+      this.idToImportFileBranchData = new HashMap<Long, BranchData>();
       this.connection = null;
    }
 
@@ -123,8 +123,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       long[] toReturn = new long[branchesToStore.size()];
       int index = 0;
       for (BranchData branchData : branchesToStore) {
-         if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) && branchData.getBranchGuid().equals(
-            CoreBranches.SYSTEM_ROOT.getGuid())) {
+         if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) //
+            && CoreBranches.SYSTEM_ROOT.getUuid().equals(branchData.getId())) {
             continue;
          }
 
@@ -133,10 +133,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             branchData.setParentBranchId(1);
             branchData.setBranchType(BranchType.BASELINE);
          } else {
-            branchData.setParentBranchId(translateId(BranchData.PARENT_BRANCH_ID, branchData.getParentBranchId()));
+            branchData.setParentBranchId(translateLongId(BranchData.PARENT_BRANCH_ID, branchData.getParentBranchId()));
          }
-         branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getId()));
-         branchData.setAssociatedBranchId(translateId(BranchData.COMMIT_ART_ID, branchData.getAssociatedArtId()));
+         branchData.setBranchId(translateLongId(BranchData.BRANCH_ID, branchData.getId()));
+         branchData.setAssociatedBranchId(translateIntId(BranchData.COMMIT_ART_ID, branchData.getAssociatedArtId()));
 
          Object[] data = branchData.toArray(getMetaData());
          if (data != null) {
@@ -154,13 +154,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {
-         int branchUuid = branchData.getId();
-         int parentTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
+         long branchUuid = branchData.getId();
+         int parentTransactionId = translateIntId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
          if (parentTransactionId == 0) {
             parentTransactionId = 1;
          }
 
-         int baselineTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getBaselineTransactionId());
+         int baselineTransactionId = translateIntId(ExchangeDb.TRANSACTION_ID, branchData.getBaselineTransactionId());
          if (baselineTransactionId == 0) {
             baselineTransactionId = 1;
          }
@@ -178,35 +178,40 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private int translateId(String id, int originalValue) throws OseeCoreException {
+   private long translateLongId(String id, long originalValue) throws OseeCoreException {
+      Long original = new Long(originalValue);
+      Long newValue = (Long) getTranslator().translate(id, original);
+      return newValue.intValue();
+   }
+
+   private int translateIntId(String id, int originalValue) throws OseeCoreException {
       Long original = new Long(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
 
    private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches) throws OseeCoreException {
-      Map<String, BranchData> guidToImportFileBranchData = new HashMap<String, BranchData>();
+      Map<Long, BranchData> idToBranchData = new HashMap<Long, BranchData>();
       for (BranchData data : selectedBranches) {
-         guidToImportFileBranchData.put(data.getBranchGuid(), data);
+         idToBranchData.put(data.getId(), data);
       }
 
       JdbcStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
-            String branchGuid = chStmt.getString(BranchData.BRANCH_GUID);
             Long branchUuid = chStmt.getLong(BranchData.BRANCH_ID);
-            BranchData branchData = guidToImportFileBranchData.get(branchGuid);
+            BranchData branchData = idToBranchData.get(branchUuid);
             if (branchData != null) {
-               getTranslator().checkIdMapping("branch_id", (long) branchData.getId(), branchUuid);
+               getTranslator().checkIdMapping("branch_id", branchData.getId(), branchUuid);
                // Remove from to store list so we don't store duplicate information
-               guidToImportFileBranchData.remove(branchGuid);
+               idToBranchData.remove(branchUuid);
             }
          }
       } finally {
          chStmt.close();
       }
-      return guidToImportFileBranchData.values();
+      return idToBranchData.values();
    }
 
    @Override

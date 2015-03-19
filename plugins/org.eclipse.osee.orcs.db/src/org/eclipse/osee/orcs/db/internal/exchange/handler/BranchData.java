@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public final class BranchData implements Cloneable {
    public static final String BRANCH_NAME = "branch_name";
-   public static final String BRANCH_GUID = "branch_guid";
    public static final String BRANCH_ID = "branch_id";
    private static final String BRANCH_TYPE = "branch_type";
    public static final String COMMIT_ART_ID = "associated_art_id";
@@ -55,12 +55,24 @@ public final class BranchData implements Cloneable {
       return (Integer) backingData.get(IS_ARCHIVED_BRANCH);
    }
 
-   public int getId() {
-      return (Integer) backingData.get(BRANCH_ID);
+   public long getId() {
+      return asLong(backingData.get(BRANCH_ID));
    }
 
-   public int getParentBranchId() {
-      return (Integer) backingData.get(PARENT_BRANCH_ID);
+   public long getParentBranchId() {
+      return asLong(backingData.get(PARENT_BRANCH_ID));
+   }
+
+   private Long asLong(Object object) {
+      Long toReturn;
+      if (object instanceof Long) {
+         toReturn = (Long) object;
+      } else if (object instanceof BigInteger) {
+         toReturn = ((BigInteger) object).longValue();
+      } else {
+         toReturn = ((Number) object).longValue();
+      }
+      return toReturn;
    }
 
    public int getParentTransactionId() {
@@ -69,10 +81,6 @@ public final class BranchData implements Cloneable {
 
    public int getBaselineTransactionId() {
       return (Integer) backingData.get(BASELINE_TRANSACTION_ID);
-   }
-
-   public String getBranchGuid() {
-      return (String) backingData.get(BRANCH_GUID);
    }
 
    public Object[] toArray(MetaData metadata) {
@@ -126,11 +134,11 @@ public final class BranchData implements Cloneable {
       return valuesMatch;
    }
 
-   public void setBranchId(int nextSeqVal) {
+   public void setBranchId(long nextSeqVal) {
       this.backingData.put(BRANCH_ID, nextSeqVal);
    }
 
-   public void setParentBranchId(int nextSeqVal) {
+   public void setParentBranchId(long nextSeqVal) {
       this.backingData.put(PARENT_BRANCH_ID, nextSeqVal);
    }
 
