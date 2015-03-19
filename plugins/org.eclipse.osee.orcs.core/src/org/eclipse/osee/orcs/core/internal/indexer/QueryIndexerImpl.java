@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.indexer;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -30,13 +27,11 @@ import org.eclipse.osee.orcs.search.QueryIndexer;
 public class QueryIndexerImpl implements QueryIndexer {
 
    private final OrcsSession session;
-   private final ExecutorAdmin executorAdmin;
    private final QueryEngineIndexer engineIndexer;
    private final AttributeTypes attributeTypes;
 
-   public QueryIndexerImpl(OrcsSession session, ExecutorAdmin executorAdmin, QueryEngineIndexer engineIndexer, AttributeTypes attributeTypes) {
+   public QueryIndexerImpl(OrcsSession session, QueryEngineIndexer engineIndexer, AttributeTypes attributeTypes) {
       this.session = session;
-      this.executorAdmin = executorAdmin;
       this.engineIndexer = engineIndexer;
       this.attributeTypes = attributeTypes;
    }
@@ -58,14 +53,8 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream, IndexerCollector... collector) {
-      return engineIndexer.indexXmlStream(session, attributeTypes, inputStream, collector);
-   }
-
-   @Override
-   public void submitXmlStream(InputStream inputStream) throws Exception {
-      Callable<?> callable = indexXmlStream(inputStream);
-      executorAdmin.schedule(callable);
+   public CancellableCallable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector) {
+      return engineIndexer.indexResources(session, attributeTypes, gammaIds, collector);
    }
 
    @Override

@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeVersion;
+import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
@@ -192,5 +193,10 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public TypesEndpoint getTypesEndpoint() {
       return client.targetProxy(baseUri, TypesEndpoint.class);
+   }
+
+   @Override
+   public IndexerEndpoint getIndexerEndpoint() {
+      return client.targetProxy(baseUri, IndexerEndpoint.class);
    }
 }

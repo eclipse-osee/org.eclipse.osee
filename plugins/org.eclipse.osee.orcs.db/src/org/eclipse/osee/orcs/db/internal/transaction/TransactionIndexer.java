@@ -43,13 +43,13 @@ public class TransactionIndexer implements TransactionProcessor {
    @Override
    public void process(final HasCancellation cancellation, OrcsSession session, TransactionData txData) {
       try {
-         final Set<AttributeData> datas = new LinkedHashSet<AttributeData>();
+         final Set<Long> datas = new LinkedHashSet<Long>();
          txData.getChangeSet().accept(new OrcsVisitorAdapter() {
             @Override
             public void visit(AttributeData data) {
                IAttributeType type = types.getByUuid(data.getTypeUuid());
                if (types.isTaggable(type)) {
-                  datas.add(data);
+                  datas.add(data.getVersion().getGammaId());
                }
             }
          });

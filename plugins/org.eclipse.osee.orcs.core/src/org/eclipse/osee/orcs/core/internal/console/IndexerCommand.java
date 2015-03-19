@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.console;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.console.admin.Console;
@@ -138,9 +136,12 @@ public class IndexerCommand implements ConsoleCommand {
                break;
             case ITEM_IDS:
                boolean printTags = params.getBoolean("debug");
-               InputStream inputStream = asXmlStream(params.getArray("ids"));
+               Set<Long> ids = new LinkedHashSet<Long>();
+               for (String value : params.getArray("ids")) {
+                  ids.add(Long.parseLong(value));
+               }
                IndexStatusDisplayCollector collector2 = new IndexStatusDisplayCollector(console, startTime, printTags);
-               Callable<?> callable2 = indexer.indexXmlStream(inputStream, collector2);
+               Callable<?> callable2 = indexer.indexResources(ids, collector2);
                callable2.call();
                break;
             case STATS:
@@ -152,16 +153,5 @@ public class IndexerCommand implements ConsoleCommand {
          return Boolean.TRUE;
       }
 
-      private InputStream asXmlStream(String[] ids) throws UnsupportedEncodingException {
-         StringBuilder builder = new StringBuilder();
-         builder.append("<AttributeTag>\n");
-         for (String id : ids) {
-            builder.append("<entry gammaId=\"");
-            builder.append(id);
-            builder.append("\" />\n");
-         }
-         builder.append("</AttributeTag>");
-         return new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
-      }
    }
 }

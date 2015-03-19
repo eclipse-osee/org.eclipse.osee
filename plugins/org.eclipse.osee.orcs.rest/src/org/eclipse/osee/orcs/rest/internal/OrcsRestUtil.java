@@ -112,4 +112,19 @@ public final class OrcsRestUtil {
       }
       return toReturn;
    }
+
+   public static List<Long> asLongList(String rawValue) {
+      List<Long> toReturn;
+      if (Strings.isValid(rawValue)) {
+         String[] entries = rawValue.split(",");
+         toReturn = new ArrayList<Long>();
+         for (String entry : entries) {
+            Long value = Long.parseLong(entry.trim());
+            toReturn.add(value);
+         }
+      } else {
+         toReturn = Collections.emptyList();
+      }
+      return toReturn;
+   }
 }

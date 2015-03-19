@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -26,28 +25,7 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> indexBranches(Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
-   /**
-    * Create tags for attributes specified in xml stream. Notifies listener of tagging events. <b>
-    * 
-    * <pre>
-    * The XML data is formatted as follows:
-    *    &lt;AttributeTag&gt;
-    *       &lt;entry gammaId=&quot;90&quot;/&gt;
-    *       &lt;entry gammaId=&quot;91&quot;/&gt;
-    *                .
-    *                .
-    *                .
-    *    &lt;AttributeTag&gt;
-    * </pre>
-    * 
-    * </b>
-    * 
-    * @param listener object listening for tag events
-    * @param inputStream xml inputStream
-    */
-   CancellableCallable<List<Future<?>>> indexXmlStream(InputStream inputStream, IndexerCollector... collector);
-
-   void submitXmlStream(InputStream inputStream) throws Exception;
+   CancellableCallable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector);
 
    CancellableCallable<Integer> deleteIndexByQueryId(int queueId);
 

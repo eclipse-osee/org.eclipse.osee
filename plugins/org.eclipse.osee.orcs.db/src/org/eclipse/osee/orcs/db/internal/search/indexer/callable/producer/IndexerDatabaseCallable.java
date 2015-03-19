@@ -14,7 +14,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.HasVersion;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexingTaskConsumer;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -25,17 +24,17 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public class IndexerDatabaseCallable extends AbstractIndexerTxDatabaseCallable {
 
-   private final Iterable<? extends HasVersion> datas;
+   private final Iterable<Long> datas;
 
-   public IndexerDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<? extends HasVersion> datas) {
+   public IndexerDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector listener, boolean isCacheAll, int cacheLimit, Iterable<Long> datas) {
       super(logger, session, jdbcClient, joinFactory, types, consumer, listener, isCacheAll, cacheLimit);
       this.datas = datas;
    }
 
    @Override
    protected void convertInput(final JdbcConnection connection) throws Exception {
-      for (HasVersion data : datas) {
-         addEntry(connection, data.getVersion().getGammaId());
+      for (Long data : datas) {
+         addEntry(connection, data);
       }
 
    }

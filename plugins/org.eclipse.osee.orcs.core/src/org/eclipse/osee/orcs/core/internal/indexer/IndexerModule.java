@@ -86,6 +86,6 @@ public class IndexerModule implements HasStatistics<IndexerStatistics> {
    }
 
    public QueryIndexer createQueryIndexer(OrcsSession session, AttributeTypes attributeTypes) {
-      return new QueryIndexerImpl(session, executorAdmin, queryIndexer, attributeTypes);
+      return new QueryIndexerImpl(session, queryIndexer, attributeTypes);
    }
 }

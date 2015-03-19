@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
@@ -38,5 +39,7 @@ public interface OseeClient {
    TransactionEndpoint getTransactionEndpoint();
 
    TypesEndpoint getTypesEndpoint();
+
+   IndexerEndpoint getIndexerEndpoint();
 
 }

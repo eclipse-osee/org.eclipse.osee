@@ -122,14 +122,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    private void tagGammas() throws OseeCoreException {
-      Set<Integer> gammasToTag = new LinkedHashSet<Integer>();
+      Set<Long> gammasToTag = new LinkedHashSet<Long>();
       for (BaseTransactionData transactionData : txDatas) {
          if (!transactionData.getModificationType().isExistingVersionUsed() && transactionData instanceof AttributeTransactionData) {
             AttributeTransactionData attrData = (AttributeTransactionData) transactionData;
             if (!attrData.getAttribute().isUseBackingData()) {
                Attribute<?> attr = ((AttributeTransactionData) transactionData).getAttribute();
                if (attr.getAttributeType().isTaggable()) {
-                  gammasToTag.add(transactionData.getGammaId());
+                  gammasToTag.add((long) transactionData.getGammaId());
                }
             }
          }
