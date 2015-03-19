@@ -18,10 +18,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -127,14 +124,18 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       UpdatePreviousTxCurrent updater =
          new UpdatePreviousTxCurrent(getJdbcClient(), joinFactory, connection, destinationBranch.getUuid());
       for (ChangeItem change : changes) {
-         if (change instanceof ArtifactChangeItem) {
-            updater.addArtifact(change.getItemId());
-         } else if (change instanceof AttributeChangeItem) {
-            updater.addAttribute(change.getItemId());
-         } else if (change instanceof RelationChangeItem) {
-            updater.addRelation(change.getItemId());
-         } else {
-            throw new OseeStateException("Unexpected change type");
+         switch (change.getChangeType()) {
+            case ARTIFACT_CHANGE:
+               updater.addArtifact(change.getItemId());
+               break;
+            case ATTRIBUTE_CHANGE:
+               updater.addAttribute(change.getItemId());
+               break;
+            case RELATION_CHANGE:
+               updater.addRelation(change.getItemId());
+               break;
+            default:
+               throw new OseeStateException("Unexpected change type");
          }
       }
       updater.updateTxNotCurrents();

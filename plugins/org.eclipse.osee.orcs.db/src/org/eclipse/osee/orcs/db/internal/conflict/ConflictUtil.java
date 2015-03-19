@@ -14,10 +14,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.MergeBranch;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -73,14 +70,18 @@ public final class ConflictUtil {
 
    public static ConflictType toConflictType(ChangeItem item) throws OseeCoreException {
       ConflictType type = null;
-      if (item instanceof ArtifactChangeItem) {
-         type = ConflictType.ARTIFACT;
-      } else if (item instanceof AttributeChangeItem) {
-         type = ConflictType.ATTRIBUTE;
-      } else if (item instanceof RelationChangeItem) {
-         type = ConflictType.RELATION;
-      } else {
-         throw new OseeArgumentException("Unable to convert change item [%s] to conflict type", item);
+      switch (item.getChangeType()) {
+         case ARTIFACT_CHANGE:
+            type = ConflictType.ARTIFACT;
+            break;
+         case ATTRIBUTE_CHANGE:
+            type = ConflictType.ATTRIBUTE;
+            break;
+         case RELATION_CHANGE:
+            type = ConflictType.RELATION;
+            break;
+         default:
+            throw new OseeArgumentException("Unable to convert change item [%s] to conflict type", item);
       }
       return type;
    }

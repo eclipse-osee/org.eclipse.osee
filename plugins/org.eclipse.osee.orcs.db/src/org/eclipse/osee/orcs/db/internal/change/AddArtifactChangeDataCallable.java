@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 
@@ -31,27 +29,26 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
 
    @Override
    public List<ChangeItem> call() throws Exception {
-      Map<Integer, ArtifactChangeItem> artifactChanges = new HashMap<Integer, ArtifactChangeItem>();
+      Map<Integer, ChangeItem> artifactChanges = new HashMap<Integer, ChangeItem>();
       for (ChangeItem item : changeItems) {
-         if (item instanceof ArtifactChangeItem) {
-            ArtifactChangeItem artItem = (ArtifactChangeItem) item;
-            artifactChanges.put(artItem.getArtId(), artItem);
+         if (item.getChangeType().isArtifactChange()) {
+            artifactChanges.put(item.getArtId(), item);
          }
       }
 
-      List<AttributeChangeItem> attrItems = new ArrayList<AttributeChangeItem>();
-      Map<Integer, ArtifactChangeItem> syntheticArtifactChanges = new HashMap<Integer, ArtifactChangeItem>();
+      List<ChangeItem> attrItems = new ArrayList<ChangeItem>();
+      Map<Integer, ChangeItem> syntheticArtifactChanges = new HashMap<Integer, ChangeItem>();
 
       for (ChangeItem item : changeItems) {
-         if (item instanceof AttributeChangeItem) {
-            AttributeChangeItem attributeChange = (AttributeChangeItem) item;
+         if (item.getChangeType().isAttributeChange()) {
+            ChangeItem attributeChange = item;
             Integer artIdToCheck = attributeChange.getArtId();
 
-            ArtifactChangeItem artifactChange = artifactChanges.get(artIdToCheck);
+            ChangeItem artifactChange = artifactChanges.get(artIdToCheck);
             if (artifactChange == null) {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
-                  artifactChange = new ArtifactChangeItem(artIdToCheck, -1, -1, null);
+                  artifactChange = ChangeItemUtil.newArtifactChange(artIdToCheck, -1, -1, null);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                   artifactChange.setSynthetic(true);
                }
@@ -64,7 +61,7 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
       return changeItems;
    }
 
-   private void updateArtifactChangeItem(ArtifactChangeItem artifact, AttributeChangeItem attribute) {
+   private void updateArtifactChangeItem(ChangeItem artifact, ChangeItem attribute) {
       try {
          if (!artifact.getBaselineVersion().isValid() && attribute.getBaselineVersion().isValid()) {
             ChangeItemUtil.copy(attribute.getBaselineVersion(), artifact.getBaselineVersion());

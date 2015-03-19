@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
@@ -42,12 +43,12 @@ public final class MockRequestFactory {
          new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
-   public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException {
+   public static ChangeItem createArtifactChangeItem() throws OseeArgumentException {
       int artId = (int) Math.random();
       Long gammaIdNumber = Long.valueOf((int) Math.random());
       int artTypeId = artId * 10;
-      ArtifactChangeItem changeItem =
-         new ArtifactChangeItem(artId, artTypeId, gammaIdNumber, ModificationType.getMod(1));
+      ChangeItem changeItem =
+         ChangeItemUtil.newArtifactChange(artId, artTypeId, gammaIdNumber, ModificationType.getMod(1));
       populateChangeVersion(changeItem.getDestinationVersion(), 22);
       populateChangeVersion(changeItem.getCurrentVersion(), 15);
       return changeItem;

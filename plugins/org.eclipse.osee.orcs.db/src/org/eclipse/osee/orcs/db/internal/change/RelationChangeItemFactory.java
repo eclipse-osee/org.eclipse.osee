@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.change;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
@@ -46,7 +46,7 @@ public final class RelationChangeItemFactory implements ChangeItemFactory {
       int bArtId = chStmt.getInt("b_art_id");
       String rationale = chStmt.getString("rationale");
 
-      return new RelationChangeItem(relLinkId, relTypeId, gammaId, modType, aArtId, bArtId, rationale);
+      return ChangeItemUtil.newRelationChange(relLinkId, relTypeId, gammaId, modType, aArtId, bArtId, rationale);
    }
 
    @Override

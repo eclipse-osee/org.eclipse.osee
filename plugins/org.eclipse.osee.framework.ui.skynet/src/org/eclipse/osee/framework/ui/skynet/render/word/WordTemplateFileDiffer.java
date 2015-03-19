@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -134,7 +133,7 @@ public final class WordTemplateFileDiffer {
          if (changeIds.contains(artId)) {
             // If there is a change on the IS branch
             Change newChange = findChange(artId, changes);
-            if (newChange != null && !(newChange.getChangeItem() instanceof RelationChangeItem) && !addedIds.contains(artId)) {
+            if (newChange != null && !newChange.getChangeItem().getChangeType().isRelationChange() && !addedIds.contains(artId)) {
                artifactDeltas.add(newChange.getDelta());
                addedIds.add(artId);
             }

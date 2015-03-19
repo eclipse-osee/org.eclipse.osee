@@ -40,8 +40,16 @@ public final class ChangeTestUtility {
    }
 
    public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
-      MockChangeItem change =
-         new MockChangeItem(itemId, itemId * 10, itemId * 100, current.getGammaId(), current.getModType());
+      ChangeItem change = new ChangeItem();
+
+      change.setItemId(itemId);
+      change.setItemTypeId(itemId * 10);
+      change.setArtId(itemId * 100);
+
+      ChangeVersion currentVersion = change.getCurrentVersion();
+      currentVersion.setGammaId(current.getGammaId());
+      currentVersion.setModType(current.getModType());
+
       if (base != null) {
          change.getBaselineVersion().copy(base);
       }

@@ -29,12 +29,9 @@ import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -203,53 +200,55 @@ public class ChangeDataLoader extends AbstractOperation {
       Artifact changeArtifact = artifactDelta.getEndArtifact();
       boolean isHistorical = txDelta.areOnTheSameBranch();
 
-      if (item instanceof ArtifactChangeItem) {
-         change =
-            new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical, changeArtifact,
-               artifactDelta);
-      } else if (item instanceof AttributeChangeItem) {
-         String isValue = item.getCurrentVersion().getValue();
-         AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
+      switch (item.getChangeType()) {
+         case ARTIFACT_CHANGE:
+            change =
+               new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
+                  changeArtifact, artifactDelta);
+            break;
+         case ATTRIBUTE_CHANGE:
+            String isValue = item.getCurrentVersion().getValue();
+            AttributeType attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId());
 
-         String wasValue = "";
-         if (!txDelta.areOnTheSameBranch()) {
-            ChangeVersion netChange = item.getNetChange();
-            if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
-               ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
-               wasValue = fromVersion.getValue();
-            }
-         } else {
-            Artifact startArtifact = artifactDelta.getBaseArtifact();
-            if (startArtifact == null) {
-               startArtifact = artifactDelta.getStartArtifact();
-            }
-            if (startArtifact != null) {
-               wasValue = startArtifact.getAttributesToString(attributeType);
-               if (wasValue == null) {
-                  wasValue = "";
+            String wasValue = "";
+            if (!txDelta.areOnTheSameBranch()) {
+               ChangeVersion netChange = item.getNetChange();
+               if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
+                  ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
+                  wasValue = fromVersion.getValue();
+               }
+            } else {
+               Artifact startArtifact = artifactDelta.getBaseArtifact();
+               if (startArtifact == null) {
+                  startArtifact = artifactDelta.getStartArtifact();
+               }
+               if (startArtifact != null) {
+                  wasValue = startArtifact.getAttributesToString(attributeType);
+                  if (wasValue == null) {
+                     wasValue = "";
+                  }
                }
             }
-         }
-         change =
-            new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
-               attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+            change =
+               new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
+                  attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+            break;
+         case RELATION_CHANGE:
+            RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId());
 
-      } else if (item instanceof RelationChangeItem) {
-         RelationChangeItem relationItem = (RelationChangeItem) item;
-         RelationType relationType = RelationTypeManager.getTypeByGuid(relationItem.getItemTypeId());
+            TransactionRecord transaction = txDelta.getStartTx();
+            if (txDelta.areOnTheSameBranch()) {
+               transaction = txDelta.getEndTx();
+            }
+            Artifact endTxBArtifact = bulkLoaded.get(transaction, item.getArtIdB());
 
-         TransactionRecord transaction = txDelta.getStartTx();
-         if (txDelta.areOnTheSameBranch()) {
-            transaction = txDelta.getEndTx();
-         }
-         Artifact endTxBArtifact = bulkLoaded.get(transaction, relationItem.getBArtId());
-
-         change =
-            new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
-               itemId, relationItem.getRationale(), relationType, isHistorical, changeArtifact, artifactDelta,
-               endTxBArtifact);
-      } else {
-         throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
+            String rationale = item.getCurrentVersion().getValue();
+            change =
+               new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact.getArtId(),
+                  itemId, rationale, relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
+            break;
+         default:
+            throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }
       return change;
    }
@@ -284,8 +283,8 @@ public class ChangeDataLoader extends AbstractOperation {
       Set<Integer> artIds = new HashSet<Integer>();
       for (ChangeItem item : changeItems) {
          artIds.add(item.getArtId());
-         if (item instanceof RelationChangeItem) {
-            artIds.add(((RelationChangeItem) item).getBArtId());
+         if (item.getChangeType().isRelationChange()) {
+            artIds.add(item.getArtIdB());
          }
       }
       return artIds;

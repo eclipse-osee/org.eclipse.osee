@@ -21,11 +21,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -58,15 +57,21 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          Multimap<Integer, Integer> modifiedRels = LinkedListMultimap.create();
 
          for (ChangeItem change : changes) {
-            if (change instanceof AttributeChangeItem) {
-               modifiedAttrIds.put(change.getArtId(), change.getItemId());
-            } else if (change instanceof ArtifactChangeItem) {
-               if (!change.isSynthetic()) {
-                  modifiedArtIds.add(change.getArtId());
-               }
-            } else if (change instanceof RelationChangeItem) {
-               modifiedRels.put(change.getArtId(), change.getItemId());
-               modifiedRels.put(((RelationChangeItem) change).getBArtId(), change.getItemId());
+            switch (change.getChangeType()) {
+               case ARTIFACT_CHANGE:
+                  if (!change.isSynthetic()) {
+                     modifiedArtIds.add(change.getArtId());
+                  }
+                  break;
+               case ATTRIBUTE_CHANGE:
+                  modifiedAttrIds.put(change.getArtId(), change.getItemId());
+                  break;
+               case RELATION_CHANGE:
+                  modifiedRels.put(change.getArtId(), change.getItemId());
+                  modifiedRels.put(change.getArtIdB(), change.getItemId());
+                  break;
+               default:
+                  throw new OseeStateException("Unknonw change type detected [%s]", change);
             }
          }
 
@@ -162,8 +167,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return TokenFactory.createBranch(tx.getBranchId(), "Missing Change Items");
    }
 
-   private Set<RelationChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionReadable destTx, final Multimap<Integer, RelationData> relationChangesToAdd) throws OseeCoreException {
-      final Set<RelationChangeItem> toReturn = new LinkedHashSet<RelationChangeItem>();
+   private Set<ChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionReadable destTx, final Multimap<Integer, RelationData> relationChangesToAdd) throws OseeCoreException {
+      final Set<ChangeItem> toReturn = new LinkedHashSet<ChangeItem>();
 
       DataLoader loader =
          dataLoaderFactory.newDataLoaderFromIds(session, getBranch(destTx), relationChangesToAdd.keySet());
@@ -188,23 +193,23 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       }
    }
 
-   private ArtifactChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
-      ArtifactChangeItem artChange =
-         new ArtifactChangeItem(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+   private ChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
+      ChangeItem artChange =
+         ChangeItemUtil.newArtifactChange(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
             determineModType(data));
       return artChange;
    }
 
-   private AttributeChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
-      AttributeChangeItem attrChange =
-         new AttributeChangeItem(data.getLocalId(), data.getTypeUuid(), data.getArtifactId(),
+   private ChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
+      ChangeItem attrChange =
+         ChangeItemUtil.newAttributeChange(data.getLocalId(), data.getTypeUuid(), data.getArtifactId(),
             data.getVersion().getGammaId(), determineModType(data), data.getDataProxy().getDisplayableString());
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
 
-   private RelationChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
-      return new RelationChangeItem(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
+   private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
+      return ChangeItemUtil.newRelationChange(data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
          determineModType(data), data.getArtIdA(), data.getArtIdB(), data.getRationale());
    }
 

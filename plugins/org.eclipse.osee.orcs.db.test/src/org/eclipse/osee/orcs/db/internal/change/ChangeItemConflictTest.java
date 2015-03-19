@@ -14,9 +14,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -89,9 +88,9 @@ public class ChangeItemConflictTest {
       // but since we don't seem to handle the mixed case of say artifact on src and attribute on destination
       ChangeItem item;
       if (itemType == ItemType.artifact) {
-         item = new ArtifactChangeItem(0, 0, GAMMA, ModificationType.MODIFIED);
+         item = ChangeItemUtil.newArtifactChange(0, 0, GAMMA, ModificationType.MODIFIED);
       } else {
-         item = new AttributeChangeItem(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change");
+         item = ChangeItemUtil.newAttributeChange(0, 0, 0, GAMMA, ModificationType.MODIFIED, "change");
       }
 
       buildTestCase(GAMMA, item);

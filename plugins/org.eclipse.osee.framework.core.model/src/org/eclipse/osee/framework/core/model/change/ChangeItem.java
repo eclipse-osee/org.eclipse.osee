@@ -10,41 +10,52 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.change;
 
-import org.eclipse.osee.framework.core.enums.ModificationType;
-
 /**
  * @author Roberto E. Escobar
  */
-public abstract class ChangeItem implements Comparable<ChangeItem> {
-   private final int artId;
-   private final int itemId;
-   private final long itemTypeId;
+public class ChangeItem implements Comparable<ChangeItem> {
 
-   private final ChangeVersion baseEntry;
-   private final ChangeVersion firstChange;
-   private final ChangeVersion currentEntry;
-   private final ChangeVersion destinationEntry;
-   private final ChangeVersion netEntry;
+   private ChangeType changeType = ChangeType.UNKNOWN_CHANGE;
+   private int artId = -1;
+   private int itemId = -1;
+   private long itemTypeId = -1;
 
-   private boolean synthetic;
+   private ChangeVersion baselineVersion = new ChangeVersion();
+   private ChangeVersion firstNonCurrentChange = new ChangeVersion();
+   private ChangeVersion currentVersion = new ChangeVersion();
+   private ChangeVersion destinationVersion = new ChangeVersion();
+   private ChangeVersion netChange = new ChangeVersion();
 
-   protected ChangeItem(int itemId, long itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
-      this.itemId = itemId;
-      this.itemTypeId = itemTypeId;
-      this.artId = artId;
+   private boolean synthetic = false;
 
-      this.currentEntry = new ChangeVersion(currentSourceGammaId, currentSourceModType);
+   private int artIdB = -1;
 
-      this.baseEntry = new ChangeVersion();
-      this.firstChange = new ChangeVersion();
-      this.destinationEntry = new ChangeVersion();
-      this.netEntry = new ChangeVersion();
-
-      this.synthetic = false;
+   public ChangeItem() {
+      super();
    }
 
    public void setSynthetic(boolean synthetic) {
       this.synthetic = synthetic;
+   }
+
+   public ChangeType getChangeType() {
+      return changeType;
+   }
+
+   public void setChangeType(ChangeType changeType) {
+      this.changeType = changeType;
+   }
+
+   public void setArtId(int artId) {
+      this.artId = artId;
+   }
+
+   public void setItemId(int itemId) {
+      this.itemId = itemId;
+   }
+
+   public void setItemTypeId(long itemTypeId) {
+      this.itemTypeId = itemTypeId;
    }
 
    public boolean isSynthetic() {
@@ -64,23 +75,51 @@ public abstract class ChangeItem implements Comparable<ChangeItem> {
    }
 
    public ChangeVersion getBaselineVersion() {
-      return baseEntry;
+      return baselineVersion;
    }
 
    public ChangeVersion getFirstNonCurrentChange() {
-      return firstChange;
+      return firstNonCurrentChange;
    }
 
    public ChangeVersion getCurrentVersion() {
-      return currentEntry;
+      return currentVersion;
    }
 
    public ChangeVersion getDestinationVersion() {
-      return destinationEntry;
+      return destinationVersion;
    }
 
    public ChangeVersion getNetChange() {
-      return netEntry;
+      return netChange;
+   }
+
+   public void setBaselineVersion(ChangeVersion baselineVersion) {
+      this.baselineVersion = baselineVersion;
+   }
+
+   public void setFirstNonCurrentChange(ChangeVersion firstNonCurrentChange) {
+      this.firstNonCurrentChange = firstNonCurrentChange;
+   }
+
+   public void setCurrentVersion(ChangeVersion currentVersion) {
+      this.currentVersion = currentVersion;
+   }
+
+   public void setDestinationVersion(ChangeVersion destinationVersion) {
+      this.destinationVersion = destinationVersion;
+   }
+
+   public void setNetChange(ChangeVersion netChange) {
+      this.netChange = netChange;
+   }
+
+   public int getArtIdB() {
+      return artIdB;
+   }
+
+   public void setArtIdB(int artIdB) {
+      this.artIdB = artIdB;
    }
 
    @Override
@@ -108,12 +147,12 @@ public abstract class ChangeItem implements Comparable<ChangeItem> {
       if (artId != other.artId) {
          return false;
       }
-      if (currentEntry == null) {
-         if (other.currentEntry != null) {
+      if (currentVersion == null) {
+         if (other.currentVersion != null) {
             return false;
          }
       }
-      if (!currentEntry.equals(other.currentEntry)) {
+      if (!currentVersion.equals(other.currentVersion)) {
          return false;
       }
       if (itemTypeId != other.itemTypeId) {

@@ -15,11 +15,9 @@ import org.eclipse.osee.framework.core.enums.ChangeItemType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
-import org.eclipse.osee.framework.core.model.change.ArtifactChangeItem;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
-import org.eclipse.osee.framework.core.model.change.RelationChangeItem;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -114,29 +112,32 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 
    private static String[] toArray(ChangeItem item) throws OseeStateException {
       String[] row;
-      if (item instanceof ArtifactChangeItem) {
-         row = new String[4];
-         row[0] = ChangeItemType.ARTIFACT.name();
-         row[1] = String.valueOf(item.getItemId());
-         row[2] = String.valueOf(item.getItemTypeId());
-         row[3] = String.valueOf(item.isSynthetic());
-      } else if (item instanceof AttributeChangeItem) {
-         row = new String[4];
-         row[0] = ChangeItemType.ATTRIBUTE.name();
-         row[1] = String.valueOf(item.getItemId());
-         row[2] = String.valueOf(item.getItemTypeId());
-         row[3] = String.valueOf(item.getArtId());
-      } else if (item instanceof RelationChangeItem) {
-         row = new String[6];
-         RelationChangeItem relationChangeItem = (RelationChangeItem) item;
-         row[0] = ChangeItemType.RELATION.name();
-         row[1] = String.valueOf(item.getItemId());
-         row[2] = String.valueOf(item.getItemTypeId());
-         row[3] = String.valueOf(relationChangeItem.getArtId());
-         row[4] = String.valueOf(relationChangeItem.getBArtId());
-         row[5] = relationChangeItem.getRationale();
-      } else {
-         throw new OseeStateException("Invalid change item type");
+      switch (item.getChangeType()) {
+         case ARTIFACT_CHANGE:
+            row = new String[4];
+            row[0] = ChangeItemType.ARTIFACT.name();
+            row[1] = String.valueOf(item.getItemId());
+            row[2] = String.valueOf(item.getItemTypeId());
+            row[3] = String.valueOf(item.isSynthetic());
+            break;
+         case ATTRIBUTE_CHANGE:
+            row = new String[4];
+            row[0] = ChangeItemType.ATTRIBUTE.name();
+            row[1] = String.valueOf(item.getItemId());
+            row[2] = String.valueOf(item.getItemTypeId());
+            row[3] = String.valueOf(item.getArtId());
+            break;
+         case RELATION_CHANGE:
+            row = new String[6];
+            row[0] = ChangeItemType.RELATION.name();
+            row[1] = String.valueOf(item.getItemId());
+            row[2] = String.valueOf(item.getItemTypeId());
+            row[3] = String.valueOf(item.getArtId());
+            row[4] = String.valueOf(item.getArtIdB());
+            row[5] = item.getCurrentVersion().getValue();
+            break;
+         default:
+            throw new OseeStateException("Invalid change item type");
       }
       return row;
 
@@ -151,12 +152,12 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
       switch (type) {
          case ARTIFACT:
             boolean synthetic = Boolean.parseBoolean(row[3]);
-            changeItem = new ArtifactChangeItem(itemId, itemTypeId, -1, ModificationType.NEW);
+            changeItem = ChangeItemUtil.newArtifactChange(itemId, itemTypeId, -1, ModificationType.NEW);
             changeItem.setSynthetic(synthetic);
             break;
          case ATTRIBUTE:
             int artId = Integer.parseInt(row[3]);
-            changeItem = new AttributeChangeItem(itemId, itemTypeId, artId, -1, ModificationType.NEW, null);
+            changeItem = ChangeItemUtil.newAttributeChange(itemId, itemTypeId, artId, -1, ModificationType.NEW, null);
             break;
          case RELATION:
             int aArtId = Integer.parseInt(row[3]);
@@ -164,7 +165,7 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
             String rationale = row[5];
 
             changeItem =
-               new RelationChangeItem(itemId, itemTypeId, -1, ModificationType.NEW, aArtId, bArtId, rationale);
+               ChangeItemUtil.newRelationChange(itemId, itemTypeId, -1, ModificationType.NEW, aArtId, bArtId, rationale);
             break;
          default:
             throw new OseeStateException("Invalid change item type");

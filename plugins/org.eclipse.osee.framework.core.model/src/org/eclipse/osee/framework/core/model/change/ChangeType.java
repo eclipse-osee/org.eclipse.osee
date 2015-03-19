@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.model.mocks;
-
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.change.ChangeItem;
+package org.eclipse.osee.framework.core.model.change;
 
 /**
  * @author Roberto E. Escobar
  */
-public class MockChangeItem extends ChangeItem {
+public enum ChangeType {
+   ARTIFACT_CHANGE,
+   ATTRIBUTE_CHANGE,
+   RELATION_CHANGE,
+   UNKNOWN_CHANGE;
 
-   public MockChangeItem(int itemId, int itemTypeId, int artId, long currentSourceGammaId, ModificationType currentSourceModType) {
-      super(itemId, itemTypeId, artId, currentSourceGammaId, currentSourceModType);
+   public boolean isArtifactChange() {
+      return this == ARTIFACT_CHANGE;
+   }
+
+   public boolean isAttributeChange() {
+      return this == ATTRIBUTE_CHANGE;
+   }
+
+   public boolean isRelationChange() {
+      return this == RELATION_CHANGE;
    }
 }

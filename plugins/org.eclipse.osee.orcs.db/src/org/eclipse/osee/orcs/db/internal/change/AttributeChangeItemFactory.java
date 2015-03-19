@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.change.AttributeChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.db.internal.change.ChangeItemLoader.ChangeItemFactory;
@@ -45,7 +45,7 @@ public final class AttributeChangeItemFactory implements ChangeItemFactory {
 
       String value = chStmt.getString("value");
 
-      return new AttributeChangeItem(attrId, attrTypeId, artId, gammaId, modType, value);
+      return ChangeItemUtil.newAttributeChange(attrId, attrTypeId, artId, gammaId, modType, value);
    }
 
    @Override
