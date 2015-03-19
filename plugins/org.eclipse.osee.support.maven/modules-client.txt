@@ -1,5 +1,5 @@
              ------------------>[ote]---------------------->| 
             |                                               |
-[runtime]-->|-->[osee-client]-->[ats-client]-->[coverage]-->|-->[client-all]
+[runtime]-->|-->[osee-client]-->[ats-client]-->[coverage]-->|-->[products]
             |                                               |
              ---------------------------------------------->|
