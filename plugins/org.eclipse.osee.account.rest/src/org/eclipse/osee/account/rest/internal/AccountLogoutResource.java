@@ -16,8 +16,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import org.eclipse.osee.account.admin.SystemRoles;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
+import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar

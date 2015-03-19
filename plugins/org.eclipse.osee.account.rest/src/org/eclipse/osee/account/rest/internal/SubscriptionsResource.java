@@ -25,11 +25,11 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
-import org.eclipse.osee.account.admin.SystemRoles;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
