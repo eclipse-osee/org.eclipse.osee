@@ -16,6 +16,7 @@ import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * @author John Misinco
@@ -33,7 +34,9 @@ public interface OseeClient {
    Collection<String> getIdeClientSupportedVersions();
 
    BranchEndpoint getBranchEndpoint();
-   
+
    TransactionEndpoint getTransactionEndpoint();
+
+   TypesEndpoint getTypesEndpoint();
 
 }
