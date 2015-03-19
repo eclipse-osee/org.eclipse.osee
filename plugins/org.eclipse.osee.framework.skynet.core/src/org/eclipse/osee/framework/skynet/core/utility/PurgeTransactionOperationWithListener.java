@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation.PurgeTransactionListener;
 
 public class PurgeTransactionOperationWithListener {
@@ -42,9 +41,7 @@ public class PurgeTransactionOperationWithListener {
 
    public static IOperation getPurgeTransactionOperationById(List<Integer> txIdsToDelete) throws OseeCoreException {
 
-      final PurgeTransactionOperation op =
-         new PurgeTransactionOperation(ConnectionHandler.getJdbcClient(),
-            ServiceUtil.getOseeCacheService().getBranchCache(), txIdsToDelete);
+      final PurgeTransactionOperation op = new PurgeTransactionOperation(txIdsToDelete);
 
       PurgeTransactionListener listener = new PurgeTransactionListener() {
 
