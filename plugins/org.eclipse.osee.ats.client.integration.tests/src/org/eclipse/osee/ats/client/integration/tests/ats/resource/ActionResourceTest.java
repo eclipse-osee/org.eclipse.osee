@@ -49,7 +49,6 @@ public class ActionResourceTest extends AbstractRestTest {
    public void testQuerySingle() throws Exception {
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       String url = String.format("%s/ats/action/query?ats%%2EId=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
-      System.err.println(url);
       URI uri = new URL(url).toURI();
 
       JsonArray array = getAndCheckArray(uri);
@@ -61,7 +60,6 @@ public class ActionResourceTest extends AbstractRestTest {
 
       url =
          String.format("%s/ats/action/query?1152921504606847877=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
-      System.err.println(url);
       uri = new URL(url).toURI();
 
       array = getAndCheckArray(uri);
