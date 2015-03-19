@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
@@ -60,5 +61,10 @@ public class TransactionFactoryImpl implements TransactionFactory {
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
       return orcsTxn;
+   }
+
+   @Override
+   public Callable<Void> setTransactionComment(ITransaction transaction, String comment) {
+      return txCallableFactory.setTransactionComment(session, transaction, comment);
    }
 }

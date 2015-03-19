@@ -49,6 +49,15 @@ public class TxCallableFactory {
       };
    }
 
+   public Callable<Void> setTransactionComment(OrcsSession session, final ITransaction transaction, final String comment) {
+      return new AbstractTxCallable<Void>("SetTxComment", session) {
+         @Override
+         protected Void innerCall() throws Exception {
+            return txDataStore.setTransactionComment(getSession(), transaction, comment).call();
+         }
+      };
+   }
+
    public CancellableCallable<TransactionReadable> createTx(final TxData txData) {
       return new AbstractTxCallable<TransactionReadable>("CommitTransaction", txData.getSession()) {
 

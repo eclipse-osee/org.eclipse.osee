@@ -24,6 +24,7 @@ import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.PurgeTransactionTxCallable;
+import org.eclipse.osee.orcs.db.internal.callable.SetTransactionTxCallable;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -61,6 +62,11 @@ public class TxModule {
          @Override
          public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactionsToPurge) {
             return new PurgeTransactionTxCallable(logger, session, jdbcClient, sqlJoinFactory, transactionsToPurge);
+         }
+
+         @Override
+         public Callable<Void> setTransactionComment(OrcsSession session, ITransaction transaction, String comment) {
+            return new SetTransactionTxCallable(logger, session, jdbcClient, transaction, comment);
          }
       };
    }

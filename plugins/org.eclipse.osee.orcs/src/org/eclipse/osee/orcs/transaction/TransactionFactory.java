@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.transaction;
 
 import java.util.Collection;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -26,6 +26,7 @@ public interface TransactionFactory {
 
    TransactionBuilder createTransaction(long uuid, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
+   Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
 
-   CancellableCallable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
+   Callable<Void> setTransactionComment(ITransaction transaction, String comment);
 }

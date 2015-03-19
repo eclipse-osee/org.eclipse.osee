@@ -1007,6 +1007,24 @@ public class OrcsTransactionTest {
       assertEquals(true, art.areRelated(CoreRelationTypes.Users_User, otherSide));
    }
 
+   @Test
+   public void testSetTransactionComment() throws Exception {
+      TransactionBuilder tx = createTx();
+      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.Component, "A component");
+      ArtifactId art2 = tx.createArtifact(CoreArtifactTypes.User, "User Artifact");
+      tx.relate(art1, CoreRelationTypes.Users_User, art2, "rationale1");
+      TransactionReadable transaction = tx.commit();
+
+      assertEquals(testName.getMethodName(), transaction.getComment());
+
+      String expectedComment = "My new Comment";
+      txFactory.setTransactionComment(transaction, expectedComment).call();
+
+      TransactionReadable actual = query.transactionQuery().andTxId(transaction.getGuid()).getResults().getExactlyOne();
+      assertEquals(transaction.getGuid(), actual.getGuid());
+      assertEquals(expectedComment, actual.getComment());
+   }
+
    private TransactionBuilder createTx() throws OseeCoreException {
       return txFactory.createTransaction(COMMON, userArtifact, testName.getMethodName());
    }

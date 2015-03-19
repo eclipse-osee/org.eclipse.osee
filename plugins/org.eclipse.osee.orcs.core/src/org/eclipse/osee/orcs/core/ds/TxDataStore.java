@@ -23,4 +23,7 @@ public interface TxDataStore {
    Callable<TransactionResult> commitTransaction(OrcsSession session, TransactionData transaction);
 
    Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends ITransaction> transactions);
+
+   Callable<Void> setTransactionComment(OrcsSession session, ITransaction transaction, String comment);
+
 }
