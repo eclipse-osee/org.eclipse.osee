@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.x.server.parent</artifactId>
+		<version>0.21.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.x.server.parent</relativePath>
+	</parent>
+
+	<artifactId>org.eclipse.osee.web.ui.test</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<name>OSEE Web UI Test - (Incubation)</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.searls</groupId>
+				<artifactId>jasmine-maven-plugin</artifactId>
+				<version>${jasmine-version}</version>
+				<configuration>
+					<jsSrcDir>../org.eclipse.osee.web.ui/src</jsSrcDir>
+					<jsTestSrcDir>src</jsTestSrcDir>
+					<preloadSources>
+						<source>../../../org.eclipse.ip/org.eclipse.oss.ajax/src/*</source>
+					</preloadSources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

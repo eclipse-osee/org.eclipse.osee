@@ -1,0 +1,16 @@
+<div>
+   <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ $parent.profile.name }}<span class="caret"></span></a>
+         <ul class="dropdown-menu" role="menu">
+            <li><a href="#" ng-show="show=='logged-out'" ng-click="login()"><span class="glyphicon glyphicon-pencil"></span>Sign In</a></li>
+            <li><a href="#" ng-show="show=='denied'"     ng-click="login()"><span class="glyphicon glyphicon-ban-circle"></span>Access denied. Try again.</a></li>
+            <li><a href="#" ng-show="show=='logged-out'" ng-click="$parent.createAccount()"><span class="glyphicon glyphicon-list-alt"></span>Create Account</a></li>
+            <li><a href="#" ng-show="show=='logged-in'"  ng-click="$parent.gotoAccount()"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+            <li><a href="#" ng-click="$parent.gotoSettings()"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>
+            <li class="divider" ng-show="show=='logged-in'"></li>
+            <li ng-show="show=='logged-in'" ng-click="logout()"><a href="#"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+         </ul>
+      </li>
+   </ul>
+</div>

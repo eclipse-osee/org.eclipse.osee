@@ -29,6 +29,9 @@
 		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
 
+		<module>../../plugins/org.eclipse.osee.web.ui</module>
+		<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
+		
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
 
 		<module>../../features/org.eclipse.osee.x.server.feature</module>

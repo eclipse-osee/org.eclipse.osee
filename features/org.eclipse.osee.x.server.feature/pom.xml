@@ -10,4 +10,28 @@
 	<artifactId>org.eclipse.osee.x.server.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
 	<name>OSEE X Server Feature - (Incubation)</name>
+	
+	<build>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-source-feature-plugin</artifactId>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<id>source-feature</id>
+							<goals>
+								<goal>source-feature</goal>
+							</goals>
+							<configuration>
+								<excludes>
+									<plugin id="org.eclipse.osee.web.ui" />
+								</excludes>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+	</build>
+	
 </project>

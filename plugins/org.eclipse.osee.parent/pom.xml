@@ -47,6 +47,8 @@
 
 		<jaxb2-maven-version>1.5</jaxb2-maven-version>
 
+		<jasmine-version>1.3.1.0</jasmine-version>
+
 		<platform-version-name>kepler</platform-version-name>
 		<orbit-version>R20130517111416</orbit-version>
 		<xtext-version>2.0.0</xtext-version>
@@ -116,8 +118,9 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> </environment> <environment> <os>macosx</os> <ws>cocoa</ws> 
-							<arch>x86</arch> </environment> -->
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -161,8 +164,9 @@
 					</filters>
 					<resolver>p2</resolver>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> </environment> <environment> <os>macosx</os> <ws>cocoa</ws> 
-							<arch>x86</arch> </environment> -->
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
@@ -326,6 +330,39 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>build-helper-maven-plugin</artifactId>
 					<version>${build-helper-maven-plugin-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.github.searls</groupId>
+					<artifactId>jasmine-maven-plugin</artifactId>
+					<version>${jasmine-version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test</goal>
+							</goals>
+						</execution>
+					</executions>
+				<!-- <configuration>
+						<preloadSources>
+							<source>${project.basedir}/src/main/resources/ui/javascript/require.js</source>
+						</preloadSources>
+						<jsSrcDir>${project.basedir}/src</jsSrcDir>
+						<sourceIncludes>
+							<include>**/*.js</include>
+							<include>**/*.coffee</include>
+						</sourceIncludes>
+						<sourceExcludes>
+							<exclude>${project.basedir}/src/main/resources/ui/javascript/require.js</exclude>
+						</sourceExcludes>
+						<jsTestSrcDir>${project.basedir}/src/test/javascript</jsTestSrcDir>
+						<specIncludes>
+							<include>**/SpecHelper.js</include>
+							<include>**/*.js</include>
+							<include>**/*.coffee</include>
+						</specIncludes>
+						<customRunnerTemplate>${project.basedir}/src/main/resources/jasmine-templates/RequireJsSpecRunner.htmltemplate</customRunnerTemplate>
+						<format>progress</format>
+					</configuration> -->
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -533,8 +570,9 @@
 									<append>true</append>
 								</configuration>
 							</execution>
-							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> <goals> <goal>report</goal> </goals> <configuration> 
-								<dataFile>${sonar.jacoco.reportPath}</dataFile> <includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
+							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
+								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
+								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
 								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
 						</executions>
 					</plugin>
@@ -607,7 +645,8 @@
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
 				</repository>
-				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> </repository> -->
+				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
+					</repository> -->
 				<repository>
 					<id>polarion</id>
 					<layout>p2</layout>
@@ -618,7 +657,8 @@
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
 				</repository>
-				<!-- <repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> </repository> -->
+				<!-- <repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> 
+					</repository> -->
 			</repositories>
 		</profile>
 

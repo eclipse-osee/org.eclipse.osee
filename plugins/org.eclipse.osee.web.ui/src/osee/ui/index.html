@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <base href="/osee/ui/index.html">
+      <meta charset="UTF-8">
+      </meta>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      </meta>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      </meta>
+      <link rel="stylesheet" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css">
+      </link>
+      <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
+      <script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
+      <script src="/ajax/libs/ngStorage/0.3.0/ngStorage.min.js"></script>
+      <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
+      <script src="/libs/js/oseeAuth/oseeAuth.js"></script>
+      <script src="/libs/js/support/linkRewrite.js"></script>
+      <script src="../js/oseeApp.js"></script>
+      <link rel="icon" type="image/x-icon" href="images/osee.ico" />
+      <link rel="shortcut icon" type="image/x-icon" href="/libs/images/osee.ico" />
+      <title>OSEE</title>
+   </head>
+   <body ng-app="oseeApp">
+      <div ng-controller="indexController">
+         <osee 
+            redirect-uri="../osee/ui/index.html"
+            links="links">
+         </osee>
+      </div>
+      <div ng-view></div>
+   </body>
+    <script>
+   	 app.controller("indexController", [
+ 				"$scope", '$location', '$window',
+ 				function($scope, $location, $window) {
+ 					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'about', name: 'About'}, { ref: 'wiki', name: 'Wiki'}, { ref: 'contactUs', name: 'Contact Us'}];
+ 				}]);
+ 	</script>
+</html>
