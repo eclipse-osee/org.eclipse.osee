@@ -10,24 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
-import org.eclipse.osee.framework.core.message.ChangeBranchTypeRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Megumi Telles
@@ -45,18 +43,17 @@ public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperatio
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.UPDATE_BRANCH_TYPE.name());
-
-      ChangeBranchTypeRequest requestData = new ChangeBranchTypeRequest(branchUuid, type);
-      AcquireResult response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_BRANCH_TYPE,
-            requestData, null);
-
-      if (response.wasSuccessful()) {
-         Branch branch = BranchManager.getBranch(branchUuid);
-         branch.setBranchType(type);
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchUuid));
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
+      try {
+         Response response = proxy.setBranchType(branchUuid, type);
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            Branch branch = BranchManager.getBranch(branchUuid);
+            branch.setBranchType(type);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchUuid));
+         }
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 }

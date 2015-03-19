@@ -10,29 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.message.BranchCreationRequest;
-import org.eclipse.osee.framework.core.message.BranchCreationResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.NewBranch;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -65,22 +67,57 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.CREATE_BRANCH.name());
+      if (branchUuid <= 0) {
+         throw new OseeArgumentException("branchUuid [%d] uuid must be > 0", branchUuid);
+      }
 
-      BranchCreationRequest request =
-         new BranchCreationRequest(branchType, parentTransaction.getId(), parentTransaction.getBranchId(),
-            branchName, branchUuid, getAssociatedArtifactId(associatedArtifact), getAuthorId(), creationComment,
-            mergeAddressingQueryId, destinationBranchId);
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
 
-      request.setTxIsCopied(isTxCopyBranchType());
+      NewBranch data = new NewBranch();
+      data.setAssociatedArtifactId(getAssociatedArtifactId(associatedArtifact));
+      data.setAuthorId(getAuthorId());
+      data.setBranchName(branchName);
+      data.setBranchType(branchType);
+      data.setCreationComment(creationComment);
+      data.setMergeAddressingQueryId(mergeAddressingQueryId);
+      data.setMergeDestinationBranchId(destinationBranchId);
+      data.setParentBranchId(parentTransaction.getBranchId());
+      data.setSourceTransactionId(parentTransaction.getId());
+      data.setTxCopyBranchType(isTxCopyBranchType());
 
-      BranchCreationResponse response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_CREATION_REQUEST,
-            request, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
+      try {
+         Response response = proxy.createBranchWithId(branchUuid, data);
+         if (Status.CREATED.getStatusCode() == response.getStatus()) {
+            long branchUuid = getBranchUuid(response);
+            newBranch = BranchManager.getBranch(branchUuid);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, branchUuid));
+         }
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
+   }
 
-      newBranch = BranchManager.getBranch(response.getBranchId());
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch.getUuid()));
+   private long getBranchUuid(Response response) {
+      long toReturn = -1;
+      if (response.hasEntity()) {
+         org.eclipse.osee.orcs.rest.model.Branch branch =
+            response.readEntity(org.eclipse.osee.orcs.rest.model.Branch.class);
+         toReturn = branch.getBranchUuid();
+      } else {
+         URI location = response.getLocation();
+         if (location != null) {
+            String path = location.toASCIIString();
+            int index = path.lastIndexOf("branches/");
+            if (index > 0 && index < path.length()) {
+               String value = path.substring(index);
+               if (Strings.isNumeric(value)) {
+                  toReturn = Integer.parseInt(value);
+               }
+            }
+         }
+      }
+      return toReturn;
    }
 
    private static int getAssociatedArtifactId(Artifact associatedArtifact) throws OseeCoreException {

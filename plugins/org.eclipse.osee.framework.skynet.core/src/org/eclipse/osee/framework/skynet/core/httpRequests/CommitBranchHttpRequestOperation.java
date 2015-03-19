@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,19 +18,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
-import org.eclipse.osee.framework.core.message.BranchCommitRequest;
-import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
@@ -38,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -55,6 +53,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.Transaction;
 
 /**
  * @author Megumi Telles
@@ -78,9 +81,6 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.BRANCH_COMMIT.name());
-
       BranchState currentState = sourceBranch.getBranchState();
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
@@ -88,29 +88,49 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          new BranchEvent(BranchEventType.Committing, sourceBranch.getUuid(), destinationBranch.getUuid());
       OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
-      BranchCommitRequest requestData =
-         new BranchCommitRequest(user.getArtId(), sourceBranch.getUuid(), destinationBranch.getUuid(), isArchiveAllowed);
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
 
-      BranchCommitResponse response = null;
+      BranchCommitOptions options = new BranchCommitOptions();
+      options.setArchive(isArchiveAllowed);
+      options.setCommitterId(user.getArtId());
       try {
-         response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
-               CoreTranslatorId.BRANCH_COMMIT_REQUEST, requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
-         sourceBranch.setBranchState(BranchState.COMMITTED);
-      } catch (OseeCoreException ex) {
+         Response response = proxy.commitBranch(sourceBranch.getUuid(), destinationBranch.getUuid(), options);
+         if (Status.CREATED.getStatusCode() == response.getStatus()) {
+            sourceBranch.setBranchState(BranchState.COMMITTED);
+            int txId = getTransactionId(response);
+            handleResponse(txId, monitor, sourceBranch, destinationBranch);
+         }
+      } catch (Exception ex) {
          sourceBranch.setBranchState(currentState);
          OseeEventManager.kickBranchEvent(getClass(),
             new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getUuid()));
-         throw ex;
-      }
-
-      if (response != null) {
-         handleResponse(response, monitor, sourceBranch, destinationBranch);
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 
-   private void handleResponse(BranchCommitResponse response, IProgressMonitor monitor, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      Integer newTxId = response.getTransactionId();
+   private int getTransactionId(Response response) {
+      int toReturn = -1;
+      if (response.hasEntity()) {
+         Transaction tx = response.readEntity(Transaction.class);
+         toReturn = tx.getTxId();
+      } else {
+         URI location = response.getLocation();
+         if (location != null) {
+            String path = location.toASCIIString();
+            int index = path.lastIndexOf("txs/");
+            if (index > 0 && index < path.length()) {
+               String value = path.substring(index);
+               if (Strings.isNumeric(value)) {
+                  toReturn = Integer.parseInt(value);
+               }
+            }
+         }
+      }
+      return toReturn;
+   }
+
+   private void handleResponse(Integer newTxId, IProgressMonitor monitor, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);

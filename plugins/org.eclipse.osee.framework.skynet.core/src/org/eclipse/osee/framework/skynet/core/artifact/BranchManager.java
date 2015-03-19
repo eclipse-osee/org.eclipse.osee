@@ -317,7 +317,7 @@ public class BranchManager {
    }
 
    public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchUuid, final BranchArchivedState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchUuid, state);
+      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchUuid, state.isArchived());
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 

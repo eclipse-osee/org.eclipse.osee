@@ -12,20 +12,13 @@ package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.message.ChangeReportRequest;
-import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -40,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -50,7 +42,12 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.CompareResults;
+import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
 /**
  * @author Jeff C. Phillips
@@ -68,8 +65,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      ChangeReportResponse response = requestChanges(txDelta);
-      Collection<ChangeItem> changeItems = response.getChangeItems();
+      List<ChangeItem> changeItems = requestChanges(txDelta);
 
       monitor.worked(calculateWork(0.20));
 
@@ -99,8 +95,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
    public void determineChanges(IProgressMonitor monitor) throws OseeCoreException {
       monitor.setTaskName("Retrieve Change Items");
-      ChangeReportResponse response = requestChanges(txDelta);
-      Collection<ChangeItem> changeItems = response.getChangeItems();
+      List<ChangeItem> changeItems = requestChanges(txDelta);
 
       checkForCancelledStatus(monitor);
       monitor.setTaskName("Bulk load changed artifacts");
@@ -290,16 +285,15 @@ public class ChangeDataLoader extends AbstractOperation {
       return artIds;
    }
 
-   private static ChangeReportResponse requestChanges(TransactionDelta txDelta) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.CHANGE_REPORT.name());
+   private static List<ChangeItem> requestChanges(TransactionDelta txDelta) throws OseeCoreException {
+      OseeClient client = ServiceUtil.getOseeClient();
+      TransactionEndpoint proxy = client.getTransactionEndpoint();
 
-      ChangeReportRequest requestData =
-         new ChangeReportRequest(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
-
-      ChangeReportResponse response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_REPORT_REQUEST,
-            requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-      return response;
+      try {
+         CompareResults results = proxy.compareTxs(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
+         return results.getChanges();
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
    }
 }

@@ -10,28 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Jeff C. Phillips
@@ -50,9 +48,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.PURGE_BRANCH.name());
-
+      long branchUuid = branch.getUuid();
       BranchState currentState = branch.getBranchState();
       BranchArchivedState archivedState = branch.getArchiveState();
 
@@ -60,32 +56,28 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
       branch.setBranchState(BranchState.PURGE_IN_PROGRESS);
       branch.setArchived(true);
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch.getUuid()));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branchUuid));
 
-      AcquireResult response = null;
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
       try {
-         PurgeBranchRequest requestData = new PurgeBranchRequest(branch.getUuid(), recursive);
-         response =
-            HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.PURGE_BRANCH_REQUEST,
-               requestData, null);
-      } catch (OseeCoreException ex) {
+         Response response = proxy.purgeBranch(branchUuid, recursive);
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            branch.setStorageState(StorageState.PURGED);
+            branch.setBranchState(BranchState.PURGED);
+            branch.setArchived(true);
+            BranchManager.decache(branch);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branchUuid));
+         }
+      } catch (Exception ex) {
          try {
             branch.setBranchState(currentState);
             branch.setArchived(archivedState.isArchived());
-            OseeEventManager.kickBranchEvent(getClass(),
-               new BranchEvent(BranchEventType.StateUpdated, branch.getUuid()));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchUuid));
          } catch (Exception ex2) {
             log(ex2);
          }
-         throw ex;
-      }
-
-      if (response.wasSuccessful()) {
-         branch.setStorageState(StorageState.PURGED);
-         branch.setBranchState(BranchState.PURGED);
-         branch.setArchived(true);
-         BranchManager.decache(branch);
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getUuid()));
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 }

@@ -10,24 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.Function;
-import org.eclipse.osee.framework.core.message.ChangeBranchArchiveStateRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Megumi Telles
@@ -35,28 +31,35 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public final class UpdateBranchArchivedStateHttpRequestOperation extends AbstractOperation {
    private final long branchUuid;
-   private final BranchArchivedState branchState;
+   private final boolean archive;
 
-   public UpdateBranchArchivedStateHttpRequestOperation(long branchUuid, BranchArchivedState branchState) {
+   public UpdateBranchArchivedStateHttpRequestOperation(long branchUuid, boolean archive) {
       super("Update branch archived state " + branchUuid, Activator.PLUGIN_ID);
       this.branchUuid = branchUuid;
-      this.branchState = branchState;
+      this.archive = archive;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.UPDATE_ARCHIVE_STATE.name());
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
 
-      ChangeBranchArchiveStateRequest requestData = new ChangeBranchArchiveStateRequest(branchUuid, branchState);
-      AcquireResult response =
-         HttpClientMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
-            CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE, requestData, null);
-
-      if (response.wasSuccessful()) {
-         Branch branch = BranchManager.getBranch(branchUuid);
-         branch.setArchived(branchState.isArchived());
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branchUuid));
+      if (archive) {
+         Response response = proxy.archiveBranch(branchUuid);
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            Branch branch = BranchManager.getBranch(branchUuid);
+            branch.setArchived(true);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated,
+               branchUuid));
+         }
+      } else {
+         Response response = proxy.unarchiveBranch(branchUuid);
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            Branch branch = BranchManager.getBranch(branchUuid);
+            branch.setArchived(false);
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated,
+               branchUuid));
+         }
       }
    }
 }
