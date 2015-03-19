@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -63,10 +62,6 @@ public final class ServiceUtil {
 
    public static IOseeCachingService getOseeCacheService() throws OseeCoreException {
       return getService(IOseeCachingService.class);
-   }
-
-   public static IDataTranslationService getTranslationService() throws OseeCoreException {
-      return getService(IDataTranslationService.class);
    }
 
    public static AttributeAdapterService getAttributeAdapterService() throws OseeCoreException {

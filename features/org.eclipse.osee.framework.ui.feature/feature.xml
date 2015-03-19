@@ -54,7 +54,6 @@
       <import plugin="com.lowagie.text"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.osee.framework.core.message"/>
       <import plugin="org.eclipse.osee.framework.core.model"/>
       <import plugin="org.eclipse.zest.layouts"/>
       <import plugin="org.eclipse.gef"/>

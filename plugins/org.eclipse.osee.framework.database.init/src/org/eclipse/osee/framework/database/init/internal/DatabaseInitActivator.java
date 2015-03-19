@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.init.internal;
 
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.osgi.framework.BundleActivator;
@@ -23,17 +22,12 @@ public class DatabaseInitActivator implements BundleActivator {
 
    private static DatabaseInitActivator instance;
 
-   private ServiceTracker<IDataTranslationService, IDataTranslationService> serviceTracker;
    private ServiceTracker<IOseeCachingService, IOseeCachingService> serviceTracker2;
    private ServiceTracker<JdbcService, JdbcService> serviceTracker3;
 
    @Override
    public void start(BundleContext context) throws Exception {
       DatabaseInitActivator.instance = this;
-      serviceTracker =
-         new ServiceTracker<IDataTranslationService, IDataTranslationService>(context, IDataTranslationService.class,
-            null);
-      serviceTracker.open(true);
 
       serviceTracker2 =
          new ServiceTracker<IOseeCachingService, IOseeCachingService>(context, IOseeCachingService.class, null);
@@ -46,9 +40,6 @@ public class DatabaseInitActivator implements BundleActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      if (serviceTracker != null) {
-         serviceTracker.close();
-      }
       if (serviceTracker2 != null) {
          serviceTracker2.close();
       }
@@ -63,10 +54,6 @@ public class DatabaseInitActivator implements BundleActivator {
 
    public IOseeCachingService getCachingService() {
       return serviceTracker2.getService();
-   }
-
-   public IDataTranslationService getTranslationService() {
-      return serviceTracker.getService();
    }
 
    public JdbcClient getJdbcClient() {

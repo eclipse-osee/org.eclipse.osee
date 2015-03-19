@@ -27,8 +27,6 @@
 		<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server</module>
 		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.message</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.message.test</module>
 		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
 
 		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
