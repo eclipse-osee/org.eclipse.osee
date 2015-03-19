@@ -8,9 +8,14 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.orcs.rest.model.search.branch
-Import-Package: javax.xml.bind.annotation,
+Import-Package: javax.annotation.security;version="1.2.0",
+ javax.ws.rs;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
+ javax.xml.bind.annotation,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.model.change,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util

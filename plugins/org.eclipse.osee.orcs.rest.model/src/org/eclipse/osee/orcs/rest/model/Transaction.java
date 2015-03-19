@@ -20,12 +20,21 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 @XmlRootElement
 public class Transaction {
 
-   private String branchUuid;
+   private int txId = -1;
+   private long branchUuid;
    private TransactionDetailsType txType;
    private String comment;
-   private Date time;
-   private int authorArtId;
+   private Date timestamp;
+   private int authorId;
    private int commitArtId;
+
+   public int getTxId() {
+      return txId;
+   }
+
+   public void setTxId(int txId) {
+      this.txId = txId;
+   }
 
    public TransactionDetailsType getTxType() {
       return txType;
@@ -35,11 +44,11 @@ public class Transaction {
       this.txType = txType;
    }
 
-   public String getBranchId() {
+   public long getBranchUuid() {
       return branchUuid;
    }
 
-   public void setBranchId(String branchUuid) {
+   public void setBranchUuid(long branchUuid) {
       this.branchUuid = branchUuid;
    }
 
@@ -52,27 +61,32 @@ public class Transaction {
    }
 
    public Date getTimeStamp() {
-      return time;
+      return timestamp;
    }
 
-   public void setTimeStamp(Date time) {
-      this.time = time;
+   public void setTimeStamp(Date timestamp) {
+      this.timestamp = timestamp;
    }
 
-   public int getAuthor() {
-      return authorArtId;
+   public int getAuthorId() {
+      return authorId;
    }
 
-   public void setAuthor(int authorArtId) {
-      this.authorArtId = authorArtId;
+   public void setAuthorId(int authorId) {
+      this.authorId = authorId;
    }
 
-   public int getCommit() {
+   public int getCommitArtId() {
       return commitArtId;
    }
 
-   public void setCommit(int commitArtId) {
+   public void setCommitArtId(int commitArtId) {
       this.commitArtId = commitArtId;
+   }
+
+   @Override
+   public String toString() {
+      return "Transaction [txId=" + getTxId() + ", branchUuid=" + branchUuid + ", txType=" + txType + ", comment=" + comment + ", timestamp=" + timestamp + ", authorArtId=" + authorId + ", commitArtId=" + commitArtId + "]";
    }
 
 }
