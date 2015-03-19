@@ -1323,12 +1323,6 @@
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ReportAttributeTypesUsageBlam">
     </Operation>
  </extension>
- <extension
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.FixTemplateContentArtifacts">
-    </Operation>
- </extension>
 <extension
       id="Open With Commands"
       point="org.eclipse.ui.commands">
@@ -1665,12 +1659,6 @@
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.ItemsDeletedWithNoOtherModification">
      </DatabaseHealthOperation>
   </extension>
-    <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeTrackChangeHealthOperation">
-     </DatabaseHealthOperation>
-  </extension>
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
@@ -1687,12 +1675,6 @@
           point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
        <DatabaseHealthOperation
              className="org.eclipse.osee.framework.ui.skynet.dbHealth.AuthorIdCheck">
-       </DatabaseHealthOperation>
-    </extension>
-        <extension
-          point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-       <DatabaseHealthOperation
-             className="org.eclipse.osee.framework.ui.skynet.dbHealth.AttributeBackingDataCheck">
        </DatabaseHealthOperation>
     </extension>
         <extension
@@ -1716,19 +1698,7 @@
              plugin="org.eclipse.osee.framework.skynet.core">
        </statusHandler>
     </extension>
-        <extension
-              point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-           <DatabaseHealthOperation
-                 className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeSmartTagsRemovedHealthOperation">
-           </DatabaseHealthOperation>
-        </extension>
-                 <extension
-              point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-           <DatabaseHealthOperation
-                 className="org.eclipse.osee.framework.ui.skynet.dbHealth.WordAttributeUpdateHyperlinksHealthOperation">
-           </DatabaseHealthOperation>
-        </extension>
-                         <extension
+       <extension
               point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
            <DatabaseHealthOperation
                  className="org.eclipse.osee.framework.ui.skynet.dbHealth.RepeatEnumerationAttributeValues">
