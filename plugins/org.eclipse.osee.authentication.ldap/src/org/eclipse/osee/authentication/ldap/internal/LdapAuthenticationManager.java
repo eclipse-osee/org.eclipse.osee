@@ -135,7 +135,7 @@ public final class LdapAuthenticationManager {
          Set<LdapGroup> groups = connection.findGroups(ldapFilter, username, account);
          if (Strings.isValid(groupNamespace)) {
             for (LdapGroup group : groups) {
-               roles.add(String.format("%s.%s", groupNamespace, group.getGroupName()));
+               roles.add(String.format("%s__%s", groupNamespace, group.getGroupName()));
             }
          } else {
             for (LdapGroup group : groups) {
