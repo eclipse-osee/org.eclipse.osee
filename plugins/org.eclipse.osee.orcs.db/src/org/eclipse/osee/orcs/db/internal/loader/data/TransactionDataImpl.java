@@ -94,7 +94,7 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
 
    @Override
    public String toString() {
-      return "TransactionDataImpl [authorId=" + authorId + ", branchUuid=" + branchUuid + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
+      return "TransactionDataImpl [id=" + getGuid() + ", authorId=" + authorId + ", branchUuid=" + branchUuid + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
    }
 
    @Override

@@ -135,11 +135,7 @@ public interface BranchEndpoint {
    Response unarchiveBranch(@PathParam("branch-uuid") long branchUuid);
 
    @DELETE
-   @Path("{branch-uuid}/txs")
-   @Consumes({MediaType.APPLICATION_JSON})
-   Response deleteTxs(@PathParam("branch-uuid") long branchUuid, DeleteTransaction deleteTxs);
+   @Path("{branch-uuid}/txs/{tx-ids}")
+   Response purgeTxs(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-ids") String txIds);
 
-   @DELETE
-   @Path("{branch-uuid}/txs/{tx-id}")
-   Response deleteTx(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-id") int txId);
 }

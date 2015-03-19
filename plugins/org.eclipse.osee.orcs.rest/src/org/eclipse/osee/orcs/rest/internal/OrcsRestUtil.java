@@ -11,12 +11,14 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.Branch;
@@ -94,5 +96,20 @@ public final class OrcsRestUtil {
       data.setTimeStamp(tx.getDate());
       data.setTxType(tx.getTxType());
       return data;
+   }
+
+   public static List<Integer> asIntegerList(String rawValue) {
+      List<Integer> toReturn;
+      if (Strings.isValid(rawValue)) {
+         String[] entries = rawValue.split(",");
+         toReturn = new ArrayList<Integer>();
+         for (String entry : entries) {
+            Integer value = Integer.parseInt(entry.trim());
+            toReturn.add(value);
+         }
+      } else {
+         toReturn = Collections.emptyList();
+      }
+      return toReturn;
    }
 }

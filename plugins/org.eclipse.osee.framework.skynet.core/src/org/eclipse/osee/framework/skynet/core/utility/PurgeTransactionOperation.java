@@ -22,11 +22,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.DeleteTransaction;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 
 /**
@@ -64,10 +64,9 @@ public class PurgeTransactionOperation extends AbstractOperation {
       OseeClient client = ServiceUtil.getOseeClient();
       TransactionEndpoint txEndpoint = client.getTransactionEndpoint();
 
-      DeleteTransaction deleteTxs = new DeleteTransaction();
-      deleteTxs.setTransactions(txIdsToDelete);
+      String deleteTxs = Collections.toString(",", txIdsToDelete);
       try {
-         Response result = txEndpoint.deleteTxs(deleteTxs);
+         Response result = txEndpoint.purgeTxs(deleteTxs);
          if (Status.OK.getStatusCode() == result.getStatus()) {
             for (PurgeTransactionListener listener : listeners) {
                listener.onPurgeTransactionSuccess(changedTransactions);

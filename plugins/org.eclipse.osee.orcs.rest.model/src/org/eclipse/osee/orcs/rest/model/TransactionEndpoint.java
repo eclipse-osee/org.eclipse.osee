@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -49,11 +48,7 @@ public interface TransactionEndpoint {
    Response setTxComment(@PathParam("tx-id") int txId, @PathParam("tx-comment") String comment);
 
    @DELETE
-   @Consumes({MediaType.APPLICATION_JSON})
-   Response deleteTxs(DeleteTransaction deleteTxs);
-
-   @DELETE
-   @Path("{tx-id}")
-   Response deleteTxs(@PathParam("tx-id") int txId);
+   @Path("{tx-ids}")
+   Response purgeTxs(@PathParam("tx-ids") String txIds);
 
 }

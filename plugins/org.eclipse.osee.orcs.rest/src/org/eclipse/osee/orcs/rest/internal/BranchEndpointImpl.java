@@ -13,13 +13,15 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
+import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asIntegerList;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -50,7 +52,6 @@ import org.eclipse.osee.orcs.rest.model.Branch;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.CompareResults;
-import org.eclipse.osee.orcs.rest.model.DeleteTransaction;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.NewTransaction;
 import org.eclipse.osee.orcs.rest.model.Transaction;
@@ -60,6 +61,8 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 
 /**
  * @author Roberto E. Escobar
@@ -422,13 +425,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public Response deleteTxs(long branchUuid, DeleteTransaction deleteTxs) {
+   public Response purgeTxs(long branchUuid, String txIds) {
       boolean modified = false;
-      if (!deleteTxs.isEmpty()) {
+      List<Integer> txsToDelete = asIntegerList(txIds);
+      if (!txsToDelete.isEmpty()) {
          ResultSet<TransactionReadable> results =
-            newTxQuery().andBranchIds(branchUuid).andTxIds(deleteTxs.getTransactions()).getResults();
+            newTxQuery().andBranchIds(branchUuid).andTxIds(txsToDelete).getResults();
          if (!results.isEmpty()) {
-            Callable<?> op = newTxFactory().purgeTransaction(Lists.newLinkedList(results));
+            checkAllTxFoundAreOnBranch("Purge Transaction", branchUuid, txsToDelete, results);
+            List<TransactionReadable> list = Lists.newArrayList(results);
+            Callable<?> op = newTxFactory().purgeTransaction(list);
             executeCallable(op);
             modified = true;
          }
@@ -436,16 +442,19 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   @Override
-   public Response deleteTx(long branchUuid, int txId) {
-      TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
-      boolean modified = false;
-      if (tx != null) {
-         Callable<?> op = newTxFactory().purgeTransaction(Collections.singleton(tx));
-         executeCallable(op);
-         modified = true;
+   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Integer> txIds, ResultSet<TransactionReadable> result) {
+      if (txIds.size() != result.size()) {
+         Set<Integer> found = new HashSet<Integer>();
+         for (TransactionReadable tx : result) {
+            found.add(tx.getGuid());
+         }
+         SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
+         if (!difference.isEmpty()) {
+            throw new OseeWebApplicationException(
+               Status.BAD_REQUEST,
+               "%s Error - The following transactions from %s were not found on branch [%s] - txs %s - Please remove them from the request and try again.",
+               opName, txIds, branchUuid, difference);
+         }
       }
-      return asResponse(modified);
    }
-
 }
