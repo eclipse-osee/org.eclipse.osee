@@ -106,7 +106,7 @@ public class SendNotificationEvents {
 
    private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
       if (user.getUserId().equals(SystemUser.OseeSystem.getUserId()) || user.getUserId().equals(
-         SystemUser.UnAssigned.getUserId()) || user.getUserId().equals(SystemUser.Guest.getUserId())) {
+         SystemUser.UnAssigned.getUserId()) || user.getUserId().equals(SystemUser.Anonymous.getUserId())) {
          // do nothing
          return;
       }

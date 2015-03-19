@@ -79,7 +79,7 @@ public class CurrentUserProvider extends LazyObject<User> {
                   } catch (UserNotInDatabase ex) {
                      if (isGuestAuthenticationAllowed.compareAndSet(true, false)) {
                         ClientSessionManager.authenticateAsGuest();
-                        currentUser = getUser(SystemUser.Guest);
+                        currentUser = getUser(SystemUser.Anonymous);
                      }
                   }
                }
@@ -87,14 +87,14 @@ public class CurrentUserProvider extends LazyObject<User> {
          } else {
             if (isGuestAuthenticationAllowed.compareAndSet(true, false)) {
                ClientSessionManager.authenticateAsGuest();
-               currentUser = getUser(SystemUser.Guest);
+               currentUser = getUser(SystemUser.Anonymous);
             }
          }
 
          if (currentUser == null) {
             throw new OseeStateException("Setting current user to null.");
          } else {
-            if (currentUser.getName().equals(SystemUser.Guest.getName())) {
+            if (currentUser.getName().equals(SystemUser.Anonymous.getName())) {
                if (isGuestNotificationAllowed.compareAndSet(true, false)) {
                   OseeLog.log(Activator.class, Level.INFO,
                      "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");

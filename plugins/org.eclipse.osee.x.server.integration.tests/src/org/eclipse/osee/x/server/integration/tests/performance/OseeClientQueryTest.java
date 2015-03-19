@@ -42,7 +42,7 @@ import org.junit.rules.MethodRule;
 @PerfTest(threads = 2, invocations = 100)
 public class OseeClientQueryTest {
 
-   private static final String GUID1 = SystemUser.Guest.getGuid();
+   private static final String GUID1 = SystemUser.Anonymous.getGuid();
    private static final String GUID2 = SystemUser.OseeSystem.getGuid();
 
    private static final IOseeBranch SAW_1 = new IOseeBranch() {
@@ -93,7 +93,7 @@ public class OseeClientQueryTest {
    public void searchForAttributeTypeByTokenIds() throws OseeCoreException {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
-         createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Guest).getSearchResult(
+         createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Anonymous).getSearchResult(
             RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }

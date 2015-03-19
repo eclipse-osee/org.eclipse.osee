@@ -47,12 +47,12 @@ public class OseeDslRoleContextProviderTest {
    @Test
    public void testGetContextId() throws Exception {
       String contextGuid = GUID.create();
-      String testSheet = getTestSheet1(contextGuid, SystemUser.Guest.getGuid());
+      String testSheet = getTestSheet1(contextGuid, SystemUser.Anonymous.getGuid());
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact guest = ArtifactQuery.getArtifactFromId(SystemUser.Guest.getGuid(), CoreBranches.COMMON);
-      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(guest);
+      Artifact user = ArtifactQuery.getArtifactFromId(SystemUser.Anonymous.getGuid(), CoreBranches.COMMON);
+      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextGuid, contextIds.iterator().next().getGuid());
@@ -63,12 +63,12 @@ public class OseeDslRoleContextProviderTest {
       String contextGuid1 = GUID.create();
       String contextGuid2 = GUID.create();
       String role2Guid = GUID.create();
-      String testSheet = getTestSheet2(contextGuid1, SystemUser.Guest.getGuid(), contextGuid2, role2Guid);
+      String testSheet = getTestSheet2(contextGuid1, SystemUser.Anonymous.getGuid(), contextGuid2, role2Guid);
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact guest = ArtifactQuery.getArtifactFromId(SystemUser.Guest.getGuid(), CoreBranches.COMMON);
-      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(guest);
+      Artifact user = ArtifactQuery.getArtifactFromId(SystemUser.Anonymous.getGuid(), CoreBranches.COMMON);
+      Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
       Assert.assertEquals(contextGuid1, contextIds.iterator().next().getGuid());

@@ -204,18 +204,17 @@ public class OrcsTransactionTest {
 
    @Test
    public void testCopyArtifact() throws Exception {
-      ArtifactReadable guestUser =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+      ArtifactReadable user =
+         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       // duplicate on same branch
       TransactionBuilder transaction1 = createTx();
-      ArtifactId duplicate = transaction1.copyArtifact(guestUser);
+      ArtifactId duplicate = transaction1.copyArtifact(user);
       transaction1.commit();
-      ArtifactReadable guestUserDup =
-         query.fromBranch(CoreBranches.COMMON).andIds(duplicate).getResults().getExactlyOne();
+      ArtifactReadable userDup = query.fromBranch(CoreBranches.COMMON).andIds(duplicate).getResults().getExactlyOne();
 
-      assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
-      assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
+      assertNotSame(SystemUser.Anonymous.getGuid(), userDup.getGuid());
+      assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
 
       // duplicate on different branch
       IOseeBranch branchToken = TokenFactory.createBranch("DuplicateArtifact tests");
@@ -225,46 +224,46 @@ public class OrcsTransactionTest {
 
       TransactionBuilder transaction2 =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
-      duplicate = transaction2.copyArtifact(guestUser);
+      duplicate = transaction2.copyArtifact(user);
       transaction2.commit();
-      guestUserDup = query.fromBranch(topLevelBranch).andIds(duplicate).getResults().getExactlyOne();
+      userDup = query.fromBranch(topLevelBranch).andIds(duplicate).getResults().getExactlyOne();
 
-      assertNotSame(SystemUser.Guest.getGuid(), guestUserDup.getGuid());
-      assertEquals(SystemUser.Guest.getName(), guestUserDup.getName());
+      assertNotSame(SystemUser.Anonymous.getGuid(), userDup.getGuid());
+      assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
    }
 
    @Test
    public void testIntroduceArtifact() throws Exception {
-      ArtifactReadable guestUser =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+      ArtifactReadable user =
+         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       IOseeBranch branchToken = TokenFactory.createBranch("IntroduceArtifact tests");
       BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
       TransactionBuilder transaction =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
-      transaction.introduceArtifact(guestUser);
+      transaction.introduceArtifact(user);
       transaction.commit();
 
       ArtifactReadable introduced =
-         query.fromBranch(topLevelBranch).andIds(SystemUser.Guest).getResults().getExactlyOne();
-      assertEquals(guestUser.getLocalId(), introduced.getLocalId());
+         query.fromBranch(topLevelBranch).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+      assertEquals(user.getLocalId(), introduced.getLocalId());
    }
 
    @Test
    public void testIntroduceOnSameBranch() throws OseeCoreException {
-      ArtifactReadable guestUser =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest).getResults().getExactlyOne();
+      ArtifactReadable user =
+         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       TransactionBuilder tx = createTx();
 
       thrown.expect(OseeArgumentException.class);
-      tx.introduceArtifact(guestUser);
+      tx.introduceArtifact(user);
    }
 
    @Test
    public void testReadAfterWrite() throws OseeCoreException {
-      QueryBuilder queryBuilder = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Guest);
+      QueryBuilder queryBuilder = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous);
 
       ArtifactReadable originalGuest = queryBuilder.getResults().getExactlyOne();
 
@@ -274,7 +273,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable newGuest = queryBuilder.getResults().getExactlyOne();
 
-      assertEquals("Guest", originalGuest.getName());
+      assertEquals(SystemUser.Anonymous.getName(), originalGuest.getName());
       assertEquals("Test", newGuest.getName());
    }
 

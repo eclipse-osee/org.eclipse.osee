@@ -139,7 +139,7 @@ public class InternalClientSessionManager {
                   if (OseeClientProperties.isInDbInit()) {
                      userName = SystemUser.BootStrap.getName();
                   } else {
-                     userName = System.getProperty("user.name", SystemUser.Guest.getName());
+                     userName = System.getProperty("user.name", SystemUser.Anonymous.getName());
                      if (Strings.isValid(userName)) {
                         userName = userName.toLowerCase();
                      }

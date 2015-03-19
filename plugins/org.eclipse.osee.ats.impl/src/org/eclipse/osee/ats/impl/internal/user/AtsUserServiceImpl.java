@@ -150,7 +150,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
       if (!orcsApi.getQueryFactory(null).branchQuery().andIds(configAtsBranch).getResults().isEmpty()) {
          String userId = getCurrentUserId();
-         if (Strings.isValid(userId) && !userId.equals(SystemUser.Guest.getUserId())) {
+         if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
             ResultSet<ArtifactReadable> results =
                orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
                   CoreAttributeTypes.UserId, userId).getResults();

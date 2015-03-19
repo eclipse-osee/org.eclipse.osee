@@ -63,7 +63,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    public IUserToken asUserToken(OseeCredential credential) throws OseeAuthenticationException {
       IUserToken toReturn = null;
       if (isGuestLogin(credential)) {
-         toReturn = SystemUser.Guest;
+         toReturn = SystemUser.Anonymous;
       } else if (isBootStrap(credential)) {
          toReturn = SystemUser.BootStrap;
       } else {
@@ -87,7 +87,7 @@ public class AuthenticationManager implements IAuthenticationManager {
    }
 
    private boolean isGuestLogin(OseeCredential credential) {
-      return credential.getUserName().equals(SystemUser.Guest.getName());
+      return credential.getUserName().equals(SystemUser.Anonymous.getName());
    }
 
    private boolean isBootStrap(OseeCredential credential) {

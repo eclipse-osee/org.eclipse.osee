@@ -116,7 +116,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
       IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
       if (BranchManager.getBranch(configAtsBranch) != null) {
          String userId = getCurrentUserId();
-         if (Strings.isValid(userId) && !userId.equals(SystemUser.Guest.getUserId())) {
+         if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
             Artifact userArt = null;
             try {
                userArt =

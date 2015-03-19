@@ -67,13 +67,13 @@ public class CoverageParametersTest {
       Assert.assertTrue(coverageParameters.isAssigneeMatch(item));
       Assert.assertTrue(coverageParameters.isAssigneeMatch(unit));
 
-      coverageParameters.setAssignee(UserManager.getUser(SystemUser.Guest));
+      coverageParameters.setAssignee(UserManager.getUser(SystemUser.Anonymous));
       // Won't match unit cause assignees don't match
       Assert.assertFalse(coverageParameters.isAssigneeMatch(unit));
       // Will match item cause item doesn't store assignee
       Assert.assertTrue(coverageParameters.isAssigneeMatch(item));
 
-      OseeCoverageUnitStore.setAssignees(unit, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(unit, UserManager.getUser(SystemUser.Anonymous));
       // Will match unit cause assignees match
       Assert.assertTrue(coverageParameters.isAssigneeMatch(unit));
    }
@@ -323,11 +323,11 @@ public class CoverageParametersTest {
       Assert.assertNotNull(power1);
       Assert.assertNotNull(power2);
 
-      OseeCoverageUnitStore.setAssignees(button1, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(button1, UserManager.getUser(SystemUser.Anonymous));
       OseeCoverageUnitStore.setAssignees(button2, UserManager.getUser());
-      OseeCoverageUnitStore.setAssignees(button3, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(button3, UserManager.getUser(SystemUser.Anonymous));
       OseeCoverageUnitStore.setAssignees(power1, UserManager.getUser());
-      OseeCoverageUnitStore.setAssignees(power2, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(power2, UserManager.getUser(SystemUser.Anonymous));
 
       // Test Assignee search
       coverageParameters.clearAll();

@@ -23,10 +23,10 @@ public final class SystemUser {
 
    // @formatter:off
    public static final IUserToken OseeSystem = TokenFactory.createUserToken("AAABDBYPet4AGJyrc9dY1w", "OSEE System", "", "99999999", false, false, false);
-   public static final IUserToken Guest = TokenFactory.createUserToken("AAABDi35uzwAxJLISLBZdA", "Guest", "", "99999998", false, false, false);
+   public static final IUserToken Anonymous = TokenFactory.createUserToken("AAABDi35uzwAxJLISLBZdA", "Anonymous", "", "99999998", false, false, false);
    public static final IUserToken BootStrap = TokenFactory.createUserToken("noguid", "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
    public static final IUserToken UnAssigned = TokenFactory.createUserToken("AAABDi1tMx8Al92YWMjeRw", "UnAssigned", "", "99999997", true, false, false);
-   public static final List<IUserToken> values = Arrays.asList(OseeSystem, Guest, BootStrap, UnAssigned);
+   public static final List<IUserToken> values = Arrays.asList(OseeSystem, Anonymous, BootStrap, UnAssigned);
    // @formatter:on
 
    private SystemUser() {

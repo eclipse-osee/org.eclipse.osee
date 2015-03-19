@@ -33,7 +33,7 @@ public class TrustAllAuthenticationProvider extends AbstractAuthenticationProvid
 
    @Override
    public IUserToken asOseeUserId(OseeCredential credential) {
-      IUserToken userToken = SystemUser.Guest;
+      IUserToken userToken = SystemUser.Anonymous;
       String userName = credential.getUserName();
       if (Strings.isValid(userName)) {
          userToken = getUserTokenFromOseeDb(userName);
