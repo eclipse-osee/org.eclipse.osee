@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcSchemaOptions;
 import org.eclipse.osee.jdbc.JdbcSchemaResource;
@@ -22,6 +23,7 @@ import org.eclipse.osee.orcs.core.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
+import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
@@ -36,13 +38,15 @@ public class AdminModule {
    private final JdbcClient jdbcClient;
    private final IdentityManager identityService;
    private final SystemPreferences preferences;
+   private final OrcsTypesDataStore typesDataStore;
 
-   public AdminModule(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemPreferences preferences) {
+   public AdminModule(Log logger, JdbcClient jdbcClient, IdentityManager identityService, SystemPreferences preferences, OrcsTypesDataStore typesDataStore) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.identityService = identityService;
       this.preferences = preferences;
+      this.typesDataStore = typesDataStore;
    }
 
    public DataStoreAdmin createDataStoreAdmin(final BranchDataStore branchStore) {
@@ -83,6 +87,23 @@ public class AdminModule {
                toReturn = value;
             }
             return toReturn;
+         }
+
+         @Override
+         public boolean isDataStoreInitialized() {
+            boolean initialized = false;
+            try {
+               String systemUuid = preferences.getSystemUuid();
+               if (Strings.isValid(systemUuid)) {
+                  IResource resource = typesDataStore.getOrcsTypesLoader(null).call();
+                  if (resource != null) {
+                     initialized = true;
+                  }
+               }
+            } catch (Exception ex) {
+               // do nothing;
+            }
+            return initialized;
          }
       };
    }

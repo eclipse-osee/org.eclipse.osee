@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.jaxrs.server.internal.security.oauth2;
+package org.eclipse.osee.jaxrs.server.internal.security;
 
 import java.security.Principal;
 import javax.ws.rs.ext.Provider;
@@ -35,4 +35,5 @@ public class OseePrincipalContextProvider implements ContextProvider<OseePrincip
       }
       return toReturn;
    }
+
 }

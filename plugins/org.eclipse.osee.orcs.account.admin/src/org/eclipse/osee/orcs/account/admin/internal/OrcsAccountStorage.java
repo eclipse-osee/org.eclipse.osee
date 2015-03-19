@@ -21,11 +21,13 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactId;
@@ -40,6 +42,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
+   private Account bootstrapAccount;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -50,6 +53,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       super.start();
       JdbcClient jdbcClient = jdbcService.getClient();
       sessionStore = new AccountSessionDatabaseStore(getLogger(), jdbcClient, getFactory());
+      bootstrapAccount = new BootstrapAccount();
    }
 
    @Override
@@ -227,6 +231,19 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
+   }
+
+   @Override
+   public ResultSet<Account> getAnonymousAccount() {
+      ResultSet<Account> toReturn;
+      if (isInitialized()) {
+         ResultSet<ArtifactReadable> results =
+            newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(SystemUser.Anonymous.getGuid()).getResults();
+         toReturn = getFactory().newAccountResultSet(results);
+      } else {
+         toReturn = ResultSets.singleton(bootstrapAccount);
+      }
+      return toReturn;
    }
 
 }

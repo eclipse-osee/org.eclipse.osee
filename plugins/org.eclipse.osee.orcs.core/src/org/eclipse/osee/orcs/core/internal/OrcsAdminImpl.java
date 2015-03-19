@@ -44,4 +44,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
    public Callable<OrcsMetaData> createFetchOrcsMetaData() {
       return new FetchDatastoreMetadataCallable(logger, session, dataStoreAdmin);
    }
+
+   @Override
+   public boolean isDataStoreInitialized() {
+      return dataStoreAdmin.isDataStoreInitialized();
+   }
 }

@@ -42,4 +42,5 @@ public class DataStoreInfoImpl implements DataStoreInfo {
    public void setConfigurationResources(List<IResource> configResources) {
       this.configResources = configResources;
    }
+
 }

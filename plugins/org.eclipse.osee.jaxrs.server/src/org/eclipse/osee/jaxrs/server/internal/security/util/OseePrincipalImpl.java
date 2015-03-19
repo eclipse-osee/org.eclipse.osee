@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -86,5 +87,17 @@ public class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincip
    @Override
    public Map<String, String> getProperties() {
       return props;
+   }
+
+   @Override
+   public String getOseeGuid() {
+      String toReturn = "N/A";
+      if (props != null) {
+         String value = props.get("osee.guid");
+         if (Strings.isValid(value)) {
+            toReturn = value;
+         }
+      }
+      return toReturn;
    }
 }

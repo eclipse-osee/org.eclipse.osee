@@ -23,6 +23,7 @@ import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar
@@ -103,6 +104,17 @@ public final class AccountDataUtil {
       data.setName(src.getName());
       data.setId(src.getId());
       return data;
+   }
+
+   public static AccountInfoData asAccountInfoData(OseePrincipal principal) {
+      AccountInfoData toReturn = new AccountInfoData();
+      toReturn.setAccountId(principal.getGuid());
+      toReturn.setActive(principal.isActive());
+      toReturn.setEmail(principal.getEmailAddress());
+      toReturn.setName(principal.getName());
+      toReturn.setUserName(principal.getUserName());
+      toReturn.setGuid(principal.getOseeGuid());
+      return toReturn;
    }
 
 }

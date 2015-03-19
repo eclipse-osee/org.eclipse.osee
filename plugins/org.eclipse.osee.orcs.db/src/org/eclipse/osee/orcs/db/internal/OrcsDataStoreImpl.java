@@ -100,7 +100,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
 
       TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager);
 
-      AdminModule adminModule = new AdminModule(logger, jdbcClient, idManager, preferences);
+      AdminModule adminModule = new AdminModule(logger, jdbcClient, idManager, preferences, typesDataStore);
 
       dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, txModule, adminModule);
    }

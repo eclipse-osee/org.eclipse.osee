@@ -151,4 +151,10 @@ public class AccountOps {
       return accountAdmin.setAccountPreferences(accountId, input.getMap());
    }
 
+   public AccountInfoData getAnonymousAccount() {
+      ResultSet<Account> result = accountAdmin.getAnonymousAccount();
+      Account account = result.getExactlyOne();
+      return AccountDataUtil.asAccountData(account);
+   }
+
 }

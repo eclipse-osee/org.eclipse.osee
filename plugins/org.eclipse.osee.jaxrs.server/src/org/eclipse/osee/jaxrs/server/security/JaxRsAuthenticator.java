@@ -19,4 +19,6 @@ public interface JaxRsAuthenticator {
 
    OseePrincipal authenticate(String scheme, String username, String password);
 
+   OseePrincipal getAnonymousPrincipal();
+
 }

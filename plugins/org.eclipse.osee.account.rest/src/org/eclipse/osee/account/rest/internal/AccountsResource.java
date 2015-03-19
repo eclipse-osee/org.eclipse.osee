@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.internal;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
+import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
@@ -30,6 +33,20 @@ public class AccountsResource {
 
    public AccountsResource(AccountOps accountOps) {
       this.accountOps = accountOps;
+   }
+
+   @GET
+   @Path("self")
+   @PermitAll
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   public AccountInfoData getWhoAmI(@Context OseePrincipal principal) {
+      AccountInfoData toReturn = null;
+      if (principal != null) {
+         toReturn = AccountDataUtil.asAccountInfoData(principal);
+      } else {
+         toReturn = accountOps.getAnonymousAccount();
+      }
+      return toReturn;
    }
 
    /**

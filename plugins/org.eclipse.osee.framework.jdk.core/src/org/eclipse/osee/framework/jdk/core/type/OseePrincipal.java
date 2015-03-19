@@ -35,4 +35,6 @@ public interface OseePrincipal extends Principal, Identity<Long> {
 
    Map<String, String> getProperties();
 
+   String getOseeGuid();
+
 }

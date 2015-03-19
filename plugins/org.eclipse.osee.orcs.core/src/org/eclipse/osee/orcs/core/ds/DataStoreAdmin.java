@@ -23,4 +23,6 @@ public interface DataStoreAdmin {
 
    Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session);
 
+   boolean isDataStoreInitialized();
+
 }

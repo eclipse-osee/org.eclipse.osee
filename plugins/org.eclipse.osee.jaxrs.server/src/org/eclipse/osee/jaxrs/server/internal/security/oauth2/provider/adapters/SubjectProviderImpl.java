@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
 
+import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil.saveSecurityContext;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.MultivaluedMap;
@@ -166,13 +167,6 @@ public class SubjectProviderImpl implements SubjectProvider {
          securityContext = mc.getContent(SecurityContext.class);
       }
       return securityContext;
-   }
-
-   private void saveSecurityContext(MessageContext mc, SecurityContext securityContext) {
-      if (securityContext != null) {
-         mc.put(SecurityContext.class, securityContext);
-         mc.put(SecurityContext.class.getName(), securityContext);
-      }
    }
 
    @Override

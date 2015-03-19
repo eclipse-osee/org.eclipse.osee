@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.cxf.common.util.Base64Utility;
+import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.impl.HttpHeadersImpl;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
@@ -154,6 +155,7 @@ public final class OAuthUtil {
    private static final String SUBJECT_EMAIL = "email";
    private static final String SUBJECT_IS_ACTIVE = "is.active";
    private static final String SUBJECT_IS_AUTHENTICATED = "is.authenticated";
+   private static final String SUBJECT_OSEE_GUID = "osee.guid";
 
    public static UserSubject newUserSubject(OseePrincipal subject) {
       List<String> roles = new ArrayList<String>();
@@ -171,6 +173,7 @@ public final class OAuthUtil {
       properties.put(SUBJECT_EMAIL, subject.getEmailAddress());
       properties.put(SUBJECT_IS_ACTIVE, Boolean.toString(subject.isActive()));
       properties.put(SUBJECT_IS_AUTHENTICATED, Boolean.toString(subject.isAuthenticated()));
+      properties.put(SUBJECT_OSEE_GUID, subject.getOseeGuid());
       data.setProperties(properties);
       return data;
    }
@@ -214,6 +217,13 @@ public final class OAuthUtil {
          }
       }
       return new UserSubject(name, roleNames);
+   }
+
+   public static void saveSecurityContext(MessageContext mc, SecurityContext securityContext) {
+      if (securityContext != null) {
+         mc.put(SecurityContext.class, securityContext);
+         mc.put(SecurityContext.class.getName(), securityContext);
+      }
    }
 
    private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {
@@ -274,6 +284,11 @@ public final class OAuthUtil {
 
       private String get(String key, String defaultValue) {
          return getProperty(getProperties(), key, defaultValue);
+      }
+
+      @Override
+      public String getOseeGuid() {
+         return getProperty(getProperties(), SUBJECT_OSEE_GUID, "N/A");
       }
    }
 

@@ -73,4 +73,6 @@ public interface AccountAdmin {
 
    ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField);
 
+   ResultSet<Account> getAnonymousAccount();
+
 }

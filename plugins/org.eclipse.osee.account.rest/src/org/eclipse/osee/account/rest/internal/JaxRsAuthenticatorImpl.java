@@ -65,6 +65,24 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
    }
 
    @Override
+   public OseePrincipal getAnonymousPrincipal() {
+      ResultSet<Account> result = accountAdmin.getAnonymousAccount();
+
+      OseePrincipal anonymous = null;
+      Account account = result.getOneOrNull();
+      if (account != null) {
+         Set<String> roles = new LinkedHashSet<String>();
+         roles.add(SystemRoles.ROLES_ANONYMOUS);
+         // Get additional roles/permissions from authorization service;
+
+         // Preferences or other user specific properties
+         Map<String, String> properties = Collections.emptyMap();
+         anonymous = new OseePrincipalImpl(account.getUserName(), account, true, roles, properties);
+      }
+      return anonymous;
+   }
+
+   @Override
    public OseePrincipal authenticate(String scheme, String username, String password) {
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder() //
       .userName(username)//
@@ -183,6 +201,11 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       @Override
       public Map<String, String> getProperties() {
          return properties;
+      }
+
+      @Override
+      public String getOseeGuid() {
+         return data.getGuid();
       }
    }
 

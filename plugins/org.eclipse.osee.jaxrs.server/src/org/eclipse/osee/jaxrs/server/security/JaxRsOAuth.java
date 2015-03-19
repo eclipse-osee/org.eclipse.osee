@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthContextProvider;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthJSONProvider;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OseeOAuthContextProvider;
-import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OseePrincipalContextProvider;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.writers.OAuthErrorHtmlWriter;
 
 /**
@@ -36,7 +35,6 @@ public final class JaxRsOAuth {
          List<Object> providers = new ArrayList<Object>();
          providers.add(new OAuthJSONProvider());
          providers.add(new OAuthContextProvider());
-         providers.add(new OseePrincipalContextProvider());
          providers.add(new OseeOAuthContextProvider());
          providers.add(new OAuthErrorHtmlWriter());
          OAUTH_PROVIDERS = providers;

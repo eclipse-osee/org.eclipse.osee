@@ -62,4 +62,5 @@ public interface AccountStorage {
 
    void deleteAccountSessionBySessionToken(String sessionToken);
 
+   ResultSet<Account> getAnonymousAccount();
 }

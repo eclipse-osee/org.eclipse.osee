@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -95,6 +96,11 @@ public abstract class AbstractOrcsStorage {
    protected TransactionBuilder newTransaction(String comment) {
       TransactionFactory transactionFactory = orcsApi.getTransactionFactory(context);
       return transactionFactory.createTransaction(getBranch(), getSystemUser(), comment);
+   }
+
+   protected boolean isInitialized() {
+      OrcsAdmin adminOps = orcsApi.getAdminOps(context);
+      return adminOps.isDataStoreInitialized();
    }
 
 }

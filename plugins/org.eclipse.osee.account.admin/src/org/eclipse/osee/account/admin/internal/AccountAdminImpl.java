@@ -350,4 +350,9 @@ public class AccountAdminImpl implements AccountAdmin {
       return modified;
    }
 
+   @Override
+   public ResultSet<Account> getAnonymousAccount() {
+      return storage.getAnonymousAccount();
+   }
+
 }
