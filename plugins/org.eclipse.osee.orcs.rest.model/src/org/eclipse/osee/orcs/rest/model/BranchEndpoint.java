@@ -125,6 +125,24 @@ public interface BranchEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    Response writeTx(@PathParam("branch-uuid") long branchUuid, NewTransaction data);
 
+   @POST
+   @Path("exchange/validation")
+   Response validateExchange(@QueryParam("path") String path);
+
+   @POST
+   @Path("exchange/export")
+   @Consumes({MediaType.APPLICATION_JSON})
+   Response exportBranches(BranchExportOptions options);
+
+   @POST
+   @Path("exchange/import")
+   @Consumes({MediaType.APPLICATION_JSON})
+   Response importBranches(BranchImportOptions options);
+
+   @DELETE
+   @Path("exchange")
+   Response deleteBranchExchange(@QueryParam("path") String path);
+
    @PUT
    @Path("{branch-uuid}/name/{branch-name}")
    Response setBranchName(@PathParam("branch-uuid") long branchUuid, @PathParam("branch-name") String newName);

@@ -19,6 +19,8 @@ import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransaction;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asTransactions;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,13 +38,18 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.ApplicationContext;
+import org.eclipse.osee.orcs.ExportOptions;
+import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -53,6 +60,8 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.rest.model.Branch;
 import org.eclipse.osee.orcs.rest.model.BranchCommitOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchExportOptions;
+import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
 import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 import org.eclipse.osee.orcs.rest.model.CompareResults;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
@@ -73,12 +82,14 @@ import com.google.common.collect.Sets.SetView;
 public class BranchEndpointImpl implements BranchEndpoint {
 
    private final OrcsApi orcsApi;
+   private final IResourceManager resourceManager;
 
    @Context
    private UriInfo uriInfo;
 
-   public BranchEndpointImpl(OrcsApi orcsApi) {
+   public BranchEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
+      this.resourceManager = resourceManager;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -377,6 +388,140 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
+   public Response validateExchange(String path) {
+      String exchangePath = asExchangeLocator(path);
+      IResourceLocator locator = resourceManager.getResourceLocator(exchangePath);
+      Callable<URI> op = getBranchOps().checkBranchExchangeIntegrity(locator.getLocation());
+      URI verifyUri = executeCallable(op);
+
+      UriInfo uriInfo = getUriInfo();
+      URI location = getExchangeResourceURI(uriInfo, verifyUri);
+      return Response.created(location).build();
+   }
+
+   @Override
+   public Response deleteBranchExchange(String path) {
+      boolean modified = false;
+      String exchangePath = asExchangeLocator(path);
+      IResourceLocator locator = resourceManager.getResourceLocator(exchangePath);
+      if (locator != null) {
+         int deleteResult = resourceManager.delete(locator);
+         switch (deleteResult) {
+            case IResourceManager.OK:
+               modified = true;
+               break;
+            case IResourceManager.FAIL:
+               throw new OseeWebApplicationException(Status.INTERNAL_SERVER_ERROR,
+                  "Error deleting exchange resource [%s] - locator [%s]", path, locator.getLocation());
+            case IResourceManager.RESOURCE_NOT_FOUND:
+            default:
+               // do nothing - no modification
+               break;
+         }
+      }
+      return OrcsRestUtil.asResponse(modified);
+   }
+
+   @Override
+   public Response exportBranches(BranchExportOptions options) {
+      List<IOseeBranch> branches = getExportImportBranches(options.getBranchUuids());
+
+      PropertyStore exportOptions = new PropertyStore();
+      addOption(exportOptions, ExportOptions.MIN_TXS, options.getMinTx());
+      addOption(exportOptions, ExportOptions.MAX_TXS, options.getMaxTx());
+      addOption(exportOptions, ExportOptions.COMPRESS, options.isCompress());
+
+      Callable<URI> op = getBranchOps().exportBranch(branches, exportOptions, options.getFileName());
+      URI exportURI = executeCallable(op);
+
+      UriInfo uriInfo = getUriInfo();
+      URI location = getExchangeExportUri(uriInfo, exportURI, options.isCompress());
+      return Response.created(location).build();
+   }
+
+   @Override
+   public Response importBranches(BranchImportOptions options) {
+      List<IOseeBranch> branches;
+      if (!options.getBranchUuids().isEmpty()) {
+         branches = getExportImportBranches(options.getBranchUuids());
+      } else {
+         branches = Collections.emptyList();
+      }
+      String path = options.getExchangeFile();
+      String exchangePath = asExchangeLocator(path);
+
+      IResourceLocator locator = resourceManager.getResourceLocator(exchangePath);
+
+      PropertyStore importOptions = new PropertyStore();
+      addOption(importOptions, ImportOptions.MIN_TXS, options.getMinTx());
+      addOption(importOptions, ImportOptions.MAX_TXS, options.getMaxTx());
+      addOption(importOptions, ImportOptions.USE_IDS_FROM_IMPORT_FILE, options.isUseIdsFromImportFile());
+      addOption(importOptions, ImportOptions.EXCLUDE_BASELINE_TXS, options.isExcludeBaselineTxs());
+      addOption(importOptions, ImportOptions.ALL_AS_ROOT_BRANCHES, options.isAllAsRootBranches());
+      addOption(importOptions, ImportOptions.CLEAN_BEFORE_IMPORT, options.isCleanBeforeImport());
+
+      Callable<URI> op = getBranchOps().importBranch(locator.getLocation(), branches, importOptions);
+      URI importURI = executeCallable(op);
+
+      Response response;
+      if (importURI != null) {
+         UriInfo uriInfo = getUriInfo();
+         URI location = getExchangeResourceURI(uriInfo, importURI);
+         response = Response.created(location).build();
+      } else {
+         response = Response.ok().build();
+      }
+      return response;
+   }
+
+   private void addOption(PropertyStore data, Enum<?> enumKey, Object value) {
+      if (value != null) {
+         data.put(enumKey.name(), String.valueOf(value));
+      }
+   }
+
+   private String asExchangeLocator(String path) {
+      String toReturn = path;
+      if (Strings.isValid(toReturn)) {
+         if (!toReturn.startsWith("exchange://")) {
+            toReturn = "exchange://" + toReturn;
+         }
+      }
+      return toReturn;
+   }
+
+   private URI getExchangeResourceURI(UriInfo uriInfo, URI rawUri) {
+      URI toReturn = rawUri;
+      String path = rawUri.toASCIIString();
+      int index = path.indexOf("exchange/");
+      if (index > 0 && index < path.length()) {
+         path = path.substring(index);
+         toReturn = uriInfo.getBaseUriBuilder().path("resources").queryParam("path", path).build();
+      }
+      return toReturn;
+   }
+
+   private URI getExchangeExportUri(UriInfo uriInfo, URI rawUri, boolean isCompressed) {
+      String path = rawUri.toASCIIString();
+      path = path.replace("://", "/");
+      if (isCompressed && !path.endsWith(".zip")) {
+         path = path + ".zip";
+      } else {
+         path = path + "/export.manifest.xml";
+      }
+      URI toReturn = uriInfo.getBaseUriBuilder().path("resources").queryParam("path", path).build();
+      return toReturn;
+   }
+
+   private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
+      ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
+      .includeArchived()//
+      .includeDeleted()//
+      .getResultsAsId();
+      return Lists.newLinkedList(resultsAsId);
+   }
+
+   @Override
    public Response setBranchName(long branchUuid, String newName) {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
@@ -567,4 +712,5 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
       return query.getResults();
    }
+
 }

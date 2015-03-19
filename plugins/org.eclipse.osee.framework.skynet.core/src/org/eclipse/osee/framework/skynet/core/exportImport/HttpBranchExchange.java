@@ -10,75 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.exportImport;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class HttpBranchExchange {
-   private static final String BRANCH_EXPORT = "exportBranch";
-   private static final String BRANCH_IMPORT = "importBranch";
 
-   public static void exportBranches(String exportFileName, int... branchUuids) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", BRANCH_EXPORT);
-      if (Strings.isValid(exportFileName)) {
-         parameters.put("filename", exportFileName);
-      }
-      addBranchIds(parameters, branchUuids);
-      execute(parameters);
-   }
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, long... branchUuids) throws OseeCoreException {
+      OseeClient oseeClient = ServiceUtil.getOseeClient();
+      BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchUuids) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("sessionId", ClientSessionManager.getSessionId());
-      parameters.put("function", BRANCH_IMPORT);
-      if (!path.startsWith("exchange://")) {
-         path = "exchange://" + path;
-      }
-      parameters.put("uri", path);
-      if (allAsRootBranches) {
-         parameters.put("all_as_root_branches", Boolean.toString(allAsRootBranches));
-      }
-      if (cleanAllBeforeImport) {
-         parameters.put("clean_before_import", Boolean.toString(cleanAllBeforeImport));
-      }
-      addBranchIds(parameters, branchUuids);
-      execute(parameters);
-   }
+      BranchImportOptions options = new BranchImportOptions();
+      options.setExchangeFile(path);
+      options.setCleanBeforeImport(cleanAllBeforeImport);
+      options.setAllAsRootBranches(allAsRootBranches);
 
-   private static void execute(Map<String, String> parameters) throws OseeCoreException {
-      try {
-         String returnVal =
-            HttpProcessor.post(new URL(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(
-               OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
-         OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
-      } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
-   }
-
-   private static void addBranchIds(Map<String, String> parameters, int... branchUuids) {
       if (branchUuids != null && branchUuids.length > 0) {
-         StringBuffer ids = new StringBuffer();
-         for (int index = 0; index < branchUuids.length; index++) {
-            ids.append(branchUuids[index]);
-            if (index + 1 < branchUuids.length) {
-               ids.append(",");
-            }
+         List<Long> ids = new ArrayList<Long>();
+         for (Long entry : branchUuids) {
+            ids.add(entry);
          }
-         parameters.put("branchUuids", ids.toString());
+         options.setBranchUuids(ids);
+      }
+      try {
+         endpoint.importBranches(options);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
+
 }
