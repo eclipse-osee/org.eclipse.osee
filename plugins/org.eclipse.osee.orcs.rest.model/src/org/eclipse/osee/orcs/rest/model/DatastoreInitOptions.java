@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message;
+package org.eclipse.osee.orcs.rest.model;
 
-public class DatastoreInitRequest {
+import javax.xml.bind.annotation.XmlRootElement;
 
-   private final String tableDataSpace;
-   private final String indexDataSpace;
-   private final boolean useFileSpecifiedSchemas;
+/**
+ * @author Roberto E. Escobar
+ */
+@XmlRootElement
+public class DatastoreInitOptions {
 
-   public DatastoreInitRequest(String tableDataSpace, String indexDataSpace, boolean useFileSpecifiedSchemas) {
-      super();
-      this.tableDataSpace = tableDataSpace;
-      this.indexDataSpace = indexDataSpace;
-      this.useFileSpecifiedSchemas = useFileSpecifiedSchemas;
-   }
+   private String tableDataSpace;
+   private String indexDataSpace;
+   private boolean useFileSpecifiedSchemas;
 
    public String getTableDataSpace() {
       return tableDataSpace;
@@ -34,4 +33,17 @@ public class DatastoreInitRequest {
    public boolean isUseFileSpecifiedSchemas() {
       return useFileSpecifiedSchemas;
    }
+
+   public void setTableDataSpace(String tableDataSpace) {
+      this.tableDataSpace = tableDataSpace;
+   }
+
+   public void setIndexDataSpace(String indexDataSpace) {
+      this.indexDataSpace = indexDataSpace;
+   }
+
+   public void setUseFileSpecifiedSchemas(boolean useFileSpecifiedSchemas) {
+      this.useFileSpecifiedSchemas = useFileSpecifiedSchemas;
+   }
+
 }

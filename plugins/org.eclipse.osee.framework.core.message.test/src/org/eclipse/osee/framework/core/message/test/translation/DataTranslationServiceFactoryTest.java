@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;
-import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -35,8 +34,6 @@ public class DataTranslationServiceFactoryTest {
       srvc.start();
 
       checkExists(srvc, TableDataTranslator.class, CoreTranslatorId.TABLE_DATA);
-
-      checkExists(srvc, DatastoreInitRequestTranslator.class, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
 
       srvc.stop();
    }

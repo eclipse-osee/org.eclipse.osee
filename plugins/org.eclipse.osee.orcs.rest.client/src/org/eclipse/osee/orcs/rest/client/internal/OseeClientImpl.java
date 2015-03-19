@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
@@ -178,4 +179,10 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       JaxRsClient newClient = JaxRsClient.newBuilder(client.getConfig()).followRedirects(false).build();
       return newClient.targetProxy(baseUri, ResourcesEndpoint.class);
    }
+   
+   @Override
+   public DatastoreEndpoint getDatastoreEndpoint() {
+      return client.targetProxy(baseUri, DatastoreEndpoint.class);
+   }
+      
 }

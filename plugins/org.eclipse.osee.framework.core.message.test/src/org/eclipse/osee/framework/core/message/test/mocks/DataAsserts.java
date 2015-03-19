@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.mocks;
 
-import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -145,12 +144,6 @@ public final class DataAsserts {
       Assert.assertEquals(expected.getTitle(), actual.getTitle());
       Assert.assertFalse(Compare.isDifferent(expected.getColumns(), actual.getColumns()));
       Assert.assertFalse(Compare.isDifferent(expected.getRows(), actual.getRows()));
-   }
-
-   public static void assertEquals(DatastoreInitRequest expected, DatastoreInitRequest actual) {
-      Assert.assertEquals(expected.getIndexDataSpace(), actual.getIndexDataSpace());
-      Assert.assertEquals(expected.getTableDataSpace(), actual.getTableDataSpace());
-      Assert.assertEquals(expected.isUseFileSpecifiedSchemas(), actual.isUseFileSpecifiedSchemas());
    }
 
 }

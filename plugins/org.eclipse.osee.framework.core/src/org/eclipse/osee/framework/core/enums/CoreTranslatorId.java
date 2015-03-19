@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.core.translation.ITranslatorId;
  * @author Roberto E. Escobar
  */
 public enum CoreTranslatorId implements ITranslatorId {
-   OSEE_DATASTORE_INIT_REQUEST,
-
    TABLE_DATA;
 
    @Override

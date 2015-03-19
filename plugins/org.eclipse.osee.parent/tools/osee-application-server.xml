@@ -102,7 +102,7 @@
 		</forget>
 
 		<waitfor maxwait="20" maxwaitunit="second" checkevery="100" checkeveryunit="millisecond">
-			<http url="http://127.0.0.1:${xserver-port}/osee/configure/datastore/schema" />
+			<http url="http://127.0.0.1:${xserver-port}/orcs/datastore/info" />
 		</waitfor>
 	</target>
 

@@ -18,12 +18,10 @@ import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
-import org.eclipse.osee.framework.manager.servlet.ConfigurationServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
@@ -45,7 +43,6 @@ public class ServletRegistrationHandler {
    private Log logger;
    private ISessionManager sessionManager;
    private IApplicationServerManager appServerManager;
-   private IDataTranslationService translationService;
    private IAuthenticationManager authenticationManager;
    private IResourceManager resourceManager;
    private OrcsApi orcsApi;
@@ -60,10 +57,6 @@ public class ServletRegistrationHandler {
 
    public void setAppServerManager(IApplicationServerManager appServerManager) {
       this.appServerManager = appServerManager;
-   }
-
-   public void setTranslationService(IDataTranslationService translationService) {
-      this.translationService = translationService;
    }
 
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
@@ -119,7 +112,6 @@ public class ServletRegistrationHandler {
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
 
       register(new AtsServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/ats");
-      register(new ConfigurationServlet(logger, translationService, orcsApi), OseeServerContext.OSEE_CONFIGURE_CONTEXT);
       register(new DataServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }

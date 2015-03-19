@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.message.test.translation;
+package org.eclipse.osee.orcs.rest.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collections;
+import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   DataTranslationServiceFactoryTest.class,
-   DataTranslationServiceTest.class,
-   TableDataTranslatorTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class TranslationTestSuite {
-   // Test Suite
+@XmlRootElement
+public class DatastoreInfo {
+
+   private Map<String, String> properties;
+
+   public Map<String, String> getProperties() {
+      return properties != null ? properties : Collections.<String, String> emptyMap();
+   }
+
+   public void setProperties(Map<String, String> data) {
+      this.properties = data;
+   }
+
 }

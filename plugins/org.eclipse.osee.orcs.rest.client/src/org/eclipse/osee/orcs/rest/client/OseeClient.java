@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
@@ -41,5 +42,7 @@ public interface OseeClient {
    IdeClientEndpoint getIdeClientEndpoint();
 
    ResourcesEndpoint getResourcesEndpoint();
+   
+   DatastoreEndpoint getDatastoreEndpoint();
 
 }

@@ -11,29 +11,22 @@
 
 package org.eclipse.osee.framework.database.init.internal;
 
-import java.util.HashMap;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
-import org.eclipse.osee.framework.core.util.HttpMessage;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.httpRequests.DatastoreInitializationOperation;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -97,23 +90,12 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
    private void createOseeDatastore() throws OseeCoreException {
       //    OseeClientProperties.isOseeImportAllowed();
-
       String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
       String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();
       boolean useSchemasSpecified = OseeClientProperties.useSchemasSpecifiedInDbConfigFiles();
 
-      DatastoreInitRequest requestData = new DatastoreInitRequest(tableDataSpace, indexDataSpace, useSchemasSpecified);
-
-      String datastoreInitContext = OseeServerContext.OSEE_CONFIGURE_CONTEXT + "/datastore/initialize";
-      String urlString =
-         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(datastoreInitContext,
-            new HashMap<String, String>());
-
-      IDataTranslationService service = DatabaseInitActivator.getInstance().getTranslationService();
-      AcquireResult updateResponse =
-         HttpMessage.send(urlString, service, CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST, requestData, null);
-      if (!updateResponse.wasSuccessful()) {
-         throw new OseeStateException("Error during datastore init");
-      }
+      DatastoreInitializationOperation op =
+         new DatastoreInitializationOperation(tableDataSpace, indexDataSpace, useSchemasSpecified);
+      Operations.executeWorkAndCheckStatus(op);
    }
 }
