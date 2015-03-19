@@ -18,8 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.ITranslatorId;
@@ -37,17 +35,9 @@ public class DataTranslationService implements IDataTranslationService {
    private final Map<ITranslatorId, ITranslator<?>> translators =
       new ConcurrentHashMap<ITranslatorId, ITranslator<?>>();
 
-   private IOseeModelFactoryService modelFactory;
-
-   public void setModelFactory(IOseeModelFactoryService modelFactory) {
-      this.modelFactory = modelFactory;
-   }
-
    public void start() throws OseeCoreException {
-      AttributeTypeFactory attributeTypeFactory = modelFactory.getAttributeTypeFactory();
-
       translators.clear();
-      factoryConfigurator.configureService(this, attributeTypeFactory);
+      factoryConfigurator.configureService(this);
    }
 
    public void stop() {

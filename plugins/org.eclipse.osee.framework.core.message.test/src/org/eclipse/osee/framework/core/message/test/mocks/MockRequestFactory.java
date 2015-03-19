@@ -11,28 +11,15 @@
 package org.eclipse.osee.framework.core.message.test.mocks;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
-import org.eclipse.osee.framework.core.model.type.ArtifactTypeFactory;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.model.type.OseeEnumTypeFactory;
-import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 public final class MockRequestFactory {
 
    private MockRequestFactory() {
       // Utility class
-   }
-
-   public static IOseeModelFactoryService createFactoryService() {
-      return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
-         new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
    public static ChangeItem createArtifactChangeItem() throws OseeArgumentException {

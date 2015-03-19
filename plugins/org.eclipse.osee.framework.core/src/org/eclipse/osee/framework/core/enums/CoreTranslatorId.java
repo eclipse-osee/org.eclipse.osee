@@ -19,9 +19,6 @@ import org.eclipse.osee.framework.core.translation.ITranslatorId;
 public enum CoreTranslatorId implements ITranslatorId {
    OSEE_DATASTORE_INIT_REQUEST,
 
-   OSEE_IMPORT_MODEL_REQUEST,
-   OSEE_IMPORT_MODEL_RESPONSE,
-
    TABLE_DATA;
 
    @Override

@@ -18,8 +18,6 @@ import org.junit.runners.Suite;
    DatastoreInitRequestTranslatorTest.class,
    DataTranslationServiceFactoryTest.class,
    DataTranslationServiceTest.class,
-   OseeImportModelRequestTranslatorTest.class,
-   OseeImportModelResponseTranslatorTest.class,
    TableDataTranslatorTest.class})
 /**
  * @author Roberto E. Escobar

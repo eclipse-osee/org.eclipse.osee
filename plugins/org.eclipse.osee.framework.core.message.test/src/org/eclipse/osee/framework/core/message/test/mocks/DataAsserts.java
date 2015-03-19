@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.mocks;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.model.TableData;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TypeUtil;
@@ -141,32 +138,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
          Assert.assertEquals(expected.getModType(), actual.getModType());
          Assert.assertEquals(expected.getValue(), actual.getValue());
-      }
-   }
-
-   public static void assertEquals(OseeImportModelRequest expected, OseeImportModelRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getModel(), actual.getModel());
-         Assert.assertEquals(expected.getModelName(), actual.getModelName());
-         Assert.assertEquals(expected.isCreateCompareReport(), actual.isCreateCompareReport());
-         Assert.assertEquals(expected.isCreateTypeChangeReport(), actual.isCreateTypeChangeReport());
-      }
-   }
-
-   public static void assertEquals(OseeImportModelResponse expected, OseeImportModelResponse actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getComparisonSnapshotModelName(), actual.getComparisonSnapshotModelName());
-         Assert.assertEquals(expected.getComparisonSnapshotModel(), actual.getComparisonSnapshotModel());
-         List<TableData> expDatas = expected.getReportData();
-         List<TableData> actualData = actual.getReportData();
-         Assert.assertEquals(expDatas.size(), actualData.size());
-         for (int index = 0; index < expDatas.size(); index++) {
-            assertEquals(expDatas.get(index), actualData.get(index));
-         }
       }
    }
 

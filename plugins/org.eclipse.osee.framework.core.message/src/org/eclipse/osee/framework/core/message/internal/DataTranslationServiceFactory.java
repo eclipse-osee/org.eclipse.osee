@@ -12,10 +12,7 @@ package org.eclipse.osee.framework.core.message.internal;
 
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
-import org.eclipse.osee.framework.core.model.type.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -29,9 +26,7 @@ public class DataTranslationServiceFactory {
       //
    }
 
-   public void configureService(IDataTranslationService service, AttributeTypeFactory attributeTypeFactory) throws OseeCoreException {
-      service.addTranslator(new OseeImportModelRequestTranslator(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
-      service.addTranslator(new OseeImportModelResponseTranslator(service), CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
+   public void configureService(IDataTranslationService service) throws OseeCoreException {
       service.addTranslator(new TableDataTranslator(), CoreTranslatorId.TABLE_DATA);
 
       service.addTranslator(new DatastoreInitRequestTranslator(), CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
