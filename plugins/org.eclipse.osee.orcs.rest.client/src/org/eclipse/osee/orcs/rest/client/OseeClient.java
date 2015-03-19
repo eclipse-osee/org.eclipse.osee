@@ -11,11 +11,11 @@
 package org.eclipse.osee.orcs.rest.client;
 
 import java.io.Writer;
-import java.util.Collection;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
+import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -27,13 +27,7 @@ public interface OseeClient {
 
    QueryBuilder createQueryBuilder(IOseeBranch branch);
 
-   boolean isClientVersionSupportedByApplicationServer();
-
-   boolean isApplicationServerAlive();
-
    void executeScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
-
-   Collection<String> getIdeClientSupportedVersions();
 
    BranchEndpoint getBranchEndpoint();
 
@@ -43,4 +37,5 @@ public interface OseeClient {
 
    IndexerEndpoint getIndexerEndpoint();
 
+   IdeClientEndpoint getIdeClientEndpoint();
 }

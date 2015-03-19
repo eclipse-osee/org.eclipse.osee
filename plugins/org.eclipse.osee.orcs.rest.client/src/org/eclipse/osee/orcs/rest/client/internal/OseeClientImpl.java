@@ -14,8 +14,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +22,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -38,7 +35,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
-import org.eclipse.osee.orcs.rest.model.IdeVersion;
+import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -91,34 +88,6 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       QueryOptions options = new QueryOptions();
       List<Predicate> predicates = new ArrayList<Predicate>();
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, this);
-   }
-
-   @Override
-   public Collection<String> getIdeClientSupportedVersions() {
-      IdeVersion clientResult = null;
-      try {
-         clientResult = newTarget("ide/versions").request(MediaType.APPLICATION_JSON).get(IdeVersion.class);
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
-      return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
-   }
-
-   @Override
-   public boolean isClientVersionSupportedByApplicationServer() {
-      return getIdeClientSupportedVersions().contains(OseeCodeVersion.getVersion());
-   }
-
-   @Override
-   public boolean isApplicationServerAlive() {
-      boolean alive = false;
-      try {
-         getIdeClientSupportedVersions();
-         alive = true;
-      } catch (Exception ex) {
-         alive = false;
-      }
-      return alive;
    }
 
    @Override
@@ -196,5 +165,10 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public IndexerEndpoint getIndexerEndpoint() {
       return client.targetProxy(baseUri, IndexerEndpoint.class);
+   }
+
+   @Override
+   public IdeClientEndpoint getIdeClientEndpoint() {
+      return client.targetProxy(baseUri, IdeClientEndpoint.class);
    }
 }

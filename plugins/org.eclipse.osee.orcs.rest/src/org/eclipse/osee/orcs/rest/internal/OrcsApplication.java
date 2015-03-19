@@ -42,7 +42,7 @@ public class OrcsApplication extends Application {
       resources.add(new OrcsScriptResource(engine));
 
       classes.add(BranchesResource.class);
-      resources.add(new IdeClientResource());
+      resources.add(new IdeClientEndpointImpl());
 
       resources.add(new BranchEndpointImpl(orcsApi));
       resources.add(new TransactionEndpointImpl(orcsApi));

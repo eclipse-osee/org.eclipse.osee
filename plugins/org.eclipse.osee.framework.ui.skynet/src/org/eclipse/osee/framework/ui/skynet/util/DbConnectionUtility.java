@@ -10,13 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
+import org.eclipse.osee.orcs.rest.model.IdeVersion;
 
 /**
  * @author Donald G Dunne
@@ -57,10 +62,10 @@ public class DbConnectionUtility {
       if (applicationServerAlive == null) {
          String address = OseeClientProperties.getOseeApplicationServer();
          if (Strings.isValid(address)) {
-            OseeClient client = ServiceUtil.getOseeClient();
-            if (client != null) {
-               applicationServerAlive = client.isApplicationServerAlive();
-            } else {
+            try {
+               getIdeClientSupportedVersions();
+               applicationServerAlive = true;
+            } catch (Exception ex) {
                applicationServerAlive = false;
             }
          } else {
@@ -74,17 +79,27 @@ public class DbConnectionUtility {
       if (supported == null) {
          String address = OseeClientProperties.getOseeApplicationServer();
          if (Strings.isValid(address)) {
-            OseeClient client = ServiceUtil.getOseeClient();
-            if (client != null) {
-               supported = client.isClientVersionSupportedByApplicationServer();
-            } else {
-               supported = false;
-            }
+            supported = getIdeClientSupportedVersions().contains(OseeCodeVersion.getVersion());
          } else {
             supported = false;
          }
       }
       return supported;
+   }
+
+   private static Collection<String> getIdeClientSupportedVersions() {
+      IdeVersion clientResult = null;
+
+      OseeClient client = ServiceUtil.getOseeClient();
+      if (client != null) {
+         IdeClientEndpoint endpoint = client.getIdeClientEndpoint();
+         try {
+            clientResult = endpoint.getSupportedVersions();
+         } catch (Exception ex) {
+            throw JaxRsExceptions.asOseeException(ex);
+         }
+      }
+      return clientResult != null ? clientResult.getVersions() : Collections.<String> emptySet();
    }
 
 }
