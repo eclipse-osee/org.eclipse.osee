@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test;
 
-import org.eclipse.osee.framework.core.message.test.data.DataTestSuite;
 import org.eclipse.osee.framework.core.message.test.translation.TranslationTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DataTestSuite.class, TranslationTestSuite.class,})
+@Suite.SuiteClasses({TranslationTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

@@ -13,14 +13,9 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;
-import org.eclipse.osee.framework.core.message.internal.translation.ArtifactTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.AttributeTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.CacheUpdateRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.RelationTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
@@ -48,16 +43,6 @@ public class DataTranslationServiceFactoryTest {
       DataTranslationService srvc = new DataTranslationService();
       srvc.setModelFactory(new MockModelFactoryService());
       srvc.start();
-
-      checkExists(srvc, CacheUpdateRequestTranslator.class, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
-      checkExists(srvc, ArtifactTypeCacheUpdateResponseTranslator.class,
-         CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
-      checkExists(srvc, AttributeTypeCacheUpdateResponseTranslator.class,
-         CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
-      checkExists(srvc, RelationTypeCacheUpdateResponseTranslator.class,
-         CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
-      checkExists(srvc, OseeEnumTypeCacheUpdateResponseTranslator.class,
-         CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
 
       checkExists(srvc, OseeImportModelRequestTranslator.class, CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
       checkExists(srvc, OseeImportModelResponseTranslator.class, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);

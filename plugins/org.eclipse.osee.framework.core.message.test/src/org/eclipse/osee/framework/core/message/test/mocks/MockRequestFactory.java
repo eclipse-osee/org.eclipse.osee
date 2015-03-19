@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.mocks;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
@@ -60,15 +56,6 @@ public final class MockRequestFactory {
       changeVersion.setGammaId((long) (index * Integer.MAX_VALUE));
       changeVersion.setModType(modType);
       changeVersion.setValue("change_version_value_" + index);
-   }
-
-   public static CacheUpdateRequest createRequest(int index) {
-      OseeCacheEnum cacheEnum = OseeCacheEnum.values()[Math.abs(index % OseeCacheEnum.values().length)];
-      List<Integer> guids = new ArrayList<Integer>();
-      for (int j = 1; j <= index * 3; j++) {
-         guids.add(j * index);
-      }
-      return new CacheUpdateRequest(cacheEnum, guids);
    }
 
 }

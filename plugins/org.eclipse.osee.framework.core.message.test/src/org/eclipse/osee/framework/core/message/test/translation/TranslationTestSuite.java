@@ -15,7 +15,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   CacheUpdateRequestTranslatorTest.class,
    DatastoreInitRequestTranslatorTest.class,
    DataTranslationServiceFactoryTest.class,
    DataTranslationServiceTest.class,

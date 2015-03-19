@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.message.test.mocks;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -105,15 +104,6 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getGuid(), actual.getGuid());
          Assert.assertEquals(expected.getName(), actual.getName());
          Assert.assertEquals(expected.getFullArtifact(), actual.getFullArtifact());
-      }
-   }
-
-   public static void assertEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
-         Assert.assertFalse(Compare.isDifferent(expected.getItemsIds(), actual.getItemsIds()));
       }
    }
 
