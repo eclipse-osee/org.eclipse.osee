@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -29,8 +30,14 @@ public class OrcsApplication extends Application {
    private final Set<Class<?>> classes = new HashSet<Class<?>>();
    private static OrcsApi orcsApi;
 
+   private IResourceManager resourceManager;
+
    public void setOrcsApi(OrcsApi orcsApi) {
       OrcsApplication.orcsApi = orcsApi;
+   }
+
+   public void setResourceManager(IResourceManager resourceManager) {
+      this.resourceManager = resourceManager;
    }
 
    public static OrcsApi getOrcsApi() {
@@ -49,6 +56,7 @@ public class OrcsApplication extends Application {
       resources.add(new TypesEndpointImpl(orcsApi));
 
       resources.add(new IndexerEndpointImpl(orcsApi));
+      resources.add(new ResourcesEndpointImpl(resourceManager));
    }
 
    public void stop() {
