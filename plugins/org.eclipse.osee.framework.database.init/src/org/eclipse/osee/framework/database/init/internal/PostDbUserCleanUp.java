@@ -71,5 +71,6 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
       }
 
       DatabaseInitActivator.getInstance().getCachingService().clearAll();
+      DatabaseInitActivator.getInstance().getCachingService().reloadTypes();
    }
 }

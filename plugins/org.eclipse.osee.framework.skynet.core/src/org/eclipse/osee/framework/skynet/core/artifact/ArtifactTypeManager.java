@@ -45,6 +45,8 @@ import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
 import org.eclipse.osee.framework.skynet.core.internal.OseeTypesImportOperation;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
@@ -113,7 +115,7 @@ public class ArtifactTypeManager {
       }
       ArtifactType artifactType = getCache().getByGuid(guid);
       if (artifactType == null) {
-         getCache().reloadCache();
+         getCacheService().reloadTypes();
          artifactType = getCache().getByGuid(guid);
          if (artifactType == null) {
             throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", guid);
@@ -220,10 +222,6 @@ public class ArtifactTypeManager {
       }
    }
 
-   public static void persist() throws OseeCoreException {
-      getCache().storeAllModified();
-   }
-
    /**
     * @return Returns the ArtifactType factory.
     */
@@ -235,11 +233,16 @@ public class ArtifactTypeManager {
    }
 
    public static IOperation newImportTypesOp(URI model) {
-      return new OseeTypesImportOperation(getCacheService(), model);
+      IOseeCachingService caches = getCacheService();
+      OseeClient oseeClient = ServiceUtil.getOseeClient();
+      TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
+      return new OseeTypesImportOperation(typesEndpoint, caches, model, true);
    }
 
    public static IOperation newExportTypesOp(OutputStream outputStream) {
-      return new OseeTypesExportOperation(outputStream);
+      OseeClient oseeClient = ServiceUtil.getOseeClient();
+      TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
+      return new OseeTypesExportOperation(typesEndpoint, outputStream);
    }
 
 }

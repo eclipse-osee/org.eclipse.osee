@@ -65,7 +65,4 @@ public class OseeEnumTypeManager {
       return -1;
    }
 
-   public static void persist() throws OseeCoreException {
-      getCache().storeAllModified();
-   }
 }

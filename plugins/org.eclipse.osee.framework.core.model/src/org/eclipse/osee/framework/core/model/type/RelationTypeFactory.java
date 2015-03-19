@@ -42,6 +42,7 @@ public class RelationTypeFactory implements IOseeTypeFactory {
          relationType =
             create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
                defaultOrderTypeGuid);
+         relationType.setId(guid);
          cache.cache(relationType);
       } else {
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,

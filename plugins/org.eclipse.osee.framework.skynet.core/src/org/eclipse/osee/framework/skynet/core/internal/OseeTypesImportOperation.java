@@ -10,73 +10,49 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.model.OseeImportModelRequest;
-import org.eclipse.osee.framework.core.model.OseeImportModelResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypesImportOperation extends AbstractOperation {
+   private final TypesEndpoint typesEndpoint;
    private final IOseeCachingService cacheService;
    private final URI model;
+   private final boolean refreshCaches;
 
-   public OseeTypesImportOperation(IOseeCachingService cacheService, URI model) {
+   public OseeTypesImportOperation(TypesEndpoint typesEndpoint, IOseeCachingService cacheService, URI model, boolean refreshCaches) {
       super("Import Osee Types Model", Activator.PLUGIN_ID);
+      this.typesEndpoint = typesEndpoint;
       this.cacheService = cacheService;
       this.model = model;
-   }
-
-   private String getModel(URL url) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = new BufferedInputStream(url.openStream());
-         return Lib.inputStreamToString(inputStream);
-      } finally {
-         Lib.close(inputStream);
-      }
-   }
-
-   private String getName(URI uri) {
-      String name = uri.toASCIIString();
-      int index = name.lastIndexOf("/");
-      if (index > 0) {
-         name = name.substring(index + 1, name.length());
-      }
-      return name;
+      this.refreshCaches = refreshCaches;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Map<String, String> parameters = new HashMap<String, String>();
-
-      OseeImportModelRequest modelRequest =
-         new OseeImportModelRequest(getName(model), getModel(model.toURL()), false, false);
-
-      OseeImportModelResponse response =
-         HttpClientMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,
-            CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST, modelRequest, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
-
-      if (response.wasPersisted()) {
-         cacheService.getEnumTypeCache().reloadCache();
-         cacheService.getAttributeTypeCache().reloadCache();
-         cacheService.getArtifactTypeCache().reloadCache();
-         cacheService.getRelationTypeCache().reloadCache();
+      InputStream inputStream = null;
+      try {
+         inputStream = model.toURL().openStream();
+         Response response = typesEndpoint.setTypes(inputStream);
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            if (refreshCaches) {
+               cacheService.reloadTypes();
+            }
+         }
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      } finally {
+         Lib.close(inputStream);
       }
-
    }
-
 }

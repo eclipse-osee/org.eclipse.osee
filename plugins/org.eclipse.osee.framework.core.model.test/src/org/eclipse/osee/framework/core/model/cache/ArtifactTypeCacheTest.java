@@ -13,10 +13,8 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -32,37 +30,19 @@ public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactTyp
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
       artifactTypes = new ArrayList<ArtifactType>();
+      artCache = new ArtifactTypeCache();
 
-      ArtifactDataAccessor artData = new ArtifactDataAccessor(artifactTypes);
-      artCache = new ArtifactTypeCache(artData);
-
-      artCache.ensurePopulated();
-      Assert.assertTrue(artData.wasLoaded());
+      int typeId = 100;
+      for (int index = 0; index < 10; index++) {
+         ArtifactType item = MockDataFactory.createArtifactType(index);
+         artifactTypes.add(item);
+         item.setId(typeId++);
+         artCache.cache(item);
+      }
    }
 
    public ArtifactTypeCacheTest() {
       super(artifactTypes, artCache);
    }
 
-   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<Long, ArtifactType> {
-      private final List<ArtifactType> artifactTypes;
-
-      public ArtifactDataAccessor(List<ArtifactType> artifactTypes) {
-         super();
-         this.artifactTypes = artifactTypes;
-      }
-
-      @Override
-      public void load(IOseeCache<Long, ArtifactType> cache) throws OseeCoreException {
-         super.load(cache);
-
-         int typeId = 100;
-         for (int index = 0; index < 10; index++) {
-            ArtifactType item = MockDataFactory.createArtifactType(index);
-            artifactTypes.add(item);
-            item.setId(typeId++);
-            cache.cache(item);
-         }
-      }
-   }
 }

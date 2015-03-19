@@ -49,6 +49,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
          attributeType =
             create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
                minOccurrences, maxOccurrences, description, taggerId, mediaType);
+         attributeType.setId(guid);
          attributeType.setOseeEnumType(oseeEnumType);
          cache.cache(attributeType);
       } else {

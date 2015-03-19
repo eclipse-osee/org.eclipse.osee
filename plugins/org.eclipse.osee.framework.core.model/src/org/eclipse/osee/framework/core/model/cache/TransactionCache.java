@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
@@ -32,20 +33,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionCache implements IOseeCache<String, TransactionRecord> {
+public class TransactionCache implements IOseeLoadingCache<String, TransactionRecord> {
    private ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache =
       new ConcurrentHashMap<Integer, TransactionRecord>();
 
    private final OseeCacheEnum cacheId;
-   private boolean ensurePopulatedRanOnce;
+   private final AtomicBoolean wasLoaded;
    private long lastLoaded;
 
    public TransactionCache() {
       this.lastLoaded = 0;
       this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
-      this.ensurePopulatedRanOnce = false;
+      this.wasLoaded = new AtomicBoolean(false);
    }
 
    public void setAccessor(ITransactionDataAccessor accessor) {
@@ -191,10 +192,8 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
       }
    }
 
-   @Override
-   public synchronized void ensurePopulated() throws OseeCoreException {
-      if (!ensurePopulatedRanOnce) {
-         ensurePopulatedRanOnce = true;
+   private synchronized void ensurePopulated() throws OseeCoreException {
+      if (wasLoaded.compareAndSet(false, true)) {
          reloadCache();
       }
    }
@@ -224,6 +223,16 @@ public class TransactionCache implements IOseeCache<String, TransactionRecord> {
    @Override
    public void decacheAll() {
       transactionIdCache.clear();
-      this.ensurePopulatedRanOnce = false;
+      invalidate();
+   }
+
+   @Override
+   public boolean isLoaded() {
+      return wasLoaded.get();
+   }
+
+   @Override
+   public void invalidate() {
+      wasLoaded.set(false);
    }
 }

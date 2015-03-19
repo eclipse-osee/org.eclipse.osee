@@ -666,7 +666,7 @@ public class BranchManager {
    }
 
    public static void resetWasLoaded() {
-      getCache().resetWasLoaded();
+      getCache().invalidate();
    }
 
    public static boolean isLoaded() {

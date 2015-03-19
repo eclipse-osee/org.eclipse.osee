@@ -14,11 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -35,11 +33,22 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
    public static void prepareTestData() throws OseeCoreException {
       data = new ArrayList<OseeEnumType>();
 
-      EnumDataAccessor enumAccessor = new EnumDataAccessor(data);
-      cache = new OseeEnumTypeCache(enumAccessor);
+      cache = new OseeEnumTypeCache();
 
-      cache.ensurePopulated();
-      Assert.assertTrue(enumAccessor.wasLoaded());
+      int typeId = 100;
+      for (int index = 0; index < 10; index++) {
+         OseeEnumType item = MockDataFactory.createEnumType(index);
+         List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+         for (int j = 1; j <= 5; j++) {
+            OseeEnumEntry enumEntry = MockDataFactory.createEnumEntry(index + j);
+            entries.add(enumEntry);
+         }
+         item.setEntries(entries);
+
+         data.add(item);
+         item.setId(typeId++);
+         cache.cache(item);
+      }
    }
 
    public OseeEnumTypeCacheTest() {
@@ -51,31 +60,4 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
       ModelAsserts.checkEnumType(expected, actual);
    }
 
-   private final static class EnumDataAccessor extends MockOseeDataAccessor<Long, OseeEnumType> {
-      private final List<OseeEnumType> oseeEnumTypes;
-
-      public EnumDataAccessor(List<OseeEnumType> oseeEnumTypes) {
-         super();
-         this.oseeEnumTypes = oseeEnumTypes;
-      }
-
-      @Override
-      public void load(IOseeCache<Long, OseeEnumType> cache) throws OseeCoreException {
-         super.load(cache);
-         int typeId = 100;
-         for (int index = 0; index < 10; index++) {
-            OseeEnumType item = MockDataFactory.createEnumType(index);
-            List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
-            for (int j = 1; j <= 5; j++) {
-               OseeEnumEntry enumEntry = MockDataFactory.createEnumEntry(index + j);
-               entries.add(enumEntry);
-            }
-            item.setEntries(entries);
-
-            oseeEnumTypes.add(item);
-            item.setId(typeId++);
-            cache.cache(item);
-         }
-      }
-   }
 }

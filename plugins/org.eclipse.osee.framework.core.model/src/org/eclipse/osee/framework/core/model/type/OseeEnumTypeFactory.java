@@ -54,6 +54,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       OseeEnumType oseeEnumType = cache.getByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = createEnumType(guid, enumTypeName);
+         oseeEnumType.setId(guid);
          cache.cache(oseeEnumType);
       } else {
          oseeEnumType.setName(enumTypeName);

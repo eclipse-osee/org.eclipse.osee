@@ -32,6 +32,7 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);
+         artifactType.setId(guid);
          cache.cache(artifactType);
       } else {
          artifactType.setName(name);

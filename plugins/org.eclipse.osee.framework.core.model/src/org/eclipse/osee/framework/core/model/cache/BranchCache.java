@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public class BranchCache extends AbstractOseeCache<Long, Branch> {
+public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
 
    private final TransactionCache txCache;
 

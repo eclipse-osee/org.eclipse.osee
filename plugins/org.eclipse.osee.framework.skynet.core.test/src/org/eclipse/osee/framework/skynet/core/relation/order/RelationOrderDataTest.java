@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.mocks.DataFactory;
-import org.eclipse.osee.framework.skynet.core.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.After;
 import org.junit.Assert;
@@ -59,7 +58,7 @@ public class RelationOrderDataTest {
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
-      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
+      RelationTypeCache cache = new RelationTypeCache();
 
       relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.USER_DEFINED.getGuid());
       relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.UNORDERED.getGuid());

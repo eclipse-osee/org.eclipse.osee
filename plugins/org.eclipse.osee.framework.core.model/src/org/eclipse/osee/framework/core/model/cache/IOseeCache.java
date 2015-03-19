@@ -23,10 +23,6 @@ public interface IOseeCache<KEY, TYPE> {
 
    int size();
 
-   long getLastLoaded();
-
-   boolean reloadCache() throws OseeCoreException;
-
    void decacheAll();
 
    void decache(TYPE... types) throws OseeCoreException;
@@ -46,8 +42,6 @@ public interface IOseeCache<KEY, TYPE> {
    Collection<TYPE> getAllDirty() throws OseeCoreException;
 
    void storeAllModified() throws OseeCoreException;
-
-   void ensurePopulated() throws OseeCoreException;
 
    void storeItems(TYPE... items) throws OseeCoreException;
 

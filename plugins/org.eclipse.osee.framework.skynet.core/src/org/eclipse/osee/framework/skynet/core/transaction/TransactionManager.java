@@ -67,6 +67,8 @@ public final class TransactionManager {
    private static final String SELECT_BRANCH_TRANSACTION_BY_DATE =
       "SELECT * FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
 
+   private static final TransactionRecordFactory factory = new TransactionRecordFactory();
+
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
@@ -197,7 +199,6 @@ public final class TransactionManager {
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
       TransactionRecord transactionId =
          factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getUuid(), comment, transactionTime,
             authorArtId, 0, txType, getBranchCache());
@@ -268,9 +269,7 @@ public final class TransactionManager {
             }
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            TransactionRecordFactory factory = ServiceUtil.getTransactionFactory();
             BranchCache branchCache = getBranchCache();
-
             transactionRecord =
                factory.createOrUpdate(txCache, txId, chStmt.getLong("branch_id"), chStmt.getString("osee_comment"),
                   chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType,

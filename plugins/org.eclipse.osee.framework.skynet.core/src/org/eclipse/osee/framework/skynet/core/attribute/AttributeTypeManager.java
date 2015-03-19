@@ -88,7 +88,7 @@ public class AttributeTypeManager {
       }
       AttributeType attributeType = getCache().getByGuid(guid);
       if (attributeType == null) {
-         getCache().reloadCache();
+         getCacheService().reloadTypes();
          attributeType = getCache().getByGuid(guid);
          if (attributeType == null) {
             throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", guid);
@@ -138,10 +138,6 @@ public class AttributeTypeManager {
 
    public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {
       return getEnumerationValues(getType(attributeName));
-   }
-
-   public static void persist() throws OseeCoreException {
-      getCache().storeAllModified();
    }
 
    @SuppressWarnings("rawtypes")

@@ -192,15 +192,19 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
 
    @Test
    public void testReload() throws OseeCoreException {
-      int fullCacheSize = cache.size();
-      Assert.assertTrue(fullCacheSize > 0);
-      for (T type : cache.getAll()) {
-         cache.decache(type);
-      }
+      if (cache instanceof IOseeLoadingCache) {
+         int fullCacheSize = cache.size();
+         Assert.assertTrue(fullCacheSize > 0);
+         for (T type : cache.getAll()) {
+            cache.decache(type);
+         }
 
-      Assert.assertEquals(0, cache.size());
-      Assert.assertTrue(cache.reloadCache());
-      Assert.assertEquals(fullCacheSize, cache.size());
+         Assert.assertEquals(0, cache.size());
+         if (cache instanceof IOseeLoadingCache) {
+            Assert.assertTrue(((IOseeLoadingCache<?, ?>) cache).reloadCache());
+         }
+         Assert.assertEquals(fullCacheSize, cache.size());
+      }
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)

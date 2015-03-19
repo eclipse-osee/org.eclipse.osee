@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -40,9 +39,11 @@ public interface IOseeCachingService {
 
    Collection<?> getCaches();
 
-   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
+   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId);
 
-   void reloadAll() throws OseeCoreException;
+   void reloadTypes();
+
+   void reloadAll();
 
    void clearAll();
 }

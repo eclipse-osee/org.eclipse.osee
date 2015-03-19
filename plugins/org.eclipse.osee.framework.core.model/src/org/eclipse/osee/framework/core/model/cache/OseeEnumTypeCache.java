@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumType;
  */
 public final class OseeEnumTypeCache extends AbstractOseeCache<Long, OseeEnumType> {
 
-   public OseeEnumTypeCache(IOseeDataAccessor<Long, OseeEnumType> dataAccessor) {
-      super(OseeCacheEnum.OSEE_ENUM_TYPE_CACHE, dataAccessor, true);
+   public OseeEnumTypeCache() {
+      super(OseeCacheEnum.OSEE_ENUM_TYPE_CACHE, true);
    }
 
 }

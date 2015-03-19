@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -31,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -42,22 +39,12 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<Long, T>();
    private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
 
-   private final IOseeDataAccessor<K, T> dataAccessor;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
-   private final AtomicBoolean wasLoaded;
-   private long lastLoaded;
 
-   protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
-      this.lastLoaded = 0;
+   protected AbstractOseeCache(OseeCacheEnum cacheId, boolean uniqueName) {
       this.cacheId = cacheId;
-      this.wasLoaded = new AtomicBoolean(false);
-      this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
-   }
-
-   public void invalidate() {
-      wasLoaded.set(false);
    }
 
    @Override
@@ -66,7 +53,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       nameToTypeMap.clear();
       idToTypeMap.clear();
       guidToTypeMap.clear();
-      wasLoaded.set(false);
    }
 
    protected void clearAdditionalData() {
@@ -253,18 +239,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       storeItems(getAllDirty());
    }
 
-   @Override
-   public synchronized void ensurePopulated() throws OseeCoreException {
-      if (wasLoaded.compareAndSet(false, true)) {
-         try {
-            reloadCache();
-         } catch (OseeCoreException ex) {
-            wasLoaded.set(false);
-            throw ex;
-         }
-      }
-   }
-
    public void storeByGuid(Collection<K> guids) throws OseeCoreException {
       ensurePopulated();
       Conditions.checkNotNull(guids, "guids to store");
@@ -280,32 +254,6 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public long getLastLoaded() {
-      return lastLoaded;
-   }
-
-   private void setLastLoaded(long lastLoaded) {
-      this.lastLoaded = lastLoaded;
-   }
-
-   @Override
-   public synchronized boolean reloadCache() throws OseeCoreException {
-      dataAccessor.load(this);
-      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
-      setLastLoaded(System.currentTimeMillis());
-      wasLoaded.set(true);
-      return true;
-   }
-
-   public void resetWasLoaded() {
-      wasLoaded.set(false);
-   }
-
-   public boolean isLoaded() {
-      return wasLoaded.get();
-   }
-
-   @Override
    public void storeItems(T... items) throws OseeCoreException {
       storeItems(Arrays.asList(items));
    }
@@ -314,7 +262,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    public void storeItems(Collection<T> toStore) throws OseeCoreException {
       Conditions.checkDoesNotContainNulls(toStore, "items to store");
       if (!toStore.isEmpty()) {
-         dataAccessor.store(toStore);
+         store(toStore);
          synchronized (this) {
             for (T type : toStore) {
                decache(type);
@@ -330,5 +278,13 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       for (T type : source.getAll()) {
          cache(type);
       }
+   }
+
+   protected void ensurePopulated() throws OseeCoreException {
+      // Do nothing
+   }
+
+   protected void store(Collection<T> toStore) throws OseeCoreException {
+      // Do nothing
    }
 }

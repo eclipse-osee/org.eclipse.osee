@@ -50,8 +50,7 @@ public class RelationOrderRendererTest {
    public static void prepareTest() throws Exception {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
 
-      AbstractOseeCache<Long, RelationType> typeCache =
-         new RelationTypeCache(new MockOseeDataAccessor<Long, RelationType>());
+      AbstractOseeCache<Long, RelationType> typeCache = new RelationTypeCache();
       addRelationTypeData(typeCache);
       sorterProvider = new RelationSorterProvider();
       renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
@@ -189,7 +188,7 @@ public class RelationOrderRendererTest {
    }
 
    private final static void addRelationTypeData(AbstractOseeCache<Long, RelationType> cache) throws OseeCoreException {
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<Long, ArtifactType>());
+      ArtifactTypeCache artCache = new ArtifactTypeCache();
       IArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
       IArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
 

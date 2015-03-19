@@ -92,6 +92,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       oseeTypesSetup.execute(oseeTypes);
 
       service.clearAll();
+      service.reloadTypes();
    }
 
    private void createOseeDatastore() throws OseeCoreException {

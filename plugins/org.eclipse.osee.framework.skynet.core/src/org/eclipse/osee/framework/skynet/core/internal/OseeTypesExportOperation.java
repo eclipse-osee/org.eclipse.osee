@@ -10,43 +10,46 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.util.HttpProcessor;
-import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
+import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypesExportOperation extends AbstractOperation {
+
+   private final TypesEndpoint typesEndpoint;
    private final OutputStream outputStream;
 
-   public OseeTypesExportOperation(OutputStream outputStream) {
+   public OseeTypesExportOperation(TypesEndpoint typesEndpoint, OutputStream outputStream) {
       super("Export Osee Types Model", Activator.PLUGIN_ID);
+      this.typesEndpoint = typesEndpoint;
       this.outputStream = outputStream;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Conditions.checkNotNull(outputStream, "outputStream");
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("sessionId", ClientSessionManager.getSessionId());
-
-      String url =
-         HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT, parameters);
-
-      AcquireResult results = HttpProcessor.acquire(new URL(url), outputStream);
-      if (!results.wasSuccessful()) {
-         throw new OseeCoreException("Error exporting osee types");
+      try {
+         Response response = typesEndpoint.getTypes();
+         if (Status.OK.getStatusCode() == response.getStatus()) {
+            InputStream inputStream = response.readEntity(InputStream.class);
+            try {
+               Lib.inputStreamToOutputStream(inputStream, outputStream);
+            } finally {
+               Lib.close(inputStream);
+            }
+         }
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
       }
    }
 }
