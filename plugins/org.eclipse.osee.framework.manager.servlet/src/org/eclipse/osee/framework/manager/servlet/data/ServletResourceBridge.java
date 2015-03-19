@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
  */
 public class ServletResourceBridge implements IResource {
 
+   private static final String IS_COMPRESSED = "is.compressed";
+
    private final HttpServletRequest request;
    private final IResourceLocator locator;
 
@@ -60,7 +62,7 @@ public class ServletResourceBridge implements IResource {
 
    @Override
    public boolean isCompressed() {
-      return HttpRequestDecoder.isDataCompressed(request);
+      return Boolean.valueOf(request.getParameter(IS_COMPRESSED));
    }
 
 }

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
 import org.eclipse.osee.framework.manager.servlet.ConfigurationServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
-import org.eclipse.osee.framework.manager.servlet.ResourceManagerServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
 import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
@@ -109,7 +108,6 @@ public class ServletRegistrationHandler {
       contexts.clear();
       JdbcClient jdbcClient = jdbcService.getClient();
       register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
-      register(new ResourceManagerServlet(logger, sessionManager, resourceManager), OseeServerContext.RESOURCE_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), OseeServerContext.PROCESS_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
          OseeServerContext.ARTIFACT_CONTEXT);
