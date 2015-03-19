@@ -44,11 +44,6 @@ public class ArtifactResource {
       this.artifactUuid = artifactUuid;
    }
 
-   @Path("version")
-   public VersionsResource getArtifactVersions() {
-      return new VersionsResource(uriInfo, request, branchUuid, artifactUuid);
-   }
-
    @Path("attribute")
    public AttributesResource getAttributes() {
       return new AttributesResource(uriInfo, request, branchUuid, artifactUuid);

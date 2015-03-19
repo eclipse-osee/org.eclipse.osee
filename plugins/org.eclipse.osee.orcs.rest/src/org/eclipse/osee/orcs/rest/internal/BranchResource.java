@@ -48,11 +48,6 @@ public class BranchResource {
       return new ArtifactsResource(uriInfo, request, branchUuid, orcsApi);
    }
 
-   @Path("txs")
-   public TxsResource getTransactions() {
-      return new TxsResource(uriInfo, request, branchUuid);
-   }
-
    /**
     * @return Html representation of branche(s) that match UUID. Although it's not expected, no exception thrown if
     * multiple branches found.
