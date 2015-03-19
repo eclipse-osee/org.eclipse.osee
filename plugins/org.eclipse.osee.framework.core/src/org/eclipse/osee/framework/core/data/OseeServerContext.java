@@ -19,16 +19,13 @@ public class OseeServerContext {
 
    public static final String PROCESS_CONTEXT = "GET.ARTIFACT"; // For backwards compatibility must remain without base context.
    public static final String MANAGER_CONTEXT = asAbsoluteContext("manager");
-   public static final String BRANCH_CONTEXT = asAbsoluteContext("branch");
    public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext("branch/exchange");
    public static final String SEARCH_TAGGING_CONTEXT = asAbsoluteContext("search/tagger");
    public static final String RESOURCE_CONTEXT = asAbsoluteContext("resource");
    public static final String SESSION_CONTEXT = asAbsoluteContext("session");
    public static final String CLIENT_LOOPBACK_CONTEXT = asAbsoluteContext("client/loopback");
    public static final String ARTIFACT_CONTEXT = asAbsoluteContext("artifact");
-   public static final String OSEE_MODEL_CONTEXT = asAbsoluteContext("model");
    public static final String OSEE_CONFIGURE_CONTEXT = asAbsoluteContext("configure");
-   public static final String CACHE_CONTEXT = asAbsoluteContext("cache");
 
    private static final String asAbsoluteContext(String value) {
       return BASE_CONTEXT + "/" + value;
