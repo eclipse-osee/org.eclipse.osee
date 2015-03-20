@@ -8,8 +8,8 @@ app.controller('userController', [
     'Item',
     'Annotation',
     'SetSearch',
-
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch) {
+    'SourceFile',
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -45,7 +45,7 @@ app.controller('userController', [
     		$scope.isSearchView = true;
     		$scope.searchValue = window.opener.$windowScope.searchValue;
     		
-    		$scope.dispoType = window.opener.$windowScope.dispoType;
+    		$scope.type = window.opener.$windowScope.type;
     	} else {
             // Get programs from server
             Program.query(function(data) {
@@ -129,6 +129,21 @@ app.controller('userController', [
         
         $scope.saveLastFocused = function saveLastFocused(element) {
             $scope.lastFocused = element;
+        }
+        
+        $scope.getSourceFlie = function () {
+        	var requst = [];
+        	requst.push(
+        	  "program/",
+        	  $scope.programSelection,
+        	  "/set/",
+        	  $scope.setSelection,
+        	  "/file/",
+        	  $scope.selectedItem.name
+        	  );
+        	var url = requst.join("");
+            
+            window.open(url);
         }
         
         $scope.toggleEditItems = function toggleEditItems() {
@@ -488,7 +503,7 @@ app.controller('userController', [
         }
         
         $scope.getResolutionTypes = function getResolutionTypes() {
-        	if($scope.dispoType == 'codeCoverage') {
+        	if($scope.type == 'codeCoverage') {
         		return $scope.coverageResolutionTypes;
         	} else {
         		return $scope.testResolutionTypes;

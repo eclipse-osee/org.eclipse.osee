@@ -188,6 +188,11 @@ public class DispoSetResource {
       return Response.status(status).build();
    }
 
+   @Path("{setId}/file")
+   public DispoSourceFileResource getDispoSourceFiles(@PathParam("setId") String setId) {
+      return new DispoSourceFileResource(dispoApi, program, setId);
+   }
+
    @Path("{setId}/item")
    public DispoItemResource getDispositionableItems(@PathParam("setId") String setId) {
       return new DispoItemResource(dispoApi, program, setId);

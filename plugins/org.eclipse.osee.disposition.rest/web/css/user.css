@@ -4,6 +4,11 @@
     margin-right: 5px;
     overflow: auto;
 }
+
+p#itemSelectedText {
+	margin: 0px;
+	
+}
 #bottom-content {
     position: fixed;
     height: 300px;
@@ -41,6 +46,7 @@ background-color: lightslategray;
 }
 
 #itemSelectedBar {
+	min-height: 30px;
 	background-color: lightcyan;
 }
 
