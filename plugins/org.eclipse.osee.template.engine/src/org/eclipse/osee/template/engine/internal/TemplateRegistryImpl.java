@@ -84,7 +84,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    private void cache(ResourceToken token) {
       tokenByUuid.put(token.getGuid(), token);
       ResourceToken oldToken = tokenByName.put(token.getName(), token);
-      if (oldToken != null) {
+      if (oldToken != null && !token.getGuid().equals(oldToken.getGuid())) {
          logger.error("Template conflict detected between - [%s] and [%s]", oldToken, token);
       }
    }
