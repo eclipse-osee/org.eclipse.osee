@@ -13,13 +13,12 @@ package org.eclipse.osee.framework.resource.management.test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
-import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 import org.eclipse.osee.framework.resource.management.internal.ResourceManager;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockLocatorProvider;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockResourceListener;
@@ -114,12 +113,12 @@ public class ResourceManagerTest {
          manager.getResourceLocator("protocol");
          Assert.fail("This line should not be executed");
       } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex instanceof OseeStateException);
+         Assert.assertTrue(ex instanceof OseeNotFoundException);
       }
       try {
          manager.generateResourceLocator(null, null, null);
       } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex instanceof OseeStateException);
+         Assert.assertTrue(ex instanceof OseeNotFoundException);
       }
    }
 
@@ -164,7 +163,7 @@ public class ResourceManagerTest {
          manager.generateResourceLocator("dummyProcotol", "", "");
          Assert.fail("This line should not be executed");
       } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex instanceof MalformedLocatorException);
+         Assert.assertTrue(ex instanceof OseeNotFoundException);
       }
 
       IResourceLocator locator = manager.generateResourceLocator("protocol1", "ABCDE", "name1");
@@ -182,7 +181,7 @@ public class ResourceManagerTest {
          manager.getResourceLocator("dummyProcotol://hello");
          Assert.fail("This line should not be executed");
       } catch (OseeCoreException ex) {
-         Assert.assertTrue(ex instanceof MalformedLocatorException);
+         Assert.assertTrue(ex instanceof OseeNotFoundException);
       }
 
       IResourceLocator locator = manager.getResourceLocator("protocol1://one/two/three");

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
-import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar
@@ -88,18 +87,14 @@ public class ResourceManager implements IResourceManager {
    }
 
    private IResourceProvider getProvider(IResourceLocator locator) throws OseeCoreException {
-      IResourceProvider toReturn = null;
       for (IResourceProvider provider : resourceProviders) {
-         if (provider.isValid(locator) != false) {
-            toReturn = provider;
-            break;
+         if (provider.isValid(locator)) {
+            return provider;
          }
       }
 
-      if (toReturn == null) {
-         throw new OseeNotFoundException("Invalid Locator: [%s]", locator);
-      }
-      return toReturn;
+      throw new OseeNotFoundException("No resource provider found for Locator: [%s].  Searched providers: [%s]",
+         locator, Arrays.deepToString(resourceProviders.toArray()));
    }
 
    public boolean addResourceProvider(IResourceProvider resourceProvider) {
@@ -174,20 +169,13 @@ public class ResourceManager implements IResourceManager {
    }
 
    private IResourceLocatorProvider getProvider(String protocol) throws OseeCoreException {
-      if (resourceLocatorProviders.isEmpty()) {
-         throw new OseeStateException("Resource locator providers are not available");
-      }
-      IResourceLocatorProvider toReturn = null;
       for (IResourceLocatorProvider provider : resourceLocatorProviders) {
          if (provider.isValid(protocol)) {
-            toReturn = provider;
-            break;
+            return provider;
          }
       }
-      if (toReturn == null) {
-         throw new MalformedLocatorException("Error finding locator for [%s] in [%s]", protocol,
-            resourceLocatorProviders);
-      }
-      return toReturn;
+
+      throw new OseeNotFoundException("No locator proivder found for [%s].  Searched providers: [%s]", protocol,
+         Arrays.deepToString(resourceLocatorProviders.toArray()));
    }
 }
