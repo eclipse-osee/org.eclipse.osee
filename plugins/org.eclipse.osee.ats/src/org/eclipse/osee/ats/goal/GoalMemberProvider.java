@@ -41,7 +41,7 @@ public class GoalMemberProvider implements IMemberProvider {
    @Override
    public String getCollectorName() {
       if (isBacklog()) {
-         return "Sprint";
+         return "Backlog";
       }
       return "Goal";
    }
