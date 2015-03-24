@@ -134,16 +134,27 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       SprintFilteredListDialog dialog = createDialog(items, activeSprints);
 
       if (dialog.open() == 0) {
-         IAgileSprint selectedSprint = dialog.getSelectedFirst();
-         for (Artifact awa : awas) {
-            Artifact newSprintArt = (Artifact) selectedSprint.getStoreObject();
-            Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
-            for (Artifact relatedSprint : relatedSprintArts) {
-               awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+         if (dialog.isRemoveFromSprint()) {
+            for (Artifact awa : awas) {
+               Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
+               for (Artifact relatedSprint : relatedSprintArts) {
+                  awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+               }
             }
-            awa.addRelation(AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
+            Artifacts.persistInTransaction("Remove Sprint", awas);
+
+         } else {
+            IAgileSprint selectedSprint = dialog.getSelectedFirst();
+            for (Artifact awa : awas) {
+               Artifact newSprintArt = (Artifact) selectedSprint.getStoreObject();
+               Collection<Artifact> relatedSprintArts = AgileUtilClient.getRelatedSprints(awa);
+               for (Artifact relatedSprint : relatedSprintArts) {
+                  awa.deleteRelation(AtsRelationTypes.AgileSprintToItem_Sprint, relatedSprint);
+               }
+               awa.addRelation(AtsRelationTypes.AgileSprintToItem_Sprint, newSprintArt);
+            }
+            Artifacts.persistInTransaction("Set Sprint", awas);
          }
-         Artifacts.persistInTransaction("Set Sprint", awas);
          return true;
       }
       return false;
