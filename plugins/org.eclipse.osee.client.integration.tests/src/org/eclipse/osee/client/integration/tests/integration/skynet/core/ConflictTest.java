@@ -201,6 +201,7 @@ public class ConflictTest {
          monitorLog.getSevereLogs().isEmpty());
    }
 
+   @Ignore
    @org.junit.Test
    public void test06CommitFiltering() throws OseeCoreException {
       checkNoTxCurrent("art_id", "osee_artifact");
