@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.jms.internal;
 
 import java.io.Serializable;
+import java.net.InetSocketAddress;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
@@ -20,6 +22,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.MessageService;
 import org.eclipse.osee.framework.messaging.NodeInfo;
+import org.eclipse.osee.ote.OTEException;
+import org.eclipse.osee.ote.endpoint.OteEndpointUtil;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpointSender;
 import org.eclipse.osee.ote.jms.OteServerJmsNodeProvider;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.service.IOteClientService;
@@ -38,6 +44,8 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
    private IOteClientService clientService;
    private BundleContext context;
    private ServiceRegistration<?> registration;
+   private OteUdpEndpointSender oteEndpointSender;
+   private OteUdpEndpoint oteEndpoint;
 
    public void start(BundleContext context) {
       this.context = context;
@@ -61,6 +69,10 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
    public void setClientService(IOteClientService clientService) {
       this.clientService = clientService;
    }
+   
+   public void bindOteUdpEndpoint(OteUdpEndpoint oteEndpoint) {
+      this.oteEndpoint = oteEndpoint;
+   }
 
    @Override
    public void onPostConnect(ConnectionEvent event) {
@@ -76,20 +88,33 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
     * @param connector
     */
    private void registerConnectionNode(IServiceConnector connector) {
-      Object obj = connector.getProperty("OTEEmbeddedBroker", null);
-      if (obj != null && obj instanceof NodeInfo) {
-         debug("Registering client connection service");
-         NodeInfo nodeInfo = (NodeInfo) obj;
-         registerConnectionNode(nodeInfo);
+      Object obj = connector.getProperty("oteUdpEndpoint", null);
+      if (obj != null) {
+         try{
+            InetSocketAddress address = OteEndpointUtil.getAddress(obj.toString());
+            if(!oteEndpoint.getLocalEndpoint().equals(address)){
+               oteEndpointSender = oteEndpoint.getOteEndpointSender(address);
+               oteEndpoint.addBroadcast(oteEndpointSender);
+            }
+         } catch (OTEException ex){
+            OseeLog.log(getClass(), Level.SEVERE, ex);
+         }
       } else {
-         debug(String.format("Problem using connector...%s:%s", obj.getClass(), obj));
-         EnhancedProperties properties = connector.getProperties();
-         for( Entry<String, Serializable> entry : properties.entrySet() ) {
-            debug(String.format("\t%s = %s", entry.getKey(), entry.getValue()));
+         obj = connector.getProperty("OTEEmbeddedBroker", null);
+         if (obj != null && obj instanceof NodeInfo) {
+            debug("Registering client connection service");
+            NodeInfo nodeInfo = (NodeInfo) obj;
+            registerConnectionNode(nodeInfo);
+         } else {
+            debug(String.format("Problem using connector...%s:%s", obj.getClass(), obj));
+            EnhancedProperties properties = connector.getProperties();
+            for( Entry<String, Serializable> entry : properties.entrySet() ) {
+               debug(String.format("\t%s = %s", entry.getKey(), entry.getValue()));
+            }
          }
       }
    }
-
+   
    /**
     * @param nodeInfo
     */
@@ -105,7 +130,23 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
 
    @Override
    public void onConnectionLost(IServiceConnector connector) {
-      unregisterConnectionNode();
+      Object obj = connector.getProperty("oteUdpEndpoint", null);
+      if (obj != null) {
+         try{
+            InetSocketAddress address = OteEndpointUtil.getAddress(obj.toString());
+            if(!oteEndpoint.getLocalEndpoint().equals(address)){
+               oteEndpointSender = oteEndpoint.getOteEndpointSender(address);
+               oteEndpoint.removeBroadcast(oteEndpointSender);
+               oteEndpointSender.stop();
+            }
+         } catch (OTEException ex){
+            OseeLog.log(getClass(), Level.SEVERE, ex);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      } else {
+         unregisterConnectionNode();
+      }
    }
 
 
@@ -119,7 +160,23 @@ public final class ClientSideConnectionNodeLifecycleController implements ITestC
 
    @Override
    public void onPreDisconnect(ConnectionEvent event) {
-      unregisterConnectionNode();
+      Object obj = event.getConnector().getProperty("oteUdpEndpoint", null);
+      if (obj != null) {
+         try{
+            InetSocketAddress address = OteEndpointUtil.getAddress(obj.toString());
+            if(!oteEndpoint.getLocalEndpoint().equals(address)){
+               oteEndpointSender = oteEndpoint.getOteEndpointSender(address);
+               oteEndpoint.removeBroadcast(oteEndpointSender);
+               oteEndpointSender.stop();
+            }
+         } catch (OTEException ex){
+            OseeLog.log(getClass(), Level.SEVERE, ex);
+         } catch (InterruptedException e) {
+            e.printStackTrace();
+         }
+      } else {
+         unregisterConnectionNode();
+      }
    }
 
    private void debug(String msg ) {

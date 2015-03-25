@@ -36,7 +36,8 @@ public class MessageInstance {
    private int refcount = 0;
    private boolean supported = true;
    private volatile boolean connected = false;
-   
+   private HashSet<DataType> availableTypes = new HashSet<DataType>();
+
    public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;
       this.mode = mode;
@@ -75,6 +76,15 @@ public class MessageInstance {
       supported = true;
       msg.setData(details.getCurrentData());
       connected = true;
+      //determine types for message
+      Set<? extends DataType> envSet = MessageServiceSupport.getAvailablePhysicalTypes();
+      Set<DataType> available = msg.getAssociatedMessages().keySet();
+      for(DataType type : available.toArray(new DataType[available.size()])){
+         if(envSet.contains(type)){
+            availableTypes.add(type);
+         }
+      }
+      
       serverSubscriptionKey = details.getKey();
       return serverSubscriptionKey.getId();
    }
@@ -84,6 +94,7 @@ public class MessageInstance {
          MessageServiceSupport.unsubscribeToMessage(new UnSubscribeToMessage(msg.getClass().getName(), mode, type,
             client.getAddressByType(msg.getClass().getName(), type)));
       }
+      availableTypes.clear();
       connected = false;
       serverSubscriptionKey = null;
    }
@@ -113,17 +124,7 @@ public class MessageInstance {
    }
 
    public Set<DataType> getAvailableTypes() {
-	  HashSet<DataType> set = new HashSet<DataType>();
-	  if(connected){
-	     Set<? extends DataType> envSet = MessageServiceSupport.getAvailablePhysicalTypes();
-	     Set<DataType> available = msg.getAssociatedMessages().keySet();
-	     for(DataType type : available.toArray(new DataType[available.size()])){
-	        if(envSet.contains(type)){
-	           set.add(type);
-	        }
-	     }
-	  }
-     return set;
+     return availableTypes;
    }
 
    public boolean isSupported() {

@@ -75,6 +75,7 @@ public class JmsToJiniBridgeConnectorLite implements IServiceConnector, OseeMess
    public Object service;
 
     Object myLock = new Object();
+   private boolean connected = false;
 
    public JmsToJiniBridgeConnectorLite(ServiceHealth serviceHealth, MessageService messageService) {
 	   this.serviceHealth = serviceHealth;
@@ -264,6 +265,14 @@ public class JmsToJiniBridgeConnectorLite implements IServiceConnector, OseeMess
    @Override
    public void fail(Throwable th) {
 	   OseeLog.log(Activator.class, Level.SEVERE, th);
+   }
+   
+   public void setConnected(boolean connected){
+      this.connected  = connected;
+   }
+   
+   public boolean isConnected() {
+      return this.connected;
    }
 
 }

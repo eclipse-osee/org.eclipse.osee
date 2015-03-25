@@ -17,16 +17,17 @@ import java.rmi.server.ExportException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+
 import net.jini.core.entry.Entry;
 import net.jini.export.Exporter;
 import net.jini.jeri.BasicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.IServicePropertyChangeListener;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
-import org.eclipse.osee.framework.jini.service.core.PropertyEntry;
 
 /**
  * @author Ken J. Aguilar
@@ -37,6 +38,7 @@ public abstract class JiniConnector implements IServiceConnector {
    private final EnhancedProperties properties;
    private final HashSet<IServicePropertyChangeListener> propertyChangeListeners =
       new HashSet<IServicePropertyChangeListener>();
+   private boolean connected = false;
 
    private static final class ExportInfo {
       private final Exporter exporter;
@@ -98,54 +100,8 @@ public abstract class JiniConnector implements IServiceConnector {
          new BasicILFactory(null, null, Activator.getDefault().getExportClassLoader()), false, false);
    }
 
-   protected static void buildPropertiesFromEntries(Entry[] entries, EnhancedProperties properties) {
-      for (Entry entry : entries) {
-         if (entry instanceof PropertyEntry) {
-            ((PropertyEntry) entry).fillProps(properties.asMap());
-            // } else if (entry instanceof ServiceInfo) {
-            // ServiceInfo si = (ServiceInfo) entry;
-            // properties.setProperty("name", si.name);
-            // properties.setProperty("model", si.model == null ? "N.A."
-            // : si.model);
-            // } else if (entry instanceof Comment) {
-            // properties.setProperty("comment", ((Comment) entry).comment);
-            // } else if (entry instanceof GroupEntry) {
-            // properties.setProperty("groups", ((GroupEntry) entry)
-            // .getFormmatedString());
-            // } else if (entry instanceof StaticStationInfo) {
-            // StaticStationInfo ssi = (StaticStationInfo) entry;
-            // properties.setProperty("type", ssi.type);
-            // properties.setProperty("station", ssi.station);
-            // properties.setProperty("mode", ssi.mode);
-            // properties.setProperty("date", ssi.dateStarted);
-            // properties.setProperty("version", ssi.version);
-            // } else if (entry instanceof Name) {
-            // properties.setProperty("name", ((Name) entry).name);
-            // } else if (entry instanceof VersionEntry) {
-            // properties.setProperty("version",
-            // ((VersionEntry) entry).version);
-            // } else if (entry instanceof TestEntry) {
-            // System.out.println("test entry data = "
-            // + ((TestEntry) entry).getData());
-         }
-      }
-   }
-
    protected Entry[] createEntries() {
       LinkedList<Entry> entries = new LinkedList<Entry>();
-      // GroupEntry group = new GroupEntry();
-      // group.group =
-      // OseeProperties.getInstance().getOseeJiniServiceGroups();
-      // entries.add(group);
-      // // entries.add(new StaticStationInfo((String) properties
-      // // .getProperty("station"), "", (String) properties
-      // // .getProperty("type"), "", "", new Date()));
-      // entries.add(new ServiceInfo((String) properties.getProperty("name"),
-      // "", "", "", "", ""));
-      // // entries.add(new TestEntry("this is test data"));
-      PropertyEntry entry = new PropertyEntry(properties.asMap());
-      assert entry.getProperty("date", null) != null;
-      entries.add(entry);
       return entries.toArray(new Entry[entries.size()]);
    }
 
@@ -179,11 +135,18 @@ public abstract class JiniConnector implements IServiceConnector {
 
    public void entriesChanged(Entry[] entries) {
       EnhancedProperties newProps = new EnhancedProperties();
-      buildPropertiesFromEntries(entries, newProps);
       for (String key : properties.differences(newProps)) {
          for (IServicePropertyChangeListener listener : propertyChangeListeners) {
             listener.propertyChanged(this, key, properties.getProperty(key));
          }
       }
+   }
+   
+   public void setConnected(boolean connected){
+      this.connected = connected;
+   }
+   
+   public boolean isConnected() {
+      return this.connected;
    }
 }

@@ -14,7 +14,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import org.eclipse.osee.framework.messaging.Message;
-import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 
@@ -35,8 +34,6 @@ public interface ITestEnvironment extends Remote {
    int getUniqueId() throws RemoteException;
 
    public void setBatchMode(boolean isBatched) throws RemoteException;
-
-   public void sendCommand(Command command) throws RemoteException;
 
    public void sendMessage(Message message) throws RemoteException;
    

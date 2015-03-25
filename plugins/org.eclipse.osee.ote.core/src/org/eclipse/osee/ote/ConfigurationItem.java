@@ -1,13 +1,16 @@
 package org.eclipse.osee.ote;
 
+import java.io.Serializable;
+
 /**
  * This defines the bundle to be loaded by the OTE Server.
  * 
  * @author Andrew M. Finkbeiner
  *
  */
-public class ConfigurationItem {
+public class ConfigurationItem implements Serializable {
 
+   private static final long serialVersionUID = -2805353994429454202L;
    private String url;
    private String version;
    private String symbolicName;

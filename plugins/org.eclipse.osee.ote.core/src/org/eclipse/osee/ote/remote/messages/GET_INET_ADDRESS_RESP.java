@@ -2,6 +2,7 @@ package org.eclipse.osee.ote.remote.messages;
 
 import org.eclipse.osee.ote.message.elements.EnumeratedElement;
 import org.eclipse.osee.ote.message.event.OteEventMessage;
+import org.eclipse.osee.ote.message.event.SOCKET_ADDRESS_RECORD;
 
 public class GET_INET_ADDRESS_RESP extends OteEventMessage {
 

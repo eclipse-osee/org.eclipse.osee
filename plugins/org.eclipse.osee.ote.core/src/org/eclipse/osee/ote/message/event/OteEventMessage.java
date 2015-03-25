@@ -69,4 +69,8 @@ public class OteEventMessage extends Message<MessageSystemTestEnvironment, OteEv
       return 8*size-1;
    }
    
+   public void setResponse(OteEventMessage msg){
+      getHeader().RESPONSE_ID.setValue(msg.getHeader().MESSAGE_SEQUENCE_NUMBER.getValue());
+   }
+   
 }

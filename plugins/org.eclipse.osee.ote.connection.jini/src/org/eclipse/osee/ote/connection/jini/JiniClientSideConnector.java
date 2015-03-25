@@ -28,7 +28,6 @@ public class JiniClientSideConnector extends JiniConnector {
    JiniClientSideConnector(ServiceItem serviceItem) {
       super();
       this.serviceItem = serviceItem;
-      buildPropertiesFromEntries(serviceItem.attributeSets, getProperties());
       link = (IJiniConnectorLink) getProperties().getProperty(LINK_PROPERTY);
    }
 

@@ -50,13 +50,16 @@ public class OseeConsole {
 
    private final Thread thread;
 
+   private boolean newline;
+
    public OseeConsole(String title) {
-      this(title, true);
+      this(title, true, true);
    }
 
-   private OseeConsole(String title, boolean time) {
+   public OseeConsole(String title, boolean time, boolean newline) {
       console = new IOConsole(title, null);
       this.time = time;
+      this.newline = newline;
       this.inputHandler = new HandleInput();
 
       thread = new Thread(inputHandler);
@@ -169,8 +172,9 @@ public class OseeConsole {
          } else {
             sendToStreams(type, str);
          }
-
-         sendToStreams(type, "\n");
+         if(newline ){
+            sendToStreams(type, "\n");
+         }
          if (popup) {
             popup();
          }

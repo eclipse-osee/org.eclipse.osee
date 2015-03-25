@@ -14,7 +14,4 @@
               policy="static"
               bind="setMessageService"
               unbind="unsetMessageService"/>
-   <service>
-      <provide interface="org.eclipse.osee.ote.jms.OteServerJmsNodeProvider"/>
-   </service>
 </scr:component>

@@ -16,7 +16,7 @@ import org.eclipse.osee.ote.ConfigurationStatus;
 import org.eclipse.osee.ote.OTEStatusCallback;
 
 /**
- * An interface for 
+ * An interface for loading and installing bundles in the running test environment.
  * 
  * @author Andrew M. Finkbeiner
  *

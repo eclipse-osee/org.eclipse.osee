@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-console</programArgs>
-      <vmArgs>-Dorg.osgi.service.http.port=8008
+      <vmArgs>-Dorg.osgi.service.http.port=8010
 -Ddequinox.ds.debug=true
 -Ddequinox.ds.print=true
 -Dcm.config.uri=&quot;etc/ote.server.config.json&quot;</vmArgs>

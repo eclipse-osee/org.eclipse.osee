@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IConnectorListener;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -85,7 +87,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	}
 
 	@Override
-	public  ConnectionEvent connect(IHostTestEnvironment testHost, IEnvironmentConfigurer configurer, TestEnvironmentConfig config) throws IllegalArgumentException, TestSessionException {
+	public  ConnectionEvent connect(IHostTestEnvironment testHost, IEnvironmentConfigurer configurer, TestEnvironmentConfig config, IProgressMonitor monitor) throws IllegalArgumentException, TestSessionException {
 		checkState();
 		final IServiceConnector connector;
 		final ClientSession localSession;
@@ -93,11 +95,9 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			if (session == null) {
 				throw new IllegalArgumentException("a user has not been set");
 			}
-
 			if (testConnection != null) {
 				throw new IllegalStateException("already connected");
 			}
-
 			if (testHost == null) {
 				throw new IllegalArgumentException("test host cannot be null");
 			}
@@ -105,22 +105,17 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 			localSession = session;
 		}
 		try {
-
-			
 			if (connector == null) {
 				throw new IllegalStateException("Unable to find a connection.");
 			}
-
-			configurer.configure(testHost);
-
-			testConnection = localSession.connect(connector, testHost, config);
-			if (testConnection != null) {
-				// success
-				ConnectionEvent event =
-						new ConnectionEvent(testHost, connector, testConnection.getConnectEnvironment(),
-								testConnection.getSessionKey());
-				listenerNotifier.notifyPostConnection(event);
-				return event;
+			if(configurer.configure(testHost, new SubProgressMonitor(monitor, 95)) && !monitor.isCanceled()){
+			   testConnection = localSession.connect(connector, testHost, config);
+			   if (testConnection != null) {
+			      // success
+			      ConnectionEvent event = new ConnectionEvent(testHost, connector, testConnection.getConnectEnvironment(), testConnection.getSessionKey());
+			      listenerNotifier.notifyPostConnection(event);
+			      return event;
+			   }
 			}
 		} catch (Exception e) {
 			Activator.log(Level.SEVERE, "failed to establish connection", e);
@@ -133,12 +128,14 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	public IServiceConnector getConnector(IHostTestEnvironment host) {
 		try {
 			EnhancedProperties properties = host.getProperties();
-			String passedInId = (String) properties.getProperty("id");
-			for (IServiceConnector connector : testHosts.values()) {
-				String loopId = (String) connector.getProperty("id", "no");
-				if (passedInId != null && loopId != null && loopId.equals(passedInId)) {
-					return connector;
-				}
+			if(properties != null){
+			   String passedInId = (String) properties.getProperty("id");
+			   for (IServiceConnector connector : testHosts.values()) {
+			      String loopId = (String) connector.getProperty("id", "no");
+			      if (passedInId != null && loopId != null && loopId.equals(passedInId)) {
+			         return connector;
+			      }
+			   }
 			}
 		} catch (RemoteException ex) {
 			ex.printStackTrace();

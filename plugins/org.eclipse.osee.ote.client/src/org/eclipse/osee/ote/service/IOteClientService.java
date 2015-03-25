@@ -14,6 +14,7 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -61,10 +62,11 @@ public interface IOteClientService {
 
    /**
     * creates a connection to a test server. <B>NOTE: </B><I>A user must be logged in prior to calling this method.>/I>
+    * @param monitor 
     * 
     * @see #setUser(OSEEPerson1_4, InetAddress)
     */
-   ConnectionEvent connect(IHostTestEnvironment env, IEnvironmentConfigurer configurer, TestEnvironmentConfig config) throws TestSessionException;
+   ConnectionEvent connect(IHostTestEnvironment env, IEnvironmentConfigurer configurer, TestEnvironmentConfig config, IProgressMonitor monitor) throws TestSessionException;
 
    /**
     * breaks the current connection to a test server. This will call the

@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.concurrent.Callable;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -27,12 +26,12 @@ public class RemoveServer implements Callable<OTEMasterServerResult> {
    public OTEMasterServerResult call() throws Exception {
       OTEMasterServerResult result = new OTEMasterServerResult();
       try {
-         URI targetUri = UriBuilder.fromUri(uri).path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).path(server.getUUID().toString()).build();
-         webClientProvider.target(targetUri).request(MediaType.APPLICATION_XML).method(HttpMethod.DELETE);
+         URI targetUri  =
+               UriBuilder.fromUri(uri).path(OTEMasterServerImpl.CONTEXT_NAME).path(OTEMasterServerImpl.CONTEXT_SERVERS).path(server.getUUID().toString()).build();
+         webClientProvider.target(targetUri).request().method(HttpMethod.DELETE);
       } catch (Throwable th) {
          result.setSuccess(false);
          result.setThrowable(th);
-         th.printStackTrace();
       }
       return result;
    }

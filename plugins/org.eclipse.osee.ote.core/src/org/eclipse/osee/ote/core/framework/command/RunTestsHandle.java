@@ -1,14 +1,10 @@
 package org.eclipse.osee.ote.core.framework.command;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
-import org.eclipse.osee.ote.core.framework.command.ITestCommandResult;
-import org.eclipse.osee.ote.core.framework.command.ITestContext;
 
 public class RunTestsHandle implements ICommandHandle, Serializable {
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -17,7 +18,6 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.Configuration;
 import org.eclipse.osee.ote.OTEApi;
-import org.eclipse.osee.ote.OTEServerFolder;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.status.CommandEndedStatusEnum;
@@ -25,6 +25,7 @@ import org.eclipse.osee.ote.core.environment.status.OTEStatusBoard;
 import org.eclipse.osee.ote.core.framework.IMethodResult;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.framework.saxparse.ProcessOutfileOverview;
+import org.eclipse.osee.ote.io.OTEServerFolder;
 import org.eclipse.osee.ote.message.IMessageTestContext;
 
 public class RunTests implements ITestServerCommand, Serializable {
@@ -37,15 +38,15 @@ public class RunTests implements ITestServerCommand, Serializable {
    private volatile boolean cancelAll = false;
    private volatile boolean isRunning = false;
    private final UUID sessionKey;
-   private final String guid;
+   private final String commandId;
    private TestEnvironment environment;
    private final Configuration configuration;
 
-   public RunTests(String guid, UUID uuid, Configuration configuration, IPropertyStore global, List<IPropertyStore> scripts) {
+   public RunTests(String commandId, UUID sessionKey, Configuration configuration, IPropertyStore global, List<IPropertyStore> scripts) {
       this.global = global;
       this.scripts = scripts;
-      this.sessionKey = uuid;
-      this.guid = guid;
+      this.sessionKey = sessionKey;
+      this.commandId = commandId;
       this.configuration = configuration;
    }
 
@@ -114,6 +115,21 @@ public class RunTests implements ITestServerCommand, Serializable {
       }
       
       for (IPropertyStore store : scripts) {
+         Set<String> arrayKeySet = global.arrayKeySet();
+         for(String key:arrayKeySet){
+            String[] array = global.getArray(key);
+            if(array != null ){
+               store.put(key, array);
+            }
+         }
+         Set<String> keySet = global.keySet();
+         for(String key:keySet){
+            String val = global.get(key);
+            if(val != null ){
+               store.put(key, val);
+            }
+         }
+                 
          if (cancelAll) {
             statusBoard.onTestComplete(store.get(RunTestsKeys.testClass.name()),
                store.get(RunTestsKeys.serverOutfilePath.name()),
@@ -226,7 +242,7 @@ public class RunTests implements ITestServerCommand, Serializable {
 
    @Override
    public String getGUID() {
-      return guid;
+      return commandId;
    }
 
    @Override

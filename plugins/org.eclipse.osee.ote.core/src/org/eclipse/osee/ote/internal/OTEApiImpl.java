@@ -1,5 +1,7 @@
 package org.eclipse.osee.ote.internal;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,14 +10,16 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.osee.ote.Configuration;
+import org.eclipse.osee.ote.ConfigurationItem;
 import org.eclipse.osee.ote.ConfigurationStatus;
 import org.eclipse.osee.ote.OTEApi;
-import org.eclipse.osee.ote.OTEServerFolder;
 import org.eclipse.osee.ote.OTEServerRuntimeCache;
 import org.eclipse.osee.ote.OTEStatusCallback;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.model.IModelManager;
+import org.eclipse.osee.ote.io.OTEServerFolder;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 
 public final class OTEApiImpl implements OTEApi {
@@ -31,6 +35,7 @@ public final class OTEApiImpl implements OTEApi {
    private TestEnvironmentInterface env;
    private IModelManager modelManager;
    private IRemoteMessageService remoteMessageService;
+   private IHostTestEnvironment host;
    
    /**
     * ds component method
@@ -128,6 +133,20 @@ public final class OTEApiImpl implements OTEApi {
       this.remoteMessageService = null;
    }
    
+   /**
+    * ds component method
+    */
+   public void bindIHostTestEnvironment(IHostTestEnvironment host){
+      this.host = host;
+   }
+   
+   /**
+    * ds component method
+    */
+   public void unbindIHostTestEnvironment(IHostTestEnvironment host){
+      this.host = null;
+   }
+   
    public OTEApiImpl(){
       this.configurationLock = new ReentrantLock();
       this.emptyConfiguration = new Configuration();
@@ -154,7 +173,7 @@ public final class OTEApiImpl implements OTEApi {
             status = new OTEFutureImpl(executor.submit(new Configure(runtimeLibraryManager, configuration, callable)));
             currentConfigurationFuture = status;
          } else {
-            status = new OTEFutureImpl(new ConfigurationStatus(configuration, false, "Environment already configured."));
+            status = new OTEFutureImpl(new ConfigurationStatus(configuration, false, generateConfigDiff(configuration, currentConfigurationFuture.get().getConfiguration())));
             callable.complete(status.get());
          }
       } finally {
@@ -163,6 +182,45 @@ public final class OTEApiImpl implements OTEApi {
       return status;
    }
    
+   private String generateConfigDiff(Configuration configuration, Configuration configuration2) {
+      Collections.sort(configuration.getItems(), new ConfigurationItemComparator());
+      Collections.sort(configuration2.getItems(), new ConfigurationItemComparator());
+      StringBuilder missingBundles = new StringBuilder();
+      StringBuilder extraBundles = new StringBuilder();
+      StringBuilder differentVersion = new StringBuilder();
+      for(ConfigurationItem item:configuration.getItems()){
+         int i = Collections.binarySearch(configuration2.getItems(), item, new ConfigurationItemComparator());
+         if(i >= 0 ){
+            ConfigurationItem item2 = configuration2.getItems().get(i);
+            if(!item2.getVersion().equals(item.getVersion())){
+               differentVersion.append(String.format("%s  [%s] != [%s]\n", item.getSymbolicName(), item.getVersion(), item2.getVersion()));
+            } else if(!item2.getMd5Digest().equals(item.getMd5Digest())){
+               differentVersion.append(String.format("%s  binary contents do not match\n", item.getSymbolicName()));
+            }
+         } else {
+            missingBundles.append(String.format("%s   missing\n", item.getSymbolicName()));
+         }
+      }
+      for(ConfigurationItem item:configuration2.getItems()){
+         int i = Collections.binarySearch(configuration.getItems(), item, new ConfigurationItemComparator());
+         if(i < 0 ){
+            extraBundles.append(String.format("%s   extra bundle\n", item.getSymbolicName()));
+         }
+      }      
+      return differentVersion.toString() + missingBundles.toString() + extraBundles.toString();
+   }
+   
+   private static class ConfigurationItemComparator implements Comparator<ConfigurationItem> {
+
+      @Override
+      public int compare(ConfigurationItem arg0, ConfigurationItem arg1) {
+         return arg0.getSymbolicName().compareTo(arg1.getSymbolicName());
+      }
+      
+   }
+   
+   
+
    @Override
    public Future<ConfigurationStatus> resetConfiguration(OTEStatusCallback<ConfigurationStatus> callable) throws InterruptedException, ExecutionException {
       return loadConfiguration(emptyConfiguration, callable);
@@ -213,4 +271,8 @@ public final class OTEApiImpl implements OTEApi {
 	   return remoteMessageService;
    }
 
+   @Override
+   public IHostTestEnvironment getIHostTestEnvironment() {
+      return host;
+   }
 }

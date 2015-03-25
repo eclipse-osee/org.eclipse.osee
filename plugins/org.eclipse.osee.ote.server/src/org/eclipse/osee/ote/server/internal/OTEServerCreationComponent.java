@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.connection.jini.JiniServiceSideConnector;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.eclipse.osee.ote.server.OteServiceStarter;
 import org.eclipse.osee.ote.server.PropertyParamter;
 import org.eclipse.osee.ote.server.TestEnvironmentServiceConfigImpl;
@@ -36,16 +37,17 @@ public class OTEServerCreationComponent {
    }
    
    public void start() {
-      final String oteServerFactoryClass = System.getProperty("osee.ote.server.factory.class");
+      
+      final String oteServerFactoryClass = OtePropertiesCore.serverFactoryClass.getValue();
       if (oteServerFactoryClass != null) {
          try{
-            String outfileLocation = System.getProperty("osee.ote.outfiles");
+            String outfileLocation = OtePropertiesCore.outfilesLocation.getValue();
             if (outfileLocation == null) {
-               outfileLocation = System.getProperty("java.io.tmpdir");
+               outfileLocation = OtePropertiesCore.javaIoTmpdir.getValue();
             }
-            String title = System.getProperty("osee.ote.server.title");
-            String name = System.getProperty("user.name");
-            String keepEnvAliveWithNoUsersStr = System.getProperty("osee.ote.server.keepAlive");
+            String title = OtePropertiesCore.serverTitle.getValue();
+            String name = OtePropertiesCore.userName.getValue();
+            String keepEnvAliveWithNoUsersStr = OtePropertiesCore.serverKeepalive.getValue();
             boolean keepEnvAliveWithNoUsers = true;
             if (keepEnvAliveWithNoUsersStr != null) {
                keepEnvAliveWithNoUsers = Boolean.parseBoolean(keepEnvAliveWithNoUsersStr);
@@ -69,7 +71,7 @@ public class OTEServerCreationComponent {
             } catch (UnknownHostException ex) {
                OseeLog.log(OTEServerCreationComponent.class, Level.SEVERE, ex);
             }
-            boolean useJiniLookup = System.getProperty("osee.ote.use.lookup") != null;
+            boolean useJiniLookup = OtePropertiesCore.useLookup.getValue() != null;
             boolean isLocalConnector = false;
 
             int index = oteServerFactoryClass.indexOf('.');

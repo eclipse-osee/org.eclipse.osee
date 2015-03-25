@@ -32,4 +32,5 @@ public interface IHostTestEnvironment extends Remote {
    public NodeInfo getBroker() throws RemoteException;
    
    public String getHttpURL() throws RemoteException;
+   
 }

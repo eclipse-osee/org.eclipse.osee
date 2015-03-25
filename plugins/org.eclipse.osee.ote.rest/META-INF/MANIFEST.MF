@@ -15,6 +15,7 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.ote.core,
  org.eclipse.osee.ote.core.environment,
  org.eclipse.osee.ote.core.framework.command,
+ org.eclipse.osee.ote.io,
  org.eclipse.osee.ote.rest.model
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.runtime

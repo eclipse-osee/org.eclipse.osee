@@ -1,25 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-     <extension
-         id="TestInterface"
-         name="TestInterface"
-         point="org.eclipse.osee.framework.jini.JiniInterface">
-      <Interface classname="org.eclipse.osee.ote.core.environment.jini.ITestEnvironmentCommandCallback"/>
-      <Interface classname="org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole"/>
-      <Interface
-            classname="org.eclipse.osee.ote.core.environment.status.IServiceStatusData">
-      </Interface>
-      <Interface
-            classname="org.eclipse.osee.ote.core.environment.status.IServiceStatusDataCommand">
-      </Interface>
-      </extension>
-   <extension
-         id="TestBundle"
-         name="TestBundle"
-         point="org.eclipse.osee.framework.jini.JiniInterface">
-      <RegisterBundle/>
-   </extension>
+
    <extension
          id="server"
          name="OTE Server"
@@ -38,10 +20,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.osee.ote.core.server"
-            name="ote.server">
+            name="OteServerStandalone">
          <property
                name="appName"
-               value="ote.server">
+               value="OteServerStandalone">
          </property>
       </product>
    </extension>

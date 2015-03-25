@@ -29,6 +29,7 @@ public class LocalConnector implements IServiceConnector {
 
    private final HashSet<IServicePropertyChangeListener> propertyChangeListeners =
       new HashSet<IServicePropertyChangeListener>();
+   private boolean connected = false;
 
    public LocalConnector() {
       this(null, "", new EnhancedProperties());
@@ -120,4 +121,11 @@ public class LocalConnector implements IServiceConnector {
 	  }  
    }
 
+   public void setConnected(boolean connected){
+      this.connected  = connected;
+   }
+   
+   public boolean isConnected() {
+      return this.connected;
+   }
 }

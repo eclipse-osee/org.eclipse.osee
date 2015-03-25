@@ -15,12 +15,10 @@ import org.osgi.service.event.EventHandler;
 
 public class UnSubscribeCommandListener implements EventHandler {
 
-   private final EventAdmin eventAdmin;
    private final IRemoteMessageService messageService;
    private final SerializedUnSubscribeMessage cmd;
    
    public UnSubscribeCommandListener(EventAdmin eventAdmin, IRemoteMessageService messageService) {
-      this.eventAdmin = eventAdmin;
       this.messageService = messageService;
       cmd = new SerializedUnSubscribeMessage();
    }

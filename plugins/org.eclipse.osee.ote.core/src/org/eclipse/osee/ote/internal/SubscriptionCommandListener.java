@@ -17,12 +17,10 @@ import org.osgi.service.event.EventHandler;
 
 public class SubscriptionCommandListener implements EventHandler {
 
-   private final EventAdmin eventAdmin;
    private final IRemoteMessageService messageService;
    private final SerializedSubscribeToMessage cmd;
    
    public SubscriptionCommandListener(EventAdmin eventAdmin, IRemoteMessageService messageService) {
-      this.eventAdmin = eventAdmin;
       this.messageService = messageService;
       cmd = new SerializedSubscribeToMessage();
    }

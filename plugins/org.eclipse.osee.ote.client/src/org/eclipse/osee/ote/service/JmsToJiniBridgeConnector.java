@@ -55,6 +55,7 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    private final List<IServicePropertyChangeListener> propertyChangeListeners =
       new CopyOnWriteArrayList<IServicePropertyChangeListener>();
    private final String uniqueServerId;
+   private boolean connected = false;
 
    public JmsToJiniBridgeConnector(ExportClassLoader exportClassLoader, Object service, String id) {
       this.uniqueServerId = id;
@@ -178,6 +179,14 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    @Override
    public void init(Object service) throws UnknownHostException, ExportException {
 
+   }
+   
+   public void setConnected(boolean connected){
+      this.connected = connected;
+   }
+   
+   public boolean isConnected() {
+      return this.connected;
    }
 
 }

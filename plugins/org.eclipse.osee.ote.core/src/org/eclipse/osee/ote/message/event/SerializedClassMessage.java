@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import org.eclipse.osee.ote.message.elements.ArrayElement;
 
@@ -44,8 +46,10 @@ public class SerializedClassMessage<T> extends OteEventMessage {
 
 	public void setObject(Serializable obj) throws IOException{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		GZIPOutputStream gos = new GZIPOutputStream(bos);
+		ObjectOutputStream oos = new ObjectOutputStream(gos);
 		oos.writeObject(obj);
+		oos.close();
 		byte[] data = bos.toByteArray();
 		int offset = OBJECT.getByteOffset() + getHeaderSize();
 		byte[] newData = new byte[data.length + offset];
@@ -54,11 +58,18 @@ public class SerializedClassMessage<T> extends OteEventMessage {
 		getDefaultMessageData().setNewBackingBuffer(newData);
 	}
 	
-	public T getObject() throws IOException, ClassNotFoundException{
+	@SuppressWarnings("unchecked")
+   public T getObject() throws IOException, ClassNotFoundException{
 		int offset = OBJECT.getByteOffset() + getHeaderSize();
 		ByteArrayInputStream bis = new ByteArrayInputStream(getData(), offset, getData().length - offset);
-		MyObjectInputStream ois = new MyObjectInputStream(bis);
-		return (T)ois.readObject();
+		GZIPInputStream gis = new GZIPInputStream(bis);
+		MyObjectInputStream ois = new MyObjectInputStream(gis);
+		try{
+		   Object obj = ois.readObject();
+		   return (T)obj;
+		} finally {
+		   ois.close();
+		}
 	}
 	
 }  

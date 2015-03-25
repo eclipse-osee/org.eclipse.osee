@@ -11,16 +11,11 @@
 package org.eclipse.osee.ote.rest.internal;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -49,7 +44,7 @@ public class OteRootResource {
    public String getConfiguration() throws OseeCoreException {
       String url = uriInfo.getAbsolutePath().toASCIIString();
       OTEApi ote = ServiceUtility.getService(OTEApi.class);
-      File serverFolder = ote.getServerFolder().getServerFolder();
+      File serverFolder = ote.getServerFolder().getRootFolder();
       HTMLBuilder builder = new HTMLBuilder();
       builder.open("OTE Server");
       builder.commonHeader(serverFolder);

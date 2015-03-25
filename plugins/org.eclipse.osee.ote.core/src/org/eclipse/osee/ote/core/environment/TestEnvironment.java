@@ -46,7 +46,6 @@ import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeTestThread;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.TestScript;
-import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.interfaces.IAssociatedObjectListener;
 import org.eclipse.osee.ote.core.environment.interfaces.ICancelTimer;
 import org.eclipse.osee.ote.core.environment.interfaces.IEnvironmentFactory;
@@ -65,6 +64,7 @@ import org.eclipse.osee.ote.core.framework.command.ICommandHandle;
 import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.internal.Activator;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
@@ -137,7 +137,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
       props.setProperty("date", new Date());
       props.setProperty("group", "OSEE Test Environment");
-      props.setProperty("owner", System.getProperty("user.name"));
+      props.setProperty("owner", OtePropertiesCore.userName.getValue());
       connector = new LocalConnector(this, Integer.toString(this.getUniqueId()), props);
    }
 
@@ -148,10 +148,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
             oteServerSideEndpointRecieve, oteServerSideEndpointSender,
             OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
-   }
-
-   public void sendCommand(Command command) {
-      Activator.getInstance().getCommandDistributer().distribute(command);
    }
 
    public void sendMessageToServer(Message message) {
@@ -290,7 +286,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Override
    public URL setBatchLibJar(byte[] batchJar) throws IOException {
-      String path = System.getProperty("user.home") + File.separator + TestEnvironment.class.getName();
+      String path = OtePropertiesCore.userHome.getValue() + File.separator + TestEnvironment.class.getName();
 
       File dir = new File(path, "batchLibCache");
       if (!dir.isDirectory()) {

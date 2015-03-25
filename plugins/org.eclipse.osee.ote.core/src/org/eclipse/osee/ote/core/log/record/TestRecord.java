@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.message.log.record.MessageJarConfigrecord;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -55,7 +56,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 	}
 
 	static {
-		filterTheStacktrace = System.getProperty("org.eclipse.osee.ote.core.noStacktraceFilter") == null;
+		filterTheStacktrace = OtePropertiesCore.noStacktraceFilter.getValue() == null;
 		stacktraceExcludes.add(Pattern.compile("org\\.eclipse\\.osee\\..*"));
 	}
 

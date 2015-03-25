@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.osee.ote.core.ServiceUtility;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpointSender;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
@@ -26,6 +27,8 @@ import org.osgi.service.event.EventHandler;
 public class OteEventMessageUtil {
 	
 	public final static String BYTE_KEY = "oteeventbytes";
+	
+	public final static String BYTE_KEY_2 = "bytes";
 	
 	private static EventAdmin eventAdmin;
 	
@@ -61,6 +64,14 @@ public class OteEventMessageUtil {
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.postEvent(newevent);
    }
+   
+   public static void sendEvent(OteEventMessage message, OteUdpEndpointSender sender) throws InterruptedException {
+      sender.send(message);
+   }
+   
+   public static void postEvent(OteEventMessage message, OteUdpEndpointSender sender) throws InterruptedException {
+      sender.send(message);
+   }
 
    public static UUID getUUID(OteEventMessage msg) {
       return new UUID(msg.getHeader().UUID_HIGH.getValue(), msg.getHeader().UUID_LOW.getValue());
@@ -93,6 +104,11 @@ public class OteEventMessageUtil {
       Object obj = event.getProperty(BYTE_KEY);
       if (obj != null && obj instanceof byte[]) {
          return new OteEventMessage((byte[]) obj);
+      } else {
+         obj = event.getProperty(BYTE_KEY_2);
+         if(obj != null && obj instanceof byte[]){
+            return new OteEventMessage((byte[]) obj);
+         }
       }
       return null;
    }
@@ -102,6 +118,10 @@ public class OteEventMessageUtil {
       if (obj != null && obj instanceof byte[]) {
          return (byte[]) obj;
       } else {
+         obj = event.getProperty(BYTE_KEY_2);
+         if (obj != null && obj instanceof byte[]) {
+            return (byte[]) obj;
+         }
          return null;
       }
    }

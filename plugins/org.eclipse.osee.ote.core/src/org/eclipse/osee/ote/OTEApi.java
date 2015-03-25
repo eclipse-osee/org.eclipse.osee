@@ -4,7 +4,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
+import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.model.IModelManager;
+import org.eclipse.osee.ote.io.OTEServerFolder;
 import org.eclipse.osee.ote.message.interfaces.IRemoteMessageService;
 
 /**
@@ -119,4 +121,12 @@ public interface OTEApi {
     * @throws ClassNotFoundException
     */
    Class<?> loadFromRuntimeLibraryLoader(String clazz) throws ClassNotFoundException;
+
+   /**
+    * Get the host test environment.  This method will return null if one has not yet been registered,
+    * so users need to check for null.
+    * 
+    * @return the host environment or null if one is not created
+    */
+   IHostTestEnvironment getIHostTestEnvironment();
 }

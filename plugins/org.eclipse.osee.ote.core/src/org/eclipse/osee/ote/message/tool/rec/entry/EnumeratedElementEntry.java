@@ -40,7 +40,7 @@ public class EnumeratedElementEntry implements IElementEntry {
    public void write(ByteBuffer buffer, MemoryResource mem, int limit) {
       mem.setOffset(element.getMsgData().getMem().getOffset());
       Enum<?> val = element.valueOf(mem);
-      byte[] bytes = Integer.toString(((IEnumValue) val).getIntValue()).getBytes();
+      byte[] bytes = Integer.toString(((IEnumValue<?>) val).getIntValue()).getBytes();
       buffer.put(nameAsBytes).put(COMMA).put(valueToBytes[val.ordinal()]);
       buffer.put(SPACE_LEFT_PAREN).put(bytes).put(RIGHT_PAREN).put(COMMA);
 

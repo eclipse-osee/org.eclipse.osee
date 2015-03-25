@@ -31,6 +31,7 @@ import org.eclipse.osee.ote.message.elements.MsgWaitResult;
 import org.eclipse.osee.ote.message.enums.DataType;
 import org.eclipse.osee.ote.message.interfaces.IOSEEMessageReaderListener;
 import org.eclipse.osee.ote.message.interfaces.IOSEEMessageWriterListener;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 
 /**
  * @author Ryan D. Brooks
@@ -38,9 +39,9 @@ import org.eclipse.osee.ote.message.interfaces.IOSEEMessageWriterListener;
  */
 public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEMessageWriterListener, ITimeout {
    
+   private static long debugTimeout = OtePropertiesCore.timeDebugTimeout.getLongValue();
+   private static boolean debugTime = OtePropertiesCore.timeDebug.getBooleanValue();
    
-   private static int debugTimeout = Integer.parseInt(System.getProperty("ote.time.debug.timeout", "250000"));
-   private static boolean debugTime = Boolean.parseBoolean(System.getProperty("ote.time.debug", "false"));
    
    private volatile boolean isTimedOut = false;
    private int masterMessageCount = 0;

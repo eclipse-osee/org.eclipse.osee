@@ -32,16 +32,17 @@ import org.osgi.service.event.EventHandler;
 public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteEventMessage> implements OteEventMessageFuture<T, R>, EventHandler{
 
    private final ServiceRegistration<EventHandler> reg;
-   private final OteEventMessageCallable<T, R> callable;
-   private final Class<R> recieveClasstype;
-   private final int responseId;
-   private final T sentMessage;
+   protected final OteEventMessageCallable<T, R> callable;
+   protected final Class<R> recieveClasstype;
+   protected final int responseId;
+   protected final T sentMessage;
    private final ScheduledExecutorService ex;
    private final ReentrantLock lock;
    private final Condition condition;
    private final ScheduledFuture<?> wakeup;
    private TimeoutRunnable<T, R> timeoutRunnable;
-   private volatile boolean gotResponse = false;
+   protected volatile boolean gotResponse = false;
+   protected volatile boolean isDone = false;
 
    public OteEventMessageFutureImpl(Class<R> recieveClasstype, OteEventMessageCallable<T, R> callable, T sentMessage, String responseTopic, int responseId, long timeout) {
       this.callable = callable;
@@ -55,6 +56,7 @@ public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteE
          @Override
          public Thread newThread(Runnable arg0) {
             Thread th = new Thread(arg0);
+            th.setDaemon(true);
             th.setName("OteEventMessage Timeout");
             return th;
          }
@@ -71,13 +73,8 @@ public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteE
          if(msg.getHeader().RESPONSE_ID.getValue() == responseId){
             cancel();
             gotResponse = true;
-            callable.call(sentMessage, msg);
-            lock.lock();
-            try{
-               condition.signal();
-            } finally {
-               lock.unlock();
-            }
+            callable.call(sentMessage, msg, this);
+            executeCondition();
          }
       } catch (InstantiationException e) {
          e.printStackTrace();
@@ -86,6 +83,15 @@ public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteE
       }
    }
 
+   protected final void executeCondition(){
+      lock.lock();
+      try{
+         condition.signal();
+      } finally {
+         lock.unlock();
+      }
+   }
+   
    @Override
    public void cancel(){
       dispose();
@@ -117,9 +123,21 @@ public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteE
       return gotResponse ;
    }
    
+   @Override
+   public void complete(){
+      cancel();
+      executeCondition();
+   }
+   
    private void dispose(){
       reg.unregister();
       wakeup.cancel(false);
       this.ex.shutdown();
+      isDone = true;
+   }
+
+   @Override
+   public boolean isDone() {
+      return isDone;
    }
 }

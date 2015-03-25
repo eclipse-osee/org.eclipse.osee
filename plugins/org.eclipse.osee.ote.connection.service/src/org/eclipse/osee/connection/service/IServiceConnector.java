@@ -65,4 +65,7 @@ public interface IServiceConnector {
    EnhancedProperties getProperties();
 
    public String getUniqueServerId();
+
+   void setConnected(boolean b);
+   boolean isConnected();
 }

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.net.InetAddress;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -23,24 +25,28 @@ import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
-import org.eclipse.osee.framework.jini.service.interfaces.IService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
+import org.eclipse.osee.ote.HostServerProperties;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 import org.eclipse.osee.ote.core.OTESessionManager;
 import org.eclipse.osee.ote.core.ReturnStatus;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
+import org.eclipse.osee.ote.io.OTEServerFolder;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 import org.eclipse.osee.ote.server.PropertyParamter;
 
-public class OteService implements IHostTestEnvironment, IService {
+public class OteService implements IHostTestEnvironment {
 
    private final ServiceID serviceID;
    private final EnhancedProperties enhancedProperties;
@@ -52,7 +58,7 @@ public class OteService implements IHostTestEnvironment, IService {
    private OTESessionManager oteSessions;
    
    
-   public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, OTESessionManager oteSessions, PropertyParamter parameterObject, EnhancedProperties properties) {
+   public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, OTESessionManager oteSessions, PropertyParamter parameterObject, EnhancedProperties properties, OteUdpEndpoint receiver) {
       this.runtimeLibraryManager = runtimeLibraryManager;
       this.environmentCreation = environmentCreation;
       this.oteSessions = oteSessions;
@@ -63,24 +69,45 @@ public class OteService implements IHostTestEnvironment, IService {
       serviceID = new ServiceID(msb.longValue(), lsb.longValue());
 
       enhancedProperties = properties;
-      enhancedProperties.setProperty("name", environmentCreation.getServerTitle());
-      enhancedProperties.setProperty("station", parameterObject.getStation());
-      enhancedProperties.setProperty("version", parameterObject.getVersion());
-      enhancedProperties.setProperty("type", parameterObject.getType());
-      enhancedProperties.setProperty("maxUsers", Integer.toString(environmentCreation.getMaxUsersPerEnvironment()));
-      enhancedProperties.setProperty("comment", parameterObject.getComment());
-      enhancedProperties.setProperty("date", new Date().toString());
-      enhancedProperties.setProperty("group", "OSEE Test Environment");
-      enhancedProperties.setProperty("owner", System.getProperty("user.name"));
-      enhancedProperties.setProperty("id", serviceID.toString());
+      enhancedProperties.setProperty(HostServerProperties.name.name(), environmentCreation.getServerTitle());
+      enhancedProperties.setProperty(HostServerProperties.station.name(), parameterObject.getStation());
+      enhancedProperties.setProperty(HostServerProperties.version.name(), parameterObject.getVersion());
+      enhancedProperties.setProperty(HostServerProperties.type.name(), parameterObject.getType());
+      enhancedProperties.setProperty(HostServerProperties.maxUsers.name(), Integer.toString(environmentCreation.getMaxUsersPerEnvironment()));
+      enhancedProperties.setProperty(HostServerProperties.comment.name(), parameterObject.getComment());
+      enhancedProperties.setProperty(HostServerProperties.date.name(), new Date().toString());
+      enhancedProperties.setProperty(HostServerProperties.group.name(), "OSEE Test Environment");
+      enhancedProperties.setProperty(HostServerProperties.owner.name(), OtePropertiesCore.userName.getValue());
+      enhancedProperties.setProperty(HostServerProperties.id.name(), serviceID.toString());
+      enhancedProperties.setProperty(HostServerProperties.activeMq.name(), environmentCreation.getBroker().getUri().toString());
       try {
-         if(System.getProperty("org.osgi.service.http.port") == null){
-            enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), 80));
+         String format = String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort());
+         if(OtePropertiesCore.httpPort.getValue() == null){
+            enhancedProperties.setProperty(HostServerProperties.appServerURI.name(), format);
          } else {
-            enhancedProperties.setProperty("appServerURI", String.format("http://%s:%s", InetAddress.getLocalHost().getHostAddress(), Integer.parseInt(System.getProperty("org.osgi.service.http.port"))));
+            enhancedProperties.setProperty(HostServerProperties.appServerURI.name(), format);
          }
+         enhancedProperties.setProperty(HostServerProperties.oteUdpEndpoint.name(), format);
       } catch (Exception e) {
          OseeLog.log(OteService.class, Level.SEVERE, "Failed to set the appServerURI", e);
+      }
+      
+      OTEServerFolder service = ServiceUtility.getService(OTEServerFolder.class);
+      if(service != null){
+         File dir = service.getCurrentServerFolder();
+         dir.mkdirs();
+         if(dir.exists() && dir.isDirectory()){
+            try{
+               Properties serverProperties = new Properties();
+               serverProperties.putAll(enhancedProperties.asMap());
+               serverProperties.store(new FileOutputStream(new File(dir, "server.properties")), "");
+               File running = new File(dir, ".running");
+               running.createNewFile();
+               running.deleteOnExit();
+            } catch (Throwable th){
+               th.printStackTrace();
+            }
+         }
       }
    }
    
@@ -132,7 +159,7 @@ public class OteService implements IHostTestEnvironment, IService {
             try {
                userList.add(session.getUser());
             } catch (Exception e) {
-               OseeLog.log(OteService.class, Level.SEVERE, e);
+               OseeLog.log(OteService.class, Level.WARNING, e);
             }
          }
       }
@@ -151,12 +178,10 @@ public class OteService implements IHostTestEnvironment, IService {
       }
    }
 
-   @Override
    public ServiceID getServiceID() throws RemoteException {
       return serviceID;
    }
 
-   @Override
    public void kill() throws RemoteException {
       if(currentEnvironment != null){
          currentEnvironment.shutdown();

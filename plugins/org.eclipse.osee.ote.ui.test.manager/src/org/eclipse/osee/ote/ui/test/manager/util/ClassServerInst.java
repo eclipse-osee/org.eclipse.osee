@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.CorePreferences;
-import org.eclipse.osee.framework.plugin.core.server.ClassServer;
-import org.eclipse.osee.framework.plugin.core.server.PathResourceFinder;
 import org.eclipse.osee.framework.ui.ws.AJavaProject;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
+import org.eclipse.osee.ote.classserver.ClassServer;
+import org.eclipse.osee.ote.classserver.PathResourceFinder;
 import org.eclipse.osee.ote.runtimemanager.UserLibResourceFinder;
 
 public class ClassServerInst {

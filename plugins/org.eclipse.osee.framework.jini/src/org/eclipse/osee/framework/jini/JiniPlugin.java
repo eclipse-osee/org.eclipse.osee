@@ -12,8 +12,6 @@
 package org.eclipse.osee.framework.jini;
 
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
-import org.eclipse.osee.framework.jini.discovery.ServiceDataStore;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -28,11 +26,6 @@ public class JiniPlugin extends Plugin {
     */
    public JiniPlugin() {
       JiniPlugin.plugin = this;
-      try {
-         JiniClassServer.getInstance();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
    }
 
    /**
@@ -42,7 +35,6 @@ public class JiniPlugin extends Plugin {
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       plugin = null;
-      JiniClassServer.stopServer();
    }
 
    /**
@@ -50,12 +42,6 @@ public class JiniPlugin extends Plugin {
     */
    public static JiniPlugin getInstance() {
       return plugin;
-   }
-
-   public void earlyStartup() {
-      // so that the jini stuff gets started up
-      ServiceDataStore.getEclipseInstance(EclipseJiniClassloader.getInstance());
-      System.out.println("JiniPlugin early startup");
    }
 
 }

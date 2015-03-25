@@ -23,8 +23,12 @@ public class TestManagerEditorInputFactory implements IElementFactory {
    @Override
    public IAdaptable createElement(IMemento memento) {
       String path = memento.getString("path");
-      File file = new File(path);
-      TestManagerEditorInput input = new TestManagerEditorInput(file);
-      return input;
+      if(path != null){
+         File file = new File(path);
+         TestManagerEditorInput input = new TestManagerEditorInput(file);
+         return input;
+      } else {
+         return null;
+      }
    }
 }

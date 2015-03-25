@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamPumper;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.OTEServerRuntimeCache;
-import org.eclipse.osee.ote.OTEServerFolder;
+import org.eclipse.osee.ote.io.OTEServerFolder;
 
 public class OTEServerRuntimeCacheImpl implements OTEServerRuntimeCache  {
    

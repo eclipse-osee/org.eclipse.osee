@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.OteProperties;
 import org.eclipse.osee.ote.core.StandardShell;
-import org.eclipse.osee.ote.core.cmd.CommandDistributer;
-import org.eclipse.osee.ote.core.cmd.CommandDistributerImpl;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.core.environment.console.ConsoleCommandManager;
@@ -38,7 +36,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class Activator implements BundleActivator {
 
    private ServiceRegistration testEnvironmentRegistration;
-   CommandDistributer commandDistributer;
    private static Activator activator;
    private BundleContext bundleContext;
    private final CompositeKeyHashMap<String, ServiceTrackerCustomizer, ServiceTracker> serviceTrackers =
@@ -46,7 +43,6 @@ public class Activator implements BundleActivator {
    private ConsoleCommandManager consoleCommandManager;
    private StandardShell stdShell;
    private ServiceRegistration consoleCommandRegistration;
-   private ServiceRegistration commandDistributerRegistration;
    private ServiceDependencyTracker serviceDependencyTracker;
    private MessageIoManagementStarter messageIoManagementStarter;
    private ServiceTracker testEnvTracker;
@@ -65,10 +61,6 @@ public class Activator implements BundleActivator {
       consoleCommandRegistration =
          context.registerService(ICommandManager.class.getName(), consoleCommandManager, new Hashtable());
 
-      commandDistributer = new CommandDistributerImpl();
-      commandDistributerRegistration =
-         context.registerService(CommandDistributer.class.getName(), commandDistributer, new Hashtable());
-
       serviceDependencyTracker = new ServiceDependencyTracker(bundleContext, new StatusBoardRegistrationHandler());
       serviceDependencyTracker.open();
       
@@ -82,7 +74,6 @@ public class Activator implements BundleActivator {
    @Override
    public void stop(BundleContext context) throws Exception {
       serviceDependencyTracker.close();
-      commandDistributer.shutdown();
       closeAllValidServiceTrackers();
       unregisterTestEnvironment();
       if (stdShell != null) {
@@ -90,7 +81,6 @@ public class Activator implements BundleActivator {
       }
       consoleCommandManager.shutdown();
       consoleCommandRegistration.unregister();
-      commandDistributerRegistration.unregister();
       
       messageIoManagementStarter.close();
       testEnvTracker.close();
@@ -98,10 +88,6 @@ public class Activator implements BundleActivator {
 
    public static Activator getInstance() {
       return activator;
-   }
-
-   public CommandDistributer getCommandDistributer() {
-      return commandDistributer;
    }
 
    public void registerTestEnvironment(TestEnvironment env) {

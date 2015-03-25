@@ -20,7 +20,11 @@ public interface OteEventMessageFuture<T extends OteEventMessage, R extends OteE
    
    void waitForCompletion();
    
+   public boolean isDone();
+   
    public boolean isTimedOut();
    
    public boolean gotResponse();
+
+   void complete();
 }

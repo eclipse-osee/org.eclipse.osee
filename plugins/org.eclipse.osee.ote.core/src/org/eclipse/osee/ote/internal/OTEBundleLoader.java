@@ -217,7 +217,6 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
       }
       installedBundles.clear();
 
-      int count = 0;
       for (Bundle bundle : runningBundles) {
          try {
             String entry = bundle.getHeaders().get("Fragment-Host");
@@ -229,7 +228,6 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
             result = false;
             statusCallback.error("Failed to stop and uninstall " + bundle.getSymbolicName(), ex);
          }
-         count++;
       }
       runningBundles.clear();
       

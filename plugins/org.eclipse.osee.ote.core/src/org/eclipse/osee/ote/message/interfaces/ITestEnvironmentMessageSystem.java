@@ -19,7 +19,6 @@ import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
  * @author Andrew M. Finkbeiner
  */
 public interface ITestEnvironmentMessageSystem extends ITestEnvironment {
-//   IRemoteMessageService getMessageToolServiceProxy() throws RemoteException;
 
    void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
 

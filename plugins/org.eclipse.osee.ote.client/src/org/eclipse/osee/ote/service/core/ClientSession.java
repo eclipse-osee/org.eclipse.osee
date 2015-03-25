@@ -45,11 +45,13 @@ public class ClientSession extends AbstractRemoteSession {
    private SessionDelegate sessionDelegate = null;
    private final ReentrantLock lock = new ReentrantLock();
    private final OteClientEndpointReceive receive;
+   private UUID id;
 
    public ClientSession(OSEEPerson1_4 user, InetAddress address, OteClientEndpointReceive receive) {
       super(user);
       this.address = address;
       this.receive = receive;
+      this.id = UUID.randomUUID();
       Activator.log(Level.INFO,
          String.format("Created OTE session for %s. Address=%s\n ", user.getName(), address.toString()));
    }
@@ -172,7 +174,8 @@ public class ClientSession extends AbstractRemoteSession {
             UUID id = UUID.randomUUID();
             Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
             ConnectionRequestResult result = testHost.requestEnvironment(exportedSession, id, config);
-            if (result.getStatus().getStatus()) {
+            if (result != null && result.getStatus().getStatus()) {
+               connector.setConnected(true);
                return new TestHostConnection(connector, testHost, result.getEnvironment(), result.getSessionKey());
             } else {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error Connecting to the OTE Test Server.",
@@ -191,6 +194,7 @@ public class ClientSession extends AbstractRemoteSession {
       // intentionally package-private
       if (lock.tryLock(TIMEOUT, TimeUnit.MINUTES)) {
          try {
+            connection.getServiceConnector().setConnected(false);
             connection.endConnection();
             return;
          } finally {
@@ -213,5 +217,10 @@ public class ClientSession extends AbstractRemoteSession {
       } catch (Exception ex) {
          throw new RemoteException("exception initiating prompt", ex);
       }
+   }
+
+   @Override
+   public UUID getUserId() throws Exception {
+      return id;
    }
 }

@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServer;
 import org.eclipse.osee.ote.master.rest.client.OTEMasterServerAvailableNodes;
@@ -26,7 +27,7 @@ public class OTEMasterServerImpl implements OTEMasterServer {
          public Thread newThread(Runnable arg0) {
             Thread th = new Thread(arg0);
             th.setName("OTE Master Client " + th.getId());
-            th.setDaemon(true);
+            th.setDaemon(false);
             return th;
          }
       });

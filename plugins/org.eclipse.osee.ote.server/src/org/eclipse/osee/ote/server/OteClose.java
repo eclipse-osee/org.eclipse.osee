@@ -15,6 +15,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.CommandProcessor;
 import org.apache.felix.service.command.Descriptor;
+import org.eclipse.osee.ote.core.ServiceUtility;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -32,6 +33,10 @@ public class OteClose {
 	
 	@Descriptor ("Shutdown the OTE Server")
 	public void x() throws Exception {
+	   OteServiceStarter service = ServiceUtility.getService(OteServiceStarter.class);
+	   if(service != null){
+	      service.stop();
+	   }
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		Bundle systemBundle = context.getBundle(0);
 		systemBundle.stop();

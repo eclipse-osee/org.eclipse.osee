@@ -9,9 +9,9 @@ import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 
 public class MyObjectInputStream extends ObjectInputStream {
 
+   @SuppressWarnings({ "unchecked", "rawtypes" })
    @Override
    public Class resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
-      ClassLoader currentTccl = null;
       try {
          return ExportClassLoader.getInstance().loadClass(desc.getName());
       } catch (Exception e) {

@@ -50,14 +50,15 @@ import org.eclipse.osee.ote.messaging.dds.status.RequestedIncompatibleQosStatus;
 import org.eclipse.osee.ote.messaging.dds.status.SampleLostStatus;
 import org.eclipse.osee.ote.messaging.dds.status.SampleRejectedStatus;
 import org.eclipse.osee.ote.messaging.dds.status.SubscriptionMatchStatus;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public abstract class MessageData implements DataReaderListener, DataWriterListener, Data, Key {
 
-   private static int debugTimeout = Integer.parseInt(System.getProperty("ote.time.debug.timeout", "250000"));
-   private static boolean debugTime = Boolean.parseBoolean(System.getProperty("ote.time.debug", "false"));
+   private static long debugTimeout = OtePropertiesCore.timeDebugTimeout.getLongValue();
+   private static boolean debugTime = OtePropertiesCore.timeDebug.getBooleanValue();
 
    private DataWriter writer;
    private DataReader reader;

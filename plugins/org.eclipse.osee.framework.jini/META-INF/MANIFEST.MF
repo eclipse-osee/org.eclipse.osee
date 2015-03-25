@@ -5,18 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.jini;singleton:=true
 Bundle-Version: 0.21.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.jini.JiniPlugin
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.framework.jini,
- org.eclipse.osee.framework.jini.discovery,
- org.eclipse.osee.framework.jini.lease,
- org.eclipse.osee.framework.jini.service.core,
- org.eclipse.osee.framework.jini.service.directory.service,
- org.eclipse.osee.framework.jini.service.gssfl,
- org.eclipse.osee.framework.jini.service.interfaces,
- org.eclipse.osee.framework.jini.service.report,
- org.eclipse.osee.framework.jini.service.scheduler,
- org.eclipse.osee.framework.jini.service.test.interfaces,
- org.eclipse.osee.framework.jini.util,
- org.eclipse.osee.framework.jini.utility
+Export-Package: org.eclipse.osee.framework.jini
 Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.core.runtime,
  net.jini,

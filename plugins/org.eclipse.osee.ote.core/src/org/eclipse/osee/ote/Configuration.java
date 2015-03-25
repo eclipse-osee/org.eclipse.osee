@@ -1,5 +1,6 @@
 package org.eclipse.osee.ote;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,9 @@ import java.util.List;
  * @author Andrew M. Finkbeiner
  *
  */
-public class Configuration {
+public class Configuration implements Serializable {
+
+   private static final long serialVersionUID = -3395485777990884086L;
 
    private ArrayList<ConfigurationItem> items;
 

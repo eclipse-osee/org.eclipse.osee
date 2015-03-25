@@ -14,6 +14,6 @@ public interface OteEventMessageCallable<T,R> {
 
    void timeout(T transmitted);
    
-   void call(T transmitted, R recieved);
+   void call(T transmitted, R recieved, OteEventMessageFuture<?, ?> future);
    
 }

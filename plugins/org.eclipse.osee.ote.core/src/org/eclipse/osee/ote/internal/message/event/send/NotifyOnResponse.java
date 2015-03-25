@@ -39,6 +39,7 @@ public class NotifyOnResponse<T extends OteEventMessage> implements EventHandler
       reg = OteEventMessageUtil.subscribe(responseTopic, this);
    }
 
+   @SuppressWarnings("unchecked")
    public NotifyOnResponse(T responseMessage, int responseId2, Lock lock2, Condition responseReceived2) {
       this((Class<T>)responseMessage.getClass(), responseMessage.getHeader().TOPIC.getValue(), responseId2, lock2, responseReceived2);
       this.responseMessage = responseMessage;

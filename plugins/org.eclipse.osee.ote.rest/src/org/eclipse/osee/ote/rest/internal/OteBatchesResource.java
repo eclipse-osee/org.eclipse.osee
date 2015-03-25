@@ -24,7 +24,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.ote.OTEApi;
-import org.eclipse.osee.ote.OTEServerFolder;
 import org.eclipse.osee.ote.core.ServiceUtility;
 
 /**

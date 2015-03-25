@@ -21,7 +21,6 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.ServiceUtility;
-import org.eclipse.osee.ote.core.cmd.Command;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
 import org.eclipse.osee.ote.core.model.IModel;
@@ -232,11 +231,6 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    @Override
    public void setBatchMode(boolean isInBatchMode) throws RemoteException {
       env.setBatchMode(isInBatchMode);
-   }
-
-   @Override
-   public void sendCommand(Command command) throws RemoteException {
-      env.sendCommand(command);
    }
 
    @Override

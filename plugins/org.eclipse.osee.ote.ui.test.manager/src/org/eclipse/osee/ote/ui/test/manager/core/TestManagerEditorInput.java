@@ -12,10 +12,14 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.io.File;
 import java.io.InputStream;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.ui.IFileEditorInput;
@@ -28,12 +32,22 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    private final IFile iFile;
 
    public TestManagerEditorInput(File file) {
-      this(AWorkspace.fileToIFile(file));
+      this(getIFile(file));
    }
 
    public TestManagerEditorInput(IFile iFile) {
       super();
       this.iFile = iFile;
+   }
+   
+   private static IFile getIFile(File file){
+      IFile ifile = AWorkspace.fileToIFile(file);
+      if(ifile == null){
+         IWorkspace workspace= ResourcesPlugin.getWorkspace();    
+         IPath location= Path.fromOSString(file.getAbsolutePath()); 
+         ifile= workspace.getRoot().getFileForLocation(location);
+      }
+      return ifile;
    }
 
    /*
@@ -102,6 +116,9 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
     */
    @Override
    public String getName() {
+      if(iFile == null){
+         return "TestManager";
+      }
       return iFile.getName();
    }
 

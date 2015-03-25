@@ -7,7 +7,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
+import org.eclipse.osee.ote.classserver.ResourceFinder;
 import org.eclipse.osee.ote.ui.builder.OTEPackagingBuilder;
 
 /**

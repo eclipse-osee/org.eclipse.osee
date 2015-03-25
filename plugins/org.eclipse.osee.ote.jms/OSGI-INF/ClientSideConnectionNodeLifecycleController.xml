@@ -11,4 +11,5 @@
 			  interface="org.eclipse.osee.framework.messaging.MessageService"
 			  name="MessageService"
 			  policy="dynamic"/>
+   <reference bind="bindOteUdpEndpoint" cardinality="1..1" interface="org.eclipse.osee.ote.endpoint.OteUdpEndpoint" name="OteUdpEndpoint" policy="dynamic"/>
 </scr:component>
