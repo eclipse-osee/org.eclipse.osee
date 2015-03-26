@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -141,16 +143,16 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andLocalId(int... artifactIds) throws OseeCoreException {
-      Set<Integer> ids = new HashSet<Integer>();
-      for (Integer id : artifactIds) {
+   public T andUuid(long... uuids) throws OseeCoreException {
+      List<Long> ids = new ArrayList<Long>(uuids.length);
+      for (long id : uuids) {
          ids.add(id);
       }
-      return andLocalIds(ids);
+      return andUuids(ids);
    }
 
    @Override
-   public T andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException {
+   public T andUuids(Collection<Long> artifactIds) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createArtifactIdCriteria(artifactIds);
       return addAndCheck(getQueryData(), criteria);
    }

@@ -492,7 +492,7 @@ public class RelationManagerImpl implements RelationManager {
       int checkArtId = destination.getLocalId() == artIdA ? artIdB : artIdA;
       // need to check if artifact to relate to exists 
       ArtifactReadable readable =
-         provider.getQueryFactory(session).fromBranch(branch).andLocalId(checkArtId).getResults().getOneOrNull();
+         provider.getQueryFactory(session).fromBranch(branch).andUuid(checkArtId).getResults().getOneOrNull();
       return readable;
    }
 

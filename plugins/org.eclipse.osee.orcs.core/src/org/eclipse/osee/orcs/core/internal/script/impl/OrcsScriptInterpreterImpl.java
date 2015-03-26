@@ -561,8 +561,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsArtifactIdCriteria(OsArtifactIdCriteria object) {
-         Collection<Integer> ids = resolver.resolve(Integer.class, object.getIds());
-         getArtifactQuery().andLocalIds(ids);
+         Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
+         getArtifactQuery().andUuids(ids);
          return null;
       }
 

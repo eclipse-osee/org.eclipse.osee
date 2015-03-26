@@ -54,7 +54,7 @@ public class OrcsRelationLoadingTest {
    }
 
    private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
+      QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andUuids(Arrays.asList(6L, 7L, 8L));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(3, resultSet.size());

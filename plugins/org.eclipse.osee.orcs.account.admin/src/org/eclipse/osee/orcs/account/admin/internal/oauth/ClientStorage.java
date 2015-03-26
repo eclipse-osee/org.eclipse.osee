@@ -83,7 +83,7 @@ public class ClientStorage {
       ArtifactReadable author;
       if (authorId > -1L) {
          int artId = idToInt(authorId);
-         author = newQuery().andLocalId(artId).getResults().getExactlyOne();
+         author = newQuery().andUuid(artId).getResults().getExactlyOne();
       } else {
          author = getSystemUser();
       }
@@ -105,7 +105,7 @@ public class ClientStorage {
 
    public ResultSet<ArtifactReadable> getClientByApplicationId(long applicationId) {
       int id = idToInt(applicationId);
-      return newQuery().andIsOfType(OAUTH_CLIENT).andLocalId(id).getResults();
+      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(id).getResults();
    }
 
    public ResultSet<ArtifactReadable> getClientByClientGuid(String guid) {

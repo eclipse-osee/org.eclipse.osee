@@ -152,12 +152,12 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       ArtifactReadable userReadable =
          newQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();
       ArtifactReadable baselineArtifact =
-         newQueryFactory().fromBranch(branchId).fromTransaction(txId).andLocalId(artId).getResults().getOneOrNull();
+         newQueryFactory().fromBranch(branchId).fromTransaction(txId).andUuid(artId).getResults().getOneOrNull();
 
       if (userReadable != null && baselineArtifact != null) {
          TransactionBuilder tx = newTxFactory().createTransaction(branchId, userReadable, comment);
          ArtifactReadable destination =
-            newQueryFactory().fromBranch(branchId).includeDeletedArtifacts().andLocalId(artId).getResults().getOneOrNull();
+            newQueryFactory().fromBranch(branchId).includeDeletedArtifacts().andUuid(artId).getResults().getOneOrNull();
          tx.replaceWithVersion(baselineArtifact, destination);
          tx.commit();
          introduced = true;

@@ -87,7 +87,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    private static final long CODED_WORD_3 = 981274L;
 
    private static final Criteria GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
-   private static final Criteria IDS = new CriteriaArtifactIds(asList(1, 2, 3, 4, 5));
+   private static final Criteria IDS = new CriteriaArtifactIds(asList(1L, 2L, 3L, 4L, 5L));
    private static final Criteria TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
    private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(Collections.singleton(CoreAttributeTypes.Name),
       asList("Hello"));

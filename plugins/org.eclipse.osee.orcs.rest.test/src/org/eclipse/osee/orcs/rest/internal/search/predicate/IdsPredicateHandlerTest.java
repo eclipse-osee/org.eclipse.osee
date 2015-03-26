@@ -40,7 +40,7 @@ public class IdsPredicateHandlerTest {
    @Captor
    private ArgumentCaptor<Collection<String>> guidsCaptor;
    @Captor
-   private ArgumentCaptor<Collection<Integer>> localIdsCaptor;
+   private ArgumentCaptor<Collection<Long>> localIdsCaptor;
 
    @Before
    public void initialize() {
@@ -57,9 +57,9 @@ public class IdsPredicateHandlerTest {
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
       handler.handle(builder, testPredicate);
-      verify(builder).andLocalIds(localIdsCaptor.capture());
+      verify(builder).andUuids(localIdsCaptor.capture());
       Assert.assertEquals(1, localIdsCaptor.getValue().size());
-      Assert.assertTrue(localIdsCaptor.getValue().contains(12345));
+      Assert.assertTrue(localIdsCaptor.getValue().contains(12345L));
    }
 
    @Test(expected = OseeArgumentException.class)

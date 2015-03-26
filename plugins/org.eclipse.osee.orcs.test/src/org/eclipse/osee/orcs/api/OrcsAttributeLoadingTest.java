@@ -53,7 +53,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testAttributeLoading() throws Exception {
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON).andLocalIds(Arrays.asList(6, 7, 8));
+      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON).andUuids(Arrays.asList(6L, 7L, 8L));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(3, resultSet.size());

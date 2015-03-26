@@ -36,7 +36,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    public ResultSet<Subscription> getSubscriptionsByAccountLocalId(long accountId) {
       int intAccountId = Long.valueOf(accountId).intValue();
       ResultSet<ArtifactReadable> accountResults =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andLocalId(intAccountId).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(intAccountId).getResults();
       ArtifactReadable account = accountResults.getExactlyOne();
 
       ResultSet<ArtifactReadable> allGroups = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
@@ -53,9 +53,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       int intAccountId = Long.valueOf(accountId).intValue();
       int intGroupId = Long.valueOf(groupId).intValue();
 
-      ArtifactReadable account = newQuery().andLocalId(intAccountId).getResults().getExactlyOne();
+      ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
       ArtifactReadable group =
-         newQuery().andLocalId(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults().getExactlyOne();
+         newQuery().andUuid(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults().getExactlyOne();
 
       String txComment =
          String.format("%s user [%s] to [%s].", activate ? "Subscribe" : "Unsubscribe", account.getName(),
@@ -86,8 +86,8 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
             int intAccountId = Long.valueOf(accountId).intValue();
             int intGroupId = Long.valueOf(groupId).intValue();
 
-            ArtifactReadable account = newQuery().andLocalId(intAccountId).getResults().getExactlyOne();
-            ArtifactReadable group = newQuery().andLocalId(intGroupId).getResults().getExactlyOne();
+            ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
+            ArtifactReadable group = newQuery().andUuid(intGroupId).getResults().getExactlyOne();
             isActive = account.areRelated(CoreRelationTypes.Users_Artifact, group);
          }
          return isActive;
@@ -104,7 +104,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    public ResultSet<SubscriptionGroup> getSubscriptionGroupByLocalId(long groupId) {
       int intGroupId = Long.valueOf(groupId).intValue();
       ResultSet<ArtifactReadable> results =
-         newQuery().andLocalId(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
+         newQuery().andUuid(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
       return getFactory().newAccountSubscriptionGroupResultSet(results);
    }
 

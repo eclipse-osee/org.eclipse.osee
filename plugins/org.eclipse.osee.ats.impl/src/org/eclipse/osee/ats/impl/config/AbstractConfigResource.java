@@ -66,7 +66,7 @@ public abstract class AbstractConfigResource {
    }
 
    private IAtsConfigObject getObject(int uuid) {
-      ArtifactReadable configArt = atsServer.getQuery().andLocalId(Integer.valueOf(uuid)).getResults().getExactlyOne();
+      ArtifactReadable configArt = atsServer.getQuery().andUuid(Integer.valueOf(uuid)).getResults().getExactlyOne();
       return atsServer.getConfigItemFactory().getConfigObject(configArt);
    }
 

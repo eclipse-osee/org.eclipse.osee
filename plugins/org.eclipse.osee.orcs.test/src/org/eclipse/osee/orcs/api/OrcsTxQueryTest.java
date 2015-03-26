@@ -585,8 +585,7 @@ public class OrcsTxQueryTest {
       /*********************************************************
        * Only valid user is 17
        */
-      Integer seventeen = new Integer(17);
-      branchQuery.andLocalIds(Arrays.asList(seventeen));
+      branchQuery.andUuids(Arrays.asList(17L));
       ResultSet<ArtifactReadable> userIds = branchQuery.getResults();
       Iterator<ArtifactReadable> itUsers = userIds.iterator();
       ArtifactId user17 = itUsers.next();

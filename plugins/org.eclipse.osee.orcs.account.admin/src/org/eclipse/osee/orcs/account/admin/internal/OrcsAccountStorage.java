@@ -103,7 +103,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<Account> getAccountByLocalId(long accountId) {
       int id = Long.valueOf(accountId).intValue();
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andLocalId(id).getResults();
+      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
@@ -124,7 +124,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    @Override
    public ResultSet<AccountPreferences> getAccountPreferencesById(long accountId) {
       int id = Long.valueOf(accountId).intValue();
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andLocalId(id).getResults();
+      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
       return getFactory().newAccountPreferencesResultSet(results);
    }
 

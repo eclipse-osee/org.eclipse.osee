@@ -129,7 +129,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    private ArtifactReadable getArtifactById(IOseeBranch branch, int id) {
       ArtifactReadable artifact = null;
       if (id > 0) {
-         artifact = newQuery().fromBranch(branch).andLocalId(id).getResults().getExactlyOne();
+         artifact = newQuery().fromBranch(branch).andUuid(id).getResults().getExactlyOne();
       }
       return artifact;
    }
@@ -563,7 +563,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (isDifferent(branch.getAssociatedArtifactId(), artifactId)) {
          ArtifactReadable artifact =
-            newQuery().fromBranch(CoreBranches.COMMON).andLocalId(artifactId).getResults().getExactlyOne();
+            newQuery().fromBranch(CoreBranches.COMMON).andUuid(artifactId).getResults().getExactlyOne();
          Callable<?> op = getBranchOps().associateBranchToArtifact(branch, artifact);
          executeCallable(op);
          modified = true;

@@ -59,14 +59,14 @@ public interface ArtifactQueryBuilder<T> {
    T excludeDeleted();
 
    /**
-    * Search criteria that finds a given artifact id
+    * Search criteria that finds the artifact with given uuid (artifact id)
     */
-   T andLocalId(int... artifactId) throws OseeCoreException;
+   T andUuid(long... uuid) throws OseeCoreException;
 
    /**
-    * Search criteria that finds a given artifact ids
+    * Search criteria that finds the artifacts of given uuids (artifact ids)
     */
-   T andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException;
+   T andUuids(Collection<Long> uuids) throws OseeCoreException;
 
    /**
     * Search criteria that finds a given artifact with guid

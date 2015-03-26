@@ -44,7 +44,7 @@ public class AgileFolders {
    }
 
    public static ArtifactReadable getTeamFolder(IAtsServer atsServer, long teamUuid) {
-      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andLocalId(
+      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andUuid(
          new Long(teamUuid).intValue()).getResults().getAtMostOneOrNull();
    }
 

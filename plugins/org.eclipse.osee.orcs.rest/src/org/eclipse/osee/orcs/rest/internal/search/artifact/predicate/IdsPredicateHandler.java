@@ -35,17 +35,17 @@ public class IdsPredicateHandler implements PredicateHandler {
 
       Conditions.checkNotNull(values, "values");
 
-      Collection<Integer> rawIds = new HashSet<Integer>();
+      Collection<Long> rawIds = new HashSet<Long>();
       for (String value : values) {
          if (value.matches("\\d+")) {
-            rawIds.add(Integer.parseInt(value));
+            rawIds.add(Long.parseLong(value));
          } else {
             throw new OseeArgumentException("Non integer value passed for IDS search: [%s]", value);
          }
       }
 
       if (!rawIds.isEmpty()) {
-         builder.andLocalIds(rawIds);
+         builder.andUuids(rawIds);
       }
       return builder;
    }

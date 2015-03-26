@@ -100,7 +100,7 @@ public class CriteriaFactory {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 
-   public Criteria createArtifactIdCriteria(Collection<Integer> artifactIds) throws OseeCoreException {
+   public Criteria createArtifactIdCriteria(Collection<Long> artifactIds) throws OseeCoreException {
       return new CriteriaArtifactIds(artifactIds);
    }
 

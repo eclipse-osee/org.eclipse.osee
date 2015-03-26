@@ -155,7 +155,7 @@ public class AgileService implements IAgileService {
    public IAgileBacklog getBacklogForTeam(long teamUuid) {
       IAgileBacklog backlog = null;
       ArtifactReadable teamArt =
-         atsServer.getQuery().andLocalId(Long.valueOf(teamUuid).intValue()).getResults().getAtMostOneOrNull();
+         atsServer.getQuery().andUuid(Long.valueOf(teamUuid).intValue()).getResults().getAtMostOneOrNull();
       ArtifactReadable backlogArt =
          teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
       if (backlogArt != null) {
@@ -178,7 +178,7 @@ public class AgileService implements IAgileService {
    }
 
    private ArtifactReadable getArtifact(long teamUuid) {
-      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andLocalId(
+      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andUuid(
          new Long(teamUuid).intValue()).getResults().getAtMostOneOrNull();
    }
 

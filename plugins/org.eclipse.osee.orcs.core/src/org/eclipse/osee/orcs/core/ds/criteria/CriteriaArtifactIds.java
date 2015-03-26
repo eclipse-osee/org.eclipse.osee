@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaArtifactIds extends Criteria {
 
-   private final Collection<Integer> ids;
+   private final Collection<Long> ids;
 
-   public CriteriaArtifactIds(Collection<Integer> ids) {
+   public CriteriaArtifactIds(Collection<Long> ids) {
       super();
       this.ids = ids;
    }
@@ -33,7 +33,7 @@ public class CriteriaArtifactIds extends Criteria {
       Conditions.checkNotNullOrEmpty(ids, "artifact ids");
    }
 
-   public Collection<Integer> getIds() {
+   public Collection<Long> getIds() {
       return ids;
    }
 
