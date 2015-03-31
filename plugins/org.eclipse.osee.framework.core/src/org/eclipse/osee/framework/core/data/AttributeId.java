@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.data;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.HasLocalId;
 
 /**
  * @author Megumi Telles

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.util;
 
 import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.orcs.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 
 /**
  * @author Donald G Dunne

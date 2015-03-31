@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.orcs.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 
 /**
  * @author Roberto E. Escobar
