@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllTxs;
@@ -29,7 +30,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithTwoOperators;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.search.Operator;
 
 /**

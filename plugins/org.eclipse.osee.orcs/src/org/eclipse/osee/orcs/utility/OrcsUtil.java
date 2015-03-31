@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.utility;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
-import org.eclipse.osee.orcs.data.ArtifactId;
 
 /**
  * @author Angel Avila

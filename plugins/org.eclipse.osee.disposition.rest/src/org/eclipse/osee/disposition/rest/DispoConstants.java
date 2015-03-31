@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.utility.OrcsUtil;
 
 /**

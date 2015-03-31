@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.users;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 /**
  * @author Donald G. Dunne
  */
