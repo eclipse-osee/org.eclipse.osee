@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 

@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
-import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import com.google.common.io.InputSupplier;
 
 /**

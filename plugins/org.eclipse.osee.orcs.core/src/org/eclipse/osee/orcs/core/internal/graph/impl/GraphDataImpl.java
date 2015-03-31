@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -19,7 +20,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
-import org.eclipse.osee.orcs.data.HasLocalId;
 
 /**
  * @author Roberto E. Escobar

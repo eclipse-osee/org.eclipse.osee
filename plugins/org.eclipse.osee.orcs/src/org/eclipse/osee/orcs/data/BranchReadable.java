@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;

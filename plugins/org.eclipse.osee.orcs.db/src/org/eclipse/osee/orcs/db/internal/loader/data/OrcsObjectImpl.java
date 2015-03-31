@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import org.eclipse.osee.orcs.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.HasLocalId;
+
 /**
  * @author Megumi Telles
  */
