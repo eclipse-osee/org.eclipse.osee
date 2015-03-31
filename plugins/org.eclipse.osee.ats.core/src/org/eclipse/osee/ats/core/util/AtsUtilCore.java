@@ -15,8 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -24,8 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.orcs.data.ArtifactId;
-import org.eclipse.osee.orcs.data.AttributeId;
 
 /**
  * @author Donald G. Dunne
@@ -116,14 +112,6 @@ public class AtsUtilCore {
       } else {
          return String.format("%4.2f", d);
       }
-   }
-
-   public static ArtifactId toArtifactId(IAtsWorkItem workItem) {
-      return new ArtifactIdWrapper(workItem);
-   }
-
-   public static AttributeId toAttributeId(IAttribute<?> attr) {
-      return new AttributeIdWrapper(attr);
    }
 
    public static String toStringWithId(Identifiable<String> obj) {

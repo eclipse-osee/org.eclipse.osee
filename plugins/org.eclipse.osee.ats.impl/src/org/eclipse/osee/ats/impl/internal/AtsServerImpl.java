@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
@@ -69,7 +69,7 @@ import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
-import org.eclipse.osee.ats.impl.internal.util.AtsStoreFactoryImpl;
+import org.eclipse.osee.ats.impl.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
@@ -117,7 +117,7 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsConfigItemFactory configItemFactory;
    private IAtsLogFactory atsLogFactory;
    private IAtsStateFactory atsStateFactory;
-   private IAtsStoreFactory atsStoreFactory;
+   private IAtsStoreService atsStoreService;
    private IAtsUtilService utilService;
    private ISequenceProvider sequenceProvider;
    private IAtsActionFactory actionFactory;
@@ -202,7 +202,7 @@ public class AtsServerImpl implements IAtsServer {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      atsStoreFactory = new AtsStoreFactoryImpl(attributeResolverService, this, atsStateFactory, atsLogFactory, this);
+      atsStoreService = new AtsStoreServiceImpl(attributeResolverService, this, atsStateFactory, atsLogFactory, this);
 
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
       sequenceProvider = new ISequenceProvider() {
@@ -214,7 +214,7 @@ public class AtsServerImpl implements IAtsServer {
 
       };
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
-      actionableItemManager = new ActionableItemManager(config, attributeResolverService);
+      actionableItemManager = new ActionableItemManager(config, attributeResolverService, atsStoreService);
       actionFactory =
          new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
             userService, attributeResolverService, atsStateFactory, config, getServices());
@@ -313,8 +313,8 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public IAtsStoreFactory getStoreFactory() {
-      return atsStoreFactory;
+   public IAtsStoreService getStoreFactory() {
+      return atsStoreService;
    }
 
    @Override

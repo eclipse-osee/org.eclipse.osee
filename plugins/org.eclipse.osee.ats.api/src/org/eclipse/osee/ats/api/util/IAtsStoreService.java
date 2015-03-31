@@ -8,25 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.api.util;
 
-import org.eclipse.osee.ats.api.workflow.IAttribute;
-import org.eclipse.osee.orcs.data.AttributeId;
+import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 
-/**
- * @author Donald G Dunne
- */
-public class AttributeIdWrapper implements AttributeId {
+public interface IAtsStoreService {
 
-   private final IAttribute<?> attribute;
+   IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user);
 
-   public AttributeIdWrapper(IAttribute<?> attribute) {
-      this.attribute = attribute;
-   }
+   List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows);
 
-   @Override
-   public Integer getLocalId() {
-      return attribute.getId();
-   }
-
+   boolean isDeleted(IAtsObject atsObject);
 }

@@ -13,11 +13,12 @@ package org.eclipse.osee.ats.impl.internal.util;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -28,7 +29,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Donald G. Dunne
  */
-public class AtsStoreFactoryImpl implements IAtsStoreFactory {
+public class AtsStoreServiceImpl implements IAtsStoreService {
 
    private final IAttributeResolver attributeResolver;
    private final IAtsStateFactory stateFactory;
@@ -36,7 +37,7 @@ public class AtsStoreFactoryImpl implements IAtsStoreFactory {
    private final IAtsNotifier notifier;
    private final IAtsServer atsServer;
 
-   public AtsStoreFactoryImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
+   public AtsStoreServiceImpl(IAttributeResolver attributeResolver, IAtsServer atsServer, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, IAtsNotifier notifier) {
       this.atsServer = atsServer;
       this.attributeResolver = attributeResolver;
       this.logFactory = logFactory;
@@ -59,5 +60,10 @@ public class AtsStoreFactoryImpl implements IAtsStoreFactory {
          workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));
       }
       return workItems;
+   }
+
+   @Override
+   public boolean isDeleted(IAtsObject atsObject) {
+      return ((ArtifactReadable) atsObject.getStoreObject()).isDeleted();
    }
 }

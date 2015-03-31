@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -34,18 +34,20 @@ public class ActionableItemManager {
 
    private final IAtsConfig atsConfig;
    private final IAttributeResolver attrResolver;
+   private final IAtsStoreService atsStoreService;
 
-   public ActionableItemManager(IAtsConfig atsConfig, IAttributeResolver attrResolver) {
+   public ActionableItemManager(IAtsConfig atsConfig, IAttributeResolver attrResolver, IAtsStoreService atsStoreService) {
       this.atsConfig = atsConfig;
       this.attrResolver = attrResolver;
+      this.atsStoreService = atsStoreService;
    }
 
    public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
-      if (!((ArtifactReadable) atsObject.getStoreObject()).isDeleted()) {
+      if (!atsStoreService.isDeleted(atsObject)) {
          for (String guid : getActionableItemGuids(atsObject)) {
             IAtsActionableItem aia = atsConfig.getSoleByGuid(guid, IAtsActionableItem.class);
-            if (aia == null && !((ArtifactReadable) atsObject.getStoreObject()).isDeleted()) {
+            if (aia == null) {
                OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
                   AtsUtilCore.toStringWithId(atsObject));

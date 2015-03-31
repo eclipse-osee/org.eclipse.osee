@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.cpa.CpaProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -63,7 +62,7 @@ public class CpaFactory {
    }
 
    public static CpaBuild getVersion(IAtsVersion version, Object storeObject) {
-      Long uuid = Long.valueOf(((ArtifactReadable) version.getStoreObject()).getLocalId());
+      Long uuid = version.getId();
       CpaBuild build = new CpaBuild(uuid, version.getName());
       setStoreObject(String.valueOf(uuid), storeObject);
       return build;

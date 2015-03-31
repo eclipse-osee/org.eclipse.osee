@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.api.util.IAtsStoreFactory;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
@@ -58,7 +58,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    ArtifactReadable getArtifactByGuid(String guid);
 
-   IAtsStoreFactory getStoreFactory();
+   IAtsStoreService getStoreFactory();
 
    @Override
    IAtsConfigItemFactory getConfigItemFactory();
@@ -105,7 +105,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    IAgileService getAgileService();
 
    IAtsQueryService getQueryService();
-   
+
    Collection<ArtifactReadable> getArtifacts(List<Long> uuids);
 
 }

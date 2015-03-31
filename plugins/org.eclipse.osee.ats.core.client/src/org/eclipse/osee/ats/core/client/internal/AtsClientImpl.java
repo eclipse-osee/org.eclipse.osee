@@ -162,6 +162,7 @@ public class AtsClientImpl implements IAtsClient {
    private IAtsQueryService atsQueryService;
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
+   private AtsStoreService atsStoreService;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -222,8 +223,9 @@ public class AtsClientImpl implements IAtsClient {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
+      atsStoreService = new AtsStoreService();
 
-      actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService);
+      actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService, atsStoreService);
       sequenceProvider = new ISequenceProvider() {
 
          @Override

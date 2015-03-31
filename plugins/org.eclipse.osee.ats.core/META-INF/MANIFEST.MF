@@ -12,8 +12,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.xml,
- org.eclipse.osee.framework.logging,
- org.eclipse.osee.orcs.data
+ org.eclipse.osee.framework.logging
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.ai,
