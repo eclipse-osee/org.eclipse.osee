@@ -43,7 +43,7 @@ public class DataRightBuilder {
 
    private final OrcsApi orcsApi;
 
-   private static final IArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken("AOkJ_kFNbEXCS7UjmfwA",
+   private static final IArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258, "AOkJ_kFNbEXCS7UjmfwA",
       "DataRightsFooters", CoreArtifactTypes.GeneralData);
 
    public DataRightBuilder(OrcsApi orcsApi) {

@@ -60,7 +60,7 @@ public class MergeManagerTest {
 
    private Branch workingBranch;
    private static Artifact newArt;
-   public static IArtifactToken NewArtifactToken = TokenFactory.createArtifactToken("AAABER+3yR4A8O7WYQ+Xaw",
+   public static IArtifactToken NewArtifactToken = TokenFactory.createArtifactToken(3534859, "AAABER+3yR4A8O7WYQ+Xaw",
       "ART_NAME", CoreArtifactTypes.SoftwareRequirement);
 
    private static final int DELETE_MERGE = 2;

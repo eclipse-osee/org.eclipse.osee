@@ -1703,6 +1703,14 @@ public final class Lib {
       return next;
    }
 
+   public static Long generateUuidAsInt() {
+      long next = 0;
+      while (next <= 0) {
+         next = RANDOM.nextInt();
+      }
+      return next;
+   }
+
    /**
     * NOW_IS_THE_TIME to nowIsTheTime
     */

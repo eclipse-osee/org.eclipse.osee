@@ -34,9 +34,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
 
-   public static IArtifactToken Software_Team = TokenFactory.createArtifactToken("AGZs2EW0tWRkIv3OqfAA",
+   public static IArtifactToken Software_Team = TokenFactory.createArtifactToken(4696084, "AGZs2EW0tWRkIv3OqfAA",
       "AtsConfig2 Software", AtsArtifactTypes.TeamDefinition);
-   public static IArtifactToken Requirements_Team = TokenFactory.createArtifactToken("AGZs2EU1d3db9M57WJQA",
+   public static IArtifactToken Requirements_Team = TokenFactory.createArtifactToken(4696085, "AGZs2EU1d3db9M57WJQA",
       "AtsConfig2 Requirements", AtsArtifactTypes.TeamDefinition);
 
    public AtsConfig2DataExample() {

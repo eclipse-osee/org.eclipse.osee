@@ -19,47 +19,47 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class AtsArtifactToken {
 
-   public static final IArtifactToken AtsConfig = TokenFactory.createArtifactToken("Af7L9SYYgCcBCKZ8CCwA", "AtsConfig",
+   public static final IArtifactToken AtsConfig = TokenFactory.createArtifactToken(5367053, "Af7L9SYYgCcBCKZ8CCwA", "AtsConfig",
       CoreArtifactTypes.GeneralData);
-   public static final IArtifactToken Users = TokenFactory.createArtifactToken("AAABGTAGb+8BauB5Cw1QNA", "Users",
+   public static final IArtifactToken Users = TokenFactory.createArtifactToken(95459, "AAABGTAGb+8BauB5Cw1QNA", "Users",
       CoreArtifactTypes.Folder);
-   public static IArtifactToken HeadingFolder = TokenFactory.createArtifactToken("AAABER+3yR4A8O7WYQ+Xbw",
+   public static IArtifactToken HeadingFolder = TokenFactory.createArtifactToken(114713, "AAABER+3yR4A8O7WYQ+Xbw",
       "Action Tracking System", CoreArtifactTypes.Folder);
-   public static IArtifactToken TopTeamDefinition = TokenFactory.createArtifactToken("AAABER+35b4A8O7WHrXTiA", "Teams",
+   public static IArtifactToken TopTeamDefinition = TokenFactory.createArtifactToken(56004, "AAABER+35b4A8O7WHrXTiA", "Teams",
       AtsArtifactTypes.TeamDefinition);
-   public static IArtifactToken TopActionableItem = TokenFactory.createArtifactToken("AAABER+37QEA8O7WSQaqJQ",
+   public static IArtifactToken TopActionableItem = TokenFactory.createArtifactToken(122894, "AAABER+37QEA8O7WSQaqJQ",
       "Actionable Items", AtsArtifactTypes.ActionableItem);
-   public static IArtifactToken ConfigFolder = TokenFactory.createArtifactToken("AAABF4n18eYAc1ruQSSWdg", "Config",
+   public static IArtifactToken ConfigFolder = TokenFactory.createArtifactToken(113036, "AAABF4n18eYAc1ruQSSWdg", "Config",
       CoreArtifactTypes.Folder);
-   public static IArtifactToken ConfigsFolder = TokenFactory.createArtifactToken("BEmf1DEFnwkUqC9o3hwA", "Configs",
+   public static IArtifactToken ConfigsFolder = TokenFactory.createArtifactToken(5086714, "BEmf1DEFnwkUqC9o3hwA", "Configs",
       CoreArtifactTypes.Folder);
-   public static IArtifactToken WorkDefinitionsFolder = TokenFactory.createArtifactToken("ADTfjCLEj2DH2WYyeOgA",
+   public static IArtifactToken WorkDefinitionsFolder = TokenFactory.createArtifactToken(284655, "ADTfjCLEj2DH2WYyeOgA",
       "Work Definitions", CoreArtifactTypes.Folder);
-   public static IArtifactToken WebPrograms = TokenFactory.createArtifactToken("Awsk_RtncCochcuSxagA", "Web Programs",
+   public static IArtifactToken WebPrograms = TokenFactory.createArtifactToken(277592, "Awsk_RtncCochcuSxagA", "Web Programs",
       CoreArtifactTypes.UniversalGroup);
-   public static IArtifactToken WorkDef_State_Names = TokenFactory.createArtifactToken("BFqfTrN8W3QmQSFAi6wA",
+   public static IArtifactToken WorkDef_State_Names = TokenFactory.createArtifactToken(1330130, "BFqfTrN8W3QmQSFAi6wA",
       "WorkDef_State_Names", CoreArtifactTypes.GeneralData);
-   public static IArtifactToken AtsAdmin = TokenFactory.createArtifactToken("AAABHaItoVsAG6ZAAMyhQw", "AtsAdmin",
+   public static IArtifactToken AtsAdmin = TokenFactory.createArtifactToken(136750, "AAABHaItoVsAG6ZAAMyhQw", "AtsAdmin",
       CoreArtifactTypes.UserGroup);
-   public static IArtifactToken AtsTempAdmin = TokenFactory.createArtifactToken("AAABHaItoVsAG7ZAAMyhQw",
+   public static IArtifactToken AtsTempAdmin = TokenFactory.createArtifactToken(5367074, "AAABHaItoVsAG7ZAAMyhQw",
       "AtsTempAdmin", CoreArtifactTypes.UserGroup);
 
    // Default Work Definitions
-   public static IArtifactToken WorkDef_Goal = TokenFactory.createArtifactToken("BAB1YhIbUQWluN2+SVgA", "WorkDef_Goal",
+   public static IArtifactToken WorkDef_Goal = TokenFactory.createArtifactToken(142177, "BAB1YhIbUQWluN2+SVgA", "WorkDef_Goal",
       AtsArtifactTypes.WorkDefinition);
-   public static IArtifactToken WorkDef_Review_Decision = TokenFactory.createArtifactToken("A__fwv3zpnS2oEVTaDQA",
+   public static IArtifactToken WorkDef_Review_Decision = TokenFactory.createArtifactToken(25335, "A__fwv3zpnS2oEVTaDQA",
       "WorkDef_Review_Decision", AtsArtifactTypes.WorkDefinition);
-   public static IArtifactToken WorkDef_Review_PeerToPeer = TokenFactory.createArtifactToken("A__WLyb77Cl_diWCUmAA",
+   public static IArtifactToken WorkDef_Review_PeerToPeer = TokenFactory.createArtifactToken(25334, "A__WLyb77Cl_diWCUmAA",
       "WorkDef_Review_PeerToPeer", AtsArtifactTypes.WorkDefinition);
-   public static IArtifactToken WorkDef_Task_Default = TokenFactory.createArtifactToken("BABAJntqsGoKosWZtKgA",
+   public static IArtifactToken WorkDef_Task_Default = TokenFactory.createArtifactToken(105373, "BABAJntqsGoKosWZtKgA",
       "WorkDef_Task_Default", AtsArtifactTypes.WorkDefinition);
-   public static IArtifactToken WorkDef_Team_Default = TokenFactory.createArtifactToken("BADtJXMuZ1e9+5AgyRwA",
+   public static IArtifactToken WorkDef_Team_Default = TokenFactory.createArtifactToken(72301, "BADtJXMuZ1e9+5AgyRwA",
       "WorkDef_Team_Default", AtsArtifactTypes.WorkDefinition);
-   public static IArtifactToken WorkDef_Team_Simple = TokenFactory.createArtifactToken("BAEWlOp78DShE_gJymAA",
+   public static IArtifactToken WorkDef_Team_Simple = TokenFactory.createArtifactToken(72302, "BAEWlOp78DShE_gJymAA",
       "WorkDef_Team_Simple", AtsArtifactTypes.WorkDefinition);
 
    // Agile
-   public static IArtifactToken TopAgileFolder = TokenFactory.createArtifactToken("APFgz7OwBmpcrGt0DbQA", "Agile",
+   public static IArtifactToken TopAgileFolder = TokenFactory.createArtifactToken(6915493, "APFgz7OwBmpcrGt0DbQA", "Agile",
       CoreArtifactTypes.Folder);
 
    private AtsArtifactToken() {

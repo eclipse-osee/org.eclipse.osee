@@ -44,4 +44,9 @@ public final class DefaultBasicArtifact extends NamedIdentity<String> implements
    public Branch getBranch() {
       return null;
    }
+
+   @Override
+   public long getUuid() {
+      return 0;
+   }
 }

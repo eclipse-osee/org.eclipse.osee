@@ -1745,4 +1745,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       return types;
    }
 
+   @Override
+   public long getUuid() {
+      return getArtId();
+   }
+
 }

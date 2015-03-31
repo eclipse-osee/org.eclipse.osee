@@ -305,6 +305,11 @@ public class ArtifactMatchInterpreterTest {
             return false;
          }
 
+         @Override
+         public long getUuid() {
+            return 0;
+         }
+
       };
    }
 }

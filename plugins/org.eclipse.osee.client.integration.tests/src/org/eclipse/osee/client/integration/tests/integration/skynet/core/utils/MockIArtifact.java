@@ -77,4 +77,9 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
       return Collections.emptyList();
    }
 
+   @Override
+   public long getUuid() {
+      return uniqueId;
+   }
+
 }

@@ -170,7 +170,7 @@ public class ArtifactTypeManager {
 
    public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
-         artifactToken.getName(), artifactToken.getGuid());
+         artifactToken.getName(), artifactToken.getGuid(), artifactToken.getUuid());
    }
 
    private static final String COUNT_ARTIFACT_OCCURRENCE =

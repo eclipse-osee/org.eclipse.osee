@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
@@ -47,12 +48,15 @@ public final class TokenFactory {
       return new AccessContextIdToken(guid, name);
    }
 
-   public static IArtifactToken createArtifactToken(String guid, String name, IArtifactType artifactType) {
-      return new ArtifactToken(guid, name, artifactType);
+   public static IArtifactToken createArtifactToken(long uuid, String guid, String name, IArtifactType artifactType) {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Artifact Token Uuid must be > 0 for token [%s] type [%s]", name,
+         artifactType);
+      return new ArtifactToken(uuid, guid, name, artifactType);
    }
 
-   public static IUserToken createUserToken(String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
-      return new UserToken(guid, name, userId, active, admin, email, creationRequired);
+   public static IUserToken createUserToken(long uuid, String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0, "User Token Uuid must be > 0 for userId [%s]", userId);
+      return new UserToken(uuid, guid, name, userId, active, admin, email, creationRequired);
    }
 
    public static IOseeBranch createBranch(String name) {
@@ -130,15 +134,22 @@ public final class TokenFactory {
 
    private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
       private final IArtifactType artifactType;
+      private final long uuid;
 
-      public ArtifactToken(String guid, String name, IArtifactType artifactType) {
+      public ArtifactToken(long uuid, String guid, String name, IArtifactType artifactType) {
          super(guid, name);
+         this.uuid = uuid;
          this.artifactType = artifactType;
       }
 
       @Override
       public IArtifactType getArtifactType() {
          return artifactType;
+      }
+
+      @Override
+      public long getUuid() {
+         return uuid;
       }
    }
 
@@ -149,9 +160,11 @@ public final class TokenFactory {
       private final boolean admin;
       private final String email;
       private final boolean creationRequired;
+      private final long uuid;
 
-      public UserToken(String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
+      public UserToken(long uuid, String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
          super(guid, name);
+         this.uuid = uuid;
          this.userId = userId;
          this.active = active;
          this.admin = admin;
@@ -193,6 +206,11 @@ public final class TokenFactory {
       public String toString() {
          return String.format("UserToken [userId=[%s], active=[%s], admin=[%s], email=[%s], creationRequired=[%s]",
             userId, active, admin, email, creationRequired);
+      }
+
+      @Override
+      public long getUuid() {
+         return uuid;
       }
 
    }

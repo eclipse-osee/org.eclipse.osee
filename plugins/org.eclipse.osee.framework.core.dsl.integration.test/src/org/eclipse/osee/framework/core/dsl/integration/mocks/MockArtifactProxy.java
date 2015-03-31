@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
  * @author Roberto E. Escobar
@@ -92,5 +91,10 @@ public class MockArtifactProxy implements ArtifactProxy {
    @Override
    public boolean matches(Identity... identities) {
       return artifactObject.matches(identities);
+   }
+
+   @Override
+   public long getUuid() {
+      return artifactObject.getArtId();
    }
 }

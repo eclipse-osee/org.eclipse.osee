@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -106,7 +107,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    private IUserToken getOseeUser(final UserDef dslUserDef) {
-      return TokenFactory.createUserToken(GUID.create(), Strings.unquote(dslUserDef.getName()),
+      return TokenFactory.createUserToken(Lib.generateUuidAsInt(), GUID.create(),
+         Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),
          BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
@@ -321,8 +323,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          AttrDefOptions attrDefOption = attrDef.getOption();
          if (attrDefOption instanceof AttrValueDef) {
             AttributeType attrType = AttributeTypeManager.getType(attrName);
-            newProgramArt.addAttributeFromString(attrType,
-               Strings.unquote(((AttrValueDef) attrDefOption).getValue()));
+            newProgramArt.addAttributeFromString(attrType, Strings.unquote(((AttrValueDef) attrDefOption).getValue()));
          } else if (attrDefOption instanceof AttrFullDef) {
             AttrFullDef attrFullDef = (AttrFullDef) attrDefOption;
             if (Strings.isValid(attrFullDef.getUuid())) {

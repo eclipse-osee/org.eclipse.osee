@@ -62,13 +62,13 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
-   IArtifactToken Version_2_5_6 = TokenFactory.createArtifactToken("A8Yqcqy9Ewu1LTNllrAA", "2.5.6",
+   IArtifactToken Version_2_5_6 = TokenFactory.createArtifactToken(212596, "A8Yqcqy9Ewu1LTNllrAA", "2.5.6",
       AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_7 = TokenFactory.createArtifactToken("A8YqcqzY91Im4M9XsKQA", "2.5.7",
+   IArtifactToken Version_2_5_7 = TokenFactory.createArtifactToken(443308, "A8YqcqzY91Im4M9XsKQA", "2.5.7",
       AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_8 = TokenFactory.createArtifactToken("A8YqcqzzHG5BUQ4PJqwA", "2.5.8",
+   IArtifactToken Version_2_5_8 = TokenFactory.createArtifactToken(666319, "A8YqcqzzHG5BUQ4PJqwA", "2.5.8",
       AtsArtifactTypes.Version);
-   IArtifactToken atsActionableItem = TokenFactory.createArtifactToken("AAABER+4zV8A8O7WAtxxaA",
+   IArtifactToken atsActionableItem = TokenFactory.createArtifactToken(126809, "AAABER+4zV8A8O7WAtxxaA",
       "Action Tracking System", AtsArtifactTypes.ActionableItem);
 
    public AtsRemoteEventTestItem(XNavigateItem parent) {

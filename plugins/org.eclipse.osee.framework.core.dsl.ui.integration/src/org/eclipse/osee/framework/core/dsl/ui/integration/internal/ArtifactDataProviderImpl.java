@@ -134,5 +134,10 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       public String toString() {
          return self.toString();
       }
+
+      @Override
+      public long getUuid() {
+         return self.getArtId();
+      }
    }
 }

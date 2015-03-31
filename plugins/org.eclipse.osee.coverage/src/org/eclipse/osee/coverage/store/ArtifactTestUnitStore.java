@@ -49,7 +49,7 @@ public class ArtifactTestUnitStore implements ITestUnitStore {
    private final Artifact coveragePackage;
    private Artifact readOnlyTestUnitNames;
 
-   private static final IArtifactToken READ_ONLY_TEST_UNIT_NAMES = TokenFactory.createArtifactToken(
+   private static final IArtifactToken READ_ONLY_TEST_UNIT_NAMES = TokenFactory.createArtifactToken(1971647,
       "Bs+PvSVQf3R5EHSTcyQA", "ReadOnlyTestUnitNames", CoreArtifactTypes.GeneralData);
    public static final String READ_ONLY_GUID = READ_ONLY_TEST_UNIT_NAMES.getGuid();
    private final AtomicBoolean isRegisteredForEvents = new AtomicBoolean(false);
