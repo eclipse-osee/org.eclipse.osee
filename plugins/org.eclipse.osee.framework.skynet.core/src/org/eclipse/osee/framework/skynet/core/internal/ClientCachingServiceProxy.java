@@ -52,7 +52,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private JdbcService jdbcService;
    private OseeClient oseeClient;
 
-   private DslToTypeLoader typesLoader;
    private BranchCache branchCache;
    private TransactionCache txCache;
 
@@ -78,8 +77,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache, new BranchFactory()), txCache);
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, branchCache, new TransactionRecordFactory()));
 
-      typesLoader = new DslToTypeLoader(branchCache);
-
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();
       attributeTypeCache = new AttributeTypeCache();
@@ -104,8 +101,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       branchCache = null;
       txCache = null;
-
-      typesLoader = null;
    }
 
    @Override
@@ -156,22 +151,21 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
    @Override
    public void reloadTypes() {
-      synchronized (typesLoader) {
-         typesLoader.loadTypes(this, new InputSupplier<InputStream>() {
-            @Override
-            public InputStream getInput() {
-               OseeLog.log(Activator.class, Level.INFO, "Loading All type caches <<<<<<<<<<<<<<<<<<<<<<");
-               TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
-               try {
-                  Response response = typesEndpoint.getTypes();
-                  return response.hasEntity() ? response.readEntity(InputStream.class) : new ByteArrayInputStream(
-                     new byte[0]);
-               } catch (Exception ex) {
-                  throw JaxRsExceptions.asOseeException(ex);
-               }
+      DslToTypeLoader typesLoader = new DslToTypeLoader(branchCache);
+      typesLoader.loadTypes(this, new InputSupplier<InputStream>() {
+         @Override
+         public InputStream getInput() {
+            OseeLog.log(Activator.class, Level.INFO, "Loading All type caches <<<<<<<<<<<<<<<<<<<<<<");
+            TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
+            try {
+               Response response = typesEndpoint.getTypes();
+               return response.hasEntity() ? response.readEntity(InputStream.class) : new ByteArrayInputStream(
+                  new byte[0]);
+            } catch (Exception ex) {
+               throw JaxRsExceptions.asOseeException(ex);
             }
-         });
-      }
+         }
+      });
    }
 
    @Override
