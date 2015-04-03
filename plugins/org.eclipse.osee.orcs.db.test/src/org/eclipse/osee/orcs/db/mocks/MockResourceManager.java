@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 
@@ -22,16 +21,6 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
  * @author Roberto E. Escobar
  */
 public class MockResourceManager implements IResourceManager {
-
-   @Override
-   public boolean addResourceListener(IResourceListener listener) {
-      return false;
-   }
-
-   @Override
-   public boolean removeResourceListener(IResourceListener listener) {
-      return false;
-   }
 
    @Override
    public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {

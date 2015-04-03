@@ -24,16 +24,6 @@ public interface IResourceManager {
    public static final int RESOURCE_NOT_FOUND = 3;
 
    /**
-    * Add listener to list
-    */
-   boolean addResourceListener(IResourceListener listener);
-
-   /**
-    * Remove listener from list
-    */
-   boolean removeResourceListener(IResourceListener listener);
-
-   /**
     * Acquire resource specified by resource locator
     * 
     * @param locator location of the resource needed

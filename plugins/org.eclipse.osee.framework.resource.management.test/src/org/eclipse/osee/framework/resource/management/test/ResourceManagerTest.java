@@ -15,13 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.internal.ResourceManager;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockLocatorProvider;
-import org.eclipse.osee.framework.resource.management.test.mocks.MockResourceListener;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockResourceLocator;
 import org.eclipse.osee.framework.resource.management.test.mocks.ResourceProviderAdaptor;
 import org.junit.Assert;
@@ -71,16 +69,6 @@ public class ResourceManagerTest {
       Assert.assertTrue(resourceManagerX.addResourceProvider(provider1));
       Assert.assertFalse(resourceManagerX.addResourceProvider(provider1)); // Add again
       Assert.assertTrue(resourceManagerX.removeResourceProvider(provider1));
-   }
-
-   @Test
-   public void testAddRemoveListener() {
-      ResourceManager resourceManagerX = new ResourceManager();
-      IResourceListener listener = new MockResourceListener();
-      Assert.assertTrue(resourceManagerX.addResourceListener(listener));
-      Assert.assertFalse(resourceManagerX.addResourceListener(listener)); // Add again
-      Assert.assertTrue(resourceManagerX.removeResourceListener(listener));
-      Assert.assertFalse(resourceManagerX.removeResourceListener(listener)); // Add again
    }
 
    @Test

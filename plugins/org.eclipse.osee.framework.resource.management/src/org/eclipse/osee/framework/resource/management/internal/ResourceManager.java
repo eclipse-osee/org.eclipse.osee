@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -30,60 +29,12 @@ import org.eclipse.osee.framework.resource.management.IResourceProvider;
  */
 public class ResourceManager implements IResourceManager {
 
-   private final Collection<IResourceListener> listeners;
    private final Collection<IResourceProvider> resourceProviders;
    private final Collection<IResourceLocatorProvider> resourceLocatorProviders;
 
    public ResourceManager() {
-      this.listeners = new CopyOnWriteArraySet<IResourceListener>();
       this.resourceProviders = new CopyOnWriteArraySet<IResourceProvider>();
       this.resourceLocatorProviders = new CopyOnWriteArraySet<IResourceLocatorProvider>();
-   }
-
-   @Override
-   public boolean addResourceListener(IResourceListener listener) {
-      return listeners.add(listener);
-   }
-
-   @Override
-   public boolean removeResourceListener(IResourceListener listener) {
-      return listeners.remove(listener);
-   }
-
-   private void notifyPreOnDelete(final IResourceLocator locator) {
-      for (IResourceListener listener : listeners) {
-         listener.onPreDelete(locator);
-      }
-   }
-
-   private void notifyPostOnDelete(final IResourceLocator locator) {
-      for (IResourceListener listener : listeners) {
-         listener.onPostDelete(locator);
-      }
-   }
-
-   private void notifyPreOnSave(final IResourceLocator locator, IResource resource, PropertyStore options) {
-      for (IResourceListener listener : listeners) {
-         listener.onPreSave(locator, resource, options);
-      }
-   }
-
-   private void notifyPostOnSave(IResourceLocator locator, final IResource resource, PropertyStore options) {
-      for (IResourceListener listener : listeners) {
-         listener.onPostSave(locator, resource, options);
-      }
-   }
-
-   private void notifyPreOnAcquire(final IResourceLocator locator) {
-      for (IResourceListener listener : listeners) {
-         listener.onPreAcquire(locator);
-      }
-   }
-
-   private void notifyPostOnAcquire(final IResource resource) {
-      for (IResourceListener listener : listeners) {
-         listener.onPostAcquire(resource);
-      }
    }
 
    private IResourceProvider getProvider(IResourceLocator locator) throws OseeCoreException {
@@ -108,18 +59,14 @@ public class ResourceManager implements IResourceManager {
    @Override
    public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
-      notifyPreOnAcquire(locator);
       IResource toReturn = provider.acquire(locator, options);
-      notifyPostOnAcquire(toReturn);
       return toReturn;
    }
 
    @Override
    public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
       IResourceProvider provider = getProvider(locator);
-      notifyPreOnSave(locator, resource, options);
       IResourceLocator actualLocator = provider.save(locator, resource, options);
-      notifyPostOnSave(locator, resource, options);
       return actualLocator;
    }
 
@@ -127,9 +74,7 @@ public class ResourceManager implements IResourceManager {
    public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       IResourceProvider provider = getProvider(locator);
-      notifyPreOnDelete(locator);
       toReturn = provider.delete(locator);
-      notifyPostOnDelete(locator);
       return toReturn;
    }
 
