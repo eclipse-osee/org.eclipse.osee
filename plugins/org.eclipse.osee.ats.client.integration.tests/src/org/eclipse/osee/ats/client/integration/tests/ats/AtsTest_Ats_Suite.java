@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats;
 
 import org.eclipse.osee.ats.client.integration.tests.ats.access.AtsTest_Access_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.actions.AtsTest_Action_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.agile.AtsTest_Agile_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.column.AtsTest_Column_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.dialog.AtsTest_Dialog_Suite;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsTest_Access_Suite.class,
    AtsTest_Action_Suite.class,
+   AtsTest_Agile_Suite.class,
    AtsTest_Column_Suite.class,
    AtsTest_Config_Suite.class,
    AtsTest_Dialog_Suite.class,
