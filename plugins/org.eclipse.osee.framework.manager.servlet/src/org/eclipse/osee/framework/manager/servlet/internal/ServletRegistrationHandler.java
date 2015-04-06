@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
-import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
@@ -108,7 +107,6 @@ public class ServletRegistrationHandler {
          OseeServerContext.SESSION_CONTEXT);
       register(new SessionClientLoopbackServlet(logger, sessionManager), OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
 
-      register(new AtsServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/ats");
       register(new DataServlet(logger, resourceManager, orcsApi, jdbcClient), "osee/data");
       register(new AdminServlet(logger, context), "osee/console");
    }
