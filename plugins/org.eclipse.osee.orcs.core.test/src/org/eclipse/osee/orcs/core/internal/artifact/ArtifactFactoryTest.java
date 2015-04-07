@@ -135,6 +135,18 @@ public class ArtifactFactoryTest {
    }
 
    @Test
+   public void testCreateArtifactFromBranchTypeAndGuidAndUuid() throws OseeCoreException {
+      long uuid = 93456L;
+      when(dataFactory.create(branch, artifactType, guid, uuid)).thenReturn(artifactData);
+
+      Artifact artifact = artifactFactory.createArtifact(session, branch, artifactType, guid, uuid);
+
+      verify(dataFactory).create(branch, artifactType, guid, uuid);
+      assertEquals(artifactType, artifact.getArtifactType());
+      assertEquals(guid, artifact.getGuid());
+   }
+
+   @Test
    public void testCreateArtifactFromArtifactData() throws OseeCoreException {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 

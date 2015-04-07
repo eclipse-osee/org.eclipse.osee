@@ -49,6 +49,8 @@ public interface TransactionBuilder {
 
    ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
 
+   ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException;
+
    ArtifactId createArtifact(IArtifactToken configsFolder);
 
    void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException;

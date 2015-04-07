@@ -48,6 +48,11 @@ public class DataFactoryImpl implements DataFactory {
 
    @Override
    public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid) throws OseeCoreException {
+      return this.create(branch, token, guid, idFactory.getNextArtifactId());
+   }
+
+   @Override
+   public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid, long uuid) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
@@ -62,8 +67,7 @@ public class DataFactoryImpl implements DataFactory {
       version.setBranchId(branch.getUuid());
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      int artifactId = idFactory.getNextArtifactId();
-      ArtifactData artifactData = objectFactory.createArtifactData(version, artifactId, token, modType, guidToSet);
+      ArtifactData artifactData = objectFactory.createArtifactData(version, (int) uuid, token, modType, guidToSet);
       return artifactData;
    }
 

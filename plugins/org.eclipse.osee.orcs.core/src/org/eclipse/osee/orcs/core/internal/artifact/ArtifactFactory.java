@@ -63,6 +63,13 @@ public class ArtifactFactory {
       return artifact;
    }
 
+   public Artifact createArtifact(OrcsSession session, IOseeBranch branch, IArtifactType artifactType, String guid, long uuid) throws OseeCoreException {
+      ArtifactData artifactData = factory.create(branch, artifactType, guid, uuid);
+      Artifact artifact = createArtifact(session, artifactData);
+      artifact.setLoaded(true);
+      return artifact;
+   }
+
    public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends IAttributeType> types, IOseeBranch ontoBranch) throws OseeCoreException {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);

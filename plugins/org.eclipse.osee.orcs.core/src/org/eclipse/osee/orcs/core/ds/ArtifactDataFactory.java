@@ -21,6 +21,8 @@ public interface ArtifactDataFactory {
 
    ArtifactData create(IOseeBranch branch, IArtifactType artifactType, String guid) throws OseeCoreException;
 
+   ArtifactData create(IOseeBranch branch, IArtifactType artifactType, String guid, long uuid) throws OseeCoreException;
+
    ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException;
 
    ArtifactData clone(ArtifactData source) throws OseeCoreException;

@@ -93,6 +93,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
+      return txManager.createArtifact(txData, artifactType, name, guid, uuid);
+   }
+
+   @Override
    public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid());
    }

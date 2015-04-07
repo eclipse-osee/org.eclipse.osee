@@ -242,6 +242,14 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
+   public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
+      checkChangesAllowed(txData);
+      Artifact artifact =
+         artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid, uuid);
+      artifact.setName(name);
+      return asExternalArtifact(txData, artifact);
+   }
+
    public ArtifactReadable copyArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
       checkChangesAllowed(txData);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
