@@ -124,7 +124,7 @@ public class ClientStorage {
    }
 
    public void update(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = OrcsUtil.newArtifactId(data.getGuid(), data.getApplicationName());
+      ArtifactId artId = OrcsUtil.newArtifactId(data.getClientUuid(), data.getGuid(), data.getApplicationName());
 
       TransactionBuilder tx = newTransaction(principal, "Update OAuth Client");
       tx.setName(artId, data.getApplicationName());
@@ -162,7 +162,7 @@ public class ClientStorage {
    }
 
    public void delete(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = OrcsUtil.newArtifactId(data.getGuid(), data.getApplicationName());
+      ArtifactId artId = OrcsUtil.newArtifactId(data.getClientUuid(), data.getGuid(), data.getApplicationName());
 
       TransactionBuilder tx = newTransaction(principal, "Delete OAuth Client");
       tx.deleteArtifact(artId);

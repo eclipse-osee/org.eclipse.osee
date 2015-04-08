@@ -22,13 +22,21 @@ public final class OrcsUtil {
       // Utility class
    }
 
-   public static ArtifactId newArtifactId(String guid, String name) {
-      return new ArtifactToken(guid, name);
+   public static ArtifactId newArtifactId(long uuid, String guid, String name) {
+      return new ArtifactToken(uuid, guid, name);
    }
 
    private static class ArtifactToken extends NamedIdentity<String> implements ArtifactId {
-      public ArtifactToken(String guid, String name) {
+      private final long uuid;
+
+      public ArtifactToken(long uuid, String guid, String name) {
          super(guid, name);
+         this.uuid = uuid;
+      }
+
+      @Override
+      public long getUuid() {
+         return uuid;
       }
    }
 

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.account.admin.internal.SubscriptionUtil.ActiveDelegate;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -137,7 +138,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public void deleteSubscriptionGroup(SubscriptionGroup group) {
-      ArtifactId artId = OrcsUtil.newArtifactId(group.getGuid(), group.getName());
+      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), group.getGuid(), group.getName());
 
       String comment = String.format("Delete subscription group [%s]", group.getName());
       TransactionBuilder tx = newTransaction(comment);

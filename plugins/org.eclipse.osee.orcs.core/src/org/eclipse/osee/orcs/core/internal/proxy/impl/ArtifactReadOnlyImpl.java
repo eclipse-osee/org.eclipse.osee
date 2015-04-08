@@ -285,4 +285,9 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return typeAndSide.getSide().oppositeSide();
    }
 
+   @Override
+   public long getUuid() {
+      return getLocalId();
+   }
+
 }

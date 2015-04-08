@@ -46,7 +46,7 @@ public final class DispoConstants {
    public static final IAttributeType DispoItemNeedsReview = TokenFactory.createAttributeType(0x3000000000000212L, "dispo.Needs Review");
 
 
-   public static final ArtifactId DispoTypesArtifact = OrcsUtil.newArtifactId("BEQGMZJDBHPd4OeWg6AA", "DispositionTypes");
+   public static final ArtifactId DispoTypesArtifact = OrcsUtil.newArtifactId(4757831, "BEQGMZJDBHPd4OeWg6AA", "DispositionTypes");
    // @formatter:on
 
    private DispoConstants() {

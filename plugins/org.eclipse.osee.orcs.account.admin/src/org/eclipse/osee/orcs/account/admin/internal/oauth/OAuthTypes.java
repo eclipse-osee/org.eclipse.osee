@@ -40,6 +40,7 @@ public final class OAuthTypes {
    public static final IAttributeType OAUTH_CLIENT_AUTHORIZED_AUDIENCE = TokenFactory.createAttributeType(0x635EBFA0D4A82E22L, "Authorized Audience");
    // @formatter:on
 
-   public static final ArtifactId OAUTH_TYPES_ARTIFACT = OrcsUtil.newArtifactId("AmgrOMuL6U7uL9hBWCAA", "OAuthTypes");
+   public static final ArtifactId OAUTH_TYPES_ARTIFACT = OrcsUtil.newArtifactId(77964317L, "AmgrOMuL6U7uL9hBWCAA",
+      "OAuthTypes");
 
 }

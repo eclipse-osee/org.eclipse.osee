@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -153,7 +154,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public void setActive(Identifiable<String> account, boolean active) {
-      ArtifactId artId = OrcsUtil.newArtifactId(account.getGuid(), account.getName());
+      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), account.getName());
 
       TransactionBuilder tx = newTransaction("Update Account Active");
       tx.setSoleAttributeValue(artId, CoreAttributeTypes.Active, active);
@@ -179,7 +180,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    public void setAccountPreferences(Identity<String> account, Map<String, String> preferences) {
       String prefValue = asString(account.getGuid(), preferences);
 
-      ArtifactId artId = OrcsUtil.newArtifactId(account.getGuid(), "N/A");
+      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), "N/A");
       TransactionBuilder tx = newTransaction("User - Save Settings");
       tx.setSoleAttributeFromString(artId, CoreAttributeTypes.UserSettings, prefValue);
       tx.commit();
@@ -187,7 +188,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public void deleteAccount(Identifiable<String> account) {
-      ArtifactId artId = OrcsUtil.newArtifactId(account.getGuid(), account.getName());
+      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), account.getName());
 
       TransactionBuilder tx = newTransaction("Delete User");
       tx.deleteArtifact(artId);
