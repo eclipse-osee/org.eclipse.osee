@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.util.io;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -21,6 +22,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public class UriWatcher {
 
@@ -94,13 +96,18 @@ public class UriWatcher {
          try {
             LinkedList<URI> uris = new LinkedList<URI>();
             for (Map.Entry<URI, Long> entry : urisToWatch.entrySet()) {
-               Long latestLastModified = entry.getKey().toURL().openConnection().getLastModified();
-               Long storedLastModified = entry.getValue();
-               if (!storedLastModified.equals(latestLastModified)) {
-                  entry.setValue(latestLastModified);
-                  if (storedLastModified != -1) {
-                     uris.add(entry.getKey());
+               URLConnection connection = entry.getKey().toURL().openConnection();
+               try {
+                  Long latestLastModified = connection.getLastModified();
+                  Long storedLastModified = entry.getValue();
+                  if (!storedLastModified.equals(latestLastModified)) {
+                     entry.setValue(latestLastModified);
+                     if (storedLastModified != -1) {
+                        uris.add(entry.getKey());
+                     }
                   }
+               } finally {
+                  Lib.close(connection.getInputStream());
                }
             }
             if (!uris.isEmpty()) {
