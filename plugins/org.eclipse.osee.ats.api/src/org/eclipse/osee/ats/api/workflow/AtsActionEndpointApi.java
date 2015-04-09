@@ -22,7 +22,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +37,6 @@ public interface AtsActionEndpointApi {
     * @return html representation of the action
     */
    @Path("{ids}")
-   @IdentityView
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public abstract List<IAtsWorkItem> getAction(String ids) throws Exception;
