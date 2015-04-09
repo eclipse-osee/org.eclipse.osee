@@ -73,8 +73,8 @@ public class ChangeTypeColumnTest {
       Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(reqArt, ChangeTypeColumn.getInstance(), 0));
 
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(actionArt));
-      Assert.assertEquals("Problem; Improvement",
-         ChangeTypeColumn.getInstance().getColumnText(actionArt, ChangeTypeColumn.getInstance(), 0));
+      String columnText = ChangeTypeColumn.getInstance().getColumnText(actionArt, ChangeTypeColumn.getInstance(), 0);
+      Assert.assertTrue(columnText.equals("Problem; Improvement") || columnText.equals("Improvement; Problem"));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }
