@@ -30,11 +30,15 @@ public final class AuthorizationConstants {
    public static final String DENY_ALL_AUTHORIZER_SCHEME = "Override - DenyAll";
    public static final String PERMIT_ALL_AUTHORIZER_SCHEME = "Override - PermitAll";
    public static final String NONE_AUTHORIZATION_PROVIDER = "None";
+   public static final String OSEE_AUTHORIZATION_PROVIDER = "OSEE";
 
    public static final AuthorizationOverride DEFAULT_AUTHORIZATION_OVERRIDE = AuthorizationOverride.PERMIT_ALL;
    public static final String DEFAULT_AUTHORIZATION_PROVIDER = NONE_AUTHORIZATION_PROVIDER;
 
    public static final String AUTHORIZATION_OVERRIDE = qualify("override");
    public static final String AUTHORIZATION_SCHEME_ALLOWED = qualify("scheme.allowed");
+
+   public static final String AUTHORIZATION_SCHEME_DEFAULT = qualify("scheme.default");
+   public static final String DEFAULT_AUTHORIZATION_SCHEME_DEFAULT = "";
 
 }

@@ -23,4 +23,6 @@ public interface AuthorizationAdmin {
 
    Iterable<String> getAvailableSchemes();
 
+   String getDefaultScheme();
+
 }

@@ -24,6 +24,11 @@ import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
 import org.eclipse.osee.authentication.admin.AuthenticationRequestBuilder;
+import org.eclipse.osee.authorization.admin.Authorization;
+import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
+import org.eclipse.osee.authorization.admin.AuthorizationRequest;
+import org.eclipse.osee.authorization.admin.AuthorizationRequestBuilder;
+import org.eclipse.osee.authorization.admin.AuthorizationUser;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,6 +43,7 @@ import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator;
 public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
 
    private AuthenticationAdmin authenticationAdmin;
+   private AuthorizationAdmin authorizationAdmin;
    private AccountAdmin accountAdmin;
 
    private volatile boolean automaticAccountCreationAllowed = DEFAULT_JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION;
@@ -48,6 +54,10 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
 
    public void setAccountAdmin(AccountAdmin accountAdmin) {
       this.accountAdmin = accountAdmin;
+   }
+
+   public void setAuthorizationAdmin(AuthorizationAdmin authorizationAdmin) {
+      this.authorizationAdmin = authorizationAdmin;
    }
 
    public void start(Map<String, Object> props) {
@@ -102,6 +112,17 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
          roles.add(role);
       }
       // Get additional roles/permissions from authorization service;
+      AuthorizationRequest authorizationRequest = AuthorizationRequestBuilder.newBuilder()//
+      .secure(true) //
+      .identifier(account.getId())//
+      .build();
+
+      Authorization authorize = authorizationAdmin.authorize(authorizationRequest);
+      AuthorizationUser authUser = (AuthorizationUser) authorize.getPrincipal();
+
+      for (String role : authUser.getRoles()) {
+         roles.add(role);
+      }
 
       // Preferences or other user specific properties
       Map<String, String> properties = Collections.emptyMap();

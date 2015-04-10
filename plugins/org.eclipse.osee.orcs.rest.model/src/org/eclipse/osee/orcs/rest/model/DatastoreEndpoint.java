@@ -10,20 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("datastore")
-@RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
 public interface DatastoreEndpoint {
 
    @GET

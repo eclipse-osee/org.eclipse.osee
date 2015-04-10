@@ -60,6 +60,7 @@ public class AuthorizationConfigurationBuilder {
 
       private AuthorizationOverride override;
       private final Set<String> schemes = new HashSet<String>();
+      private String defaultScheme;
 
       @Override
       public synchronized AuthorizationConfigurationImpl clone() {
@@ -88,6 +89,11 @@ public class AuthorizationConfigurationBuilder {
          return unmodifiableSortedIterable(schemes);
       }
 
+      @Override
+      public String getDefaultScheme() {
+         return defaultScheme;
+      }
+
       public void addSchemes(Collection<String> toAdd) {
          if (toAdd != null && !toAdd.isEmpty()) {
             for (String scheme : toAdd) {
@@ -102,10 +108,18 @@ public class AuthorizationConfigurationBuilder {
          }
       }
 
+      public void setDefaultScheme(String scheme) {
+         if (Strings.isValid(scheme)) {
+            this.defaultScheme = scheme;
+         }
+      }
+
       public void loadProperties(Map<String, Object> props) {
          if (props != null && !props.isEmpty()) {
             setOverride(getOverrideType(props, AUTHORIZATION_OVERRIDE, DEFAULT_AUTHORIZATION_OVERRIDE));
             addSchemes(getSet(props, AUTHORIZATION_SCHEME_ALLOWED, DEFAULT_AUTHORIZATION_PROVIDER));
+            setDefaultScheme(get(props, AuthorizationConstants.AUTHORIZATION_SCHEME_DEFAULT,
+               AuthorizationConstants.DEFAULT_AUTHORIZATION_SCHEME_DEFAULT));
          }
       }
 
@@ -143,7 +157,6 @@ public class AuthorizationConfigurationBuilder {
          }
          return toReturn;
       }
-
    }
 
 }

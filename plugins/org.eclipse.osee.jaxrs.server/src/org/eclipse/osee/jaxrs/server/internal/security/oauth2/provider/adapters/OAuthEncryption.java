@@ -308,7 +308,8 @@ public class OAuthEncryption {
          state.append(tokenizeString(subject.getId()));
          state.append("&");
          // 3
-         state.append(tokenizeString(subject.getRoles().toString()));
+         String roles = tokenizeString(subject.getRoles().toString());
+         state.append(roles.replaceAll(", ", ","));
          state.append("&");
          // 4
          state.append(tokenizeString(subject.getProperties().toString()));

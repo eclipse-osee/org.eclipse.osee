@@ -49,7 +49,6 @@ public class SubscriptionsResource {
     * 
     * @return accountSubscriptions
     */
-   @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Path("/for-account/{account-id}")
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

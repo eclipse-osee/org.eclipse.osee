@@ -21,4 +21,6 @@ public interface AuthorizationConfiguration {
 
    Iterable<String> getAllowedSchemes();
 
+   String getDefaultScheme();
+
 }

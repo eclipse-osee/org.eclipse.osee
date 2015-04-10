@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" configuration-policy="optional">
+	<implementation class="org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.OseeAnnotationsInterceptor" />
+	<service>
+		<provide interface="org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor" />
+	</service>
+</scr:component>

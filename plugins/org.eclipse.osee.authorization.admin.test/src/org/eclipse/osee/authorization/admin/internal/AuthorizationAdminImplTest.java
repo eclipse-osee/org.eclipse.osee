@@ -137,6 +137,7 @@ public class AuthorizationAdminImplTest {
       assertEquals(false, actual);
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
+      .authorizationType("None")//
       .build();
 
       thrown.expect(OseeArgumentException.class);

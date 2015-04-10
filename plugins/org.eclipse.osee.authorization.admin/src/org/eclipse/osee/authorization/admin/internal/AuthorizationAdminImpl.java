@@ -13,6 +13,7 @@ package org.eclipse.osee.authorization.admin.internal;
 import static org.eclipse.osee.authorization.admin.internal.AuthorizationUtil.normalize;
 import java.security.Principal;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.authorization.admin.Authority;
@@ -104,7 +105,6 @@ public class AuthorizationAdminImpl implements AuthorizationAdmin {
    @Override
    public Authorization authorize(AuthorizationRequest request) {
       logger.debug("Authorization Requested: [%s]", request);
-
       String scheme = getScheme(request);
       checkSchemeAllowed(scheme);
 
@@ -124,10 +124,20 @@ public class AuthorizationAdminImpl implements AuthorizationAdmin {
       return new AuthorizationImpl(authScheme, date, secure, principal, authority);
    }
 
+   @Override
+   public String getDefaultScheme() {
+      String toReturn = config.getDefaultScheme();
+      if (!Strings.isValid(toReturn)) {
+         Iterator<String> iterator = getAllowedSchemes().iterator();
+         toReturn = iterator.hasNext() ? iterator.next() : "";
+      }
+      return toReturn;
+   }
+
    private String getScheme(AuthorizationRequest request) {
       String toReturn = request.getAuthorizationType();
       if (!Strings.isValid(toReturn) || isNoneAllowed()) {
-         toReturn = AuthorizationConstants.NONE_AUTHORIZATION_PROVIDER;
+         toReturn = getDefaultScheme();
       }
       return toReturn;
    }

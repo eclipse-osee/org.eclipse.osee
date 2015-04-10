@@ -310,8 +310,14 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
                Iterable<OAuthToken> accessTokens = storage.getAccessTokensByRefreshToken(accessToken.getTokenKey());
                for (OAuthToken entry : accessTokens) {
                   boolean isExpired = OAuthUtils.isExpired(entry.getIssuedAt(), entry.getExpiresIn());
+
                   if (!isExpired && entry.getGrantType().equals(grantType)) {
                      token = serializer.decryptAccessToken(this, entry.getTokenKey(), getSecretKey());
+                  }
+
+                  boolean isRolesOutdated = isRolesOutdated(subject, token);
+                  if (isRolesOutdated) {
+                     revokeAllTokens(client, subjectId, grantType);
                   }
                   break;
                }
@@ -322,6 +328,30 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
          }
       }
       return token;
+   }
+
+   private boolean isRolesOutdated(UserSubject subject, ServerAccessToken token) {
+      List<String> oldRoles = token.getSubject().getRoles();
+      List<String> newRoles = subject.getRoles();
+
+      boolean equalLists = oldRoles.size() == newRoles.size() && oldRoles.containsAll(newRoles);
+
+      return !equalLists;
+   }
+
+   private void revokeAllTokens(Client client, long subjectId, String grantType) {
+      long clientId = getClientId(client);
+      OAuthToken preauthorizedToken = storage.getPreauthorizedToken(clientId, subjectId, grantType);
+      while (preauthorizedToken != null) {
+         Iterable<OAuthToken> accessTokens = storage.getAccessTokensByRefreshToken(preauthorizedToken.getTokenKey());
+
+         for (OAuthToken entry : accessTokens) {
+            revokeToken(client, entry.getTokenKey(), "");
+         }
+         revokeToken(client, preauthorizedToken.getTokenKey(), "");
+
+         preauthorizedToken = storage.getPreauthorizedToken(clientId, subjectId, grantType);
+      }
    }
 
    @Override

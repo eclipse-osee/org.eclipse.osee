@@ -11,7 +11,6 @@
 package org.eclipse.osee.account.rest.internal;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
-import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +53,6 @@ public class AccountsResource {
     * @return All accounts
     */
    @GET
-   @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public AccountInfoData[] getAccounts() {
       return accountOps.getAllAccounts().toArray(new AccountInfoData[] {});

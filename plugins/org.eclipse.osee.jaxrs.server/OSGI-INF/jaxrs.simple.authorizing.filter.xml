@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+   <implementation class="org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.OseeAuthorizingFilter"/>
+   <service>
+      <provide interface="javax.ws.rs.container.ContainerRequestFilter"/>
+      <provide interface="java.lang.Object"/>
+   </service>
+   <reference bind="setInterceptor" cardinality="1..1" interface="org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor" name="AbstractAuthorizingInInterceptor" policy="static"/>
+   <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager" name="JaxRsResourceManager" policy="static"/>
+</scr:component>

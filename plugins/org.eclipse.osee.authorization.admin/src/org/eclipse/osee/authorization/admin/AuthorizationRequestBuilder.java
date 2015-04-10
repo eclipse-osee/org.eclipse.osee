@@ -22,6 +22,7 @@ public final class AuthorizationRequestBuilder {
    private String path;
    private String method;
    private String authType;
+   private long identifier;
 
    private AuthorizationRequestBuilder() {
       //
@@ -32,7 +33,7 @@ public final class AuthorizationRequestBuilder {
    }
 
    public AuthorizationRequest build() {
-      return new AuthorizationRequestImpl(isSecure, date, path, method, authType);
+      return new AuthorizationRequestImpl(isSecure, date, path, method, authType, identifier);
    }
 
    public AuthorizationRequestBuilder secure(boolean isSecure) {
@@ -42,6 +43,11 @@ public final class AuthorizationRequestBuilder {
 
    public AuthorizationRequestBuilder date(Date date) {
       this.date = date;
+      return this;
+   }
+
+   public AuthorizationRequestBuilder identifier(long identifier) {
+      this.identifier = identifier;
       return this;
    }
 
@@ -67,14 +73,16 @@ public final class AuthorizationRequestBuilder {
       private final String path;
       private final String method;
       private final String authType;
+      private final long identifier;
 
-      public AuthorizationRequestImpl(boolean isSecure, Date requestDate, String path, String method, String authType) {
+      public AuthorizationRequestImpl(boolean isSecure, Date requestDate, String path, String method, String authType, long identifier) {
          super();
          this.isSecure = isSecure;
          this.requestDate = requestDate;
          this.path = path;
          this.method = method;
          this.authType = authType;
+         this.identifier = identifier;
       }
 
       @Override
@@ -103,9 +111,13 @@ public final class AuthorizationRequestBuilder {
       }
 
       @Override
-      public String toString() {
-         return "AuthorizationRequestImpl [isSecure=" + isSecure + ", requestDate=" + requestDate + ", path=" + path + ", method=" + method + ", authType=" + authType + "]";
+      public long getIdentifier() {
+         return identifier;
       }
 
+      @Override
+      public String toString() {
+         return "AuthorizationRequestImpl [isSecure=" + isSecure + ", requestDate=" + requestDate + ", path=" + path + ", method=" + method + ", authType=" + authType + ", identifier" + identifier + "]";
+      }
    }
 }

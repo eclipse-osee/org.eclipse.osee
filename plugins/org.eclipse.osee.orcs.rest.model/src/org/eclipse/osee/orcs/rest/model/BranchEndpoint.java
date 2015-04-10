@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -26,13 +25,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("branches")
-@RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
 public interface BranchEndpoint {
 
    @GET

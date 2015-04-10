@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -20,13 +19,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("txs")
-@RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
 public interface TransactionEndpoint {
 
    @GET
