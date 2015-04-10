@@ -26,6 +26,7 @@ import org.eclipse.osee.ote.core.framework.MethodResultImpl;
 import org.eclipse.osee.ote.core.framework.ResultBuilder;
 import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.internal.Activator;
+import org.eclipse.osee.ote.properties.OtePropertiesCore;
 
 public class TestRunThread extends OseeTestThread {
 
@@ -48,18 +49,19 @@ public class TestRunThread extends OseeTestThread {
    protected void run() throws Exception {
       try {
          rb.append(listenerProvider.notifyPreRun(dataProvider.createOnPreRun(propertyStore, test)));
-         //todo we need to make it so that the setup and teardown test casees get added to the list.... from the getTestCases() method
-         //we also need to make sure script initialization gets added through a prerun listener
          if (rb.isReturnStatusOK()) {
             List<TestCase> testCases = test.getTestCases();
-            for (TestCase testCase : testCases) {
+            for (int i = 0; i < testCases.size(); i++) {
+               if (abort) {
+                  Thread.interrupted();//clear the interrupted flag so that cleanup can occur without exception
+                  addAbortResult(null);
+                  i = testCases.size() - 1;//set to the last test case - TearDown
+               }
+               TestCase testCase = testCases.get(i);
                if (testCase == null) {
                   continue;
                }
-               if (abort) {
-                  addAbortResult(null);
-                  break;
-               }
+               
                rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test,
                   testCase)));
                try {
@@ -89,7 +91,7 @@ public class TestRunThread extends OseeTestThread {
                      OseeLog.log(
                         Activator.class,
                         Level.SEVERE,
-                        "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "uknown (null test case)" + "]",
+                        "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "unknown (null test case)" + "]",
                         ex);
                   }
                } 
@@ -97,6 +99,7 @@ public class TestRunThread extends OseeTestThread {
             }
          }
       } finally {
+         Thread.interrupted();//clear the interrupted flag so that cleanup can occur without exception
          rb.append(listenerProvider.notifyPostRun(dataProvider.createOnPostRun(propertyStore, test)));
          if (getEnvironment().getScriptCtrl().isLocked()) {
             getEnvironment().getScriptCtrl().unlock();
@@ -122,15 +125,23 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      int count = 0;
-      do{
+      if(OtePropertiesCore.abortMultipleInterrupt.getBooleanValue()){
+         int count = 0;
+         do{
+            this.interrupt();
+            try{
+               this.join(10);
+            } catch (InterruptedException ex){
+            }
+            count++;
+         } while (this.isAlive() && count < 200);
+      } else {
          this.interrupt();
          try{
-            this.join(10);
+            this.join(1000*60);
          } catch (InterruptedException ex){
          }
-         count++;
-      } while (this.isAlive() && count < 200);
+      }
       if (this.isAlive()) {
          OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
                "Waited 60s for test to abort but the thread did not die."));

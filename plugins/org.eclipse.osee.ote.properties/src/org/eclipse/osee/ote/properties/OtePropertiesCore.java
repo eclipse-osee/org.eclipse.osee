@@ -20,6 +20,7 @@ public enum OtePropertiesCore implements OteProperties {
    serverKeepalive("osee.ote.server.keepAlive"),
    serverTitle("osee.ote.server.title"),
    timeDebug("ote.time.debug", false),
+   abortMultipleInterrupt("ote.abort.interrupt.multiple", false),
    timeDebugTimeout("ote.time.debug.timeout", 250000),
    userHome("user.home"),
    userName("user.name"),
