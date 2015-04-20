@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -178,16 +181,44 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names = Versions.getNames(teamDefHoldingVersions.getVersions());
-                     if (names.isEmpty()) {
+                     List<String> sorted = getSortedVersions(teamDefHoldingVersions);
+                     if (sorted.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     versionCombo.setDataStrings(names.toArray(new String[names.size()]));
+                     versionCombo.setDataStrings(sorted.toArray(new String[sorted.size()]));
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
+            }
+
+            private List<String> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
+               List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+               versions.addAll(teamDefHoldingVersions.getVersions());
+               Collections.sort(versions, new Comparator<IAtsVersion>() {
+
+                  @Override
+                  public int compare(IAtsVersion aObj1, IAtsVersion aObj2) {
+                     if (!aObj1.isReleased() && aObj2.isReleased()) {
+                        return -1;
+                     } else if (aObj1.isReleased() && !aObj2.isReleased()) {
+                        return 1;
+                     }
+                     return aObj1.getName().compareTo(aObj2.getName());
+                  }
+               });
+               List<String> sorted = new ArrayList<String>();
+               for (IAtsVersion version : versions) {
+                  String postfix = "";
+                  if (version.isNextVersion()) {
+                     postfix = " (Next)";
+                  } else if (version.isReleased()) {
+                     postfix = " (Released)";
+                  }
+                  sorted.add(version + postfix);
+               }
+               return sorted;
             }
          });
       }
