@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Control;
 public class VersionListDialog extends FilteredTreeDialog {
 
    XCheckBox showReleased = new XCheckBox("Show Released Versions");
-   VersionContentProvider versionContentProvider;
    private final Collection<IAtsVersion> verArts;
 
    public VersionListDialog(String title, String message, Collection<IAtsVersion> verArts) {
@@ -53,6 +52,8 @@ public class VersionListDialog extends FilteredTreeDialog {
       showReleased.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
+            VersionContentProvider versionContentProvider =
+               (VersionContentProvider) getTreeViewer().getViewer().getContentProvider();
             versionContentProvider.setShowReleased(!versionContentProvider.getShowReleased());
             setInput(verArts);
             getTreeViewer().getViewer().refresh();
