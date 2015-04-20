@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -19,7 +22,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * Provides for rollup of actionable items
@@ -33,7 +35,24 @@ public class ActionableItemsColumn {
    }
 
    public static String getActionableItemsStr(Object object) throws OseeCoreException {
-      return Collections.toString(", ", getActionableItems(object));
+      List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+      ais.addAll(getActionableItems(object));
+      java.util.Collections.sort(ais, new Comparator<IAtsActionableItem>() {
+
+         @Override
+         public int compare(IAtsActionableItem arg0, IAtsActionableItem arg1) {
+            return arg0.getName().compareTo(arg1.getName());
+         }
+      });
+      if (ais.size() == 1) {
+         return ais.iterator().next().getName();
+      }
+      StringBuilder sb = new StringBuilder();
+      for (IAtsActionableItem ai : ais) {
+         sb.append(ai.getName());
+         sb.append(", ");
+      }
+      return sb.toString().replace(", $", "");
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(Object object) throws OseeCoreException {

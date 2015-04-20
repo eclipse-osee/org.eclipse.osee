@@ -115,8 +115,8 @@ public class ActionableItemsColumnTest {
 
    @org.junit.Test
    public void testGetActionableItemsStr() throws Exception {
-      when(aia1.toString()).thenReturn("AI 1");
-      when(aia2.toString()).thenReturn("AI 2");
+      when(aia1.getName()).thenReturn("AI 1");
+      when(aia2.getName()).thenReturn("AI 2");
 
       String results = ActionableItemsColumn.getActionableItemsStr(teamWf1);
 
