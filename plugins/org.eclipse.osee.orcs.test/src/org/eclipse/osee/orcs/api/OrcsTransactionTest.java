@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -84,7 +83,6 @@ public class OrcsTransactionTest {
    @OsgiService
    private OrcsApi orcsApi;
 
-   private final ApplicationContext context = null; // TODO use real application context
    private TransactionFactory txFactory;
    private ArtifactReadable userArtifact;
    private OrcsBranch orcsBranch;
@@ -92,9 +90,9 @@ public class OrcsTransactionTest {
 
    @Before
    public void setUp() throws Exception {
-      txFactory = orcsApi.getTransactionFactory(context);
-      orcsBranch = orcsApi.getBranchOps(context);
-      query = orcsApi.getQueryFactory(context);
+      txFactory = orcsApi.getTransactionFactory();
+      orcsBranch = orcsApi.getBranchOps();
+      query = orcsApi.getQueryFactory();
       userArtifact = getSystemUser();
    }
 

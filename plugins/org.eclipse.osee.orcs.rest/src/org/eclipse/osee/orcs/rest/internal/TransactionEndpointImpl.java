@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -62,30 +61,20 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       this.uriInfo = uriInfo;
    }
 
-   private ApplicationContext newContext() {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return null;
-         }
-      };
-   }
-
    private TransactionQuery newTxQuery() {
-      return orcsApi.getQueryFactory(newContext()).transactionQuery();
+      return orcsApi.getQueryFactory().transactionQuery();
    }
 
    private OrcsBranch getBranchOps() {
-      return orcsApi.getBranchOps(newContext());
+      return orcsApi.getBranchOps();
    }
 
    private TransactionFactory newTxFactory() {
-      return orcsApi.getTransactionFactory(newContext());
+      return orcsApi.getTransactionFactory();
    }
 
    private QueryFactory newQueryFactory() {
-      return orcsApi.getQueryFactory(newContext());
+      return orcsApi.getQueryFactory();
    }
 
    private TransactionReadable getTxById(int txId) {

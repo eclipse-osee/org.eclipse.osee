@@ -55,7 +55,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows) {
       List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>(inWorkWorkflows.size());
       Iterator<ArtifactReadable> arts =
-         atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIds(inWorkWorkflows).getResults().iterator();
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(inWorkWorkflows).getResults().iterator();
       while (arts.hasNext()) {
          workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));
       }

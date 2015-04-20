@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -32,7 +31,6 @@ public abstract class AbstractOrcsStorage {
    private OrcsApi orcsApi;
 
    private IOseeBranch storageBranch;
-   private ApplicationContext context;
    private AccountFactory factory;
 
    public void setLogger(Log logger) {
@@ -50,25 +48,11 @@ public abstract class AbstractOrcsStorage {
    public void start() {
       logger.trace("Starting [%s]...", getClass().getSimpleName());
       storageBranch = CoreBranches.COMMON;
-
-      String sessionId = SystemUser.OseeSystem.getGuid();
-      context = newApplicationContext(sessionId);
    }
 
    public void stop() {
       logger.trace("Stopping [%s]...", getClass().getSimpleName());
       storageBranch = null;
-      context = null;
-   }
-
-   private ApplicationContext newApplicationContext(final String sessionId) {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return sessionId;
-         }
-      };
    }
 
    private IOseeBranch getBranch() {
@@ -84,7 +68,7 @@ public abstract class AbstractOrcsStorage {
    }
 
    protected QueryBuilder newQuery() {
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
+      QueryFactory queryFactory = orcsApi.getQueryFactory();
       return queryFactory.fromBranch(getBranch());
    }
 
@@ -94,12 +78,12 @@ public abstract class AbstractOrcsStorage {
    }
 
    protected TransactionBuilder newTransaction(String comment) {
-      TransactionFactory transactionFactory = orcsApi.getTransactionFactory(context);
+      TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
       return transactionFactory.createTransaction(getBranch(), getSystemUser(), comment);
    }
 
    protected boolean isInitialized() {
-      OrcsAdmin adminOps = orcsApi.getAdminOps(context);
+      OrcsAdmin adminOps = orcsApi.getAdminOps();
       return adminOps.isDataStoreInitialized();
    }
 

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -42,18 +41,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
       this.orcsApi = orcsApi;
    }
 
-   private ApplicationContext newContext() {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return null;
-         }
-      };
-   }
-
    private OrcsTypes getOrcsTypes() {
-      return orcsApi.getOrcsTypes(newContext());
+      return orcsApi.getOrcsTypes();
    }
 
    @Override

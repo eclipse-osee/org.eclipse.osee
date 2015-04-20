@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -46,14 +45,12 @@ public class OrcsRelationLoadingTest {
 
    @Test
    public void testSearchById() throws Exception {
-      ApplicationContext context = null; // TODO use real application context
-
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
-      checkRelationsForCommonBranch(orcsApi, queryFactory, context);
-      checkRelationsForSawBranch(orcsApi, queryFactory, context);
+      QueryFactory queryFactory = orcsApi.getQueryFactory();
+      checkRelationsForCommonBranch(orcsApi, queryFactory);
+      checkRelationsForSawBranch(orcsApi, queryFactory);
    }
 
-   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
+   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder = queryFactory.fromBranch(CoreBranches.COMMON).andUuids(Arrays.asList(6L, 7L, 8L));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
@@ -90,7 +87,7 @@ public class OrcsRelationLoadingTest {
 
    }
 
-   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory, ApplicationContext context) throws OseeCoreException {
+   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory) throws OseeCoreException {
       QueryBuilder builder =
          queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, "Design Constraints");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();

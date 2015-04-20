@@ -43,7 +43,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    @Override
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
-      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.WorkDefinition).getResults()) {
          nameToWorkDefStr.add(new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
@@ -62,7 +62,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       ArtifactReadable artifact =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
             AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }

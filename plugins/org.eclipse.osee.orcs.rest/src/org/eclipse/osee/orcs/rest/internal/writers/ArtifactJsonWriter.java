@@ -82,7 +82,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    }
 
    private AttributeTypes getAttibuteTypes() {
-      return orcsApi.getOrcsTypes(null).getAttributeTypes();
+      return orcsApi.getOrcsTypes().getAttributeTypes();
    }
 
    @Override

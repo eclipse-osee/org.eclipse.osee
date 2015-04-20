@@ -54,7 +54,7 @@ public class PurgeTransactionCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
-      final TransactionFactory txFactory = getOrcsApi().getTransactionFactory(null);
+      final TransactionFactory txFactory = getOrcsApi().getTransactionFactory();
       return new Callable<Object>() {
 
          @Override

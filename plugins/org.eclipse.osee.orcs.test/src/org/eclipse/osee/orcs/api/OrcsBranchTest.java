@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -68,10 +67,9 @@ public class OrcsBranchTest {
 
    @Before
    public void setUp() throws Exception {
-      ApplicationContext context = null;
-      branchOps = orcsApi.getBranchOps(context);
-      query = orcsApi.getQueryFactory(context);
-      txFactory = orcsApi.getTransactionFactory(context);
+      branchOps = orcsApi.getBranchOps();
+      query = orcsApi.getQueryFactory();
+      txFactory = orcsApi.getTransactionFactory();
    }
 
    @Test

@@ -66,7 +66,7 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
       parser.parse(urlRequest);
       Long branchUuid = Long.valueOf(parser.getAttribute("branch"));
       String artifactGuid = parser.getAttribute("artifact");
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       BranchReadable branch = query.andUuids(branchUuid).getResults().getExactlyOne();
 
       String uri = ArtifactUtil.getUri(jdbcClient, artifactGuid, branch);

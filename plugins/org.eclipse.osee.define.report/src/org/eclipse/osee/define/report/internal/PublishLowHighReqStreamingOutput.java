@@ -61,10 +61,10 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
 
    public PublishLowHighReqStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String selectedTypes) {
       this.logger = logger;
-      this.queryApi = orcsApi.getQueryFactory(null);
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      this.queryApi = orcsApi.getQueryFactory();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       this.branch = query.andUuids(branchUuid).getResults().getExactlyOne();
-      this.types = orcsApi.getOrcsTypes(null);
+      this.types = orcsApi.getOrcsTypes();
       includeOnlyArtifactTypes = convertStringTypes(selectedTypes);
    }
 

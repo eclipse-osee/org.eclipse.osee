@@ -60,7 +60,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
    private SearchResponse search(SearchRequest params) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
 
-      QueryFactory qFactory = orcsApi.getQueryFactory(null); // Fix this
+      QueryFactory qFactory = orcsApi.getQueryFactory(); // Fix this
 
       QueryBuilder builder = searchQueryBuilder.build(qFactory, params);
 

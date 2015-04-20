@@ -135,7 +135,7 @@ public final class BranchCommand implements ConsoleCommand {
          filter.setBranchStates(isStates);
          filter.setNegatedBranchStates(notStates);
 
-         BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+         BranchQuery query = orcsApi.getQueryFactory().branchQuery();
          ResultSet<BranchReadable> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
 
          branches.sort(new Comparator<BranchReadable>() {

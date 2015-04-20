@@ -16,7 +16,6 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
 
@@ -66,13 +65,7 @@ public class CacheUpdateCommand implements ConsoleCommand {
       }
 
       private OrcsTypes getOrcTypes() {
-         return getOrcsApi().getOrcsTypes(new ApplicationContext() {
-
-            @Override
-            public String getSessionId() {
-               return "Update Cache Console Command";
-            }
-         });
+         return getOrcsApi().getOrcsTypes();
       }
 
       @Override

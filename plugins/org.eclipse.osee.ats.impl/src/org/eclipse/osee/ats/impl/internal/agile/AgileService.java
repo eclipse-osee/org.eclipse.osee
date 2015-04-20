@@ -96,7 +96,7 @@ public class AgileService implements IAgileService {
          throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
       }
       TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), team,
+         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), team,
             "Delete Agile Team");
       deleteRecurse(transaction, team.getChildren());
       transaction.deleteArtifact(team);
@@ -136,7 +136,7 @@ public class AgileService implements IAgileService {
          throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
       }
       TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), featureGroup,
+         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), featureGroup,
             "Delete Agile Feature Group");
       transaction.deleteArtifact(featureGroup);
       transaction.commit();
@@ -189,7 +189,7 @@ public class AgileService implements IAgileService {
    }
 
    private ArtifactReadable getArtifact(long teamUuid) {
-      return atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andUuid(
+      return atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
          new Long(teamUuid).intValue()).getResults().getAtMostOneOrNull();
    }
 
@@ -311,7 +311,7 @@ public class AgileService implements IAgileService {
       ArtifactReadable sprint = atsServer.getArtifactByUuid(sprintUuid);
       if (sprint != null) {
          TransactionBuilder transaction =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), sprint,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), sprint,
                "Delete Agile Sprint");
          transaction.deleteArtifact(sprint);
          transaction.commit();

@@ -23,9 +23,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -134,7 +132,7 @@ public class OrcsApiImpl implements OrcsApi {
             Iterable<? extends IOseeBranch> toReturn = cache.get();
             if (toReturn == null) {
                Set<IOseeBranch> branches = Sets.newLinkedHashSet();
-               BranchQuery branchQuery = getQueryFactory(null).branchQuery();
+               BranchQuery branchQuery = getQueryFactory().branchQuery();
                branchQuery.andIsAncestorOf(branch);
                branches.add(branch);
 
@@ -246,14 +244,14 @@ public class OrcsApiImpl implements OrcsApi {
    }
 
    @Override
-   public QueryFactory getQueryFactory(ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public QueryFactory getQueryFactory() {
+      OrcsSession session = getSession();
       return queryModule.createQueryFactory(session);
    }
 
    @Override
-   public OrcsBranch getBranchOps(final ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public OrcsBranch getBranchOps() {
+      OrcsSession session = getSession();
       LazyObject<ArtifactReadable> systemUser = new LazyObject<ArtifactReadable>() {
 
          @Override
@@ -261,61 +259,55 @@ public class OrcsApiImpl implements OrcsApi {
             Callable<ArtifactReadable> callable = new Callable<ArtifactReadable>() {
                @Override
                public ArtifactReadable call() throws Exception {
-                  return getQueryFactory(context).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
 
                }
             };
             return new FutureTask<ArtifactReadable>(callable);
          }
       };
-      QueryFactory queryFactory = getQueryFactory(context);
+      QueryFactory queryFactory = getQueryFactory();
       return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser,
-         getOrcsTypes(context));
+         getOrcsTypes());
    }
 
    @Override
-   public TransactionFactory getTransactionFactory(ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public TransactionFactory getTransactionFactory() {
+      OrcsSession session = getSession();
       return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule);
    }
 
    @Override
-   public OrcsAdmin getAdminOps(ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public OrcsAdmin getAdminOps() {
+      OrcsSession session = getSession();
       return new OrcsAdminImpl(logger, session, module.getDataStoreAdmin());
    }
 
    @Override
-   public OrcsPerformance getOrcsPerformance(ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public OrcsPerformance getOrcsPerformance() {
+      OrcsSession session = getSession();
       return new OrcsPerformanceImpl(logger, session, queryModule, indexerModule);
    }
 
    @Override
-   public QueryIndexer getQueryIndexer(ApplicationContext context) {
-      OrcsSession session = getSession(context);
-      return indexerModule.createQueryIndexer(session, getOrcsTypes(context).getAttributeTypes());
+   public QueryIndexer getQueryIndexer() {
+      OrcsSession session = getSession();
+      return indexerModule.createQueryIndexer(session, getOrcsTypes().getAttributeTypes());
    }
 
    private OrcsSession getSystemSession() {
       return systemSession;
    }
 
-   private OrcsSession getSession(ApplicationContext context) {
+   private OrcsSession getSession() {
       // TODO get sessions from a session context cache - improve this
-      String sessionId = null;
-      if (context != null) {
-         sessionId = context.getSessionId();
-      }
-      if (!Strings.isValid(sessionId)) {
-         sessionId = GUID.create();
-      }
+      String sessionId = GUID.create();
       return new OrcsSessionImpl(sessionId);
    }
 
    @Override
-   public OrcsTypes getOrcsTypes(ApplicationContext context) {
-      OrcsSession session = getSession(context);
+   public OrcsTypes getOrcsTypes() {
+      OrcsSession session = getSession();
       return typesModule.createOrcsTypes(session);
    }
 

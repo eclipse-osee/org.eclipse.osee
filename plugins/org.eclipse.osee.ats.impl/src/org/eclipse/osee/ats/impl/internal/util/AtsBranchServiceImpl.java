@@ -52,7 +52,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public IOseeBranch getCommittedWorkingBranch(IAtsTeamWorkflow teamWf) {
       int assocArtId = ((ArtifactReadable) teamWf.getStoreObject()).getLocalId();
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       query =
          query.andIsOfType(BranchType.WORKING).andStateIs(BranchState.COMMITTED).excludeArchived().andAssociatedArtId(
             assocArtId);
@@ -61,7 +61,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
-      BranchQuery branchQuery = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
       if (negatedBranchStates.length > 0) {
          Collection<BranchState> statesToSearch = new LinkedList<BranchState>(Arrays.asList(BranchState.values()));
          statesToSearch.removeAll(Arrays.asList(negatedBranchStates));
@@ -80,7 +80,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchState getBranchState(IOseeBranch branch) {
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
       return fullBranch.getBranchState();
    }
@@ -102,19 +102,19 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       if (workingBranch == null) {
          return false;
       }
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       query = query.andIsMergeFor(workingBranch.getUuid(), destinationBranch.getUuid());
       return query.getCount() > 0;
    }
 
    @Override
    public BranchReadable getBranchByUuid(long branchUuid) {
-      return orcsApi.getQueryFactory(null).branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
    }
 
    @Override
    public boolean branchExists(long branchUuid) {
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       return query.andUuids(branchUuid).getCount() > 0;
    }
 
@@ -142,7 +142,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
          transactionIds = new ArrayList<ITransaction>(5);
-         TransactionQuery txQuery = orcsApi.getQueryFactory(null).transactionQuery();
+         TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
          txQuery.andCommitIds(artifactReadable.getLocalId());
          for (TransactionReadable tx : txQuery.getResults()) {
             transactionIds.add(tx);
@@ -154,14 +154,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public IOseeBranch getParentBranch(IOseeBranch branch) {
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
       return getBranchByUuid(fullBranch.getParentBranch());
    }
 
    @Override
    public ITransaction getBaseTransaction(IOseeBranch branch) {
-      TransactionQuery txQuery = orcsApi.getQueryFactory(null).transactionQuery();
+      TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
       return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }
 }

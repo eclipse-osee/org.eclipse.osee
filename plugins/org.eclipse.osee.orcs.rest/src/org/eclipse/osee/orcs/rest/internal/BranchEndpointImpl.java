@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.ExportOptions;
 import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -100,18 +99,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return uriInfo;
    }
 
-   private ApplicationContext newContext() {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return null;
-         }
-      };
-   }
-
    private QueryFactory newQuery() {
-      return orcsApi.getQueryFactory(newContext());
+      return orcsApi.getQueryFactory();
    }
 
    private BranchQuery newBranchQuery() {
@@ -123,7 +112,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private OrcsBranch getBranchOps() {
-      return orcsApi.getBranchOps(newContext());
+      return orcsApi.getBranchOps();
    }
 
    private ArtifactReadable getArtifactById(IOseeBranch branch, int id) {
@@ -154,7 +143,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private TransactionFactory newTxFactory() {
-      return orcsApi.getTransactionFactory(newContext());
+      return orcsApi.getTransactionFactory();
    }
 
    @Override
@@ -661,7 +650,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private ResultSet<BranchReadable> searchBranches(BranchQueryData options) {
-      BranchQuery query = orcsApi.getQueryFactory(null).branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       if (Conditions.hasValues(options.getBranchIds())) {
          query.andUuids(options.getBranchIds());
       }

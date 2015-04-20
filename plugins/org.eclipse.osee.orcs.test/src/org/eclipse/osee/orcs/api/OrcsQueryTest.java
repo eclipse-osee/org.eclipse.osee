@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -78,10 +77,9 @@ public class OrcsQueryTest {
 
    @Before
    public void setup() {
-      ApplicationContext context = null; // TODO use real application context
-      factory = orcsApi.getQueryFactory(context);
-      branchApi = orcsApi.getBranchOps(context);
-      txFactory = orcsApi.getTransactionFactory(context);
+      factory = orcsApi.getQueryFactory();
+      branchApi = orcsApi.getBranchOps();
+      txFactory = orcsApi.getTransactionFactory();
    }
 
    @Test
@@ -404,7 +402,7 @@ public class OrcsQueryTest {
       ArtifactReadable parent = results.iterator().next().getParent();
       author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory(null).createTransaction(TestBranches.SAW_Bld_2, author, "FollowTest");
+         orcsApi.getTransactionFactory().createTransaction(TestBranches.SAW_Bld_2, author, "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
       tx.relate(parent, CoreRelationTypes.Default_Hierarchical__Child, child);
       TransactionReadable commitTx = tx.commit();

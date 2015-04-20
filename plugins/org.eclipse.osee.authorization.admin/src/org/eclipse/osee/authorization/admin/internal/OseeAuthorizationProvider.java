@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -68,11 +67,7 @@ public class OseeAuthorizationProvider implements AuthorizationProvider, Authori
    }
 
    private QueryFactory getQuery() {
-      return orcsApi.getQueryFactory(getContext());
-   }
-
-   private ApplicationContext getContext() {
-      return null;
+      return orcsApi.getQueryFactory();
    }
 
    private Set<String> getRolesFromStore(long identifier) {

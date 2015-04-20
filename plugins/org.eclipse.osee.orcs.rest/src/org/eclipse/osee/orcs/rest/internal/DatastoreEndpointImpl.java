@@ -19,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
@@ -52,18 +51,8 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       return uriInfo;
    }
 
-   private ApplicationContext newContext() {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return null;
-         }
-      };
-   }
-
    private OrcsAdmin getOrcsAdmin() {
-      return orcsApi.getAdminOps(newContext());
+      return orcsApi.getAdminOps();
    }
 
    @Override

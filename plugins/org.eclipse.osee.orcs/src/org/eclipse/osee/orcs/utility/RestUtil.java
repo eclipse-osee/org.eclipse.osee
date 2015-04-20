@@ -95,11 +95,11 @@ public class RestUtil {
    }
 
    private static void addAttribute(OrcsApi orcsApi, JSONObject jsonObj, ArtifactReadable art) throws Exception {
-      for (IAttributeType attrType : orcsApi.getOrcsTypes(null).getAttributeTypes().getAll()) {
+      for (IAttributeType attrType : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
          if (art.isAttributeTypeValid(attrType)) {
             ResultSet<? extends AttributeReadable<Object>> attributeVals = art.getAttributes();
             if (!attributeVals.isEmpty()) {
-               if (art.isAttributeTypeValid(attrType) && orcsApi.getOrcsTypes(null).getAttributeTypes().getMaxOccurrences(
+               if (art.isAttributeTypeValid(attrType) && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
                   attrType) > 1) {
                   List<String> attributeValues = new ArrayList<String>();
                   for (AttributeReadable<?> attrRead : attributeVals) {

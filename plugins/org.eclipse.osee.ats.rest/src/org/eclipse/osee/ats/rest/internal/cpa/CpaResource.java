@@ -150,7 +150,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Override
    public CpaConfig getConfigs() throws Exception {
       CpaConfig config = new CpaConfig();
-      for (EnumEntry entry : orcsApi.getOrcsTypes(null).getAttributeTypes().getEnumType(
+      for (EnumEntry entry : orcsApi.getOrcsTypes().getAttributeTypes().getEnumType(
          AtsAttributeTypes.ApplicableToProgram).values()) {
          config.getApplicabilityOptions().add(entry.getName());
       }

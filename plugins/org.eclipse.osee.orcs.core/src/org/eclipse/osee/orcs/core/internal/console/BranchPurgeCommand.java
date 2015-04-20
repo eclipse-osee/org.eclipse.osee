@@ -106,8 +106,8 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       boolean baseline = options.contains("B");
       boolean runPurge = options.contains("P");
 
-      OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null), branchUuids, recurse,
+      OrcsBranch orcsBranch = getOrcsApi().getBranchOps();
+      return new PurgeBranchCallable(console, orcsBranch, getOrcsApi().getQueryFactory(), branchUuids, recurse,
          unArchived, unDeleted, baseline, runPurge);
    }
 

@@ -59,7 +59,7 @@ public class AttributeResource {
    @Produces(MediaType.TEXT_PLAIN)
    public String getAsText() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
-      QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory(null);
+      QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
       QueryBuilder queryBuilder = factory.fromBranch(branch).andGuid(artifactUuid);
       if (transactionId > 0) {
          queryBuilder.fromTransaction(transactionId);

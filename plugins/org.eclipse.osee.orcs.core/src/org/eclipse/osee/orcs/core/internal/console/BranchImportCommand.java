@@ -74,8 +74,8 @@ public final class BranchImportCommand implements ConsoleCommand {
       options.put(ImportOptions.ALL_AS_ROOT_BRANCHES.name(), params.getBoolean("allAsRootBranches"));
       options.put(ImportOptions.CLEAN_BEFORE_IMPORT.name(), params.getBoolean("clean"));
 
-      OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
-      return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getQueryFactory(null).branchQuery(),
+      OrcsBranch orcsBranch = getOrcsApi().getBranchOps();
+      return new ImportBranchDelegateCallable(console, orcsBranch, getOrcsApi().getQueryFactory().branchQuery(),
          options, importFiles, branchUuids);
    }
 

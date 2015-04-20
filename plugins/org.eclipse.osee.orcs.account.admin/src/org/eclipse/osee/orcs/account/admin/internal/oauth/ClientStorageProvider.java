@@ -19,9 +19,7 @@ import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import com.google.common.io.InputSupplier;
 import com.google.gson.GsonBuilder;
@@ -52,8 +50,7 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
          public ClientStorage call() throws Exception {
             GsonBuilder builder = new GsonBuilder();
             IOseeBranch storageBranch = CoreBranches.COMMON;
-            ApplicationContext context = newApplicationContext(GUID.create());
-            ClientStorage clientStorage = new ClientStorage(logger, builder, orcsApi, context, storageBranch);
+            ClientStorage clientStorage = new ClientStorage(logger, builder, orcsApi, storageBranch);
 
             if (!clientStorage.typesExist()) {
                clientStorage.storeTypes(newTypesSupplier());
@@ -63,16 +60,6 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
 
       };
       return new FutureTask<ClientStorage>(callable);
-   }
-
-   private ApplicationContext newApplicationContext(final String sessionId) {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return sessionId;
-         }
-      };
    }
 
    private InputSupplier<InputStream> newTypesSupplier() {

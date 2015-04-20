@@ -125,7 +125,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       }
 
       private void populateAttributeTypeJoin(IdJoinQuery typeJoin) throws OseeCoreException {
-         AttributeTypes types = orcsApi.getOrcsTypes(null).getAttributeTypes();
+         AttributeTypes types = orcsApi.getOrcsTypes().getAttributeTypes();
          for (IAttributeType attributeType : types.getAll()) {
             if (types.getMaxOccurrences(attributeType) == 1) {
                typeJoin.add(attributeType.getGuid());

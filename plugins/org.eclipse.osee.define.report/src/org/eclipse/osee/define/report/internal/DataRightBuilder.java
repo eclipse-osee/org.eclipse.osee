@@ -51,7 +51,7 @@ public class DataRightBuilder {
    }
 
    public DataRightResult getDataRights(DataRightInput request) {
-      QueryFactory queryFactory = orcsApi.getQueryFactory(null);
+      QueryFactory queryFactory = orcsApi.getQueryFactory();
       QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON);
 
       DataRightResult mapping = new DataRightResult();

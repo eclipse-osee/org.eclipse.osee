@@ -61,7 +61,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), getUser(user), comment);
+            orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), getUser(user), comment);
       }
       return transaction;
    }
@@ -70,7 +70,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    @Override

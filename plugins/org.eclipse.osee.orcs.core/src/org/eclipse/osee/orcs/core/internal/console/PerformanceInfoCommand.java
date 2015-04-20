@@ -88,7 +88,7 @@ public class PerformanceInfoCommand implements ConsoleCommand {
       boolean isResetAllowed = params.getBoolean("reset");
       Collection<StatsType> statsType = toStatusTypes(params.getArray("statusId"));
 
-      OrcsPerformance performance = getOrcsApi().getOrcsPerformance(null);
+      OrcsPerformance performance = getOrcsApi().getOrcsPerformance();
       return new PerformanceCallable(console, performance, statsType, isResetAllowed);
    }
 

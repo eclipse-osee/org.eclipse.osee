@@ -46,13 +46,13 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
-      if (!getOrcsApi().getOrcsTypes(null).getAttributeTypes().exists(AtsAttributeTypes.BaselineBranchUuid)) {
+      if (!getOrcsApi().getOrcsTypes().getAttributeTypes().exists(AtsAttributeTypes.BaselineBranchUuid)) {
          data.logError("ats.BaselineBranchUuid is not configured for this database");
          return;
       }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
-      for (ArtifactReadable art : getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+      for (ArtifactReadable art : getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {

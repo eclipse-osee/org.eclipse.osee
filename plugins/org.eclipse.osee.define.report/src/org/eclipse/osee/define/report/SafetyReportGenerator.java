@@ -68,7 +68,7 @@ public class SafetyReportGenerator {
 
    private void init(OrcsApi orcsApi, long branchUuid, ISheetWriter writer) {
       accumulator = new SafetyInformationAccumulator(this, writer);
-      queryFactory = orcsApi.getQueryFactory(null);
+      queryFactory = orcsApi.getQueryFactory();
       this.branchUuid = branchUuid;
       componentUtil = new ComponentUtil(branchUuid, orcsApi);
    }

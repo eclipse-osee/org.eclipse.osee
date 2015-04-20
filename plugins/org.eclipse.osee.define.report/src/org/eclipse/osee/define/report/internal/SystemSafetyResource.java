@@ -65,7 +65,7 @@ public final class SystemSafetyResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
-      OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
+      OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory().branchQuery());
       return pageUtil.realizeApplet(resourceRegistry, "systemSafetyReport.html", getClass());
    }
 }

@@ -76,7 +76,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          }
 
          String uri = null;
-         BranchQuery query = orcs.getQueryFactory(null).branchQuery();
+         BranchQuery query = orcs.getQueryFactory().branchQuery();
          if (branchName != null) {
             query.andNameEquals(branchName);
          } else if (branchUuid != null) {
@@ -100,7 +100,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
    private Long extractBranchUuid(String branchGuid) {
       Long branchUuid = null;
       ArtifactReadable mapArtifact =
-         orcs.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andGuid(MAPPING_ART).getResults().getExactlyOne();
+         orcs.getQueryFactory().fromBranch(CoreBranches.COMMON).andGuid(MAPPING_ART).getResults().getExactlyOne();
       String map = mapArtifact.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
       int start = map.indexOf(branchGuid);
       if (start > 0) {

@@ -58,7 +58,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       A result = cache.getSoleByGuid(guid, clazz);
       if (result == null) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
             result = (A) configItemFactory.getConfigObject(artifact);
             if (result != null) {
@@ -74,7 +74,7 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       IAtsConfigObject result = cache.getSoleByGuid(guid);
       if (result == null) {
          ArtifactReadable artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
          if (artifact != null) {
             result = configItemFactory.getConfigObject(artifact);
             if (result != null) {

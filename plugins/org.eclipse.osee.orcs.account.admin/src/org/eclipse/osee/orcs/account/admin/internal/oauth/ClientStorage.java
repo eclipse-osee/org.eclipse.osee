@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -54,15 +53,13 @@ public class ClientStorage {
    private final Log logger;
    private final GsonBuilder builder;
    private final OrcsApi orcsApi;
-   private final ApplicationContext context;
    private final IOseeBranch storageBranch;
 
-   public ClientStorage(Log logger, GsonBuilder builder, OrcsApi orcsApi, ApplicationContext context, IOseeBranch storageBranch) {
+   public ClientStorage(Log logger, GsonBuilder builder, OrcsApi orcsApi, IOseeBranch storageBranch) {
       super();
       this.logger = logger;
       this.builder = builder;
       this.orcsApi = orcsApi;
-      this.context = context;
       this.storageBranch = storageBranch;
    }
 
@@ -75,7 +72,7 @@ public class ClientStorage {
    }
 
    private QueryBuilder newQuery() {
-      QueryFactory queryFactory = orcsApi.getQueryFactory(context);
+      QueryFactory queryFactory = orcsApi.getQueryFactory();
       return queryFactory.fromBranch(getBranch());
    }
 
@@ -99,7 +96,7 @@ public class ClientStorage {
       long authorId = principal != null ? principal.getGuid() : -1L;
       ArtifactReadable author = getAuthorById(authorId);
 
-      TransactionFactory transactionFactory = orcsApi.getTransactionFactory(context);
+      TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
       return transactionFactory.createTransaction(getBranch(), author, comment);
    }
 
@@ -195,7 +192,7 @@ public class ClientStorage {
    }
 
    private void reloadTypes() {
-      orcsApi.getOrcsTypes(context).invalidateAll();
+      orcsApi.getOrcsTypes().invalidateAll();
    }
 
    public boolean typesExist() {

@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -78,20 +77,16 @@ public class OrcsStorageImpl implements Storage {
       return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
-   private ApplicationContext getContext() {
-      return null;
-   }
-
    private QueryFactory getQuery() {
-      return orcsApi.getQueryFactory(getContext());
+      return orcsApi.getQueryFactory();
    }
 
    private TransactionFactory getTxFactory() {
-      return orcsApi.getTransactionFactory(getContext());
+      return orcsApi.getTransactionFactory();
    }
 
    private void reloadTypes() {
-      orcsApi.getOrcsTypes(getContext()).invalidateAll();
+      orcsApi.getOrcsTypes().invalidateAll();
    }
 
    @SuppressWarnings("unchecked")

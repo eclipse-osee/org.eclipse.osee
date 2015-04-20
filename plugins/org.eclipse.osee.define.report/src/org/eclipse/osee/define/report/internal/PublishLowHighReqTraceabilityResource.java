@@ -73,7 +73,7 @@ public final class PublishLowHighReqTraceabilityResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getApplet() {
-      OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory(null).branchQuery());
+      OseeAppletPage pageUtil = new OseeAppletPage(orcsApi.getQueryFactory().branchQuery());
 
       ArtifactTypeOptionsRule selectRule =
          new ArtifactTypeOptionsRule("artifactTypeSelect", getTypes(), new HashSet<String>());
@@ -81,7 +81,7 @@ public final class PublishLowHighReqTraceabilityResource {
    }
 
    private Set<String> getTypes() {
-      OrcsTypes orcsTypes = orcsApi.getOrcsTypes(null);
+      OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
       ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
       Set<String> toReturn = new HashSet<String>();
 

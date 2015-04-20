@@ -110,11 +110,11 @@ public class IndexerCommand implements ConsoleCommand {
          String[] uuids = params.getArray("branchUuids");
          if (uuids != null & uuids.length > 0) {
             for (String uuid : uuids) {
-               branches.add(getOrcsApi().getQueryFactory(null).branchQuery().andUuids(Long.valueOf(uuid)).getResults().getExactlyOne());
+               branches.add(getOrcsApi().getQueryFactory().branchQuery().andUuids(Long.valueOf(uuid)).getResults().getExactlyOne());
             }
          }
 
-         QueryIndexer indexer = getOrcsApi().getQueryIndexer(null);
+         QueryIndexer indexer = getOrcsApi().getQueryIndexer();
 
          OpType opType = toOpType(params.get("op"));
          switch (opType) {
@@ -146,7 +146,7 @@ public class IndexerCommand implements ConsoleCommand {
                break;
             case STATS:
             default:
-               IndexerStatistics indexerStats = getOrcsApi().getOrcsPerformance(null).getIndexerStatistics();
+               IndexerStatistics indexerStats = getOrcsApi().getOrcsPerformance().getIndexerStatistics();
                IndexerUtil.writeStatistics(console, indexerStats);
                break;
          }

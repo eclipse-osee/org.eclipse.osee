@@ -72,7 +72,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    private AttributeTypes getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes(null).getAttributeTypes();
+      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes();
    }
 
    @Override

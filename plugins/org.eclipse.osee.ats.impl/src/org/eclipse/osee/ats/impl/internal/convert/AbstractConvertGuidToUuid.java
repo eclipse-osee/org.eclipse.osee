@@ -56,11 +56,11 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    }
 
    protected BranchReadable getBranch(String guid) throws OseeCoreException {
-      return orcsApi.getQueryFactory(null).branchQuery().andUuids(getBranchIdLegacy(guid)).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().branchQuery().andUuids(getBranchIdLegacy(guid)).getResults().getExactlyOne();
    }
 
    protected TransactionBuilder createTransactionBuilder() throws OseeCoreException {
-      TransactionFactory txFactory = getOrcsApi().getTransactionFactory(null);
+      TransactionFactory txFactory = getOrcsApi().getTransactionFactory();
       Conditions.checkNotNull(txFactory, "transaction factory");
       return txFactory.createTransaction(COMMON, atsServer.getArtifactByGuid(SystemUser.OseeSystem.getGuid()),
          getName());

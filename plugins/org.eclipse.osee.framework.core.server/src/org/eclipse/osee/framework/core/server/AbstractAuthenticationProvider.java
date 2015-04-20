@@ -51,7 +51,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
    protected IUserToken getUserTokenFromOseeDb(String userId) {
       IUserToken toReturn = null;
       try {
-         QueryFactory queryFactory = orcsApi.getQueryFactory(null);
+         QueryFactory queryFactory = orcsApi.getQueryFactory();
          QueryBuilder query =
             queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
                CoreAttributeTypes.UserId, userId);

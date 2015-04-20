@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -46,22 +45,18 @@ public class DispositionInitializer {
       return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
-   private ApplicationContext getContext() {
-      return null;
-   }
-
    private QueryFactory getQueryFactory() {
-      return orcsApi.getQueryFactory(getContext());
+      return orcsApi.getQueryFactory();
    }
 
    public void initialize() throws Exception {
 
-      orcsApi.getBranchOps(getContext()).createWorkingBranch(SAW_Bld_1_FOR_DISPO, getDispositionUser(), SAW_Bld_1, null).call();
+      orcsApi.getBranchOps().createWorkingBranch(SAW_Bld_1_FOR_DISPO, getDispositionUser(), SAW_Bld_1, null).call();
 
       // create Dispo Config Art
       ArtifactReadable oseeSystem = findUser();
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory(null).createTransaction(CoreBranches.COMMON, oseeSystem, "Create Dispo Config");
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, oseeSystem, "Create Dispo Config");
       ArtifactId createArtifact = tx.createArtifact(CoreArtifactTypes.GeneralData, DispoStrings.Dispo_Config_Art);
       StringBuffer sb = new StringBuffer(String.valueOf(SAW_Bld_1.getUuid()));
       sb.append(":");
@@ -83,6 +78,6 @@ public class DispositionInitializer {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable findUser() {
-      return orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 }

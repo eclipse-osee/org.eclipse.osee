@@ -47,7 +47,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @SuppressWarnings("unchecked")
    @Override
    public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
-      QueryBuilder query = atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch());
+      QueryBuilder query = atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch());
 
       // WorkItem type
       if (clazz != null) {

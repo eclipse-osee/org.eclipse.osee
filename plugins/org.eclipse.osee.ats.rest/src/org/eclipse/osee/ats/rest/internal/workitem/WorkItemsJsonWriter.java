@@ -82,7 +82,7 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
    }
 
    private AttributeTypes getAttributeTypes() {
-      return atsServer.getOrcsApi().getOrcsTypes(null).getAttributeTypes();
+      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes();
    }
 
    @Override

@@ -81,7 +81,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    protected IAtsUser loadUserByUserIdFromDb(String userId) {
       IAtsUser atsUser = null;
       ResultSet<ArtifactReadable> results =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
             CoreAttributeTypes.UserId, userId).getResults();
       if (!results.isEmpty()) {
          ArtifactReadable userArt = results.getExactlyOne();
@@ -94,7 +94,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    protected IAtsUser loadUserByUserNameFromDb(String name) {
       IAtsUser atsUser = null;
       ArtifactReadable userArt =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
             CoreAttributeTypes.Name, name).getResults().getExactlyOne();
       if (userArt != null) {
          atsUser = new AtsUser(userArt);
@@ -108,7 +108,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       Boolean admin = userIdToAdmin.get(user.getUserId());
       if (admin == null) {
          admin =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(
                AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
          userIdToAdmin.put(user.getUserId(), admin);
       }
@@ -120,14 +120,14 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
    }
 
    @Override
    public List<IAtsUser> getUsers(Active active) {
       ensureLoaded();
       List<IAtsUser> users = new ArrayList<IAtsUser>();
-      for (ArtifactReadable userArt : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+      for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.User).getResults()) {
          Boolean activeFlag = userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true);
          if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
@@ -140,7 +140,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    @Override
    protected synchronized void ensureLoaded() {
       if (!loaded) {
-         for (ArtifactReadable art : orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+         for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
             CoreArtifactTypes.User).getResults()) {
             AtsUser atsUser = new AtsUser(art);
             userIdToAtsUser.put(art.getSoleAttributeValue(CoreAttributeTypes.UserId, ""), atsUser);
@@ -154,11 +154,11 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    public boolean currentUserHasAccessToAtsBranch(Long branchUuid) {
       boolean hasPermission = false;
       IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
-      if (!orcsApi.getQueryFactory(null).branchQuery().andIds(configAtsBranch).getResults().isEmpty()) {
+      if (!orcsApi.getQueryFactory().branchQuery().andIds(configAtsBranch).getResults().isEmpty()) {
          String userId = getCurrentUserId();
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
             ResultSet<ArtifactReadable> results =
-               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
+               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
                   CoreAttributeTypes.UserId, userId).getResults();
             hasPermission = (results.size() == 1);
          }

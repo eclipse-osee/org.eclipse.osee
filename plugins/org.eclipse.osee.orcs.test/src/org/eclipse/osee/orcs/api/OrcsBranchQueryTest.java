@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
@@ -65,8 +64,7 @@ public class OrcsBranchQueryTest {
 
    @Before
    public void setup() {
-      ApplicationContext context = null; // TODO use real application context
-      factory = orcsApi.getQueryFactory(context);
+      factory = orcsApi.getQueryFactory();
    }
 
    @Test
@@ -299,7 +297,7 @@ public class OrcsBranchQueryTest {
    }
 
    private OrcsBranch getBranchOps() {
-      return orcsApi.getBranchOps(null);
+      return orcsApi.getBranchOps();
    }
 
    private static void assertBranch(BranchReadable actual, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {

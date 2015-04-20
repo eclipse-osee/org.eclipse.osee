@@ -64,7 +64,7 @@ public class ArtifactSearch_V1Test {
 
    @Test
    public void testSearchRequestNull() throws OseeCoreException {
-      when(orcsApi.getQueryFactory(null)).thenReturn(queryFactory);
+      when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
       when(queryFactory.fromBranch(BRANCH)).thenReturn(builder);
 
       Collection<IAttributeType> attrTypes = PredicateHandlerUtil.getIAttributeTypes(types);

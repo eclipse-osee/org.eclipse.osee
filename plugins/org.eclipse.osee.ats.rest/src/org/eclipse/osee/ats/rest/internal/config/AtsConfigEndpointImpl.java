@@ -61,7 +61,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public AtsConfigurations get() {
       ResultSet<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.Configuration).getResults();
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.Configuration).getResults();
       AtsConfigurations configs = new AtsConfigurations();
       for (ArtifactReadable art : artifacts) {
          AtsConfiguration config = new AtsConfiguration();
@@ -99,11 +99,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       }
       ArtifactReadable userArt = atsServer.getArtifact(user);
       org.eclipse.osee.orcs.data.BranchReadable fromBranch =
-         orcsApi.getQueryFactory(null).branchQuery().andUuids(fromBranchUuid).getResults().getExactlyOne();
+         orcsApi.getQueryFactory().branchQuery().andUuids(fromBranchUuid).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =
-         orcsApi.getBranchOps(null).createTopLevelBranch(TokenFactory.createBranch(newBranchName), userArt);
+         orcsApi.getBranchOps().createTopLevelBranch(TokenFactory.createBranch(newBranchName), userArt);
       BranchReadable newBranch;
       try {
          newBranch = newBranchCallable.call();
@@ -124,7 +124,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private void introduceAtsHeadingArtifacts(org.eclipse.osee.orcs.data.BranchReadable fromBranch, BranchReadable newBranch, ArtifactReadable userArt) {
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory(null).createTransaction(newBranch, userArt, "Add ATS Configuration");
+         orcsApi.getTransactionFactory().createTransaction(newBranch, userArt, "Add ATS Configuration");
 
       ArtifactId headingArt =
          introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
@@ -153,20 +153,20 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @SuppressWarnings("unchecked")
    private ArtifactId introduceAndRelateTo(TransactionBuilder tx, org.eclipse.osee.orcs.data.BranchReadable fromBranch, IArtifactToken introToken, BranchReadable newBranch, IArtifactToken relateToToken, ArtifactId relateToArt) {
       ArtifactReadable introArt =
-         orcsApi.getQueryFactory(null).fromBranch(fromBranch).andIds(introToken).getResults().getAtMostOneOrNull();
+         orcsApi.getQueryFactory().fromBranch(fromBranch).andIds(introToken).getResults().getAtMostOneOrNull();
       if (introArt == null) {
          introArt =
-            orcsApi.getQueryFactory(null).fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
+            orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
                introToken.getName()).getResults().getAtMostOneOrNull();
       }
       Conditions.checkNotNull(introArt, "No artifact found for token " + introToken);
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
       if (relateToToken != null) {
          relateToArt =
-            orcsApi.getQueryFactory(null).fromBranch(newBranch).andIds(relateToToken).getResults().getAtMostOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(newBranch).andIds(relateToToken).getResults().getAtMostOneOrNull();
          if (relateToArt == null) {
             relateToArt =
-               orcsApi.getQueryFactory(null).fromBranch(newBranch).andTypeEquals(relateToToken.getArtifactType()).andNameEquals(
+               orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(relateToToken.getArtifactType()).andNameEquals(
                   relateToToken.getName()).getResults().getAtMostOneOrNull();
          }
       }
@@ -176,7 +176,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactReadable userArt, long newBranchUuid) {
       TransactionBuilder tx =
-         orcsApi.getTransactionFactory(null).createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();
       config.setName(branchName);
       config.setBranchUuid(newBranchUuid);

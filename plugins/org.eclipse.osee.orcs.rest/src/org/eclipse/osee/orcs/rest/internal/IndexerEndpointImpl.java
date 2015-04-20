@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.IndexResources;
@@ -41,22 +40,12 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
       this.orcsApi = orcsApi;
    }
 
-   private ApplicationContext newContext() {
-      return new ApplicationContext() {
-
-         @Override
-         public String getSessionId() {
-            return null;
-         }
-      };
-   }
-
    private QueryIndexer getIndexer() {
-      return orcsApi.getQueryIndexer(newContext());
+      return orcsApi.getQueryIndexer();
    }
 
    private QueryFactory newQuery() {
-      return orcsApi.getQueryFactory(newContext());
+      return orcsApi.getQueryFactory();
    }
 
    private BranchQuery newBranchQuery() {

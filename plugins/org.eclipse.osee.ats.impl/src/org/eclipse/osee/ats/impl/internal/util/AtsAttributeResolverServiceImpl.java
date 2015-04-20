@@ -88,7 +88,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public IAttributeType getAttributeType(String attributeName) {
       IAttributeType attrType = null;
       try {
-         for (IAttributeType type : orcsApi.getOrcsTypes(null).getAttributeTypes().getAll()) {
+         for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
             if (type.getName().equals(attributeName)) {
                attrType = type;
             }

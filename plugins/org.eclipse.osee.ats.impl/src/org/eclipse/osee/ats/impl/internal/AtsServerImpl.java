@@ -267,7 +267,7 @@ public class AtsServerImpl implements IAtsServer {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
             result =
-               orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getAtMostOneOrNull();
+               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getAtMostOneOrNull();
          }
       }
       return result;
@@ -293,7 +293,7 @@ public class AtsServerImpl implements IAtsServer {
       ArtifactReadable artifact = null;
       try {
          artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
       } catch (ItemDoesNotExist ex) {
          // do nothing
       }
@@ -305,7 +305,7 @@ public class AtsServerImpl implements IAtsServer {
       ArtifactReadable artifact = null;
       try {
          artifact =
-            orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId, id).getResults().getOneOrNull();
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId, id).getResults().getOneOrNull();
       } catch (ItemDoesNotExist ex) {
          // do nothing
       }
@@ -385,14 +385,14 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifactByUuid(long uuid) {
-      return orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andUuid(new Long(uuid).intValue()).getResults().getOneOrNull();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(new Long(uuid).intValue()).getResults().getOneOrNull();
    }
 
    @Override
    public Collection<ArtifactReadable> getArtifacts(List<Long> uuids) {
       Collection<ArtifactReadable> artifacts = new LinkedList<ArtifactReadable>();
       Iterator<ArtifactReadable> iterator =
-         orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andUuids(uuids).getResults().iterator();
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuids(uuids).getResults().iterator();
       while (iterator.hasNext()) {
          artifacts.add(iterator.next());
       }
@@ -415,7 +415,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public QueryBuilder getQuery() {
-      return getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch());
+      return getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch());
    }
 
    @Override
@@ -423,7 +423,7 @@ public class AtsServerImpl implements IAtsServer {
       String result = null;
       @SuppressWarnings("unchecked")
       ArtifactReadable atsConfig =
-         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;
@@ -517,7 +517,7 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public Collection<IArtifactType> getArtifactTypes() {
       List<IArtifactType> types = new ArrayList<IArtifactType>();
-      types.addAll(orcsApi.getOrcsTypes(null).getArtifactTypes().getAll());
+      types.addAll(orcsApi.getOrcsTypes().getArtifactTypes().getAll());
       return types;
    }
 

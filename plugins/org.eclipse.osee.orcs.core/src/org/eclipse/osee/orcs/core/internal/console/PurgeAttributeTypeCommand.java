@@ -57,7 +57,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(final Console console, final ConsoleParameters params) {
-      final OrcsTypes orcsTypes = orcsApi.getOrcsTypes(null);
+      final OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
       return new Callable<Void>() {
 
          @Override

@@ -21,19 +21,19 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
  */
 public interface OrcsApi {
 
-   QueryIndexer getQueryIndexer(ApplicationContext context);
+   QueryIndexer getQueryIndexer();
 
-   QueryFactory getQueryFactory(ApplicationContext context);
+   QueryFactory getQueryFactory();
 
-   OrcsBranch getBranchOps(ApplicationContext context);
+   OrcsBranch getBranchOps();
 
-   OrcsAdmin getAdminOps(ApplicationContext context);
+   OrcsAdmin getAdminOps();
 
-   TransactionFactory getTransactionFactory(ApplicationContext context);
+   TransactionFactory getTransactionFactory();
 
-   OrcsPerformance getOrcsPerformance(ApplicationContext context);
+   OrcsPerformance getOrcsPerformance();
 
-   OrcsTypes getOrcsTypes(ApplicationContext context);
+   OrcsTypes getOrcsTypes();
 
    ScriptEngine getScriptEngine();
 

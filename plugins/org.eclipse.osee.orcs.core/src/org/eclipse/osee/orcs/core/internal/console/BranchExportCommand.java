@@ -78,7 +78,7 @@ public final class BranchExportCommand implements ConsoleCommand {
       List<String> excludeBranchIds = Arrays.asList(params.getArray("excludeBranchIds"));
       List<String> includeBranchIds = Arrays.asList(params.getArray("includeBranchIds"));
 
-      OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
+      OrcsBranch orcsBranch = getOrcsApi().getBranchOps();
       return new ExportBranchCallable(console, orcsBranch, exportFileName, options, includeArchivedBranches,
          includeBranchIds, excludeBranchIds, orcsApi);
    }
@@ -108,7 +108,7 @@ public final class BranchExportCommand implements ConsoleCommand {
 
       private List<IOseeBranch> getBranchesToExport() throws OseeCoreException {
          List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
-         BranchQuery branchQuery = orcsApi.getQueryFactory(null).branchQuery();
+         BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (includeBranchIds.isEmpty()) {
             ResultSet<BranchReadable> branchReadables = null;
             if (includeArchivedBranches) {
@@ -129,7 +129,7 @@ public final class BranchExportCommand implements ConsoleCommand {
             }
          }
 
-         branchQuery = orcsApi.getQueryFactory(null).branchQuery();
+         branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (!excludeBranchIds.isEmpty()) {
             for (String branchUuidString : excludeBranchIds) {
                BranchReadable toExclude =

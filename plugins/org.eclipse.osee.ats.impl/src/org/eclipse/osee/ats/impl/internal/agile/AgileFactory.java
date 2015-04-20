@@ -54,7 +54,7 @@ public class AgileFactory {
       if (agileTeamArt == null) {
 
          TransactionBuilder transaction =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), userArt,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
                "Create new Agile Team");
 
          agileTeamArt =
@@ -79,7 +79,7 @@ public class AgileFactory {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
       TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), userArt,
+         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
             "Update new Agile Team");
 
       ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(team.getUuid());
@@ -132,7 +132,7 @@ public class AgileFactory {
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServer atsServer, JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
       TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(), userArt,
+         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
             "Create new Agile Feature Group");
       ArtifactReadable featureGroupArt =
          (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),

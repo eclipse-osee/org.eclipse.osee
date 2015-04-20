@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -62,8 +61,7 @@ public class OrcsTxQueryTest {
 
    @Before
    public void setup() {
-      ApplicationContext context = null; // TODO use real application context
-      factory = orcsApi.getQueryFactory(context);
+      factory = orcsApi.getQueryFactory();
    }
 
    @Test
@@ -580,7 +578,7 @@ public class OrcsTxQueryTest {
 
    @Test
    public void testAuthorLocal() throws Exception {
-      QueryFactory branchFactory = orcsApi.getQueryFactory(null);
+      QueryFactory branchFactory = orcsApi.getQueryFactory();
       QueryBuilder branchQuery = branchFactory.fromBranch(CoreBranches.COMMON);
       /*********************************************************
        * Only valid user is 17

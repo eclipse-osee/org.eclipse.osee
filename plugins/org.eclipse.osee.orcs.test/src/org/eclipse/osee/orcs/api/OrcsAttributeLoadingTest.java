@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -47,8 +46,7 @@ public class OrcsAttributeLoadingTest {
 
    @Before
    public void setUp() throws Exception {
-      ApplicationContext context = null; // TODO use real application context
-      query = orcsApi.getQueryFactory(context);
+      query = orcsApi.getQueryFactory();
    }
 
    @Test

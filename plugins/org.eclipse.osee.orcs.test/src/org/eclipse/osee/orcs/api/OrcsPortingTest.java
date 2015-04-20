@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -62,11 +61,9 @@ public class OrcsPortingTest {
 
    @Before
    public void setUp() throws Exception {
-      ApplicationContext context = null; // TODO use real application context
-
-      branchApi = orcsApi.getBranchOps(context);
-      query = orcsApi.getQueryFactory(context);
-      txFactory = orcsApi.getTransactionFactory(context);
+      branchApi = orcsApi.getBranchOps();
+      query = orcsApi.getQueryFactory();
+      txFactory = orcsApi.getTransactionFactory();
 
       author = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }

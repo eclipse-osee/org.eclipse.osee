@@ -147,7 +147,7 @@ public class HtmlWriter {
    }
 
    private IOseeBranch getBranchFromUuid(long uuid) {
-      return OrcsApplication.getOrcsApi().getQueryFactory(null).branchQuery().andUuids(uuid).getResultsAsId().getExactlyOne();
+      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(uuid).getResultsAsId().getExactlyOne();
    }
 
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {

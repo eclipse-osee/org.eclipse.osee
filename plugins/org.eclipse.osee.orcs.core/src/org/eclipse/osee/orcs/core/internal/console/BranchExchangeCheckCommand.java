@@ -54,7 +54,7 @@ public class BranchExchangeCheckCommand implements ConsoleCommand {
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
       List<String> importFiles = Arrays.asList(params.getArray("uri"));
-      OrcsBranch orcsBranch = getOrcsApi().getBranchOps(null);
+      OrcsBranch orcsBranch = getOrcsApi().getBranchOps();
       return new CheckBranchExchangeCallable(console, orcsBranch, importFiles);
    }
 

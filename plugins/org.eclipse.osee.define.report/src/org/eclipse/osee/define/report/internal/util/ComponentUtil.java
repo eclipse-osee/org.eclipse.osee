@@ -39,7 +39,7 @@ public class ComponentUtil {
    private synchronized void load() {
       wasLoaded = true;
       mpCsci =
-         orcsApi.getQueryFactory(null).fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
+         orcsApi.getQueryFactory().fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
             "MP CSCI").getResults().getExactlyOne();
       mpComponents = mpCsci.getDescendants();
    }

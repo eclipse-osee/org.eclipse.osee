@@ -107,7 +107,7 @@ public final class ActionResource implements AtsActionEndpointApi {
       for (String key : queryParameters.keySet()) {
          IAttributeType attrType = null;
          Long attrTypeId = Strings.isNumeric(key) ? Long.valueOf(key) : null;
-         for (IAttributeType type : atsServer.getOrcsApi().getOrcsTypes(null).getAttributeTypes().getAll()) {
+         for (IAttributeType type : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
             if (attrTypeId != null && type.getGuid().equals(attrTypeId)) {
                attrType = type;
                break;
@@ -119,7 +119,7 @@ public final class ActionResource implements AtsActionEndpointApi {
          if (attrType != null) {
             for (String value : queryParameters.get(key)) {
                Iterator<ArtifactReadable> iterator =
-                  atsServer.getOrcsApi().getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
+                  atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(attrType,
                      value).getResults().iterator();
                while (iterator.hasNext()) {
                   ArtifactReadable artifactReadable = iterator.next();
@@ -190,7 +190,7 @@ public final class ActionResource implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
       IAtsChangeSet changes = atsServer.getStoreFactory().createAtsChangeSet("Create Action - Server", atsUser);
-      orcsApi.getTransactionFactory(null).createTransaction(AtsUtilCore.getAtsBranch(),
+      orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(),
          ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
 
       ChangeType changeType = null;

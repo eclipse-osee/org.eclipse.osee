@@ -59,7 +59,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
       try {
-         QueryFactory queryFactory = getOrcsApi().getQueryFactory(null);
+         QueryFactory queryFactory = getOrcsApi().getQueryFactory();
          TransactionBuilder tx = createTransactionBuilder();
          for (ArtifactReadable art : getUsersFavoriteBranch(queryFactory)) {
             convertAttributeToUuid(data, reportOnly, tx, art, art.getAttributes(CoreAttributeTypes.FavoriteBranch));
