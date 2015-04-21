@@ -16,10 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.Message;
+import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
 import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
@@ -42,7 +42,8 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
 
    private final ReentrantLock lock = new ReentrantLock();
-//   private IRemoteMessageService exportedRemoteMessageService;
+
+   //   private IRemoteMessageService exportedRemoteMessageService;
 
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
       if (serviceConnector == null) {
@@ -54,6 +55,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public Remote getControlInterface(String controlInterfaceID) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       Remote controlInterface = env.getControlInterface(controlInterfaceID);
       if (controlInterface != null) {
          try {
@@ -69,25 +71,28 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       env.addInstrumentationRegistrationListener(listener);
    }
 
    @Override
    public void removeInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       env.removeInstrumentationRegistrationListener(listener);
    }
 
-//   @Override
-//   public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
-//      if(exportedRemoteMessageService == null){
-//         IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
-//         exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
-//      }
-//      return exportedRemoteMessageService;
-//   }
+   //   @Override
+   //   public IRemoteMessageService getMessageToolServiceProxy() throws RemoteException {
+   //      if(exportedRemoteMessageService == null){
+   //         IRemoteMessageService service = ServiceUtility.getService(IRemoteMessageService.class, 30000);
+   //         exportedRemoteMessageService = (IRemoteMessageService)this.serviceConnector.export(service);
+   //      }
+   //      return exportedRemoteMessageService;
+   //   }
 
    @Override
    public IRemoteCommandConsole getCommandConsole() throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       OseeLog.log(RemoteTestEnvironment.class, Level.FINE, "Remote command onsole requested");
       ICommandManager commandManager = ServiceUtility.getService(ICommandManager.class);
       RemoteShell shell = new RemoteShell(commandManager);
@@ -109,6 +114,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public void closeCommandConsole(IRemoteCommandConsole console) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       RemoteShell shell;
       lock.lock();
       try {
@@ -131,6 +137,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public IModelManagerRemote getModelManager() throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       if (modelManager == null) {
          modelManager = new RemoteModelManager();
       }
@@ -143,11 +150,13 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public byte[] getScriptOutfile(String outfilePath) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       return env.getScriptOutfile(outfilePath);
    }
 
    @Override
    public int getUniqueId() throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       return env.getUniqueId();
    }
 
@@ -155,33 +164,39 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
       @Override
       public void addModelActivityListener(IModelListener listener) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().addModelActivityListener(listener);
       }
 
       @Override
       public void removeModelActivityListener(IModelListener listener) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().removeModelActivityListener(listener);
       }
 
       @Override
       public void addModelActivityListener(IModelListener listener, ModelKey<?> key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().addModelActivityListener(listener, key);
       }
 
       @Override
       public void removeModelActivityListener(IModelListener listener, ModelKey<?> key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().removeModelActivityListener(listener, key);
       }
 
       @SuppressWarnings("rawtypes")
       @Override
       public List<ModelKey> getRegisteredModels() throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          return env.getModelManager().getRegisteredModels();
       }
 
       @Override
-      @SuppressWarnings({ "unchecked", "rawtypes" })
+      @SuppressWarnings({"unchecked", "rawtypes"})
       public Remote getRemoteModel(ModelKey<?> key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          try {
             Class modelClass;
             try {
@@ -199,12 +214,14 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
       @Override
       public void releaseReference(ModelKey<?> key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().releaseReference(key);
       }
 
       @Override
-      @SuppressWarnings({ "unchecked", "rawtypes" })
+      @SuppressWarnings({"unchecked", "rawtypes"})
       public void changeModelState(ModelKey<?> key, ModelState state) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          Class modelClass;
          try {
             modelClass = env.loadClassFromMessageLoader(key.getClassName());
@@ -217,12 +234,14 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
       @Override
       public ModelState getModelState(ModelKey<?> key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          return env.getModelManager().getModelState(key);
       }
 
       @SuppressWarnings("rawtypes")
       @Override
       public void releaseAllReferences(ModelKey key) throws RemoteException {
+         Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
          env.getModelManager().releaseAllReferences(key);
       }
 
@@ -230,11 +249,13 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
 
    @Override
    public void setBatchMode(boolean isInBatchMode) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       env.setBatchMode(isInBatchMode);
    }
 
    @Override
    public void sendMessage(Message message) throws RemoteException {
+      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       env.sendMessageToServer(message);
    }
 
