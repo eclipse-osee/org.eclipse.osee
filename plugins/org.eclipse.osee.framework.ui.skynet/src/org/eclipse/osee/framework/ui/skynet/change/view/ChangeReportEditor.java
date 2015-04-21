@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
+import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
@@ -40,18 +41,27 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor";
 
    private ChangeReportPage changeReportPage;
-   private ChangeReportActionBarContributor actionBarContributor;
+   private ChangeReportActionBarContributor changeReportActionBarContributor;
+   private BranchTransactionActionBarContributor branchTransactionActionBarContributor;
    private final EventRelay eventRelay;
+   private BranchTransactionPage branchTransactionPage;
 
    public ChangeReportEditor() {
       eventRelay = new EventRelay();
    }
 
-   public ChangeReportActionBarContributor getActionBarContributor() {
-      if (actionBarContributor == null) {
-         actionBarContributor = new ChangeReportActionBarContributor(this);
+   public ChangeReportActionBarContributor getChangeReportActionBarContributor() {
+      if (changeReportActionBarContributor == null) {
+         changeReportActionBarContributor = new ChangeReportActionBarContributor(this);
       }
-      return actionBarContributor;
+      return changeReportActionBarContributor;
+   }
+
+   public BranchTransactionActionBarContributor getBranchTransactionActionBarContributor() {
+      if (branchTransactionActionBarContributor == null) {
+         branchTransactionActionBarContributor = new BranchTransactionActionBarContributor(this);
+      }
+      return branchTransactionActionBarContributor;
    }
 
    @Override
@@ -76,6 +86,15 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      if (getEditorInput().getBranch() != null) {
+         try {
+            branchTransactionPage = new BranchTransactionPage(this, getEditorInput().getBranch());
+            addPage(branchTransactionPage);
+         } catch (PartInitException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+      setActivePage(getEditorInput().isTransactionTabActive() ? 1 : 0);
       OseeEventManager.addListener(eventRelay);
    }
 
@@ -108,6 +127,13 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    public void recomputeChangeReport() {
       if (changeReportPage != null && changeReportPage.isActive()) {
          changeReportPage.recomputeChangeReport(true);
+      }
+   }
+
+   @Override
+   public void recomputeBranchTransactions() {
+      if (branchTransactionPage != null && branchTransactionPage.isActive()) {
+         branchTransactionPage.recomputeBranchTransactions(true);
       }
    }
 
@@ -176,4 +202,11 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);
    }
+
+   @Override
+   protected void pageChange(int newPageIndex) {
+      super.pageChange(newPageIndex);
+      getEditorInput().setTransactionTabActive(newPageIndex == 1);
+   }
+
 }

@@ -45,6 +45,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    private boolean showOnlyWorkingBranches;
 
    private static Object[] EMPTY_ARRAY = new Object[0];
+   private int maxPerList = 100;
 
    public XBranchContentProvider(BranchXViewer commitXViewer) {
       super();
@@ -74,7 +75,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
-   protected Object[] getBranchChildren(Branch branch) {
+   public Object[] getBranchChildren(Branch branch) {
       try {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
@@ -160,7 +161,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       });
       if (transactions != null) {
          return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(new ArrayList<Object>(
-            transactions), 100);
+            transactions), maxPerList);
       } else {
          return Collections.emptyList();
       }
@@ -258,4 +259,13 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public void setShowTransactions(boolean showTransactions) {
       this.showTransactions = showTransactions;
    }
+
+   public boolean isShowTransactions() {
+      return showTransactions;
+   }
+
+   public void setMaxPerList(int maxPerList) {
+      this.maxPerList = maxPerList;
+   }
+
 }

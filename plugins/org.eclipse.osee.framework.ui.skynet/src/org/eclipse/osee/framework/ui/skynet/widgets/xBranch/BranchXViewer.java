@@ -12,13 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.logging.Level;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -26,18 +20,13 @@ import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -46,10 +35,15 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class BranchXViewer extends XViewer {
    private final XBranchWidget xBranchViewer;
+   private IBranchWidgetMenuListener menuListener;
+
+   public BranchXViewer(Composite parent, int style, BranchXViewerFactory xViewerFactory, XBranchWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
+      super(parent, style, xViewerFactory, filterRealTime, searchRealTime);
+      this.xBranchViewer = xBranchViewer;
+   }
 
    public BranchXViewer(Composite parent, int style, XBranchWidget xBranchViewer, boolean filterRealTime, boolean searchRealTime) {
-      super(parent, style, new BranchXViewerFactory(), filterRealTime, searchRealTime);
-      this.xBranchViewer = xBranchViewer;
+      this(parent, style, new BranchXViewerFactory(), xBranchViewer, filterRealTime, searchRealTime);
    }
 
    @Override
@@ -92,48 +86,9 @@ public class BranchXViewer extends XViewer {
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
-      mm.insertBefore(MENU_GROUP_PRE, new SetAsFavoriteAction());
-   }
-
-   private class SetAsFavoriteAction extends Action {
-
-      public SetAsFavoriteAction() {
-         super("Toggle Branch as Favorite");
+      if (getMenuListener() != null) {
+         menuListener.updateMenuActionsForTable(mm);
       }
-
-      @Override
-      public ImageDescriptor getImageDescriptor() {
-         return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY);
-      }
-
-      @Override
-      public void run() {
-         User user;
-         try {
-            user = UserManager.getUser();
-            if (user.isSystemUser()) {
-               AWorkbench.popup("Can not set favorite as system user");
-               return;
-            }
-            List<Branch> branches = xBranchViewer.getSelectedBranches();
-            if (branches.isEmpty()) {
-               AWorkbench.popup("Must select branches");
-               return;
-            }
-            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
-               "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
-               for (Branch branch : branches) {
-                  user.toggleFavoriteBranch(branch);
-               }
-               user.persist("Toggle Branch Favorites");
-               xBranchViewer.refresh();
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
-         }
-      }
-
    }
 
    /**
@@ -155,7 +110,28 @@ public class BranchXViewer extends XViewer {
 
    @Override
    public XViewerTextFilter getXViewerTextFilter() {
-      return new XBranchTextFilter(this);
+      if (getBranchFactory().isBranchManager()) {
+         return new XBranchTextFilter(this);
+      } else {
+         return super.getXViewerTextFilter();
+      }
+   }
+
+   private BranchXViewerFactory getBranchFactory() {
+      return (BranchXViewerFactory) getXViewerFactory();
+   }
+
+   public IBranchWidgetMenuListener getMenuListener() {
+      return menuListener;
+   }
+
+   public void setMenuListener(IBranchWidgetMenuListener menuListener) {
+      this.menuListener = menuListener;
+   }
+
+   @Override
+   public boolean isRemoveItemsMenuOptionEnabled() {
+      return false;
    }
 
 }

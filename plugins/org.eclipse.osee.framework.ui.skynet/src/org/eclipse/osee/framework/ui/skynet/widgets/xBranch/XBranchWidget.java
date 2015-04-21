@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -32,10 +33,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.change.BranchTransactionUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,6 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Karol M. Wilk
@@ -67,17 +71,26 @@ public class XBranchWidget extends GenericXWidget {
    private ToolBar toolBar;
    private final IOseeBranch selectedBranch;
    private final List<BranchSelectedListener> branchSelectedListeners;
+   private BranchXViewerFactory branchXViewerFactory;
+   private final IBranchWidgetMenuListener menuListener;
 
-   public XBranchWidget() {
-      this(false, false, null);
+   public XBranchWidget(IBranchWidgetMenuListener menuListener) {
+      this(false, false, null, menuListener);
    }
 
-   public XBranchWidget(boolean filterRealTime, boolean searchRealTime, IOseeBranch selectedBranch) {
+   public XBranchWidget(boolean filterRealTime, boolean searchRealTime, IOseeBranch selectedBranch, IBranchWidgetMenuListener menuListener) {
       super(VIEW_ID);
       this.filterRealTime = filterRealTime;
       this.searchRealTime = searchRealTime;
       this.selectedBranch = selectedBranch;
+      this.menuListener = menuListener;
       branchSelectedListeners = new CopyOnWriteArrayList<BranchSelectedListener>();
+      branchXViewerFactory = new BranchXViewerFactory();
+   }
+
+   public XBranchWidget(BranchXViewerFactory branchXViewerFactory, IBranchWidgetMenuListener menuListener) {
+      this(false, false, null, menuListener);
+      this.branchXViewerFactory = branchXViewerFactory;
    }
 
    public void setBranchOptions(boolean state, BranchOptionsEnum... options) {
@@ -120,6 +133,12 @@ public class XBranchWidget extends GenericXWidget {
    }
 
    @Override
+   public void adaptControls(FormToolkit toolkit) {
+      super.adaptControls(toolkit);
+      toolkit.adapt(extraInfoLabel, true, true);
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {
@@ -140,7 +159,9 @@ public class XBranchWidget extends GenericXWidget {
       createTaskActionBar(mainComp);
 
       branchXViewer =
-         new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this, filterRealTime, searchRealTime);
+         new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, branchXViewerFactory, this,
+            filterRealTime, searchRealTime);
+      branchXViewer.setMenuListener(menuListener);
       branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       branchContentProvider = new XBranchContentProvider(branchXViewer);
@@ -165,9 +186,7 @@ public class XBranchWidget extends GenericXWidget {
    }
 
    public void createTaskActionBar(Composite parent) {
-      // Button composite for state transitions, etc
       Composite composite = new Composite(parent, SWT.NONE);
-      //      composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_CYAN));
       GridLayout layout = ALayout.getZeroMarginLayout(2, false);
       layout.marginLeft = 5;
       composite.setLayout(layout);
@@ -177,25 +196,27 @@ public class XBranchWidget extends GenericXWidget {
       extraInfoLabel.setAlignment(SWT.LEFT);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
+      extraInfoLabel.setFont(FontManager.getCourierNew12Bold());
 
-      toolBar = new ToolBar(composite, SWT.FLAT);
-      ToolItem item = null;
+      if (branchXViewerFactory.isBranchManager()) {
+         toolBar = new ToolBar(composite, SWT.FLAT);
+         ToolItem item = null;
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
-      item.setToolTipText("Refresh");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               BranchManager.refreshBranches();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         item = new ToolItem(toolBar, SWT.PUSH);
+         item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
+         item.setToolTipText("Refresh");
+         item.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  BranchManager.refreshBranches();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+               loadData();
             }
-            loadData();
-         }
-      });
-
+         });
+      }
    }
 
    public ArrayList<Branch> getSelectedBranches() {
@@ -274,12 +295,16 @@ public class XBranchWidget extends GenericXWidget {
       loadData(((XBranchContentProvider) branchXViewer.getContentProvider()).getBranchManagerChildren());
    }
 
+   public void setExtraInfoLabel(String message) {
+      if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
+         extraInfoLabel.setText(message);
+      }
+   }
+
    public void loadData(final Object input) {
       final Object[] expandedBranches = getXViewer().getExpandedElements();
 
-      if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
-         extraInfoLabel.setText(LOADING);
-      }
+      setExtraInfoLabel(LOADING);
 
       Job job = new Job("Banch Manager") {
 
@@ -294,7 +319,12 @@ public class XBranchWidget extends GenericXWidget {
                      extraInfoLabel.setText("");
                   }
                   if (branchXViewer != null && branchXViewer.getTree() != null && !branchXViewer.getTree().isDisposed()) {
-                     branchXViewer.setInput(input);
+                     if (input instanceof BranchTransactionUiData) {
+                        Object[] transactions = ((BranchTransactionUiData) input).getTransactions();
+                        branchXViewer.setInput(transactions);
+                     } else {
+                        branchXViewer.setInput(input);
+                     }
                      getXViewer().setExpandedElements(expandedBranches);
                      if (selectedBranch != null) {
                         getXViewer().reveal(selectedBranch);
@@ -328,6 +358,10 @@ public class XBranchWidget extends GenericXWidget {
    public interface BranchSelectedListener {
 
       public void onBranchSelected(IOseeBranch branch);
+   }
+   public interface IBranchWidgetMenuListener {
+      public void updateMenuActionsForTable(MenuManager mm);
+
    }
 
 }

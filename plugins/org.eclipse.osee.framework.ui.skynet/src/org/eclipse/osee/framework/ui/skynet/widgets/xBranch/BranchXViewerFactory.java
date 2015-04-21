@@ -45,6 +45,8 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn inheritAccessControl = new XViewerColumn(
       "framework.branch.inherit.access.control", "Inherit Access Control", 100, SWT.LEFT, false, SortDataType.Boolean,
       false, null);
+   public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction",
+      100, SWT.LEFT, true, SortDataType.Integer, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
@@ -57,6 +59,10 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    @Override
    public XViewerSorter createNewXSorter(XViewer xViewer) {
       return new XViewerSorter(xViewer);
+   }
+
+   public boolean isBranchManager() {
+      return true;
    }
 
 }

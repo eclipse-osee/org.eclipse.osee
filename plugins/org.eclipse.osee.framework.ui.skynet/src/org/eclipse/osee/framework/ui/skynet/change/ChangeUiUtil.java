@@ -33,18 +33,25 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
 public final class ChangeUiUtil {
-
    public static void open(IOseeBranch branch) throws OseeCoreException {
+      open(branch, false);
+   }
+
+   public static void open(IOseeBranch branch, boolean showTransactionTab) throws OseeCoreException {
       Branch heavyBranch = BranchManager.getBranch(branch);
       Conditions.checkNotNull(branch, "Branch");
       if (heavyBranch.getBranchType() == BranchType.BASELINE) {
-         if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
-            "You have chosen to show a change report for a BASLINE branch.\n\n" + //
+         if (!MessageDialog.openConfirm(
+            AWorkbench.getActiveShell(),
+            "Show Change Report",
+            "You have chosen to show a " + (showTransactionTab ? "transaction report" : "change report") + " for a BASLINE branch.\n\n" + //
             "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;
          }
       }
-      open(createInput(heavyBranch, true));
+      ChangeReportEditorInput editorInput = createInput(heavyBranch, true);
+      editorInput.setTransactionTabActive(showTransactionTab);
+      open(editorInput);
    }
 
    public static void open(TransactionRecord transactionId) throws OseeCoreException {
@@ -74,7 +81,9 @@ public final class ChangeUiUtil {
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(parentBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
-      return createInput(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, txDelta, loadOnOpen);
+      ChangeReportEditorInput input = createInput(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, txDelta, loadOnOpen);
+      input.setBranch(branch);
+      return input;
    }
 
    public static ChangeReportEditorInput createInput(CompareType compareType, TransactionDelta txDelta, boolean loadOnOpen) {

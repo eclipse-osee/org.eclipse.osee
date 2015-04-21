@@ -21,10 +21,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
-import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
-import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
-import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction.Option;
-import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
+import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -48,11 +45,14 @@ import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionPr
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
@@ -64,7 +64,7 @@ import org.osgi.service.prefs.Preferences;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
+public class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    public static final String BRANCH_ID = "branchUuid";
 
@@ -110,7 +110,7 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         xBranchWidget = new XBranchWidget();
+         xBranchWidget = new XBranchWidget(this);
          xBranchWidget.setDisplayLabel(false);
          xBranchWidget.createWidgets(parent, 1);
 
@@ -130,10 +130,10 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
                menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                menuManager.add(new EditTransactionComment(fBranchView));
                menuManager.add(new Separator());
-               menuManager.add(new TableCustomizationAction(branchWidget));
-               menuManager.add(new ViewTableReportAction(branchWidget));
-               menuManager.add(new ViewSelectedCellDataAction(branchWidget, clipboard, Option.Copy));
-               menuManager.add(new ViewSelectedCellDataAction(branchWidget, null, Option.View));
+               Menu menu = menuManager.getMenu();
+               XViewerCustomMenu customMenu = new XViewerCustomMenu(xBranchWidget.getXViewer());
+               customMenu.createTableCustomizationMenuItem(menu);
+               customMenu.createViewTableReportMenuItem(menu);
                try {
                   if (AccessControlManager.isOseeAdmin()) {
                      menuManager.add(new ColumnMultiEditAction(branchWidget));
@@ -141,6 +141,13 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
+               customMenu.createViewSelectedCellMenuItem(menu);
+               menuManager.add(new Separator());
+               customMenu.createFilterByValueMenuItem(menu);
+               customMenu.createFilterByColumnMenuItem(menu);
+               customMenu.createClearAllFiltersMenuItem(menu);
+               customMenu.createClearAllSortingMenuItem(menu);
+               menuManager.add(new Separator());
             }
          });
 
@@ -156,6 +163,11 @@ public class BranchView extends GenericViewPart implements IBranchEventListener,
 
          OseeEventManager.addListener(this);
       }
+   }
+
+   @Override
+   public void updateMenuActionsForTable(MenuManager mm) {
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new SetAsFavoriteAction(xBranchWidget));
    }
 
    public static void revealBranch(Branch branch) throws OseeCoreException {

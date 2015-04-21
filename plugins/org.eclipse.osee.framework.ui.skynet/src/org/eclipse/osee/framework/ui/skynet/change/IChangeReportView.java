@@ -13,4 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.change;
 public interface IChangeReportView {
 
    public void recomputeChangeReport();
+
+   public void recomputeBranchTransactions();
 }

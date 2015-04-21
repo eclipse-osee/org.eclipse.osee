@@ -152,10 +152,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String getTransactionText(TransactionRecord transaction, XViewerColumn cCol, int columnIndex) {
+   protected String getTransactionText(TransactionRecord transaction, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
 
-      if (cCol.equals(BranchXViewerFactory.branchName)) {
+      if (cCol.equals(BranchXViewerFactory.branchName) || cCol.equals(BranchXViewerFactory.transaction)) {
          columnText = String.valueOf(transaction.getId());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {

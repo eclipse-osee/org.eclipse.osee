@@ -414,6 +414,10 @@
             commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeReport"
             style="push">
       </command>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.BranchTransactionReport"
+            style="push">
+      </command>
       <menu
             label="Merge Manager">
          <dynamic
@@ -920,6 +924,18 @@
      </enabledWhen>
   </handler>
   <handler
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.BranchTransactionHandler"
+        commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.BranchTransactionReport">
+     <enabledWhen>
+        <with
+              variable="selection">
+           <count
+                 value="+">
+           </count>
+        </with>
+     </enabledWhen>
+  </handler>
+  <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.AccessControlHandler"
         commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
   </handler>
@@ -1231,6 +1247,10 @@
         icon="images/branch_change.gif">
   </image>
   <image
+        commandId="org.eclipse.osee.framework.ui.skynet.widgets.xchange.BranchTransactionReport"
+        icon="images/DBiconBlueEdit.GIF">
+  </image>
+  <image
         commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager"
         icon="images/branch_merge.gif">
   </image>
@@ -1447,6 +1467,11 @@
           name="Change Report">
     </command>
     <command
+          categoryId="org.eclipse.osee.artifact"
+          id="org.eclipse.osee.framework.ui.skynet.widgets.xchange.BranchTransactionReport"
+          name="Branch Transaction Report">
+    </command>
+        <command
           categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.accessControl"
           name="Access Control">

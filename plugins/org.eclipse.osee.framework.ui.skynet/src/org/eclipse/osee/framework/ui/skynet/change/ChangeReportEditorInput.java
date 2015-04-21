@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.EditorsPreferencePage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -25,9 +28,17 @@ import org.eclipse.ui.IPersistableElement;
 public class ChangeReportEditorInput implements IEditorInput, IPersistableElement {
 
    private final ChangeUiData changeData;
+   private IOseeBranch branch;
+   private boolean transactionTabActive = false;
+   private boolean notLoaded = false;
 
    public ChangeReportEditorInput(ChangeUiData changeData) {
+      this(changeData, null);
+   }
+
+   public ChangeReportEditorInput(ChangeUiData changeData, IOseeBranch branch) {
       this.changeData = changeData;
+      this.branch = branch;
    }
 
    @Override
@@ -51,6 +62,10 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    @Override
    public String getName() {
       return String.format("Change Report: %s", getTitle());
+   }
+
+   public String getBranchTransactionName() {
+      return String.format("Branch Transactions: %s", getTitle());
    }
 
    @Override
@@ -105,6 +120,34 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    @Override
    public void saveState(IMemento memento) {
       ChangeReportEditorInputFactory.saveState(memento, this);
+   }
+
+   public IOseeBranch getBranch() {
+      return branch;
+   }
+
+   public void setBranch(Branch branch) {
+      this.branch = branch;
+   }
+
+   public boolean isTransactionTabActive() {
+      return transactionTabActive;
+   }
+
+   public void setTransactionTabActive(boolean transactionTabActive) {
+      this.transactionTabActive = transactionTabActive;
+   }
+
+   public boolean isNotLoaded() {
+      return notLoaded;
+   }
+
+   public void setNotLoaded(boolean notLoaded) {
+      this.notLoaded = notLoaded;
+   }
+
+   public Image getBranchTransactionImage() {
+      return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
    }
 
 }

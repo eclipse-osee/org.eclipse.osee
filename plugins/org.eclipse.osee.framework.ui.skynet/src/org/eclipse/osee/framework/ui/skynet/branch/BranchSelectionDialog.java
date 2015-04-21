@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.BranchSelectedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -42,7 +45,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class BranchSelectionDialog extends MessageDialog {
+public class BranchSelectionDialog extends MessageDialog implements IBranchWidgetMenuListener {
 
    private Branch selected;
    private IOseeBranch defaultSelected;
@@ -74,7 +77,7 @@ public class BranchSelectionDialog extends MessageDialog {
 
    @Override
    protected Control createDialogArea(Composite container) {
-      branchWidget = new XBranchWidget(true, true, defaultSelected);
+      branchWidget = new XBranchWidget(true, true, defaultSelected, this);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
       branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_KEY, BranchOptionsEnum.FLAT_KEY);
@@ -133,6 +136,11 @@ public class BranchSelectionDialog extends MessageDialog {
       });
 
       return branchWidget.getControl();
+   }
+
+   @Override
+   public void updateMenuActionsForTable(MenuManager mm) {
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new SetAsFavoriteAction(branchWidget));
    }
 
    @Override

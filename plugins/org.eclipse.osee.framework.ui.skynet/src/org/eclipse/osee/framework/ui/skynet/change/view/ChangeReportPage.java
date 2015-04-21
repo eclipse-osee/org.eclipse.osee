@@ -158,7 +158,7 @@ public class ChangeReportPage extends FormPage {
    private void addToolBar(FormToolkit toolkit, ScrolledForm form, boolean add) {
       IToolBarManager manager = form.getToolBarManager();
       if (add) {
-         getEditor().getActionBarContributor().contributeToToolBar(manager);
+         getEditor().getChangeReportActionBarContributor().contributeToToolBar(manager);
          manager.add(changeReportTable.getXViewer().getCustomizeAction());
          manager.update(true);
       } else {
@@ -225,7 +225,7 @@ public class ChangeReportPage extends FormPage {
       @Override
       public void scheduled(IJobChangeEvent event) {
          super.scheduled(event);
-         getEditor().getActionBarContributor().getReloadAction().setEnabled(false);
+         getEditor().getChangeReportActionBarContributor().getReloadAction().setEnabled(false);
          showBusy(true);
       }
 
@@ -247,8 +247,8 @@ public class ChangeReportPage extends FormPage {
             public IStatus runInUIThread(IProgressMonitor monitor) {
                if (Widgets.isAccessible(getManagedForm().getForm())) {
                   getEditor().refresh();
-                  getEditor().getActionBarContributor().getReloadAction().setEnabled(true);
-                  getEditor().getActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
+                  getEditor().getChangeReportActionBarContributor().getReloadAction().setEnabled(true);
+                  getEditor().getChangeReportActionBarContributor().getOpenAssociatedArtifactAction().updateEnablement();
                   getManagedForm().getForm().getBody().layout(true, true);
                   getManagedForm().getForm().reflow(true);
                   getManagedForm().refresh();
