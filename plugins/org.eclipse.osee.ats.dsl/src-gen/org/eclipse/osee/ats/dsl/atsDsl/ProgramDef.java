@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getProgramDefOption <em>Program Def Option</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getGuid <em>Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getUuid <em>Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getArtifactTypeName <em>Artifact Type Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getNamespace <em>Namespace</em>}</li>
@@ -98,6 +99,32 @@ public interface ProgramDef extends EObject
    * @generated
    */
   void setGuid(String value);
+
+  /**
+   * Returns the value of the '<em><b>Uuid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Uuid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Uuid</em>' attribute.
+   * @see #setUuid(int)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getProgramDef_Uuid()
+   * @model
+   * @generated
+   */
+  int getUuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getUuid <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Uuid</em>' attribute.
+   * @see #getUuid()
+   * @generated
+   */
+  void setUuid(int value);
 
   /**
    * Returns the value of the '<em><b>Artifact Type Name</b></em>' attribute.

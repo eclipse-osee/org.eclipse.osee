@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getProgramDefOption <em>Program Def Option</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getGuid <em>Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getUuid <em>Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getArtifactTypeName <em>Artifact Type Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getNamespace <em>Namespace</em>}</li>
@@ -95,6 +96,26 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
    * @ordered
    */
   protected String guid = GUID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected static final int UUID_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected int uuid = UUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getArtifactTypeName() <em>Artifact Type Name</em>}' attribute.
@@ -272,6 +293,29 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getUuid()
+  {
+    return uuid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setUuid(int newUuid)
+  {
+    int oldUuid = uuid;
+    uuid = newUuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.PROGRAM_DEF__UUID, oldUuid, uuid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public String getArtifactTypeName()
   {
     return artifactTypeName;
@@ -405,6 +449,8 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
         return getProgramDefOption();
       case AtsDslPackage.PROGRAM_DEF__GUID:
         return getGuid();
+      case AtsDslPackage.PROGRAM_DEF__UUID:
+        return getUuid();
       case AtsDslPackage.PROGRAM_DEF__ARTIFACT_TYPE_NAME:
         return getArtifactTypeName();
       case AtsDslPackage.PROGRAM_DEF__ACTIVE:
@@ -439,6 +485,9 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
         return;
       case AtsDslPackage.PROGRAM_DEF__GUID:
         setGuid((String)newValue);
+        return;
+      case AtsDslPackage.PROGRAM_DEF__UUID:
+        setUuid((Integer)newValue);
         return;
       case AtsDslPackage.PROGRAM_DEF__ARTIFACT_TYPE_NAME:
         setArtifactTypeName((String)newValue);
@@ -479,6 +528,9 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
       case AtsDslPackage.PROGRAM_DEF__GUID:
         setGuid(GUID_EDEFAULT);
         return;
+      case AtsDslPackage.PROGRAM_DEF__UUID:
+        setUuid(UUID_EDEFAULT);
+        return;
       case AtsDslPackage.PROGRAM_DEF__ARTIFACT_TYPE_NAME:
         setArtifactTypeName(ARTIFACT_TYPE_NAME_EDEFAULT);
         return;
@@ -514,6 +566,8 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
         return programDefOption != null && !programDefOption.isEmpty();
       case AtsDslPackage.PROGRAM_DEF__GUID:
         return GUID_EDEFAULT == null ? guid != null : !GUID_EDEFAULT.equals(guid);
+      case AtsDslPackage.PROGRAM_DEF__UUID:
+        return uuid != UUID_EDEFAULT;
       case AtsDslPackage.PROGRAM_DEF__ARTIFACT_TYPE_NAME:
         return ARTIFACT_TYPE_NAME_EDEFAULT == null ? artifactTypeName != null : !ARTIFACT_TYPE_NAME_EDEFAULT.equals(artifactTypeName);
       case AtsDslPackage.PROGRAM_DEF__ACTIVE:
@@ -545,6 +599,8 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
     result.append(programDefOption);
     result.append(", guid: ");
     result.append(guid);
+    result.append(", uuid: ");
+    result.append(uuid);
     result.append(", artifactTypeName: ");
     result.append(artifactTypeName);
     result.append(", active: ");

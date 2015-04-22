@@ -46,6 +46,7 @@ ProgramDef:
 	name=PROGRAM_REFERENCE (programDefOption+=ProgramDefOption)*
 	'{'
 		('guid' guid=STRING)?
+		('uuid' uuid=INT)?
 		('artifactType' artifactTypeName=STRING)?
 		('active' active=BooleanDef)?
 		('namespace' namespace=STRING)*
@@ -60,6 +61,7 @@ TeamDef:
 	name=TEAM_DEF_REFERENCE (teamDefOption+=TeamDefOption)*
 	'{'
 		('guid' guid=STRING)?
+		('uuid' uuid=INT)?
 		('active' active=BooleanDef)?
 		('staticId' staticId+=STRING)*
 		('lead' lead+=UserRef)*
@@ -83,6 +85,7 @@ ActionableItemDef:
 	name=AI_DEF_REFERENCE (aiDefOption+=ActionableItemOption)*
 	('{'
 		('guid' guid=STRING)?
+		('uuid' uuid=INT)?
 		('active' active=BooleanDef)?
 		('actionable' actionable=BooleanDef)?
 		('lead' lead+=UserRef)*
@@ -103,6 +106,7 @@ VersionDef:
 	name=VERSION_DEF_REFERENCE
 	'{'
 		('guid' guid=STRING)?
+		('uuid' uuid=INT)?
 		('staticId' staticId+=STRING)*
 		('next' next=BooleanDef)?
 		('released' released=BooleanDef)?

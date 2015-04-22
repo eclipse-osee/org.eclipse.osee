@@ -52,6 +52,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/programDefOption"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/artifactTypeName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/namespace"/>
@@ -62,6 +63,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/teamDefOption"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/staticId"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/lead"/>
@@ -78,6 +80,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/aiDefOption"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/actionable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ActionableItemDef/lead"/>
@@ -90,6 +93,7 @@
     <genClasses ecoreClass="AtsDsl.ecore#//VersionDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/guid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/staticId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/next"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/released"/>

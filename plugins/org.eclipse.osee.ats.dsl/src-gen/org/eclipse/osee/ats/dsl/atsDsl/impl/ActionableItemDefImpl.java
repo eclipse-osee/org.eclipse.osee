@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAiDefOption <em>Ai Def Option</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getGuid <em>Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getUuid <em>Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActive <em>Active</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getActionable <em>Actionable</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getLead <em>Lead</em>}</li>
@@ -98,6 +99,26 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String guid = GUID_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected static final int UUID_EDEFAULT = 0;
+
+  /**
+   * The cached value of the '{@link #getUuid() <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUuid()
+   * @generated
+   * @ordered
+   */
+  protected int uuid = UUID_EDEFAULT;
 
   /**
    * The default value of the '{@link #getActive() <em>Active</em>}' attribute.
@@ -295,6 +316,29 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  public int getUuid()
+  {
+    return uuid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setUuid(int newUuid)
+  {
+    int oldUuid = uuid;
+    uuid = newUuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.ACTIONABLE_ITEM_DEF__UUID, oldUuid, uuid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public BooleanDef getActive()
   {
     return active;
@@ -465,6 +509,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return getAiDefOption();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
         return getGuid();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__UUID:
+        return getUuid();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         return getActive();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIONABLE:
@@ -505,6 +551,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
         setGuid((String)newValue);
+        return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__UUID:
+        setUuid((Integer)newValue);
         return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         setActive((BooleanDef)newValue);
@@ -558,6 +607,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
         setGuid(GUID_EDEFAULT);
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__UUID:
+        setUuid(UUID_EDEFAULT);
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         setActive(ACTIVE_EDEFAULT);
         return;
@@ -602,6 +654,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return aiDefOption != null && !aiDefOption.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__GUID:
         return GUID_EDEFAULT == null ? guid != null : !GUID_EDEFAULT.equals(guid);
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__UUID:
+        return uuid != UUID_EDEFAULT;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIVE:
         return active != ACTIVE_EDEFAULT;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACTIONABLE:
@@ -639,6 +693,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
     result.append(aiDefOption);
     result.append(", guid: ");
     result.append(guid);
+    result.append(", uuid: ");
+    result.append(uuid);
     result.append(", active: ");
     result.append(active);
     result.append(", actionable: ");

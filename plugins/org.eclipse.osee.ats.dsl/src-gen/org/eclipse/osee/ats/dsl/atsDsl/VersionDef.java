@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getGuid <em>Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getUuid <em>Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getNext <em>Next</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getReleased <em>Released</em>}</li>
@@ -83,6 +84,32 @@ public interface VersionDef extends EObject
    * @generated
    */
   void setGuid(String value);
+
+  /**
+   * Returns the value of the '<em><b>Uuid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Uuid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Uuid</em>' attribute.
+   * @see #setUuid(int)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef_Uuid()
+   * @model
+   * @generated
+   */
+  int getUuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getUuid <em>Uuid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Uuid</em>' attribute.
+   * @see #getUuid()
+   * @generated
+   */
+  void setUuid(int value);
 
   /**
    * Returns the value of the '<em><b>Static Id</b></em>' attribute list.
