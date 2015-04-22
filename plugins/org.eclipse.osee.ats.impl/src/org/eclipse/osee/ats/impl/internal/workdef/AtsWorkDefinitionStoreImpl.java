@@ -63,7 +63,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
       ArtifactReadable artifact =
          orcsApi.getQueryFactory(null).fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
-            AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.TOKEN_DELIMITER__EXACT).getResults().getExactlyOne();
+            AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }
 
