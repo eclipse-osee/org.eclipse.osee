@@ -258,10 +258,10 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    /*
-    * Provide easy way to display/report [guid][name]
+    * Provide easy way to display/report [name][uuid]
     */
    public final String toStringWithId() {
-      return String.format("[%s][%s]", getGuid(), getName());
+      return String.format("[%s][%s]", getSafeName(), getUuid());
    }
 
    // TODO should not return null but currently application code expects it to
