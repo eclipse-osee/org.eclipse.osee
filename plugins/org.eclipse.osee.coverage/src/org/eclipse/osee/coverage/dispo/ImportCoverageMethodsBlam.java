@@ -128,7 +128,7 @@ public class ImportCoverageMethodsBlam extends AbstractBlam {
                updateToPackageListWidget();
                try {
                   if (fromPackageListWidget != null) {
-                     fromPackageListWidget.setContentProvider(new ArtifactContentProvider());
+                     fromPackageListWidget.setContentProvider(new ArtifactContentProvider(null));
                      fromPackageListWidget.setLabelProvider(new ArtifactLabelProvider());
                      List<Object> arts = new LinkedList<Object>();
                      arts.addAll(OseeCoveragePackageStore.getCoveragePackageArtifacts(fromBranch));
@@ -152,7 +152,7 @@ public class ImportCoverageMethodsBlam extends AbstractBlam {
       IOseeBranch toBranch = toBranchWidget.getSelection();
       try {
          if (toPackageListWidget != null) {
-            toPackageListWidget.setContentProvider(new ArtifactContentProvider());
+            toPackageListWidget.setContentProvider(new ArtifactContentProvider(null));
             toPackageListWidget.setLabelProvider(new ArtifactLabelProvider());
             List<Object> arts = new LinkedList<Object>();
             arts.addAll(OseeCoveragePackageStore.getCoveragePackageArtifacts(toBranch));

@@ -61,6 +61,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    private DecoratorAction showArtType;
    private DecoratorAction showArtVersion;
    private DecoratorAction showArtBranch;
+   private DecoratorAction showRelations;
    private ShowAttributeAction attributesAction;
    private SetSettingsAsDefault saveSettingsAction;
    private StructuredViewer viewer;
@@ -87,6 +88,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtType, "artifact.decorator.show.artType");
          saveAction(showArtBranch, "artifact.decorator.show.artBranch");
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
+         saveAction(showRelations, "artifact.decorator.show.relations");
          if (attributesAction != null) {
             Collection<IAttributeType> items = attributesAction.getSelected();
             saveSetting("artifact.decorator.attrTypes", Collections.toString(",", items));
@@ -103,6 +105,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          loadAction(showArtType, "artifact.decorator.show.artType");
          loadAction(showArtBranch, "artifact.decorator.show.artBranch");
          loadAction(showArtVersion, "artifact.decorator.show.artVersion");
+         loadAction(showRelations, "artifact.decorator.show.relations");
          if (attributesAction != null) {
             String value = getSetting("artifact.decorator.attrTypes");
             if (Strings.isValid(value)) {
@@ -118,8 +121,11 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void loadAction(Action action, String key) throws OseeCoreException {
       if (action != null) {
-         boolean isChecked = Boolean.parseBoolean(getSetting(key));
-         action.setChecked(isChecked);
+         String setting = getSetting(key);
+         if (Strings.isValid(setting)) {
+            boolean isChecked = Boolean.parseBoolean(setting);
+            action.setChecked(isChecked);
+         }
       }
    }
 
@@ -138,13 +144,17 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void checkActionsCreated(IBranchProvider branchProvider) {
       if (showArtType == null) {
-         showArtType = new DecoratorAction("Artifact Type", FrameworkImage.FILTERS);
+         showArtType = new DecoratorAction("Artifact Type", FrameworkImage.FILTERS, false);
       }
       if (showArtBranch == null) {
-         showArtBranch = new DecoratorAction("Artifact Branch", FrameworkImage.FILTERS);
+         showArtBranch = new DecoratorAction("Artifact Branch", FrameworkImage.FILTERS, false);
       }
       if (showArtVersion == null) {
-         showArtVersion = new DecoratorAction("Artifact Version", FrameworkImage.FILTERS);
+         showArtVersion = new DecoratorAction("Artifact Version", FrameworkImage.FILTERS, false);
+      }
+
+      if (showRelations == null) {
+         showRelations = new DecoratorAction("Relations", FrameworkImage.FILTERS, true);
       }
 
       if (attributesAction == null && branchProvider != null) {
@@ -152,7 +162,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       }
 
       if (showArtIds == null && isAdmin()) {
-         showArtIds = new DecoratorAction("Artifact Ids", FrameworkImage.FILTERS);
+         showArtIds = new DecoratorAction("Artifact Ids", FrameworkImage.FILTERS, false);
       }
       if (saveSettingsAction == null) {
          saveSettingsAction = new SetSettingsAsDefault();
@@ -186,10 +196,12 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          manager.add(showArtVersion);
          manager.add(showArtType);
          manager.add(showArtBranch);
+         manager.add(showRelations);
       }
       showArtType.updateText();
       showArtVersion.updateText();
       showArtBranch.updateText();
+      showRelations.updateText();
 
       if (manager != null) {
          manager.add(attributesAction);
@@ -245,6 +257,11 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       return showArtVersion != null && showArtVersion.isChecked();
    }
 
+   @Override
+   public boolean showRelations() {
+      return showRelations != null && showRelations.isChecked();
+   }
+
    public void setShowArtType(boolean set) {
       if (showArtType != null) {
          showArtType.setChecked(set);
@@ -254,6 +271,12 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    public void setShowArtBranch(boolean set) {
       if (showArtBranch != null) {
          showArtBranch.setChecked(set);
+      }
+   }
+
+   public void setShowRelations(boolean set) {
+      if (showRelations != null) {
+         showRelations.setChecked(set);
       }
    }
 
@@ -267,10 +290,10 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       private final String name;
       private boolean isSelected;
 
-      public DecoratorAction(String name, KeyedImage image) {
+      public DecoratorAction(String name, KeyedImage image, boolean defaultValue) {
          super(name, IAction.AS_PUSH_BUTTON);
          this.name = name;
-         this.isSelected = false;
+         this.isSelected = defaultValue;
          if (image != null) {
             setImageDescriptor(ImageManager.getImageDescriptor(image));
          }

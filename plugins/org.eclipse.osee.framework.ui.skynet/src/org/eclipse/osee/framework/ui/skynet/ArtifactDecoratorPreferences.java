@@ -21,6 +21,7 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
    private boolean isShowArtTypeAllowed;
    private boolean isShowBranchAllowed;
    private boolean isShowArtVersionAllowed;
+   private boolean isShowRelations;
 
    @Override
    public String getSelectedAttributeData(Artifact artifact) {
@@ -61,6 +62,15 @@ public class ArtifactDecoratorPreferences implements IArtifactDecoratorPreferenc
    @Override
    public boolean showArtVersion() {
       return isShowArtVersionAllowed;
+   }
+
+   @Override
+   public boolean showRelations() {
+      return isShowRelations;
+   }
+
+   public void setShowRelations(boolean isShowRelations) {
+      this.isShowRelations = isShowRelations;
    }
 
 }

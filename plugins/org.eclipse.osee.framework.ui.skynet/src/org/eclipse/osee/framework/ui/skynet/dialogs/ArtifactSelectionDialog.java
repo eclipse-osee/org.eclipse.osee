@@ -65,7 +65,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    public ArtifactSelectionDialog(Shell parent) {
       super(parent);
       branchSelect = new XBranchSelectWidget("");
-      contentProvider = new ArtifactContentProvider();
+      contentProvider = new ArtifactContentProvider(null);
       labelProvider = new ArtifactLabelProvider();
    }
 

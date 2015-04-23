@@ -55,7 +55,7 @@ public class UserListDialog extends FilteredTreeArtifactDialog {
    }
 
    public UserListDialog(Shell parent, String title, Collection<? extends Artifact> users) throws OseeCoreException {
-      super(title, title, users, new ArtifactContentProvider(), new UserArtifactLabelProvider());
+      super(title, title, users, new ArtifactContentProvider(null), new UserArtifactLabelProvider());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 

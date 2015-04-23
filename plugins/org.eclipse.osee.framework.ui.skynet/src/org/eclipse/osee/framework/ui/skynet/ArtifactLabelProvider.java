@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,6 +47,8 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          return ArtifactImageManager.getImage((Artifact) element);
       } else if (element instanceof Match && ((Match) element).getElement() instanceof Artifact) {
          return ArtifactImageManager.getImage((Artifact) ((Match) element).getElement());
+      } else if (element instanceof ArtifactExplorerLinkNode) {
+         return ImageManager.getImage(FrameworkImage.RELATION);
       }
       return ImageManager.getImage(ImageManager.MISSING);
    }
@@ -96,6 +99,14 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
             }
          }
          return Collections.toString(" ", extraInfo);
+      } else if (element instanceof ArtifactExplorerLinkNode) {
+         ArtifactExplorerLinkNode smartifactLinkNode = (ArtifactExplorerLinkNode) element;
+         RelationType relationType = smartifactLinkNode.getRelationType();
+         if (smartifactLinkNode.isParentIsOnSideA()) {
+            return relationType.getName() + ": " + relationType.getSideBName();
+         } else {
+            return relationType.getName() + ": " + relationType.getSideAName();
+         }
       } else if (element != null) {
          return element.toString();
       } else {

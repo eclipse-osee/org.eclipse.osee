@@ -29,7 +29,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -319,7 +318,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                   ArtifactExplorerEventManager.remove(fArtExplorere);
                }
             });
-            treeViewer.setContentProvider(new ArtifactContentProvider());
+            treeViewer.setContentProvider(new ArtifactContentProvider(artifactDecorator));
 
             treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
             treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
@@ -1030,7 +1029,17 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
-         treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
+         Object obj = iter.next();
+         expandAll(obj);
+      }
+   }
+
+   private void expandAll(Object object) {
+      if (!(object instanceof ArtifactExplorerLinkNode)) {
+         treeViewer.expandToLevel(object, 1);
+         for (Object child : ((ArtifactContentProvider) getTreeViewer().getContentProvider()).getChildren(object)) {
+            expandAll(child);
+         }
       }
    }
 
