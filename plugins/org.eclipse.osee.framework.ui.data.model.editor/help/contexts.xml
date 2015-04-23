@@ -1,8 +1,0 @@
-<contexts>
-<!--
-	<context id="oseeDataModelEditor" title="OSEE Data Model Editor">
-		<description>Create and modify OSEE Data Types</description>
-		<topic href="help/oseeDataModelEditor.html" label="OSEE Data Model Editor"/>
-	</context>
--->
-</contexts>
