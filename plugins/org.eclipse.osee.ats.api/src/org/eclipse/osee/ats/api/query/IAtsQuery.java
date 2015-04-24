@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -42,5 +43,9 @@ public interface IAtsQuery {
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 
    IAtsWorkItemFilter andFilter() throws OseeCoreException;
+
+   IAtsQuery isOfType(IArtifactType... artifactType);
+
+   IAtsQuery andUuids(Long... uuid);
 
 }

@@ -23,8 +23,10 @@ public class JaxAgileItem {
    private final List<Long> uuids = new ArrayList<Long>();
    private final List<Long> features = new ArrayList<Long>();
    private long sprintUuid = 0;
+   private long backlogUuid = 0;
    private boolean setFeatures = false;
    private boolean setSprint = false;
+   private boolean setBacklog = false;
 
    public List<Long> getFeatures() {
       return features;
@@ -56,6 +58,22 @@ public class JaxAgileItem {
 
    public void setSetSprint(boolean setSprint) {
       this.setSprint = setSprint;
+   }
+
+   public boolean isSetBacklog() {
+      return setBacklog;
+   }
+
+   public void setSetBacklog(boolean setBacklog) {
+      this.setBacklog = setBacklog;
+   }
+
+   public long getBacklogUuid() {
+      return backlogUuid;
+   }
+
+   public void setBacklogUuid(long backlogUuid) {
+      this.backlogUuid = backlogUuid;
    }
 
 }

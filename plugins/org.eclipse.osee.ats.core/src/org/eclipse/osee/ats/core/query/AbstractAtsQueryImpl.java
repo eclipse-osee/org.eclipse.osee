@@ -50,9 +50,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected StateType[] stateType;
    private final IAtsWorkItemService workItemService;
    protected Class<? extends IAtsWorkItem> clazz;
+   protected IArtifactType[] artifactTypes;
+   protected Long[] uuids;
 
    public AbstractAtsQueryImpl(IAtsWorkItemService workItemService) {
       this.workItemService = workItemService;
+   }
+
+   @Override
+   public IAtsQuery isOfType(IArtifactType... artifactTypes) {
+      this.artifactTypes = artifactTypes;
+      return this;
    }
 
    @Override
@@ -87,6 +95,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsQuery andRelated(IAtsObject object, IRelationTypeSide relation) {
       andRels.put(relation, object);
+      return this;
+   }
+
+   @Override
+   public IAtsQuery andUuids(Long... uuids) {
+      this.uuids = uuids;
       return this;
    }
 

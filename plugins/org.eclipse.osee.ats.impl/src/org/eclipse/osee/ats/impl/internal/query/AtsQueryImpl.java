@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -67,6 +68,19 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
             stateTypes.add(type.name());
          }
          query.and(AtsAttributeTypes.CurrentStateType, stateTypes);
+      }
+
+      // Artifact Types
+      if (artifactTypes != null && artifactTypes.length > 0) {
+         query.andIsOfType(artifactTypes);
+      }
+
+      if (uuids != null && uuids.length > 0) {
+         List<Long> artIds = new LinkedList<Long>();
+         for (Long uuid : uuids) {
+            artIds.add(uuid);
+         }
+         query.andUuids(artIds);
       }
 
       // attributes

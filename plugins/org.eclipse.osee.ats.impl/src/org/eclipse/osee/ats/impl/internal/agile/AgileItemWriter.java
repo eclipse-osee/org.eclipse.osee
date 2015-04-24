@@ -65,16 +65,31 @@ public class AgileItemWriter {
       }
 
       if (newItem.isSetSprint()) {
-         IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(newItem.getSprintUuid());
+         ArtifactReadable sprintArt = atsServer.getArtifactByUuid(newItem.getSprintUuid());
+         IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
          for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
             if (sprint != null) {
-               changes.setRelation(awa, AtsRelationTypes.AgileSprintToItem_Sprint, sprint);
+               changes.setRelation(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, awa);
             } else {
-               changes.unrelateAll(awa, AtsRelationTypes.AgileSprintToItem_Sprint);
+               changes.unrelateAll(awa, AtsRelationTypes.AgileSprintToItem_AtsItem);
             }
             changes.add(sprint);
          }
       }
+
+      if (newItem.isSetBacklog()) {
+         ArtifactReadable backlogArt = atsServer.getArtifactByUuid(newItem.getBacklogUuid());
+         IAgileSprint backlog = atsServer.getAgileService().getAgileSprint(backlogArt);
+         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
+            if (backlog != null) {
+               changes.setRelation(backlog, AtsRelationTypes.Goal_Member, awa);
+            } else {
+               changes.unrelateAll(awa, AtsRelationTypes.Goal_Member);
+            }
+            changes.add(backlog);
+         }
+      }
+
       if (!changes.isEmpty()) {
          changes.execute();
       }

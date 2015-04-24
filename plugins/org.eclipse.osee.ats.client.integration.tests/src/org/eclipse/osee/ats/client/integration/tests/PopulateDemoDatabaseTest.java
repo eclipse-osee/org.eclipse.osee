@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
+import org.eclipse.osee.ats.client.demo.PopulateDemoAgile;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -57,6 +58,9 @@ public class PopulateDemoDatabaseTest {
 
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
          populateDemoActions.run(false);
+
+         PopulateDemoAgile populateDemoAgile = new PopulateDemoAgile();
+         populateDemoAgile.run();
 
          DemoUtil.setPopulateDbSuccessful(true);
          System.out.println("End Populate Demo DB...\n");
