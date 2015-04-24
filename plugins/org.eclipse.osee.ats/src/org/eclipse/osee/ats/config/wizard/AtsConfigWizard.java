@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -67,9 +66,11 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
          String workDefName = page1.getWorkDefinitionName();
 
          AtsConfigOperation.Display display = new OpenAtsConfigEditors();
-         IOperation operation = new AtsConfigOperation(display, workDefName, teamDefName, versionNames, aias);
+         AtsConfigOperation operation = new AtsConfigOperation(workDefName, teamDefName, versionNames, aias);
          Operations.executeAsJob(operation, true);
 
+         display.openAtsConfigurationEditors(operation.getTeamDefinition(), operation.getActionableItems(),
+            operation.getWorkDefinition());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
@@ -85,11 +86,9 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(teamDef),
-                     AtsOpenOption.OpenAll);
+                  AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(teamDef), AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia),
-                        AtsOpenOption.OpenAll);
+                     AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsUtilCore.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -433,18 +432,11 @@ public class AtsBranchConfigurationTest {
    }
 
    public static AtsConfigOperation configureAts(String workDefinitionName, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
-      AtsConfigOperation.Display noDisplay = new MockAtsConfigDisplay();
       AtsConfigOperation atsConfigManagerOperation =
-         new AtsConfigOperation(noDisplay, workDefinitionName, teamDefName, versionNames, actionableItems);
+         new AtsConfigOperation(workDefinitionName, teamDefName, versionNames, actionableItems);
       Operations.executeWorkAndCheckStatus(atsConfigManagerOperation);
       TestUtil.sleep(2000);
       return atsConfigManagerOperation;
    }
 
-   private static final class MockAtsConfigDisplay implements AtsConfigOperation.Display {
-      @Override
-      public void openAtsConfigurationEditors(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> aias, IAtsWorkDefinition workDefinition) {
-         // Nothing to do - we have no display during testing
-      }
-   }
 }

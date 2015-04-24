@@ -65,22 +65,21 @@ public class AtsConfigOperation extends AbstractOperation {
    private final String teamDefName;
    private final Collection<String> versionNames;
    private final Collection<String> actionableItemsNames;
-   private final Display display;
    private IAtsTeamDefinition teamDefinition;
    private Collection<IAtsActionableItem> actionableItems;
+   private IAtsWorkDefinition workDefinition = null;
 
    /**
     * @param teamDefName - name of team definition to use
     * @param versionNames - list of version names (if team is using versions)
     * @param actionableItems - list of actionable items
     */
-   public AtsConfigOperation(Display display, String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
+   public AtsConfigOperation(String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
       super("Configure Ats", Activator.PLUGIN_ID);
       this.name = name;
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
       this.actionableItemsNames = actionableItems;
-      this.display = display;
    }
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
@@ -94,6 +93,14 @@ public class AtsConfigOperation extends AbstractOperation {
          throw new OseeArgumentException(String.format(
             "Configuration Namespace [%s] already used, choose a unique namespace.", name));
       }
+   }
+
+   public IAtsWorkDefinition getWorkDefinition() {
+      return workDefinition;
+   }
+
+   public Collection<IAtsActionableItem> getActionableItems() {
+      return actionableItems;
    }
 
    @Override
@@ -110,13 +117,10 @@ public class AtsConfigOperation extends AbstractOperation {
       createVersions(changes, teamDefinition);
 
       XResultData resultData = new XResultData();
-      IAtsWorkDefinition workDefinition = createWorkflow(changes, resultData, teamDefinition);
+      this.workDefinition = createWorkflow(changes, resultData, teamDefinition);
 
       changes.execute();
       monitor.worked(calculateWork(0.30));
-
-      display.openAtsConfigurationEditors(teamDefinition, actionableItems, workDefinition);
-      monitor.worked(calculateWork(0.10));
    }
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes) throws OseeCoreException {
