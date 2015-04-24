@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE OTE Rest Client (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.rest.client
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs;version="2.0.0",

@@ -21,8 +21,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -82,6 +85,16 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       browser = new Browser(composite, SWT.READ_ONLY | SWT.BORDER);
       browser.setLayout(new FillLayout());
       browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+
+      composite.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            if (Widgets.isAccessible(browser)) {
+               browser.dispose();
+            }
+         }
+      });
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

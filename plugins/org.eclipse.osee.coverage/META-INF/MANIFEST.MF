@@ -92,7 +92,7 @@ Import-Package: com.google.common.io;version="[11.0.0,15.0.0)",
  org.eclipse.ui.part,
  org.osgi.framework,
  org.osgi.util.tracker
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.blam,
  org.eclipse.osee.coverage.editor,

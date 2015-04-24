@@ -349,7 +349,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
 
    private void updateTxItem(BaseTransactionData itemToCheck, ModificationType currentModType) {
       if (itemToCheck.getModificationType() == NEW && currentModType.isDeleted()) {
-         transactionDataItems.remove(itemToCheck.getClass(), itemToCheck.getItemId());
+         transactionDataItems.removeAndGet(itemToCheck.getClass(), itemToCheck.getItemId());
       } else {
          itemToCheck.setModificationType(currentModType);
       }

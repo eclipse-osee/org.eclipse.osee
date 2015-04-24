@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
-import javax.annotation.Priority;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -26,7 +24,6 @@ import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
  */
 
 @Provider
-@Priority(Priorities.AUTHORIZATION)
 public class OseeAuthorizingFilter extends SimpleAuthorizingFilter {
 
    private AbstractAuthorizingInInterceptor interceptor;

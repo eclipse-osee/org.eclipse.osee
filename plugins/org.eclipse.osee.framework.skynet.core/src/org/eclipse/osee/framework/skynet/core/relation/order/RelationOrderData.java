@@ -99,7 +99,7 @@ public class RelationOrderData {
    public void removeOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(side, "relationSide");
-      lists.remove(type.getName(), side.name());
+      lists.removeAndGet(type.getName(), side.name());
    }
 
    public boolean hasEntries() {

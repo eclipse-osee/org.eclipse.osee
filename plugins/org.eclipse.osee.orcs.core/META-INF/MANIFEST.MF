@@ -4,11 +4,11 @@ Bundle-Name: OSEE Object Revision Control System Core
 Bundle-SymbolicName: org.eclipse.osee.orcs.core
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.base;version="[11.0.0,15.0.0)",
- com.google.common.collect;version="[11.0.0,15.0.0)",
- com.google.common.io;version="[11.0.0,15.0.0)",
+Import-Package: com.google.common.base,
+ com.google.common.collect,
+ com.google.common.io,
  org.codehaus.jackson;version="1.9.13",
  org.codehaus.jackson.map;version="1.9.13",
  org.codehaus.jackson.map.module;version="1.9.13",

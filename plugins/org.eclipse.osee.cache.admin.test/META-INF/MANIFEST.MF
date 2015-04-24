@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Cache Admin Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.cache.admin.test
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.cache.admin
 Require-Bundle: org.junit,

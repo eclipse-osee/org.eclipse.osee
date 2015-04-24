@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ote.master.rest.client
 Bundle-Version: 0.22.0.qualifier
 Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.inject,
  com.google.inject.binder,
  com.google.inject.matcher,

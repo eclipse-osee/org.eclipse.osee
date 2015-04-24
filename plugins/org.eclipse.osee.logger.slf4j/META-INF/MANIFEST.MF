@@ -9,7 +9,7 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.osgi.service.component,
  org.osgi.service.log,
  org.slf4j
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy

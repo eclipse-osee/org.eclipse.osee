@@ -37,7 +37,7 @@ public class OseeStringValueConverter extends DefaultTerminalConverters {
    }
 
    @Override
-   protected IValueConverter<Object> getConverter(String lexerRule) {
+   public IValueConverter<Object> getConverter(String lexerRule) {
       return super.getConverter(lexerRule);
    }
 

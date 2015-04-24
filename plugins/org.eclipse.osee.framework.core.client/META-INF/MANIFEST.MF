@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core.client;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.client.internal.CoreClientActivator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.data,

@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.integration.test;single
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.core.dsl.integration
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.junit;version="4.8.2",

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.version.FileVersion;
 import org.eclipse.osee.ote.version.FileVersionInformationProvider;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
-import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
+import org.eclipse.team.svn.core.connector.SVNDepth;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.SVNEntryRevisionReference;
 import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
@@ -29,36 +29,36 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 
 public class SvnVersionProvider implements FileVersionInformationProvider {
 
-
    protected boolean isSvn(File file) {
       File svn = new File(file, SVNUtility.getSVNFolderName());
       return svn.exists();
    }
-   
+
    @Override
    public void getFileVersions(List<File> scriptFiles, Map<File, FileVersion> versions) {
 
       IProject[] workspaceProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
       ScriptToProject collection = new ScriptToProject(workspaceProjects);
-      
-      for(File scriptFile:scriptFiles){
+
+      for (File scriptFile : scriptFiles) {
          collection.add(scriptFile);
       }
 
-      ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-      for (String projectName :  collection.getProjectsSet()) {
+      ISVNConnector proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().createConnector();
+      for (String projectName : collection.getProjectsSet()) {
          try {
-            SVNEntryInfo []st = SVNUtility.info(proxy, new SVNEntryRevisionReference(projectName), Depth.INFINITY, new SVNNullProgressMonitor());
+            SVNEntryInfo[] st =
+               SVNUtility.info(proxy, new SVNEntryRevisionReference(projectName), SVNDepth.INFINITY,
+                  new SVNNullProgressMonitor());
             for (SVNEntryInfo entry : st) {
                String svnEntryPath = entry.path;
                String itemToMatch = svnEntryPath.substring(svnEntryPath.lastIndexOf("/") + 1);
                File scriptFile = collection.getScriptFileMatch(projectName, itemToMatch);
-               if(scriptFile != null){
+               if (scriptFile != null) {
                   versions.put(scriptFile, new SvnFileVersion(entry));
                }
             }
-         }
-         catch (Exception ex) {
+         } catch (Exception ex) {
             OseeLog.logf(getClass(), Level.SEVERE, "SVNConnectorException while retrieving script SVN info ", ex);
          }
       }

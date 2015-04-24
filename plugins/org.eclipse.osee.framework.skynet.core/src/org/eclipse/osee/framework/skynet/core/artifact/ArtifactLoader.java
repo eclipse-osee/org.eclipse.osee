@@ -124,7 +124,7 @@ public final class ArtifactLoader {
                   Integer artId = loadPair.getFirst();
                   Long branchUuid = loadPair.getSecond();
                   removeAndUnlock(artId, branchUuid);
-                  locks.remove(artId, branchUuid);
+                  locks.removeAndGet(artId, branchUuid);
                }
             }
          }
@@ -135,7 +135,7 @@ public final class ArtifactLoader {
    private static void removeAndUnlock(Integer artId, Long branchUuid) {
       ReentrantLock lock = null;
       synchronized (loadingActiveMap) {
-         lock = loadingActiveMap.remove(artId, branchUuid);
+         lock = loadingActiveMap.removeAndGet(artId, branchUuid);
       }
       if (lock != null && lock.isLocked()) {
          lock.unlock();

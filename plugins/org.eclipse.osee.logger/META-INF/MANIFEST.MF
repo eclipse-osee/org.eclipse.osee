@@ -4,5 +4,5 @@ Bundle-Name: Osee Logger (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.logger
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.logger

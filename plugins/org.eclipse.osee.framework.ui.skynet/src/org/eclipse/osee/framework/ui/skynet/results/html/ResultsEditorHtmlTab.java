@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -96,7 +97,10 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
       xResultsComposite.setHtmlText(xResultPage.getManipulatedHtml(Arrays.asList(Manipulations.NONE)));
 
       HelpUtil.setHelp(xResultsComposite, OseeHelpContext.RESULTS_VIEW);
-      HelpUtil.setHelp(xResultsComposite.getBrowser(), OseeHelpContext.RESULTS_VIEW);
+      Browser browser = xResultsComposite.getBrowser();
+      if (Widgets.isAccessible(browser)) {
+         HelpUtil.setHelp(browser, OseeHelpContext.RESULTS_VIEW);
+      }
       return comp;
    }
 

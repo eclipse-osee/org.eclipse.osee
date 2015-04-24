@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.access.test;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.access
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.access.test
 Import-Package: org.eclipse.osee.framework.core.model.access.exp

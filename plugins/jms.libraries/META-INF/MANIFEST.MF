@@ -4,7 +4,7 @@ Bundle-Name: JMS Libraries
 Bundle-SymbolicName: jms.libraries
 Bundle-Version: 0.22.0.qualifier
 Eclipse-BuddyPolicy: global
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: libs/geronimo-j2ee-management_1.0_spec-1.0.jar,
  libs/geronimo-jms_1.1_spec-1.1.1.jar,
  libs/activemq-core-5.3.0.jar

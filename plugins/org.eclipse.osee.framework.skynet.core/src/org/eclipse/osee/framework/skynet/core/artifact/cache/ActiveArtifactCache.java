@@ -49,7 +49,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    @Override
    public void deCache(Artifact artifact) {
       super.deCache(artifact);
-      byArtifactTypeCache.remove(artifact.getArtifactType(), new ArtifactKey(artifact));
+      byArtifactTypeCache.removeAndGet(artifact.getArtifactType(), new ArtifactKey(artifact));
    }
 
    @Override

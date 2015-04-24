@@ -36,40 +36,51 @@
 						<eventSystem>new</eventSystem>
 						<osee.is.in.db.init>true</osee.is.in.db.init>
 						<osee.application.server>http://localhost:${osee-server-port}</osee.application.server>
+						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
+<!-- 						<org.eclipse.swt.browser.UseWebKitGTK>true</org.eclipse.swt.browser.UseWebKitGTK> -->
 					</systemProperties>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
-					<dependencies>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.osee.coverage.feature</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.osee.ats.client.demo.feature</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.osee.ats.feature</artifactId>
-							<version>0.0.0</version>
-						</dependency>						
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.osee.client.demo.feature</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.osee.client.feature</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
-							<type>eclipse-feature</type>
-							<artifactId>org.eclipse.sdk</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-					</dependencies>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.coverage.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.ats.client.demo.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.ats.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.client.demo.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.client.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.sdk</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -178,8 +189,8 @@
 										<property name="xserver-log-output"
 											value="${project.build.directory}/server-output.log" />
 										<mkdir dir="${xserver-data}" />
-										<ant antfile="${osee-application-server-launch-ant}" target="run"
-											inheritRefs="true" output="${xserver-log-output}" />
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="run" inheritRefs="true" output="${xserver-log-output}" />
 									</target>
 								</configuration>
 								<goals>
@@ -201,8 +212,8 @@
 										<property name="xserver-port" value="${osee-server-port}" />
 										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
 
-										<ant antfile="${osee-application-server-launch-ant}" target="stopServer"
-											inheritRefs="true" />
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="stopServer" inheritRefs="true" />
 									</target>
 								</configuration>
 								<goals>

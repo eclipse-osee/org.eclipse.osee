@@ -6,7 +6,7 @@ Bundle-Version: 0.22.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.core.client.internal.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.inject,
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",

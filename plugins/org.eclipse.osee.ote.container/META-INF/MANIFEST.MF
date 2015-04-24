@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.runtimeManager,
  org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.ote.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.ui.workspacebundleloader
 Bundle-Vendor: Eclipse Open System Engineering Environment

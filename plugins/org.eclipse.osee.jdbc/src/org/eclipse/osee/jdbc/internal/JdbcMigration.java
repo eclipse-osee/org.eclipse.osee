@@ -51,7 +51,11 @@ public class JdbcMigration {
          for (JdbcMigrationResource migration : migrations) {
             migration.addPlaceholders(placeholders);
             URL location = migration.getLocation();
-            location = FileLocator.toFileURL(location);
+            try {
+               location = FileLocator.toFileURL(location);
+            } catch (Exception ex) {
+               // do nothing
+            }
             String formated = String.format(LOCATION_TEMPLATE, location.getFile());
             allPaths.add(formated);
          }

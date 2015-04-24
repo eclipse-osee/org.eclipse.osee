@@ -67,7 +67,8 @@ public class EmailGroupsData {
       HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<Artifact, Artifact>();
       for (Artifact group : groups) {
          for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-            if (user.getSoleAttributeValue(CoreAttributeTypes.Active)) {
+            Boolean isActive = user.getSoleAttributeValue(CoreAttributeTypes.Active);
+            if (isActive) {
                userToGroupMap.put(user, group);
             }
          }

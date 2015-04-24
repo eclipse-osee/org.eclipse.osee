@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Script DSL UI Integration
 Bundle-SymbolicName: org.eclipse.osee.orcs.script.dsl.ui.integration;singleton:=true
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.orcs.script.dsl.ui
 Import-Package: org.eclipse.core.runtime,

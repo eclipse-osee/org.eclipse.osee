@@ -12,4 +12,4 @@ Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.connection.service
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

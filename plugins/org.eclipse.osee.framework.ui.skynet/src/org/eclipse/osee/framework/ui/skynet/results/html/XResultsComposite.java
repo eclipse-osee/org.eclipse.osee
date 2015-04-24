@@ -23,8 +23,12 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -57,10 +61,24 @@ public class XResultsComposite extends Composite {
       parent.setLayout(layout);
       parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      browser = new Browser(this, SWT.BORDER);
-      browser.addLocationListener(new XResultBrowserListener());
-      browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-      browser.setMenu(getPopup(parent));
+      try {
+         browser = new Browser(this, SWT.BORDER);
+         browser.addLocationListener(new XResultBrowserListener());
+         browser.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+         browser.setMenu(getPopup(parent));
+      } catch (SWTError e) {
+         // do nothing
+      }
+
+      addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            if (Widgets.isAccessible(browser)) {
+               browser.dispose();
+            }
+         }
+      });
 
    }
 
@@ -162,7 +180,7 @@ public class XResultsComposite extends Composite {
    public void setHtmlText(String htmlText, String title) {
       this.htmlText = htmlText;
       this.title = title;
-      if (browser != null && !browser.isDisposed()) {
+      if (Widgets.isAccessible(browser)) {
          browser.setText(htmlText);
       }
    }

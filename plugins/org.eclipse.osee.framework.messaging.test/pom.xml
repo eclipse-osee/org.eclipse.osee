@@ -23,18 +23,27 @@
 				<configuration>
 					<testSuite>org.eclipse.osee.framework.messaging.test</testSuite>
 					<testClass>org.eclipse.osee.framework.messaging.integration.AllMessagingIntegrationTestSuite</testClass>
-					<dependencies>
-						<dependency>
+					</configuration>
+			</plugin>
+			<plugin>
+			<groupId>org.eclipse.tycho</groupId>
+   			<artifactId>target-platform-configuration</artifactId>
+   			<version>${tycho-version}</version>
+   			<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+						<requirement>
 							<type>eclipse-plugin</type>
-							<artifactId>jms.libraries</artifactId>
-							<version>0.0.0</version>
-						</dependency>
-						<dependency>
+							<id>jms.libraries</id>
+							<versionRange>0.0.0</versionRange>
+						</requirement>
+						<requirement>
 							<type>eclipse-plugin</type>
-							<artifactId>jms.activemq.launch</artifactId>
-							<version>0.0.0</version>
-						</dependency>						
-					</dependencies>
+							<id>jms.activemq.launch</id>
+							<versionRange>0.0.0</versionRange>
+						</requirement>						
+					</extraRequirements>
+					</dependency-resolution>
 				</configuration>
 			</plugin>
 		</plugins>

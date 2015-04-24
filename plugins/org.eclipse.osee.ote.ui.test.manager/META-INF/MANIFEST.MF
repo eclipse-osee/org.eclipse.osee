@@ -44,7 +44,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.osee.ote.runtimeManager,
  net.jini;bundle-version="2.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.xml.serialize,
  org.eclipse.jdt.core,
  org.eclipse.osee.framework.core.exception,

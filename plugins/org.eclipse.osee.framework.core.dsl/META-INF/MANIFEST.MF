@@ -33,4 +33,4 @@ Export-Package: org.eclipse.osee.framework.core.dsl,
  org.eclipse.osee.framework.core.dsl.validation,
  org.eclipse.osee.framework.core.dsl.scoping,
  org.eclipse.osee.framework.core.dsl.formatting
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

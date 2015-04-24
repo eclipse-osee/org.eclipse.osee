@@ -15,10 +15,13 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -58,6 +61,16 @@ public class PreviewPanel extends Composite {
       stackLayout.marginHeight = 0;
       stackedComposite.setLayout(stackLayout);
       stackedComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      stackedComposite.addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            if (Widgets.isAccessible(browser)) {
+               browser.dispose();
+            }
+         }
+      });
 
       createBrowserArea(stackedComposite);
       createPreviewNotAllowed(stackedComposite);

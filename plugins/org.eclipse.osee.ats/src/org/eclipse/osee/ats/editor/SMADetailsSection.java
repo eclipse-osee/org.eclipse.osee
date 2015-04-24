@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -81,6 +83,15 @@ public class SMADetailsSection extends SectionPart {
          Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
          composite.setLayout(ALayout.getZeroMarginLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+         composite.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+               if (Widgets.isAccessible(browser)) {
+                  browser.dispose();
+               }
+            }
+         });
 
          browser = new Browser(composite, SWT.NONE);
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -163,14 +174,6 @@ public class SMADetailsSection extends SectionPart {
          }
       }
       return message;
-   }
-
-   @Override
-   public void dispose() {
-      if (Widgets.isAccessible(browser)) {
-         browser.dispose();
-      }
-      super.dispose();
    }
 
 }

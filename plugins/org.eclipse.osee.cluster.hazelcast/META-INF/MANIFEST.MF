@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Hazelcast Cluster
 Bundle-SymbolicName: org.eclipse.osee.cluster.hazelcast
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.hazelcast.config,
  com.hazelcast.core,
  com.hazelcast.impl,

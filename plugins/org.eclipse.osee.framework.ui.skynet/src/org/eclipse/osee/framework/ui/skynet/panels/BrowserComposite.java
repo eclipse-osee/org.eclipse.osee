@@ -12,10 +12,13 @@
 package org.eclipse.osee.framework.ui.skynet.panels;
 
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.ProgressListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
@@ -40,6 +43,16 @@ public class BrowserComposite extends Composite {
       previewBrowser = new Browser(this, SWT.NONE);
       gridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
       previewBrowser.setLayoutData(gridData);
+
+      addDisposeListener(new DisposeListener() {
+
+         @Override
+         public void widgetDisposed(DisposeEvent e) {
+            if (Widgets.isAccessible(previewBrowser)) {
+               previewBrowser.dispose();
+            }
+         }
+      });
 
       this.toolBar = toolBar;
    }

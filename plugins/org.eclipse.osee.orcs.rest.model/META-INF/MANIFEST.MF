@@ -4,7 +4,7 @@ Bundle-Name: OSEE ORCS Rest Model (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.orcs.rest.model
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact
 Import-Package: javax.annotation.security;version="1.2.0",

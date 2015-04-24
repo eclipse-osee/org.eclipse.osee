@@ -4,7 +4,7 @@ Bundle-Name: Osee Lifecycle
 Bundle-SymbolicName: org.eclipse.osee.framework.lifecycle;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,

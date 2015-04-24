@@ -3,15 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE JAX-RS Server (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.jaxrs.server
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Osee-Template: OSEE-INF/templates/*.html
-Import-Package: com.google.common.cache;version="[11.0.0,15.0.0)",
- com.google.common.io;version="[11.0.0,15.0.0)",
- javax.annotation;version="1.2.0",
- javax.annotation.security;version="1.2.0",
- javax.servlet;version="2.6.0",
- javax.servlet.http;version="2.6.0",
+Import-Package: com.google.common.cache,
+ com.google.common.io,
+ javax.annotation,
+ javax.annotation.security,
+ javax.servlet,
+ javax.servlet.http,
  javax.ws.rs;version="2.0.0",
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.container;version="2.0.0",

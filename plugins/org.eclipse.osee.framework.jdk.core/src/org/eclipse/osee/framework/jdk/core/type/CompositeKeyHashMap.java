@@ -185,7 +185,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return values;
    }
 
-   public Value remove(KeyOne key1, KeyTwo key2) {
+   public Value removeAndGet(KeyOne key1, KeyTwo key2) {
       Value value = map.remove(threadLocalKey.get().set(key1, key2));
       singleKeyMap.removeValue(key1, key2);
       return value;

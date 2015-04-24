@@ -26,10 +26,12 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.apache.xerces" />
+								<plugin id="javax.servlet" />
 								<plugin id="javax.xml" />
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.json" />
+								<plugin id="org.eclipse.persistence.asm" />
 								<plugin id="org.eclipse.persistence.core" />
 								<plugin id="org.eclipse.persistence.moxy" />
 								<plugin id="org.apache.cxf.core.config" />

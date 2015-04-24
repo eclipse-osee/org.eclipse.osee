@@ -28,7 +28,6 @@ import org.apache.cxf.transport.common.gzip.GZIPFeature;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.cxf.transports.http.configuration.ProxyServerType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.JacksonFeature;
@@ -80,20 +79,11 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    @Override
    public void configureJaxRsRuntime() {
-      // Ensure CXF JAX-RS implementation is loaded 
+      // Ensure CXF JAX-RS implementation is loaded
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
 
-      try {
-         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-         if (classLoader == null) {
-            classLoader = getClass().getClassLoader();
-         }
-         classLoader.loadClass(DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
-      } catch (ClassNotFoundException ex) {
-         throw new OseeCoreException(ex, "Unable to find JAX-RS Client Builder implementation - [%s]",
-            DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
-      }
+      new org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl();
       System.setProperty(JAVAX_WS_RS_CLIENT_BUILDER_PROPERTY, DEFAULT_JAXRS_CLIENT_BUILDER_IMPL);
    }
 

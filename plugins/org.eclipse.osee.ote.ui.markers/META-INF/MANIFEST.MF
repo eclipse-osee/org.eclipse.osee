@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.osee.framework.ui.plugin
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ote.ui.markers
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.ws,

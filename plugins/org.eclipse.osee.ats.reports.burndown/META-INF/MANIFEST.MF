@@ -7,7 +7,7 @@ Bundle-Activator: org.eclipse.osee.ats.reports.burndown.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.forms
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats,

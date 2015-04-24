@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Disposition REST Model (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.disposition.rest.model
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.disposition.model
 Import-Package: org.eclipse.osee.framework.jdk.core.type,

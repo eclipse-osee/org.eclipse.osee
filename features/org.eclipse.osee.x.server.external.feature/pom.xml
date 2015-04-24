@@ -26,6 +26,8 @@
 						<configuration>
 							<excludes>
 								<plugin id="org.aopalliance" />
+								<plugin id="javax.servlet" />
+								<plugin id="com.google.gson" />
 							</excludes>
 						</configuration>
 					</execution>

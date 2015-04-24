@@ -12,9 +12,7 @@ package org.eclipse.osee.jaxrs.client.internal.ext;
 
 import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newException;
 import java.net.URI;
-import javax.annotation.Priority;
 import javax.crypto.SecretKey;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
@@ -29,7 +27,6 @@ import org.eclipse.osee.jaxrs.client.JaxRsTokenStore;
 /**
  * @author Roberto E. Escobar
  */
-@Priority(Priorities.HEADER_DECORATOR)
 @Provider
 public class OAuth2ClientRequestFilter implements ClientRequestFilter {
 

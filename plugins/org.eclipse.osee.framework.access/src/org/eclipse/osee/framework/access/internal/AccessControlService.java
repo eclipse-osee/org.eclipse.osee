@@ -703,7 +703,7 @@ public class AccessControlService implements IAccessControlService {
          if (artifactLockCache.containsKey(branchUuid, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
             removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
-            artifactLockCache.remove(branchUuid, objectArtId);
+            artifactLockCache.removeAndGet(branchUuid, objectArtId);
             event.getArtifacts().add(object.getBasicGuidArtifact());
             lockedArts.add(object);
          }

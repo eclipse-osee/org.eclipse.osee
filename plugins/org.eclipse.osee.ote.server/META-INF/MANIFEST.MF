@@ -4,7 +4,7 @@ Bundle-Name: OTE Server Launching Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.server;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Description: OTE Server
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.felix.service.command;status=provisional;version="0.8.0",
  org.eclipse.core.runtime,

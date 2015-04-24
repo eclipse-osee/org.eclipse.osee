@@ -46,8 +46,8 @@ public abstract class AbstractArtifactCache {
 
    public void deCache(Artifact artifact) {
       Long key2 = getKey2(artifact);
-      idCache.remove(artifact.getArtId(), key2);
-      guidCache.remove(artifact.getGuid(), key2);
+      idCache.removeAndGet(artifact.getArtId(), key2);
+      guidCache.removeAndGet(artifact.getGuid(), key2);
    }
 
    public Collection<Artifact> getAll() {

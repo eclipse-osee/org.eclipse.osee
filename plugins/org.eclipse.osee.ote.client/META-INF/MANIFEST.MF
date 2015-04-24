@@ -68,6 +68,6 @@ Import-Package: net.jini.activation,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.ote.service,
  org.eclipse.osee.ote.service.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.messaging

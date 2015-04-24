@@ -4,7 +4,7 @@ Bundle-Name: OSEE Coverage Demo (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.coverage.demo;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.osee.ats.core.client.util,
  org.eclipse.osee.coverage,
  org.eclipse.osee.coverage.blam,

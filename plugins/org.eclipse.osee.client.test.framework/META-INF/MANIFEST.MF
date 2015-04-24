@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Client Test Framework (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.client.test.framework
 Bundle-Version: 0.22.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.junit,
  org.eclipse.core.runtime

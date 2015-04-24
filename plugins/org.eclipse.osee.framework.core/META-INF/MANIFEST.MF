@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.core;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.core.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.httpclient,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.params,

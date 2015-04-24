@@ -33,6 +33,52 @@
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.orcs.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.x.core.external.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-feature</type>
+								<id>org.eclipse.osee.x.core.feature</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.cm</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.ds</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.osee.orcs.db.mock</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.eclipse.equinox.registry</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -53,7 +99,8 @@
 						<version>${tycho-version}</version>
 						<configuration>
 							<debugPort>${int-test-debug-port}</debugPort>
-							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug> </systemProperties> -->
+							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug> 
+								</systemProperties> -->
 						</configuration>
 					</plugin>
 				</plugins>
@@ -114,12 +161,14 @@
 											</classpath>
 										</taskdef>
 
-										<property name="xserver-project" value="${project.basedir}/../org.eclipse.osee.x.server.p2" />
+										<property name="xserver-project"
+											value="${project.basedir}/../org.eclipse.osee.x.server.p2" />
 										<property name="xserver-home" value="${xserver-project}/target/server" />
 										<property name="xserver-port" value="${osee-server-port}" />
 										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
 										<property name="xserver-authentication" value="demo" />
-										<property name="xserver-data" value="${project.build.directory}/server-data" />
+										<property name="xserver-data"
+											value="${project.build.directory}/server-data" />
 										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
 
 										<property name="xserver-use-demo-data" value="true" />
@@ -136,7 +185,8 @@
 										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
 										<mkdir dir="${xserver-data}" />
 
-										<ant antfile="${osee-application-server-launch-ant}" target="run" inheritRefs="true" output="${xserver-log-output}" />
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="run" inheritRefs="true" output="${xserver-log-output}" />
 									</target>
 								</configuration>
 								<goals>
@@ -158,7 +208,8 @@
 										<property name="xserver-port" value="${osee-server-port}" />
 										<property name="xserver-telnet-port" value="${osee-server-telnet-port}" />
 
-										<ant antfile="${osee-application-server-launch-ant}" target="stopServer" inheritRefs="true" />
+										<ant antfile="${osee-application-server-launch-ant}"
+											target="stopServer" inheritRefs="true" />
 									</target>
 								</configuration>
 								<goals>

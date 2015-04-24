@@ -12,9 +12,7 @@ package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
 import static org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil.newAuthorizationRequiredResponse;
 import java.net.URI;
-import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.HttpHeaders;
@@ -37,11 +35,10 @@ import org.eclipse.osee.logger.Log;
  * This filter allows for JAX-RS APIs to be shared between OAuth access
  * and when the resource owner accesses the API without using OAuth.
  * </pre>
- * 
+ *
  * @author Roberto E. Escobar
  */
 @PreMatching
-@Priority(Priorities.AUTHENTICATION)
 public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private final Log logger;

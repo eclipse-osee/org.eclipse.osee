@@ -19,7 +19,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -68,18 +71,35 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          composite.setLayout(ALayout.getZeroMarginLayout());
          composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-         browser = new Browser(composite, SWT.NONE);
+         composite.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+               if (Widgets.isAccessible(browser)) {
+                  browser.dispose();
+               }
+            }
+         });
+
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 200;
          gd.heightHint = 250;
-         browser.setLayoutData(gd);
+
+         try {
+            browser = new Browser(composite, SWT.NONE);
+            browser.setLayoutData(gd);
+         } catch (SWTError e) {
+            // do nothing
+         }
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
          sectionCreated = true;
 
          HelpUtil.setHelp(composite, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
-         HelpUtil.setHelp(browser, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
+         if (Widgets.isAccessible(browser)) {
+            HelpUtil.setHelp(browser, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
+         }
       }
 
       if (Widgets.isAccessible(browser)) {
@@ -92,14 +112,6 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          }
          getManagedForm().reflow(true);
       }
-   }
-
-   @Override
-   public void dispose() {
-      if (browser != null && !browser.isDisposed()) {
-         browser.dispose();
-      }
-      super.dispose();
    }
 
    @Override

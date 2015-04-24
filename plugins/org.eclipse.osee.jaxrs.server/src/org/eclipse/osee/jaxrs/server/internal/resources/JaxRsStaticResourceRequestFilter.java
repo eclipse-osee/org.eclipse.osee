@@ -16,9 +16,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
-import javax.annotation.Priority;
 import javax.servlet.ServletContext;
-import javax.ws.rs.Priorities;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -40,7 +38,6 @@ import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
  * @author Roberto E. Escobar
  */
 @PreMatching
-@Priority(Priorities.USER)
 @Provider
 public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter {
 

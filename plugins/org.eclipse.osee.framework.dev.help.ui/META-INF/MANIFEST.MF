@@ -4,5 +4,5 @@ Bundle-Name: OSEE Framework Dev Help
 Bundle-SymbolicName: org.eclipse.osee.framework.dev.help.ui;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
