@@ -21,6 +21,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -58,6 +59,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    private PredicateFactory predicateFactory;
    private volatile JaxRsClient client;
    private volatile URI baseUri;
+   private volatile URI defineUri;
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
@@ -69,6 +71,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       client = null;
       baseUri = null;
       predicateFactory = null;
+      defineUri = null;
    }
 
    public void update(Map<String, Object> properties) {
@@ -78,6 +81,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          address = System.getProperty(OSEE_APPLICATION_SERVER, "");
       }
       baseUri = UriBuilder.fromUri(address).path("orcs").build();
+      defineUri = UriBuilder.fromUri(address).path("define").build();
    }
 
    private JaxRsWebTarget newTarget(String path, Object... values) {
@@ -179,10 +183,15 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       JaxRsClient newClient = JaxRsClient.newBuilder(client.getConfig()).followRedirects(false).build();
       return newClient.targetProxy(baseUri, ResourcesEndpoint.class);
    }
-   
+
    @Override
    public DatastoreEndpoint getDatastoreEndpoint() {
       return client.targetProxy(baseUri, DatastoreEndpoint.class);
    }
-      
+
+   @Override
+   public WordUpdateEndpoint getWordUpdateEndpoint() {
+      return client.targetProxy(defineUri, WordUpdateEndpoint.class);
+   }
+
 }
