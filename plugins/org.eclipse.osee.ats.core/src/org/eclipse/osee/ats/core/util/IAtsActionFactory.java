@@ -45,4 +45,8 @@ public interface IAtsActionFactory {
 
    void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException;
 
+   Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf);
+
+   IAtsAction getAction(IAtsTeamWorkflow teamWf);
+
 }

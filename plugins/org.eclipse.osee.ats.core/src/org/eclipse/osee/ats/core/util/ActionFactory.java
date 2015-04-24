@@ -353,4 +353,27 @@ public class ActionFactory implements IAtsActionFactory {
       }
    }
 
+   @Override
+   public Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf) {
+      List<IAtsTeamWorkflow> teams = new LinkedList<IAtsTeamWorkflow>();
+      Object action = getAction(teamWf);
+      for (Object teamArt : atsServices.getRelationResolver().getRelated(action,
+         AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+         if (!teamArt.equals(teamWf)) {
+            teams.add(atsServices.getWorkItemFactory().getTeamWf(teamArt));
+         }
+      }
+      return teams;
+   }
+
+   @Override
+   public IAtsAction getAction(IAtsTeamWorkflow teamWf) {
+      Object actionArt =
+         atsServices.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action);
+      if (actionArt != null) {
+         return atsServices.getWorkItemFactory().getAction(actionArt);
+      }
+      return null;
+   }
+
 }
