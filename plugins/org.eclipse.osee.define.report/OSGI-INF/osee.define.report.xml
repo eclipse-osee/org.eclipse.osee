@@ -23,4 +23,5 @@
    <property name="osee.trace.myII.Ada_Code.secondary.regexs" type="String">(SRS)?\d*\s*([^;]+)
 .+
    </property>
+   <reference bind="setAtsServer" cardinality="1..1" interface="org.eclipse.osee.ats.impl.IAtsServer" name="IAtsServer" policy="static"/>
  </scr:component>

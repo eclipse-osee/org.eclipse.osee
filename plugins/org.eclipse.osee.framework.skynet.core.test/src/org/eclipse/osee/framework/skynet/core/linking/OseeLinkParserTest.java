@@ -20,15 +20,6 @@ import org.junit.Assert;
 public class OseeLinkParserTest {
 
    @org.junit.Test
-   public void testOldSchoolLink() throws Exception {
-      OseeLinkParser parser = new OseeLinkParser();
-      String guid = GUID.create();
-      parser.parse(String.format("http://127.0.0.1:8081/get/guid/%s/Define", guid));
-
-      Assert.assertEquals(guid, parser.getGuid());
-   }
-
-   @org.junit.Test
    public void testNewSchoolLink() throws Exception {
       OseeLinkParser parser = new OseeLinkParser();
       String guid = GUID.create();

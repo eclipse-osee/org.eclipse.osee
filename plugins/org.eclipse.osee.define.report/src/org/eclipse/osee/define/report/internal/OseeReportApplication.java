@@ -16,6 +16,8 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.app.OseeAppResourceTokens;
+import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.define.report.WordUpdateEndpointImpl;
 import org.eclipse.osee.define.report.api.DefineApi;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -31,6 +33,11 @@ public final class OseeReportApplication extends Application {
    private OrcsApi orcsApi;
    private Log logger;
    private DefineApi defineApi;
+   private IAtsServer atsServer;
+
+   public void setAtsServer(IAtsServer atsServer) {
+      this.atsServer = atsServer;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -55,6 +62,8 @@ public final class OseeReportApplication extends Application {
       logger.debug(">>>>> registered Low/High Trace resource");
       singletons.add(new DataRightsResource(defineApi));
       logger.debug(">>>>> registered Data Rights resource");
+      singletons.add(new WordUpdateEndpointImpl(logger, orcsApi, atsServer));
+      logger.debug(">>>>> registered WordUpdateEndpointImpl");
    }
 
    @Override
