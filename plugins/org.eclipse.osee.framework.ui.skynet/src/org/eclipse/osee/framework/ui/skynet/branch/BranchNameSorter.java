@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * Default sorter for branch. Sorts on descriptive name
@@ -29,8 +29,10 @@ public class BranchNameSorter extends ViewerSorter {
    @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
-
-      return getComparator().compare(((Branch) o1).getName(), ((Branch) o2).getName());
+      if ((o1 instanceof IOseeBranch) && (o2 instanceof IOseeBranch)) {
+         return getComparator().compare(((IOseeBranch) o1).getName(), ((IOseeBranch) o2).getName());
+      }
+      return super.compare(viewer, o1, o2);
    }
 
 }
