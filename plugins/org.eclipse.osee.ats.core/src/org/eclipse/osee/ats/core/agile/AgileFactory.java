@@ -173,8 +173,9 @@ public class AgileFactory {
       return getAgileSprint(logger, services, sprintArt);
    }
 
-   public static IAgileSprint getAgileSprint(Log logger, IAtsServices services, Object artifact) {
-      return new AgileSprint(logger, services, (ArtifactToken) artifact);
+   public static IAgileSprint getAgileSprint(Log logger, IAtsServices services, ArtifactId artifact) {
+      ArtifactToken artifact2 = services.getArtifact(artifact);
+      return new AgileSprint(logger, services, artifact2);
    }
 
    public static IAgileBacklog createAgileBacklog(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {

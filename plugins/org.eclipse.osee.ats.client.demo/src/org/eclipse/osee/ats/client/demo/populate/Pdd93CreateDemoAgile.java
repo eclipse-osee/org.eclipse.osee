@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
@@ -116,8 +117,8 @@ public class Pdd93CreateDemoAgile {
       for (IAtsWorkItem workItem : items) {
          item.getUuids().add(workItem.getId());
       }
-      response = agile.updateItems(item);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      AgileWriterResult result = agile.updateItems(item);
+      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       // Create Sprints
       JaxNewAgileSprint newSprint = newSprint(DemoArtifactToken.SAW_Sprint_1);
@@ -144,10 +145,10 @@ public class Pdd93CreateDemoAgile {
             inworkItems.getUuids().add(workItem.getId());
          }
       }
-      response = agile.updateItems(inworkItems);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      response = agile.updateItems(completedItems);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      result = agile.updateItems(inworkItems);
+      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
+      result = agile.updateItems(completedItems);
+      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(

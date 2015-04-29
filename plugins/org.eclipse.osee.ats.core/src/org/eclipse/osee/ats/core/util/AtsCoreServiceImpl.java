@@ -550,7 +550,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
       ArtifactId art = getArtifact(artifact);
       if (art != null) {
          return getWorkItemFactory().getTeamWf(art);

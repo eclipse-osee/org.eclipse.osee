@@ -13,8 +13,19 @@ angular.module('AgileApp').factory('AgileFactory',
 			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
 			var sprintCurrentResource = $resource('/ats/agile/team/:uuid/sprintcurrent');
 			var sprintSingleResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid');
+			var sprintForKbResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid/kb');
 			var backlogResource = $resource('/ats/agile/team/:uuid/backlog');
 			var backlogItemsResource = $resource('/ats/agile/team/:uuid/backlog/item');
+			var itemResource = $resource('/ats/agile/items/:uuid', 
+					{}, { 'update': { method:'PUT' } });
+
+			// ////////////////////////////////////
+			// Agile Item
+			// ////////////////////////////////////
+
+			factory.updateStatus = function(data) {
+				return itemResource.update(data);
+			}
 
 			// ////////////////////////////////////
 			// Agile Teams
@@ -71,6 +82,10 @@ angular.module('AgileApp').factory('AgileFactory',
 				var param = {};
 				param.uuid = team.uuid;
 				return sprintCurrentResource.get(param);
+			}
+			
+			factory.getSprintForKb = function(sprint) {
+				return sprintForKbResource.get(team, sprint);
 			}
 			
 			factory.deleteSprint = function(team) {

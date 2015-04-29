@@ -41,13 +41,15 @@ public interface IAgileService {
 
    IAgileSprint getAgileSprint(ArtifactId artifact);
 
+   IAgileSprint getAgileSprint(long id);
+
    IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid);
 
    IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid);
 
    IAgileBacklog getAgileBacklog(ArtifactId artifact);
 
-   JaxAgileItem updateItem(JaxAgileItem newItem);
+   AgileWriterResult updateAgileItem(JaxAgileItem newItem);
 
    IAgileBacklog getAgileBacklog(IAgileTeam team);
 

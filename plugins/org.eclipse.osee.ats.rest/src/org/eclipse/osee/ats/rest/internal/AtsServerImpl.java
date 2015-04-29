@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
@@ -481,6 +482,16 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public static IAtsServices get() {
       return services;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
+      return getWorkItemFactory().getTeamWf(services.getArtifact(artifact));
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(Long id) {
+      return getWorkItemFactory().getTeamWf(services.getArtifact(id));
    }
 
 }

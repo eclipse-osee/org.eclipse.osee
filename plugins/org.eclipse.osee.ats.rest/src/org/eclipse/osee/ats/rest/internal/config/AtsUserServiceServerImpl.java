@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.HttpHeaders;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -53,7 +54,15 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
          atsAdminArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
             AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
       }
-      return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, (ArtifactReadable) user.getStoreObject());
+      return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, getArtifact(user));
+   }
+
+   private ArtifactReadable getArtifact(IAtsObject atsObjecct) {
+      if (atsObjecct.getStoreObject() instanceof ArtifactReadable) {
+         return (ArtifactReadable) atsObjecct.getStoreObject();
+      }
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
+         atsObjecct.getId()).getResults().getAtMostOneOrNull();
    }
 
    @Override

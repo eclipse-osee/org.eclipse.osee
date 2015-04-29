@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -70,5 +71,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    @Override
    IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
+
+   IAtsTeamWorkflow getTeamWf(Long id);
 
 }

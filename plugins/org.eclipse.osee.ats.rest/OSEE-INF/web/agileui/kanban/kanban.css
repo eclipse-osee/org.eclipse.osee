@@ -1,0 +1,159 @@
+/*
+ * Copyright (c) 2015 Robert Bosch Engineering and Business Solutions Private Ltd India. All rights reserved. This program and
+ * the accompanying materials are made available under the terms of the Eclipse Public License v1.0 which accompanies
+ * this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+@CHARSET "ISO-8859-1";
+
+#board {
+	display: table;
+	margin: 0;
+	padding: 0px;
+	border-spacing: 5px;
+	font-size: 11px;	
+	min-height: 100%;	
+}
+
+.headerStyle {
+	COLOR: black;
+	FONT-SIZE: 20PX;
+	FONT-WEIGHT: BOLD;
+}
+
+.section {
+	display: table-cell;
+	margin: 0;
+	font-style: 12px ;
+	border: 1px solid #666;
+	padding: 5px;
+	min-width: 30%;
+	background: #F8F8F8;
+	min-height: 100%;
+	
+}
+
+.section.droppable {
+	border: 1px dashed #666;
+}
+
+.section>h1 {
+	margin: 0;
+	border-bottom: 1px solid #999;
+	padding: 0;
+	font-size: 12pt;
+	text-align: center;
+}
+
+.card {
+	display: inline-block;
+	vertical-align: top;
+	color: black;
+	margin: 10px 5px;
+	cursor: move;
+	text-align: center;
+	font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande",
+		sans-serif;
+	box-shadow: 2px 2px 2px #eee;
+	table-layout: fixed;
+	resize: both;
+	overflow: auto;
+	word-wrap: break-word;
+}
+
+.Endorse {
+	background: #E9F7B2;
+}
+
+.Analyze {
+	background: #EBEB00;
+}
+
+.Authorize {
+	background: #CAC7D6;
+}
+
+.Implement {
+	background: #77D7DD;
+}
+
+.Completed {
+	background: #B1EB84;
+}
+
+.Cancelled {
+	background: #FF8282;
+}
+
+.tableWrap {
+	table-layout: fixed;
+}
+
+.tableWrap td {
+	word-wrap: break-word;
+}
+
+.modalDialog {
+	position: fixed;
+	font-family: Arial, Helvetica, sans-serif;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.8);
+	z-index: 99999;
+	opacity: 0;
+	-webkit-transition: opacity 400ms ease-in;
+	-moz-transition: opacity 400ms ease-in;
+	transition: opacity 400ms ease-in;
+	pointer-events: none;
+}
+
+.modalDialog:target {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.modalDialog>div {
+	width: 400px;
+	position: relative;
+	margin: 10% auto;
+	padding: 5px 20px 13px 20px;
+	border-radius: 10px;
+	background: #fff;
+	background: -moz-linear-gradient(#fff, #999);
+	background: -webkit-linear-gradient(#fff, #999);
+	background: -o-linear-gradient(#fff, #999);
+}
+
+.headerDropdowns{
+	background: #D6DFF4;
+    color: black;
+    align: center;
+    font-size: 12PX;
+    font-weight: bold;
+}
+
+.headerDropdownWidth{
+    width:30%;
+}
+
+.boardStyle {
+	align: center;
+	font-style: 12px ;
+	border: 1px solid #666;
+	padding: 5px;
+	min-width: 30%;
+	background: #F8F8F8;
+	min-height: 100%;
+	
+}
+
+.tasktable table tr:nth-child(odd) td{
+		background: yellow;
+	
+}
+.tasktable table tr:nth-child(even) td{
+			background: blue;
+	
+}

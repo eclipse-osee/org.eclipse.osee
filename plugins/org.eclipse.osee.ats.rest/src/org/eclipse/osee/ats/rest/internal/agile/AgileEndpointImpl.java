@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
+import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -49,6 +50,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
+import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -61,6 +63,7 @@ import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -381,6 +384,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return Response.ok().build();
    }
 
+   @Override
+   public JaxKbSprint getSprintItemsForKb(long teamUuid, long sprintUuid) {
+      return KanbanOperations.getSprintItemsForKb(atsServer, teamUuid, sprintUuid);
+   }
+
    /********************************
     ** Agile Backlog
     ***********************************/
@@ -481,34 +489,30 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Agile Item
     ***********************************/
    @Override
-   public Response updateItem(long itemUuid, JaxAgileItem newItem) {
+   public AgileWriterResult updateAgileItem(long itemUuid, JaxAgileItem newItem) {
       // validate uuid
       if (newItem.getUuids().isEmpty()) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "itemUuid is not valid");
       }
 
-      JaxAgileItem sprint = atsServer.getAgileService().updateItem(newItem);
+      AgileWriterResult result = atsServer.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
-      item.getUuids().addAll(sprint.getUuids());
-      item.getFeatures().addAll(sprint.getFeatures());
-      item.setSprintUuid(sprint.getSprintUuid());
+      item.getUuids().addAll(result.getJaxAgileItem().getUuids());
+      item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
+      item.setSprintUuid(result.getJaxAgileItem().getSprintUuid());
 
-      UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("team").path(String.valueOf(item.getSprintUuid())).build();
-      return Response.created(location).entity(item).build();
+      return result;
    }
 
    @Override
-   public Response updateItems(JaxAgileItem newItem) {
-      JaxAgileItem sprint = atsServer.getAgileService().updateItem(newItem);
+   public AgileWriterResult updateItems(JaxAgileItem newItem) {
+      AgileWriterResult result = atsServer.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
-      item.getUuids().addAll(sprint.getUuids());
-      item.getFeatures().addAll(sprint.getFeatures());
-      item.setSprintUuid(sprint.getSprintUuid());
+      item.getUuids().addAll(result.getJaxAgileItem().getUuids());
+      item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
+      item.setSprintUuid(result.getJaxAgileItem().getSprintUuid());
 
-      UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("team").path(String.valueOf(item.getSprintUuid())).build();
-      return Response.created(location).entity(item).build();
+      return result;
    }
 
    /********************************

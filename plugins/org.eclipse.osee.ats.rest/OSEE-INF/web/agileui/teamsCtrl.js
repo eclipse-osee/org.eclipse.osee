@@ -27,7 +27,8 @@ angular
 							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="configTeam(row.entity)">Config</button>';
 							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklog(row.entity)">Backlog</button>';
-
+							var openKanbanImpl = '<button class="btn btn-default btn-sm" ng-click="openKanban(row.entity)">Kanban</button>';
+							
 							$scope.teamGridOptions = {
 								data : 'teams',
 								enableHighlighting : true,
@@ -57,6 +58,11 @@ angular
 									width : 66,
 									cellTemplate : openBacklogImpl
 								}, {
+									field : "kanban",
+									displayName : 'Kanban',
+									width : 66,
+									cellTemplate : openKanbanImpl
+								}, {
 									field : "config",
 									displayName : 'Config',
 									width : 60,
@@ -67,15 +73,15 @@ angular
 							$scope.updateTeams = function() {
 								$scope.sheets = null;
 								var loadingModal = PopupService
-								.showLoadingModal();
-								AgileFactory.getTeams().$promise
-										.then(function(data) {
-											$scope.teams = data;
-											loadingModal.close();
-											LayoutService
-													.resizeElementHeight("teamTable");
-											LayoutService.refresh();
-										});
+										.showLoadingModal();
+								AgileFactory.getTeams().$promise.then(function(
+										data) {
+									$scope.teams = data;
+									loadingModal.close();
+									LayoutService
+											.resizeElementHeight("teamTable");
+									LayoutService.refresh();
+								});
 							}
 
 							$scope.openTeam = function(team) {
@@ -85,6 +91,11 @@ angular
 
 							$scope.configTeam = function(team) {
 								window.location.assign("main#/config?team="
+										.concat(team.uuid))
+							}
+
+							$scope.openKanban = function(team) {
+								window.location.assign("main#/kanban?team="
 										.concat(team.uuid))
 							}
 

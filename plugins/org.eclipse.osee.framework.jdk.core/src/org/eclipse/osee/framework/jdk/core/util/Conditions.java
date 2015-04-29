@@ -210,4 +210,8 @@ public final class Conditions {
          throw new OseeArgumentException(message, data);
       }
    }
+
+   public static void assertFalse(boolean value, String message, Object... data) {
+      assertTrue(!value, message, data);
+   }
 }

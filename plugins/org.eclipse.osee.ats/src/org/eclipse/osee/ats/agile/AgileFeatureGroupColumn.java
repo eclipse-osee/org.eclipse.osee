@@ -162,7 +162,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       }
 
       try {
-         agileEp.updateItem(teamUuid, updateItem);
+         agileEp.updateAgileItem(teamUuid, updateItem);
          ArtifactQuery.reloadArtifacts(awas);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

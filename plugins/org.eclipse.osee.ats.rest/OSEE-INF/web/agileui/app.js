@@ -2,13 +2,16 @@
  * Agile app definition
  */
 var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
-		'ngGrid' ]);
+		'ngGrid', 'ngDraggable' ]);
 
 app.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {
 		redirectTo : "/teams",
 	}).when('/home', {
 		redirectTo : "/teams",
+	}).when('/kanban', {
+		templateUrl : 'kanban/kanban.html',
+		controller : 'KanbanCtrl'
 	}).when('/backlog', {
 		templateUrl : 'backlog.html',
 		controller : 'BacklogCtrl'
@@ -146,3 +149,37 @@ app.directive('ngConfirmClick', [ function() {
 		}
 	};
 } ])
+
+app.directive(
+// Directive for cards element
+'cards', function() {
+	return {
+		restrict : 'EA',
+		link : function(scope, element, attrs) {
+			var tasksAsCards = getTasksFor(scope.state.name, scope.assignee);
+			scope.tasks = tasksAsCards;
+
+		},
+		replace : true,
+		templateUrl : 'kanban/kanbanCard.html',
+	}
+});
+
+app.filter(
+// Truncate characters for long text
+'truncate', function() {
+	return function(text, length, end) {
+		if (isNaN(length))
+			length = 10;
+
+		if (end === undefined)
+			end = "...";
+
+		if (text.length <= length || text.length - end.length <= length) {
+			return text;
+		} else {
+			return String(text).substring(0, length - end.length) + end;
+		}
+
+	};
+});

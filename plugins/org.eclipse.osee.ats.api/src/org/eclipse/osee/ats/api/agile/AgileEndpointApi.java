@@ -21,6 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -68,6 +69,11 @@ public interface AgileEndpointApi {
    @Path("team/{teamUuid}/sprint")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/kb")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxKbSprint getSprintItemsForKb(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
    @Path("team/{teamUuid}/sprintcurrent")
@@ -175,13 +181,13 @@ public interface AgileEndpointApi {
    @Path("item/{itemId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateItem(@PathParam("itemId") long itemId, JaxAgileItem newItem);
+   public AgileWriterResult updateAgileItem(@PathParam("itemId") long itemId, JaxAgileItem newItem);
 
    @PUT
-   @Path("item")
+   @Path("items")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateItems(JaxAgileItem newItem);
+   public AgileWriterResult updateItems(JaxAgileItem newItem);
 
    @DELETE
    @Path("team/{teamUuid}/feature/{featureUuid}")

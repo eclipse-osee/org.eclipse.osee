@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -223,6 +224,11 @@ public class AgileService implements IAgileService {
    }
 
    @Override
+   public IAgileSprint getAgileSprint(long id) {
+      return getAgileSprint(ArtifactId.valueOf(id));
+   }
+
+   @Override
    public IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid) {
       return AgileFactory.createAgileSprint(logger, services, teamUuid, name, guid, uuid);
    }
@@ -293,7 +299,7 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public JaxAgileItem updateItem(JaxAgileItem newItem) {
+   public AgileWriterResult updateAgileItem(JaxAgileItem newItem) {
       AgileItemWriter writer = new AgileItemWriter(services, this, newItem);
       return writer.write();
    }

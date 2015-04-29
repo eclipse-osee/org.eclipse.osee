@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxAgileItem {
 
    private final List<Long> uuids = new ArrayList<>();
@@ -28,6 +26,8 @@ public class JaxAgileItem {
    private boolean removeFeatures = false;
    private boolean setSprint = false;
    private boolean setBacklog = false;
+   private String toState = null;
+   private List<String> toStateUsers = new ArrayList<String>();
 
    public List<Long> getFeatures() {
       return features;
@@ -83,6 +83,22 @@ public class JaxAgileItem {
 
    public void setRemoveFeatures(boolean removeFeatures) {
       this.removeFeatures = removeFeatures;
+   }
+
+   public void setToState(String toState) {
+      this.toState = toState;
+   }
+
+   public List<String> getToStateUsers() {
+      return toStateUsers;
+   }
+
+   public void setToStateUsers(List<String> toStateUsers) {
+      this.toStateUsers = toStateUsers;
+   }
+
+   public String getToState() {
+      return toState;
    }
 
 }
