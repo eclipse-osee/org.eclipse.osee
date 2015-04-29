@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider;
 
+import java.util.List;
+import java.util.TreeMap;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor;
 import org.apache.cxf.jaxrs.security.SimpleAuthorizingFilter;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
+import org.apache.cxf.message.Message;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
 
@@ -33,9 +36,16 @@ public class OseeAuthorizingFilter extends SimpleAuthorizingFilter {
    public void filter(ContainerRequestContext context) {
       context.getSecurityContext().getUserPrincipal();
       Resource resource = resourceManager.findResource(context);
-      if (resource == null) {
+
+      Message currentMessage = JAXRSUtils.getCurrentMessage();
+      @SuppressWarnings("unchecked")
+      TreeMap<String, List<String>> protocolHeaders =
+         (TreeMap<String, List<String>>) currentMessage.getContextualProperty("org.apache.cxf.message.Message.PROTOCOL_HEADERS");
+      List<String> referers = protocolHeaders.get("Referer");
+
+      if (resource != null && referers != null && !referers.toString().contains("coverage")) {
          try {
-            interceptor.handleMessage(JAXRSUtils.getCurrentMessage());
+            interceptor.handleMessage(currentMessage);
          } catch (Exception ex) {
             context.abortWith(Response.status(Response.Status.FORBIDDEN).build());
          }

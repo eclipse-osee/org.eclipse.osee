@@ -314,11 +314,6 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
                   if (!isExpired && entry.getGrantType().equals(grantType)) {
                      token = serializer.decryptAccessToken(this, entry.getTokenKey(), getSecretKey());
                   }
-
-                  boolean isRolesOutdated = isRolesOutdated(subject, token);
-                  if (isRolesOutdated) {
-                     revokeAllTokens(client, subjectId, grantType);
-                  }
                   break;
                }
                break;
@@ -327,6 +322,15 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
                break;
          }
       }
+
+      if (token != null) {
+         boolean isRolesOutdated = isRolesOutdated(subject, token);
+         if (isRolesOutdated) {
+            revokeAllTokens(client, subjectId, grantType);
+            token = null;
+         }
+      }
+
       return token;
    }
 

@@ -114,6 +114,7 @@ public final class AccountDataUtil {
       toReturn.setName(principal.getName());
       toReturn.setUserName(principal.getUserName());
       toReturn.setGuid(principal.getOseeGuid());
+      toReturn.setRoles(principal.getRoles());
       return toReturn;
    }
 

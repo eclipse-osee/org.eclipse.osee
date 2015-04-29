@@ -9,10 +9,10 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
          <ul class="nav navbar-nav">
-            <li ng-repeat="link in links" ng-class='getNgClass(link)'><a href='{{ link.ref }}'>{{ link.name }}</a></li>
+            <li ng-repeat="link in links" ng-hide='isDisabled(link)' ng-class='getNgClass(link)'><a href='{{ link.ref }}'>{{ link.name }}</a></li>
          </ul>
          <oauth class="ng-isolate-scope" site='{{ site }}'
-            client-id="b48d7a3462f66a42718ce3c914a2519"
+            client-id="36fe99bb6c4158c041d6e6624f75460"
             redirect-uri='{{ redirectUri }}'
             scope="public"
             template="/libs/js/oseeAuth/views/default.html"

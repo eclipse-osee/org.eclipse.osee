@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+  	 <base href="/dispo/ui/index.html">
     <meta charset="UTF-8"></meta>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
     <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
@@ -10,8 +11,8 @@
     <title>Disposition</title>
     
     <link rel="stylesheet" href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css"></link>
-    <link rel="stylesheet" href="css/user.css"></link>
-    <link rel="stylesheet" href="css/admin.css"></link>
+    <link rel="stylesheet" href="/dispo/legacy/css/user.css"></link>
+    <link rel="stylesheet" href="/dispo/legacy/css/admin.css"></link>
     
   	 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -33,11 +34,9 @@
                 <a class="navbar-brand" href="#/user">Disposition</a>
             </div>
             <p ng-dblclick="resetUserName()" class="navbar-text">Signed in as {{ cachedName }}</p>
-            <div class="collapse navbar-collapse" ng-controller="HeaderController">
+            <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                 	  <button id="helpButton" class="btn btn-info" ng-click="showHelpModal()">Help</button>
-                    <li ng-class="{ active: isActive('/user')}"><a href="#/user">User</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -70,20 +69,21 @@
         </div>
 
     </script>
-    
-    <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
-    <script src="/ajax/libs/angularjs/1.2.28/angular-route.min.js"></script>
-    <script src="/ajax/libs/angularjs/1.2.28/angular-resource.min.js"></script>
-    <script src="/ajax/libs/angularjs/1.2.28/angular-cookies.js"></script>
-    <script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
-    <script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
-    <script src="js/resizer.js"></script>
-    <script src="js/dispoApp.js"></script>
-    <script src="js/userController.js"></script>
-    <script src="js/adminController.js"></script>
-    <script src="js/mainController.js"></script>
+      <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
+      <script src="/ajax/libs/angularjs/1.3.11/angular-cookies.js"></script>
+      <script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+      <script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+      <script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
+      <script src="/ajax/libs/ngStorage/0.3.0/ngStorage.min.js"></script>
+      <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
+      <script src="/dispo/legacy/js/resizer.js"></script>
+      <script src="/dispo/legacy/js/dispoApp.js"></script>
+      <script src="/dispo/legacy/js/userController.js"></script>
+      <script src="/dispo/legacy/js/adminController.js"></script>
+      <script src="/dispo/legacy/js/mainController.js"></script>
 </body>
 
 </html>

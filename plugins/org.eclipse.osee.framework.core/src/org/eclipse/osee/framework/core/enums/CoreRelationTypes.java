@@ -62,6 +62,11 @@ public final class CoreRelationTypes {
    public static final IRelationTypeSide Universal_Grouping__Group = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000156L, "Universal Grouping");
    public static final IRelationTypeSide Universal_Grouping__Members = Universal_Grouping__Group.getOpposite();
    
+   
+   public static final IRelationTypeSide User_Grouping__Group = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000163L, "User Grouping");
+   public static final IRelationTypeSide User_Grouping__Members = User_Grouping__Group.getOpposite();
+   
+   
    public static final IRelationTypeSide Users_Artifact = TokenFactory.createRelationTypeSide(SIDE_A, 0x2000000000000164L, "Artifact");
    public static final IRelationTypeSide Users_User = Users_Artifact.getOpposite();
    

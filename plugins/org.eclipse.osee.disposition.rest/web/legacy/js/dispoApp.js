@@ -9,13 +9,13 @@ app.config(['$routeProvider',
         $routeProvider.when('/', {
             redirectTo: "/user",
         }).when('/user', {
-            templateUrl: 'user.html',
+            templateUrl: '/dispo/legacy/user.html',
             controller: 'userController'
         }).when('/admin', {
-            templateUrl: 'admin.html',
+            templateUrl: '/dispo/legacy/admin.html',
             controller: 'adminController'
         }).when('/search', {
-            templateUrl: 'user.html',
+            templateUrl: '/dispo/legacy/user.html',
             controller: 'userController'
         }).otherwise({
             redirectTo: "/user"

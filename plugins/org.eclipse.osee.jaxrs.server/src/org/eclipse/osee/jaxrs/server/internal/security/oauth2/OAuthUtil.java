@@ -177,7 +177,12 @@ public final class OAuthUtil {
 
       Map<String, String> properties = new HashMap<String, String>();
       properties.put(SUBJECT_USERNAME, subject.getUserName());
-      properties.put(SUBJECT_DISPLAY_NAME, subject.getDisplayName());
+      String displayName = subject.getDisplayName();
+      if (displayName.contains(",")) {
+         String[] names = displayName.split(",");
+         displayName = String.format("%s %s", names[1].trim(), names[0].trim());
+      }
+      properties.put(SUBJECT_DISPLAY_NAME, displayName);
       properties.put(SUBJECT_EMAIL, subject.getEmailAddress());
       properties.put(SUBJECT_IS_ACTIVE, Boolean.toString(subject.isActive()));
       properties.put(SUBJECT_IS_AUTHENTICATED, Boolean.toString(subject.isAuthenticated()));

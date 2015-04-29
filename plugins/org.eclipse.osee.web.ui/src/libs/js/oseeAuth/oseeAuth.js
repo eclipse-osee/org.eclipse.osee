@@ -50,7 +50,22 @@ directives.directive('osee', [
 						};
 						return toReturn;
 					}
-
+					
+					scope.isDisabled = function(link) {
+						if(link.roles) {
+							for(var i =0; i < link.roles.length; i++) {
+								var role = link.roles[i];
+								if(role == 'all' || $.inArray(role, scope.profile.roles) > 0) {
+									return false;
+								}
+							}
+						} else {
+							return false;
+						}
+						
+						return true;
+					}
+					
 					scope.isActive = function(viewLocation) {
 						var toCompare = "/" + viewLocation.ref;
 						return toCompare === $location.path();
@@ -126,10 +141,10 @@ directives.directive('osee', [
 					}
 				});
 				// END
-
+				
 				scope.$on("oauth:authorized", function(event, token) {
 					Profile.find(scope.profileUri).success(function(response) {
-						scope.profile = response
+						scope.profile = response;
 					});
 					if($localStorage.continueTo) {
 						// Change the state to the continueTo we caught when User first tried to get into page
@@ -138,8 +153,8 @@ directives.directive('osee', [
 					}
 				})
 				scope.$on("oauth:logout", function() {
-					AccessToken.destroy();
 					scope.profile = scope.anonymousUser;
+					var fr = AccessToken.destroy();
 					$location.path("/");
 				})
 				scope.$on("oauth:denied", function(event, token) {

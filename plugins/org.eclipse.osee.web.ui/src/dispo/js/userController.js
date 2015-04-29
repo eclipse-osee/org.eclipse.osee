@@ -8,9 +8,8 @@ app.controller('userController', [
     'Item',
     'Annotation',
     'SetSearch',
-    'SourceFile',
-    'Config',
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, Config) {
+
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -46,7 +45,7 @@ app.controller('userController', [
     		$scope.isSearchView = true;
     		$scope.searchValue = window.opener.$windowScope.searchValue;
     		
-    		$scope.type = window.opener.$windowScope.type;
+    		$scope.dispoType = window.opener.$windowScope.dispoType;
     	} else {
             // Get programs from server
             Program.query(function(data) {
@@ -70,15 +69,6 @@ app.controller('userController', [
             }, function(data) {
             	loadingModal.close();
                 $scope.sets = data;
-            });
-            
-            // Try to get custom config
-            Config.get({
-                programId: $scope.programSelection,
-                type: $rootScope.type
-            }, function(data) {
-            	loadingModal.close();
-                $scope.coverageResolutionTypes = data.validResolutions;
             });
         };
         
@@ -139,21 +129,6 @@ app.controller('userController', [
         
         $scope.saveLastFocused = function saveLastFocused(element) {
             $scope.lastFocused = element;
-        }
-        
-        $scope.getSourceFlie = function () {
-        	var requst = [];
-        	requst.push(
-        	  "program/",
-        	  $scope.programSelection,
-        	  "/set/",
-        	  $scope.setSelection,
-        	  "/file/",
-        	  $scope.selectedItem.name
-        	  );
-        	var url = requst.join("");
-            
-            window.open(url);
         }
         
         $scope.toggleEditItems = function toggleEditItems() {
@@ -223,34 +198,34 @@ app.controller('userController', [
             field: 'name',
             displayName: 'Name',
             cellTemplate: origCellTmpl,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'status',
             displayName: 'Status',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'totalPoints',
             displayName: 'Total',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'failureCount',
             displayName: 'Failure Count',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'discrepanciesAsRanges',
             displayName: 'Failed Points',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'assignee',
             displayName: 'Assignee',
             enableCellEdit: false,
             cellTemplate: assigneeCellTmpl,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
             cellTemplate: cellEditNotes,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -262,45 +237,45 @@ app.controller('userController', [
             displayName: 'Last Ran',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
             sortFn: dateSorting
         }, {
             field: 'category',
             displayName: 'Category',
             enableCellEdit: true,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'machine',
             displayName: 'Station',
             enableCellEdit: true,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'elapsedTime',
             displayName: 'Elapsed Time',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         },{
             field: 'creationDate',
             displayName: 'Creation Date',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
             sortFn: dateSorting
         },{
             field: 'aborted',
             displayName: 'Aborted',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
             }, {
                 field: 'version',
                 displayName: 'Version',
                 enableCellEdit: false,
                 visible: false,
-                headerCellTemplate: 'templates/nameFilterTmpl.html'
+                headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }];
         
         $scope.wideColumns = [{
@@ -308,36 +283,36 @@ app.controller('userController', [
             displayName: 'Name',
             width: 350,
             cellTemplate: origCellTmpl,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'status',
             displayName: 'Status',
             width: 100,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'totalPoints',
             displayName: 'Total',
             width: 100,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'failureCount',
             displayName: 'Failure Count',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'discrepanciesAsRanges',
             displayName: 'Failed Points',
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'assignee',
             displayName: 'Assignee',
             enableCellEdit: false,
             cellTemplate: assigneeCellTmpl,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'itemNotes',
             displayName: 'Script Notes',
             cellTemplate: cellEditNotes,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         },{
             field: 'needsRerun',
             displayName: 'Rerun?',
@@ -350,45 +325,45 @@ app.controller('userController', [
             displayName: 'Last Ran',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
             sortFn: dateSorting
         }, {
             field: 'category',
             displayName: 'Category',
             enableCellEdit: true,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'machine',
             displayName: 'Station',
             enableCellEdit: true,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }, {
             field: 'elapsedTime',
             displayName: 'Elapsed Time',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         },{
             field: 'creationDate',
             displayName: 'Creation Date',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html',
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
             sortFn: dateSorting
         },{
             field: 'aborted',
             displayName: 'Aborted',
             enableCellEdit: false,
             visible: false,
-            headerCellTemplate: 'templates/nameFilterTmpl.html'
+            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         },  {
                 field: 'version',
                 displayName: 'Version',
                 enableCellEdit: false,
                 visible: false,
-                headerCellTemplate: 'templates/nameFilterTmpl.html'
+                headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
         }];
         
         if(window.innerWidth < 1000) {
@@ -513,7 +488,7 @@ app.controller('userController', [
         }
         
         $scope.getResolutionTypes = function getResolutionTypes() {
-        	if($scope.type == 'codeCoverage') {
+        	if($scope.dispoType == 'codeCoverage') {
         		return $scope.coverageResolutionTypes;
         	} else {
         		return $scope.testResolutionTypes;

@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -31,6 +32,7 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
@@ -60,6 +62,7 @@ public class DispoSetResource {
     * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
     */
    @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response postDispoSet(DispoSetDescriptorData descriptor) {
@@ -153,6 +156,7 @@ public class DispoSetResource {
     */
    @Path("{setId}")
    @PUT
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet) {
       Response.Status status;
@@ -176,6 +180,7 @@ public class DispoSetResource {
     * @response.representation.404.doc Not Found, Could not find any Disposition Sets
     */
    @Path("{setId}")
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @DELETE
    public Response deleteDispoSet(@PathParam("setId") String setId) {
       Response.Status status = Status.NOT_FOUND;

@@ -17,6 +17,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
@@ -85,7 +86,9 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
    @Override
    public void filter(ContainerRequestContext context) {
       boolean isSecurePath = isPathSecure(context);
-      if (isSecurePath) {
+      UriInfo uriInfo = context.getUriInfo();
+      String path = uriInfo.getAbsolutePath().getPath();
+      if (isSecurePath && (path.contains("dispo") || path.contains("oauth2")) || path.contains("accounts/self")) {
          if (isResourceOwnerRequest(context)) {
             handleResourceOwnerRequest(context);
          } else {

@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.resources;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
@@ -30,6 +31,7 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,6 +51,7 @@ public class DispoAdminResource {
 
    @Path("/report")
    @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
@@ -72,6 +75,7 @@ public class DispoAdminResource {
 
    @Path("/export")
    @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
@@ -94,6 +98,7 @@ public class DispoAdminResource {
 
    @Path("/copy")
    @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet, CopySetParams params) {

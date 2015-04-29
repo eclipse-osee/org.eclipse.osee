@@ -1,0 +1,30 @@
+#programSelect {
+	background-color: yellow;
+	width: 200px;
+}
+
+.createSetModal .modal-content {
+width: 500px;
+
+}
+
+button.btn.btn-default.btn-sm.setDelete.ng-scope {
+	width: 57px;
+}
+
+#importButton {
+	width:150px;
+}
+
+button.btn.btn-primary.ng-scope {
+	width: 70px;
+	height: 30px;
+}
+
+#reportRow {
+	margin-top: 100px;
+}
+
+#generateReportBtn {
+	margin-top:20px;
+}

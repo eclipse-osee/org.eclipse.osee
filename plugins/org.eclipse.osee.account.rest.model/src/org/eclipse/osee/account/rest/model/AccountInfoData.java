@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.model;
 
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
@@ -25,6 +26,7 @@ public class AccountInfoData implements Identity<String> {
    private String uuid;
    private long accountId;
    private boolean isActive;
+   private Set<String> roles;
 
    public String getName() {
       return name;
@@ -44,6 +46,10 @@ public class AccountInfoData implements Identity<String> {
 
    public String getEmail() {
       return email;
+   }
+
+   public Set<String> getRoles() {
+      return roles;
    }
 
    public void setEmail(String email) {
@@ -73,6 +79,10 @@ public class AccountInfoData implements Identity<String> {
 
    public void setGuid(String uuid) {
       this.uuid = uuid;
+   }
+
+   public void setRoles(Set<String> roles) {
+      this.roles = roles;
    }
 
    @Override
