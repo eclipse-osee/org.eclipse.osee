@@ -43,7 +43,9 @@
 		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
 		<module>../../plugins/org.eclipse.osee.orcs.test</module>
-
+		
+		<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
+		
 		<module>../../plugins/org.eclipse.osee.orcs.account.admin</module>
 		<module>../../plugins/org.eclipse.osee.orcs.account.admin.test</module>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
-   <implementation class="org.eclipse.osee.authorization.admin.internal.OseeAuthorizationProvider"/>
+   <implementation class="org.eclipse.osee.orcs.authorization.OseeAuthorizationProvider"/>
    <service>
       <provide interface="org.eclipse.osee.authorization.admin.AuthorizationProvider"/>
    </service>

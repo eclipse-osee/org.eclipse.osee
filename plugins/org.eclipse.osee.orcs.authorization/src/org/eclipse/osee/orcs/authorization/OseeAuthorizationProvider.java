@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.authorization.admin.internal;
+package org.eclipse.osee.orcs.authorization;
 
 import java.security.Principal;
 import java.util.Date;
@@ -74,8 +74,7 @@ public class OseeAuthorizationProvider implements AuthorizationProvider, Authori
       Set<String> roles = new HashSet<String>();
       ArtifactReadable oseeUser =
          getQuery().fromBranch(getAdminBranch()).andUuid(identifier).getResults().getExactlyOne();
-      ResultSet<ArtifactReadable> groups = oseeUser.getRelated(CoreRelationTypes.User_Grouping__Group);
-
+      ResultSet<ArtifactReadable> groups = oseeUser.getRelated(CoreRelationTypes.Universal_Grouping__Group);
       for (ArtifactReadable group : groups) {
          roles.add(group.getName());
       }
