@@ -520,6 +520,7 @@ public class WordTemplateProcessor {
             }
          }
       }
+      wordMl.setPageLayout(artifact, footer);
    }
 
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
