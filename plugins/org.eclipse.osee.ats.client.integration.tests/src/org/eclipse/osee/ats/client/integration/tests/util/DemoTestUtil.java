@@ -210,12 +210,12 @@ public class DemoTestUtil {
          Result result = isDbPopulatedWithDemoData();
          assertTrue(result.getText(), result.isTrue());
          // Confirm user is Joe Smith
-         assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
-            UserManager.getUserByUserId("Joe Smith") != null);
+         assertTrue("User \"3333\" does not exist in DB.  Run Demo DBInit prior to this test.",
+            UserManager.getUserByUserId("3333") != null);
          // Confirm user is Joe Smith
          assertTrue(
-            "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
-            AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("Joe Smith"));
+            "Authenticated user should be \"3333\" and is not.  Check that Demo Application Server is being run.",
+            AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");

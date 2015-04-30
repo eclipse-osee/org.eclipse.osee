@@ -50,8 +50,9 @@ public class PopulateDemoDatabaseTest {
          OseeClientSession session = ClientSessionManager.getSession();
          UserManager.releaseUser();
 
-         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
-         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(),
+         Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
+            session.getUserId());
+         Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
             UserManager.getUser().getUserId());
 
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);

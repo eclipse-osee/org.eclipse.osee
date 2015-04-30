@@ -77,7 +77,7 @@ public class StateResourceTest extends AbstractRestTest {
       postAndValidateResponse("User by id [Joe Wrong] does not exist", Status.BAD_REQUEST, form);
 
       form.asMap().remove("asUserId");
-      form.param("asUserId", "Joe Smith");
+      form.param("asUserId", "3333");
       postAndValidateResponse("Action by id [InvalidId] does not exist", Status.BAD_REQUEST, form);
 
       form.asMap().remove("operation");

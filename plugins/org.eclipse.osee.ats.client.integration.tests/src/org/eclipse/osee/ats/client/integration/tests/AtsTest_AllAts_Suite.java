@@ -50,8 +50,9 @@ public class AtsTest_AllAts_Suite {
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
 
       OseeClientSession session = ClientSessionManager.getSession();
-      assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
-      assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserId(), UserManager.getUser().getUserId());
+      assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(), session.getUserId());
+      assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
+         UserManager.getUser().getUserId());
 
       RenderingUtil.setPopupsAllowed(false);
    }

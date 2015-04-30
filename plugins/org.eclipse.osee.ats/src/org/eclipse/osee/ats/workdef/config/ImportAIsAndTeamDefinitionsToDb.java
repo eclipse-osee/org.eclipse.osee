@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -92,7 +93,12 @@ public class ImportAIsAndTeamDefinitionsToDb {
       for (UserDef dslUserDef : userDefs) {
          String dslUserName = Strings.unquote(dslUserDef.getName());
          Artifact userArt = null;
-         if (dslUserDef.getUserDefOption().contains("GetOrCreate")) {
+         try {
+            userArt = UserManager.getUserByName(dslUserName);
+         } catch (UserNotInDatabase ex) {
+            // do nothing
+         }
+         if (userArt == null && dslUserDef.getUserDefOption().contains("GetOrCreate")) {
             userArt = UserManager.createUser(getOseeUser(dslUserDef), null);
             changes.add(userArt);
          }

@@ -21,11 +21,12 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
 
    private final boolean autoAuthenticate = true;
    private final String DEMO_USER = "Joe Smith";
+   private final String DEMO_USER_ID = "3333";
 
    @Override
    public IUserToken asOseeUserId(OseeCredential credential) {
       IUserToken userToken = getUserTokenFromOseeDb(DEMO_USER);
-      return userToken != null ? userToken : createUserToken(true, DEMO_USER, DEMO_USER, "", true);
+      return userToken != null ? userToken : createUserToken(true, DEMO_USER, DEMO_USER_ID, "", true);
    }
 
    @Override

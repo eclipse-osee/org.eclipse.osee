@@ -166,7 +166,7 @@ public class ActionResourceTest extends AbstractRestTest {
       postAndValidateResponse("userId [asdf] is not valid", form);
 
       form.asMap().remove("userId");
-      form.param("userId", "Joe Smith");
+      form.param("userId", "3333");
       postAndValidateResponse("changeType is not valid", form);
 
       form.param("changeType", "invalid change type");

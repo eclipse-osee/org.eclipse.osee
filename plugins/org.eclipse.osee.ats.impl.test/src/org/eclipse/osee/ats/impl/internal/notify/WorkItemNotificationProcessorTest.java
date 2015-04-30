@@ -70,13 +70,13 @@ public class WorkItemNotificationProcessorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "Joe Smith", true,
+      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "3333", true,
          false);
-      setupUser(kay_ValidEmail, 5896672L, "Kay Jones", "kay@boeing.com", "Kay Jones", true, false);
-      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "Jason Michael",
+      setupUser(kay_ValidEmail, 5896672L, "Kay Jones", "kay@boeing.com", "4444", true, false);
+      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "5555",
          true, false);
-      setupUser(alex_NoValidEmail, 8006939L, "Alex Kay", "", "Alex Kay", true, false);
-      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "Inactive Steve",
+      setupUser(alex_NoValidEmail, 8006939L, "Alex Kay", "", "6666", true, false);
+      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "7777",
          false, false);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
