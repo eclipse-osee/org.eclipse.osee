@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -51,7 +50,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Methods in support of programatically transitioning the DefaultWorkFlow through it's states. Only to be used for the
@@ -362,7 +360,6 @@ public class TeamWorkFlowManager {
    }
 
    public static TeamWorkFlowArtifact getTeamWorkflowArt(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromId(teamWf.getGuid(), AtsUtilCore.getAtsBranch());
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(teamWf);
    }
-
 }

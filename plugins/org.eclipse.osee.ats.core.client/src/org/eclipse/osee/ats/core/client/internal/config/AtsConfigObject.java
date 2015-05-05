@@ -37,7 +37,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
    private final IAtsClient atsClient;
 
    public AtsConfigObject(IAtsClient atsClient, Artifact artifact) {
-      super(artifact.getName(), artifact.getGuid(), artifact.getArtId());
+      super(artifact.getName(), artifact.getArtId());
       this.atsClient = atsClient;
       this.artifact = artifact;
       setStoreObject(artifact);
@@ -126,7 +126,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return artifact.getArtId();
    }
 

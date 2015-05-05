@@ -25,17 +25,12 @@ public final class UnAssigned extends AbstractAtsUser {
    }
 
    @Override
-   public String getGuid() {
-      return "AAABDi1tMx8Al92YWMjeRw";
-   }
-
-   @Override
    public boolean isActive() {
       return true;
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return 33429;
    }
 

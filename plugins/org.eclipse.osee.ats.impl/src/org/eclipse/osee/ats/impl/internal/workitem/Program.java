@@ -33,16 +33,16 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    }
 
    @Override
-   public Long getUuid() {
-      return artifact.getLocalId().longValue();
+   public long getUuid() {
+      return artifact.getUuid();
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       if (teamDefinition == null) {
-         teamDefinition =
-            getAtsServer().getConfig().getSoleByGuid(
-               artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""), IAtsTeamDefinition.class);
+         String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
+         Long uuid = getAtsServer().getStoreService().getUuidFromGuid(teamDefGuid);
+         teamDefinition = getAtsServer().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
       }
       return teamDefinition;
    }

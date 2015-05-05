@@ -76,7 +76,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs != null ? teamDefs.size() : 0);
       if (teamDefs != null) {
          for (IAtsTeamDefinition teamDef : teamDefs) {
-            teamDefinitionGuids.add(teamDef.getGuid());
+            teamDefinitionGuids.add(AtsUtilCore.getGuid(teamDef));
          }
       }
       List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();

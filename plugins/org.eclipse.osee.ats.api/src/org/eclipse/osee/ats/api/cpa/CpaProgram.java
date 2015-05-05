@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
 /**
  * @author Donald G. Dunne
  */
-public class CpaProgram extends UuidNamedIdentityJaxRs<Long> {
+public class CpaProgram extends UuidNamedIdentityJaxRs {
 
    public CpaProgram() {
       super(null, null);

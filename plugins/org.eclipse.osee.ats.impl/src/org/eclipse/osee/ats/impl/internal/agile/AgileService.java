@@ -223,7 +223,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileBacklog getAgileBacklog(IAgileTeam team) {
-      ArtifactReadable teamFolder = AgileFolders.getTeamFolder(atsServer, team.getId());
+      ArtifactReadable teamFolder = AgileFolders.getTeamFolder(atsServer, team.getUuid());
       if (teamFolder == null) {
          return null;
       }

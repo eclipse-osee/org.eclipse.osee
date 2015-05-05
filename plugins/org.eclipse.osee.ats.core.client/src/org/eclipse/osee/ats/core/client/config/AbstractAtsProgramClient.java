@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.AbstractAtsProgram;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implements IAtsProgramClient {
@@ -60,9 +61,11 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       if (teamDefinition == null) {
-         teamDefinition =
-            AtsClientService.get().getConfig().getSoleByGuid(
-               artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ""), IAtsTeamDefinition.class);
+         String guid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
+         if (Strings.isValid(guid)) {
+            Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(guid);
+            teamDefinition = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
+         }
       }
       return teamDefinition;
    }
@@ -85,11 +88,6 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       this.artifact = artifact;
-   }
-
-   @Override
-   public String getGuid() {
-      return artifact.getGuid();
    }
 
    @Override

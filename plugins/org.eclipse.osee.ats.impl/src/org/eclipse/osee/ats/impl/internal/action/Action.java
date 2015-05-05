@@ -25,7 +25,7 @@ public class Action extends AtsObject implements IAtsAction {
    private final IAtsServer atsServer;
 
    public Action(IAtsServer atsServer, ArtifactReadable artRead) {
-      super(artRead.getGuid(), artRead.getName(), artRead.getLocalId());
+      super(artRead.getGuid(), artRead.getLocalId());
       this.atsServer = atsServer;
       setStoreObject(artRead);
    }
@@ -38,7 +38,8 @@ public class Action extends AtsObject implements IAtsAction {
    @Override
    public String getAtsId() {
       try {
-         return ((ArtifactReadable) getStoreObject()).getSoleAttributeAsString(AtsAttributeTypes.AtsId, getGuid());
+         return ((ArtifactReadable) getStoreObject()).getSoleAttributeAsString(AtsAttributeTypes.AtsId,
+            String.valueOf(getUuid()));
       } catch (OseeCoreException ex) {
          return null;
       }

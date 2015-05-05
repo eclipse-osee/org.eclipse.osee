@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G Dunne
@@ -63,9 +62,9 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
             if (verArts.size() > 1) {
                OseeLog.log(Activator.class, Level.SEVERE,
                   "Multiple targeted versions for artifact " + teamWf.toStringWithId());
-               version = cacheProvider.get().getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+               version = cacheProvider.get().getSoleByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
             } else {
-               version = cacheProvider.get().getSoleByGuid(verArts.iterator().next().getGuid(), IAtsVersion.class);
+               version = cacheProvider.get().getSoleByUuid(verArts.iterator().next().getUuid(), IAtsVersion.class);
             }
             versionCache.cache(teamWf, version);
          }
@@ -111,7 +110,7 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    }
 
    private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      Artifact versionArt = ArtifactQuery.checkArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
+      Artifact versionArt = atsClient.checkArtifactFromId(version.getUuid(), AtsUtilCore.getAtsBranch());
       if (versionArt != null) {
          TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
          if (teamArt != null) {
@@ -128,11 +127,11 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
 
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      Artifact verArt = ArtifactQuery.getArtifactFromId(version.getGuid(), AtsUtilCore.getAtsBranch());
+      Artifact verArt = atsClient.getArtifact(version);
       if (verArt == null) {
          throw new OseeStateException("Version [%s] does not exist.", version);
       }
-      Artifact teamDefArt = ArtifactQuery.getArtifactFromId(teamDef.getGuid(), AtsUtilCore.getAtsBranch());
+      Artifact teamDefArt = getArtifact(teamDef);
       if (teamDefArt == null) {
          throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
       }

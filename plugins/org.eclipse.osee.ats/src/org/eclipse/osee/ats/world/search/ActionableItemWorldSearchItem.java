@@ -96,7 +96,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       Set<IAtsActionableItem> items = getSearchActionableItems();
       List<String> actionItemGuids = new ArrayList<String>(items.size());
       for (IAtsActionableItem ai : items) {
-         actionItemGuids.add(ai.getGuid());
+         actionItemGuids.add(AtsUtilCore.getGuid(ai));
       }
       List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
 

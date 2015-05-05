@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,10 +51,9 @@ public class CoreAtsUsersTest {
    }
 
    @Test
-   public void testGetGuid() {
-      Assert.assertEquals("AAABDBYPet4AGJyrc9dY1w", AtsCoreUsers.SYSTEM_USER.getGuid());
-      Assert.assertEquals("AAABDi35uzwAxJLISLBZdA", AtsCoreUsers.GUEST_USER.getGuid());
-      Assert.assertEquals("AAABDi1tMx8Al92YWMjeRw", AtsCoreUsers.UNASSIGNED_USER.getGuid());
+   public void testGetUuid() {
+      Assert.assertEquals(11L, AtsCoreUsers.SYSTEM_USER.getUuid());
+      Assert.assertEquals(1896L, AtsCoreUsers.GUEST_USER.getUuid());
    }
 
    @Test
@@ -181,17 +180,12 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public String getGuid() {
-         return "ASE434dfgsdfgs";
-      }
-
-      @Override
       public void setStoreObject(Object object) {
          // do nothing
       }
 
       @Override
-      public long getId() {
+      public long getUuid() {
          return 999994;
       }
    };
@@ -206,11 +200,6 @@ public class CoreAtsUsersTest {
       @Override
       public String getName() {
          return "Exception User";
-      }
-
-      @Override
-      public String getGuid() {
-         return "ASE434dfgsdfgs";
       }
 
       @Override
@@ -234,13 +223,18 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public boolean matches(Identity<?>... identities) {
+      public boolean matches(UuidIdentity... identities) {
+         for (UuidIdentity identity : identities) {
+            if (equals(identity)) {
+               return true;
+            }
+         }
          return false;
       }
 
       @Override
       public String toStringWithId() {
-         return String.format("[%s][%s]", getName(), getGuid());
+         return String.format("[%s][%d]", getName(), getUuid());
       }
 
       @Override
@@ -254,7 +248,7 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public long getId() {
+      public long getUuid() {
          return 0;
       }
    };

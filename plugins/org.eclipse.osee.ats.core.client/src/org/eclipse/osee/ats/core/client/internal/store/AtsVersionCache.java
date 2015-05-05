@@ -31,7 +31,7 @@ public class AtsVersionCache {
    }
 
    public IAtsVersion getVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return configCacheProvider.get().getSoleByGuid(teamWf.getGuid(), IAtsVersion.class);
+      return configCacheProvider.get().getSoleByUuid(teamWf.getUuid(), IAtsVersion.class);
    }
 
    public boolean hasVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
@@ -40,12 +40,12 @@ public class AtsVersionCache {
    }
 
    public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
-      configCacheProvider.get().cacheSoleByTag(teamWf.getGuid(), version);
+      configCacheProvider.get().cacheById(teamWf.getUuid(), version);
       return version;
    }
 
    public void deCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      configCacheProvider.get().invalidateByTag(teamWf.getGuid());
+      configCacheProvider.get().invalidateByUuid(teamWf.getUuid());
    }
 
    public void invalidateCache() {

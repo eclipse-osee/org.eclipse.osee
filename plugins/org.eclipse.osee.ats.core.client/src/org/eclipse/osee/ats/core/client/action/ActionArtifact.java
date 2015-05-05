@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,8 +89,18 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return getArtId();
+   }
+
+   @Override
+   public boolean matches(UuidIdentity... identities) {
+      for (UuidIdentity identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

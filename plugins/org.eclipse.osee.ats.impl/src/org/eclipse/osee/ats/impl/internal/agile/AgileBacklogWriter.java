@@ -41,7 +41,7 @@ public class AgileBacklogWriter {
 
    public IAgileBacklog write() {
       AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreFactory().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
+         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       // Validate backlog exists
       IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getUuid());

@@ -44,13 +44,13 @@ public class AtsVersionCacheTest {
    public void setup() throws Exception {
       MockitoAnnotations.initMocks(this);
 
-      when(teamWf.getGuid()).thenReturn("abcdefghijkl");
+      when(teamWf.getUuid()).thenReturn(35L);
       when(teamWf.getAtsId()).thenReturn("ZAQWS");
       when(atsVersion.getName()).thenReturn("Test Version");
-      when(atsVersion.getGuid()).thenReturn("adsf");
+      when(atsVersion.getUuid()).thenReturn(99L);
 
       AtsArtifactConfigCache cache = new AtsArtifactConfigCache();
-      cache.cacheByTag(teamWf.getGuid(), atsVersion);
+      cache.cacheById(teamWf.getUuid(), atsVersion);
 
       when(cacheProvider.get()).thenReturn(cache);
 
@@ -65,8 +65,8 @@ public class AtsVersionCacheTest {
    @Test
    public void testCache() throws Exception {
       IAtsVersion testVersion = atsVersionCache.cache(teamWf, atsVersionCache.getVersion(teamWf));
-      String guid = testVersion.getGuid();
-      assertEquals("adsf", guid);
+      long uuid = testVersion.getUuid();
+      assertEquals(99L, uuid);
    }
 
    @Test

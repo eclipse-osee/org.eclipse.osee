@@ -173,14 +173,14 @@ public class ArtifactSelectWizardPage extends WizardPage {
          } else if (arg0 instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) arg0;
             if (showArtData) {
-               return String.format("%s - (%s  %s)", workItem.getName(), workItem.getAtsId(), workItem.getGuid());
+               return String.format("%s - (%s  %d)", workItem.getName(), workItem.getAtsId(), workItem.getUuid());
             } else {
                return workItem.getName();
             }
          } else if (arg0 instanceof IAtsObject) {
             IAtsObject art = (IAtsObject) arg0;
             if (showArtData) {
-               return String.format("%s - (%s)", art.getName(), art.getGuid());
+               return String.format("%s - (%d)", art.getName(), art.getUuid());
             } else {
                return art.getName();
             }

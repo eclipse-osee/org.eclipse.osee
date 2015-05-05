@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,7 +45,8 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
       String teamDefGuid =
          ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
-         teamDef = (IAtsTeamDefinition) config.getSoleByGuid(teamDefGuid);
+         Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(teamDefGuid);
+         teamDef = (IAtsTeamDefinition) config.getSoleByUuid(uuid);
       }
       return teamDef;
    }

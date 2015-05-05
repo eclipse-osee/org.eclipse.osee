@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -49,8 +50,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    private final IAtsLogFactory logFactory;
    private final IAtsNotifier notifier;
 
-   public AtsChangeSet(IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
+   private final IAtsServer atsServer;
+
+   public AtsChangeSet(IAtsServer atsServer, IAttributeResolver attributeResolver, OrcsApi orcsApi, IAtsStateFactory stateFactory, IAtsLogFactory logFactory, String comment, IAtsUser user, IAtsNotifier notifier) {
       super(comment, user);
+      this.atsServer = atsServer;
       this.attributeResolver = attributeResolver;
       this.orcsApi = orcsApi;
       this.stateFactory = stateFactory;
@@ -70,7 +74,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(user.getUuid()).getResults().getExactlyOne();
    }
 
    @Override

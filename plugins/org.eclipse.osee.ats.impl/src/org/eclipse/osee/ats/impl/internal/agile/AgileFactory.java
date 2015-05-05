@@ -157,7 +157,7 @@ public class AgileFactory {
    public static IAgileSprint createAgileSprint(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
       AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreFactory().createAtsChangeSet("Create new Agile Sprint",
+         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
             AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable sprintArt =
@@ -189,7 +189,7 @@ public class AgileFactory {
    public static IAgileBacklog createAgileBacklog(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
       AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreFactory().createAtsChangeSet("Create new Agile Backlog",
+         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
             AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable backlogArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);

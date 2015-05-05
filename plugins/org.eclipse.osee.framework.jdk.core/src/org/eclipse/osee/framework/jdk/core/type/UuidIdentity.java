@@ -14,10 +14,10 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Donald G. Dunne
  */
-public interface UuidIdentity<T> {
+public interface UuidIdentity {
 
-   T getUuid();
+   long getUuid();
 
-   boolean matches(UuidIdentity<?>... identities);
+   boolean matches(UuidIdentity... identities);
 
 }

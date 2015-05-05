@@ -40,7 +40,7 @@ public class AgileItemWriter {
 
    public JaxAgileItem write() {
       AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreFactory().createAtsChangeSet("Update new Agile Item",
+         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
             AtsCoreUsers.SYSTEM_USER);
 
       if (newItem.isSetFeatures()) {

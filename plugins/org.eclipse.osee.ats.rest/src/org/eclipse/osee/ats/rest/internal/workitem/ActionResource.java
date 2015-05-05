@@ -171,7 +171,7 @@ public final class ActionResource implements AtsActionEndpointApi {
       if (aiArt == null) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
       }
-      IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByGuid(aiArt.getGuid());
+      IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByUuid(aiArt.getUuid());
       aias.add(aia);
 
       // validate userId
@@ -189,7 +189,7 @@ public final class ActionResource implements AtsActionEndpointApi {
       if (!Strings.isValid(changeTypeStr)) {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
-      IAtsChangeSet changes = atsServer.getStoreFactory().createAtsChangeSet("Create Action - Server", atsUser);
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
       orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(),
          ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
 

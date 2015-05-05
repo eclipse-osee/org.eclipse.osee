@@ -78,11 +78,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       // add new children that are not part of curr children
       for (String newGuid : newGuids) {
          if (!currGuids.contains(newGuid)) {
-            Artifact newArt = null;
-            IAtsActionableItem newAi = cache.getSoleByGuid(newGuid, IAtsActionableItem.class);
-            if (newAi != null) {
-               newArt = cache.getSoleArtifact(newAi);
-            }
+            Artifact newArt = AtsClientService.get().getArtifactByGuid(newGuid);
             // if not persisted yet, it should be in artifact cache
             if (newArt == null) {
                newArt = ArtifactCache.getActive(newGuid, AtsUtilCore.getAtsBranch());
@@ -101,11 +97,11 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       }
 
       // set parent artifact to top team def
-      if (ai.getParentActionableItem() == null && !ai.getGuid().equals(
-         ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()).getGuid())) {
+      if (ai.getParentActionableItem() == null && ai.getUuid() != ActionableItems.getTopActionableItem(
+         AtsClientService.get().getConfig()).getUuid()) {
          // if parent is null, add to top team definition
          Artifact topAIArt =
-            cache.getSoleArtifact(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
+            cache.getArtifact(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
          topAIArt.addChild(artifact);
          changes.add(topAIArt);
       } else {
@@ -113,8 +109,8 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
          Artifact parentAiArt = artifact.getParent();
          if (parentAiArt != null) {
             if (parentAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-               if (!parentAiArt.getGuid().equals(ai.getParentActionableItem().getGuid())) {
-                  Artifact newParentAIArt = cache.getSoleArtifact(ai);
+               if (parentAiArt.getUuid() != ai.getParentActionableItem().getUuid()) {
+                  Artifact newParentAIArt = cache.getArtifact(ai);
                   newParentAIArt.addChild(artifact);
                   changes.add(newParentAIArt);
                   changes.add(parentAiArt);

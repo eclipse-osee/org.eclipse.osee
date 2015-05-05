@@ -94,7 +94,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
             return true;
          }
       }
-      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) {
+      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemUuids().size() > 0) {
          return true;
       }
       return false;
@@ -155,7 +155,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {
-      if (reviewArt.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
+      if (reviewArt.getActionableItemsDam().getActionableItemUuids().isEmpty()) {
          return;
       }
       actionableItemsLabel = editor.getToolkit().createLabel(this, "");

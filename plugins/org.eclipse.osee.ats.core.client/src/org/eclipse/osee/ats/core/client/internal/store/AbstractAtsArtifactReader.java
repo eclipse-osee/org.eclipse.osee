@@ -41,10 +41,9 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
 
    protected IAtsActionableItem getOrCreateActionableItem(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
-      String guid = artifact.getGuid();
-      IAtsActionableItem item = cache.getSoleByGuid(guid, IAtsActionableItem.class);
+      IAtsActionableItem item = cache.getSoleByUuid(artifact.getUuid(), IAtsActionableItem.class);
       if (item == null) {
-         item = actionableItemFactory.createActionableItem(guid, artifact.getName(), artifact.getArtId());
+         item = actionableItemFactory.createActionableItem(artifact.getGuid(), artifact.getName(), artifact.getUuid());
          item.setStoreObject(artifact);
          cache.cache(item);
       }
@@ -53,10 +52,9 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
 
    protected IAtsTeamDefinition getOrCreateTeamDefinition(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
-      String guid = artifact.getGuid();
-      IAtsTeamDefinition item = cache.getSoleByGuid(guid, IAtsTeamDefinition.class);
+      IAtsTeamDefinition item = cache.getSoleByUuid(artifact.getUuid(), IAtsTeamDefinition.class);
       if (item == null) {
-         item = teamDefFactory.createTeamDefinition(guid, artifact.getName(), artifact.getArtId());
+         item = teamDefFactory.createTeamDefinition(artifact.getGuid(), artifact.getName(), artifact.getUuid());
          item.setStoreObject(artifact);
          cache.cache(item);
       }
@@ -65,10 +63,9 @@ public abstract class AbstractAtsArtifactReader<T extends IAtsConfigObject> impl
 
    protected IAtsVersion getOrCreateVersion(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
-      String guid = artifact.getGuid();
-      IAtsVersion item = cache.getSoleByGuid(guid, IAtsVersion.class);
+      IAtsVersion item = cache.getSoleByUuid(artifact.getUuid(), IAtsVersion.class);
       if (item == null) {
-         item = versionFactory.createVersion(artifact.getName(), guid, artifact.getArtId());
+         item = versionFactory.createVersion(artifact.getName(), artifact.getGuid(), artifact.getUuid());
          item.setStoreObject(artifact);
          cache.cache(item);
       }

@@ -36,14 +36,6 @@ public class ActionableItems {
       return names;
    }
 
-   public static List<String> toGuids(Collection<? extends IAtsActionableItem> ais) {
-      List<String> guids = new ArrayList<String>(ais.size());
-      for (IAtsActionableItem ai : ais) {
-         guids.add(ai.getGuid());
-      }
-      return guids;
-   }
-
    /**
     * Recurses default hierarchy and collections children of parentAI that are of type class
     */
@@ -108,11 +100,11 @@ public class ActionableItems {
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
-      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getGuid() + ").\n\nChoose another item.";
+      return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getUuid() + ").\n\nChoose another item.";
    }
 
    public static IAtsActionableItem getTopActionableItem(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByGuid(AtsArtifactToken.TopActionableItem.getGuid(), IAtsActionableItem.class);
+      return config.getSoleByUuid(AtsArtifactToken.TopActionableItem.getUuid(), IAtsActionableItem.class);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsConfig config) throws OseeCoreException {

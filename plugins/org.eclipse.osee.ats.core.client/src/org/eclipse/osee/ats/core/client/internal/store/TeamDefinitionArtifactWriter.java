@@ -100,11 +100,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
       // add new children that are not part of curr children
       for (String newGuid : newGuids) {
          if (!currGuids.contains(newGuid)) {
-            Artifact newArt = null;
-            IAtsTeamDefinition newTeamDef = cache.getSoleByGuid(newGuid, IAtsTeamDefinition.class);
-            if (newTeamDef != null) {
-               newArt = cache.getSoleArtifact(newTeamDef);
-            }
+            Artifact newArt = AtsClientService.get().getArtifactByGuid(newGuid);
             // if not persisted yet, it should be in artifact cache
             if (newArt == null) {
                newArt = ArtifactCache.getActive(newGuid, AtsUtilCore.getAtsBranch());
@@ -129,11 +125,10 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
       }
 
       // set parent artifact to top team def
-      if (teamDef.getParentTeamDef() == null && !teamDef.getGuid().equals(
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getGuid())) {
+      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig());
+      if (teamDef.getParentTeamDef() == null && teamDef.getUuid() != topTeamDefinition.getUuid()) {
          // if parent is null, add to top team definition
-         Artifact topTeamDefArt =
-            cache.getSoleArtifact(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()));
+         Artifact topTeamDefArt = cache.getArtifact(topTeamDefinition);
          topTeamDefArt.addChild(artifact);
          changes.add(topTeamDefArt);
       } else {
@@ -141,8 +136,8 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
          Artifact parentTeamDefArt = artifact.getParent();
          if (parentTeamDefArt != null) {
             if (parentTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               if (!parentTeamDefArt.getGuid().equals(teamDef.getParentTeamDef().getGuid())) {
-                  Artifact newParentTeamDefArt = cache.getSoleArtifact(teamDef);
+               if (parentTeamDefArt.getUuid() != teamDef.getParentTeamDef().getUuid()) {
+                  Artifact newParentTeamDefArt = cache.getArtifact(teamDef);
                   newParentTeamDefArt.addChild(artifact);
                   changes.add(newParentTeamDefArt);
                   changes.add(parentTeamDefArt);

@@ -35,14 +35,6 @@ public class TeamDefinitions {
       return names;
    }
 
-   public static List<String> toGuids(Collection<? extends IAtsTeamDefinition> teamDefs) {
-      List<String> guids = new ArrayList<String>(teamDefs.size());
-      for (IAtsTeamDefinition teamDef : teamDefs) {
-         guids.add(teamDef.getGuid());
-      }
-      return guids;
-   }
-
    public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
       IAtsTeamDefinition topTeamDef = getTopTeamDefinition(config);
       if (topTeamDef == null) {
@@ -93,7 +85,7 @@ public class TeamDefinitions {
    }
 
    public static IAtsTeamDefinition getTopTeamDefinition(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByGuid(AtsArtifactToken.TopTeamDefinition.getGuid(), IAtsTeamDefinition.class);
+      return config.getSoleByUuid(AtsArtifactToken.TopTeamDefinition.getUuid(), IAtsTeamDefinition.class);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsConfig config) throws OseeCoreException {

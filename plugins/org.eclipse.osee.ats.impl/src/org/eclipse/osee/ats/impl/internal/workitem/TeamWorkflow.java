@@ -35,23 +35,30 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
-         IAtsActionableItem ai = getAtsServer().getConfig().getSoleByGuid(aiGuid, IAtsActionableItem.class);
-         if (ai == null) {
-            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
-            ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+         Long uuid = getAtsServer().getStoreService().getUuidFromGuid(aiGuid);
+         if (uuid != null) {
+            IAtsActionableItem ai = getAtsServer().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
+            if (ai == null) {
+               ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
+               ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+            }
+            ais.add(ai);
          }
-         ais.add(ai);
       }
       return ais;
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
+      IAtsTeamDefinition teamDef = null;
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
-      IAtsTeamDefinition teamDef = getAtsServer().getConfig().getSoleByGuid(teamDefGuid, IAtsTeamDefinition.class);
-      if (teamDef == null) {
-         ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
-         teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
+      Long uuid = getAtsServer().getStoreService().getUuidFromGuid(teamDefGuid);
+      if (uuid != null) {
+         teamDef = getAtsServer().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
+         if (teamDef == null) {
+            ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
+            teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);
+         }
       }
       return teamDef;
    }

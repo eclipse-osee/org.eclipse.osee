@@ -61,7 +61,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
             results =
-               AtsClientService.get().getConfig().getSoleByGuid(team.getTeamDefToken().getGuid(),
+               AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
                   IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

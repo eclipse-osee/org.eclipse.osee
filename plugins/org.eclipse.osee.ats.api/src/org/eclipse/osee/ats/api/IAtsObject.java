@@ -11,19 +11,18 @@
 package org.eclipse.osee.ats.api;
 
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsObject extends Identifiable<String>, HasDescription {
+public interface IAtsObject extends Named, UuidIdentity, HasDescription {
 
    String toStringWithId();
 
    Object getStoreObject();
 
    void setStoreObject(Object object);
-
-   long getId();
 
 }

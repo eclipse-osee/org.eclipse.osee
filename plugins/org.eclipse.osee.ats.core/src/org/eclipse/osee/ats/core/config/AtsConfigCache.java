@@ -34,8 +34,7 @@ public class AtsConfigCache implements IAtsConfig {
 
    public void cache(IAtsConfigObject configObject) {
       configObjects.add(configObject);
-      cacheByTag(configObject.getGuid(), configObject);
-      cacheById(configObject.getId(), configObject);
+      cacheById(configObject.getUuid(), configObject);
    }
 
    public void cacheByTag(String tag, IAtsConfigObject configObject) {
@@ -44,6 +43,10 @@ public class AtsConfigCache implements IAtsConfig {
 
    public void cacheById(long id, IAtsConfigObject configObject) {
       idToConfigObject.put(id, configObject);
+   }
+
+   public void invalidateByUuid(long uuid) {
+      idToConfigObject.removeValues(uuid);
    }
 
    /**
@@ -111,20 +114,6 @@ public class AtsConfigCache implements IAtsConfig {
          }
       }
       return objs;
-   }
-
-   @Override
-   public final <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) {
-      List<A> list = getByTag(guid, clazz);
-      if (list.isEmpty()) {
-         return null;
-      }
-      return list.iterator().next();
-   }
-
-   @Override
-   public final IAtsConfigObject getSoleByGuid(String guid) {
-      return getSoleByGuid(guid, IAtsConfigObject.class);
    }
 
    @Override

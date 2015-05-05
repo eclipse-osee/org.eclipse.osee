@@ -15,14 +15,14 @@ package org.eclipse.osee.framework.jdk.core.type;
  * 
  * @author Donald G. Dunne
  */
-public class UuidNamedIdentityJaxRs<T> extends UuidBaseIdentityJaxRs<T> implements UuidIdentifiable<T>, Comparable<Named> {
+public class UuidNamedIdentityJaxRs extends UuidBaseIdentityJaxRs implements UuidIdentifiable, Comparable<Named> {
    private String name;
 
    public UuidNamedIdentityJaxRs() {
       this(null, null);
    }
 
-   public UuidNamedIdentityJaxRs(T uid, String name) {
+   public UuidNamedIdentityJaxRs(Long uid, String name) {
       super(uid);
       this.name = name;
    }

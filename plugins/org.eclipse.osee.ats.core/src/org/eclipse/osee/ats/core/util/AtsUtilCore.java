@@ -12,9 +12,12 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -36,6 +39,8 @@ public class AtsUtilCore {
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
    private volatile static String atsConfigName;
+   private static Map<Long, String> uuidToGuidMap = new HashMap<Long, String>(50);
+   private static Map<String, Long> guidToUuidMap = new HashMap<String, Long>(50);
 
    public static String getAtsConfigName() {
       getAtsBranch();
@@ -84,7 +89,7 @@ public class AtsUtilCore {
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<String>(atsObjects.size());
       for (IAtsObject atsObj : atsObjects) {
-         guids.add(atsObj.getGuid());
+         guids.add(AtsUtilCore.getGuid(atsObj));
       }
       return guids;
    }
@@ -117,5 +122,27 @@ public class AtsUtilCore {
    public static String toStringWithId(Identifiable<String> obj) {
       Conditions.checkNotNull(obj, "object");
       return String.format("[%s][%s]", obj.getGuid(), obj.getName());
+   }
+
+   public static String toStringWithId(IAtsObject obj) {
+      Conditions.checkNotNull(obj, "object");
+      return String.format("[%s][%s]", obj.getUuid(), obj.getName());
+   }
+
+   public static String getGuid(IAtsObject atsObject) {
+      String guid = uuidToGuidMap.get(atsObject.getUuid());
+      if (!Strings.isValid(guid) && atsObject.getStoreObject() instanceof ArtifactId) {
+         guid = ((ArtifactId) atsObject.getStoreObject()).getGuid();
+      }
+      return guid;
+   }
+
+   public static void putUuidToGuid(String guid, IAtsObject atsObject) {
+      uuidToGuidMap.put(atsObject.getUuid(), guid);
+      guidToUuidMap.put(guid, atsObject.getUuid());
+   }
+
+   public static Long getUuidFromGuid(String guid) {
+      return guidToUuidMap.get(guid);
    }
 }

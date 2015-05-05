@@ -27,9 +27,9 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsArtifactConfigCache implements IAtsConfig {
 
-   private final OrcsApi orcsApi;
    private final AtsConfigCache cache;
    private final IAtsConfigItemFactory configItemFactory;
+   private final OrcsApi orcsApi;
 
    public AtsArtifactConfigCache(IAtsConfigItemFactory configItemFactory, OrcsApi orcsApi) {
       this.configItemFactory = configItemFactory;
@@ -52,39 +52,6 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       return cache.get(clazz);
    }
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) throws OseeCoreException {
-      A result = cache.getSoleByGuid(guid, clazz);
-      if (result == null) {
-         ArtifactReadable artifact =
-            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
-         if (artifact != null) {
-            result = (A) configItemFactory.getConfigObject(artifact);
-            if (result != null) {
-               cache.cache(result);
-            }
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public IAtsConfigObject getSoleByGuid(String guid) throws OseeCoreException {
-      IAtsConfigObject result = cache.getSoleByGuid(guid);
-      if (result == null) {
-         ArtifactReadable artifact =
-            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(guid).getResults().getOneOrNull();
-         if (artifact != null) {
-            result = configItemFactory.getConfigObject(artifact);
-            if (result != null) {
-               cache.cache(result);
-            }
-         }
-      }
-      return result;
-   }
-
    @Override
    public void getReport(XResultData rd) throws OseeCoreException {
       throw new OseeStateException("Not Implemented");
@@ -100,14 +67,37 @@ public class AtsArtifactConfigCache implements IAtsConfig {
       return cache.getById(id, clazz);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
-      return cache.getSoleByUuid(uuid, clazz);
+      A result = cache.getSoleByUuid(uuid, clazz);
+      if (result == null) {
+         ArtifactReadable artifact =
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(uuid).getResults().getOneOrNull();
+         if (artifact != null) {
+            result = (A) configItemFactory.getConfigObject(artifact);
+            if (result != null) {
+               cache.cache(result);
+            }
+         }
+      }
+      return result;
    }
 
    @Override
    public IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException {
-      return cache.getSoleByUuid(uuid);
+      IAtsConfigObject result = cache.getSoleByUuid(uuid);
+      if (result == null) {
+         ArtifactReadable artifact =
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(uuid).getResults().getOneOrNull();
+         if (artifact != null) {
+            result = configItemFactory.getConfigObject(artifact);
+            if (result != null) {
+               cache.cache(result);
+            }
+         }
+      }
+      return result;
    }
 
 }

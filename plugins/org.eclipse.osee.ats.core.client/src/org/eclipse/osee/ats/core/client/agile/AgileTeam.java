@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.config.AtsConfigObject;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -42,7 +41,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       }
       return uuids;
    }
-   
+
    @Override
    public String getDescription() {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
@@ -59,6 +58,11 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
          // do nothing
       }
       return backlogUuid;
+   }
+
+   @Override
+   public String getGuid() {
+      return artifact.getGuid();
    }
 
 }

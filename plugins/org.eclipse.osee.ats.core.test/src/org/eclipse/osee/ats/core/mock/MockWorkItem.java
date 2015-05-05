@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
  * @author Donald G. Dunne
@@ -61,11 +61,6 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public String getGuid() {
-      return atsId;
-   }
-
-   @Override
    public String getDescription() {
       return name;
    }
@@ -94,8 +89,8 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
+   public boolean matches(UuidIdentity... identities) {
+      for (UuidIdentity identity : identities) {
          if (equals(identity)) {
             return true;
          }
@@ -230,7 +225,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return 456;
    }
 

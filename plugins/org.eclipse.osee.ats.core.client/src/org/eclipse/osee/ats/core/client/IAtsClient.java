@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
@@ -52,6 +53,7 @@ import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -156,5 +158,9 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
+
+   Artifact checkArtifactFromId(long uuid, IOseeBranch atsBranch);
+
+   IAtsStoreService getStoreService();
 
 }

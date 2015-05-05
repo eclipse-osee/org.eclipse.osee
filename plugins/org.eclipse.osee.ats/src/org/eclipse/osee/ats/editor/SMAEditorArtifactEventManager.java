@@ -212,7 +212,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
                   for (EventBasicGuidRelation relation : artifactEvent.getRelations()) {
                      // If relation is parallel config and guid is one of parallel configured versions
                      if (relation.is(AtsRelationTypes.ParallelVersion_Child) && (relation.getArtA().getGuid().equals(
-                        version.getGuid()) || relation.getArtB().getGuid().equals(version.getGuid()))) {
+                        AtsUtilCore.getGuid(version)) || relation.getArtB().getGuid().equals(
+                        AtsUtilCore.getGuid(version)))) {
                         changed = true;
                         break;
                      }

@@ -28,8 +28,8 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    }
 
    @Override
-   public Long getUuid() {
-      return getId();
+   public long getUuid() {
+      return getUuid();
    }
 
    @Override
@@ -37,7 +37,8 @@ public class Program extends AtsConfigObject implements IAtsProgram {
       IAtsTeamDefinition teamDef = null;
       String teamDefGuid = getAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
-         teamDef = getAtsClient().getConfig().getSoleByGuid(teamDefGuid, IAtsTeamDefinition.class);
+         Long uuid = getAtsClient().getStoreService().getUuidFromGuid(teamDefGuid);
+         teamDef = getAtsClient().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
       }
       return teamDef;
    }

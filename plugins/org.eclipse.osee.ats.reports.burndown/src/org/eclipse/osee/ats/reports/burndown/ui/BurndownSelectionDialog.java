@@ -159,7 +159,7 @@ public class BurndownSelectionDialog extends SelectionDialog {
          try {
             for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version =
-                  AtsClientService.get().getConfig().getSoleByGuid(versionArtifact.getGuid(), IAtsVersion.class);
+                  AtsClientService.get().getConfig().getSoleByUuid(versionArtifact.getUuid(), IAtsVersion.class);
                Artifact verArt = AtsClientService.get().getConfigArtifact(version);
                objs.add(verArt);
             }

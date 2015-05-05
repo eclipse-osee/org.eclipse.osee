@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,8 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsProgramService implements IAtsProgramService {
 
    private final IAtsConfig config;
+   private final IAtsClient atsClient;
 
-   public AtsProgramService(IAtsConfig config) {
+   public AtsProgramService(IAtsClient atsClient, IAtsConfig config) {
+      this.atsClient = atsClient;
       this.config = config;
    }
 
@@ -37,7 +40,10 @@ public class AtsProgramService implements IAtsProgramService {
          Artifact artifact = (Artifact) atsProgram.getStoreObject();
          String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, null);
          if (Strings.isValid(teamDefGuid)) {
-            teamDef = (IAtsTeamDefinition) config.getSoleByGuid(teamDefGuid);
+            Long uuid = atsClient.getStoreService().getUuidFromGuid(teamDefGuid);
+            if (uuid != null) {
+               teamDef = (IAtsTeamDefinition) config.getSoleByUuid(uuid);
+            }
          }
       }
       return teamDef;

@@ -29,4 +29,9 @@ public class AgileItem extends WorkItem implements IAgileItem {
       return 0;
    }
 
+   @Override
+   public String getGuid() {
+      return artifact.getGuid();
+   }
+
 }

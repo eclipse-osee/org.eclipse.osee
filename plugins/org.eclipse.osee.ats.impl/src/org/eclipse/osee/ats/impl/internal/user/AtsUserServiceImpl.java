@@ -120,7 +120,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(user.getGuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(user.getUuid()).getResults().getExactlyOne();
    }
 
    @Override

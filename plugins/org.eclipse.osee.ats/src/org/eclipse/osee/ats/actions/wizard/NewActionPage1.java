@@ -181,9 +181,9 @@ public class NewActionPage1 extends WizardPage {
       try {
          ((XText) getXWidget("Title")).set("tt");
          if (atsAi == null) {
-            atsAi =
-               AtsClientService.get().getConfig().getSoleByGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos,
-                  IAtsActionableItem.class);
+            Long uuid =
+               AtsClientService.get().getStoreService().getUuidFromGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos);
+            atsAi = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
                treeViewer.setInitalChecked(Arrays.asList(atsAi));

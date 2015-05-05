@@ -46,7 +46,8 @@ public class ActionableItemManager {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       if (!atsStoreService.isDeleted(atsObject)) {
          for (String guid : getActionableItemGuids(atsObject)) {
-            IAtsActionableItem aia = atsConfig.getSoleByGuid(guid, IAtsActionableItem.class);
+            long uuid = atsStoreService.getUuidFromGuid(guid);
+            IAtsActionableItem aia = atsConfig.getSoleByUuid(uuid, IAtsActionableItem.class);
             if (aia == null) {
                OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
@@ -68,13 +69,15 @@ public class ActionableItemManager {
    }
 
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
-      if (!getActionableItemGuids(atsObject).contains(aia.getGuid())) {
-         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItem, aia.getGuid());
+      String guid = AtsUtilCore.getGuid(aia);
+      if (!getActionableItemGuids(atsObject).contains(guid)) {
+         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItem, guid);
       }
    }
 
    public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
-      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItem, aia.getGuid());
+      String guid = AtsUtilCore.getGuid(aia);
+      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItem, guid);
    }
 
    public Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) throws OseeCoreException {

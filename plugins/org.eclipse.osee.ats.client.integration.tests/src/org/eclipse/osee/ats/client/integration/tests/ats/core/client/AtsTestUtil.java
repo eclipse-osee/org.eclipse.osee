@@ -307,68 +307,88 @@ public class AtsTestUtil {
 
       AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
 
+      String guid = GUID.create();
       testAi =
-         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI", postFixName),
+         AtsClientService.get().createActionableItem(guid, getTitle("AI", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       testAi.setActive(true);
       testAi.setActionable(true);
+      AtsUtilCore.putUuidToGuid(guid, testAi);
 
+      guid = GUID.create();
       testAi2 =
-         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI2", postFixName),
+         AtsClientService.get().createActionableItem(guid, getTitle("AI2", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       testAi2.setActive(true);
       testAi2.setActionable(true);
+      AtsUtilCore.putUuidToGuid(guid, testAi2);
 
+      guid = GUID.create();
       testAi3 =
-         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI3", postFixName),
+         AtsClientService.get().createActionableItem(guid, getTitle("AI3", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       testAi3.setActive(true);
       testAi3.setActionable(true);
+      AtsUtilCore.putUuidToGuid(guid, testAi3);
 
+      guid = GUID.create();
       testAi4 =
-         AtsClientService.get().createActionableItem(GUID.create(), getTitle("AI4", postFixName),
+         AtsClientService.get().createActionableItem(guid, getTitle("AI4", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       testAi4.setActive(true);
       testAi4.setActionable(true);
+      AtsUtilCore.putUuidToGuid(guid, testAi4);
 
+      guid = GUID.create();
       teamDef =
-         AtsClientService.get().createTeamDefinition(GUID.create(), getTitle("Team Def", postFixName),
+         AtsClientService.get().createTeamDefinition(guid, getTitle("Team Def", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
+      AtsUtilCore.putUuidToGuid(guid, teamDef);
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
       testAi3.setTeamDefinition(teamDef);
       testAi4.setTeamDefinition(teamDef);
 
+      guid = GUID.create();
       verArt1 =
-         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 1.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 1.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt1);
+      AtsUtilCore.putUuidToGuid(guid, verArt1);
 
+      guid = GUID.create();
       verArt2 =
-         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 2.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 2.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt2);
+      AtsUtilCore.putUuidToGuid(guid, verArt2);
 
+      guid = GUID.create();
       verArt3 =
-         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 3.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 3.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt3);
+      AtsUtilCore.putUuidToGuid(guid, verArt3);
 
+      guid = GUID.create();
       verArt4 =
-         AtsClientService.get().getVersionService().createVersion(GUID.create(), getTitle("ver 4.0", postFixName),
+         AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 4.0", postFixName),
             AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt4);
+      AtsUtilCore.putUuidToGuid(guid, verArt4);
 
       actionArt =
          ActionManager.createAction(null, getTitle("Team WF", postFixName), "description", ChangeType.Improvement, "1",
             false, null, Arrays.asList(testAi), new Date(), AtsClientService.get().getUserService().getCurrentUser(),
             null, changes);
+      AtsUtilCore.putUuidToGuid(actionArt.getGuid(), actionArt);
 
       teamArt = actionArt.getFirstTeam();
+      AtsUtilCore.putUuidToGuid(actionArt.getGuid(), teamArt);
 
       changes.execute();
    }
@@ -380,6 +400,7 @@ public class AtsTestUtil {
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
                AtsClientService.get().getUserService().getCurrentUser(), changes);
          taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
+         AtsUtilCore.putUuidToGuid(taskArtWf1.getGuid(), taskArtWf1);
       }
       return taskArtWf1;
    }
@@ -391,6 +412,7 @@ public class AtsTestUtil {
             teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
                AtsClientService.get().getUserService().getCurrentUser(), changes);
          taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
+         AtsUtilCore.putUuidToGuid(taskArtWf2.getGuid(), taskArtWf2);
       }
       return taskArtWf2;
    }
@@ -407,6 +429,7 @@ public class AtsTestUtil {
                AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(),
                "Decision Review", options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
                new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+         AtsUtilCore.putUuidToGuid(decRevArt.getGuid(), decRevArt);
       }
       return decRevArt;
    }
@@ -643,6 +666,8 @@ public class AtsTestUtil {
                AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt2 = actionArt2.getFirstTeam();
          changes.execute();
+         AtsUtilCore.putUuidToGuid(actionArt2.getGuid(), actionArt2);
+         AtsUtilCore.putUuidToGuid(teamArt2.getGuid(), teamArt2);
       }
       return teamArt2;
    }
@@ -662,6 +687,8 @@ public class AtsTestUtil {
                AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt3 = actionArt3.getFirstTeam();
          changes.execute();
+         AtsUtilCore.putUuidToGuid(actionArt3.getGuid(), actionArt3);
+         AtsUtilCore.putUuidToGuid(teamArt3.getGuid(), teamArt3);
       }
       return teamArt3;
    }
@@ -683,6 +710,8 @@ public class AtsTestUtil {
          teamArt4 = actionArt4.getFirstTeam();
          AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4);
          changes.execute();
+         AtsUtilCore.putUuidToGuid(actionArt4.getGuid(), actionArt4);
+         AtsUtilCore.putUuidToGuid(teamArt4.getGuid(), teamArt4);
       }
       return teamArt4;
    }

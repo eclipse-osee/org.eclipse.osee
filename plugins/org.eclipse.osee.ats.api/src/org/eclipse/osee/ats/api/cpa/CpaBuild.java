@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
 /**
  * @author Donald G. Dunne
  */
-public class CpaBuild extends UuidNamedIdentityJaxRs<Long> {
+public class CpaBuild extends UuidNamedIdentityJaxRs {
 
    public CpaBuild(Long uuid, String name) {
       super(uuid, name);

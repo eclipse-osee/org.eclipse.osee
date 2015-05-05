@@ -180,7 +180,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
 
    public boolean isStandAloneReview() throws OseeCoreException {
       if (standAlone == null) {
-         standAlone = getActionableItemsDam().getActionableItemGuids().size() > 0;
+         standAlone = getActionableItemsDam().getActionableItemUuids().size() > 0;
       }
       return standAlone;
    }

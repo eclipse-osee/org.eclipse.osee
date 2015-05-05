@@ -37,7 +37,7 @@ public class AtsWorkItemArtifactProviderImpl implements IAtsWorkItemArtifactServ
       if (atsObject instanceof Artifact) {
          return (Artifact) atsObject;
       }
-      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
+      Artifact artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getUuid());
       return artifact;
    }
 

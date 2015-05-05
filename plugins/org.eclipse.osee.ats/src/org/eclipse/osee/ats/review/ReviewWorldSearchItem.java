@@ -104,10 +104,10 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       for (IAtsActionableItem aia : aias) {
          if (recurseChildren) {
             for (IAtsActionableItem childTeamDef : ActionableItems.getActionableItemsFromItemAndChildren(aia)) {
-               actionableItemGuids.add(childTeamDef.getGuid());
+               actionableItemGuids.add(AtsUtilCore.getGuid(childTeamDef));
             }
          } else {
-            actionableItemGuids.add(aia.getGuid());
+            actionableItemGuids.add(AtsUtilCore.getGuid(aia));
          }
       }
       List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();

@@ -34,4 +34,9 @@ public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureG
       return artifact.getParent().getArtId();
    }
 
+   @Override
+   public String getGuid() {
+      return artifact.getGuid();
+   }
+
 }

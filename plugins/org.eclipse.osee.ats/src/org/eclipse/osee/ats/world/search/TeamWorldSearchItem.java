@@ -114,10 +114,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (recurseChildren) {
             for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
-               teamDefinitionGuids.add(childTeamDef.getGuid());
+               teamDefinitionGuids.add(AtsUtilCore.getGuid(childTeamDef));
             }
          } else {
-            teamDefinitionGuids.add(teamDef.getGuid());
+            teamDefinitionGuids.add(AtsUtilCore.getGuid(teamDef));
          }
       }
       List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();

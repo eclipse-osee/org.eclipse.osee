@@ -104,7 +104,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          if (!identityView) {
             writer.writeArrayFieldStart("version");
             for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-               IAtsVersion version = atsServer.getConfig().getSoleByGuid(verArt.getGuid(), IAtsVersion.class);
+               IAtsVersion version = atsServer.getConfigItemFactory().getVersion(verArt);
                addProgramObject(atsServer, version, annotations, writer, true, attributeTypes);
             }
             writer.writeEndArray();
@@ -130,7 +130,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          Collection<IAgileFeatureGroup> featureGroups = atsServer.getAgileService().getAgileFeatureGroups(team);
          for (IAgileFeatureGroup group : featureGroups) {
             writer.writeStartObject();
-            writer.writeNumberField("uuid", group.getId());
+            writer.writeNumberField("uuid", group.getUuid());
             writer.writeStringField("Name", group.getName());
             writer.writeBooleanField("active", group.isActive());
             writer.writeEndObject();
@@ -140,13 +140,13 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          Collection<IAgileSprint> agileSprints = atsServer.getAgileService().getAgileSprints(team);
          for (IAgileSprint sprint : agileSprints) {
             writer.writeStartObject();
-            writer.writeNumberField("uuid", sprint.getId());
+            writer.writeNumberField("uuid", sprint.getUuid());
             writer.writeStringField("Name", sprint.getName());
             writer.writeBooleanField("active", sprint.isActive());
             writer.writeEndObject();
          }
          writer.writeEndArray();
-         ArtifactReadable teamArt = atsServer.getArtifactByUuid(team.getId());
+         ArtifactReadable teamArt = atsServer.getArtifactByUuid(team.getUuid());
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
          writer.writeStringField("Backlog Uuid", (backlogArt != null ? String.valueOf(backlogArt.getLocalId()) : ""));

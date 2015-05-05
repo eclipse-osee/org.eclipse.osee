@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.config;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,12 +41,11 @@ public class ActionableItemManager {
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       if (!artifact.isDeleted()) {
-         for (String guid : getActionableItemGuids()) {
-            IAtsActionableItem aia =
-               AtsClientService.get().getConfig().getSoleByGuid(guid, IAtsActionableItem.class);
+         for (Long uuid : getActionableItemUuids()) {
+            IAtsActionableItem aia = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
             if (aia == null && !artifact.isDeleted()) {
                OseeLog.logf(Activator.class, Level.SEVERE,
-                  "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
+                  "Actionable Item Uuid [%d] from [%s] doesn't match item in AtsConfigCache", uuid,
                   artifact.toStringWithId());
             } else {
                ais.add(aia);
@@ -58,18 +59,36 @@ public class ActionableItemManager {
       return AtsObjects.toString("; ", getActionableItems());
    }
 
-   public List<String> getActionableItemGuids() throws OseeCoreException {
-      return artifact.getAttributesToStringList(AtsAttributeTypes.ActionableItem);
+   /**
+    * Return cached guids stored in DB to uuids or query and fill cache. This cache will go away when ATS Team
+    * Definitions and AIs are referenced by uuid instead of guid in DB Store.
+    */
+   public List<Long> getActionableItemUuids() throws OseeCoreException {
+      List<Long> uuids = new LinkedList<Long>();
+      for (String guid : artifact.getAttributesToStringList(AtsAttributeTypes.ActionableItem)) {
+         Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(guid);
+         if (uuid != null) {
+            uuids.add(uuid);
+         }
+      }
+      return uuids;
    }
 
    public void addActionableItem(IAtsActionableItem aia) throws OseeCoreException {
-      if (!getActionableItemGuids().contains(aia.getGuid())) {
-         artifact.addAttribute(AtsAttributeTypes.ActionableItem, aia.getGuid());
+      if (!getActionableItemUuids().contains(aia.getUuid())) {
+         String guid = null;
+         if (aia.getStoreObject() instanceof Artifact) {
+            guid = ((Artifact) aia.getStoreObject()).getGuid();
+         } else {
+            guid = AtsUtilCore.getGuid(aia);
+         }
+         artifact.addAttribute(AtsAttributeTypes.ActionableItem, guid);
       }
    }
 
    public void removeActionableItem(IAtsActionableItem aia) throws OseeCoreException {
-      artifact.deleteAttribute(AtsAttributeTypes.ActionableItem, aia.getGuid());
+      String guid = AtsUtilCore.getGuid(aia);
+      artifact.deleteAttribute(AtsAttributeTypes.ActionableItem, guid);
    }
 
    public Result setActionableItems(Collection<IAtsActionableItem> newItems) throws OseeCoreException {

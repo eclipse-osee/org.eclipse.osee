@@ -35,7 +35,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    private final IAtsServer atsServer;
 
    public AtsConfigObject(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(artifact.getName(), artifact.getGuid(), artifact.getLocalId());
+      super(artifact.getName(), artifact.getLocalId());
       this.logger = logger;
       this.atsServer = atsServer;
       this.artifact = artifact;
@@ -127,7 +127,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return artifact.getLocalId();
    }
 

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -30,12 +30,12 @@ public class AtsObjectsTest {
    }
 
    @Test
-   public void testToGuids() {
+   public void testToUuids() {
       List<IAtsObject> objs = new ArrayList<IAtsObject>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.GUEST_USER);
-      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getGuid(), AtsCoreUsers.GUEST_USER.getGuid()),
-         AtsObjects.toGuids(objs));
+      Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getUuid(), AtsCoreUsers.GUEST_USER.getUuid()),
+         AtsObjects.toUuids(objs));
    }
 
    @Test

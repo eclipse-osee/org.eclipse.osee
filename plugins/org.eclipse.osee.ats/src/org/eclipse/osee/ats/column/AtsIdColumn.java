@@ -57,7 +57,7 @@ public class AtsIdColumn extends XViewerValueColumn {
          } else if (element instanceof IAtsAction) {
             result = ((IAtsAction) element).getAtsId();
          } else if (element instanceof IAtsObject) {
-            result = ((IAtsObject) element).getGuid();
+            result = String.valueOf(((IAtsObject) element).getUuid());
          }
       } catch (Exception ex) {
          result = XViewerCells.getCellExceptionString(ex);

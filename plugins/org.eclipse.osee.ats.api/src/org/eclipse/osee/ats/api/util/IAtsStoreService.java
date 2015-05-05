@@ -22,4 +22,7 @@ public interface IAtsStoreService {
    List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows);
 
    boolean isDeleted(IAtsObject atsObject);
+
+   Long getUuidFromGuid(String guid);
+
 }

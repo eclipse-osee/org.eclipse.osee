@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -44,7 +45,7 @@ public class AtsProgramService implements IAtsProgramService {
          ArtifactReadable artifact = (ArtifactReadable) atsProgram.getStoreObject();
          String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, null);
          if (Strings.isValid(teamDefGuid)) {
-            teamDef = (IAtsTeamDefinition) atsServer.getConfig().getSoleByGuid(teamDefGuid);
+            teamDef = (IAtsTeamDefinition) atsServer.getArtifactByGuid(teamDefGuid);
          }
       }
       return teamDef;
@@ -57,7 +58,8 @@ public class AtsProgramService implements IAtsProgramService {
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDefinition.getTeamDefinitionHoldingVersions();
          QueryBuilder query = atsServer.getQuery();
-         query.and(AtsAttributeTypes.TeamDefinition, topTeamDef.getGuid()).andIsOfType(AtsArtifactTypes.Program);
+         query.and(AtsAttributeTypes.TeamDefinition, AtsUtilCore.getGuid(topTeamDef)).andIsOfType(
+            AtsArtifactTypes.Program);
          ArtifactReadable programArt = query.getResults().getOneOrNull();
          program = atsServer.getConfigItemFactory().getProgram(programArt);
          cache.put(teamDefinition, program);

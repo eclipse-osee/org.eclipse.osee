@@ -55,7 +55,7 @@ public class Version extends AtsObject implements IAtsVersion {
    private final IAtsVersionService versionService;
 
    public Version(IAtsVersionService versionService, String name, String guid, long uuid) {
-      super(name, guid, uuid);
+      super(name, uuid);
       this.versionService = versionService;
    }
 

@@ -129,9 +129,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
                throw new OseeArgumentException("Invalid guid [%s] specified for DSL Team Definition [%s]", guid,
                   dslTeamDef);
             }
+            long uuid = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
             newTeam =
                ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtilCore.getAtsBranch(),
-                  dslTeamName, guid);
+                  dslTeamName, guid, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -207,8 +208,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
             throw new OseeArgumentException("Invalid guid [%s] specified for DSL Version Definition [%s]", guid,
                dslVersionDef);
          }
+         long uuid = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
          Artifact newVer =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranch(), dslVerName, guid);
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranch(), dslVerName, guid,
+               uuid);
 
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -254,9 +257,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
                throw new OseeArgumentException("Invalid guid [%s] specified for DSL Actionable Item Definition [%s]",
                   guid, dslAIDef);
             }
+            long uuid = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
             newAi =
                ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtilCore.getAtsBranch(), dslAIName,
-                  guid);
+                  guid, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);
@@ -298,14 +302,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (Strings.isValid(artifactTypeName)) {
             programArtifactType = ArtifactTypeManager.getType(artifactTypeName);
          }
-         if (Strings.isValid(dslProgramDef.getGuid())) {
-            newProgramArt =
-               ArtifactTypeManager.addArtifact(programArtifactType, AtsUtilCore.getAtsBranch(), dslProgramName,
-                  dslProgramDef.getGuid());
-         } else {
-            newProgramArt =
-               ArtifactTypeManager.addArtifact(programArtifactType, AtsUtilCore.getAtsBranch(), dslProgramName);
-         }
+         long uuid = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
+         String guid = Strings.isValid(dslProgramDef.getGuid()) ? dslProgramDef.getGuid() : GUID.create();
+         newProgramArt =
+            ArtifactTypeManager.addArtifact(programArtifactType, AtsUtilCore.getAtsBranch(), dslProgramName, guid, uuid);
          changes.add(newProgramArt);
          newProgramArt.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslProgramDef.getActive(), true));

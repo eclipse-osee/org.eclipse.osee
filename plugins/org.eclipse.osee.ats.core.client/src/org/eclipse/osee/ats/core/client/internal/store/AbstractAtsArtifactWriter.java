@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
@@ -41,7 +42,7 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
       Conditions.checkNotNull(artifact, "artifact");
       List<Artifact> newArts = new ArrayList<Artifact>();
       for (IAtsObject version : atsObjects) {
-         Artifact verArt = cache.getSoleArtifact(version);
+         Artifact verArt = cache.getArtifact(version);
          newArts.add(verArt);
       }
       artifact.setRelations(side, newArts);
@@ -53,7 +54,7 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
       if (artifact == null) {
          artifact =
             ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), atsObject.getName(),
-               atsObject.getGuid(), atsObject.getId());
+               GUID.create(), atsObject.getUuid());
          changes.add(artifact);
       }
       return artifact;

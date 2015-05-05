@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Donald G. Dunne
  */
-public class UuidNamedIdentity<T> extends UuidBaseIdentity<T> implements UuidIdentifiable<T>, Comparable<Named> {
+public class UuidNamedIdentity extends UuidBaseIdentity implements UuidIdentifiable, Comparable<Named> {
    private String name;
 
-   public UuidNamedIdentity(T uid, String name) {
+   public UuidNamedIdentity(Long uid, String name) {
       super(uid);
       this.name = name;
    }

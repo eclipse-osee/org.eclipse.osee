@@ -46,7 +46,7 @@ public class CpaFactory {
       if (obj instanceof IAtsProgram) {
          result = idToStoreObject.get(((IAtsProgram) obj).getUuid());
       } else if (obj instanceof CpaDecision) {
-         result = idToStoreObject.get(((CpaDecision) obj).getUuid());
+         result = idToStoreObject.get(((CpaDecision) obj).getGuid());
       }
       return result;
    }
@@ -62,7 +62,7 @@ public class CpaFactory {
    }
 
    public static CpaBuild getVersion(IAtsVersion version, Object storeObject) {
-      Long uuid = version.getId();
+      Long uuid = version.getUuid();
       CpaBuild build = new CpaBuild(uuid, version.getName());
       setStoreObject(String.valueOf(uuid), storeObject);
       return build;

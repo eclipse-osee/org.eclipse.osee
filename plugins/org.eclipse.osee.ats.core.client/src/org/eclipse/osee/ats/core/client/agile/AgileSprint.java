@@ -34,4 +34,9 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
       return artifact.getArtId();
    }
 
+   @Override
+   public String getGuid() {
+      return artifact.getGuid();
+   }
+
 }

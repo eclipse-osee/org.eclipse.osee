@@ -94,7 +94,7 @@ public class ActionPage {
       page.param("ais", getAIStr(action));
       page.param("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
       page.param("assignees", getAssigneesStr(workItem, action));
-      page.param("id", workItem.getGuid());
+      page.param("id", workItem.getUuid());
       page.param("atsId", workItem.getAtsId());
       page.param("originator", getCreatedByStr(workItem, action));
       page.param("priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
@@ -104,7 +104,7 @@ public class ActionPage {
       page.param("createdDate", workItem.getCreatedDate().toString());
       page.param("version", getVersion(workItem));
       page.param("workDef", getWorkDefStr(workItem));
-      page.param("guid", workItem.getGuid());
+      page.param("guid", workItem.getUuid());
       if (!addTransition) {
          page.param("transition", "");
       } else {

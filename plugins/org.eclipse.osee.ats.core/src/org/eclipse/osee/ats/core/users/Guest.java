@@ -25,17 +25,12 @@ public final class Guest extends AbstractAtsUser {
    }
 
    @Override
-   public String getGuid() {
-      return "AAABDi35uzwAxJLISLBZdA";
-   }
-
-   @Override
    public boolean isActive() {
       return true;
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return 1896;
    }
 

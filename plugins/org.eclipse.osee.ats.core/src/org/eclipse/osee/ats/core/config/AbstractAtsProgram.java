@@ -11,10 +11,9 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 
-public abstract class AbstractAtsProgram extends UuidNamedIdentity<Long> implements IAtsProgram {
+public abstract class AbstractAtsProgram extends UuidNamedIdentity implements IAtsProgram {
 
    public AbstractAtsProgram(Long uid, String name) {
       super(uid, name);
@@ -23,21 +22,6 @@ public abstract class AbstractAtsProgram extends UuidNamedIdentity<Long> impleme
    @Override
    public String toStringWithId() {
       return String.format("[%s][%s]", getUuid(), getName());
-   }
-
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
-   public long getId() {
-      return getUuid();
    }
 
 }

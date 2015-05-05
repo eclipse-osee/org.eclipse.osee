@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 public class AtsWorkDefinitionCache {
 
    // Cache the WorkDefinition used for each AbstractWorkflowId so don't have to recompute each time
-   private final Map<String, IWorkDefinitionMatch> awaGuidToWorkDefinition =
-      new ConcurrentHashMap<String, IWorkDefinitionMatch>();
+   private final Map<Long, IWorkDefinitionMatch> awaUuidToWorkDefinition =
+      new ConcurrentHashMap<Long, IWorkDefinitionMatch>();
    // Cache the WorkDefinition object for each WorkDefinition id so don't have to reload
    // This grows as WorkDefinitions are requested/loaded
    private final Map<String, IWorkDefinitionMatch> workDefIdToWorkDefintion =
@@ -38,11 +38,11 @@ public class AtsWorkDefinitionCache {
    }
 
    public void cache(IAtsWorkItem workItem, IWorkDefinitionMatch match) {
-      awaGuidToWorkDefinition.put(workItem.getGuid(), match);
+      awaUuidToWorkDefinition.put(workItem.getUuid(), match);
    }
 
    public IWorkDefinitionMatch getWorkDefinition(IAtsWorkItem workItem) {
-      return awaGuidToWorkDefinition.get(workItem.getGuid());
+      return awaUuidToWorkDefinition.get(workItem.getUuid());
    }
 
    //IAtsWorkDefinition
@@ -59,7 +59,7 @@ public class AtsWorkDefinitionCache {
    }
 
    public void invalidateAll() {
-      awaGuidToWorkDefinition.clear();
+      awaUuidToWorkDefinition.clear();
       workDefIdToWorkDefintion.clear();
    }
 

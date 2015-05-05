@@ -26,10 +26,6 @@ public interface IAtsConfig {
 
    <A extends IAtsConfigObject> List<A> get(Class<A> clazz) throws OseeCoreException;
 
-   <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) throws OseeCoreException;
-
-   IAtsConfigObject getSoleByGuid(String guid) throws OseeCoreException;
-
    <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException;
 
    IAtsConfigObject getSoleByUuid(long uuid) throws OseeCoreException;

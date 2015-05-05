@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.api.cpa;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentityJaxRs;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class CpaDecision extends UuidNamedIdentityJaxRs<String> {
+public class CpaDecision extends NamedIdentity<String> {
 
    private String applicability, rationale, assignees, pcrSystem, origPcrLocation, decisionLocation,
       duplicatedPcrLocation, completedBy, completedDate, duplicatedPcrId;

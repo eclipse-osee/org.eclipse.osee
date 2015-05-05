@@ -40,57 +40,57 @@ import org.junit.runners.Parameterized.Parameters;
 public class SearchWorkPackageOperationTest {
 
    private final String resultSize;
-   private final Collection<String> teamDefGuids;
+   private final Collection<Long> teamDefUuids;
    private final boolean includeChildrenTeamDefs;
-   private final Collection<String> aiGuids;
+   private final Collection<Long> aiUuids;
    private final Active activeOption;
-   private final Collection<String> expectedWpGuids;
+   private final Collection<Long> expectedWpUuids;
    private final boolean includeChildrenAIs;
 
-   public SearchWorkPackageOperationTest(String resultSize, Collection<String> teamDefGuids, boolean includeChildrenTeamDefs, Collection<String> aiGuids, boolean includeChildrenAIs, Active activeOption, Collection<String> expectedWpGuids) {
+   public SearchWorkPackageOperationTest(String resultSize, Collection<Long> teamDefUuids, boolean includeChildrenTeamDefs, Collection<Long> aiUuids, boolean includeChildrenAIs, Active activeOption, Collection<Long> expectedWpUuids) {
       this.resultSize = resultSize;
-      this.teamDefGuids = teamDefGuids;
+      this.teamDefUuids = teamDefUuids;
       this.includeChildrenTeamDefs = includeChildrenTeamDefs;
-      this.aiGuids = aiGuids;
+      this.aiUuids = aiUuids;
       this.includeChildrenAIs = includeChildrenAIs;
       this.activeOption = activeOption;
-      this.expectedWpGuids = expectedWpGuids;
+      this.expectedWpUuids = expectedWpUuids;
    }
 
    @Parameters
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
-      List<String> EMPYT_RESULTS = new ArrayList<String>();
-      String WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid();
-      String WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getGuid();
-      String WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getGuid();
-      String WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A.getGuid();
-      String WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B.getGuid();
-      String WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getGuid();
+      List<Long> EMPYT_RESULTS = new ArrayList<Long>();
+      Long WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid();
+      Long WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getUuid();
+      Long WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getUuid();
+      Long WP_0A = DemoArtifactToken.SAW_Test_AI_WorkPackage_0A.getUuid();
+      Long WP_0B = DemoArtifactToken.SAW_Test_AI_WorkPackage_0B.getUuid();
+      Long WP_0C = DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getUuid();
 
       // Test Work Packages configured by Team Def
-      addTest(data, "no work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getGuid()), false,
-         new ArrayList<String>(), false, Active.Both, EMPYT_RESULTS);
-      addTest(data, "3 work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getGuid()), true,
-         new ArrayList<String>(), false, Active.Both, Arrays.asList(WP_01, WP_02, WP_03));
-      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getGuid()),
-         true, new ArrayList<String>(), false, Active.Active, Arrays.asList(WP_01, WP_02));
-      addTest(data, "1 in-active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getGuid()),
-         true, new ArrayList<String>(), false, Active.InActive, Arrays.asList(WP_03));
+      addTest(data, "no work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()), false,
+         new ArrayList<Long>(), false, Active.Both, EMPYT_RESULTS);
+      addTest(data, "3 work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()), true,
+         new ArrayList<Long>(), false, Active.Both, Arrays.asList(WP_01, WP_02, WP_03));
+      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
+         true, new ArrayList<Long>(), false, Active.Active, Arrays.asList(WP_01, WP_02));
+      addTest(data, "1 in-active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
+         true, new ArrayList<Long>(), false, Active.InActive, Arrays.asList(WP_03));
 
       // Test Work Packages configured by AI
-      addTest(data, "no work packages should be returned", new ArrayList<String>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getGuid()), false, Active.Both, EMPYT_RESULTS);
-      addTest(data, "3 work packages should be returned", new ArrayList<String>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getGuid()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
-      addTest(data, "2 active work packages should be returned", new ArrayList<String>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getGuid()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
-      addTest(data, "1 in-active work packages should be returned", new ArrayList<String>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getGuid()), true, Active.InActive, Arrays.asList(WP_0C));
+      addTest(data, "no work packages should be returned", new ArrayList<Long>(), false,
+         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), false, Active.Both, EMPYT_RESULTS);
+      addTest(data, "3 work packages should be returned", new ArrayList<Long>(), false,
+         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
+      addTest(data, "2 active work packages should be returned", new ArrayList<Long>(), false,
+         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
+      addTest(data, "1 in-active work packages should be returned", new ArrayList<Long>(), false,
+         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.InActive, Arrays.asList(WP_0C));
 
       // Test configured by both
-      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getGuid()),
-         true, Arrays.asList(DemoArtifactToken.SAW_Test_AI.getGuid()), true, Active.Active,
+      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),
+         true, Arrays.asList(DemoArtifactToken.SAW_Test_AI.getUuid()), true, Active.Active,
          Arrays.asList(WP_01, WP_02, WP_0A, WP_0B));
 
       return data;
@@ -99,15 +99,15 @@ public class SearchWorkPackageOperationTest {
    @Test
    public void testSearchResults() throws OseeCoreException {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
-      for (String teamDefGuid : teamDefGuids) {
+      for (Long teamDefUuid : teamDefUuids) {
          IAtsTeamDefinition teamDef =
-            (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByGuid(teamDefGuid);
+            (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByUuid(teamDefUuid);
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
-      for (String aiGuid : aiGuids) {
-         IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getConfig().getSoleByGuid(aiGuid);
+      for (Long aiUuid : aiUuids) {
+         IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getConfig().getSoleByUuid(aiUuid);
          ais.add(ai);
       }
 
@@ -116,23 +116,23 @@ public class SearchWorkPackageOperationTest {
             activeOption);
       Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
-      Collection<String> resultArtifactGuids = Artifacts.toGuids(resultArtifacts);
-      Assert.assertEquals(resultSize, expectedWpGuids.size(), resultArtifacts.size());
-      for (String expectedGid : expectedWpGuids) {
-         Assert.assertTrue("Expected guid " + expectedGid + " not found in results",
-            resultArtifactGuids.contains(expectedGid));
+      Collection<Long> resultArtifactGuids = Artifacts.toUuids(resultArtifacts);
+      Assert.assertEquals(resultSize, expectedWpUuids.size(), resultArtifacts.size());
+      for (Long expectedUuid : expectedWpUuids) {
+         Assert.assertTrue("Expected uuid " + expectedUuid + " not found in results",
+            resultArtifactGuids.contains(expectedUuid));
       }
    }
 
-   private static void addTest(List<Object[]> testData, String toSearch, Collection<String> teamDefGuids, boolean includeChildrenTeamDefs, Collection<String> aiGuids, boolean includeChildrenAIs, Active both, Collection<String> expectedWpGuids) {
+   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefUuids, boolean includeChildrenTeamDefs, Collection<Long> aiUuids, boolean includeChildrenAIs, Active both, Collection<Long> expectedWpUuids) {
       testData.add(new Object[] {
          toSearch,
-         teamDefGuids,
+         teamDefUuids,
          includeChildrenTeamDefs,
-         aiGuids,
+         aiUuids,
          includeChildrenAIs,
          both,
-         expectedWpGuids});
+         expectedWpUuids});
    }
 
 }

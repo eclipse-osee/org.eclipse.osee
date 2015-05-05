@@ -57,7 +57,7 @@ public class CpaDuplicator {
                rd.logErrorWithFormat("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
             } else {
                IAtsChangeSet changes =
-                  atsServer.getStoreFactory().createAtsChangeSet("Duplicate for CPA " + duplicate.getCpaUuid(),
+                  atsServer.getStoreService().createAtsChangeSet("Duplicate for CPA " + duplicate.getCpaUuid(),
                      AtsCoreUsers.SYSTEM_USER);
                IAtsTeamWorkflow cpaWf = atsServer.getWorkItemFactory().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);

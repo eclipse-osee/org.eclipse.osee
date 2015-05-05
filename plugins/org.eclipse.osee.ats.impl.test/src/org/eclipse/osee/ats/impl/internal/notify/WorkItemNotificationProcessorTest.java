@@ -70,12 +70,13 @@ public class WorkItemNotificationProcessorTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      setupUser(joeSmith_CurrentUser, "ABNRvbZxXHICYklfslwA", "Joe Smith", "joe@boeing.com", "Joe Smith", true, false);
-      setupUser(kay_ValidEmail, "ABNRvuB8x3VARkkn3YAA", "Kay Jones", "kay@boeing.com", "Kay Jones", true, false);
-      setupUser(jason_ValidEmail, "ABNRvuHWtXAdxbG3mUAA", "Jason Michael", "jason@boeing.com", "Jason Michael", true,
+      setupUser(joeSmith_CurrentUser, 61106791L, "Joe Smith", "joe@boeing.com", "Joe Smith", true,
          false);
-      setupUser(alex_NoValidEmail, "ABNRvuKDIWOcPDe4X0wA", "Alex Kay", "", "Alex Kay", true, false);
-      setupUser(inactiveSteve, "ABNRvuRG6jKwKnEoX4gA", "Inactive Steve", "insactiveSteve@boeing.com", "Inactive Steve",
+      setupUser(kay_ValidEmail, 5896672L, "Kay Jones", "kay@boeing.com", "Kay Jones", true, false);
+      setupUser(jason_ValidEmail, 277990L, "Jason Michael", "jason@boeing.com", "Jason Michael",
+         true, false);
+      setupUser(alex_NoValidEmail, 8006939L, "Alex Kay", "", "Alex Kay", true, false);
+      setupUser(inactiveSteve, 5808093L, "Inactive Steve", "insactiveSteve@boeing.com", "Inactive Steve",
          false, false);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
@@ -87,7 +88,7 @@ public class WorkItemNotificationProcessorTest {
       when(workItemFactory.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
       when(atsServer.getConfigValue(eq("ActionUrl"))).thenReturn("http://ats/action/UUID/");
-      when(teamWf.getGuid()).thenReturn("myguid");
+      when(teamWf.getUuid()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
       when(teamWf.getStateMgr()).thenReturn(stateMgr);
       when(stateMgr.getCurrentStateName()).thenReturn("Analyze");
@@ -324,8 +325,8 @@ public class WorkItemNotificationProcessorTest {
 
    }
 
-   private void setupUser(IAtsUser user, String guid, String name, String email, String userId, boolean active, boolean admin) {
-      when(user.getGuid()).thenReturn(guid);
+   private void setupUser(IAtsUser user, long uuid, String name, String email, String userId, boolean active, boolean admin) {
+      when(user.getUuid()).thenReturn(uuid);
       when(user.getName()).thenReturn(name);
       when(user.getEmail()).thenReturn(email);
       when(user.isActive()).thenReturn(active);

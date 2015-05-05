@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
  */
 public interface IAtsProgram extends IAtsConfigObject {
 
-   public Long getUuid();
-
    public IAtsTeamDefinition getTeamDefinition();
 
    public String getNamespace();

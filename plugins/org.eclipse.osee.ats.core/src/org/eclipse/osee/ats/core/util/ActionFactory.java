@@ -106,7 +106,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (teamDefs.isEmpty()) {
          StringBuffer sb = new StringBuffer("No teams returned for Action's selected Actionable Items\n");
          for (IAtsActionableItem aia : actionableItems) {
-            sb.append("Selected AI \"" + aia + "\" " + aia.getGuid() + "\n");
+            sb.append("Selected AI \"" + aia + "\" " + aia.getUuid() + "\n");
          }
          throw new OseeStateException(sb.toString());
       }
@@ -193,13 +193,13 @@ public class ActionFactory implements IAtsActionFactory {
       // for that AI
       for (IAtsActionableItem aia : actionableItems) {
          IAtsTeamDefinition teamDefinitionInherited = aia.getTeamDefinitionInherited();
-         if (teamDefinitionInherited != null && teamDef.getGuid().equals(teamDefinitionInherited.getGuid())) {
+         if (teamDefinitionInherited != null && teamDef.getUuid() == teamDefinitionInherited.getUuid()) {
             actionableItemManager.addActionableItem(teamWf, aia, changes);
          }
       }
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinition, teamDef.getGuid());
+      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinition, AtsUtilCore.getGuid(teamDef));
 
       utilService.setAtsId(sequenceProvider, teamWf, teamWf.getTeamDefinition(), changes);
 

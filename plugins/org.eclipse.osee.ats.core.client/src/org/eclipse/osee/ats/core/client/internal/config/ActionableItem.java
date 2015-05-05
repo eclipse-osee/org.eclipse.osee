@@ -34,7 +34,7 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    private final Set<IAtsActionableItem> childrenActionableItems = new HashSet<IAtsActionableItem>();
 
    public ActionableItem(String name, String guid, long uuid) {
-      super(name, guid, uuid);
+      super(name, uuid);
    }
 
    @Override
@@ -89,7 +89,7 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
 
    @Override
    public void setParentActionableItem(IAtsActionableItem parentActionableItem) {
-      if (parentActionableItem.getGuid().equals(getGuid())) {
+      if (parentActionableItem.getUuid() == getUuid()) {
          throw new IllegalArgumentException("Can't set parent to self");
       }
       this.parentActionableItem = parentActionableItem;

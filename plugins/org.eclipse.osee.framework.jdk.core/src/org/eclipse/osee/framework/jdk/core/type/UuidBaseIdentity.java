@@ -13,36 +13,16 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Donald G. Dunne
  */
-public class UuidBaseIdentity<T> implements UuidIdentity<T> {
-   private final T uuid;
+public class UuidBaseIdentity implements UuidIdentity {
+   private final long uuid;
 
-   public UuidBaseIdentity(T id) {
+   public UuidBaseIdentity(long id) {
       this.uuid = id;
    }
 
    @Override
-   public T getUuid() {
+   public long getUuid() {
       return uuid;
-   }
-
-   @Override
-   public int hashCode() {
-      return getUuid().hashCode();
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public boolean equals(Object obj) {
-      boolean equal = false;
-      if (obj instanceof UuidIdentity) {
-         UuidIdentity<T> identity = (UuidIdentity<T>) obj;
-         if (getUuid() == identity.getUuid()) {
-            equal = true;
-         } else if (getUuid() != null) {
-            equal = getUuid().equals(identity.getUuid());
-         }
-      }
-      return equal;
    }
 
    @Override
@@ -51,12 +31,38 @@ public class UuidBaseIdentity<T> implements UuidIdentity<T> {
    }
 
    @Override
-   public boolean matches(UuidIdentity<?>... identities) {
-      for (UuidIdentity<?> identity : identities) {
+   public boolean matches(UuidIdentity... identities) {
+      for (UuidIdentity identity : identities) {
          if (equals(identity)) {
             return true;
          }
       }
       return false;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (int) (uuid ^ (uuid >>> 32));
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      UuidBaseIdentity other = (UuidBaseIdentity) obj;
+      if (uuid != other.uuid) {
+         return false;
+      }
+      return true;
    }
 }

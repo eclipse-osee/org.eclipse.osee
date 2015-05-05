@@ -75,7 +75,7 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact codeTeamArt = null;
       int numTested = 0;
       for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         teamArt.getActionableItemsDam().getActionableItemGuids();
+         teamArt.getActionableItemsDam().getActionableItemUuids();
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
             codeTeamArt = teamArt;

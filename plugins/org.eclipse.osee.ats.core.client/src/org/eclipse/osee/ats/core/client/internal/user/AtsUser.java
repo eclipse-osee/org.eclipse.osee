@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.internal.user;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -29,11 +29,6 @@ public class AtsUser implements IAtsUser {
    @Override
    public String getName() {
       return user.getName();
-   }
-
-   @Override
-   public String getGuid() {
-      return user.getGuid();
    }
 
    @Override
@@ -106,6 +101,16 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
+   public boolean matches(UuidIdentity... identities) {
+      for (UuidIdentity identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @Override
    public String getUserId() throws OseeCoreException {
       return user.getUserId();
    }
@@ -130,18 +135,8 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getGuid());
+      return String.format("[%s][%d]", getName(), getUuid());
    }
 
    @Override
@@ -157,7 +152,7 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return user.getArtId();
    }
 

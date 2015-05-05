@@ -257,4 +257,12 @@ public final class Artifacts {
       }
       return rString;
    }
+
+   public static Collection<Long> toUuids(Set<Artifact> artifacts) {
+      List<Long> uuids = new ArrayList<Long>(artifacts.size());
+      for (IArtifact artifact : artifacts) {
+         uuids.add(artifact.getUuid());
+      }
+      return uuids;
+   }
 }

@@ -56,7 +56,7 @@ public final class OseeSystemArtifacts {
 
    public static Artifact getOrCreateArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
-         artifactToken.getGuid(), true);
+         artifactToken.getGuid(), artifactToken.getUuid(), true);
    }
 
    public static Artifact getCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
@@ -64,12 +64,20 @@ public final class OseeSystemArtifacts {
    }
 
    private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch, String guid, boolean create) throws OseeCoreException {
+      return getOrCreateCachedArtifact(artifactType, artifactName, branch, guid, null, create);
+   }
+
+   private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch, String guid, Long uuid, boolean create) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getByTextId(artifactType.getName() + "." + artifactName, branch);
       if (artifact == null) {
          artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
          if (artifact == null && create) {
             if (Strings.isValid(guid)) {
-               artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, guid);
+               if (uuid != null && uuid > 0) {
+                  artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, guid, uuid);
+               } else {
+                  artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, guid);
+               }
                artifact.setName(artifactName);
             } else {
                artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);

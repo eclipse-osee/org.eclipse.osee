@@ -127,9 +127,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    private JaxAgileTeam toJaxTeam(IAgileTeam updatedTeam) {
       JaxAgileTeam created = new JaxAgileTeam();
-      created.setGuid(updatedTeam.getGuid());
       created.setName(updatedTeam.getName());
-      created.setUuid(updatedTeam.getId());
+      created.setUuid(updatedTeam.getUuid());
+      created.setGuid(updatedTeam.getGuid());
       created.setActive(updatedTeam.isActive());
       created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
       created.setBacklogUuid(updatedTeam.getBacklogUuid());
@@ -158,7 +158,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
                   IAgileFeatureGroup group = atsServer.getConfigItemFactory().getAgileFeatureGroup(subChild);
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());
-                  newGroup.setUuid(group.getId());
+                  newGroup.setUuid(group.getUuid());
                   newGroup.setGuid(group.getGuid());
                   newGroup.setActive(group.isActive());
                   newGroup.setTeamUuid(group.getTeamUuid());
@@ -193,9 +193,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          atsServer.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(), newFeatureGroup.getName(),
             guid, uuid);
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
-      newGroup.setGuid(team.getGuid());
       newGroup.setName(team.getName());
-      newGroup.setUuid(team.getId());
+      newGroup.setUuid(team.getUuid());
+      newGroup.setGuid(team.getGuid());
       newGroup.setActive(team.isActive());
       newGroup.setTeamUuid(team.getTeamUuid());
 
@@ -211,9 +211,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       IAgileFeatureGroup feature =
          atsServer.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
       JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
-      created.setGuid(feature.getGuid());
       created.setName(feature.getName());
-      created.setUuid(feature.getId());
+      created.setUuid(feature.getUuid());
+      created.setGuid(feature.getGuid());
       created.setTeamUuid(feature.getTeamUuid());
       created.setActive(feature.isActive());
       return created;
@@ -254,16 +254,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location =
          builder.path("teams").path(String.valueOf(newSprint.getTeamUuid())).path("sprints").path(
-            String.valueOf(sprint.getId())).build();
+            String.valueOf(sprint.getUuid())).build();
       return Response.created(location).entity(created).build();
    }
 
    private JaxAgileSprint toJaxSprint(IAgileSprint sprint) {
       JaxAgileSprint created = new JaxAgileSprint();
-      created.setGuid(sprint.getGuid());
       created.setName(sprint.getName());
       created.setActive(sprint.isActive());
-      created.setUuid(sprint.getId());
+      created.setUuid(sprint.getUuid());
+      created.setGuid(sprint.getGuid());
       created.setTeamUuid(sprint.getTeamUuid());
       return created;
    }
@@ -360,7 +360,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             AgileItem item = new AgileItem();
             item.setName(aItem.getName());
             item.setFeatureGroups(Collections.toString("; ", atsServer.getAgileService().getFeatureGroups(aItem)));
-            item.setUuid(aItem.getId());
+            item.setUuid(aItem.getUuid());
+            item.setGuid(aItem.getGuid());
             item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
             item.setAtsId(aItem.getAtsId());
             item.setState(aItem.getStateMgr().getCurrentStateName());
@@ -378,10 +379,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private JaxAgileBacklog toJaxBacklog(IAgileBacklog backlog) {
       JaxAgileBacklog result = new JaxAgileBacklog();
       result.setActive(backlog.isActive());
-      result.setGuid(backlog.getGuid());
       result.setActive(backlog.isActive());
       result.setName(backlog.getName());
-      result.setUuid(backlog.getId());
+      result.setUuid(backlog.getUuid());
+      result.setGuid(backlog.getGuid());
       result.setTeamUuid(backlog.getTeamUuid());
       return result;
    }

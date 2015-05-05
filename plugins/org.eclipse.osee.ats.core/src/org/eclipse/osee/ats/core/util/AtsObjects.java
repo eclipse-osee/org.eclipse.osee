@@ -21,10 +21,18 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  */
 public class AtsObjects {
 
+   public static List<Long> toUuids(Collection<? extends IAtsObject> atsObjects) {
+      List<Long> uuids = new ArrayList<Long>(atsObjects.size());
+      for (IAtsObject atsObject : atsObjects) {
+         uuids.add(atsObject.getUuid());
+      }
+      return uuids;
+   }
+
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<String>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
-         guids.add(atsObject.getGuid());
+         guids.add(AtsUtilCore.getGuid(atsObject));
       }
       return guids;
    }

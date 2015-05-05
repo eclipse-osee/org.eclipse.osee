@@ -51,7 +51,7 @@ public class VersionArtifactStoreTest {
             AtsUtilCore.getAtsBranch())) {
             art.deleteAndPersist(transaction);
 
-            IAtsConfigObject soleByGuid = config.getSoleByGuid(art.getGuid());
+            IAtsConfigObject soleByGuid = config.getSoleByUuid(art.getUuid());
             config.invalidate(soleByGuid);
          }
       }
@@ -107,8 +107,7 @@ public class VersionArtifactStoreTest {
       verArt.setName("VersionArtifactStoreTest - version 2");
 
       Artifact teamDef =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW SW",
-            AtsUtilCore.getAtsBranch());
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW SW", AtsUtilCore.getAtsBranch());
       verArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
       verArt.persist(getClass().getSimpleName());
 

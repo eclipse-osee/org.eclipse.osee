@@ -88,8 +88,6 @@ public class AtsWorkDefinitionAdminImplTest {
       AtsWorkDefinitionCache cache = new AtsWorkDefinitionCache();
       when(cacheProvider.get()).thenReturn(cache);
 
-      when(peerReview.getGuid()).thenReturn(MyPeerToPeerWorkDefId);
-
       workDefAmin =
          new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, teamWorkflowProviders,
             attributeResolver);

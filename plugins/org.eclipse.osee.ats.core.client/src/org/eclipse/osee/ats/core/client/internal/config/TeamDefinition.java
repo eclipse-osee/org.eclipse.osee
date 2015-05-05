@@ -67,7 +67,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    }
 
    public TeamDefinition(String name, String guid, long uuid) {
-      super(name, guid, uuid);
+      super(name, uuid);
    }
 
    @Override
@@ -379,7 +379,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setParentTeamDef(IAtsTeamDefinition parentTeamDef) {
-      if (parentTeamDef.getGuid().equals(getGuid())) {
+      if (parentTeamDef.getUuid() == getUuid()) {
          throw new IllegalArgumentException("Can't set parent to self");
       }
       this.parentTeamDef = parentTeamDef;

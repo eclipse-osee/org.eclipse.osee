@@ -83,7 +83,7 @@ public class AbstractAgileObject {
          return false;
       }
       IAgileFeatureGroup other = (IAgileFeatureGroup) obj;
-      if (uuid != other.getId()) {
+      if (uuid != other.getUuid()) {
          return false;
       }
       return true;

@@ -25,11 +25,6 @@ public final class SystemUser extends AbstractAtsUser {
    }
 
    @Override
-   public String getGuid() {
-      return "AAABDBYPet4AGJyrc9dY1w";
-   }
-
-   @Override
    public String getDescription() {
       return "System User";
    }
@@ -40,7 +35,7 @@ public final class SystemUser extends AbstractAtsUser {
    }
 
    @Override
-   public long getId() {
+   public long getUuid() {
       return 11;
    }
 

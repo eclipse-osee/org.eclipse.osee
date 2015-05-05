@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -105,7 +106,9 @@ import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -235,7 +238,7 @@ public class AtsClientImpl implements IAtsClient {
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
 
-      programService = new AtsProgramService(configProxy);
+      programService = new AtsProgramService(this, configProxy);
       teamDefinitionService = new AtsTeamDefinitionService(configProxy, configItemFactory);
 
       actionFactory =
@@ -419,16 +422,6 @@ public class AtsClientImpl implements IAtsClient {
       }
 
       @Override
-      public <A extends IAtsConfigObject> A getSoleByGuid(String guid, Class<A> clazz) throws OseeCoreException {
-         return getConfigCache().getSoleByGuid(guid, clazz);
-      }
-
-      @Override
-      public IAtsConfigObject getSoleByGuid(String guid) throws OseeCoreException {
-         return getConfigCache().getSoleByGuid(guid);
-      }
-
-      @Override
       public void getReport(XResultData rd) throws OseeCoreException {
          getConfigCache().getReport(rd);
       }
@@ -480,7 +473,7 @@ public class AtsClientImpl implements IAtsClient {
                results = (Artifact) atsObject;
             } else {
                try {
-                  results = AtsArtifactQuery.getArtifactFromId(atsObject.getGuid());
+                  results = AtsArtifactQuery.getArtifactFromId(atsObject.getUuid());
                } catch (ArtifactDoesNotExist ex) {
                   // do nothing
                }
@@ -746,6 +739,16 @@ public class AtsClientImpl implements IAtsClient {
          sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>(AtsRelationTypes.AgileSprintToItem_AtsItem);
       }
       return sprintItemsCache;
+   }
+
+   @Override
+   public Artifact checkArtifactFromId(long uuid, IOseeBranch atsBranch) {
+      return ArtifactQuery.checkArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public IAtsStoreService getStoreService() {
+      return atsStoreService;
    }
 
 }

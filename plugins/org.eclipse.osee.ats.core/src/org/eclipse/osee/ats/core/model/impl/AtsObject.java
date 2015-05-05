@@ -11,20 +11,18 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject {
+public class AtsObject extends UuidNamedIdentity implements IAtsObject {
 
    private String desc;
    private Object object;
-   private long id;
 
-   public AtsObject(String name, String guid, long id) {
-      super(guid, name);
-      this.id = id;
+   public AtsObject(String name, long uuid) {
+      super(uuid, name);
    }
 
    @Override
@@ -43,7 +41,7 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
 
    @Override
    public final String toStringWithId() {
-      return String.format("[%s][%s]", getGuid(), getName());
+      return String.format("[%d][%s]", getUuid(), getName());
    }
 
    @Override
@@ -57,19 +55,10 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
    }
 
    @Override
-   public long getId() {
-      return id;
-   }
-
-   public void setId(long id) {
-      this.id = id;
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + (int) (id ^ (id >>> 32));
+      result = prime * result + (int) (getUuid() ^ (getUuid() >>> 32));
       return result;
    }
 
@@ -85,10 +74,10 @@ public class AtsObject extends FullyNamedIdentity<String> implements IAtsObject 
          return false;
       }
       IAtsObject other = (IAtsObject) obj;
-      if (id != other.getId()) {
-         return false;
+      if (getUuid() == other.getUuid()) {
+         return true;
       }
-      return true;
+      return false;
    }
 
 }

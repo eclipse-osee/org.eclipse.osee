@@ -131,13 +131,13 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
-      String version1Guid = "", version2Guid = "";
+      long version1Uuid = 0L, version2Uuid = 0L;
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
-            version1Guid = vArt.getGuid();
+            version1Uuid = vArt.getUuid();
          } else {
-            version2Guid = vArt.getGuid();
+            version2Uuid = vArt.getUuid();
          }
       }
       versionToTarget.setBaselineBranchUuid(viaTeamDefBranch.getUuid());
@@ -211,8 +211,8 @@ public class AtsBranchConfigurationTest {
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
       TestUtil.severeLoggingEnd(monitor, Arrays.asList(
-         "Version [[" + version1Guid + "][BranchViaVersions - Ver1]] has no related team defininition",
-         "Version [[" + version2Guid + "][BranchViaVersions - Ver2]] has no related team defininition"));
+         "Version [[" + version1Uuid + "][BranchViaVersions - Ver1]] has no related team defininition",
+         "Version [[" + version2Uuid + "][BranchViaVersions - Ver2]] has no related team defininition"));
    }
 
    @org.junit.Test
@@ -358,7 +358,7 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
          AtsClientService.get().getConfig().invalidate(
-            AtsClientService.get().getConfig().getSoleByGuid(teamDefArt.getGuid(), IAtsTeamDefinition.class));
+            AtsClientService.get().getConfig().getSoleByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class));
       }
       transaction.execute();
 
@@ -369,10 +369,10 @@ public class AtsBranchConfigurationTest {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
             AtsClientService.get().getConfig().invalidate(
-               AtsClientService.get().getConfig().getSoleByGuid(childArt.getGuid(), IAtsActionableItem.class));
+               AtsClientService.get().getConfig().getSoleByUuid(childArt.getUuid(), IAtsActionableItem.class));
          }
          AtsClientService.get().getConfig().invalidate(
-            AtsClientService.get().getConfig().getSoleByGuid(aiaArt.getGuid(), IAtsActionableItem.class));
+            AtsClientService.get().getConfig().getSoleByUuid(aiaArt.getUuid(), IAtsActionableItem.class));
          transaction.execute();
       }
 

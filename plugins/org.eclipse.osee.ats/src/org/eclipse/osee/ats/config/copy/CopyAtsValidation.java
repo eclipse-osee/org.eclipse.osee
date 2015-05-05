@@ -74,7 +74,7 @@ public class CopyAtsValidation {
             teamDef.getName());
       }
       for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
-         if (!teamDef.getGuid().equals(childTeamDef.getGuid())) {
+         if (teamDef.getUuid() != childTeamDef.getUuid()) {
             validateTeamDefinition(childTeamDef);
          }
       }

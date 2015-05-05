@@ -74,4 +74,21 @@ public class AtsArtifactQuery {
       return toReturn;
    }
 
+   public static Artifact getArtifactFromId(long uuid) {
+      return ArtifactQuery.getArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch());
+   }
+
+   public static List<Artifact> getArtifactListFromIds(List<Long> uuids) {
+      List<Artifact> toReturn = new LinkedList<Artifact>();
+      List<Integer> artIds = new LinkedList<Integer>();
+
+      for (Long uuid : uuids) {
+         artIds.add(uuid.intValue());
+      }
+
+      List<Artifact> fromIds = ArtifactQuery.getArtifactListFromIds(artIds, AtsUtilCore.getAtsBranch());
+      toReturn.addAll(fromIds);
+      return toReturn;
+   }
+
 }

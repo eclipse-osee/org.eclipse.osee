@@ -267,7 +267,7 @@ public class AtsServerImpl implements IAtsServer {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
             result =
-               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(atsObject.getGuid()).getResults().getAtMostOneOrNull();
+               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(atsObject.getUuid()).getResults().getAtMostOneOrNull();
          }
       }
       return result;
@@ -328,7 +328,7 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public IAtsStoreService getStoreFactory() {
+   public IAtsStoreService getStoreService() {
       return atsStoreService;
    }
 

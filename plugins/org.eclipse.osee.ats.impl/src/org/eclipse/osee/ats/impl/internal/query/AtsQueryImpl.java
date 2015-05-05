@@ -57,7 +57,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
       // team
       if (teamDef != null) {
-         query.and(AtsAttributeTypes.TeamDefinition, Collections.singleton(teamDef.getGuid()));
+         query.and(AtsAttributeTypes.TeamDefinition, Collections.singleton(AtsUtilCore.getGuid(teamDef)));
       }
 
       // state

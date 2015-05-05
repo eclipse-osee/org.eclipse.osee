@@ -10,19 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsStoreService implements IAtsStoreService {
+   private static Map<String, Long> guidToUuid;
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
@@ -37,6 +41,26 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
       return ((Artifact) atsObject.getStoreObject()).isDeleted();
+   }
+
+   @Override
+   public Long getUuidFromGuid(String guid) {
+      Long result = AtsUtilCore.getUuidFromGuid(guid);
+      if (result == null) {
+         if (guidToUuid == null) {
+            guidToUuid = new HashMap<String, Long>(200);
+         }
+         if (guidToUuid.containsKey(guid)) {
+            result = guidToUuid.get(guid);
+         } else {
+            Artifact art = AtsClientService.get().getArtifactByGuid(guid);
+            if (art != null) {
+               result = art.getUuid();
+               guidToUuid.put(guid, result);
+            }
+         }
+      }
+      return result;
    }
 
 }

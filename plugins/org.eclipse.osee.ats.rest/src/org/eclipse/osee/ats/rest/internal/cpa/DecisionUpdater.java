@@ -49,7 +49,7 @@ public class DecisionUpdater {
       ResultSet<ArtifactReadable> results =
          atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getUuids()).getResults();
       IAtsChangeSet changes =
-         atsServer.getStoreFactory().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
+         atsServer.getStoreService().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (ArtifactReadable art : results) {
          IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(art);
          if (!rd.isErrors()) {

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -28,11 +29,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsArtifactConfigCache extends AtsConfigCache {
 
    public List<Artifact> getArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException {
-      List<String> guids = new ArrayList<String>();
+      List<Artifact> artifacts = new LinkedList<Artifact>();
+      List<Long> uuids = new ArrayList<Long>();
       for (IAtsObject atsObject : atsObjects) {
-         guids.add(atsObject.getGuid());
+         Artifact artifact = getArtifact(atsObject);
+         if (artifact != null) {
+            artifacts.add(artifact);
+         } else {
+            uuids.add(atsObject.getUuid());
+         }
       }
-      return AtsArtifactQuery.getArtifactListFromIds(guids);
+      artifacts.addAll(AtsArtifactQuery.getArtifactListFromIds(uuids));
+      return artifacts;
    }
 
    public <A extends IAtsConfigObject> Collection<A> getConfigObjects(Collection<? extends Artifact> artifacts, Class<A> clazz) {
@@ -43,18 +51,17 @@ public class AtsArtifactConfigCache extends AtsConfigCache {
       return objects;
    }
 
-   public Artifact getSoleArtifact(IAtsObject artifact) throws OseeCoreException {
-      return AtsArtifactQuery.getArtifactFromId(artifact.getGuid());
-   }
-
-   public Artifact getArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException {
-      Conditions.checkNotNull(atsConfigObject, "atsConfigObject");
-      Artifact artifact = (Artifact) atsConfigObject.getStoreObject();
-      try {
-         artifact = AtsArtifactQuery.getArtifactFromId(atsConfigObject.getGuid());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
+   public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
+      Conditions.checkNotNull(atsObject, "atsConfigObject");
+      Artifact artifact = (Artifact) atsObject.getStoreObject();
+      if (artifact == null) {
+         try {
+            artifact = AtsArtifactQuery.getArtifactFromId(atsObject.getUuid());
+         } catch (ArtifactDoesNotExist ex) {
+            // do nothing
+         }
       }
       return artifact;
    }
+
 }

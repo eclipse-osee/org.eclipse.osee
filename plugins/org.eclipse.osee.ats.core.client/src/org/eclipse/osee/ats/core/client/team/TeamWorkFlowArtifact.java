@@ -116,7 +116,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    }
 
    public void setTeamDefinition(IAtsTeamDefinition tda) throws OseeCoreException {
-      this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, tda.getGuid());
+      this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ((Artifact) tda.getStoreObject()).getGuid());
    }
 
    @Override
@@ -125,7 +125,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       if (!Strings.isValid(guid)) {
          throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
       }
-      IAtsTeamDefinition teamDef = AtsClientService.get().getConfig().getSoleByGuid(guid, IAtsTeamDefinition.class);
+      Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(guid);
+      IAtsTeamDefinition teamDef = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
       Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       return teamDef;
    }
