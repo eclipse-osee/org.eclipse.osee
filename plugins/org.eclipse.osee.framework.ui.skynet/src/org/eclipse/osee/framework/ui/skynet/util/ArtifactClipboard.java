@@ -36,7 +36,7 @@ import org.eclipse.swt.dnd.Transfer;
  */
 public class ArtifactClipboard {
    private static final String STATUS = "work";
-   private final Clipboard clipboard;
+   private Clipboard clipboard;
    private final String viewId;
 
    public ArtifactClipboard(String viewId) {
@@ -71,10 +71,13 @@ public class ArtifactClipboard {
       if (artifactTransferData.isEmpty()) {
          throw new IllegalArgumentException("Artifacts can not be empty.");
       }
+      if (clipboard.isDisposed()) {
+         this.clipboard = new Clipboard(null);
+      }
 
       List<Artifact> authFailedList = new ArrayList<Artifact>(artifactTransferData);
       List<Artifact> authorizedArtifacts =
-               getArtifactsWithPermission(policyHandlerService, PermissionEnum.READ, artifactTransferData);
+         getArtifactsWithPermission(policyHandlerService, PermissionEnum.READ, artifactTransferData);
 
       authFailedList.removeAll(authorizedArtifacts);
 
@@ -85,17 +88,18 @@ public class ArtifactClipboard {
          }
          Artifact[] artifacts = authorizedArtifacts.toArray(new Artifact[authorizedArtifacts.size()]);
          clipboard.setContents(
-                  new Object[] {new ArtifactData(artifacts, STATUS, viewId), HTMLTransferFormatter.getHtml(artifacts),
-                           Collections.toString(textTransferData, null, ", ", null)},
-                  new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(),
-                           TextTransfer.getInstance()});
+            new Object[] {
+               new ArtifactData(artifacts, STATUS, viewId),
+               HTMLTransferFormatter.getHtml(artifacts),
+               Collections.toString(textTransferData, null, ", ", null)},
+            new Transfer[] {ArtifactTransfer.getInstance(), HTMLTransfer.getInstance(), TextTransfer.getInstance()});
       }
       if (authFailedList.size() > 0) {
          String failed = Collections.toString(", ", authFailedList) + ".";
          MessageDialog.openError(
-                  Displays.getActiveShell(),
-                  "Copy Error",
-                  "Access control has restricted this action. The following artifacts were not copied to the clipboard: " + failed);
+            Displays.getActiveShell(),
+            "Copy Error",
+            "Access control has restricted this action. The following artifacts were not copied to the clipboard: " + failed);
       }
 
    }
@@ -107,9 +111,12 @@ public class ArtifactClipboard {
       if (textTransferData.isEmpty()) {
          throw new IllegalArgumentException("Artifacts can not be empty.");
       }
+      if (clipboard.isDisposed()) {
+         this.clipboard = new Clipboard(null);
+      }
 
       clipboard.setContents(new Object[] {Collections.toString(textTransferData, null, ", ", null)},
-               new Transfer[] {TextTransfer.getInstance()});
+         new Transfer[] {TextTransfer.getInstance()});
    }
 
    public boolean isEmpty() {
@@ -133,4 +140,5 @@ public class ArtifactClipboard {
       }
       return copiedItems;
    }
+
 }
