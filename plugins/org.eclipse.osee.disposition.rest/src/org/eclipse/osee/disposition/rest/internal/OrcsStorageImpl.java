@@ -23,10 +23,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoConstants;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -454,6 +456,17 @@ public class OrcsStorageImpl implements Storage {
       }
 
       return toReturn;
+   }
+
+   @Override
+   public DispoConfig findDispoConfig(DispoProgram program) {
+      ArtifactReadable config =
+         getQuery().fromBranch(program.getUuid()).andNameEquals("Program Config").getResults().getOneOrNull();
+
+      if (config == null) {
+         return DispoUtil.getDefaultConfig();
+      }
+      return DispoUtil.configArtToConfigData(new DispoConfigArtifact(config));
    }
 
    @Override

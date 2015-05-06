@@ -9,7 +9,8 @@ app.controller('userController', [
     'Annotation',
     'SetSearch',
     'SourceFile',
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile) {
+    'Config',
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, Config) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -69,6 +70,15 @@ app.controller('userController', [
             }, function(data) {
             	loadingModal.close();
                 $scope.sets = data;
+            });
+            
+            // Try to get custom config
+            Config.get({
+                programId: $scope.programSelection,
+                type: $rootScope.type
+            }, function(data) {
+            	loadingModal.close();
+                $scope.coverageResolutionTypes = data.validResolutions;
             });
         };
         

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,21 @@ import java.util.List;
 /**
  * @author Angel Avila
  */
+public class DispoConfigData implements DispoConfig {
 
-public interface DispoConfig {
+   List<ResolutionMethod> validResolutions;
 
-   List<ResolutionMethod> getValidResolutions();
+   public DispoConfigData() {
+
+   }
+
+   public void setValidResolutions(List<ResolutionMethod> validResolutions) {
+      this.validResolutions = validResolutions;
+   }
+
+   @Override
+   public List<ResolutionMethod> getValidResolutions() {
+      return validResolutions;
+   }
 
 }

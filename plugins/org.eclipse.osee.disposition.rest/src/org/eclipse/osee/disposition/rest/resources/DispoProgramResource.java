@@ -78,4 +78,9 @@ public class DispoProgramResource {
    public DispoAdminResource getDispoSetReport(@PathParam("programId") String programId) {
       return new DispoAdminResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
    }
+
+   @Path("{programId}/config")
+   public DispoConfigResource getDispoDataStore(@PathParam("programId") String programId) {
+      return new DispoConfigResource(dispoApi, dispoFactory.createProgram(programId, Long.parseLong(programId)));
+   }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -45,5 +46,7 @@ public interface DispoQuery {
    ResultSet<IOseeBranch> getDispoBranches();
 
    Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword);
+
+   DispoConfig findDispoConfig(DispoProgram program);
 
 }

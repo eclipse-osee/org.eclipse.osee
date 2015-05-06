@@ -11,10 +11,13 @@
 package org.eclipse.osee.disposition.rest.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoConfig;
+import org.eclipse.osee.disposition.model.DispoConfigData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -22,6 +25,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
 import org.eclipse.osee.disposition.model.Note;
+import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.json.JSONArray;
@@ -344,5 +348,31 @@ public final class DispoUtil {
       note.setDateString(object.getString("dateString"));
       note.setType(object.getString("type"));
       return note;
+   }
+
+   public static ResolutionMethod jsonObjToResolutionMethod(JSONObject object) throws JSONException {
+      ResolutionMethod method = new ResolutionMethod();
+      method.setText(object.getString("text"));
+      method.setValue(object.getString("value"));
+      method.setIsDefault(object.getBoolean("isDefault"));
+      return method;
+   }
+
+   public static DispoConfigData configArtToConfigData(DispoConfig config) {
+      DispoConfigData configData = new DispoConfigData();
+      configData.setValidResolutions(config.getValidResolutions());
+
+      return configData;
+   }
+
+   public static DispoConfig getDefaultConfig() {
+      DispoConfigData configData = new DispoConfigData();
+      ResolutionMethod defaultMethod = new ResolutionMethod();
+      defaultMethod.setText("METHODS HAVEN'T BEEN SET");
+      defaultMethod.setValue("INVALID");
+      defaultMethod.setIsDefault(true);
+      configData.setValidResolutions(Collections.singletonList(defaultMethod));
+
+      return configData;
    }
 }

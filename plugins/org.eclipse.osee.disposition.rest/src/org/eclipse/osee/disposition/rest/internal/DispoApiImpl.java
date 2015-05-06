@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoProgram;
@@ -508,4 +509,8 @@ public class DispoApiImpl implements DispoApi {
       return generateReportArt(program, getQuery().findUser(), report, "Copy Dispositions");
    }
 
+   @Override
+   public DispoConfig getDispoConfig(DispoProgram program) {
+      return getQuery().findDispoConfig(program);
+   }
 }
