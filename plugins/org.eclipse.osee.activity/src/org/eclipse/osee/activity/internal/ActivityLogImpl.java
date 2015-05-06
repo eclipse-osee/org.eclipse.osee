@@ -15,7 +15,6 @@ import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECU
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
-import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.DrainingIterator;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
 
@@ -66,6 +67,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<Long, Object[]>();
    private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<Long, Object[]>();
+   private static final Object[] EMPTY_ARRAY = new Object[0];
 
    private Log logger;
    private ExecutorAdmin executorAdmin;
@@ -77,7 +79,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private volatile int exceptionLineCount;
    private volatile int executorPoolSize;
    private volatile long lastFlushTime;
-   private volatile boolean enabled;
+   private volatile boolean enabled = ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -115,7 +117,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       freshnessMillis = get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
       exceptionLineCount = get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
       int newExecutorPoolSize = get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
-      enabled = get(properties, ACTIVITY_LOGGER__ENABLED, DEFAULT_ACTIVITY_LOGGER__ENABLED);
+      String value = (String)properties.get(ACTIVITY_LOGGER__ENABLED);
+      if (Strings.isValid(value)) {
+         enabled = Boolean.valueOf(value);
+      }
       //@formatter:on
 
       if (newExecutorPoolSize != executorPoolSize) {
@@ -151,66 +156,77 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    @Override
    public Long createEntry(Long typeId, Integer status, Object... messageArgs) {
-      Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
-      Long entryId = LogEntry.ENTRY_ID.from(threadRootEntry);
-      return createEntry(typeId, entryId, status, messageArgs);
+      if (enabled) {
+         Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
+         Long entryId = LogEntry.ENTRY_ID.from(threadRootEntry);
+         return createEntry(typeId, entryId, status, messageArgs);
+      }
+      return 0L;
    }
 
    @Override
    public Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs) {
-      Object[] rootEntry = activityMonitor.getThreadRootEntry();
-      Long accountId = LogEntry.ACCOUNT_ID.from(rootEntry);
-      Long serverId = LogEntry.SERVER_ID.from(rootEntry);
-      Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
-      Object[] entry =
-         createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
-      return LogEntry.ENTRY_ID.from(entry);
+      if (enabled) {
+         Object[] rootEntry = activityMonitor.getThreadRootEntry();
+         Long accountId = LogEntry.ACCOUNT_ID.from(rootEntry);
+         Long serverId = LogEntry.SERVER_ID.from(rootEntry);
+         Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
+         Object[] entry =
+            createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
+         return LogEntry.ENTRY_ID.from(entry);
+      }
+      return 0L;
    }
 
    private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
-      Long entryId = Lib.generateUuid();
-      Long startTime = System.currentTimeMillis();
-      String fullMsg = Collections.toString("\n", messageArgs);
+      Object[] entry = EMPTY_ARRAY;
+      if (enabled) {
+         Long entryId = Lib.generateUuid();
+         Long startTime = System.currentTimeMillis();
+         String fullMsg = Collections.toString("\n", messageArgs);
 
-      String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
-      // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
-      Object[] entry =
-         new Object[] {entryId, parentId, typeId, accountId, serverId, clientId, startTime, duration, status, msg};
-      newEntities.put(entryId, entry);
+         String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
+         // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
+         entry =
+            new Object[] {entryId, parentId, typeId, accountId, serverId, clientId, startTime, duration, status, msg};
+         newEntities.put(entryId, entry);
 
-      if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-         Long parentCursor = entryId;
-         for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
-            JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-            Long continueEntryId = Lib.generateUuid();
-            Object[] continueEntry =
-               new Object[] {
-                  continueEntryId,
-                  parentCursor,
-                  Activity.MSG_CONTINUATION.getTypeId(),
-                  accountId,
-                  serverId,
-                  clientId,
-                  startTime,
-                  duration,
-                  status,
-                  fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
-            newEntities.put(continueEntryId, continueEntry);
-            parentCursor = continueEntryId;
+         if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+            Long parentCursor = entryId;
+            for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
+               JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+               Long continueEntryId = Lib.generateUuid();
+               Object[] continueEntry =
+                  new Object[] {
+                     continueEntryId,
+                     parentCursor,
+                     Activity.MSG_CONTINUATION.getTypeId(),
+                     accountId,
+                     serverId,
+                     clientId,
+                     startTime,
+                     duration,
+                     status,
+                     fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
+               newEntities.put(continueEntryId, continueEntry);
+               parentCursor = continueEntryId;
+            }
          }
+         flush(false);
       }
-      flush(false);
       return entry;
    }
 
    @Override
    public Long createThrowableEntry(ActivityType type, Throwable throwable) {
       Long entryId = -1L;
-      try {
-         String message = captureStackTrace(throwable, exceptionLineCount);
-         entryId = createEntry(type.getTypeId(), ABNORMALLY_ENDED_STATUS, message);
-      } catch (Throwable th) {
-         logger.error(th, "logging failed in ActivityLogImpl.createThrowableEntry");
+      if (enabled) {
+         try {
+            String message = captureStackTrace(throwable, exceptionLineCount);
+            entryId = createEntry(type.getTypeId(), ABNORMALLY_ENDED_STATUS, message);
+         } catch (Throwable th) {
+            logger.error(th, "logging failed in ActivityLogImpl.createThrowableEntry");
+         }
       }
       return entryId;
    }
@@ -218,17 +234,19 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public boolean updateEntry(Long entryId, Integer status) {
       boolean modified = false;
-      if (!updateIfNew(entryId, status)) {
-         Object[] data = updatedEntities.get(entryId);
-         if (data == null) {
-            addUpdatedEntryToMap(entryId, status);
-         } else {
-            data[LogEntry.STATUS.ordinal()] = status;
-            if (!updatedEntities.containsKey(entryId)) {
+      if (enabled) {
+         if (!updateIfNew(entryId, status)) {
+            Object[] data = updatedEntities.get(entryId);
+            if (data == null) {
                addUpdatedEntryToMap(entryId, status);
+            } else {
+               data[LogEntry.STATUS.ordinal()] = status;
+               if (!updatedEntities.containsKey(entryId)) {
+                  addUpdatedEntryToMap(entryId, status);
+               }
             }
+            modified = true;
          }
-         modified = true;
       }
       return modified;
    }
@@ -342,7 +360,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    @Override
    public Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
-      return createActivityThread(-1L, type, accountId, serverId, clientId, messageArgs);
+      return createActivityThread(ActivityConstants.ROOT_ENTRY_ID, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
@@ -370,5 +388,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public void queryActivityTypes(ActivityTypeDataHandler handler) {
       storage.selectTypes(handler);
+   }
+
+   @Override
+   public boolean isEnabled() {
+      return enabled;
    }
 }

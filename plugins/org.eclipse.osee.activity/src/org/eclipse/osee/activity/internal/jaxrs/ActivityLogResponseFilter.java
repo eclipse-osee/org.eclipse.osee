@@ -43,22 +43,25 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
     */
    @Override
    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) {
-      try {
-         Long entryId = (Long) requestContext.getProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID);
-         if (entryId != null) {
-            StatusType statusType = responseContext.getStatusInfo();
-            if (statusType.getFamily() == Status.Family.SUCCESSFUL) {
-               activityLog.completeEntry(entryId);
+      if (activityLog.isEnabled()) {
+         try {
+            Long entryId = (Long) requestContext.getProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID);
+            if (entryId != null) {
+               StatusType statusType = responseContext.getStatusInfo();
+               if (statusType.getFamily() == Status.Family.SUCCESSFUL) {
+                  activityLog.completeEntry(entryId);
+               } else {
+                  activityLog.endEntryAbnormally(entryId, responseContext.getStatus());
+               }
             } else {
-               activityLog.endEntryAbnormally(entryId, responseContext.getStatus());
+               // Response was called without a matching request
+               activityLog.createActivityThread(Activity.JAXRS_METHOD_CALL_FILTER_ERROR,
+                  ActivityConstants.DEFAULT_ACCOUNT_ID, ActivityConstants.DEFAULT_SERVER_ID,
+                  ActivityConstants.DEFAULT_CLIENT_ID, ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER);
             }
-         } else {
-            // Response was called without a matching request
-            activityLog.createUpdateableEntry(Activity.JAXRS_METHOD_CALL_FILTER_ERROR,
-               ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER);
+         } catch (Throwable th) {
+            logger.error(th, "Error during ActivityContainerResponseFilter");
          }
-      } catch (Throwable th) {
-         logger.error(th, "Error during ActivityContainerResponseFilter");
       }
    }
 }

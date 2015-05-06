@@ -67,4 +67,6 @@ public interface ActivityLog {
 
    boolean activityTypeExists(Long typeId);
 
+   boolean isEnabled();
+
 }

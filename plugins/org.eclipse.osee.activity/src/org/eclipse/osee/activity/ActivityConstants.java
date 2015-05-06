@@ -35,7 +35,7 @@ public final class ActivityConstants {
    public static long DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS = 3000L;
    public static int DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT = 5;
    public static int DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE = 1;
-   public static boolean DEFAULT_ACTIVITY_LOGGER__ENABLED = false;
+   public static boolean DEFAULT_ACTIVITY_LOGGER__ENABLED = true;
 
    public static final String HTTP_HEADER__ACTIVITY_ENTRY_ID = "X-osee-activity-log-entryId";
    public static final String ERROR_MSG__MISSING_ACTIVITY_HEADER =
@@ -44,4 +44,5 @@ public final class ActivityConstants {
    public static final Long DEFAULT_ACCOUNT_ID = 1896L; // Guest Account Id
    public static final Long DEFAULT_SERVER_ID = 777L;
    public static final Long DEFAULT_CLIENT_ID = 111L;
+   public static final Long ROOT_ENTRY_ID = -1L;
 }

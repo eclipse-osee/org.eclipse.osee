@@ -45,19 +45,21 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
     */
    @Override
    public void filter(ContainerRequestContext context) {
-      try {
-         String message = String.format("%s %s", context.getMethod(), context.getUriInfo().getRequestUri());
+      if (activityLog.isEnabled()) {
+         try {
+            String message = String.format("%s %s", context.getMethod(), context.getUriInfo().getRequestUri());
 
-         Long serverId = getServerId(context);
-         Long clientId = getClientId(context);
-         Long accountId = getAccountId(context);
+            Long serverId = getServerId(context);
+            Long clientId = getClientId(context);
+            Long accountId = getAccountId(context);
 
-         Long entryId =
-            activityLog.createActivityThread(Activity.JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
+            Long entryId =
+               activityLog.createActivityThread(Activity.JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
 
-         context.setProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID, entryId);
-      } catch (Throwable th) {
-         logger.error(th, "Error during ActivityContainerRequestFilter");
+            context.setProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID, entryId);
+         } catch (Throwable th) {
+            logger.error(th, "Error during ActivityContainerRequestFilter");
+         }
       }
    }
 
