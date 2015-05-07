@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.integration.tests.util;
 
+import static org.eclipse.osee.orcs.rest.client.OseeClient.OSEE_APPLICATION_SERVER;
 import java.util.HashMap;
 import java.util.Map;
 import org.databene.contiperf.junit.ContiPerfRule;
@@ -26,9 +27,6 @@ import org.junit.rules.MethodRule;
 
 public final class IntegrationUtil {
 
-   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
-   private static final String DEFAULT_OSEE_APPLICATION_SERVER = "http://localhost:8089";
-
    private IntegrationUtil() {
       // Utility class
    }
@@ -42,10 +40,13 @@ public final class IntegrationUtil {
       return OseeClientStandaloneSetup.createClient(config);
    }
 
+   private static String getOseeApplicationServer() {
+      return System.getProperty(OSEE_APPLICATION_SERVER, "http://localhost:8089");
+   }
+
    private static Map<String, Object> createClientConfig() {
       Map<String, Object> config = new HashMap<String, Object>();
-      String serverAddress = System.getProperty(OSEE_APPLICATION_SERVER, DEFAULT_OSEE_APPLICATION_SERVER);
-      config.put(OSEE_APPLICATION_SERVER, serverAddress);
+      config.put(OSEE_APPLICATION_SERVER, getOseeApplicationServer());
       return config;
    }
 
@@ -55,9 +56,7 @@ public final class IntegrationUtil {
    }
 
    public static AtsJaxRsApi createAtsClient() {
-      Map<String, Object> properties = createClientConfig();
-      String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
-      String atsUri = String.format("%s/ats", address);
+      String atsUri = String.format("%s/ats", getOseeApplicationServer());
 
       AtsJaxRsApi atsEndpoint = JaxRsClient.newBuilder() //
       .createThreadSafeProxyClients(true) //  if the client needs to be shared between threads 

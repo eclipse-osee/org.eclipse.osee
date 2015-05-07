@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
  * @author John Misinco
  */
 public interface OseeClient {
+   String OSEE_APPLICATION_SERVER = "osee.application.server";
 
    QueryBuilder createQueryBuilder(IOseeBranch branch);
 
@@ -42,7 +43,7 @@ public interface OseeClient {
    IdeClientEndpoint getIdeClientEndpoint();
 
    ResourcesEndpoint getResourcesEndpoint();
-   
+
    DatastoreEndpoint getDatastoreEndpoint();
 
 }

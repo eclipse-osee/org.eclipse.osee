@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
  * @author Roberto E. Escobar
@@ -18,8 +19,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 public class OseeClientProperties extends OseeProperties {
 
    private static final OseeClientProperties instance = new OseeClientProperties();
-
-   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
 
    private static final String OSEE_LOCAL_APPLICATION_SERVER = "osee.local.application.server";
    private static final String OSEE_LOCAL_HTTP_WORKER_PORT = "osee.local.http.worker.port";
@@ -142,7 +141,7 @@ public class OseeClientProperties extends OseeProperties {
     * @param application server URL to use
     */
    public static void setOseeApplicationServer(String value) {
-      System.setProperty(OSEE_APPLICATION_SERVER, value);
+      System.setProperty(OseeClient.OSEE_APPLICATION_SERVER, value);
    }
 
    /**
@@ -156,7 +155,7 @@ public class OseeClientProperties extends OseeProperties {
     * @return application server URL
     */
    public static String getOseeApplicationServer() {
-      return getProperty(OSEE_APPLICATION_SERVER);
+      return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8089");
    }
 
    private static String getProperty(String name) {
