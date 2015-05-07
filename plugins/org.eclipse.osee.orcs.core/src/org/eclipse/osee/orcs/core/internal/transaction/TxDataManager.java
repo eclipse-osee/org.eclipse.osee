@@ -32,7 +32,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
@@ -275,7 +274,7 @@ public class TxDataManager {
       }
       artifactFactory.introduceArtifact(txData.getSession(), src, dest, txData.getBranch());
       relationManager.introduce(txData.getSession(), txData.getBranch(), src, dest);
-      addNodeAndAdjacencies(txData, dest);
+      addAdjacencies(txData, dest);
       return asExternalArtifact(txData, dest);
    }
 
@@ -283,13 +282,14 @@ public class TxDataManager {
       return introduceArtifact(txData, fromBranch, readable, destination);
    }
 
-   private void addNodeAndAdjacencies(TxData txData, Artifact dest) {
-      checkAndAdd(txData, dest);
-      GraphData graph = txData.getGraph();
+   private void addAdjacencies(TxData txData, Artifact dest) {
       GraphData destGraph = ((RelationNode) dest).getGraph();
-      GraphAdjacencies adjacencies = destGraph.getAdjacencies(dest);
+      RelationNodeAdjacencies adjacencies = destGraph.getAdjacencies(dest);
+      GraphData graph = txData.getGraph();
       if (adjacencies != null) {
-         graph.addAdjacencies(dest, adjacencies);
+         for (Relation rel : adjacencies.getAll()) {
+            graph.addAdjacencies(rel.getLocalIdForSide(RelationSide.SIDE_A), adjacencies);
+         }
       }
    }
 
