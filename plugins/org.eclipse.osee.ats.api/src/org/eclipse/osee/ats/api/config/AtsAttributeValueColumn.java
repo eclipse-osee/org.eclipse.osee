@@ -135,4 +135,9 @@ public class AtsAttributeValueColumn {
       this.booleanNotSetShow = booleanNotSetShow;
    }
 
+   @Override
+   public String toString() {
+      return "AtsAttributeValueColumn [name=" + name + ", namespace=" + namespace + ", attrTypeId=" + attrTypeId + ", attrTypeName=" + attrTypeName + "]";
+   }
+
 }

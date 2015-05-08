@@ -17,6 +17,7 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
+import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
@@ -65,6 +66,10 @@ public class AtsApplication extends Application {
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
       OseeTemplateTokens.register(registry);
+
+      // Register conversions
+      ConvertCreateUpdateAtsConfig conversion = new ConvertCreateUpdateAtsConfig(atsServer);
+      atsServer.addAtsDatabaseConversion(conversion);
 
       // Agile resources
       singletons.add(new AgileEndpointImpl(atsServer));

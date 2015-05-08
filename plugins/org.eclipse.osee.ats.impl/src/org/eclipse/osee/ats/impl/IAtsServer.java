@@ -108,4 +108,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    Collection<ArtifactReadable> getArtifacts(List<Long> uuids);
 
+   void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
+
 }

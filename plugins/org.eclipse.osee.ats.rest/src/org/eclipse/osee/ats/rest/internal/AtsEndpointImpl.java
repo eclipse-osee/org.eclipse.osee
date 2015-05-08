@@ -31,7 +31,6 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
 
    private final IAtsServer atsServer;
    private final Log logger;
-   private final IResourceRegistry registry;
    private AtsNotifyEndpointImpl atsNotifyEndpointImpl;
    private AtsConfigEndpointImpl atsConfigEndpointImpl;
    private AtsCpaEndpointApi atsCpaEndpointApi;
@@ -42,7 +41,6 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
    public AtsEndpointImpl(IAtsServer atsServer, Log logger, IResourceRegistry registry, CpaServiceRegistry cpaRegistry) {
       this.atsServer = atsServer;
       this.logger = logger;
-      this.registry = registry;
       this.cpaRegistry = cpaRegistry;
    }
 
@@ -57,7 +55,7 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
    @Override
    public AtsConfigEndpointApi getConfig() {
       if (atsConfigEndpointImpl == null) {
-         atsConfigEndpointImpl = new AtsConfigEndpointImpl(atsServer, atsServer.getOrcsApi(), logger, registry);
+         atsConfigEndpointImpl = new AtsConfigEndpointImpl(atsServer, atsServer.getOrcsApi(), logger);
       }
       return atsConfigEndpointImpl;
    }

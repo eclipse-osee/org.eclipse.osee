@@ -164,6 +164,7 @@ public class AtsServerImpl implements IAtsServer {
       this.userService = userService;
    }
 
+   @Override
    public void addAtsDatabaseConversion(IAtsDatabaseConversion conversion) {
       externalConversions.put(conversion.getName(), conversion);
    }
@@ -409,7 +410,7 @@ public class AtsServerImpl implements IAtsServer {
       String result = null;
       @SuppressWarnings("unchecked")
       ArtifactReadable atsConfig =
-         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getExactlyOne();
+         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;

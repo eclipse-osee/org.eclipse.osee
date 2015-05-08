@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
@@ -29,11 +30,11 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -41,20 +42,17 @@ import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import com.google.gson.Gson;
 
 /**
  * @author Donald G. Dunne
  */
 public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
-   private static final String VIEWS_KEY = "views";
    private final OrcsApi orcsApi;
    private final IAtsServer atsServer;
    private final Log logger;
-   private final Gson gson = new Gson();
 
-   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger, IResourceRegistry registry) {
+   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
       this.logger = logger;
@@ -73,11 +71,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
          config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
       }
-      String viewsStr = atsServer.getConfigValue(VIEWS_KEY);
-      if (Strings.isValid(viewsStr)) {
-         AtsViews views = gson.fromJson(viewsStr, AtsViews.class);
-         configs.setViews(views);
-      }
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+      AtsViews views = update.getConfigViews();
+      configs.setViews(views);
       return configs;
    }
 
@@ -188,24 +184,29 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
       config.setUuid(((ArtifactReadable) configArt).getLocalId());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, String.valueOf(newBranchUuid));
+      XResultData rd = new XResultData();
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+
       // Get or create Configs folder
-      ArtifactId configsFolderArt = getOrCreateConfigsFolder(tx, userArt);
+      ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userArt, rd);
+      if (rd.isErrors()) {
+         throw new OseeStateException(rd.toString());
+      }
       // Add configuration to configs folder
       tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Child, configArt);
       tx.commit();
       return config;
    }
 
-   @SuppressWarnings("unchecked")
-   private ArtifactId getOrCreateConfigsFolder(TransactionBuilder tx, ArtifactReadable userArt) {
-      ArtifactId configsFolderArt =
-         orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();
-      if (configsFolderArt == null) {
-         configsFolderArt = tx.createArtifact(AtsArtifactToken.ConfigsFolder);
-         ArtifactReadable configFolderArt =
-            orcsApi.getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.ConfigFolder).getResults().getExactlyOne();
-         tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
+   @Override
+   public Response createUpdateConfig() {
+      XResultData resultData = new XResultData(false);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+      update.createUpdateConfig(resultData);
+      if (resultData.isEmpty()) {
+         resultData.log("Nothing to update");
       }
-      return configsFolderArt;
+      return Response.ok(resultData.toString()).build();
    }
+
 }

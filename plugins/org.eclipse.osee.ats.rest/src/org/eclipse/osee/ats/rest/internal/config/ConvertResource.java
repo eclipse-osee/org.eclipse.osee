@@ -83,7 +83,7 @@ public final class ConvertResource {
       String operation = form.getFirst("operation");
       boolean reportOnly = !operation.equals("run");
       XResultData results = new XResultData(false);
-      results.logWithFormat("Converting %s ...\n", convertName);
+      results.logWithFormat("Running [%s] ...\n", convertName);
       for (IAtsDatabaseConversion convert : atsServer.getDatabaseConversions()) {
          if (convert.getName().equals(convertName)) {
             convert.run(results, reportOnly);
