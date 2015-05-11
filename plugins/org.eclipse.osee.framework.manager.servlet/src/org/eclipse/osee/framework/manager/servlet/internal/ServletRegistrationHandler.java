@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.DataServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionClientLoopbackServlet;
 import org.eclipse.osee.framework.manager.servlet.SessionManagementServlet;
-import org.eclipse.osee.framework.manager.servlet.SystemManagerServlet;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -98,7 +97,6 @@ public class ServletRegistrationHandler {
    private void registerServices(BundleContext context) {
       contexts.clear();
       JdbcClient jdbcClient = jdbcService.getClient();
-      register(new SystemManagerServlet(logger, sessionManager), OseeServerContext.MANAGER_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), OseeServerContext.PROCESS_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
          OseeServerContext.ARTIFACT_CONTEXT);
