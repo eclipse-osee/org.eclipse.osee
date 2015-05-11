@@ -62,7 +62,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       ArtifactReadable artifact = atsServer.getArtifact(object);
       if (artifact != null) {
          try {
-            related = artifact.getRelated(relationType);
+            related = artifact.getRelated(relationType).getAtMostOneOrNull();
          } catch (ArtifactDoesNotExist ex) {
             // do nothing
          }
