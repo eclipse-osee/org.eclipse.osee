@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Arrays;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,6 +73,16 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());
+
+      createSafetyConfig();
+   }
+
+   private void createSafetyConfig() {
+      List<String> versions = new ArrayList<String>();
+      AtsConfigOperation operation =
+         new AtsConfigOperation("Configure Safety For ATS", AtsArtifactToken.SafetyTeamDefinition, versions,
+            AtsArtifactToken.SafetyActionableItem);
+      Operations.executeWorkAndCheckStatus(operation);
    }
 
    public static void createAtsFolders() throws OseeCoreException {

@@ -29,7 +29,7 @@ public class ActionableItemResourceTest extends AbstractConfigurationRestTest {
    @Test
    public void testAtsAisRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/ai");
-      Assert.assertEquals(44, array.size());
+      Assert.assertEquals(46, array.size());
       JsonObject obj = getObjectNamed("SAW Code", array);
       Assert.assertNotNull("Did not find value SAW Code", obj);
       Assert.assertFalse(obj.has("ats.Active"));
@@ -38,7 +38,7 @@ public class ActionableItemResourceTest extends AbstractConfigurationRestTest {
    @Test
    public void testAtsAisDetailsRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/ai/details");
-      Assert.assertEquals(44, array.size());
+      Assert.assertEquals(46, array.size());
       JsonObject obj = getObjectNamed("SAW Code", array);
       Assert.assertNotNull("Did not find value SAW Code", obj);
       Assert.assertTrue(obj.has("ats.Active"));

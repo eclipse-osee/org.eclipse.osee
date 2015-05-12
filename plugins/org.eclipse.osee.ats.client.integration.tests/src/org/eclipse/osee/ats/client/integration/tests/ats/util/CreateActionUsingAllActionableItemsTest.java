@@ -52,9 +52,9 @@ public class CreateActionUsingAllActionableItemsTest {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
       ActionArtifact action = CreateActionUsingAllActionableItems.createActionWithAllAis();
       if (TestUtil.isDemoDb()) {
-         Assert.assertEquals("Should be 14 workflows created", 14, action.getTeams().size());
+         Assert.assertEquals("Should be 15 workflows created", 15, action.getTeams().size());
       } else {
-         Assert.assertEquals("Should be 33 workflows created", 33, action.getTeams().size());
+         Assert.assertEquals("Should be 34 workflows created", 34, action.getTeams().size());
       }
       TestUtil.severeLoggingEnd(monitor);
    }

@@ -29,7 +29,7 @@ public class TeamResourceTest extends AbstractConfigurationRestTest {
    @Test
    public void testAtsTeamsRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/team");
-      Assert.assertEquals(17, array.size());
+      Assert.assertEquals(18, array.size());
       JsonObject obj = getObjectNamed("SAW SW", array);
       Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
       Assert.assertFalse(obj.has("version"));
@@ -39,7 +39,7 @@ public class TeamResourceTest extends AbstractConfigurationRestTest {
    @Test
    public void testAtsTeamsDetailsRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/team/details");
-      Assert.assertEquals(17, array.size());
+      Assert.assertEquals(18, array.size());
       JsonObject obj = getObjectNamed("SAW SW", array);
       Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
       Assert.assertEquals(3, obj.getAsJsonArray("version").size());

@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -68,6 +70,8 @@ public class AtsConfigOperation extends AbstractOperation {
    private IAtsTeamDefinition teamDefinition;
    private Collection<IAtsActionableItem> actionableItems;
    private IAtsWorkDefinition workDefinition = null;
+   private IArtifactToken teamDefToken = null;
+   private IArtifactToken actionableItemToken = null;
 
    /**
     * @param teamDefName - name of team definition to use
@@ -80,6 +84,12 @@ public class AtsConfigOperation extends AbstractOperation {
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
       this.actionableItemsNames = actionableItems;
+   }
+
+   public AtsConfigOperation(String name, IArtifactToken teamDefToken, Collection<String> versionNames, IArtifactToken actionableItemToken) {
+      this(name, teamDefToken.getName(), versionNames, Arrays.asList(actionableItemToken.getName()));
+      this.teamDefToken = teamDefToken;
+      this.actionableItemToken = actionableItemToken;
    }
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
@@ -124,7 +134,14 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes) throws OseeCoreException {
-      IAtsTeamDefinition teamDef = AtsClientService.get().createTeamDefinition(teamDefName);
+      IAtsTeamDefinition teamDef = null;
+      if (teamDefToken == null) {
+         teamDef = AtsClientService.get().createTeamDefinition(teamDefName);
+      } else {
+         teamDef =
+            AtsClientService.get().createTeamDefinition(teamDefToken.getGuid(), teamDefToken.getName(),
+               teamDefToken.getUuid());
+      }
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
       teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
       TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(teamDef);
@@ -146,16 +163,27 @@ public class AtsConfigOperation extends AbstractOperation {
       aias.add(topAia);
 
       // Create children actionable item
-      for (String name : actionableItemsNames) {
-         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name);
-         childAi.setActionable(true);
-         topAia.getChildrenActionableItems().add(childAi);
-         childAi.setParentActionableItem(topAia);
-         AtsClientService.get().storeConfigObject(childAi, changes);
-         aias.add(childAi);
+      if (actionableItemToken == null) {
+         for (String name : actionableItemsNames) {
+            IAtsActionableItem childAi = AtsClientService.get().createActionableItem(name);
+            addChildAi(topAia, childAi, changes, aias);
+         }
+      } else {
+         IAtsActionableItem childAi =
+            AtsClientService.get().createActionableItem(actionableItemToken.getGuid(), actionableItemToken.getName(),
+               actionableItemToken.getUuid());
+         addChildAi(topAia, childAi, changes, aias);
       }
       AtsClientService.get().storeConfigObject(topAia, changes);
       return aias;
+   }
+
+   private void addChildAi(IAtsActionableItem topAia, IAtsActionableItem childAi, IAtsChangeSet changes, Collection<IAtsActionableItem> aias) {
+      childAi.setActionable(true);
+      topAia.getChildrenActionableItems().add(childAi);
+      childAi.setParentActionableItem(topAia);
+      AtsClientService.get().storeConfigObject(childAi, changes);
+      aias.add(childAi);
    }
 
    private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
