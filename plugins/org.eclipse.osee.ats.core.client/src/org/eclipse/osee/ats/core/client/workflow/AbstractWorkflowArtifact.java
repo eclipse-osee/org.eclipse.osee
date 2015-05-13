@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -162,6 +163,15 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
       return parentTeamArt;
+   }
+
+   @Override
+   public IAtsAction getParentAction() {
+      Artifact actionArt = getParentActionArtifact();
+      if (actionArt != null) {
+         return AtsClientService.get().getWorkItemFactory().getAction(actionArt);
+      }
+      return null;
    }
 
    public String getEditorTitle() throws OseeCoreException {
@@ -708,6 +718,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this.isOfType(AtsArtifactTypes.Task);
    }
 
+   @Override
    public boolean isReview() {
       return this instanceof AbstractReviewArtifact;
    }

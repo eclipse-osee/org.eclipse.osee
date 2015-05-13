@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.client.demo.artifact;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.actions.wizard.TeamWorkflowProviderAdapter;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.TeamWorkflowProviderAdapter;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.internal.Activator;

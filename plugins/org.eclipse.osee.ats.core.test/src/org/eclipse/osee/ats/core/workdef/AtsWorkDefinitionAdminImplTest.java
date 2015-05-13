@@ -89,8 +89,7 @@ public class AtsWorkDefinitionAdminImplTest {
       when(cacheProvider.get()).thenReturn(cache);
 
       workDefAmin =
-         new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, teamWorkflowProviders,
-            attributeResolver);
+         new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, attributeResolver);
    }
 
    @Test

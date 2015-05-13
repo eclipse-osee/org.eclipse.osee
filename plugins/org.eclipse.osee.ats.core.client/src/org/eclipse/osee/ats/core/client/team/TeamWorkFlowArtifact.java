@@ -243,19 +243,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       return (Branch) AtsClientService.get().getBranchService().getWorkingBranch(this);
    }
 
-   public String getBranchName() {
-      String smaTitle = getName();
-      if (smaTitle.length() > 40) {
-         smaTitle = smaTitle.substring(0, 39) + "...";
-      }
-      String typeName = TeamWorkFlowManager.getArtifactTypeShortName(this);
-      if (Strings.isValid(typeName)) {
-         return String.format("%s - %s - %s", getAtsId(), typeName, smaTitle);
-      } else {
-         return String.format("%s - %s", getAtsId(), smaTitle);
-      }
-   }
-
    public boolean isWorkingBranchCreationInProgress() {
       return creatingWorkingBranch;
    }

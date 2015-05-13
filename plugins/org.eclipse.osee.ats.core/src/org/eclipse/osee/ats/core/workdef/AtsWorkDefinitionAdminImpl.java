@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -35,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,15 +49,13 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
    private final CacheProvider<AtsWorkDefinitionCache> cacheProvider;
    private final IAtsWorkDefinitionService workDefinitionService;
-   private final ITeamWorkflowProviders teamWorkflowProviders;
    private final IAtsWorkItemService workItemService;
    private final IAttributeResolver attributeResolver;
 
-   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, ITeamWorkflowProviders teamWorkflowProviders, IAttributeResolver attributeResolver) {
+   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver) {
       this.cacheProvider = workDefCacheProvider;
       this.workItemService = workItemService;
       this.workDefinitionService = workDefinitionService;
-      this.teamWorkflowProviders = teamWorkflowProviders;
       this.attributeResolver = attributeResolver;
    }
 
@@ -230,7 +228,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
     */
    private IWorkDefinitionMatch getWorkDefinitionForTask(IAtsTeamWorkflow teamWf, IAtsTask task) throws OseeCoreException {
       IWorkDefinitionMatch match = new WorkDefinitionMatch();
-      for (ITeamWorkflowProvider provider : teamWorkflowProviders.getTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
          if (Strings.isValid(workFlowDefId)) {
             match = getWorkDefinition(workFlowDefId);
@@ -269,7 +267,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       }
       if (!match.isMatched()) {
          // Check extensions for definition handling
-         for (ITeamWorkflowProvider provider : teamWorkflowProviders.getTeamWorkflowProviders()) {
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(workItem);
             if (Strings.isValid(workFlowDefId)) {
                match = getWorkDefinition(workFlowDefId);

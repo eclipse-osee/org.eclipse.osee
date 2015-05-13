@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -67,5 +68,7 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
    String getCancelledReason();
 
    void setStateManager(IAtsStateManager stateManager);
+
+   IAtsAction getParentAction();
 
 }

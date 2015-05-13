@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -30,9 +31,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.workflow.state.SimpleTeamState;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.internal.util.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -40,17 +43,17 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
-   private final IArtifactProvider artifactProvider;
    private final IAtsServer atsServer;
+   private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
-   public AtsWorkItemServiceImpl(IAtsServer atsServer, IArtifactProvider artifactProvider) {
+   public AtsWorkItemServiceImpl(IAtsServer atsServer, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsServer = atsServer;
-      this.artifactProvider = artifactProvider;
+      this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    @Override
    public IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException {
-      return artifactProvider.getArtifact(workItem).getArtifactType();
+      return atsServer.getArtifact(workItem).getArtifactType();
    }
 
    @Override
@@ -60,7 +63,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public boolean isOfType(IAtsWorkItem workItem, IArtifactType matchType) throws OseeCoreException {
-      return artifactProvider.getArtifact(workItem).getArtifactType().matches(matchType);
+      return atsServer.getArtifact(workItem).isOfType(matchType);
    }
 
    @Override
@@ -70,7 +73,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException {
-      return artifactProvider.getArtifact(workItem).getTransaction();
+      return atsServer.getArtifact(workItem).getTransaction();
    }
 
    @Override
@@ -151,7 +154,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public String getCurrentStateName(IAtsWorkItem workItem) throws OseeCoreException {
-      return artifactProvider.getArtifact(workItem).getSoleAttributeValue(AtsAttributeTypes.CurrentState, "").replaceAll(
+      return atsServer.getArtifact(workItem).getSoleAttributeValue(AtsAttributeTypes.CurrentState, "").replaceAll(
          ";.*$", "");
    }
 
@@ -183,7 +186,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       String version = "";
       try {
          ArtifactReadable art =
-            artifactProvider.getArtifact(teamWf).getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).getOneOrNull();
+            atsServer.getArtifact(teamWf).getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).getOneOrNull();
          if (art != null) {
             version = art.getName();
          }
@@ -196,6 +199,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public String getTeamName(IAtsTeamWorkflow teamWf) {
       return teamWf.getTeamDefinition().getName();
+   }
+
+   @Override
+   public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : teamWorkflowProvidersLazy.getProviders()) {
+         String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamWf);
+         if (Strings.isValid(typeName)) {
+            return typeName;
+         }
+      }
+      return null;
    }
 
 }

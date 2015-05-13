@@ -151,7 +151,10 @@ public class WorkItemNotificationProcessor {
          try {
             IAtsStateDefinition stateDefinition = workItem.getStateDefinition();
             StateType stateType = stateDefinition.getStateType();
-            if (types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed) && (!workItem.isTask() && (stateType.isCompleted() || stateType.isCancelled()))) {
+            boolean notificationTypeIsCompletedOrCancelled =
+               types.contains(AtsNotifyType.Cancelled) || types.contains(AtsNotifyType.Completed);
+            boolean stateTypeIsCompletedOrCancelled = stateType.isCompleted() || stateType.isCancelled();
+            if (notificationTypeIsCompletedOrCancelled && !workItem.isTask() && stateTypeIsCompletedOrCancelled) {
                IAtsUser originator = workItem.getCreatedBy();
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail())) {

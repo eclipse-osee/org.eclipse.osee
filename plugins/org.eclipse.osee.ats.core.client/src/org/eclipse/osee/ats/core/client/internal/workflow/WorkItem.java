@@ -21,12 +21,16 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -108,6 +112,20 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          }
       }
       return atsClient.getWorkItemFactory().getTeamWf(teamArt);
+   }
+
+   @Override
+   public IAtsAction getParentAction() {
+      Artifact actionArt = null;
+      if (artifact instanceof ActionArtifact) {
+         actionArt = artifact;
+      } else if (artifact instanceof AbstractWorkflowArtifact) {
+         actionArt = ((AbstractWorkflowArtifact) artifact).getParentActionArtifact();
+      }
+      if (actionArt != null) {
+         return AtsClientService.get().getWorkItemFactory().getAction(actionArt);
+      }
+      return null;
    }
 
    @Override

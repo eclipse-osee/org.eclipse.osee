@@ -285,13 +285,7 @@ public class TeamWorkFlowManager {
    }
 
    public static String getBranchName(TeamWorkFlowArtifact teamArt) {
-      for (ITeamWorkflowProvider teamExtension : getTeamWorkflowProviders()) {
-         String name = teamExtension.getBranchName(teamArt);
-         if (Strings.isValid(name)) {
-            return name;
-         }
-      }
-      return teamArt.getBranchName();
+      return AtsClientService.get().getBranchService().getBranchName(teamArt);
    }
 
    public static ITeamWorkflowProvider getTeamWorkflowProvider(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {

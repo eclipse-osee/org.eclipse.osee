@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
@@ -203,4 +204,8 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return teamWf.getTeamDefinition().getName();
    }
 
+   @Override
+   public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf) {
+      return TeamWorkFlowManager.getArtifactTypeShortName((TeamWorkFlowArtifact) teamWf.getStoreObject());
+   }
 }

@@ -23,10 +23,12 @@ import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -43,9 +45,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<String, IOseeBranch>();
    protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<String, Long>(50);
-   private final IAtsServices atsServices;
+   protected IAtsServices atsServices;
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<IOseeBranch> branchesInCommit = new HashSet<IOseeBranch>();
+
+   public AbstractAtsBranchService() {
+   }
 
    public AbstractAtsBranchService(IAtsServices atsServices) {
       this.atsServices = atsServices;
@@ -605,6 +610,26 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       return workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(teamWf,
          destinationBranchParent, commitTransactionIds);
+   }
+
+   @Override
+   public String getBranchName(IAtsTeamWorkflow teamWf) {
+      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+         String name = teamExtension.getBranchName(teamWf);
+         if (Strings.isValid(name)) {
+            return name;
+         }
+      }
+      String smaTitle = teamWf.getName();
+      if (smaTitle.length() > 40) {
+         smaTitle = smaTitle.substring(0, 39) + "...";
+      }
+      String typeName = atsServices.getWorkItemService().getArtifactTypeShortName(teamWf);
+      if (Strings.isValid(typeName)) {
+         return String.format("%s - %s - %s", teamWf.getAtsId(), typeName, smaTitle);
+      } else {
+         return String.format("%s - %s", teamWf.getAtsId(), smaTitle);
+      }
    }
 
 }

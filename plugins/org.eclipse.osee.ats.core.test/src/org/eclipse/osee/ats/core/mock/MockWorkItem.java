@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
@@ -232,6 +233,11 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public boolean isReview() {
       return false;
+   }
+
+   @Override
+   public IAtsAction getParentAction() {
+      return null;
    }
 
 }

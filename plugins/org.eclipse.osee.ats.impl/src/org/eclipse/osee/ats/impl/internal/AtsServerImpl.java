@@ -71,7 +71,7 @@ import org.eclipse.osee.ats.impl.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
-import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProvider;
+import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProviders;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsVersionServiceImpl;
@@ -111,7 +111,6 @@ public class AtsServerImpl implements IAtsServer {
    private IAtsReviewService reviewService;
    private IAtsWorkDefinitionAdmin workDefAdmin;
    private AtsWorkDefinitionCacheProvider workDefCacheProvider;
-   private TeamWorkflowProvider teamWorkflowProvider;
    private AtsAttributeResolverServiceImpl attributeResolverService;
    private IAtsConfig config;
    private IAtsConfigItemFactory configItemFactory;
@@ -188,18 +187,16 @@ public class AtsServerImpl implements IAtsServer {
       workItemFactory = new WorkItemFactory(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
 
-      workItemService = new AtsWorkItemServiceImpl(this, this);
+      workItemService = new AtsWorkItemServiceImpl(this, new TeamWorkflowProviders());
       branchService = new AtsBranchServiceImpl(getServices(), orcsApi);
       reviewService = new AtsReviewServiceImpl(this, this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 
-      teamWorkflowProvider = new TeamWorkflowProvider();
       attributeResolverService = new AtsAttributeResolverServiceImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
       workDefAdmin =
-         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
-            attributeResolverService);
+         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, attributeResolverService);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);

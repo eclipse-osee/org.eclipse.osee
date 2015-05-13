@@ -219,8 +219,7 @@ public class AtsClientImpl implements IAtsClient {
       relationResolver = new AtsRelationResolverServiceImpl();
 
       workDefAdmin =
-         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, teamWorkflowProvider,
-            attributeResolverService);
+         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, attributeResolverService);
       branchService = new AtsBranchServiceImpl(this);
       reviewService = new AtsReviewServiceImpl(this, this);
 

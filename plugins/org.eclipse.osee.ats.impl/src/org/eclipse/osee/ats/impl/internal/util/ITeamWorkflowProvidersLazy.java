@@ -10,25 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.util;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkflowProvider implements ITeamWorkflowProviders {
+public interface ITeamWorkflowProvidersLazy {
 
-   @Override
-   public Iterator<ITeamWorkflowProvider> iterator() {
-      return getTeamWorkflowProviders().iterator();
-   }
-
-   @Override
-   public List<ITeamWorkflowProvider> getTeamWorkflowProviders() {
-      return Collections.emptyList();
-   }
+   public List<ITeamWorkflowProvider> getProviders();
 
 }

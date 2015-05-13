@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -108,6 +109,20 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          }
       }
       return atsServer.getWorkItemFactory().getTeamWf(teamArt);
+   }
+
+   @Override
+   public IAtsAction getParentAction() {
+      ArtifactReadable actionArt = null;
+      IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
+      if (teamWf != null) {
+         ResultSet<ArtifactReadable> results =
+            ((ArtifactReadable) teamWf.getStoreObject()).getRelated(AtsRelationTypes.ActionToWorkflow_Action);
+         if (!results.isEmpty()) {
+            actionArt = results.iterator().next();
+         }
+      }
+      return atsServer.getWorkItemFactory().getAction(actionArt);
    }
 
    @Override

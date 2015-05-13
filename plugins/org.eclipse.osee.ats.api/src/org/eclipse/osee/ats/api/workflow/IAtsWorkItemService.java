@@ -68,4 +68,6 @@ public interface IAtsWorkItemService {
 
    Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
 
+   String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
+
 }
