@@ -133,6 +133,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Category2"
 	attribute "ats.Category3"
 	attribute "ats.Points"
+	attribute "ats.Points Numeric"
 	attribute "ats.Numeric1"
 	attribute "ats.Numeric2"
 	attribute "ats.Current State"
@@ -211,6 +212,9 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "ats.Start Date"
 	attribute "ats.End Date"
 	attribute "ats.Percent Complete"
+	attribute "Notes"
+	attribute "ats.Points Numeric"
+	attribute "ats.Description"
 }
 
 artifactType "Task" extends "ats.State Machine" {
@@ -796,6 +800,15 @@ attributeType "ats.Points" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.point"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Points Numeric" extends FloatingPointAttribute {
+	uuid 0x17FDE8592A26FCB3
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue "0.0"
 	mediaType "text/plain"
 }
 

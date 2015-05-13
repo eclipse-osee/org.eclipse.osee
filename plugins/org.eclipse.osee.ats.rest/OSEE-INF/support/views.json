@@ -2,6 +2,17 @@
     "attrColumns": [
         {
             "align": "Left",
+            "attrTypeId": 1728793301637070003,
+            "attrTypeName": "ats.Points Numeric",
+            "columnMultiEdit": true,
+            "description": "Numeric Point Value",
+            "namespace": "org.eclipse.osee.ats.WorldXViewer",
+            "sortDataType": "Float",
+            "visible": false,
+            "width": 40
+        },
+        {
+            "align": "Left",
             "attrTypeId": 6025996821081174931,
             "attrTypeName": "ats.IPT",
             "columnMultiEdit": true,
