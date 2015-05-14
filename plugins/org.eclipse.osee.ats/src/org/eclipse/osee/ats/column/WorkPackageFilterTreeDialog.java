@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,6 +48,7 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
    private IAtsWorkPackage selection;
    XCheckBox showAll = new XCheckBox("Show All Work Packages");
    private final Collection<IAtsWorkPackage> allValidWorkPackages;
+   private boolean removeFromWorkPackage;
 
    public WorkPackageFilterTreeDialog(String title, String message, Collection<IAtsWorkPackage> allValidWorkPackages) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
@@ -98,7 +100,32 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
          };
       });
 
+      createRemoveCheckbox(comp1);
+
       return comp1;
+   }
+
+   private void createRemoveCheckbox(Composite parent) {
+
+      final XCheckBox checkbox = new XCheckBox("Remove from WorkPackage");
+      checkbox.setFillHorizontally(true);
+      checkbox.set(removeFromWorkPackage);
+      checkbox.createWidgets(parent, 2);
+
+      SelectionListener selectionListener = new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            removeFromWorkPackage = checkbox.isSelected();
+            if (removeFromWorkPackage) {
+               getButton(getDefaultButtonIndex()).setEnabled(true);
+            } else {
+               getButton(getDefaultButtonIndex()).setEnabled(false);
+               updateStatusLabel();
+            }
+         }
+      };
+      checkbox.addSelectionListener(selectionListener);
    }
 
    @Override
@@ -140,5 +167,9 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
          }
       }
       return filtered;
+   }
+
+   public boolean isRemoveFromWorkPackage() {
+      return removeFromWorkPackage;
    }
 }

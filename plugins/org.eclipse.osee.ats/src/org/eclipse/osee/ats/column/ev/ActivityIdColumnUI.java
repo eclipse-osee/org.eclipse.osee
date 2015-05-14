@@ -122,9 +122,14 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
                uniqueWorkPackageOptions), commonWorkPackageOptions);
          dialog.setInput();
          if (dialog.open() == Window.OK) {
+            IAtsWorkPackage workPackage = dialog.getSelection();
+            boolean removeFromWorkPackage = dialog.isRemoveFromWorkPackage();
             for (AbstractWorkflowArtifact awa : awas) {
-               IAtsWorkPackage workPackage = dialog.getSelection();
-               awa.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
+               if (removeFromWorkPackage) {
+                  awa.deleteAttributes(AtsAttributeTypes.WorkPackageGuid);
+               } else {
+                  awa.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
+               }
                modified = true;
             }
             if (persist) {
