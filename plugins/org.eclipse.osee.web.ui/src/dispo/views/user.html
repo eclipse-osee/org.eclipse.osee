@@ -37,12 +37,12 @@
             </div>
          </div>
          <div id="bottom-content">
-            <div id="itemSelectedBar">
+            <div ng-dblclick="getSourceFlie()" id="itemSelectedBar">
                Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}
             </div>
             <div id="annotationsGrid">
                <table class="table subTable">
-                  <th>{{ annotationHeaders.locationRefs }}</th>
+                  <th ng-click="sort()">{{ annotationHeaders.locationRefs }}</th>
                   <th>{{ annotationHeaders.resolutionType }}</th>
                   <th>{{ annotationHeaders.resolution }}</th>
                   <th>Developer Notes</th>

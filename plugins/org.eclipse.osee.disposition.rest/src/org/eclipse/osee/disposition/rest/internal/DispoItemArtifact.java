@@ -122,4 +122,14 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    public String getItemNotes() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemItemNotes, "");
    }
+
+   @Override
+   public String getMethodNumber() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemMethodNumber, "");
+   }
+
+   @Override
+   public String getFileNumber() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoItemFileNumber, "");
+   }
 }

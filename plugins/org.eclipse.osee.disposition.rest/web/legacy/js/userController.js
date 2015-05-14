@@ -77,7 +77,6 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 type: $rootScope.type
             }, function(data) {
-            	loadingModal.close();
                 $scope.coverageResolutionTypes = data.validResolutions;
             });
         };

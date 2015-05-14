@@ -133,6 +133,8 @@ public final class DispoUtil {
       dispoItemData.setAborted(dispoItemArt.getAborted());
       dispoItemData.setElapsedTime(dispoItemArt.getElapsedTime());
       dispoItemData.setItemNotes(dispoItemArt.getItemNotes());
+      dispoItemData.setFileNumber(dispoItemArt.getFileNumber());
+      dispoItemData.setMethodNumber(dispoItemArt.getMethodNumber());
       if (isIncludeDiscrepancies) {
          dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
       }
@@ -205,6 +207,12 @@ public final class DispoUtil {
          if (jsonObject.has("itemNotes")) {
             dispoItem.setItemNotes(jsonObject.getString("itemNotes"));
          }
+         if (jsonObject.has("fileNumber")) {
+            dispoItem.setItemNotes(jsonObject.getString("fileNumber"));
+         }
+         if (jsonObject.has("methodNumber")) {
+            dispoItem.setItemNotes(jsonObject.getString("methodNumber"));
+         }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }
@@ -228,7 +236,7 @@ public final class DispoUtil {
             dispoSet.setNotesList(jsonObject.getJSONArray("notesList"));
          }
       } catch (JSONException ex) {
-         throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
+         throw new OseeCoreException("Error deserializing a Dispositionable Set.", ex);
       }
       return dispoSet;
    }
@@ -252,6 +260,8 @@ public final class DispoUtil {
          jsonObject.put("creationDate", dispoItem.getCreationDate());
          jsonObject.put("itemNotes", dispoItem.getItemNotes());
          jsonObject.put("version", dispoItem.getVersion());
+         jsonObject.put("fileNumber", dispoItem.getFileNumber());
+         jsonObject.put("methodNumber", dispoItem.getMethodNumber());
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

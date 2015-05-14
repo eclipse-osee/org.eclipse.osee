@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.report;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
@@ -85,6 +90,80 @@ public class ExportSet {
 
    }
 
+   public void runCoverageReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
+      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid());
+
+      try {
+         Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
+         ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);
+
+         String[] headers = getHeadersCoverage();
+         int columns = headers.length;
+         sheetWriter.startSheet(setPrimary.getName(), headers.length);
+         sheetWriter.writeRow((Object[]) headers);
+
+         for (DispoItem item : items) {
+            Map<String, DispoAnnotationData> idToAnnotations = getDiscrepancyIdToCoveringAnnotation(item);
+            JSONObject discrepanciesList = item.getDiscrepanciesList();
+            @SuppressWarnings("rawtypes")
+            Iterator keys = discrepanciesList.keys();
+            while (keys.hasNext()) {
+               String key = (String) keys.next();
+               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
+               DispoAnnotationData coveringAnnotation = idToAnnotations.get(discrepancy.getId());
+               if (coveringAnnotation == null) {
+                  coveringAnnotation = createUncoveredAnnotation();
+               }
+
+               writeRow(sheetWriter, columns, item, discrepancy, coveringAnnotation);
+
+            }
+         }
+
+         sheetWriter.endSheet();
+         sheetWriter.endWorkbook();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+
+   }
+
+   private void writeRow(ExcelXmlWriter sheetWriter, int columns, DispoItem item, Discrepancy discrepancy, DispoAnnotationData annoation) throws IOException {
+
+      String[] row = new String[columns];
+      int index = 0;
+      row[index++] = "Empty";
+      row[index++] = item.getName();
+      //      row[index++] = item.getName();
+      row[index++] = discrepancy.getText();
+      row[index++] = String.valueOf(item.getMethodNumber());
+      row[index++] = String.valueOf(discrepancy.getLocation());
+      row[index++] = annoation.getResolutionType();
+      row[index++] = annoation.getResolution();
+      sheetWriter.writeRow((Object[]) row);
+   }
+
+   private Map<String, DispoAnnotationData> getDiscrepancyIdToCoveringAnnotation(DispoItem item) throws JSONException {
+      Map<String, DispoAnnotationData> toReturn = new HashMap<String, DispoAnnotationData>();
+      JSONArray annotationsList = item.getAnnotationsList();
+      for (int i = 0; i < annotationsList.length(); i++) {
+         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationsList.getJSONObject(i));
+         JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+
+         if (idsOfCoveredDiscrepancies.length() > 0) {
+            toReturn.put(idsOfCoveredDiscrepancies.getString(0), annotation);
+         }
+      }
+      return toReturn;
+   }
+
+   private static DispoAnnotationData createUncoveredAnnotation() {
+      DispoAnnotationData annotation = new DispoAnnotationData();
+      annotation.setResolutionType("Uncovered");
+      annotation.setResolution("N/A");
+      return annotation;
+   }
+
    private static String prettifyAnnotations(JSONArray annotations) throws JSONException {
       StringBuilder sb = new StringBuilder();
 
@@ -117,6 +196,18 @@ public class ExportSet {
             "Station",//
             "Dispositions"//
          };
+      return toReturn;
+   }
+
+   private static String[] getHeadersCoverage() {
+      String[] toReturn = {//
+         "Namespace",//
+            "Parent Coverage Unit",//
+            "Unit",//
+            "Method Number",//
+            "Execution Line Number",//
+            "Coverage Method",//
+            "Coverage Rationale"};
       return toReturn;
    }
 }

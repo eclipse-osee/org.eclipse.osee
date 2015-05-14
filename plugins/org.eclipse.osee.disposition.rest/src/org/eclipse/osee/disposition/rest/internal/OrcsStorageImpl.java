@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -275,7 +276,6 @@ public class OrcsStorageImpl implements Storage {
 
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDateCreated, item.getCreationDate());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoLastUpdated, item.getLastUpdate());
-
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
@@ -290,6 +290,12 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAborted, item.getAborted());
 
+         if (Strings.isValid(item.getFileNumber())) {
+            tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemFileNumber, item.getFileNumber());
+         }
+         if (Strings.isValid(item.getMethodNumber())) {
+            tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMethodNumber, item.getMethodNumber());
+         }
          tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
       }
       tx.commit();
@@ -308,6 +314,8 @@ public class OrcsStorageImpl implements Storage {
       String elapsedTime = newItemData.getElapsedTime();
       Boolean aborted = newItemData.getAborted();
       String itemNotes = newItemData.getItemNotes();
+      String fileNumber = newItemData.getFileNumber();
+      String methodNumber = newItemData.getMethodNumber();
 
       Boolean needsRerun;
       if (resetRerunFlag) {
@@ -357,6 +365,12 @@ public class OrcsStorageImpl implements Storage {
       }
       if (itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemItemNotes, itemNotes);
+      }
+      if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemFileNumber, fileNumber);
+      }
+      if (methodNumber != null && !methodNumber.equals(origItem.getMethodNumber())) {
+         tx.setSoleAttributeFromString(currentItemArt, DispoConstants.DispoItemMethodNumber, methodNumber);
       }
 
    }

@@ -106,6 +106,25 @@ app.provider('Set', function() {
     ];
 });
 
+app.provider('Config', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var Config = $resource('/dispo/program/:programId/config', {}, {
+            });
+            return Config;
+        }
+    ];
+});
+
+app.provider('SourceFile', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var SourceFile = $resource('/dispo/program/:programId/set/:setId/file/:fileName', {}, {});
+            return SourceFile;
+        }
+    ];
+});
+
 app.provider('Item', function() {
     this.$get = [
         '$resource',

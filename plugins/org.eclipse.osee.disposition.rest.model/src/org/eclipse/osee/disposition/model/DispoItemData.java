@@ -39,6 +39,8 @@ public class DispoItemData implements DispoItem {
    private String elapsedTime;
    private Boolean aborted;
    private String itemNotes;
+   private String fileNumber;
+   private String methodNumber;
 
    public DispoItemData() {
 
@@ -124,6 +126,16 @@ public class DispoItemData implements DispoItem {
       return itemNotes;
    }
 
+   @Override
+   public String getFileNumber() {
+      return fileNumber;
+   }
+
+   @Override
+   public String getMethodNumber() {
+      return methodNumber;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
@@ -186,6 +198,14 @@ public class DispoItemData implements DispoItem {
 
    public void setItemNotes(String itemNotes) {
       this.itemNotes = itemNotes;
+   }
+
+   public void setFileNumber(String fileNumber) {
+      this.fileNumber = fileNumber;
+   }
+
+   public void setMethodNumber(String methodNumber) {
+      this.methodNumber = methodNumber;
    }
 
    @Override

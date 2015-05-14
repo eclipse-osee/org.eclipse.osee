@@ -8,8 +8,9 @@ app.controller('userController', [
     'Item',
     'Annotation',
     'SetSearch',
-
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch) {
+    'SourceFile',
+    'ColumnFactory',
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, ColumnFactory) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -103,6 +104,9 @@ app.controller('userController', [
                 itemId: item.guid
             }, function(data) {
                 $scope.annotations = data;
+                if($rootScope.type == 'codeCoverage') {
+            		 $scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+            	}
                 var blankAnnotation = new Annotation();
                 $scope.annotations.push(blankAnnotation);
 
@@ -130,6 +134,24 @@ app.controller('userController', [
         $scope.saveLastFocused = function saveLastFocused(element) {
             $scope.lastFocused = element;
         }
+        
+        $scope.getSourceFlie = function () {
+        		if($rootScope.type == 'codeCoverage') {
+	         	var requst = [];
+	         	requst.push(
+	         	  "/dispo/",
+	         	  "program/",
+	         	  $scope.programSelection,
+	         	  "/set/",
+	         	  $scope.setSelection,
+	         	  "/file/",
+	         	  $scope.selectedItem.name
+	         	  );
+	         	  var url = requst.join("");
+	             
+	             window.open(url);
+	         }
+         }
         
         $scope.toggleEditItems = function toggleEditItems() {
         	var size = $scope.selectedItems.length;
@@ -159,219 +181,11 @@ app.controller('userController', [
             }
         });
         
-        var dateSorting = function (itemA, itemB) {
-        	var DateA = new Date(itemA);
-        	var DateB = new Date(itemB);
-        	
-            if (DateA < DateB) {
-                return -1;
-            } else if (DateB < DateA) {
-                return 1;
-            } else {
-            	return 0;
-            }
-        };
-        
-        var checkboxSorting = function checkboxSorting(itemA, itemB) {
-            if(itemA == itemB) {
-            	return 0;
-            } else if (itemA) {
-                return -1;
-            } else if (itemB) {
-                return 1;
-            } 
-        };
-        
         $scope.checkEditable = function checkEditable(item) {
         	return  item.assignee != $rootScope.cachedName;
         }
 
-        var origCellTmpl = '<div ng-dblclick="getItemDetails(row.entity, row)">{{row.entity.name}}</div>';
-        var editCellTmpl = '<input ng-model="row.getProperty(col.field)" ng-model-onblur ng-change="editItem(row.entity);" value="row.getProperty(col.field);></input>';
-        var cellEditNotes = '<input class="cellInput" ng-model="COL_FIELD" ng-disabled="checkEditable(row.entity);" ng-model-onblur ng-change="editNotes(row.entity)"/>'
-        var chkBoxTemplate = '<input type="checkbox" class="form-control" ng-model="COL_FIELD" ng-change="editNeedsRerun(row.entity)"></input>';
-        var assigneeCellTmpl = '<div ng-dblclick="stealItem(row.entity)">{{row.entity.assignee}}</div>';
-        var dateCellTmpl = '<div>getReadableDate({{row.getProperty(col.field)}})</div>';
-        
-        
-        $scope.smallColumns = [{
-            field: 'name',
-            displayName: 'Name',
-            cellTemplate: origCellTmpl,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'status',
-            displayName: 'Status',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'totalPoints',
-            displayName: 'Total',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'failureCount',
-            displayName: 'Failure Count',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'discrepanciesAsRanges',
-            displayName: 'Failed Points',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'assignee',
-            displayName: 'Assignee',
-            enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'itemNotes',
-            displayName: 'Script Notes',
-            cellTemplate: cellEditNotes,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        },{
-            field: 'needsRerun',
-            displayName: 'Rerun?',
-            enableCellEdit: false,
-            cellTemplate: chkBoxTemplate,
-            sortFn: checkboxSorting
-        },{
-            field: 'lastUpdated',
-            displayName: 'Last Ran',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-            sortFn: dateSorting
-        }, {
-            field: 'category',
-            displayName: 'Category',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'machine',
-            displayName: 'Station',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'elapsedTime',
-            displayName: 'Elapsed Time',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        },{
-            field: 'creationDate',
-            displayName: 'Creation Date',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-            sortFn: dateSorting
-        },{
-            field: 'aborted',
-            displayName: 'Aborted',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-            }, {
-                field: 'version',
-                displayName: 'Version',
-                enableCellEdit: false,
-                visible: false,
-                headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }];
-        
-        $scope.wideColumns = [{
-            field: 'name',
-            displayName: 'Name',
-            width: 350,
-            cellTemplate: origCellTmpl,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'status',
-            displayName: 'Status',
-            width: 100,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'totalPoints',
-            displayName: 'Total',
-            width: 100,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'failureCount',
-            displayName: 'Failure Count',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'discrepanciesAsRanges',
-            displayName: 'Failed Points',
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'assignee',
-            displayName: 'Assignee',
-            enableCellEdit: false,
-            cellTemplate: assigneeCellTmpl,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'itemNotes',
-            displayName: 'Script Notes',
-            cellTemplate: cellEditNotes,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        },{
-            field: 'needsRerun',
-            displayName: 'Rerun?',
-            enableCellEdit: false,
-            cellTemplate: chkBoxTemplate,
-            sortFn: checkboxSorting,
-            width: 70
-        },{
-            field: 'lastUpdated',
-            displayName: 'Last Ran',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-            sortFn: dateSorting
-        }, {
-            field: 'category',
-            displayName: 'Category',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'machine',
-            displayName: 'Station',
-            enableCellEdit: true,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }, {
-            field: 'elapsedTime',
-            displayName: 'Elapsed Time',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        },{
-            field: 'creationDate',
-            displayName: 'Creation Date',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
-            sortFn: dateSorting
-        },{
-            field: 'aborted',
-            displayName: 'Aborted',
-            enableCellEdit: false,
-            visible: false,
-            headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        },  {
-                field: 'version',
-                displayName: 'Version',
-                enableCellEdit: false,
-                visible: false,
-                headerCellTemplate: '/dispo/views/nameFilterTmpl.html'
-        }];
-        
-        if(window.innerWidth < 1000) {
-        	$scope.columns = $scope.smallColumns;
-        } else {
-        	$scope.columns = $scope.wideColumns;
-        }
-        
+        $scope.columns = ColumnFactory.getColumns($scope.type, window.innerWidth);
         
         var filterBarPlugin = {
                 init: function(scope, grid) {
@@ -605,6 +419,11 @@ app.controller('userController', [
                 }, function(data) {
                     alert("Could not make change, please try refreshing");
                 });
+                
+	             if($rootScope.type == 'codeCoverage') {
+	               	$scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+	             }
+
             }
         }
 
@@ -629,6 +448,10 @@ app.controller('userController', [
 
                 var blankAnnotation = new Annotation();
                 $scope.annotations.push(blankAnnotation);
+                
+                if($rootScope.type == 'codeCoverage') {
+            		 $scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+            	 }
             }, function(data) {
                 alert("Could not make change, please try refreshing");
             });

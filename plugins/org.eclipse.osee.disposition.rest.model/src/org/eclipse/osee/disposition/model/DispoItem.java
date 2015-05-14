@@ -49,4 +49,8 @@ public interface DispoItem extends Identifiable<String> {
    Boolean getAborted();
 
    String getItemNotes();
+
+   String getMethodNumber();
+
+   String getFileNumber();
 }

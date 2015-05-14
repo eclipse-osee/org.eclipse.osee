@@ -76,8 +76,6 @@ public class LisFileParser implements DispoImporterApi {
 
    @Override
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report) {
-      List<DispoItem> toReturn = new ArrayList<DispoItem>();
-
       vCastDir = filesDir.getAbsolutePath() + File.separator + "vcast";
       File f = new File(vCastDir + File.separator + "cover.db");
 
@@ -104,6 +102,11 @@ public class LisFileParser implements DispoImporterApi {
          //
       }
 
+      return createItems(exisitingItems, report);
+   }
+
+   private List<DispoItem> createItems(Map<String, DispoItem> exisitingItems, OperationReport report) {
+      List<DispoItem> toReturn;
       Collection<DispoItemData> values = datIdToItem.values();
 
       for (DispoItemData item : values) {
@@ -139,8 +142,14 @@ public class LisFileParser implements DispoImporterApi {
 
          String line = datId.replaceAll("\\d*:\\d*:", "");
          line = line.replaceAll(":", "");
-         addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, "");
-         removeDisrepancy(line, item.getDiscrepanciesList());
+         String text = "";
+         Discrepancy matchingDiscrepancy = matchDiscrepancy(line, item.getDiscrepanciesList());
+         if (matchingDiscrepancy != null) {
+            text = matchingDiscrepancy.getText();
+            JSONObject discrepancies = item.getDiscrepanciesList();
+            discrepancies.remove(matchingDiscrepancy.getId());
+            addAnnotationForForCoveredLine(item, line, Exception_Handling_Resolution, "", text);
+         }
       }
    }
 
@@ -200,6 +209,8 @@ public class LisFileParser implements DispoImporterApi {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new JSONArray());
       newItem.setName(lisFileName + "." + function.getName());
+      newItem.setFileNumber(Integer.toString(fileNum));
+      newItem.setMethodNumber(Integer.toString(functionNum));
 
       String datId = generateDatId(fileNum, functionNum);
       datIdToItem.put(datId, newItem);
@@ -226,7 +237,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void processStatement(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, JSONObject> discrepancies, OperationReport report) {
-      // Create discrepancy for every line, annotate with test usnit or exception handled
+      // Create discrepancy for every line, annotate with test unit or exception handled
       Integer functionNumber = function.getFindex();
       Integer lineNumber = statementCoverageItem.getLine();
       Pair<String, Boolean> lineData = null;
@@ -279,7 +290,6 @@ public class LisFileParser implements DispoImporterApi {
             br = new BufferedReader(new FileReader(resultsFile));
             String resultsLine;
             while ((resultsLine = br.readLine()) != null) {
-
                // Loop through results file and log coverageItem as Test_Unit for each entry
                if (Strings.isValid(resultsLine)) {
                   Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
@@ -292,8 +302,14 @@ public class LisFileParser implements DispoImporterApi {
                         if (!alreadyUsedDatIds.contains(resultsLine)) {
                            DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
                            String location = m.group(3);
-                           addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath);
-                           removeDisrepancy(location, item.getDiscrepanciesList());
+                           String text = "";
+                           Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+                           if (matchingDiscrepancy != null) {
+                              text = matchingDiscrepancy.getText();
+                              JSONObject discrepancies = item.getDiscrepanciesList();
+                              discrepancies.remove(matchingDiscrepancy.getId());
+                              addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+                           }
                            alreadyUsedDatIds.add(resultsLine);
                         }
                      }
@@ -306,7 +322,8 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private void removeDisrepancy(String location, JSONObject discrepancies) throws JSONException {
+   private Discrepancy matchDiscrepancy(String location, JSONObject discrepancies) throws JSONException {
+      Discrepancy toReturn = null;
       @SuppressWarnings("unchecked")
       Iterator<String> iterator = discrepancies.keys();
       while (iterator.hasNext()) {
@@ -314,14 +331,14 @@ public class LisFileParser implements DispoImporterApi {
          JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
          Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
          if (String.valueOf(discrepancy.getLocation()).equals(location)) {
-            discrepancies.remove(key);
+            toReturn = discrepancy;
             break;
          }
       }
-
+      return toReturn;
    }
 
-   private void addAnnotationForForCoveredLine(DispoItemData item, String location, String resolutionType, String coveringFile) throws JSONException {
+   private void addAnnotationForForCoveredLine(DispoItemData item, String location, String resolutionType, String coveringFile, String text) throws JSONException {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -332,6 +349,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setResolutionType(resolutionType);
       newAnnotation.setResolution(coveringFile);
       newAnnotation.setIsResolutionValid(true);
+      newAnnotation.setCustomerNotes(text);
       dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
 
       JSONArray annotationsList = item.getAnnotationsList();
