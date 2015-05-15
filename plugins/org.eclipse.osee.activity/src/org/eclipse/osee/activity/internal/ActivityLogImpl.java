@@ -394,4 +394,14 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    public boolean isEnabled() {
       return enabled;
    }
+
+   @Override
+   public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+   }
+
+   @Override
+   public void unInitialize() {
+      this.initialized.set(false);
+   }
 }

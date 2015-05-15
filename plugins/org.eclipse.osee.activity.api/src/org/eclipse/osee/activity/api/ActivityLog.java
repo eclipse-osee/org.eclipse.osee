@@ -69,4 +69,10 @@ public interface ActivityLog {
 
    boolean isEnabled();
 
+   void setEnabled(boolean enabled);
+
+   /**
+    * Sets the ActivityLog as un-initialized. Next call to create will re-initialize
+    */
+   void unInitialize();
 }

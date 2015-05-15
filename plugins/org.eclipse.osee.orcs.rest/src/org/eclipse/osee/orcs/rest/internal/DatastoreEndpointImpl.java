@@ -18,6 +18,7 @@ import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.orcs.ApplicationContext;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -36,8 +37,11 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
    @Context
    private UriInfo uriInfo;
 
-   public DatastoreEndpointImpl(OrcsApi orcsApi) {
+   private final ActivityLog activityLog;
+
+   public DatastoreEndpointImpl(OrcsApi orcsApi, ActivityLog activityLog) {
       this.orcsApi = orcsApi;
+      this.activityLog = activityLog;
    }
 
    protected void setUriInfo(UriInfo uriInfo) {
@@ -72,6 +76,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
 
    @Override
    public Response initialize(DatastoreInitOptions options) {
+      activityLog.setEnabled(false);
       OrcsAdmin adminOps = getOrcsAdmin();
 
       Map<String, String> parameters = new HashMap<String, String>();
@@ -82,6 +87,8 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       Callable<OrcsMetaData> callable = adminOps.createDatastore(parameters);
       OrcsMetaData metaData = executeCallable(callable);
 
+      activityLog.setEnabled(true);
+      activityLog.unInitialize();
       UriInfo uriInfo = getUriInfo();
       URI location = getDatastoreLocation(uriInfo);
       return Response.created(location).entity(asDatastoreInfo(metaData)).build();
