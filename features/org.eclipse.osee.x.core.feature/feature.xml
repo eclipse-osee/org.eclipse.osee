@@ -32,7 +32,7 @@
       <import plugin="javax.servlet" version="3.0.0" match="equivalent"/>
       <import plugin="javax.ws.rs" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit"/>
+      <import plugin="org.junit" version="4.11.0" match="equivalent"/>
    </requires>
 
    <plugin

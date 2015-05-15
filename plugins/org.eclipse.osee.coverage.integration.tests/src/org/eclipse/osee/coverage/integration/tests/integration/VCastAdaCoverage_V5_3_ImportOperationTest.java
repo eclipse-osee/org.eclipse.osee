@@ -108,7 +108,7 @@ public class VCastAdaCoverage_V5_3_ImportOperationTest {
       copyResource(getURL(bundle, "vcast/test_scheduler.2.LIS"), vcastFolder, "test_scheduler.2.LIS");
       copyResource(getURL(bundle, "vcast/test_scheduler.2.xml"), vcastFolder, "test_scheduler.2.xml");
 
-      File resultsFolder = tempFolder.newFolder("vcast/results");
+      File resultsFolder = tempFolder.newFolder("vcast", "results");
       copyResource(getURL(bundle, "vcast/results/test_unit_1.dat"), resultsFolder, "test_unit_1.dat");
       copyResource(getURL(bundle, "vcast/results/test_unit_2.dat"), resultsFolder, "test_unit_2.dat");
       copyResource(getURL(bundle, "vcast/results/test_unit_3.dat"), resultsFolder, "test_unit_3.dat");

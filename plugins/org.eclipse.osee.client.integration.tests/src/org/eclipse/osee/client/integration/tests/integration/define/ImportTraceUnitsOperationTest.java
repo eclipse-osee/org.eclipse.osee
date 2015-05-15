@@ -147,7 +147,7 @@ public final class ImportTraceUnitsOperationTest {
             new File(
                tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderName);
          if (!tempFile.exists()) {
-            tempFolder.newFolder(topLevelFolderName + IPath.SEPARATOR + folderName);
+            tempFolder.newFolder(topLevelFolderName, folderName);
          }
       }
       for (int i = 0; i < fileNames.length; i++) {
