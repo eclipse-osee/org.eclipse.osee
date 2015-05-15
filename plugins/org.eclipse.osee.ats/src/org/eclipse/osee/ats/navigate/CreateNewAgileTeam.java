@@ -57,7 +57,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                   Artifact teamArt =
                      ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsUtilCore.getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
-                  AtsUtil.openArtifact(team.getGuid(), OseeCmEditor.CmPcrEditor);
+                  AtsUtil.openArtifact(team.getUuid(), OseeCmEditor.CmPcrEditor);
                } else {
                   AWorkbench.popup("Error Creating Team", response.toString());
                }

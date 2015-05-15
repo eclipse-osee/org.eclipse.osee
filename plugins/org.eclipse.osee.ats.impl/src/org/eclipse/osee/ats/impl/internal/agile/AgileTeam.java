@@ -63,8 +63,4 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       return backlogUuid;
    }
 
-   @Override
-   public String getGuid() {
-      return artifact.getGuid();
-   }
 }

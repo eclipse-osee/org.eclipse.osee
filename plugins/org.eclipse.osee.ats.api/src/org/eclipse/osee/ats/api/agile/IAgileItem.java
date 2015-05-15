@@ -19,6 +19,4 @@ public interface IAgileItem extends IAtsWorkItem, IAgileObject {
 
    public long getTeamUuid();
 
-   public String getGuid();
-
 }

@@ -21,6 +21,4 @@ public interface IAgileSprint extends IAtsWorkItem, IAgileObject {
 
    public boolean isActive();
 
-   public String getGuid();
-
 }

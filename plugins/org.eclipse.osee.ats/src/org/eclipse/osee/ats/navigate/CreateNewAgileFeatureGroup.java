@@ -81,7 +81,7 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                            ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
                               AtsUtilCore.getAtsBranch());
                         groupArt.getParent().reloadAttributesAndRelations();
-                        AtsUtil.openArtifact(group.getGuid(), OseeCmEditor.CmPcrEditor);
+                        AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {
                         AWorkbench.popup("Error creating Agile Team [%s]", response.toString());
                         return;

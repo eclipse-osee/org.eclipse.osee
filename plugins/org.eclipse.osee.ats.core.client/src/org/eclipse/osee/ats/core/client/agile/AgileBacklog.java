@@ -45,9 +45,4 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
       return result;
    }
 
-   @Override
-   public String getGuid() {
-      return artifact.getGuid();
-   }
-
 }

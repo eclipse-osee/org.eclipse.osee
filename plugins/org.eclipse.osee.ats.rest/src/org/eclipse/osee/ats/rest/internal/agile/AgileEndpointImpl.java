@@ -95,11 +95,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      String guid = newTeam.getGuid();
-      if (guid == null) {
-         guid = GUID.create();
-         newTeam.setGuid(guid);
-      }
       Long uuid = newTeam.getUuid();
       if (uuid == null || uuid <= 0) {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
@@ -129,7 +124,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileTeam created = new JaxAgileTeam();
       created.setName(updatedTeam.getName());
       created.setUuid(updatedTeam.getUuid());
-      created.setGuid(updatedTeam.getGuid());
       created.setActive(updatedTeam.isActive());
       created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
       created.setBacklogUuid(updatedTeam.getBacklogUuid());
@@ -159,7 +153,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());
                   newGroup.setUuid(group.getUuid());
-                  newGroup.setGuid(group.getGuid());
                   newGroup.setActive(group.isActive());
                   newGroup.setTeamUuid(group.getTeamUuid());
                   groups.add(newGroup);
@@ -180,10 +173,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
-      String guid = newFeatureGroup.getGuid();
-      if (guid == null) {
-         guid = GUID.create();
-      }
+      String guid = GUID.create();
       Long uuid = newFeatureGroup.getUuid();
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
@@ -195,7 +185,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(team.getName());
       newGroup.setUuid(team.getUuid());
-      newGroup.setGuid(team.getGuid());
       newGroup.setActive(team.isActive());
       newGroup.setTeamUuid(team.getTeamUuid());
 
@@ -213,7 +202,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
       created.setName(feature.getName());
       created.setUuid(feature.getUuid());
-      created.setGuid(feature.getGuid());
       created.setTeamUuid(feature.getTeamUuid());
       created.setActive(feature.isActive());
       return created;
@@ -238,10 +226,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
       }
 
-      String guid = newSprint.getGuid();
-      if (guid == null) {
-         guid = GUID.create();
-      }
+      String guid = GUID.create();
       Long uuid = newSprint.getUuid();
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
@@ -263,7 +248,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       created.setName(sprint.getName());
       created.setActive(sprint.isActive());
       created.setUuid(sprint.getUuid());
-      created.setGuid(sprint.getGuid());
       created.setTeamUuid(sprint.getTeamUuid());
       return created;
    }
@@ -305,10 +289,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      String guid = newBacklog.getGuid();
-      if (guid == null) {
-         guid = GUID.create();
-      }
+      String guid = GUID.create();
       Long uuid = newBacklog.getUuid();
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
@@ -361,7 +342,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             item.setName(aItem.getName());
             item.setFeatureGroups(Collections.toString("; ", atsServer.getAgileService().getFeatureGroups(aItem)));
             item.setUuid(aItem.getUuid());
-            item.setGuid(aItem.getGuid());
             item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
             item.setAtsId(aItem.getAtsId());
             item.setState(aItem.getStateMgr().getCurrentStateName());
@@ -382,7 +362,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       result.setActive(backlog.isActive());
       result.setName(backlog.getName());
       result.setUuid(backlog.getUuid());
-      result.setGuid(backlog.getGuid());
       result.setTeamUuid(backlog.getTeamUuid());
       return result;
    }

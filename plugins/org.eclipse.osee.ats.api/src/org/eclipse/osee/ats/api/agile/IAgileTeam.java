@@ -22,6 +22,4 @@ public interface IAgileTeam extends IAtsConfigObject, IAgileObject {
 
    public long getBacklogUuid();
 
-   public String getGuid();
-
 }

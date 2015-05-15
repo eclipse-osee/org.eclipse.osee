@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AbstractJaxNewAgileObject {
 
    private String name;
-   private String guid;
    private Long uuid;
 
    public String getName() {
@@ -28,14 +27,6 @@ public class AbstractJaxNewAgileObject {
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
-
-   public void setGuid(String guid) {
-      this.guid = guid;
    }
 
    public Long getUuid() {

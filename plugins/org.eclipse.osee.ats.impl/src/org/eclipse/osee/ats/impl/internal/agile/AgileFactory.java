@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
@@ -50,7 +51,7 @@ public class AgileFactory {
    public static IAgileTeam createAgileTeam(Log logger, IAtsServer atsServer, JaxNewAgileTeam newTeam) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
-      ArtifactReadable agileTeamArt = atsServer.getArtifactByGuid(newTeam.getGuid());
+      ArtifactReadable agileTeamArt = atsServer.getArtifact(newTeam);
       if (agileTeamArt == null) {
 
          TransactionBuilder transaction =
@@ -58,8 +59,8 @@ public class AgileFactory {
                "Create new Agile Team");
 
          agileTeamArt =
-            (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(),
-               newTeam.getGuid(), newTeam.getUuid());
+            (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(),
+               newTeam.getUuid());
          transaction.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
          ArtifactReadable topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsServer, transaction, userArt);
          if (!topAgileFolder.equals(agileTeamArt.getParent())) {
@@ -122,7 +123,6 @@ public class AgileFactory {
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
       JaxAgileFeatureGroup feature = new JaxAgileFeatureGroup();
       feature.setName(name);
-      feature.setGuid(guid);
       feature.setUuid(uuid);
       feature.setTeamUuid(teamUuid);
       feature.setActive(true);
@@ -136,7 +136,7 @@ public class AgileFactory {
             "Create new Agile Feature Group");
       ArtifactReadable featureGroupArt =
          (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
-            newFeatureGroup.getGuid(), newFeatureGroup.getUuid());
+            GUID.create(), newFeatureGroup.getUuid());
       transaction.setSoleAttributeValue(featureGroupArt, AtsAttributeTypes.Active, newFeatureGroup.isActive());
 
       ArtifactReadable featureGroupFolder =

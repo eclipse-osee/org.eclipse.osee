@@ -38,14 +38,12 @@ import org.junit.Test;
 public class AgileEndpointTest {
 
    private AgileEndpointApi agile;
-   private String guid;
    private long teamUuid;
 
    @Before
    public void setup() {
       agile = AtsClientService.getAgile();
       teamUuid = Lib.generateArtifactIdAsInt();
-      guid = GUID.create();
    }
 
    @After
@@ -68,7 +66,6 @@ public class AgileEndpointTest {
       Assert.assertNotNull(team);
       Assert.assertEquals("My Agile Team", team.getName());
       Assert.assertEquals(teamUuid, team.getUuid());
-      Assert.assertEquals(guid, team.getGuid());
       Assert.assertEquals("", team.getDescription());
       Assert.assertEquals(true, team.isActive());
 
@@ -92,7 +89,6 @@ public class AgileEndpointTest {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName("My Agile Team");
       newTeam.setUuid(teamUuid);
-      newTeam.setGuid(guid);
       return newTeam;
    }
 
@@ -105,8 +101,6 @@ public class AgileEndpointTest {
       // Test Create
       JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
       newSprint.setName("My Sprint");
-      String guid = GUID.create();
-      newSprint.setGuid(guid);
       Long uuid = Lib.generateArtifactIdAsInt();
       newSprint.setUuid(uuid);
       newSprint.setTeamUuid(teamUuid);
@@ -120,7 +114,6 @@ public class AgileEndpointTest {
       Assert.assertEquals("My Sprint", sprint.getName());
       Assert.assertEquals(teamUuid, sprint.getTeamUuid());
       Assert.assertEquals(uuid.longValue(), sprint.getUuid());
-      Assert.assertEquals(guid, sprint.getGuid());
 
       // Test Delete
       agile.deleteSprint(teamUuid, sprint.getUuid());
@@ -138,8 +131,6 @@ public class AgileEndpointTest {
       JaxNewAgileFeatureGroup group = new JaxNewAgileFeatureGroup();
       group.setName("Communications");
       group.setTeamUuid(teamUuid);
-      String guid = GUID.create();
-      group.setGuid(guid);
       Long uuid = Lib.generateArtifactIdAsInt();
       group.setUuid(uuid);
 
@@ -153,7 +144,6 @@ public class AgileEndpointTest {
       Assert.assertEquals("Communications", newGroup.getName());
       Assert.assertEquals(teamUuid, newGroup.getTeamUuid());
       Assert.assertEquals(uuid.longValue(), newGroup.getUuid());
-      Assert.assertEquals(guid, newGroup.getGuid());
 
       // Test Delete
       agile.deleteFeatureGroup(teamUuid, newGroup.getUuid());
@@ -172,7 +162,6 @@ public class AgileEndpointTest {
       backlog.setName("My Backlog");
       backlog.setTeamUuid(teamUuid);
       String guid = GUID.create();
-      backlog.setGuid(guid);
       Long uuid = Lib.generateArtifactIdAsInt();
       backlog.setUuid(uuid);
 
@@ -186,7 +175,6 @@ public class AgileEndpointTest {
       Assert.assertEquals(teamUuid, newBacklog.getTeamUuid());
       Assert.assertTrue(newBacklog.isActive());
       Assert.assertEquals(uuid.longValue(), newBacklog.getUuid());
-      Assert.assertEquals(guid, newBacklog.getGuid());
    }
 
 }

@@ -80,7 +80,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                         ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
                            AtsUtilCore.getAtsBranch());
                      backlogart.getParent().reloadAttributesAndRelations();
-                     AtsUtil.openArtifact(backlog.getGuid(), OseeCmEditor.CmPcrEditor);
+                     AtsUtil.openArtifact(backlog.getUuid(), OseeCmEditor.CmPcrEditor);
                   } else {
                      AWorkbench.popup("Error creating Agile Backlog [%s]", response.toString());
                   }

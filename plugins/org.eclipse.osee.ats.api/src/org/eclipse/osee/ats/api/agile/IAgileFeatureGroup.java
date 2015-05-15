@@ -19,6 +19,4 @@ public interface IAgileFeatureGroup extends IAtsConfigObject, IAgileObject {
 
    public long getTeamUuid();
 
-   public String getGuid();
-
 }

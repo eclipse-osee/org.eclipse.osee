@@ -178,6 +178,18 @@ public final class AtsUtil {
    /**
     * Only to be used by browser. Use open (artifact) instead.
     */
+   public static void openArtifact(long uuid, OseeCmEditor editor) {
+      Artifact artifact = null;
+      try {
+         artifact = AtsArtifactQuery.getArtifactFromId(uuid);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return;
+      }
+
+      openArtifact(editor, artifact);
+   }
+
    public static void openArtifact(String guid, OseeCmEditor editor) {
       Artifact artifact = null;
       try {
@@ -187,6 +199,10 @@ public final class AtsUtil {
          return;
       }
 
+      openArtifact(editor, artifact);
+   }
+
+   private static void openArtifact(OseeCmEditor editor, Artifact artifact) {
       try {
          if (editor == OseeCmEditor.CmPcrEditor) {
             if (artifact instanceof AbstractWorkflowArtifact || artifact.isOfType(AtsArtifactTypes.Action)) {
