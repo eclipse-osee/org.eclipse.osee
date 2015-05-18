@@ -26,12 +26,13 @@ public class TestUnitAnnotationUtilityTest {
       sb.append("\n");
       sb.append(IMPORT_STRING);
       sb.append("\n");
+      sb.append("import org.junit.Assert;\n");
       sb.append("public class test {\n");
       return CharBuffer.wrap(sb.toString());
    }
 
    private CharBuffer getClassNoImportNoAnnotation() {
-      return CharBuffer.wrap("public class test {\n");
+      return CharBuffer.wrap("import org.junit.Assert;\n\npublic class test {\n");
    }
 
    private CharBuffer getClassWithImportAndAnnotation() {
@@ -39,6 +40,7 @@ public class TestUnitAnnotationUtilityTest {
       sb.append("\n");
       sb.append(IMPORT_STRING);
       sb.append("\n");
+      sb.append("import org.junit.Assert;\n");
       sb.append("@ObjectId(\"TEST\")\n");
       sb.append("public class test {\n");
       return CharBuffer.wrap(sb.toString());

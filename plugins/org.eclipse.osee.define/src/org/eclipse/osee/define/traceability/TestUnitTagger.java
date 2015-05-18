@@ -21,13 +21,13 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 public class TestUnitTagger extends AbstractSourceTagger {
 
    private static final String ANNOTATION_STRING = "@ObjectId(\"%s\")\n";
-   private static final String IMPORT_STRING = "import org.eclipse.osee.framework.jdk.core.type.ObjectId;\n";
+   private static final String IMPORT_STRING = "\nimport org.eclipse.osee.framework.jdk.core.type.ObjectId;";
 
    private static final Pattern classPattern = Pattern.compile("public.*?\\s+class\\s+", Pattern.DOTALL);
    public static final Pattern ANNOTATION_PATTERN = Pattern.compile("@ObjectId\\s*\\(\"(.*?)\"\\s*\\)");
    private static final Pattern importPattern =
       Pattern.compile("import org\\.eclipse\\.osee\\.framework\\.jdk\\.core\\.type\\.ObjectId;");
-   private static final Pattern importBlockPattern = Pattern.compile("(import\\s.*;\\n)+");
+   private static final Pattern importBlockPattern = Pattern.compile("(\\s*import\\s.*;)+");
 
    private final Matcher classMatcher;
    private final Matcher annotationMatcher;
@@ -68,8 +68,8 @@ public class TestUnitTagger extends AbstractSourceTagger {
          int position = 0;
          if (importBlockMatcher.find()) {
             position = importBlockMatcher.end();
+            changeSet.insertBefore(position, IMPORT_STRING);
          }
-         changeSet.insertBefore(position, IMPORT_STRING);
          return CharBuffer.wrap(changeSet.applyChangesToSelf().toString().toCharArray());
       }
    }
