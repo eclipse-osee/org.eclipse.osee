@@ -38,7 +38,9 @@ public class SystemOutputImpl implements SystemOutput {
 
    public void stop(){
       try {
-         outputStream.flush();
+         if(outputStream != null){
+            outputStream.flush();
+         }
       } catch (IOException e) {
          e.printStackTrace();
       }
