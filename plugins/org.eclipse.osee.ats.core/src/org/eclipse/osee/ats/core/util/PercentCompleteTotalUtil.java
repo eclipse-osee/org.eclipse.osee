@@ -37,32 +37,30 @@ public class PercentCompleteTotalUtil {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         if (services.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
-            // Calculate total percent using configured weighting
-            for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
-               if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
-                  percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
-               }
-            }
-            if (workItem.getStateMgr().getStateType().isCompleted()) {
-               IAtsStateDefinition stateDef = workItem.getStateDefinition();
-               percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
-            }
+         if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+            percent = 100;
          } else {
-            percent = getPercentCompleteSMASinglePercent(workItem, services);
-            if (percent == 0) {
-               if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
-                  percent = 100;
-               } else if (isAnyStateHavePercentEntered(workItem)) {
-                  int numStates = 0;
-                  for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
-                     if (!state.getStateType().isCompletedState() && !state.getStateType().isCancelledState()) {
-                        percent += getPercentCompleteSMAStateTotal(workItem, state, services);
-                        numStates++;
-                     }
+            if (services.getWorkDefService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+               // Calculate total percent using configured weighting
+               for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
+                  if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
+                     percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
                   }
-                  if (numStates > 0) {
-                     percent = percent / numStates;
+               }
+            } else {
+               percent = getPercentCompleteSMASinglePercent(workItem, services);
+               if (percent == 0) {
+                  if (isAnyStateHavePercentEntered(workItem)) {
+                     int numStates = 0;
+                     for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
+                        if (!state.getStateType().isCompletedState() && !state.getStateType().isCancelledState()) {
+                           percent += getPercentCompleteSMAStateTotal(workItem, state, services);
+                           numStates++;
+                        }
+                     }
+                     if (numStates > 0) {
+                        percent = percent / numStates;
+                     }
                   }
                }
             }

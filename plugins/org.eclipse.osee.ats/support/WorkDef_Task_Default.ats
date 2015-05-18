@@ -27,7 +27,6 @@ workDefinition "WorkDef_Task_Default" {
       to "Completed" AsDefault
       to "Cancelled" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
-      percentWeight 100
       layout {
          widget "Title"
          widget "Description"
