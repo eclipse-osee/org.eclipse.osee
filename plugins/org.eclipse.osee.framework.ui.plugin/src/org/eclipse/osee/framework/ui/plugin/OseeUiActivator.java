@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.CharBuffer;
 import java.util.List;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -25,7 +24,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.swt.program.Program;
@@ -96,15 +94,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
 
    public void log(String message, Exception ex) {
       getLog().log(new Status(0, toString(), 0, message, ex));
-   }
-
-   public CharBuffer getCharBuffer(String resource) {
-      try {
-         return Lib.inputStreamToCharBuffer(getInputStream(resource));
-      } catch (IOException ex) {
-         ex.printStackTrace();
-      }
-      return null;
    }
 
    public static File getBasePluginInstallDirectory() {
