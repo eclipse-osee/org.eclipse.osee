@@ -701,11 +701,6 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    public void refresh() {
       if (editor != null) {
-         // capture dirty data in artifact, and then allow editor to refresh
-         // so to not lose in-work edit changes
-         if (isXWidgetDirty().isTrue()) {
-            saveXWidgetToArtifact();
-         }
          // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();
