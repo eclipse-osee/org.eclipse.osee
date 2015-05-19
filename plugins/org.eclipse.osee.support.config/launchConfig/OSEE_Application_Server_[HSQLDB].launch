@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
 <setAttribute key="additional_plugins">
-<setEntry value="com.google.guava:10.0.1.v201203051515:default:false"/>
 <setEntry value="com.google.guava:12.0.0.v201212092141:default:false"/>
+<setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="automaticAdd" value="false"/>
