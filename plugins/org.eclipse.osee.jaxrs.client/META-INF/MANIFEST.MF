@@ -6,8 +6,8 @@ Bundle-Version: 0.22.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
-Import-Package: com.google.common.base,
- com.google.common.cache,
+Import-Package: com.google.common.base;version="15.0.0",
+ com.google.common.cache;version="15.0.0",
  javax.servlet,
  javax.servlet.http,
  javax.ws.rs;version="2.0.0",

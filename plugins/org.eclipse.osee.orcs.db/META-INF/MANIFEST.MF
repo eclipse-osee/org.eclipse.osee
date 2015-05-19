@@ -6,9 +6,9 @@ Bundle-Version: 0.22.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
-Import-Package: com.google.common.base,
- com.google.common.collect,
- com.google.common.io,
+Import-Package: com.google.common.base;version="15.0.0",
+ com.google.common.collect;version="15.0.0",
+ com.google.common.io;version="15.0.0",
  org.eclipse.core.runtime,
  org.eclipse.osee.console.admin,
  org.eclipse.osee.executor.admin,

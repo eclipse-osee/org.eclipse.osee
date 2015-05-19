@@ -4,7 +4,7 @@ Bundle-Name: ATS Implementation (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.impl;singleton:=true
 Bundle-Version: 0.22.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.google.common.cache,
+Import-Package: com.google.common.cache;version="15.0.0",
  javax.ws.rs;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
  org.codehaus.jackson;version="1.9.13",
