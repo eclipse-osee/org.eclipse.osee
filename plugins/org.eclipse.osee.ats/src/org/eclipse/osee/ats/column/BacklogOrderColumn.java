@@ -8,22 +8,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.world;
+package org.eclipse.osee.ats.column;
 
-import java.util.Collection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IWorldViewerEventHandler {
+public class BacklogOrderColumn extends GoalOrderColumn {
 
-   public WorldXViewer getWorldXViewer();
+   public static final String COLUMN_ID = WorldXViewerFactory.COLUMN_NAMESPACE + ".backlogOrder";
 
-   public void removeItems(Collection<? extends Object> objects);
+   static BacklogOrderColumn instance = new BacklogOrderColumn();
 
-   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered);
+   public static BacklogOrderColumn getInstance() {
+      return instance;
+   }
 
-   public boolean isDisposed();
+   public BacklogOrderColumn() {
+      super(true, COLUMN_ID, "Backlog Order");
+   }
 
 }

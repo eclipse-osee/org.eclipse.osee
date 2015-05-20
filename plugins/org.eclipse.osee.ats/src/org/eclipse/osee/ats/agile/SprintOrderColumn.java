@@ -10,23 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.agile;
 
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.artifact.MembersManager;
+import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldLabelProvider;
+import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -35,46 +32,26 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class SprintOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
+public class SprintOrderColumn extends AbstractMembersOrderColumn {
 
+   public static final String COLUMN_ID = WorldXViewerFactory.COLUMN_NAMESPACE + ".sprintOrder";
    public static SprintOrderColumn instance = new SprintOrderColumn();
 
    public static SprintOrderColumn getInstance() {
       return instance;
    }
+   private SprintManager sprintManager;
 
    private SprintOrderColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".sprintOrder", "Sprint Order", 45, SWT.LEFT, false,
-         SortDataType.Integer, true, "Order of item within displayed sprint.  Editing this field changes order.");
+      super(COLUMN_ID, "Sprint Order", 45, SWT.LEFT, false, SortDataType.Integer, true,
+         "Order of item within displayed sprint.  Editing this field changes order.");
    }
 
-   /**
-    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
-    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    */
    @Override
    public SprintOrderColumn copy() {
       SprintOrderColumn newXCol = new SprintOrderColumn();
       super.copy(this, newXCol);
       return newXCol;
-   }
-
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (element instanceof Artifact && getXViewer().getLabelProvider() instanceof WorldLabelProvider) {
-            WorldLabelProvider worldLabelProvider = (WorldLabelProvider) getXViewer().getLabelProvider();
-            SprintArtifact parentSprintArtifact = worldLabelProvider.getParentSprintArtifact();
-
-            if (parentSprintArtifact != null) {
-               return new SprintManager().getMemberOrder(parentSprintArtifact, (Artifact) element);
-            }
-            return new SprintManager().getMemberOrder((Artifact) element);
-         }
-      } catch (OseeCoreException ex) {
-         LogUtil.getCellExceptionString(ex);
-      }
-      return "";
    }
 
    @Override
@@ -114,4 +91,18 @@ public class SprintOrderColumn extends XViewerAtsColumn implements IXViewerValue
       }
       return null;
    }
+
+   @Override
+   public Artifact getParentMembersArtifact(WorldXViewer worldXViewer) {
+      return worldXViewer.getParentSprintArtifact();
+   }
+
+   @Override
+   public MembersManager<?> getMembersManager() {
+      if (sprintManager == null) {
+         sprintManager = new SprintManager();
+      }
+      return sprintManager;
+   }
+
 }

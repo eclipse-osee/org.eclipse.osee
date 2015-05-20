@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
+import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
@@ -50,6 +51,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -107,6 +109,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public final WorldXViewer thisXViewer = this;
    public List<IMenuActionProvider> menuActionProviders = new ArrayList<IMenuActionProvider>();
    protected final IDirtiableEditor editor;
+   private GoalArtifact parentGoalArtifact;
+   private SprintArtifact parentSprintArtifact;
 
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
       super(parent, style, xViewerFactory);
@@ -645,7 +649,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (item instanceof TreeItem) {
          GoalArtifact parentGoalArtifact = GoalOrderColumn.getParentGoalArtifact((TreeItem) item);
          if (parentGoalArtifact != null) {
-            ((WorldLabelProvider) getLabelProvider()).setParentGoal(parentGoalArtifact);
+            this.parentGoalArtifact = parentGoalArtifact;
+         }
+         SprintArtifact parentSprintArtifact1 = SprintOrderColumn.getParentSprintArtifact((TreeItem) item);
+         if (parentSprintArtifact1 != null) {
+            this.parentSprintArtifact = parentSprintArtifact1;
          }
       }
       super.doUpdateItem(item, element);
@@ -678,6 +686,26 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (editor != null) {
          editor.onDirtied();
       }
+   }
+
+   /**
+    * Value will be set, and changed, as label provider refreshes its elements. This is so the goal members can tell
+    * which parent they belong to.
+    */
+   public void setParentGoal(GoalArtifact parentGoalArtifact) {
+      this.parentGoalArtifact = parentGoalArtifact;
+   }
+
+   public GoalArtifact getParentGoalArtifact() {
+      return parentGoalArtifact;
+   }
+
+   public void setParentSprint(SprintArtifact parentSprintArtifact) {
+      this.parentSprintArtifact = parentSprintArtifact;
+   }
+
+   public SprintArtifact getParentSprintArtifact() {
+      return parentSprintArtifact;
    }
 
 }

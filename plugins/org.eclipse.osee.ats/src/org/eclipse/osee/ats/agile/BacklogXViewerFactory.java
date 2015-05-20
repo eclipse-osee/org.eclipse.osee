@@ -16,11 +16,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsIdColumn;
+import org.eclipse.osee.ats.column.BacklogOrderColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
-import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
@@ -49,7 +50,8 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       List<XViewerColumn> backlogCols = new LinkedList<XViewerColumn>();
 
       // Add default Backlog columns
-      WorldXViewerUtil.addColumn(this, GoalOrderColumn.getBacklogInstance(), 45, backlogCols);
+      WorldXViewerUtil.addColumn(this, BacklogOrderColumn.getInstance(), AbstractMembersOrderColumn.DEFAULT_WIDTH,
+         backlogCols);
       WorldXViewerUtil.addColumn(this, PointsColumn.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, TitleColumn.getInstance(), 300, backlogCols);
       WorldXViewerUtil.addColumn(this, StateColumn.getInstance(), 74, backlogCols);
@@ -94,11 +96,11 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(GoalOrderColumn.getBacklogInstance().getId())) {
+         if (xCol.getId().equals(BacklogOrderColumn.COLUMN_ID)) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(GoalOrderColumn.getBacklogInstance().getId());
+      customizeData.getSortingData().setSortingNames(BacklogOrderColumn.COLUMN_ID);
       return customizeData;
    }
 

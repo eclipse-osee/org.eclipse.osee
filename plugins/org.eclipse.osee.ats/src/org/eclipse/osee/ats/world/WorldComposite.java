@@ -28,10 +28,13 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
+import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -310,12 +313,14 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
    @Override
    public CustomizeData getCustomizeDataCopy() {
-      return worldXViewer.getCustomizeMgr().generateCustDataFromTable();
+      CustomizeData generateCustDataFromTable = worldXViewer.getCustomizeMgr().generateCustDataFromTable();
+      return generateCustDataFromTable;
    }
 
    @Override
    public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException {
-      return iWorldEditor.getWorldEditorProvider().copyProvider();
+      IWorldEditorProvider copyProvider = iWorldEditor.getWorldEditorProvider().copyProvider();
+      return copyProvider;
    }
 
    @Override
@@ -335,8 +340,19 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts) {
-      // provided for subclass implementation
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
+      if (!goalMemberReordered.isEmpty()) {
+         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(GoalOrderColumn.COLUMN_ID);
+         if (column != null && column.isShow() == true) {
+            getXViewer().refreshColumnLazy((GoalOrderColumn) column);
+         }
+      }
+      if (!sprintMemberReordered.isEmpty()) {
+         XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(SprintOrderColumn.COLUMN_ID);
+         if (column != null && column.isShow() == true) {
+            getXViewer().refreshColumnLazy((SprintOrderColumn) column);
+         }
+      }
    }
 
    @Override

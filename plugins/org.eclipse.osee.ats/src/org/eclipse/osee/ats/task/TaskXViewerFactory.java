@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
-   @SuppressWarnings("unchecked")
    public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns = Arrays.asList(
       TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumnUI.getInstance(),
       PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),

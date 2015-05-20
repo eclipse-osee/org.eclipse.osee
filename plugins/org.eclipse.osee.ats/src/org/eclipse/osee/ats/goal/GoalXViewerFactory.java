@@ -40,15 +40,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private GoalArtifact soleGoalArtifact;
-   @SuppressWarnings("unchecked")
-   public static final List<? extends XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(
-      GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
-      TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
-      ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
-      CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
-   public static Integer[] widths = new Integer[] {
-      GoalOrderColumn.getInstance().getWidth(),
-      GoalOrderVoteColumn.getInstance().getWidth(),
+
+   private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
+      List<XViewerColumn> columns =
+         Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
+            TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
+            ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
+            CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
+      return columns;
+   }
+   private final Integer[] widths = new Integer[] {
+      GoalOrderColumn.DEFAULT_WIDTH,
+      GoalOrderVoteColumn.DEFAULT_WIDTH,
       250,
       60,
       60,
@@ -65,7 +68,8 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       this.soleGoalArtifact = soleGoalArtifact;
       int widthIndex = 0;
       // Create new column from world columns but set show and width for task
-      for (XViewerColumn taskCol : GoalViewerVisibleColumns) {
+      List<? extends XViewerColumn> goalViewerVisibleColumns = getGoalViewerVisibleColumns();
+      for (XViewerColumn taskCol : goalViewerVisibleColumns) {
          XViewerColumn newCol = taskCol.copy();
          newCol.setShow(true);
          newCol.setWidth(widths[widthIndex++]);
@@ -73,7 +77,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       }
       // Add remaining columns from world columns
       for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
-         if (!GoalViewerVisibleColumns.contains(worldCol)) {
+         if (!goalViewerVisibleColumns.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);
             registerColumns(newCol);
@@ -94,11 +98,11 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(GoalOrderColumn.getInstance().getId())) {
+         if (xCol.getId().equals(GoalOrderColumn.COLUMN_ID)) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(GoalOrderColumn.getInstance().getId());
+      customizeData.getSortingData().setSortingNames(GoalOrderColumn.COLUMN_ID);
       return customizeData;
    }
 

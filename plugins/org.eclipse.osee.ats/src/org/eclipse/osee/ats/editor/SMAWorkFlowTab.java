@@ -747,7 +747,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
       if (relModifiedArts.contains(awa)) {
          refresh();
       }

@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldComposite;
-import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
@@ -268,11 +267,10 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
          new MembersDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
 
-         WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
          if (editor.getAwa().isOfType(AtsArtifactTypes.Goal)) {
-            labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
+            worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getAwa());
          } else {
-            labelProvider.setParentSprint((SprintArtifact) editor.getAwa());
+            worldComposite.getXViewer().setParentSprint((SprintArtifact) editor.getAwa());
          }
 
          worldComposite.getWorldXViewer().addMenuActionProvider(this);
@@ -470,8 +468,10 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts) {
-      if (relModifiedArts.contains(provider.getArtifact())) {
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
+      if (goalMemberReordered.contains(provider.getArtifact()) || sprintMemberReordered.contains(provider.getArtifact())) {
+         reload();
+      } else if (relModifiedArts.contains(provider.getArtifact())) {
          refresh();
       }
    }

@@ -10,25 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
+import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldLabelProvider;
+import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -37,23 +33,23 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
+public class GoalOrderColumn extends AbstractMembersOrderColumn {
 
-   public static GoalOrderColumn instance = new GoalOrderColumn(false);
-   public static GoalOrderColumn backlogInstance = new GoalOrderColumn(true);
+   public static final String COLUMN_ID = WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrder";
+   private boolean backlog = false;
+   private GoalManager goalManager;
+   static GoalOrderColumn instance = new GoalOrderColumn();
 
    public static GoalOrderColumn getInstance() {
       return instance;
    }
-   private boolean backlog = false;
 
-   public static GoalOrderColumn getBacklogInstance() {
-      return backlogInstance;
+   public GoalOrderColumn() {
+      this(false, COLUMN_ID, "Goal Order");
    }
 
-   private GoalOrderColumn(boolean backlog) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + (backlog ? ".backlogOrder" : ".goalOrder"),
-         (backlog ? "Backlog Order" : "Goal Order"), 45, SWT.LEFT, false, SortDataType.Integer, true,
+   protected GoalOrderColumn(boolean backlog, String id, String name) {
+      super(id, name, DEFAULT_WIDTH, SWT.LEFT, false, SortDataType.Integer, true,
          "Order of item within displayed " + (backlog ? "Backlog" : "Goal") + ".  Editing this field changes order.");
       this.backlog = backlog;
    }
@@ -64,26 +60,14 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
     */
    @Override
    public GoalOrderColumn copy() {
-      GoalOrderColumn newXCol = new GoalOrderColumn(backlog);
+      GoalOrderColumn newXCol = new GoalOrderColumn(backlog, getId(), getName());
       super.copy(this, newXCol);
+      newXCol.setBacklog(backlog);
       return newXCol;
    }
 
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (element instanceof Artifact && getXViewer().getLabelProvider() instanceof WorldLabelProvider) {
-            WorldLabelProvider worldLabelProvider = (WorldLabelProvider) getXViewer().getLabelProvider();
-            GoalArtifact parentGoalArtifact = worldLabelProvider.getParentGoalArtifact();
-            if (parentGoalArtifact != null) {
-               return new GoalManager().getMemberOrder(parentGoalArtifact, (Artifact) element);
-            }
-            return new GoalManager().getMemberOrder((Artifact) element);
-         }
-      } catch (OseeCoreException ex) {
-         LogUtil.getCellExceptionString(ex);
-      }
-      return "";
+   private void setBacklog(boolean backlog) {
+      this.backlog = backlog;
    }
 
    @Override
@@ -122,4 +106,18 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
       }
       return null;
    }
+
+   @Override
+   public Artifact getParentMembersArtifact(WorldXViewer worldXViewer) {
+      return worldXViewer.getParentGoalArtifact();
+   }
+
+   @Override
+   public MembersManager<?> getMembersManager() {
+      if (goalManager == null) {
+         goalManager = new GoalManager();
+      }
+      return goalManager;
+   }
+
 }

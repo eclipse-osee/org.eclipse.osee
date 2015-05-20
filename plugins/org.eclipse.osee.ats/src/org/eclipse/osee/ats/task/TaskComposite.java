@@ -320,7 +320,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    @Override
-   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+   public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
       try {
          loadTable();
       } catch (OseeCoreException ex) {

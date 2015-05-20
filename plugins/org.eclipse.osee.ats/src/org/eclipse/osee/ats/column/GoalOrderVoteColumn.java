@@ -23,6 +23,7 @@ import org.eclipse.swt.SWT;
  */
 public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
 
+   public static final Integer DEFAULT_WIDTH = 40;
    public static GoalOrderVoteColumn instance = new GoalOrderVoteColumn();
 
    public static GoalOrderVoteColumn getInstance() {
@@ -31,7 +32,8 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
 
    private GoalOrderVoteColumn() {
       super(AtsAttributeTypes.GoalOrderVote, WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrderVote",
-         AtsAttributeTypes.GoalOrderVote.getUnqualifiedName(), 40, SWT.LEFT, false, SortDataType.String, true, "");
+         AtsAttributeTypes.GoalOrderVote.getUnqualifiedName(), DEFAULT_WIDTH, SWT.LEFT, false, SortDataType.String,
+         true, "");
    }
 
    /**

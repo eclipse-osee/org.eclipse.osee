@@ -11,19 +11,17 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -105,7 +103,26 @@ public class WorldXViewerEventManager {
          Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
          Collection<EventBasicGuidArtifact> deletedPurgedArts =
             artifactEvent.get(EventModType.Deleted, EventModType.Purged);
-         return new DisplayRunnable(modifiedArts, relModifiedArts, deletedPurgedArts, handlers);
+         Collection<Artifact> goalMemberReordered = new HashSet<Artifact>();
+         for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
+            if (reorder.is(AtsRelationTypes.Goal_Member)) {
+               Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
+               if (cachedArt.isOfType(AtsArtifactTypes.Goal)) {
+                  goalMemberReordered.add(cachedArt);
+               }
+            }
+         }
+         Collection<Artifact> sprintMemberReordered = new HashSet<Artifact>();
+         for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
+            if (reorder.is(AtsRelationTypes.AgileSprintToItem_AtsItem)) {
+               Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
+               if (cachedArt.isOfType(AtsArtifactTypes.Goal)) {
+                  sprintMemberReordered.add(cachedArt);
+               }
+            }
+         }
+         return new DisplayRunnable(modifiedArts, relModifiedArts, deletedPurgedArts, goalMemberReordered,
+            sprintMemberReordered, handlers);
       }
    }
 
@@ -114,12 +131,16 @@ public class WorldXViewerEventManager {
       private final Collection<Artifact> relModifiedArts;
       private final Collection<EventBasicGuidArtifact> deletedPurgedArts;
       private final Collection<IWorldViewerEventHandler> handlers;
+      private final Collection<Artifact> goalMemberReordered;
+      private final Collection<Artifact> sprintMemberReordered;
 
-      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, Collection<IWorldViewerEventHandler> handlers) {
+      public DisplayRunnable(Collection<Artifact> modifiedArts, Collection<Artifact> relModifiedArts, Collection<EventBasicGuidArtifact> deletedPurgedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered, Collection<IWorldViewerEventHandler> handlers) {
          super();
          this.modifiedArts = modifiedArts;
          this.relModifiedArts = relModifiedArts;
          this.deletedPurgedArts = deletedPurgedArts;
+         this.goalMemberReordered = goalMemberReordered;
+         this.sprintMemberReordered = sprintMemberReordered;
          this.handlers = handlers;
       }
 
@@ -173,7 +194,7 @@ public class WorldXViewerEventManager {
                      for (Artifact artifact : relModifiedArts) {
                         processArtifact(worldViewer, artifact);
                      }
-                     handler.relationsModifed(relModifiedArts);
+                     handler.relationsModifed(relModifiedArts, goalMemberReordered, sprintMemberReordered);
                   }
                }
             } catch (Exception ex) {
