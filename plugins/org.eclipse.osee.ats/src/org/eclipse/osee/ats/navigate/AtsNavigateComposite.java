@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.activity.api.ActivityEntryId;
+import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsActivityLogUtil;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
@@ -53,10 +61,25 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);
       }
+      ActivityEntryId activityId = null;
+      try {
+         long uuid = Lib.generateUuid();
+         activityId =
+            AtsActivityLogUtil.create(AtsActivity.ATSNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Eror creating activity log entry", ex);
+      }
       try {
          item.run(tableLoadOptions);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
+      }
+      try {
+         if (activityId != null) {
+            AtsActivityLogUtil.update(activityId, ActivityLog.COMPLETE_STATUS);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Eror updating activity log entry", ex);
       }
    }
 

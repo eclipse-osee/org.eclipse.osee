@@ -15,11 +15,16 @@ import java.util.List;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.activity.api.Activity;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.ActivityLogUtil;
 import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
+import org.eclipse.osee.framework.ui.plugin.util.ActivityLogJaxRsService;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -136,7 +141,12 @@ public class XNavigateComposite extends Composite {
          filteredTree.getViewer().setExpandedState(item, true);
       } else {
          try {
+            long uuid = Lib.generateUuid();
+            ActivityLogJaxRsService.create(ActivityLogUtil.getAccountId(), ActivityLogUtil.getClientId(),
+               Activity.XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
             item.run(tableLoadOptions);
+            ActivityLogJaxRsService.create(ActivityLogUtil.getAccountId(), ActivityLogUtil.getClientId(),
+               Activity.XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }

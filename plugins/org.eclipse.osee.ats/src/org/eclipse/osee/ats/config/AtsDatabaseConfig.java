@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.ui.plugin.util.ActivityLogJaxRsService;
 
 /**
  * @author Donald G. Dunne
@@ -73,6 +75,8 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());
+
+      ActivityLogJaxRsService.createActivityType(AtsActivity.ATSNAVIGATEITEM);
 
       createSafetyConfig();
    }

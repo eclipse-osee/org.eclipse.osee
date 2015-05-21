@@ -67,6 +67,8 @@ public interface ActivityLog {
 
    boolean activityTypeExists(Long typeId);
 
+   Long createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String... messageArgs);
+
    boolean isEnabled();
 
    void setEnabled(boolean enabled);

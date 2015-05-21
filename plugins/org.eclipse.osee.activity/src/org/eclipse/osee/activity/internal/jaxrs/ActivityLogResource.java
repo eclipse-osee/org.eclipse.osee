@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.activity.api.ActivityEntry;
 import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -66,8 +65,8 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
    }
 
    @Override
-   public ActivityEntryId createEntry(Long typeId, Long parentId, Integer status, String message) {
-      Long entryId = activityLog.createEntry(typeId, parentId, status, message);
+   public ActivityEntryId createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String message) {
+      Long entryId = activityLog.createEntry(accountId, clientId, typeId, parentId, status, message);
       ActivityEntryId entity = new ActivityEntryId();
       entity.setGuid(entryId);
       return entity;
@@ -75,14 +74,8 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
 
    @Override
    public Response updateEntry(Long entryId, Integer statusId) {
-      boolean modified = activityLog.updateEntry(entryId, statusId);
-      ResponseBuilder builder;
-      if (modified) {
-         builder = Response.ok();
-      } else {
-         builder = Response.notModified();
-      }
-      return builder.build();
+      activityLog.updateEntry(entryId, statusId);
+      return Response.ok().build();
    }
 
    @Override

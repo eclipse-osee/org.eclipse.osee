@@ -178,12 +178,28 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       return 0L;
    }
 
+   @Override
+   public Long createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String... messageArgs) {
+      Object[] rootEntry = activityMonitor.getThreadRootEntry();
+      Long serverId = LogEntry.SERVER_ID.from(rootEntry);
+      Object[] entry =
+         createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, (Object[]) messageArgs);
+      return LogEntry.ENTRY_ID.from(entry);
+   }
+
    private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
       Object[] entry = EMPTY_ARRAY;
       if (enabled) {
          Long entryId = Lib.generateUuid();
          Long startTime = System.currentTimeMillis();
-         String fullMsg = Collections.toString("\n", messageArgs);
+         String fullMsg = null;
+
+         String messageFormat = getTypeMessageFormat(typeId);
+         if (Strings.isValid(messageFormat)) {
+            fullMsg = String.format(messageFormat, messageArgs);
+         } else {
+            fullMsg = Collections.toString("\n", messageArgs);
+         }
 
          String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
          // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
@@ -198,16 +214,16 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
                Long continueEntryId = Lib.generateUuid();
                Object[] continueEntry =
                   new Object[] {
-                     continueEntryId,
-                     parentCursor,
-                     Activity.MSG_CONTINUATION.getTypeId(),
-                     accountId,
-                     serverId,
-                     clientId,
-                     startTime,
-                     duration,
-                     status,
-                     fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
+                  continueEntryId,
+                  parentCursor,
+                  Activity.MSG_CONTINUATION.getTypeId(),
+                  accountId,
+                  serverId,
+                  clientId,
+                  startTime,
+                  duration,
+                  status,
+                  fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
                newEntities.put(continueEntryId, continueEntry);
                parentCursor = continueEntryId;
             }
@@ -215,6 +231,31 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
          flush(false);
       }
       return entry;
+   }
+
+   private class ActivityTypeMessageRetriever implements ActivityTypeDataHandler {
+
+      private final Long typeId;
+      private String messageFormat = null;
+
+      public ActivityTypeMessageRetriever(Long typeId) {
+         this.typeId = typeId;
+      }
+
+      @Override
+      public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
+         this.messageFormat = messageFormat;
+      }
+
+      public String get() {
+         queryActivityType(typeId, this);
+         return messageFormat;
+      }
+
+   }
+
+   private String getTypeMessageFormat(Long typeId) {
+      return new ActivityTypeMessageRetriever(typeId).get();
    }
 
    @Override

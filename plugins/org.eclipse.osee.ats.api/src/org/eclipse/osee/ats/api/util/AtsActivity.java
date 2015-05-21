@@ -8,36 +8,31 @@
  * Contributors:
  * Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.activity.api;
+package org.eclipse.osee.ats.api.util;
 
 import static java.util.logging.Level.INFO;
-import static java.util.logging.Level.SEVERE;
 import java.util.logging.Level;
+import org.eclipse.osee.activity.api.ActivityType;
 
 /**
- * @author Ryan D. Brooks
+ * @author Donald G. Dunne
  */
-public enum Activity implements ActivityType {
-   JAXRS_METHOD_CALL(880479734L, INFO, "org.eclipse.osee.activity.jaxrs"),
-   JAXRS_METHOD_CALL_FILTER_ERROR(23133964208285L, SEVERE, "org.eclipse.osee.activity.jaxrs"),
-   SRS_TRACE(80349535402L, INFO, "org.eclipse.osee.define.report.SrsTraceReport"),
-   MSG_CONTINUATION(29566294587L, INFO, "org.eclipse.osee.activity"),
-   IDE(88L, INFO, "osee.ide.client"),
-   XNAVIGATEITEM(45L, INFO, "osee.framework.XNavigateItem", "XNavigateItem [%s]");
+public enum AtsActivity implements ActivityType {
+   ATSNAVIGATEITEM(91L, INFO, "osee.ats.XNavigateItem", "ATS XNavigateItem [%s]");
 
    private final Long typeId;
    private final Long logLevel;
    private final String module;
-   private String messageFormat;
+   private final String messageFormat;
 
-   Activity(Long typeId, Level logLevel, String module, String messageFormat) {
+   AtsActivity(Long typeId, Level logLevel, String module, String messageFormat) {
       this.typeId = typeId;
       this.messageFormat = messageFormat;
       this.logLevel = new Long(logLevel.intValue());
       this.module = module;
    }
 
-   Activity(Long typeId, Level logLevel, String module) {
+   AtsActivity(Long typeId, Level logLevel, String module) {
       this(typeId, logLevel, module, "");
    }
 
