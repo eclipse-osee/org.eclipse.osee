@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
  * invisible to Eclipse Navigator and Package Explorer. It is provided as a common repository for files that need to be
  * created and retained by any plugin, but don't need to be visible to the user. This class does nothing more than
  * ensure the directory is created and provide a way to get the path for other plugins to use.
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class OseeData {
@@ -56,7 +56,7 @@ public final class OseeData {
          }
       }
       if (!project.isOpen()) {
-         OseeLog.logf(PluginCoreActivator.class, Level.SEVERE, "[%s] project is closed; re-opening",
+         OseeLog.logf(PluginCoreActivator.class, Level.INFO, "[%s] project is closed; re-opening",
             OSEE_DATA_FOLDER_NAME);
          try {
             project.open(null);
