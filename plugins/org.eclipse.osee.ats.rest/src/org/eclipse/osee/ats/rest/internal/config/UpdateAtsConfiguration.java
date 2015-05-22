@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -108,7 +108,7 @@ public class UpdateAtsConfiguration {
    private TransactionBuilder getOrCreateTx(ArtifactReadable userArt, TransactionBuilder tx) {
       if (tx == null) {
          tx =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(CoreBranches.COMMON, userArt,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
                "Update AtsConfig.VIEWS attribute");
       }
       return tx;
@@ -121,14 +121,13 @@ public class UpdateAtsConfiguration {
    @SuppressWarnings("unchecked")
    public ArtifactId getOrCreateConfigFolder(ArtifactReadable userArt, XResultData rd) {
       ArtifactReadable configFolderArt =
-         atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(
-            AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
       if (configFolderArt == null) {
          TransactionBuilder tx =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(CoreBranches.COMMON, userArt,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
                "Create Config Folder");
          ArtifactReadable headingFolderArt =
-            atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(
+            atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
                AtsArtifactToken.HeadingFolder).getResults().getExactlyOne();
          configFolderArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.ConfigFolder);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
@@ -142,10 +141,10 @@ public class UpdateAtsConfiguration {
    @SuppressWarnings("unchecked")
    public ArtifactId getOrCreateAtsConfig(ArtifactReadable userArt, XResultData rd) {
       ArtifactReadable atsConfigArt =
-         atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfigArt == null) {
          TransactionBuilder tx =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(CoreBranches.COMMON, userArt,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
                "Create AtsConfig");
          ArtifactReadable headingFolderArt = (ArtifactReadable) getOrCreateConfigFolder(userArt, rd);
          atsConfigArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.AtsConfig);
@@ -167,11 +166,10 @@ public class UpdateAtsConfiguration {
    public ArtifactId getOrCreateConfigsFolder(ArtifactReadable userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
       ArtifactId configsFolderArt =
-         atsServer.getOrcsApi().getQueryFactory(null).fromBranch(CoreBranches.COMMON).andIds(
-            AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();
       if (configsFolderArt == null) {
          TransactionBuilder tx =
-            atsServer.getOrcsApi().getTransactionFactory(null).createTransaction(CoreBranches.COMMON, userArt,
+            atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt,
                "Create Configs Folder");
          configsFolderArt = tx.createArtifact(AtsArtifactToken.ConfigsFolder);
          tx.relate(configsFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
