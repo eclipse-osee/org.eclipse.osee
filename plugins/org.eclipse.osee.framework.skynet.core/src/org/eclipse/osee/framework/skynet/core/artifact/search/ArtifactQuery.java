@@ -72,6 +72,8 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public class ArtifactQuery {
 
+   private static Map<String, Long> guidToUuid;
+
    public static Artifact getArtifactFromToken(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getArtifactFromId(artifactToken.getGuid(), branch);
    }
@@ -86,7 +88,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
+    *
     * @param artId the id of the desired artifact
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
@@ -95,9 +97,13 @@ public class ArtifactQuery {
       return getArtifactFromId(artId, branch, EXCLUDE_DELETED);
    }
 
+   public static Artifact getArtifactFromId(long artId, IOseeBranch branch) throws OseeCoreException {
+      return getArtifactFromId(new Long(artId).intValue(), branch, EXCLUDE_DELETED);
+   }
+
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
-    * 
+    *
     * @param artId the id of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its id - otherwise throw an exception
@@ -125,7 +131,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by id
-    * 
+    *
     * @param artifactId the id of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
@@ -136,7 +142,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by one its guid - otherwise throw an exception
-    * 
+    *
     * @param guid either the guid of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return one artifact by one its id if it exists, otherwise null
@@ -147,17 +153,17 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
-    * 
-    * @param guid of the desired artifact
+    *
+    * @param uuid of the desired artifact
     * @return one artifact by its guid if it exists, otherwise null
     */
-   public static Artifact checkArtifactFromId(String guid, IOseeBranch branch) throws OseeCoreException {
-      return getOrCheckArtifactFromId(guid, branch, EXCLUDE_DELETED, QueryType.CHECK);
+   public static Artifact checkArtifactFromId(long uuid, IOseeBranch branch) throws OseeCoreException {
+      return getOrCheckArtifactFromId(new Long(uuid).intValue(), branch, EXCLUDE_DELETED, QueryType.CHECK);
    }
 
    /**
     * search for exactly one artifact by one its guid - otherwise throw an exception
-    * 
+    *
     * @param guid of the desired artifact
     * @return exactly one artifact by one its guid - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
@@ -169,7 +175,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact by one its guid or human readable id - otherwise throw an exception
-    * 
+    *
     * @param the guid of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its guid or human readable id - otherwise throw an exception
@@ -197,7 +203,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact based on its type and name - otherwise throw an exception
-    * 
+    *
     * @return exactly one artifact based on its type and name - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -209,7 +215,7 @@ public class ArtifactQuery {
 
    /**
     * search for exactly one artifact based on its type and name - otherwise throw an exception
-    * 
+    *
     * @return exactly one artifact based on its type and name, otherwise null
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
@@ -235,7 +241,7 @@ public class ArtifactQuery {
 
    /**
     * Checks for existence of an artifact based on its type and name
-    * 
+    *
     * @return one artifact based on its type and name if it exists, otherwise null
     */
    public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
@@ -245,7 +251,7 @@ public class ArtifactQuery {
 
    /**
     * search for un-deleted artifacts with any of the given artifact ids
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch) throws OseeCoreException {
@@ -254,7 +260,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts with any of the given artifact ids
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
@@ -263,7 +269,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts with any of the given artifact guids
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(List<String> guids, IOseeBranch branch) throws OseeCoreException {
@@ -310,7 +316,7 @@ public class ArtifactQuery {
    /**
     * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -323,7 +329,7 @@ public class ArtifactQuery {
    /**
     * search for exactly one artifact based on its type and an attribute of a given type and value - otherwise throw an
     * exception
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     * @throws ArtifactDoesNotExist if no artifacts are found
     * @throws MultipleArtifactsExist if more than one artifact is found
@@ -335,7 +341,7 @@ public class ArtifactQuery {
 
    /**
     * Does not return any inherited artifacts. Use getArtifactListFromTypeWithInheritence instead.
-    * 
+    *
     * @param artifactTypeToken
     * @param branch
     * @param allowDeleted
@@ -401,7 +407,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts of the given type on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAnd(IArtifactType artifactType, IOseeBranch branch, int artifactCountEstimate, List<ArtifactSearchCriteria> criteria) throws OseeCoreException {
@@ -410,7 +416,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromCriteria(IOseeBranch branch, int artifactCountEstimate, List<ArtifactSearchCriteria> criteria) throws OseeCoreException {
@@ -419,7 +425,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts on a particular branch that satisfy the given criteria
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromCriteria(IOseeBranch branch, int artifactCountEstimate, ArtifactSearchCriteria... criteria) throws OseeCoreException {
@@ -428,7 +434,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts related
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getRelatedArtifactList(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
@@ -438,7 +444,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts by relation
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromRelation(IRelationType relationType, RelationSide relationSide, IOseeBranch branch) throws OseeCoreException {
@@ -448,7 +454,7 @@ public class ArtifactQuery {
 
    /**
     * search for artifacts of the given type with an attribute of the given type and value
-    * 
+    *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
@@ -501,7 +507,7 @@ public class ArtifactQuery {
     * </li>
     * </ul>
     * </p>
-    * 
+    *
     * @param queryString keywords to match
     * @param matchWordOrder <b>true</b> ensures the query string words exist in order; <b>false</b> matches words in any
     * order
@@ -527,7 +533,7 @@ public class ArtifactQuery {
    /**
     * Searches for keywords in attributes and returning match location information such as artifact where match was
     * found, attribute containing the match and match location in attribute data.
-    * 
+    *
     * @see #getArtifactsFromAttributeWithKeywords
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     * first one. When returning all match locations, search performance may be slow.
@@ -727,4 +733,22 @@ public class ArtifactQuery {
          return ResultSets.newResultSet(matches.values());
       }
    }
+
+   public static Long getUuidFromGuid(String guid, IOseeBranch branch) {
+      if (guidToUuid == null) {
+         guidToUuid = new HashMap<String, Long>(200);
+      }
+      Long result = null;
+      if (guidToUuid.containsKey(guid)) {
+         result = guidToUuid.get(guid);
+      } else {
+         Artifact art = getArtifactFromId(guid, branch);
+         if (art != null) {
+            result = art.getUuid();
+            guidToUuid.put(guid, result);
+         }
+      }
+      return result;
+   }
+
 }

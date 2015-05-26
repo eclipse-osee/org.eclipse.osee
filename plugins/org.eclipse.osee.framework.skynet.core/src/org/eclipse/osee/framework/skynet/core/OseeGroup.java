@@ -56,7 +56,7 @@ public class OseeGroup {
 
    /**
     * Determines whether the user is a member of this group
-    * 
+    *
     * @param user to check
     * @return whether the user is a member of this group
     */
@@ -66,7 +66,7 @@ public class OseeGroup {
 
    /**
     * Determines whether the current user is a member of this group
-    * 
+    *
     * @return whether the current user is a member of this group
     */
    public boolean isCurrentUserMember() throws OseeCoreException {
@@ -124,15 +124,13 @@ public class OseeGroup {
       String cacheKey = CoreArtifactTypes.Folder.getName() + "." + CoreArtifactTokens.UserGroups.getName();
       Artifact usersGroupFolder = ArtifactCache.getByTextId(cacheKey, branch);
       if (usersGroupFolder == null) {
-         usersGroupFolder =
-            ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups.getGuid(), branch);
+         usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups.getUuid(), branch);
          if (usersGroupFolder == null) {
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
             if (root.hasChild(CoreArtifactTokens.UserGroups.getName())) {
                usersGroupFolder = root.getChild(CoreArtifactTokens.UserGroups.getName());
             } else {
-               usersGroupFolder =
-                  ArtifactTypeManager.addArtifact(CoreArtifactTokens.UserGroups, branch);
+               usersGroupFolder = ArtifactTypeManager.addArtifact(CoreArtifactTokens.UserGroups, branch);
                root.addChild(usersGroupFolder);
             }
          }

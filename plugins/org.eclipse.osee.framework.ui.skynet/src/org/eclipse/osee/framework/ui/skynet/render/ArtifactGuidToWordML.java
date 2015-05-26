@@ -33,7 +33,8 @@ public class ArtifactGuidToWordML {
    public List<String> resolveAsOseeLinks(IOseeBranch branch, List<String> artifactGuids) throws OseeCoreException {
       List<String> mlLinks = new ArrayList<String>();
       for (String guid : artifactGuids) {
-         Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch);
+         Long uuidFromGuid = ArtifactQuery.getUuidFromGuid(guid, branch);
+         Artifact artifact = ArtifactQuery.checkArtifactFromId(uuidFromGuid, branch);
          if (artifact != null) {
             mlLinks.add(linkBuilder.getWordMlLink(LinkType.OSEE_SERVER_LINK, artifact));
          } else {

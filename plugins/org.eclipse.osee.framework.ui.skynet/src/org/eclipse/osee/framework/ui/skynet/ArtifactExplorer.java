@@ -151,7 +151,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class ArtifactExplorer extends GenericViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
-   private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
+   private static final String ROOT_UUID = "artifact.explorer.last.root_uuid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(VIEW_ID);
    private static final LinkedList<Tree> trees = new LinkedList<Tree>();
@@ -500,32 +500,32 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
          new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-            @Override
-            public void run() {
-               Job job = new UIJob("Open Quick Search") {
+         @Override
+         public void run() {
+            Job job = new UIJob("Open Quick Search") {
 
-                  @Override
-                  public IStatus runInUIThread(IProgressMonitor monitor) {
-                     IStatus status = Status.OK_STATUS;
-                     try {
-                        IViewPart viewPart =
-                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                              QuickSearchView.VIEW_ID);
-                        if (viewPart != null) {
-                           Branch branch = getBranch(monitor);
-                           if (branch != null) {
-                              ((QuickSearchView) viewPart).setBranch(branch);
-                           }
+               @Override
+               public IStatus runInUIThread(IProgressMonitor monitor) {
+                  IStatus status = Status.OK_STATUS;
+                  try {
+                     IViewPart viewPart =
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                           QuickSearchView.VIEW_ID);
+                     if (viewPart != null) {
+                        Branch branch = getBranch(monitor);
+                        if (branch != null) {
+                           ((QuickSearchView) viewPart).setBranch(branch);
                         }
-                     } catch (Exception ex) {
-                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                     return status;
+                  } catch (Exception ex) {
+                     status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                   }
-               };
-               Jobs.startJob(job);
-            }
-         };
+                  return status;
+               }
+            };
+            Jobs.startJob(job);
+         }
+      };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -1228,11 +1228,12 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       super.init(site, memento);
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
          try {
-            if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
+            if (memento != null && memento.getString(ROOT_UUID) != null && memento.getString(ROOT_BRANCH) != null) {
                Branch branch = BranchManager.getBranch(Long.parseLong(memento.getString(ROOT_BRANCH)));
 
                if (!branch.getArchiveState().isArchived() || AccessControlManager.isOseeAdmin()) {
-                  Artifact previousArtifact = ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID), branch);
+                  Artifact previousArtifact =
+                     ArtifactQuery.checkArtifactFromId(Long.valueOf(memento.getString(ROOT_UUID)), branch);
                   if (previousArtifact != null) {
                      explore(previousArtifact);
                   } else {
@@ -1256,7 +1257,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       super.saveState(memento);
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
          if (explorerRoot != null) {
-            memento.putString(ROOT_GUID, explorerRoot.getGuid());
+            memento.putString(ROOT_UUID, explorerRoot.getGuid());
             try {
                memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getFullBranch().getUuid()));
             } catch (OseeCoreException ex) {
@@ -1303,10 +1304,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             return;
          }
          if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+            //
+            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+            //
+            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

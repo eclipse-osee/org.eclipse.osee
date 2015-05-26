@@ -77,7 +77,7 @@ public class ArtifactQueryTest {
 
       // Should exist
       Artifact searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), BranchManager.getCommonBranch());
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
@@ -89,7 +89,7 @@ public class ArtifactQueryTest {
       newArtifact.deleteAndPersist();
 
       try {
-         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
+         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getUuid(), BranchManager.getCommonBranch());
          Assert.assertNull(ret);
       } catch (ArtifactDoesNotExist ex) {
          Assert.fail("ArtifactQuery should never throw ArtifactDoesNotExist with QueryType.CHECK");

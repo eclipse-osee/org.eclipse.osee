@@ -105,9 +105,12 @@ public final class FindTraceUnitFromResource {
                for (ResourceIdentifier resource : items) {
                   try {
                      if (GUID.isValid(resource.getGuid())) {
-                        Artifact checkArtifactFromId = ArtifactQuery.checkArtifactFromId(resource.getGuid(), branch);
-                        if (checkArtifactFromId != null) {
-                           artifacts.add(checkArtifactFromId);
+                        Long uuidFromGuid = ArtifactQuery.getUuidFromGuid(resource.getGuid(), branch);
+                        if (uuidFromGuid != null) {
+                           Artifact checkArtifactFromId = ArtifactQuery.checkArtifactFromId(uuidFromGuid, branch);
+                           if (checkArtifactFromId != null) {
+                              artifacts.add(checkArtifactFromId);
+                           }
                         }
                      } else {
                         artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(),
