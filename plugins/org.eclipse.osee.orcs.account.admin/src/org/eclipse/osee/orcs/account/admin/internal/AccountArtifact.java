@@ -34,7 +34,7 @@ public class AccountArtifact extends BaseIdentity<String> implements Account {
 
    @Override
    public long getId() {
-      return artifact.getLocalId();
+      return artifact.getUuid();
    }
 
    @Override

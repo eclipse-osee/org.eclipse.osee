@@ -56,7 +56,7 @@ public class RestUtil {
       for (ArtifactReadable art : artifacts) {
          JSONObject jObj = new JSONObject();
          jObj.put("name", art.getName());
-         jObj.put("uuid", art.getLocalId());
+         jObj.put("uuid", art.getUuid());
          jsonArray.put(jObj);
       }
       return jsonArray;
@@ -65,7 +65,7 @@ public class RestUtil {
    public static JSONObject getDefaultJSon(ArtifactReadable art) throws JSONException {
       JSONObject jObj = new JSONObject();
       jObj.put("name", art.getName());
-      jObj.put("uuid", art.getLocalId());
+      jObj.put("uuid", art.getUuid());
       return jObj;
    }
 

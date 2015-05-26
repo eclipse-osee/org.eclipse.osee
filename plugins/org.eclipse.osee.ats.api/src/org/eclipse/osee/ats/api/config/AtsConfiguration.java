@@ -20,7 +20,7 @@ public class AtsConfiguration {
 
    private boolean isDefault;
    private String name;
-   private int uuid;
+   private long uuid;
    private long branchUuid;
 
    public boolean isDefault() {
@@ -39,11 +39,11 @@ public class AtsConfiguration {
       this.name = name;
    }
 
-   public int getUuid() {
+   public long getUuid() {
       return uuid;
    }
 
-   public void setUuid(int uuid) {
+   public void setUuid(long uuid) {
       this.uuid = uuid;
    }
 

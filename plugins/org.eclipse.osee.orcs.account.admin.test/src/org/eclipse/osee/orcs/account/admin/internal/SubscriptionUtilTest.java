@@ -21,15 +21,15 @@ import org.mockito.Mockito;
 
 /**
  * Test Case for {@link SubscriptionUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class SubscriptionUtilTest {
 
-   private static final int ACCOUNT_ID = 3242;
+   private static final long ACCOUNT_ID = 3242L;
    private static final String ACCOUNT_NAME = "account-name";
 
-   private static final int GROUP_ID = 97012;
+   private static final long GROUP_ID = 97012L;
    private static final String SUBSCRIPTION_NAME = "subscription-name";
 
    @Test
@@ -56,8 +56,7 @@ public class SubscriptionUtilTest {
    public void testFromData() {
       String encodedUuid = SubscriptionUtil.toEncodedUuid(ACCOUNT_ID, ACCOUNT_NAME, GROUP_ID, SUBSCRIPTION_NAME);
 
-      Subscription actual =
-         SubscriptionUtil.fromData(ACCOUNT_ID, ACCOUNT_NAME, GROUP_ID, SUBSCRIPTION_NAME, true);
+      Subscription actual = SubscriptionUtil.fromData(ACCOUNT_ID, ACCOUNT_NAME, GROUP_ID, SUBSCRIPTION_NAME, true);
 
       assertEquals(encodedUuid, actual.getGuid());
       assertEquals(SUBSCRIPTION_NAME, actual.getName());
@@ -80,11 +79,11 @@ public class SubscriptionUtilTest {
       String encodedUuid = SubscriptionUtil.toEncodedUuid(ACCOUNT_ID, ACCOUNT_NAME, GROUP_ID, SUBSCRIPTION_NAME);
 
       ArtifactReadable accountArt = Mockito.mock(ArtifactReadable.class);
-      when(accountArt.getLocalId()).thenReturn(ACCOUNT_ID);
+      when(accountArt.getUuid()).thenReturn(ACCOUNT_ID);
       when(accountArt.getName()).thenReturn(ACCOUNT_NAME);
 
       ArtifactReadable subscriptionArt = Mockito.mock(ArtifactReadable.class);
-      when(subscriptionArt.getLocalId()).thenReturn(GROUP_ID);
+      when(subscriptionArt.getUuid()).thenReturn(GROUP_ID);
       when(subscriptionArt.getName()).thenReturn(SUBSCRIPTION_NAME);
 
       Subscription actual = SubscriptionUtil.fromArtifactData(accountArt, subscriptionArt, true);

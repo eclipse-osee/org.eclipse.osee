@@ -40,7 +40,7 @@ public class AccountPreferencesArtifact extends BaseIdentity<String> implements 
 
    @Override
    public long getId() {
-      return artifact.getLocalId();
+      return artifact.getUuid();
    }
 
    @Override

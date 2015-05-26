@@ -137,7 +137,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public Collection<ITransaction> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       ArtifactReadable artifactReadable = (ArtifactReadable) teamWf.getStoreObject();
-      List<ITransaction> transactionIds = commitArtifactIdMap.get(artifactReadable.getLocalId());
+      List<ITransaction> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {

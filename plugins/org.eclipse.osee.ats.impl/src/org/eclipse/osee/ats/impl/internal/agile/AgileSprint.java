@@ -38,7 +38,7 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
       try {
          ArtifactReadable agileTeam = artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_AgileTeam).getOneOrNull();
          if (agileTeam != null) {
-            result = agileTeam.getLocalId();
+            result = agileTeam.getUuid();
          }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing

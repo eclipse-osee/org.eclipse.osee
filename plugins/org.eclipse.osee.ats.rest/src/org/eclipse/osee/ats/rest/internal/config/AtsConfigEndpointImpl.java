@@ -67,7 +67,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          AtsConfiguration config = new AtsConfiguration();
          configs.getConfigs().add(config);
          config.setName(art.getName());
-         config.setUuid(art.getLocalId());
+         config.setUuid(art.getUuid());
          config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
          config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
       }
@@ -182,7 +182,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       config.setBranchUuid(newBranchUuid);
       config.setIsDefault(false);
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
-      config.setUuid(((ArtifactReadable) configArt).getLocalId());
+      config.setUuid(((ArtifactReadable) configArt).getUuid());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, String.valueOf(newBranchUuid));
       XResultData rd = new XResultData();
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);

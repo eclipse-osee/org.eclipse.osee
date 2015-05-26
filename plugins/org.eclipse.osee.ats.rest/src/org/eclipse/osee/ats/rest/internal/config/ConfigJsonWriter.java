@@ -149,7 +149,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          ArtifactReadable teamArt = atsServer.getArtifactByUuid(team.getUuid());
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
-         writer.writeStringField("Backlog Uuid", (backlogArt != null ? String.valueOf(backlogArt.getLocalId()) : ""));
+         writer.writeStringField("Backlog Uuid", (backlogArt != null ? String.valueOf(backlogArt.getUuid()) : ""));
          writer.writeStringField("Backlog", (backlogArt != null ? String.valueOf(backlogArt.getName()) : ""));
       }
       if (!identityView) {
@@ -186,12 +186,12 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
 
    private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt) throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeStartObject();
-      writer.writeNumberField("uuid", workArt.getLocalId());
+      writer.writeNumberField("uuid", workArt.getUuid());
       writer.writeStringField("Name", workArt.getName());
       writer.writeEndObject();
    }
 
    public static Long getUuid(IAtsObject atsObject) {
-      return ((ArtifactReadable) atsObject.getStoreObject()).getLocalId().longValue();
+      return ((ArtifactReadable) atsObject.getStoreObject()).getUuid();
    }
 }

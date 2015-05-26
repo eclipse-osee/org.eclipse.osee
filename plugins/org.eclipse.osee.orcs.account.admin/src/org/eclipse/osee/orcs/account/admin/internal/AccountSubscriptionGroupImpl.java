@@ -30,7 +30,7 @@ public class AccountSubscriptionGroupImpl extends BaseIdentity<String> implement
 
    @Override
    public long getId() {
-      return artifact.getLocalId();
+      return artifact.getUuid();
    }
 
    @Override

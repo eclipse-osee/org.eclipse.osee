@@ -59,7 +59,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
          ArtifactReadable artifact = query.getResults().getOneOrNull();
          if (artifact != null) {
             toReturn =
-               TokenFactory.createUserToken(artifact.getLocalId(), artifact.getGuid(), artifact.getName(),
+               TokenFactory.createUserToken(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
                   artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
          } else {
             getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);

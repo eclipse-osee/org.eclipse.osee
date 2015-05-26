@@ -38,7 +38,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    public List<Long> getAtsTeamUuids() {
       List<Long> uuids = new ArrayList<Long>();
       for (ArtifactReadable atsTeam : artifact.getRelated(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         uuids.add(new Long(atsTeam.getLocalId()));
+         uuids.add(new Long(atsTeam.getUuid()));
       }
       return uuids;
    }
@@ -55,7 +55,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
          ArtifactReadable backlogArt =
             artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
          if (backlogArt != null) {
-            backlogUuid = backlogArt.getLocalId();
+            backlogUuid = backlogArt.getUuid();
          }
       } catch (Exception ex) {
          // do nothing

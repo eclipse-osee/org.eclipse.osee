@@ -150,7 +150,7 @@ public class AtsUser implements IAtsUser {
 
    @Override
    public long getUuid() {
-      return this.user.getLocalId();
+      return this.user.getUuid();
    }
 
 }

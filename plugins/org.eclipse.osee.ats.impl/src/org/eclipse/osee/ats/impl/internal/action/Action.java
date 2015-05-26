@@ -25,7 +25,7 @@ public class Action extends AtsObject implements IAtsAction {
    private final IAtsServer atsServer;
 
    public Action(IAtsServer atsServer, ArtifactReadable artRead) {
-      super(artRead.getGuid(), artRead.getLocalId());
+      super(artRead.getGuid(), artRead.getUuid());
       this.atsServer = atsServer;
       setStoreObject(artRead);
    }

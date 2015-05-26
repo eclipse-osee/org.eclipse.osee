@@ -94,7 +94,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
             writer = jsonFactory.createJsonGenerator(entityStream);
             //         writer.setPrettyPrinter(new DefaultPr)
             writer.writeStartObject();
-            writer.writeNumberField("uuid", artifact.getLocalId());
+            writer.writeNumberField("uuid", artifact.getUuid());
             if (matches(IdentityView.class, annotations)) {
                writer.writeStringField("Name", artifact.getName());
             } else {

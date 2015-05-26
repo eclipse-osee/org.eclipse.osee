@@ -45,7 +45,7 @@ public class BranchDataFactoryTest {
    @Mock private BranchQuery branchQuery;
    @Mock private TransactionQuery txQuery;
    @Mock private QueryFactory queryFactory;
-   
+
    @Mock private IOseeBranch branch;
    @Mock private IOseeBranch parentToken;
    @Mock private BranchReadable parent;

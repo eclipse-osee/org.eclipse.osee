@@ -86,7 +86,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       Iterable<Artifact> loaded = getHandler().getArtifacts();
 
       for (Artifact item : loaded) {
-         ArtifactMatch artifactMatch = matches.get(item.getLocalId());
+         ArtifactMatch artifactMatch = matches.get(new Long(item.getUuid()).intValue());
          if (artifactMatch != null) {
             ArtifactReadable readable = proxyManager.asExternalArtifact(session, item);
             artifactMatch.setArtifactReadable(readable);

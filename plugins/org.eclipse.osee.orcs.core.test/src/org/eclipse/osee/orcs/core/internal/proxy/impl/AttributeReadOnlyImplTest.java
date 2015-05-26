@@ -29,7 +29,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for @{link AttributeReadOnlyImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeReadOnlyImplTest {
@@ -38,11 +38,11 @@ public class AttributeReadOnlyImplTest {
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private OrcsSession session;
    @Mock private Attribute<Date> proxiedObject;
-   
+
    @Mock private IAttributeType attributeType;
-   
+
    @Mock private AttributeId attributeId;
-   
+
    @Mock private Attribute<Object> attribute1;
    @Mock private AttributeReadable<Object> attributeReadable1;
    //@formatter:on
