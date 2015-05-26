@@ -40,7 +40,7 @@ import com.google.gson.JsonObject;
 
 /**
  * Test unit for {@link ActionResource}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ActionResourceTest extends AbstractRestTest {
@@ -149,7 +149,7 @@ public class ActionResourceTest extends AbstractRestTest {
       Form form = new Form();
       postAndValidateResponse("title is not valid", form);
 
-      form.param("ats_title", "title");
+      form.param("ats_title", getClass().getSimpleName());
       postAndValidateResponse("actionableItems is not valid", form);
 
       form.param("desc", "this is the description");
