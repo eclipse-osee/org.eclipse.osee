@@ -13,16 +13,9 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
-
-import org.eclipse.osee.ats.agile.SprintColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.agile.SprintColumn;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
-import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
@@ -122,6 +115,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
@@ -216,6 +210,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       NumberOfTasksRemainingColumn.getInstance(),
       new LastModifiedByColumn(false),
       new LastModifiedDateColumn(false),
+      LastModifiedCommentColumn.getInstance(),
       LastStatusedColumn.getInstance(),
       ValidationRequiredColumn.getInstance(),
       ReviewNumMajorDefectsColumn.getInstance(),
