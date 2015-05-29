@@ -180,7 +180,7 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts. Only used by Publish SRS
-    * 
+    *
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
@@ -200,43 +200,43 @@ public class WordTemplateProcessor {
       template = template.replaceAll(PGNUMTYPE_START_1, "");
       this.outlineNumber =
          outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
-      template = wordMl.setHeadingNumbers(this.outlineNumber, template, outlineType);
-      Matcher matcher = headElementsPattern.matcher(template);
+         template = wordMl.setHeadingNumbers(this.outlineNumber, template, outlineType);
+         Matcher matcher = headElementsPattern.matcher(template);
 
-      int lastEndIndex = 0;
-      while (matcher.find()) {
-         // Write the part of the template between the elements
-         wordMl.addWordMl(template.substring(lastEndIndex, matcher.start()));
+         int lastEndIndex = 0;
+         while (matcher.find()) {
+            // Write the part of the template between the elements
+            wordMl.addWordMl(template.substring(lastEndIndex, matcher.start()));
 
-         lastEndIndex = matcher.end();
-         String elementType = matcher.group(3);
-         String elementValue = matcher.group(4);
+            lastEndIndex = matcher.end();
+            String elementType = matcher.group(3);
+            String elementValue = matcher.group(4);
 
-         if (elementType.equals(ARTIFACT)) {
-            extractOutliningOptions(elementValue);
-            if (artifacts == null) {
-               // This handles the case where artifacts selected in the template
-               Matcher setNameMatcher = setNamePattern.matcher(elementValue);
-               setNameMatcher.find();
-               artifacts = renderer.getArtifactsOption(WordUtil.textOnly(setNameMatcher.group(2)));
+            if (elementType.equals(ARTIFACT)) {
+               extractOutliningOptions(elementValue);
+               if (artifacts == null) {
+                  // This handles the case where artifacts selected in the template
+                  Matcher setNameMatcher = setNamePattern.matcher(elementValue);
+                  setNameMatcher.find();
+                  artifacts = renderer.getArtifactsOption(WordUtil.textOnly(setNameMatcher.group(2)));
+               }
+               if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() == 1) {
+                  // for single edit override outlining options
+                  outlining = false;
+               }
+               processArtifactSet(elementValue, artifacts, wordMl, outlineType, presentationType);
+            } else if (elementType.equals(EXTENSION_PROCESSOR)) {
+               processExtensionTemplate(elementValue, folder, wordMl, presentationType, template);
+            } else {
+               throw new OseeArgumentException("Invalid input [%s]", elementType);
             }
-            if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() == 1) {
-               // for single edit override outlining options
-               outlining = false;
-            }
-            processArtifactSet(elementValue, artifacts, wordMl, outlineType, presentationType);
-         } else if (elementType.equals(EXTENSION_PROCESSOR)) {
-            processExtensionTemplate(elementValue, folder, wordMl, presentationType, template);
-         } else {
-            throw new OseeArgumentException("Invalid input [%s]", elementType);
          }
-      }
-      String endOfTemplate = template.substring(lastEndIndex);
-      // Write out the last of the template
-      wordMl.addWordMl(updateFooter(endOfTemplate));
-      displayNonTemplateArtifacts(nonTemplateArtifacts,
-         "Only artifacts of type Word Template Content are supported in this case.");
-      return charBak;
+         String endOfTemplate = template.substring(lastEndIndex);
+         // Write out the last of the template
+         wordMl.addWordMl(updateFooter(endOfTemplate));
+         displayNonTemplateArtifacts(nonTemplateArtifacts,
+            "Only artifacts of type Word Template Content are supported in this case.");
+         return charBak;
    }
 
    private String updateFooter(String endOfTemplate) {
@@ -520,7 +520,6 @@ public class WordTemplateProcessor {
             }
          }
       }
-      wordMl.setPageLayout(artifact, footer);
    }
 
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
