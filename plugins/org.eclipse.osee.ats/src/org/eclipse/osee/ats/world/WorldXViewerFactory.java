@@ -112,6 +112,7 @@ import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageTypeColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
@@ -217,6 +218,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ReviewNumMinorDefectsColumn.getInstance(),
       ReviewNumIssuesColumn.getInstance(),
       ArtifactTypeColumn.getInstance(),
+      ArtifactTokenColumn.getInstance(),
       OriginatingWorkFlowColumn.getInstance(),
       ParentIdColumn.getInstance(),
       ParentAtsIdColumn.getInstance(),

@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
@@ -37,6 +38,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerColumns(new UuidColumn(true));
       registerColumns(new LastModifiedDateColumn(true));
       registerColumns(new LastModifiedByColumn(true));
+      registerColumns(new ArtifactTokenColumn());
       registerAllAttributeColumnsForArtifacts(artifacts, true, true);
    }
 
