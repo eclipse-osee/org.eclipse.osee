@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +30,7 @@ public final class ArtifactGuis {
    private static final String OTHER_EDIT_SQL =
       "select txs.mod_type, br.branch_id from osee_attribute att, osee_txs txs, osee_branch br where att.art_id = ? and att.gamma_id = txs.gamma_id and txs.branch_id = br.branch_id and txs.transaction_id <> br.baseline_transaction_id and txs.tx_current <> 0 and  br.branch_id <> ? and br.parent_branch_id = ? and br.branch_type = ?  AND NOT EXISTS (SELECT 1 FROM osee_txs txs1 WHERE txs1.branch_id = br.branch_id AND txs1.transaction_id = br.baseline_transaction_id AND txs1.gamma_id = txs.gamma_id AND txs1.mod_type = txs.mod_type)";
    private static final String EDIT_MESSAGE =
-      "%d of the %d artifacts about to be edited have already been modified on the following branches:";
+      "%d of the %d artifacts about to be edited have already been modified and/or deleted on the following branches:";
    private static final int BRANCH_NAME_LENGTH = 50;
 
    private ArtifactGuis() {
@@ -93,9 +92,6 @@ public final class ArtifactGuis {
                int modType = chStmt.getInt("mod_type");
                StringBuilder branches = new StringBuilder();
                branches.append("\n\t");
-               branches.append("(");
-               branches.append(ModificationType.getMod(modType).getDisplayName());
-               branches.append(")-");
                branches.append(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
                otherBranches.add(branches.toString());
                wasModified = true;
