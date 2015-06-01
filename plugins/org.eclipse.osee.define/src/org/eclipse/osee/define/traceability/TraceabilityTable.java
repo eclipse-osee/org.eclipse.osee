@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.report.ISimpleTable;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 
 /**
  * @author Roberto E. Escobar
@@ -29,10 +29,10 @@ public class TraceabilityTable {
 
    private CharSequence result;
    private final StringWriter stringWriter;
-   private final ISheetWriter sheetWriter;
+   private final ExcelXmlWriter sheetWriter;
    private final ISimpleTable[] styles;
 
-   public TraceabilityTable(StringWriter stringWriter, ISheetWriter sheetWriter, ISimpleTable... styles) {
+   public TraceabilityTable(StringWriter stringWriter, ExcelXmlWriter sheetWriter, ISimpleTable... styles) {
       this.stringWriter = stringWriter;
       this.sheetWriter = sheetWriter;
       this.styles = styles;

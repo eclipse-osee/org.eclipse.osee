@@ -21,6 +21,7 @@ import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -99,12 +100,12 @@ public class StdTestToCsciTable implements ISimpleTable {
    }
 
    @Override
-   public void initializeSheet(ISheetWriter sheetWriter) throws Exception {
+   public void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception {
       sheetWriter.startSheet("STD - Test to CSCI Requirements Traceability", 5);
    }
 
    @Override
-   public void generateBody(ISheetWriter sheetWriter) throws Exception {
+   public void generateBody(ExcelXmlWriter sheetWriter) throws Exception {
       Collection<Artifact> directRequirements = source.getAllSwRequirements();
       HashCollection<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 

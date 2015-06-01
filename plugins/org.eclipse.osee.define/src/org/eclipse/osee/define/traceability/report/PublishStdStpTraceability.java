@@ -25,7 +25,6 @@ import org.eclipse.osee.define.traceability.ScriptTraceabilityOperation;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.traceability.TraceabilityFactory;
-import org.eclipse.osee.define.traceability.TraceabilityFactory.OutputFormat;
 import org.eclipse.osee.define.traceability.TraceabilityFactory.TraceabilityStyle;
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.TraceabilityTable;
@@ -157,8 +156,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
                monitor.subTask(String.format("Creating table: [%s] [%s of %s]", style.asLabel(), ++count,
                   selectedReports.size()));
 
-               TraceabilityTable table =
-                  TraceabilityFactory.getTraceabilityTable(OutputFormat.EXCEL, style, traceabilityData);
+               TraceabilityTable table = TraceabilityFactory.getTraceabilityTable(style, traceabilityData);
                if (table != null) {
                   table.run(monitor);
                }

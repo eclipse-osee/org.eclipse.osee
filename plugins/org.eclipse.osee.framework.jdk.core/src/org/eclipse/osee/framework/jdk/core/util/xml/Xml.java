@@ -135,7 +135,7 @@ public class Xml {
       appendable.append("]]>");
    }
 
-   private static void writeData(Appendable appendable, String string) throws IOException {
+   public static void writeData(Appendable appendable, String string) throws IOException {
       for (int index = 0; index < string.length(); index++) {
          char value = string.charAt(index);
          if (value == '\r') {

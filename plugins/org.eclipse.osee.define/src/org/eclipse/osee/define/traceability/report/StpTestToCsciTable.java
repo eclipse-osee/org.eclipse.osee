@@ -16,7 +16,7 @@ import java.util.TreeSet;
 import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -31,7 +31,7 @@ public class StpTestToCsciTable implements ISimpleTable {
    }
 
    @Override
-   public void initializeSheet(ISheetWriter sheetWriter) throws IOException {
+   public void initializeSheet(ExcelXmlWriter sheetWriter) throws IOException {
       sheetWriter.startSheet("STP - Test to CSCI Requirements Traceability", 5);
    }
 
@@ -89,7 +89,7 @@ public class StpTestToCsciTable implements ISimpleTable {
    }
 
    @Override
-   public void generateBody(ISheetWriter sheetWriter) throws Exception {
+   public void generateBody(ExcelXmlWriter sheetWriter) throws Exception {
       Collection<Artifact> directRequirements = source.getDirectSwRequirements();
       HashCollection<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 
@@ -102,7 +102,7 @@ public class StpTestToCsciTable implements ISimpleTable {
       }
    }
 
-   private void processRow(ISheetWriter sheetWriter, String partition, Artifact artifact) throws Exception {
+   private void processRow(ExcelXmlWriter sheetWriter, String partition, Artifact artifact) throws Exception {
       ArtifactOperations operator = new ArtifactOperations(artifact);
       String paragraphTitle = operator.getName();
       String paragraphNumber = operator.getParagraphNumber();

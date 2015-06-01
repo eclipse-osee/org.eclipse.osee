@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.report;
 
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ISimpleTable {
 
-   public void initializeSheet(ISheetWriter sheetWriter) throws Exception;
+   public void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception;
 
    public String getHeader();
 
    public String getHeaderStyles();
 
-   public void generateBody(ISheetWriter sheetWriter) throws Exception;
+   public void generateBody(ExcelXmlWriter sheetWriter) throws Exception;
 
 }

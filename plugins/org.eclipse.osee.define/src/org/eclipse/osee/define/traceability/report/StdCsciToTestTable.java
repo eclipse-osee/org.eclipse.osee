@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -95,12 +95,12 @@ public class StdCsciToTestTable implements ISimpleTable {
    }
 
    @Override
-   public void initializeSheet(ISheetWriter sheetWriter) throws Exception {
+   public void initializeSheet(ExcelXmlWriter sheetWriter) throws Exception {
       sheetWriter.startSheet("STD - CSCI Requirements to Test Traceability", 5);
    }
 
    @Override
-   public void generateBody(ISheetWriter sheetWriter) throws Exception {
+   public void generateBody(ExcelXmlWriter sheetWriter) throws Exception {
       List<Artifact> requirements = ArtifactOperations.sortByParagraphNumbers(source.getAllSwRequirements());
       for (Artifact artifact : requirements) {
          ArtifactOperations operations = new ArtifactOperations(artifact);

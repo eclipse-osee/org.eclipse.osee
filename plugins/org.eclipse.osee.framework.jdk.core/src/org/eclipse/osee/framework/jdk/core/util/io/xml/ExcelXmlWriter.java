@@ -86,6 +86,8 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    private double rowHeight;
 
+   private int richTextCell = -1;
+
    public ExcelXmlWriter(File file) throws IOException {
       this(new FileWriter(file));
    }
@@ -238,17 +240,29 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
                String value = cellDataStr.replaceAll("\"", "&quot;");
                sb.append(" ss:Formula=\"" + value + "\">");
             } else {
-               sb.append("><Data ss:Type=\"String\">");
+               boolean isRichText = richTextCell == cellIndex;
+               if (isRichText) {
+                  sb.append("><ss:Data ss:Type=\"String\" xmlns=\"http://www.w3.org/TR/REC-html40\">");
+               } else {
+                  sb.append("><Data ss:Type=\"String\">");
+               }
                if (cellDataStr.equals("")) {
                   sb.append(emptyStringRepresentation);
                } else {
                   if (cellDataStr.length() > 32767) {
                      sb.append(blobMessage);
+                  } else if (isRichText) {
+                     Xml.writeData(sb, cellDataStr);
                   } else {
                      Xml.writeWhileHandlingCdata(sb, cellDataStr);
                   }
                }
-               sb.append("</Data>");
+               if (isRichText) {
+                  richTextCell = -1;
+                  sb.append("</ss:Data>");
+               } else {
+                  sb.append("</Data>");
+               }
                if (cellDataStr.length() > 32767) {
                   sb.append("<EmbeddedClob>");
                   Xml.writeWhileHandlingCdata(sb, cellDataStr);
@@ -295,6 +309,10 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             mStyleMap.put(cellIndex, "OseeCentered");
             break;
       }
+   }
+
+   public void setRichTextCell(int cellIndex) {
+      richTextCell = cellIndex;
    }
 
    public void setCellStyle(String style, int cellIndex) {
