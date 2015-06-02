@@ -35,20 +35,17 @@ public final class JettyConstants {
    public static final String JETTY__ACCEPT_LOCAL_CONNECTIONS = "127.0.0.1";
    public static final String JETTY__ACCEPT_REMOTE_CONNECTIONS = "0.0.0.0";
 
-   public static final String JETTY__SERVER_NAME = qualify("name");
    public static final String JETTY__HTTP_NIO_ENABLED = qualify("http.nio.enabled");
    public static final String JETTY__HTTP_NIO_AUTO_DETECT = qualify("http.nio.enabled");
 
    public static final String JETTY__HTTP_ENABLED = qualify("http.enabled");
    public static final String JETTY__HTTP_PORT = qualify("http.port");
    public static final String JETTY__HTTP_HOST = qualify("http.host");
-   public static final String JETTY__HTTP_IS_FORWARDED = qualify("http.is.forwarded");
    public static final String JETTY__HTTP_USE_RANDOM_PORT = qualify("http.use.random.port");
 
    public static final String JETTY__HTTPS_ENABLED = qualify("https.enabled");
    public static final String JETTY__HTTPS_HOST = qualify("https.host");
    public static final String JETTY__HTTPS_PORT = qualify("https.port");
-   public static final String JETTY__HTTPS_IS_FORWARDED = qualify("https.is.forwarded");
    public static final String JETTY__HTTPS_USE_RANDOM_PORT = qualify("https.use.random.port");
 
    public static final String JETTY__SSL_PROTOCOL = qualify("ssl.protocol");
@@ -66,7 +63,6 @@ public final class JettyConstants {
 
    public static final String JETTY__MULTIPLE_SLASH_TO_SINGLE = qualify("replace.multiple.slash.to.single");
    //////////////////////////////////// Defaults
-   public static final String DEFAULT_JETTY__SERVER_NAME = null;
 
    public static final boolean DEFAULT_JETTY__HTTP_NIO_ENABLED = false;
    public static final boolean DEFAULT_JETTY__HTTP_NIO_AUTO_DETECT = true;
@@ -74,13 +70,11 @@ public final class JettyConstants {
    public static final boolean DEFAULT_JETTY__HTTP_ENABLED = true;
    public static final int DEFAULT_JETTY__HTTP_PORT = 80;
    public static final String DEFAULT_JETTY__HTTP_HOST = JETTY__ACCEPT_REMOTE_CONNECTIONS;
-   public static final boolean DEFAULT_JETTY__HTTP_IS_FORWARDED = false;
    public static final boolean DEFAULT_JETTY__HTTP_USE_RANDOM_PORT = false;
 
    public static final boolean DEFAULT_JETTY__HTTPS_ENABLED = false;
    public static final String DEFAULT_JETTY__HTTPS_HOST = JETTY__ACCEPT_REMOTE_CONNECTIONS;
    public static final int DEFAULT_JETTY__HTTPS_PORT = 443;
-   public static final boolean DEFAULT_JETTY__HTTPS_IS_FORWARDED = false;
    public static final boolean DEFAULT_JETTY__HTTPS_USE_RANDOM_PORT = false;
 
    public static final String DEFAULT_JETTY__SSL_PROTOCOL = null;

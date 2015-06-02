@@ -14,19 +14,16 @@ import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__CONTEXT_
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__CONTEXT_SESSION_INACTIVE_INTERVAL;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_HOST;
-import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTPS_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_HOST;
-import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_NIO_AUTO_DETECT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_NIO_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__HTTP_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__MULTIPLE_SLASH_TO_SINGLE;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__OTHER_INFO;
-import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SERVER_NAME;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYPASSWORD;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYSTORE;
 import static org.eclipse.osee.http.jetty.JettyConstants.DEFAULT_JETTY__SSL_KEYSTORETYPE;
@@ -39,12 +36,10 @@ import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__CONTEXT_PATH;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__CONTEXT_SESSION_INACTIVE_INTERVAL;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_HOST;
-import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTPS_USE_RANDOM_PORT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_HOST;
-import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_IS_FORWARDED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_NIO_AUTO_DETECT;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_NIO_ENABLED;
 import static org.eclipse.osee.http.jetty.JettyConstants.JETTY__HTTP_PORT;
@@ -85,7 +80,6 @@ import org.mockito.MockitoAnnotations;
  */
 public class JettyServerBuilderTest {
 
-   private static final String SERVER_NAME = "myserver.com";
    private static final String CONTEXT = "mycontext";
    private static final int SESSION_INACTIVE_INTERVAL = 10000;
 
@@ -136,9 +130,6 @@ public class JettyServerBuilderTest {
    public void testDefaults() {
       JettyConfig config = builder;
 
-      assertEquals(DEFAULT_JETTY__SERVER_NAME, config.getServerName());
-      assertEquals(false, config.hasServerName());
-
       assertEquals(DEFAULT_JETTY__CONTEXT_PATH, config.getContextPath());
       assertEquals(DEFAULT_JETTY__CONTEXT_SESSION_INACTIVE_INTERVAL, config.getContextSessioninactiveinterval());
       assertEquals(DEFAULT_JETTY__HTTP_HOST, config.getHttpHost());
@@ -162,14 +153,11 @@ public class JettyServerBuilderTest {
       assertEquals(DEFAULT_JETTY__SSL_NEEDS_CLIENT_AUTH, config.isSslNeedClientAuth());
       assertEquals(DEFAULT_JETTY__SSL_WANTS_CLIENT_AUTH, config.isSslWantClientAuth());
       assertEquals(DEFAULT_JETTY__MULTIPLE_SLASH_TO_SINGLE, config.isMultipleSlashToSingle());
-      assertEquals(DEFAULT_JETTY__HTTP_IS_FORWARDED, config.isHttpForwarded());
-      assertEquals(DEFAULT_JETTY__HTTPS_IS_FORWARDED, config.isHttpsForwarded());
       assertTrue(config.getOtherProps().isEmpty());
    }
 
    @Test
    public void testFields() {
-      builder.serverName(SERVER_NAME);
       builder.contextPath(CONTEXT);
       builder.contextSessionInactiveInterval(SESSION_INACTIVE_INTERVAL);
       builder.autoDetectNioSupport(HTTP_NIO_AUTO_DETECT);
@@ -195,13 +183,10 @@ public class JettyServerBuilderTest {
       builder.extraParams(map("a", 1, "b", 2));
       builder.logging(true);
       builder.replaceMultipleSlashesWithSingle(false);
-      builder.httpForwarded(false);
-      builder.httpsForwarded(false);
 
       JettyServer actual = builder.build();
       JettyConfig config = actual.getConfig();
 
-      assertEquals(SERVER_NAME, config.getServerName());
       assertEquals(CONTEXT, config.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config.getContextSessioninactiveinterval());
       assertEquals(HTTP_HOST, config.getHttpHost());
@@ -225,8 +210,6 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config.getWorkingDirectory());
       assertEquals(false, config.isMultipleSlashToSingle());
-      assertEquals(false, config.isHttpForwarded());
-      assertEquals(false, config.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config.getContextSessioninactiveinterval());
       assertMapEquals(config.getOtherProps(), "a", 1, "b", 2);
@@ -234,8 +217,6 @@ public class JettyServerBuilderTest {
       builder.useRandomHttpPort(true);
       builder.useRandomHttpsPort(true);
       builder.replaceMultipleSlashesWithSingle(true);
-      builder.httpForwarded(true);
-      builder.httpsForwarded(true);
 
       actual = builder.build();
       config = actual.getConfig();
@@ -249,15 +230,11 @@ public class JettyServerBuilderTest {
       assertEquals(true, config.isRandomHttpPort());
       assertEquals(true, config.isRandomHttpsPort());
       assertEquals(true, config.isMultipleSlashToSingle());
-      assertEquals(true, config.isHttpForwarded());
-      assertEquals(true, config.isHttpsForwarded());
    }
 
    @Test
    public void testConfigProperties() {
       Map<String, Object> props = new HashMap<String, Object>();
-
-      add(props, JettyConstants.JETTY__SERVER_NAME, SERVER_NAME);
 
       add(props, JETTY__HTTP_NIO_ENABLED, HTTP_NIO_ENABLED);
       add(props, JETTY__HTTP_NIO_AUTO_DETECT, HTTP_NIO_AUTO_DETECT);
@@ -281,8 +258,6 @@ public class JettyServerBuilderTest {
       add(props, JETTY__OTHER_INFO, OTHER_INFO);
       add(props, JETTY__WORKING_DIRECTORY, WORKING_DIRECTORY);
       add(props, JETTY__MULTIPLE_SLASH_TO_SINGLE, false);
-      add(props, JETTY__HTTP_IS_FORWARDED, false);
-      add(props, JETTY__HTTPS_IS_FORWARDED, false);
 
       add(props, "a", 1);
       add(props, "b", 2);
@@ -294,8 +269,6 @@ public class JettyServerBuilderTest {
 
       JettyServer actual = builder.build();
       JettyConfig config = actual.getConfig();
-
-      assertEquals(SERVER_NAME, config.getServerName());
 
       assertEquals(CONTEXT, config.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config.getContextSessioninactiveinterval());
@@ -320,8 +293,6 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config.getWorkingDirectory());
       assertEquals(false, config.isMultipleSlashToSingle());
-      assertEquals(false, config.isHttpForwarded());
-      assertEquals(false, config.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config.getContextSessioninactiveinterval());
       assertMapEquals(config.getOtherProps(), "a", "1", "b", "2");
@@ -333,8 +304,6 @@ public class JettyServerBuilderTest {
       add(props, JETTY__HTTPS_USE_RANDOM_PORT, true);
 
       add(props, JETTY__MULTIPLE_SLASH_TO_SINGLE, true);
-      add(props, JETTY__HTTP_IS_FORWARDED, true);
-      add(props, JETTY__HTTPS_IS_FORWARDED, true);
 
       builder.properties(props);
 
@@ -350,13 +319,10 @@ public class JettyServerBuilderTest {
       assertEquals(true, config.isRandomHttpPort());
       assertEquals(true, config.isRandomHttpsPort());
       assertEquals(true, config.isMultipleSlashToSingle());
-      assertEquals(true, config.isHttpForwarded());
-      assertEquals(true, config.isHttpsForwarded());
    }
 
    @Test
    public void testNoChangeAfterBuild() {
-      builder.serverName(SERVER_NAME);
       builder.contextPath(CONTEXT);
       builder.contextSessionInactiveInterval(SESSION_INACTIVE_INTERVAL);
       builder.autoDetectNioSupport(HTTP_NIO_AUTO_DETECT);
@@ -382,13 +348,9 @@ public class JettyServerBuilderTest {
       builder.extraParams(map("a", 1, "b", 2));
       builder.logging(true);
       builder.replaceMultipleSlashesWithSingle(false);
-      builder.httpForwarded(true);
-      builder.httpsForwarded(true);
 
       JettyServer actual = builder.build();
       JettyConfig config = actual.getConfig();
-
-      assertEquals(SERVER_NAME, config.getServerName());
 
       assertEquals(CONTEXT, config.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config.getContextSessioninactiveinterval());
@@ -413,16 +375,12 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config.getWorkingDirectory());
       assertEquals(false, config.isMultipleSlashToSingle());
-      assertEquals(true, config.isHttpForwarded());
-      assertEquals(true, config.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config.getContextSessioninactiveinterval());
       assertMapEquals(config.getOtherProps(), "a", 1, "b", 2);
 
       builder.readProperties(Collections.<String, Object> emptyMap());
 
-      assertEquals(SERVER_NAME, config.getServerName());
-
       assertEquals(CONTEXT, config.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config.getContextSessioninactiveinterval());
       assertEquals(HTTP_HOST, config.getHttpHost());
@@ -446,8 +404,6 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config.getWorkingDirectory());
       assertEquals(false, config.isMultipleSlashToSingle());
-      assertEquals(true, config.isHttpForwarded());
-      assertEquals(true, config.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config.getContextSessioninactiveinterval());
       assertMapEquals(config.getOtherProps(), "a", 1, "b", 2);
@@ -455,7 +411,6 @@ public class JettyServerBuilderTest {
 
    @Test
    public void testFromConfig() {
-      builder.serverName(SERVER_NAME);
       builder.contextPath(CONTEXT);
       builder.contextSessionInactiveInterval(SESSION_INACTIVE_INTERVAL);
       builder.autoDetectNioSupport(HTTP_NIO_AUTO_DETECT);
@@ -481,13 +436,10 @@ public class JettyServerBuilderTest {
       builder.extraParams(map("a", 1, "b", 2));
       builder.logging(true);
       builder.replaceMultipleSlashesWithSingle(false);
-      builder.httpForwarded(true);
-      builder.httpsForwarded(true);
 
       JettyServer actual = builder.build();
       JettyConfig config1 = actual.getConfig();
 
-      assertEquals(SERVER_NAME, config1.getServerName());
       assertEquals(CONTEXT, config1.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config1.getContextSessioninactiveinterval());
       assertEquals(HTTP_HOST, config1.getHttpHost());
@@ -511,8 +463,6 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config1.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config1.getWorkingDirectory());
       assertEquals(false, config1.isMultipleSlashToSingle());
-      assertEquals(true, config1.isHttpForwarded());
-      assertEquals(true, config1.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config1.getContextSessioninactiveinterval());
       assertMapEquals(config1.getOtherProps(), "a", 1, "b", 2);
@@ -520,7 +470,6 @@ public class JettyServerBuilderTest {
       JettyServer actual2 = JettyServer.fromConfig(config1);
       JettyConfig config2 = actual2.getConfig();
 
-      assertEquals(SERVER_NAME, config2.getServerName());
       assertEquals(CONTEXT, config2.getContextPath());
       assertEquals(SESSION_INACTIVE_INTERVAL, config2.getContextSessioninactiveinterval());
       assertEquals(HTTP_HOST, config2.getHttpHost());
@@ -544,8 +493,6 @@ public class JettyServerBuilderTest {
       assertEquals(SSL_WANTS_CLIENT_AUTH, config2.isSslWantClientAuth());
       assertEquals(WORKING_DIRECTORY, config2.getWorkingDirectory());
       assertEquals(false, config2.isMultipleSlashToSingle());
-      assertEquals(true, config2.isHttpForwarded());
-      assertEquals(true, config2.isHttpsForwarded());
 
       verify(sessionManager).setMaxInactiveInterval(config2.getContextSessioninactiveinterval());
       assertMapEquals(config1.getOtherProps(), "a", 1, "b", 2);

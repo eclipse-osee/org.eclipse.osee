@@ -17,11 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   JettyServerBuilderTest.class,
-   JettyServerTest.class,
-   JettyJdbcSessionServerTest.class,
-   JettyForwardedServerTest.class})
+@Suite.SuiteClasses({JettyServerBuilderTest.class, JettyServerTest.class, JettyJdbcSessionServerTest.class})
 public class AllJettyTestSuite {
    // Test Suite
 }

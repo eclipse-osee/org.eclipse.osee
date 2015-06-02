@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.Properties;
 import org.eclipse.jetty.http.MimeTypes;
-import org.eclipse.jetty.server.AbstractConnector;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionManager;
@@ -82,8 +81,8 @@ public class JettyServerFactory {
       return new JettyServerImpl(config, server, httpContext, httpPort, httpsPort, contextWorkDir);
    }
 
-   private AbstractConnector createHttpConnector(JettyConfig config) {
-      AbstractConnector connector = null;
+   private Connector createHttpConnector(JettyConfig config) {
+      Connector connector = null;
       if (config.isHttpEnabled()) {
          int httpPort = config.getHttpPort();
          if (httpPort > 0) {
@@ -104,9 +103,6 @@ public class JettyServerFactory {
             if (httpHost != null) {
                connector.setHost(httpHost);
             }
-
-            configureForForwardedRequests(config, connector);
-
          } else {
             throw newJettyException("http port cannot be less than = 0");
          }
@@ -137,7 +133,7 @@ public class JettyServerFactory {
    }
 
    @SuppressWarnings("deprecation")
-   private AbstractConnector createHttpsConnector(JettyConfig config) {
+   private Connector createHttpsConnector(JettyConfig config) {
       SslSocketConnector sslConnector = null;
       if (config.isHttpsEnabled()) {
          int httpsPort = config.getHttpsPort();
@@ -150,8 +146,6 @@ public class JettyServerFactory {
             if (httpHost != null) {
                sslConnector.setHost(httpHost);
             }
-
-            configureForForwardedRequests(config, sslConnector);
 
             // configure SSL
             String keyStore = config.getSslKeystore();
@@ -186,16 +180,6 @@ public class JettyServerFactory {
          }
       }
       return sslConnector;
-   }
-
-   private void configureForForwardedRequests(JettyConfig config, AbstractConnector connector) {
-      if (connector != null) {
-         if (config.hasServerName()) {
-            connector.setHostHeader(config.getServerName());
-         }
-         boolean isForwarded = config.isHttpForwarded() || config.hasServerName();
-         connector.setForwarded(isForwarded);
-      }
    }
 
    private ServletContextHandler createHttpContext(JettyConfig config) {
