@@ -183,8 +183,7 @@
 										<property name="additionalJvmArgs" value=" " />
 
 										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
-										<mkdir dir="${xserver-data}" />
-
+										
 										<ant antfile="${osee-application-server-launch-ant}"
 											target="run" inheritRefs="true" output="${xserver-log-output}" />
 									</target>
