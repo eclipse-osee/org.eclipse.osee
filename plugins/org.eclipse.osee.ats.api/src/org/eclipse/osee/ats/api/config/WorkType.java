@@ -23,6 +23,10 @@ public enum WorkType {
    SW_TechAppr,
    Test_Procedures,
    SubSystems,
+   Software,
+   Support,
+   Integration,
+   Systems,
    ICDs,
    PIDS,
    All;
