@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.dep.feature_0.23.0.qualifier.jar" id="org.eclipse.osee.dep.feature" version="0.23.0.qualifier">
+      <category name="org.eclipse.osee.dep"/>
+   </feature>
+   <category-def name="org.eclipse.osee.dep" label="Eclipse OSEE Deps - (Incubation)">
+      <description>
+         Eclipse OSEE Runtime - (Incubation)
+      </description>
+   </category-def>
+</site>

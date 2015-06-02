@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.osee</groupId>
+		<artifactId>org.eclipse.osee.ide.parent</artifactId>
+		<version>0.23.0-SNAPSHOT</version>
+		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
+	</parent>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.dep.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>OSEE Runtime - Parent (Incubation)</name>
+	<version>0.23.0-SNAPSHOT</version>
+
+	<modules>
+		<module>../../features/org.eclipse.osee.dep.feature</module>
+		<module>../../plugins/org.eclipse.osee.dep.p2</module>
+	</modules>
+
+</project>
