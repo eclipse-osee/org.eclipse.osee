@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Control;
  * @param workPackages contains the valid list of active and inactive Work Packages
  * @author Donald G. Dunne
  */
-public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
+public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
    private IAtsWorkPackage selection;
    XCheckBox showAll = new XCheckBox("Show All Work Packages");
    private final Collection<IAtsWorkPackage> allValidWorkPackages;
@@ -53,7 +53,6 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
    public WorkPackageFilterTreeDialog(String title, String message, Collection<IAtsWorkPackage> allValidWorkPackages) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
       this.allValidWorkPackages = allValidWorkPackages;
-      setMultiSelect(false);
    }
 
    @Override
@@ -61,22 +60,15 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setSorter(new StringNameSorter());
-         getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+         getTreeViewer().getViewer().addPostSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection sel = (IStructuredSelection) getTreeViewer().getViewer().getSelection();
                if (sel.isEmpty()) {
                   selection = null;
                } else {
-                  selection =
-                     (IAtsWorkPackage) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
+                  selection = (IAtsWorkPackage) sel.getFirstElement();
                }
-            }
-         });
-         getTreeViewer().getViewer().getTree().addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               super.widgetSelected(e);
                updateStatusLabel();
             }
          });
@@ -117,12 +109,7 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
          @Override
          public void widgetSelected(SelectionEvent e) {
             removeFromWorkPackage = checkbox.isSelected();
-            if (removeFromWorkPackage) {
-               getButton(getDefaultButtonIndex()).setEnabled(true);
-            } else {
-               getButton(getDefaultButtonIndex()).setEnabled(false);
-               updateStatusLabel();
-            }
+            updateStatusLabel();
          }
       };
       checkbox.addSelectionListener(selectionListener);
@@ -131,8 +118,8 @@ public class WorkPackageFilterTreeDialog extends FilteredCheckboxTreeDialog {
    @Override
    protected Result isComplete() {
       try {
-         if (selection == null) {
-            return new Result("A Work Package must be selected.");
+         if (selection == null && !removeFromWorkPackage) {
+            return new Result("A Work Package or \"Remove From WorkPackage\" must be selected.");
          }
       } catch (Exception ex) {
          OseeLog.log(org.eclipse.osee.ats.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
