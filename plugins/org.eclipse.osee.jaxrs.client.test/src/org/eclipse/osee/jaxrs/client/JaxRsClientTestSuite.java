@@ -21,8 +21,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    JaxRsClientInternalTestSuite.class,
    JaxRsClientBuilderTest.class,
-   JaxRsClientTest.class,
-   JaxRsClientToServerTest.class})
+   JaxRsClientTest.class})
 public class JaxRsClientTestSuite {
    // Test Suite
 }
