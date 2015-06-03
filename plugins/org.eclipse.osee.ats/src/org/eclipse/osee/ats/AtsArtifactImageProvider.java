@@ -47,6 +47,8 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.InsertionFeature, AtsImage.INSERTION_FEATURE, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileTeam, AtsImage.AGILE_TEAM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileFeatureGroup, AtsImage.AGILE_FEATURE_GROUP, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileSprint, AtsImage.AGILE_SPRINT, this);

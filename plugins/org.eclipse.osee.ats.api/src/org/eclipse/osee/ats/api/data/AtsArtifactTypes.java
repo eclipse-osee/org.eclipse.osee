@@ -35,10 +35,13 @@ public final class AtsArtifactTypes {
    public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(0x000000000000003EL, "Work Definition");
    public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Definition");
    public static final IArtifactType Program = TokenFactory.createArtifactType(0x0000BA123443210004L, "Program");
-   
+
    public static final IArtifactType AgileTeam = TokenFactory.createArtifactType(0x68D469C51DA01041L, "Agile Team");
    public static final IArtifactType AgileFeatureGroup = TokenFactory.createArtifactType(0x07C6AA0E42EE7661L, "Agile Feature Group");
    public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(0x7E213FC7506C5E43L, "Agile Sprint");
+
+   public static final IArtifactType Insertion = TokenFactory.createArtifactType(0x18160B4E220FEDD8L, "Insertion");
+   public static final IArtifactType InsertionFeature = TokenFactory.createArtifactType(0x36B9D38A2B7789FCL, "Insertion Feature");
 
    // @formatter:on
 
