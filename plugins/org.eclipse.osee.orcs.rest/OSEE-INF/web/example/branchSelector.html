@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+
+<title>OSEE - ORCS Writer</title>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body ng-app="BranchSelectorApp" ng-controller="FormController">
+
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="../ui/branchSelector.html">OSEE - Branch Selector</a>
+			</div>
+			<div class="collapse navbar-collapse" ng-controller="FormController">
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-class="home"><a href="../ui/branchSelector.html">Home</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<label>Branch: </label> <select
+			ng-model="formData.selectedBranch"
+			ng-options="branch.name for branch in branches | orderBy : 'name'">
+		</select>
+	</div>
+
+	<label> formData: {{formData}} </label>
+
+	<div class="container-fluid well" ng-show="message">
+		<textarea rows="30" class="form-control">{{ message }}</textarea>
+	</div>
+
+	<script src="/ajax/libs/angularjs/1.2.28/angular.min.js"></script>
+	<script src="branchSelector.js"></script>
+</body>
+</html>

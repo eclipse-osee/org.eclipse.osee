@@ -34,3 +34,4 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction
 Osee-JaxRs-Resource: OSEE-INF/web/*;path=/orcs/script/ui
+ OSEE-INF/web/example/*;path=/orcs/example/ui
