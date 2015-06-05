@@ -76,8 +76,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class WordMlLinkHandler {
 
    private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
-   private static final Matcher WORDML_LINK = Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>",
-      Pattern.DOTALL).matcher("");
+   private static final Matcher WORDML_LINK = Pattern.compile(
+      "<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
+   private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
+      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+(\")?(.+?)(\")?\\s*</w:instrText></w:r>", Pattern.DOTALL).matcher("");
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
@@ -128,11 +130,9 @@ public class WordMlLinkHandler {
          }
       }
       OSEE_LINK_PATTERN.reset();
-
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(linkType, source, content, matchMap, false);
       }
-
       if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
          modified = linkBuilder.getWordMlBookmark(source) + modified;
@@ -147,7 +147,6 @@ public class WordMlLinkHandler {
     */
    public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
       HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
-
       OseeLinkParser linkParser = new OseeLinkParser();
       WORDML_LINK.reset(content);
       while (WORDML_LINK.find()) {
@@ -161,6 +160,20 @@ public class WordMlLinkHandler {
          }
       }
       WORDML_LINK.reset();
+
+      HYPERLINK_PATTERN.reset(content);
+      while (HYPERLINK_PATTERN.find()) {
+         String link = HYPERLINK_PATTERN.group(2);
+         if (Strings.isValid(link)) {
+            linkParser.parse(link);
+            String guid = linkParser.getGuid();
+            if (Strings.isValid(guid)) {
+               matchMap.put(guid, new MatchRange(HYPERLINK_PATTERN.start(), HYPERLINK_PATTERN.end()));
+            }
+         }
+      }
+      HYPERLINK_PATTERN.reset();
+
       return matchMap;
    }
 

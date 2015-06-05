@@ -101,7 +101,6 @@ public final class OseeLinkParser {
    /**
     * Process old format: http://127.0.0.1:<port>/get/guid/<guid>/<ats,Define> old format should be removed once all
     * legacy references are change to new format
-    * 
     */
    private boolean parseOldSchoolStyleLinks(String link) {
       boolean wasHandled = false;
@@ -115,6 +114,8 @@ public final class OseeLinkParser {
             if (processType.equals("ats")) {
                parameterMap.put("guid", guid);
             } else if (processType.equals("Define") || processType.equals("")) {
+               parameterMap.put("guid", guid);
+            } else if (GUID.isValid(guid)) {
                parameterMap.put("guid", guid);
             }
          }
