@@ -500,32 +500,32 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
          new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-         @Override
-         public void run() {
-            Job job = new UIJob("Open Quick Search") {
+            @Override
+            public void run() {
+               Job job = new UIJob("Open Quick Search") {
 
-               @Override
-               public IStatus runInUIThread(IProgressMonitor monitor) {
-                  IStatus status = Status.OK_STATUS;
-                  try {
-                     IViewPart viewPart =
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                           QuickSearchView.VIEW_ID);
-                     if (viewPart != null) {
-                        Branch branch = getBranch(monitor);
-                        if (branch != null) {
-                           ((QuickSearchView) viewPart).setBranch(branch);
+                  @Override
+                  public IStatus runInUIThread(IProgressMonitor monitor) {
+                     IStatus status = Status.OK_STATUS;
+                     try {
+                        IViewPart viewPart =
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                              QuickSearchView.VIEW_ID);
+                        if (viewPart != null) {
+                           Branch branch = getBranch(monitor);
+                           if (branch != null) {
+                              ((QuickSearchView) viewPart).setBranch(branch);
+                           }
                         }
+                     } catch (Exception ex) {
+                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                  } catch (Exception ex) {
-                     status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
+                     return status;
                   }
-                  return status;
-               }
-            };
-            Jobs.startJob(job);
-         }
-      };
+               };
+               Jobs.startJob(job);
+            }
+         };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -1257,7 +1257,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       super.saveState(memento);
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
          if (explorerRoot != null) {
-            memento.putString(ROOT_UUID, explorerRoot.getGuid());
+            memento.putString(ROOT_UUID, String.valueOf(explorerRoot.getUuid()));
             try {
                memento.putString(ROOT_BRANCH, String.valueOf(explorerRoot.getFullBranch().getUuid()));
             } catch (OseeCoreException ex) {
@@ -1304,10 +1304,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             return;
          }
          if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
-            //
-            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-            //
-            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
