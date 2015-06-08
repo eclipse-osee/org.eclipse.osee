@@ -4,6 +4,16 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
 	attribute "ats.Released"
 }
 
+artifactType "Insertion" extends "ats.Ats Config Artifact" {
+	uuid  0x18160B4E220FEDD8
+	attribute "ats.Description"
+}
+
+artifactType "Insertion Feature" extends "ats.Ats Config Artifact" {
+	uuid  0x36B9D38A2B7789FC
+	attribute "ats.Description"
+}
+
 artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	uuid  0x68D469C51DA01041
 	attribute "ats.Description"
@@ -1332,12 +1342,42 @@ relationType "TeamActionableItem" {
 	multiplicity ONE_TO_MANY
 }
 
+relationType "Program To Insertion" {
+	uuid 0x7BD0963A0F884A2B
+	sideAName "Program"
+	sideAArtifactType "Program"
+	sideBName "Insertion"
+	sideBArtifactType "Insertion"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
+}
+
+relationType "Insertion To Insertion Feature" {
+	uuid 0x128D9B3123EADEB1
+	sideAName "Insertion"
+	sideAArtifactType "Insertion"
+	sideBName "Insertion Feature"
+	sideBArtifactType "Insertion Feature"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
+}
+
+relationType "Insertion Feature To Work Package" {
+	uuid 0x7B681B61D762880F
+	sideAName "Insertion Feature"
+	sideAArtifactType "Insertion Feature"
+	sideBName "Work Package"
+	sideBArtifactType "Work Package"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
+}
+
 relationType "AgileFeatureToItem" {
 	uuid 0x5380F48A35225D71  
 	sideAName "Agile Feature Group"
 	sideAArtifactType "Agile Feature Group"
 	sideBName "ATS Item"
-	sideBArtifactType "ats.Ats Artifact"
+	sideBArtifactType "ats.State Machine"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity ONE_TO_MANY
 }
