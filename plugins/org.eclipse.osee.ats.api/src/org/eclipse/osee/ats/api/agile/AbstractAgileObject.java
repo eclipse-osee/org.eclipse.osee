@@ -70,10 +70,10 @@ public class AbstractAgileObject {
       if (obj == null) {
          return false;
       }
-      if (!(obj instanceof IAgileFeatureGroup)) {
+      if (!(obj instanceof AbstractAgileObject)) {
          return false;
       }
-      IAgileFeatureGroup other = (IAgileFeatureGroup) obj;
+      AbstractAgileObject other = (AbstractAgileObject) obj;
       if (uuid != other.getUuid()) {
          return false;
       }
