@@ -68,11 +68,15 @@ public class ConflictManagerInternal {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
             commitTransaction.getId());
          while (chStmt.next()) {
+            Branch sourceBranch = BranchManager.getBranch(chStmt.getLong("source_branch_id"));
+            if (sourceBranch.getArchiveState().isArchived()) {
+               sourceBranch = null;
+            }
             AttributeConflict attributeConflict =
                new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
-                  chStmt.getInt("art_id"), commitTransaction, chStmt.getString("source_value"),
+                  chStmt.getInt("art_id"), null, commitTransaction, chStmt.getString("source_value"),
                   chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
-                  BranchManager.getBranch(chStmt.getLong("merge_branch_id")),
+                  BranchManager.getBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
                   BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
@@ -103,7 +107,7 @@ public class ConflictManagerInternal {
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException("Source Branch = %s Destination Branch = %s",
             sourceBranch == null ? "NULL" : sourceBranch.getUuid(),
-               destinationBranch == null ? "NULL" : destinationBranch.getUuid());
+            destinationBranch == null ? "NULL" : destinationBranch.getUuid());
       }
       monitor.beginTask(
          String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
@@ -195,7 +199,7 @@ public class ConflictManagerInternal {
                artId = nextArtId;
 
                if (destModType == ModificationType.DELETED && sourceModType == ModificationType.MODIFIED || //
-                  destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
+               destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
 
                   artifactConflictBuilder =
                      new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
@@ -246,15 +250,15 @@ public class ConflictManagerInternal {
                String sourceValue =
                   chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
-                  if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
-                     attrId = nextAttrId;
-                     attributeConflictBuilder =
-                        new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
-                           destinationBranch, sourceValue, attrId, attrTypeId);
+               if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
+                  attrId = nextAttrId;
+                  attributeConflictBuilder =
+                     new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
+                        destinationBranch, sourceValue, attrId, attrTypeId);
 
-                     conflictBuilders.add(attributeConflictBuilder);
-                     artIdSet.add(artId);
-                  }
+                  conflictBuilders.add(attributeConflictBuilder);
+                  artIdSet.add(artId);
+               }
             } while (chStmt.next());
          }
       } finally {

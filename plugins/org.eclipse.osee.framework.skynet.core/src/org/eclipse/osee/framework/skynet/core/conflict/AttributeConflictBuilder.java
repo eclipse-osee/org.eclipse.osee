@@ -46,7 +46,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
          }
       }
       AttributeConflict attributeConflict =
-         new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, sourceValue, attrId, attrTypeId,
+         new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, null, sourceValue, attrId, attrTypeId,
             mergeBranch, sourceBranch, destBranch);
       if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) {
          return null;

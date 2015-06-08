@@ -58,10 +58,6 @@ public abstract class Conflict implements IAdaptable {
       this.commitTransactionId = commitTransactionId;
    }
 
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord commitTransactionId, Branch mergeBranch, Branch destBranch) {
-      this(sourceGamma, destGamma, artId, null, commitTransactionId, mergeBranch, null, destBranch);
-   }
-
    public Artifact getArtifact() throws OseeCoreException {
       if (artifact == null) {
          artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, INCLUDE_DELETED);
