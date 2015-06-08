@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
@@ -23,7 +23,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditorInput extends BaseArtifactEditorInput implements IPersistableElement {
+public class SMAEditorInput extends ArtifactEditorInput implements IPersistableElement {
 
    private final boolean pend;
    private int artUuid;

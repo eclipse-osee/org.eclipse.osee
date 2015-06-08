@@ -65,8 +65,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    @Override
-   public BaseArtifactEditorInput getEditorInput() {
-      return (BaseArtifactEditorInput) super.getEditorInput();
+   public ArtifactEditorInput getEditorInput() {
+      return (ArtifactEditorInput) super.getEditorInput();
    }
 
    @Override

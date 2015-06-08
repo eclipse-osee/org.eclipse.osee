@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -105,8 +105,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String getText(Object element) {
-         if (element instanceof BaseArtifactEditorInput) {
-            return ((BaseArtifactEditorInput) element).getName();
+         if (element instanceof ArtifactEditorInput) {
+            return ((ArtifactEditorInput) element).getName();
          } else if (element instanceof AttributeTypeContainer) {
             return ((AttributeTypeContainer) element).getName();
          }
@@ -115,9 +115,9 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public Image getImage(Object element) {
-         if (element instanceof BaseArtifactEditorInput) {
+         if (element instanceof ArtifactEditorInput) {
             containers.clear();
-            return ((BaseArtifactEditorInput) element).getImage();
+            return ((ArtifactEditorInput) element).getImage();
          } else if (element instanceof AttributeTypeContainer) {
             AttributeTypeContainer container = (AttributeTypeContainer) element;
             containers.add(container);
@@ -151,11 +151,11 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          List<Object> items = new ArrayList<Object>();
 
          if (element instanceof ArtifactEditor) {
-            BaseArtifactEditorInput editorInput = ((ArtifactEditor) element).getEditorInput();
+            ArtifactEditorInput editorInput = ((ArtifactEditor) element).getEditorInput();
             items.add(editorInput);
-         } else if (element instanceof BaseArtifactEditorInput) {
+         } else if (element instanceof ArtifactEditorInput) {
             try {
-               Artifact artifact = ((BaseArtifactEditorInput) element).getArtifact();
+               Artifact artifact = ((ArtifactEditorInput) element).getArtifact();
                boolean isEditable = !artifact.isReadOnly();
                items.add(new AttributeTypeContainer(isEditable ? "Editable" : "Readable", true,
                   AttributeTypeUtil.getTypesWithData(artifact)));
@@ -174,7 +174,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public Object getParent(Object element) {
-         if (element instanceof BaseArtifactEditorInput) {
+         if (element instanceof ArtifactEditorInput) {
             return editor;
          } else if (element instanceof String) {
             return editor;
@@ -186,8 +186,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       public boolean hasChildren(Object element) {
          if (element instanceof String) {
             return false;
-         } else if (element instanceof BaseArtifactEditorInput) {
-            return ((BaseArtifactEditorInput) element).getArtifact() != null;
+         } else if (element instanceof ArtifactEditorInput) {
+            return ((ArtifactEditorInput) element).getArtifact() != null;
          } else if (element instanceof AttributeTypeContainer) {
             return !((AttributeTypeContainer) element).getTypes().isEmpty();
          } else if (element instanceof Artifact) {
