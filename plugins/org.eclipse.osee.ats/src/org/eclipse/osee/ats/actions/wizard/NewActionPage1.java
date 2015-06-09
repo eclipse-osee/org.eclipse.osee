@@ -85,8 +85,8 @@ public class NewActionPage1 extends WizardPage {
 
    protected String getWidgetXml() {
       return "<WorkPage>" + //
-      "<XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
-      "</WorkPage>";
+         "<XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
+         "</WorkPage>";
    }
 
    @Override
@@ -232,8 +232,9 @@ public class NewActionPage1 extends WizardPage {
       }
       try {
          for (IAtsActionableItem aia : getSelectedIAtsActionableItems()) {
-            if (!aia.isActionable()) {
+            if (!aia.isActionable() || !userActionCreationEnabled(aia)) {
                AWorkbench.popup("ERROR", ActionableItems.getNotActionableItemError(aia));
+               treeViewer.getCheckboxTreeViewer().setChecked(aia, false);
                return false;
             }
          }
@@ -251,6 +252,10 @@ public class NewActionPage1 extends WizardPage {
          return false;
       }
       return true;
+   }
+
+   protected boolean userActionCreationEnabled(IAtsActionableItem aia) {
+      return aia.isAllowUserActionCreation();
    }
 
    public FilteredCheckboxTree getTreeViewer() {

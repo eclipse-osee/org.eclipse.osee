@@ -30,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test unit for {@link ModifyActionableItems}
- * 
+ *
  * @author Donald G Dunne
  */
 public class ModifyActionableItemsTest {
@@ -110,6 +110,7 @@ public class ModifyActionableItemsTest {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       when(ai3.isActionable()).thenReturn(true);
+      when(ai3.isAllowUserActionCreation()).thenReturn(true);
       when(teamDefUtil.getImpactedTeamDefs(Arrays.asList(ai3))).thenReturn(Collections.singleton(teamDef));
 
       XResultData results = new XResultData(false);
@@ -139,6 +140,7 @@ public class ModifyActionableItemsTest {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       when(ai2.isActionable()).thenReturn(true);
+      when(ai2.isAllowUserActionCreation()).thenReturn(true);
       when(teamDefUtil.getImpactedTeamDefs(Arrays.asList(ai2))).thenReturn(Collections.singleton(teamDef));
 
       XResultData results = new XResultData(false);

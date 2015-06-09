@@ -11,12 +11,15 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -198,7 +201,11 @@ public class SMARelationsHyperlinkComposite extends Composite {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
       try {
-         diag.setInitialSelections(reviewArt.getActionableItemsDam().getActionableItems());
+         Collection<IAtsActionableItem> actionableItems =
+            ActionableItems.getUserEditableActionableItems(reviewArt.getActionableItemsDam().getActionableItems());
+         reviewArt.getActionableItemsDam().getActionableItems();
+
+         diag.setInitialSelections(actionableItems);
          if (diag.open() != 0) {
             return;
          }
@@ -210,4 +217,5 @@ public class SMARelationsHyperlinkComposite extends Composite {
       }
 
    }
+
 }

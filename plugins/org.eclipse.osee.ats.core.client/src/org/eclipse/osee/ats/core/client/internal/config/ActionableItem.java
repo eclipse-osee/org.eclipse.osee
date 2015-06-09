@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.model.impl.AtsObject;
 public class ActionableItem extends AtsObject implements IAtsActionableItem {
 
    private boolean actionable = true;
+   private boolean allowUserActionCreation = true;
    private boolean active = true;
    private IAtsTeamDefinition teamDefinition;
    private IAtsActionableItem parentActionableItem;
@@ -103,6 +104,16 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    @Override
    public Collection<IAtsUser> getSubscribed() {
       return subscribed;
+   }
+
+   @Override
+   public boolean isAllowUserActionCreation() {
+      return allowUserActionCreation;
+   }
+
+   @Override
+   public void setAllowUserActionCreation(boolean allowUserActionCreation) {
+      this.allowUserActionCreation = allowUserActionCreation;
    }
 
 }

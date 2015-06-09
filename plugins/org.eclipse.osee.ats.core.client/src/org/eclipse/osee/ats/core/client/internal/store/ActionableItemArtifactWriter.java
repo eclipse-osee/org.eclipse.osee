@@ -49,6 +49,11 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       if (actionable != ai.isActionable()) {
          artifact.setSoleAttributeValue(AtsAttributeTypes.Actionable, ai.isActionable());
       }
+      boolean allowUserActionCreation =
+         artifact.getSoleAttributeValue(AtsAttributeTypes.AllowUserActionCreation, false);
+      if (allowUserActionCreation != ai.isAllowUserActionCreation()) {
+         artifact.setSoleAttributeValue(AtsAttributeTypes.Actionable, ai.isActionable());
+      }
       if (Strings.isValid(ai.getDescription())) {
          artifact.setSoleAttributeValue(AtsAttributeTypes.Description, ai.getDescription());
       }

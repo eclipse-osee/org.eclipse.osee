@@ -30,6 +30,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType Active = createType(0x10000000000000B1L, "Active", "Active ATS configuration object.");
    public static final IAttributeType AllowCommitBranch = createType(0x10000000000000BAL, "Allow Commit Branch");
    public static final IAttributeType AllowCreateBranch = createType(0x10000000000000B9L, "Allow Create Branch");
+   public static final IAttributeType AllowUserActionCreation = createType(0x12591C08CFB41574L, "Allow User Action Creation");
    public static final IAttributeType ArtifactReference = createType(0x1000BA00000000F9L, "Artifact Reference");
    public static final IAttributeType AtsId = createType(0x1000000000000385L, "ATS Id", "ATS Generated Id");
    public static final IAttributeType AtsIdPrefix = createType(0x1023000000000385L, "ATS Id Prefix", "ATS Id Prefix");
@@ -133,10 +134,10 @@ public final class AtsAttributeTypes {
    public static final IAttributeType UnplannedWork = createType(0x219973F5F43E2BE5L, "Unplanned Work");
    public static final IAttributeType ActivityName = createType(0x1000000000000383L, "Activity Name");
    public static final IAttributeType WorkPackageGuid = createType(0x1000000000000384L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
-   
+
    public static final IAttributeType ClosureActive = createType(0x10000056457000BBL, "Closure Active status of Program");
    public static final IAttributeType ClosureState = createType(0x10000000000001DCL, "Closure Status of Build");
-   
+
    // Applicability Feature
    public static final IAttributeType ApplicabilityWorkflow = createType(0x10000078957000AAL, "Applicability Workflow");
    public static final IAttributeType ApplicableToProgram = createType(0x10000067857000AAL, "Applicable To Program");

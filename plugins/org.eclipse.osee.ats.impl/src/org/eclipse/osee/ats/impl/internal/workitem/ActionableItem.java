@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
@@ -108,6 +109,16 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    @Override
    public String getTypeName() {
       return "Actionable Item";
+   }
+
+   @Override
+   public boolean isAllowUserActionCreation() {
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowUserActionCreation, true);
+   }
+
+   @Override
+   public void setAllowUserActionCreation(boolean allowUserActionCreation) {
+      throw new UnsupportedOperationException("Error ActionableItem.setAllowUserActionCreation not implemented");
    }
 
 }

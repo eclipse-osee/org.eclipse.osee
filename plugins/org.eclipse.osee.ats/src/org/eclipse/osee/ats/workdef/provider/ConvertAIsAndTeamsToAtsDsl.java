@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Take existing AIs, TeamDefs and Versions and create AtsDsl
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ConvertAIsAndTeamsToAtsDsl {

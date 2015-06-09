@@ -44,6 +44,7 @@ public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAts
       IAtsActionableItem aia = getOrCreateActionableItem(cache, aiArt);
       aia.setName(aiArt.getName());
       aia.setActive(aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
+      aia.setAllowUserActionCreation(aiArt.getSoleAttributeValue(AtsAttributeTypes.AllowUserActionCreation, true));
       aia.setActionable(aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));
       aia.setDescription(aiArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
       Collection<Artifact> teamDefArts = aiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team);

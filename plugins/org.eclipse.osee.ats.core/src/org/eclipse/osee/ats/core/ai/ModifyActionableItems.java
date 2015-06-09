@@ -77,6 +77,8 @@ public class ModifyActionableItems {
          if (!checkAi.isActionable()) {
             results.logErrorWithFormat("Actionable Item [%s] is not actionable; select item lower in hierarchy",
                checkAi);
+         } else if (!checkAi.isAllowUserActionCreation()) {
+            results.logErrorWithFormat("Actionable Item [%s] is not actionable by users; select another item", checkAi);
          } else {
             if (currAIsForAllWfs.contains(checkAi)) {
                duplicatedAIs.add(checkAi);

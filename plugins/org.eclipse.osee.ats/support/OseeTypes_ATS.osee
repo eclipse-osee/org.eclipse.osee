@@ -118,6 +118,7 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
 	uuid 0x0000000000000045
+	attribute "ats.Allow User Action Creation"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
@@ -614,6 +615,14 @@ attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
 	min 0
 	max 1
 	defaultValue "true"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Allow User Action Creation" extends BooleanAttribute {
+	uuid 0x12591C08CFB41574
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	mediaType "text/plain"
 }
 

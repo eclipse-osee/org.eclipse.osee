@@ -61,4 +61,8 @@ public interface IAtsActionableItem extends IAtsConfigObject {
 
    Collection<IAtsUser> getSubscribed() throws OseeCoreException;
 
+   boolean isAllowUserActionCreation();
+
+   void setAllowUserActionCreation(boolean allowUserActionCreation);
+
 }

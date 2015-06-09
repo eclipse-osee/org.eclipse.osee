@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
@@ -146,6 +147,16 @@ public class ActionableItems {
          }
       }
       return children;
+   }
+
+   public static Collection<IAtsActionableItem> getUserEditableActionableItems(Collection<IAtsActionableItem> actionableItems) {
+      List<IAtsActionableItem> ais = new LinkedList<>();
+      for (IAtsActionableItem ai : actionableItems) {
+         if (ai.isAllowUserActionCreation()) {
+            ais.add(ai);
+         }
+      }
+      return ais;
    }
 
 }

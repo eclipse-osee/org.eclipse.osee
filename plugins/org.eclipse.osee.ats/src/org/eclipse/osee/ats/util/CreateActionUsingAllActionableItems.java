@@ -67,7 +67,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
       Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
       for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active,
          AtsClientService.get().getConfig())) {
-         if (aia.isActionable()) {
+         if (aia.isActionable() && aia.isAllowUserActionCreation()) {
             aias.add(aia);
          }
       }

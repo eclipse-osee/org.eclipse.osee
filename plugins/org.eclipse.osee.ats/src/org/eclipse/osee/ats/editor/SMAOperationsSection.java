@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.actions.AccessControlAction;
-import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.CreateActionFromTaskAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
@@ -144,7 +143,7 @@ public class SMAOperationsSection extends SectionPart {
             sectionBody, 2);
          new XButtonViaAction(
             new DuplicateWorkflowAction(Collections.singleton((TeamWorkFlowArtifact) editor.getAwa()))).createWidgets(
-            sectionBody, 2);
+               sectionBody, 2);
          new XButtonViaAction(new ModifyActionableItemAction((TeamWorkFlowArtifact) editor.getAwa())).createWidgets(
             sectionBody, 2);
          new XButtonViaAction(new AccessControlAction(editor.getAwa())).createWidgets(sectionBody, 2);
@@ -170,7 +169,6 @@ public class SMAOperationsSection extends SectionPart {
       if (editor.getAwa().isTeamWorkflow()) {
          new XButtonViaAction(new DirtyReportAction(editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ReloadAction(editor.getAwa())).createWidgets(sectionBody, 2);
-         new XButtonViaAction(new ConvertActionableItemsAction(editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new MoveTeamWorkflowsAction()).createWidgets(sectionBody, 2);
       }
 

@@ -25,10 +25,11 @@ import org.junit.runners.Suite;
    ProgramResourceTest.class,
    ActionableItemResourceTest.class,
    AtsTest_Demo_Copy_Suite.class,
-   AtsBranchConfigurationTest.class})
+   AtsBranchConfigurationTest.class,
+   ActionableItemArtifactReaderTest.class})
 /**
  * This test suite contains test that can be run against any production db
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTest_Config_Suite {
