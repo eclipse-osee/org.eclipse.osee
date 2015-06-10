@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -57,13 +58,13 @@ public interface IAtsChangeSet {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType);
 
-   Object createArtifact(IArtifactType artifactType, String name);
+   ArtifactId createArtifact(IArtifactType artifactType, String name);
 
    void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType);
 
-   Object createArtifact(IArtifactType artifactType, String name, String guid);
+   ArtifactId createArtifact(IArtifactType artifactType, String name, String guid);
 
-   Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid);
+   ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, Long uuid);
 
    void relate(Object object1, IRelationTypeSide relationSide, Object object2);
 

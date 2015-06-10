@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -221,7 +222,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name);
       add(artifact);
       return artifact;
@@ -235,12 +236,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name, String guid) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) {
       return createArtifact(artifactType, name, guid, Lib.generateArtifactIdAsInt());
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
       Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), name, guid, uuid);
       add(artifact);
       return artifact;

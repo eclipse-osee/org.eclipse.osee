@@ -161,7 +161,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name) {
       ArtifactId artifact = getTransaction().createArtifact(artifactType, name);
       add(artifact);
       return artifact;
@@ -175,14 +175,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name, String guid) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid) {
       ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid);
       add(artifact);
       return artifact;
    }
 
    @Override
-   public Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+   public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
       ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid, uuid);
       add(artifact);
       return artifact;
