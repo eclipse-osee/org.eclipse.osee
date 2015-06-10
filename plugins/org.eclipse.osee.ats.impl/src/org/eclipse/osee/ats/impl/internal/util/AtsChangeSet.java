@@ -157,11 +157,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(value));
+      add(atsObject);
    }
 
    @Override
    public Object createArtifact(IArtifactType artifactType, String name) {
-      return getTransaction().createArtifact(artifactType, name);
+      ArtifactId artifact = getTransaction().createArtifact(artifactType, name);
+      add(artifact);
+      return artifact;
    }
 
    @Override
@@ -173,12 +176,16 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public Object createArtifact(IArtifactType artifactType, String name, String guid) {
-      return getTransaction().createArtifact(artifactType, name, guid);
+      ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid);
+      add(artifact);
+      return artifact;
    }
 
    @Override
    public Object createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
-      return getTransaction().createArtifact(artifactType, name, guid, uuid);
+      ArtifactId artifact = getTransaction().createArtifact(artifactType, name, guid, uuid);
+      add(artifact);
+      return artifact;
    }
 
    @Override
