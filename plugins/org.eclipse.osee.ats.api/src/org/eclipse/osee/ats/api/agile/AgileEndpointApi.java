@@ -32,98 +32,98 @@ public interface AgileEndpointApi {
    public String get();
 
    @GET
-   @Path("teams")
+   @Path("team")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileTeam> team() throws Exception;
 
    @GET
-   @Path("teams/{teamUuid}")
+   @Path("team/{teamUuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAgileTeam getTeam(@PathParam("teamUuid") long teamUuid);
 
    @GET
-   @Path("teams/{teamUuid}/features")
+   @Path("team/{teamUuid}/feature")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileFeatureGroup> getFeatureGroups(@PathParam("teamUuid") long teamUuid);
 
    @GET
-   @Path("teams/{teamUuid}/features/{featureUuid}")
+   @Path("team/{teamUuid}/feature/{featureUuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAgileFeatureGroup getFeatureGroup(long teamUuid, long featureUuid);
 
    @GET
-   @Path("teams/{teamUuid}/backlog")
+   @Path("team/{teamUuid}/backlog")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAgileBacklog getBacklog(@PathParam("teamUuid") long teamUuid);
 
    @GET
-   @Path("teams/{teamUuid}/backlog/items")
+   @Path("team/{teamUuid}/backlog/item")
    @Produces(MediaType.APPLICATION_JSON)
    List<AgileItem> getBacklogItems(@PathParam("teamUuid") long teamUuid);
 
    @GET
-   @Path("teams/{teamUuid}/sprints")
+   @Path("team/{teamUuid}/sprint")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
 
    @POST
-   @Path("teams")
+   @Path("team")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createTeam(JaxNewAgileTeam newTeam);
 
    @PUT
-   @Path("teams")
+   @Path("team")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateTeam(JaxAgileTeam team);
 
    @POST
-   @Path("teams/{teamUuid}/features")
+   @Path("team/{teamUuid}/feature")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createFeatureGroup(@PathParam("teamUuid") long teamUuid, JaxNewAgileFeatureGroup newFeatureGroup);
 
    @POST
-   @Path("teams/{teamUuid}/sprints")
+   @Path("team/{teamUuid}/sprint")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createSprint(@PathParam("teamUuid") long teamUuid, JaxNewAgileSprint newSprint);
 
    @POST
-   @Path("teams/{teamUuid}/backlog")
+   @Path("team/{teamUuid}/backlog")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createBacklog(@PathParam("teamUuid") long teamUuid, JaxNewAgileBacklog newBacklog);
 
    @PUT
-   @Path("teams/{teamUuid}/backlog")
+   @Path("team/{teamUuid}/backlog")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    Response updateBacklog(long teamUuid, JaxAgileBacklog newBacklog);
 
    @PUT
-   @Path("items/{itemId}")
+   @Path("item/{itemId}")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateItem(@PathParam("itemId") long itemId, JaxAgileItem newItem);
 
    @PUT
-   @Path("items")
+   @Path("item")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateItems(JaxAgileItem newItem);
 
    @DELETE
-   @Path("teams/{teamUuid}/features/{featureUuid}")
+   @Path("team/{teamUuid}/feature/{featureUuid}")
    public Response deleteFeatureGroup(@PathParam("teamUuid") long teamUuid, @PathParam("featureUuid") long featureUuid);
 
    @DELETE
-   @Path("teams/{teamUuid}/sprints/{sprintUuid}")
+   @Path("team/{teamUuid}/sprint/{sprintUuid}")
    public Response deleteSprint(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @DELETE
-   @Path("teams/{teamUuid}")
+   @Path("team/{teamUuid}")
    public Response deleteTeam(@PathParam("teamUuid") long teamUuid);
 
 }

@@ -6,14 +6,14 @@ angular.module('AgileApp').factory('AgileFactory',
 
 			var factory = {};
 
-			var teamResource = $resource('/ats/agile/teams');
-			var teamSingleResource = $resource('/ats/agile/teams/:uuid');
-			var featuresResource = $resource('/ats/agile/teams/:uuid/features');
-			var featureSingleResource = $resource('/ats/agile/teams/:teamUuid/features/:uuid');
-			var sprintResource = $resource('/ats/agile/teams/:uuid/sprints');
-			var sprintSingleResource = $resource('/ats/agile/teams/:teamUuid/sprints/:uuid');
-			var backlogResource = $resource('/ats/agile/teams/:uuid/backlog');
-			var backlogItemsResource = $resource('/ats/agile/teams/:uuid/backlog/items');
+			var teamResource = $resource('/ats/agile/team');
+			var teamSingleResource = $resource('/ats/agile/team/:uuid');
+			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
+			var featureSingleResource = $resource('/ats/agile/team/:teamUuid/feature/:uuid');
+			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
+			var sprintSingleResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid');
+			var backlogResource = $resource('/ats/agile/team/:uuid/backlog');
+			var backlogItemsResource = $resource('/ats/agile/team/:uuid/backlog/item');
 
 			// ////////////////////////////////////
 			// Agile Teams
