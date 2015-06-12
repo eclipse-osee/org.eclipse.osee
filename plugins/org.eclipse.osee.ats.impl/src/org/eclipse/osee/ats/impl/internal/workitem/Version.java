@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,11 +37,15 @@ public class Version extends AtsConfigObject implements IAtsVersion {
       super(logger, atsServer, artifact);
    }
 
+   private ArtifactReadable getArtifact() {
+      return (ArtifactReadable) artifact;
+   }
+
    @Override
    public List<IAtsVersion> getParallelVersions() {
       List<IAtsVersion> parallelVersions = new ArrayList<IAtsVersion>();
-      for (ArtifactReadable parallelVerArt : artifact.getRelated(AtsRelationTypes.ParallelVersion_Child)) {
-         IAtsVersion parallelVer = getAtsServer().getConfigItemFactory().getVersion(parallelVerArt);
+      for (ArtifactReadable parallelVerArt : getArtifact().getRelated(AtsRelationTypes.ParallelVersion_Child)) {
+         IAtsVersion parallelVer = atsServices.getConfigItemFactory().getVersion(parallelVerArt);
          parallelVersions.add(parallelVer);
       }
       return parallelVersions;
@@ -63,11 +68,11 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    public String getCommitFullDisplayName() {
       List<String> strs = new ArrayList<String>();
       strs.add(getName());
-      String fullName = artifact.getSoleAttributeValue(AtsAttributeTypes.FullName, "");
+      String fullName = getArtifact().getSoleAttributeValue(AtsAttributeTypes.FullName, "");
       if (Strings.isValid(fullName)) {
          strs.add(fullName);
       }
-      String description = artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
+      String description = getArtifact().getSoleAttributeValue(AtsAttributeTypes.Description, "");
       if (Strings.isValid(description)) {
          strs.add(description);
       }
@@ -79,7 +84,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
       if (!isAllowCreateBranch()) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
-      if (!getAtsServer().getBranchService().isBranchValid(this)) {
+      if (!atsServices.getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -87,7 +92,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public boolean isAllowCreateBranch() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
    }
 
    @Override
@@ -97,7 +102,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public boolean isAllowCommitBranch() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
    }
 
    @Override
@@ -110,7 +115,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
       if (!isAllowCommitBranch()) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
-      if (!getAtsServer().getBranchService().isBranchValid(this)) {
+      if (!atsServices.getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -118,7 +123,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public Date getReleaseDate() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
    }
 
    @Override
@@ -133,7 +138,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public Boolean isReleased() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.Released, false);
    }
 
    @Override
@@ -143,7 +148,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public Date getEstimatedReleaseDate() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, (Date) null);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, (Date) null);
    }
 
    @Override
@@ -153,7 +158,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public boolean isLocked() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false);
    }
 
    @Override
@@ -173,7 +178,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public Boolean isNextVersion() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false);
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.NextVersion, false);
    }
 
    @Override
@@ -188,7 +193,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public long getBaselineBranchUuid() {
-      return Long.parseLong(artifact.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, "-1"));
+      return Long.parseLong(getArtifact().getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, "-1"));
    }
 
    @Override
@@ -197,7 +202,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
          return getBaselineBranchUuid();
       } else {
          try {
-            IAtsTeamDefinition teamDef = getAtsServer().getVersionService().getTeamDefinition(this);
+            IAtsTeamDefinition teamDef = atsServices.getVersionService().getTeamDefinition(this);
             if (teamDef != null) {
                return teamDef.getTeamBranchUuid();
             } else {

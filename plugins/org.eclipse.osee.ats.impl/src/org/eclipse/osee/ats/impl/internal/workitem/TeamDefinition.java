@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
@@ -36,8 +37,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinition {
 
+   private final IAtsServer atsServer;
+
    public TeamDefinition(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
       super(logger, atsServer, artifact);
+      this.atsServer = atsServer;
    }
 
    @Override
@@ -45,14 +49,18 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       return "Team Definition";
    }
 
+   private ArtifactReadable getArtifact() {
+      return (ArtifactReadable) artifact;
+   }
+
    @Override
    public Collection<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       try {
-         for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
+         for (Object aiGuidObj : getArtifact().getAttributeValues(AtsAttributeTypes.ActionableItem)) {
             String aiGuid = (String) aiGuidObj;
-            ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
-            IAtsActionableItem ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
+            ArtifactReadable aiArt = atsServer.getArtifactByGuid(aiGuid);
+            IAtsActionableItem ai = atsServices.getConfigItemFactory().getActionableItem(aiArt);
             ais.add(ai);
          }
       } catch (OseeCoreException ex) {
@@ -70,9 +78,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parent = null;
       try {
-         ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
+         ResultSet<ArtifactReadable> related = getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = getAtsServer().getConfigItemFactory().getTeamDef(related.iterator().next());
+            parent = atsServices.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getParentTeamDef");
@@ -84,8 +92,8 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions() {
       Set<IAtsTeamDefinition> children = new HashSet<IAtsTeamDefinition>();
       try {
-         for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsTeamDefinition childTeamDef = getAtsServer().getConfigItemFactory().getTeamDef(childArt);
+         for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
+            IAtsTeamDefinition childTeamDef = atsServices.getConfigItemFactory().getTeamDef(childArt);
             if (childTeamDef != null) {
                children.add(childTeamDef);
             }
@@ -144,7 +152,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public boolean isAllowCommitBranch() {
       boolean set = false;
       try {
-         set = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
+         set = getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error is allow commit branch");
       }
@@ -171,7 +179,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public boolean isAllowCreateBranch() {
       boolean set = false;
       try {
-         set = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
+         set = getArtifact().getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error get allow create branch");
       }
@@ -270,8 +278,8 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsVersion> getVersions() {
       Set<IAtsVersion> results = new HashSet<IAtsVersion>();
       try {
-         for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = (IAtsVersion) getAtsServer().getConfig().getSoleByUuid(verArt.getUuid());
+         for (ArtifactReadable verArt : getArtifact().getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+            IAtsVersion version = (IAtsVersion) atsServer.getConfig().getSoleByUuid(verArt.getUuid());
             results.add(version);
          }
       } catch (OseeCoreException ex) {
@@ -365,7 +373,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<String>();
       try {
-         rules = artifact.getAttributeValues(AtsAttributeTypes.RuleDefinition);
+         rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getting rules");
       }

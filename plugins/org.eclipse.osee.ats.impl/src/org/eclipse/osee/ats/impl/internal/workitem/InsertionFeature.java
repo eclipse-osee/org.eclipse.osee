@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.workitem;
 
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionFeature;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;

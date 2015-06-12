@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,8 +38,8 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public Collection<IAtsActionableItem> getChildrenActionableItems() {
       Set<IAtsActionableItem> children = new HashSet<IAtsActionableItem>();
       try {
-         for (ArtifactReadable childArt : artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsActionableItem childTeamDef = getAtsServer().getConfigItemFactory().getActionableItem(childArt);
+         for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
+            IAtsActionableItem childTeamDef = atsServices.getConfigItemFactory().getActionableItem(childArt);
             children.add(childTeamDef);
          }
       } catch (OseeCoreException ex) {
@@ -47,13 +48,17 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       return children;
    }
 
+   private ArtifactReadable getArtifact() {
+      return (ArtifactReadable) artifact;
+   }
+
    @Override
    public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parent = null;
       try {
-         ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
+         ResultSet<ArtifactReadable> related = getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = getAtsServer().getConfigItemFactory().getActionableItem(related.iterator().next());
+            parent = atsServices.getConfigItemFactory().getActionableItem(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getParentActionableItem");
@@ -65,9 +70,9 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public IAtsTeamDefinition getTeamDefinition() {
       IAtsTeamDefinition teamDef = null;
       try {
-         ResultSet<ArtifactReadable> related = artifact.getRelated(AtsRelationTypes.TeamActionableItem_Team);
+         ResultSet<ArtifactReadable> related = getArtifact().getRelated(AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
-            teamDef = getAtsServer().getConfigItemFactory().getTeamDef(related.iterator().next());
+            teamDef = atsServices.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getTeamDefinition");

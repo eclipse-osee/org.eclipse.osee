@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -46,6 +47,10 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
       return (ArtifactReadable) atsObject.getStoreObject();
+   }
+
+   private ArtifactReadable getArtifact(ArtifactId artifact) {
+      return (ArtifactReadable) artifact;
    }
 
    public void start() throws OseeCoreException {
@@ -196,6 +201,16 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use deleteSoleAttribute(IAtsWorkItem workItem, IAttributeType attributeType, IAtsChangeSet changes)");
+   }
+
+   @Override
+   public <T> T getSoleAttributeValue(ArtifactId artifact, IAttributeType attributeType, T defaultValue) {
+      return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+   }
+
+   @Override
+   public <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType) {
+      return getArtifact(artifact).getAttributeValues(attributeType);
    }
 
 }

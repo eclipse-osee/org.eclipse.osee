@@ -8,36 +8,36 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.core.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G Dunne
  */
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
-   protected final ArtifactReadable artifact;
-   private final Log logger;
-   private final IAtsServer atsServer;
+   protected final ArtifactId artifact;
+   protected final Log logger;
+   protected final IAtsServices atsServices;
 
-   public AtsConfigObject(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+   public AtsConfigObject(Log logger, IAtsServices atsServices, ArtifactId artifact) {
       super(artifact.getName(), artifact.getUuid());
       this.logger = logger;
-      this.atsServer = atsServer;
+      this.atsServices = atsServices;
       this.artifact = artifact;
       setStoreObject(artifact);
    }
@@ -46,8 +46,8 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return logger;
    }
 
-   public IAtsServer getAtsServer() {
-      return atsServer;
+   public IAtsServices getAtsServices() {
+      return atsServices;
    }
 
    public void setFullName(String fullName) {
@@ -72,7 +72,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected <T> T getAttributeValue(IAttributeType attributeType, Object defaultValue) {
       T value = null;
       try {
-         value = (T) artifact.getSoleAttributeValue(attributeType, defaultValue);
+         value = (T) atsServices.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting attribute value for - attributeType[%s]", attributeType);
       }
@@ -91,7 +91,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    public Collection<String> getStaticIds() {
       Collection<String> results = Collections.emptyList();
       try {
-         results = artifact.getAttributeValues(CoreAttributeTypes.StaticId);
+         results = atsServices.getAttributeResolver().getAttributeValues(artifact, CoreAttributeTypes.StaticId);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting static Ids");
       }
@@ -109,10 +109,11 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
       Set<IAtsUser> results = new HashSet<IAtsUser>();
       try {
-         for (ArtifactReadable userArt : artifact.getRelated(relation)) {
+         for (Object userArt : atsServices.getRelationResolver().getRelated(artifact, relation)) {
             IAtsUser lead =
-               getAtsServer().getUserService().getUserById(
-                  (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
+               atsServices.getUserService().getUserById(
+                  (String) atsServices.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+                     CoreAttributeTypes.UserId, null));
             results.add(lead);
          }
       } catch (OseeCoreException ex) {

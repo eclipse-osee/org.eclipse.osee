@@ -167,7 +167,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       return artifact;
    }
 
-   @Override
    public void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);

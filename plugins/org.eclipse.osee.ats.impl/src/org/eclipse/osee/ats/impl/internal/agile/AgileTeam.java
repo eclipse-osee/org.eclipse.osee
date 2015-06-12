@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.internal.workitem.AtsConfigObject;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -29,6 +29,10 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       super(logger, atsServer, artifact);
    }
 
+   private ArtifactReadable getArtifact() {
+      return (ArtifactReadable) artifact;
+   }
+
    @Override
    public String getTypeName() {
       return "Agile Team";
@@ -37,7 +41,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    @Override
    public List<Long> getAtsTeamUuids() {
       List<Long> uuids = new ArrayList<Long>();
-      for (ArtifactReadable atsTeam : artifact.getRelated(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+      for (ArtifactReadable atsTeam : getArtifact().getRelated(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
          uuids.add(new Long(atsTeam.getUuid()));
       }
       return uuids;
@@ -45,7 +49,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
 
    @Override
    public String getDescription() {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
+      return getArtifact().getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -53,7 +57,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       long backlogUuid = -1;
       try {
          ArtifactReadable backlogArt =
-            artifact.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
+            getArtifact().getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
          if (backlogArt != null) {
             backlogUuid = backlogArt.getUuid();
          }

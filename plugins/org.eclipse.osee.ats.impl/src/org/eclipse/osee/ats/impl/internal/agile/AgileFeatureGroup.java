@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.impl.internal.agile;
 
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.internal.workitem.AtsConfigObject;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -37,7 +37,7 @@ public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureG
       long result = 0;
       try {
          ArtifactReadable agileTeam =
-            artifact.getRelated(AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam).getOneOrNull();
+            ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam).getOneOrNull();
          if (agileTeam != null) {
             result = agileTeam.getUuid();
          }

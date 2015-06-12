@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.workdef.AttributeWrapper;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -203,5 +204,15 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
          Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
          attributeById.delete();
       }
+   }
+
+   @Override
+   public <T> T getSoleAttributeValue(ArtifactId artifact, IAttributeType attributeType, T defaultValue) {
+      return AtsClientService.get().getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+   }
+
+   @Override
+   public <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType) {
+      return AtsClientService.get().getArtifact(artifact).getAttributeValues(attributeType);
    }
 }
