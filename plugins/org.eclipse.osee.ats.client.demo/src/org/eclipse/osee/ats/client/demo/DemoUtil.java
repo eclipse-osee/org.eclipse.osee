@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.demo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -84,6 +85,22 @@ public class DemoUtil {
          }
       }
       return teamWfs;
+   }
+
+   public static TeamWorkFlowArtifact getSwDesignNoBranchWf() throws OseeCoreException {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromName(
+         "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch(),
+         DeletionFlag.EXCLUDE_DELETED)) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+            for (IAtsActionableItem ai : teamArt.getActionableItems()) {
+               if (ai.getName().contains("SW Design")) {
+                  return teamArt;
+               }
+            }
+         }
+      }
+      return null;
    }
 
    public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {

@@ -15,17 +15,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -33,9 +29,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -46,15 +42,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * Methods in support of programatically transitioning the DefaultWorkFlow through it's states. Only to be used for the
  * DefaultTeamWorkflow of Endorse->Analyze->Auth->Implement->Complete
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TeamWorkFlowManager {
@@ -70,7 +64,7 @@ public class TeamWorkFlowManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
-    * 
+    *
     * @param user Users to be assigned after transition and that did the current state work
     */
    public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
@@ -80,7 +74,7 @@ public class TeamWorkFlowManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
     * for things such as developmental testing and demos.
-    * 
+    *
     * @param transitionToAssignees Users to be assigned after transition
     * @param currentStateUser User that did work on current state
     */
@@ -228,33 +222,13 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   private static final ITeamWorkflowProviders teamWorkflowProviders = new ITeamWorkflowProviders() {
-      private final ExtensionDefinedObjects<ITeamWorkflowProvider> extensionDefinedObjects =
-         new ExtensionDefinedObjects<ITeamWorkflowProvider>("org.eclipse.osee.ats.core.client.AtsTeamWorkflowProvider",
-            "AtsTeamWorkflowProvider", "classname");
-
-      @Override
-      public List<ITeamWorkflowProvider> getTeamWorkflowProviders() {
-         return extensionDefinedObjects.getObjects();
-      }
-
-      @Override
-      public Iterator<ITeamWorkflowProvider> iterator() {
-         return getTeamWorkflowProviders().iterator();
-      }
-   };
-
-   public static ITeamWorkflowProviders getTeamWorkflowProviders() {
-      return teamWorkflowProviders;
-   }
-
    /**
     * Assigned or computed Id that will show at the top of the editor
     */
    public static String getPcrId(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
       if (teamArt != null) {
-         for (ITeamWorkflowProvider atsTeamWorkflow : getTeamWorkflowProviders()) {
+         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getTeamWorkflowProviders()) {
             if (atsTeamWorkflow.isResponsibleFor(awa)) {
                String pcrId = atsTeamWorkflow.getPcrId(teamArt);
                if (Strings.isValid(pcrId)) {
@@ -268,7 +242,7 @@ public class TeamWorkFlowManager {
    }
 
    public static String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
-      for (ITeamWorkflowProvider atsTeamWorkflow : getTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getTeamWorkflowProviders()) {
          String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamArt);
          if (Strings.isValid(typeName)) {
             return typeName;
@@ -286,21 +260,6 @@ public class TeamWorkFlowManager {
 
    public static String getBranchName(TeamWorkFlowArtifact teamArt) {
       return AtsClientService.get().getBranchService().getBranchName(teamArt);
-   }
-
-   public static ITeamWorkflowProvider getTeamWorkflowProvider(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) {
-      for (ITeamWorkflowProvider teamExtension : getTeamWorkflowProviders()) {
-         boolean isResponsible = false;
-         try {
-            isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex);
-         }
-         if (isResponsible) {
-            return teamExtension;
-         }
-      }
-      return null;
    }
 
    public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
@@ -323,12 +282,6 @@ public class TeamWorkFlowManager {
                   "Team Workflow Artifact Type name [%s] off Team Definition %s could not be found.", artifactTypeName,
                   teamDef.toStringWithId());
             }
-         }
-      }
-      if (teamWorkflowArtifactType == null) {
-         ITeamWorkflowProvider teamWorkflowProvider = getTeamWorkflowProvider(teamDef, actionableItems);
-         if (teamWorkflowProvider != null) {
-            teamWorkflowArtifactType = teamWorkflowProvider.getTeamWorkflowArtifactType(teamDef, actionableItems);
          }
       }
       if (teamWorkflowArtifactType == null) {

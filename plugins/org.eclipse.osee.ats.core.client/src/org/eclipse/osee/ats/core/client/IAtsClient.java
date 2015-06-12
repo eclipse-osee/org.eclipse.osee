@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -162,5 +163,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    Artifact checkArtifactFromId(long uuid, IOseeBranch atsBranch);
 
    IAtsStoreService getStoreService();
+
+   TeamWorkflowProviders getTeamWorkflowProviders();
 
 }

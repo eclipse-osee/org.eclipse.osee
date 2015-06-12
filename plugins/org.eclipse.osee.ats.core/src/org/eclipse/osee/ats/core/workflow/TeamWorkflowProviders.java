@@ -13,14 +13,21 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G Dunne
  */
-public class TeamWorkflowProviders {
+public class TeamWorkflowProviders implements ITeamWorkflowProvidersLazy {
 
+   private Log logger;
    private static final List<ITeamWorkflowProvider> teamWorkflowProviders =
       new CopyOnWriteArrayList<ITeamWorkflowProvider>();
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
+   }
 
    public void addTeamWorkflowProvider(ITeamWorkflowProvider teamWorkflowProvider) {
       teamWorkflowProviders.add(teamWorkflowProvider);
@@ -30,7 +37,21 @@ public class TeamWorkflowProviders {
       teamWorkflowProviders.remove(teamWorkflowProvider);
    }
 
+   public void start() throws OseeCoreException {
+      logger.info("AtsTeamWorkflowProviders started");
+   }
+
+   public void stop() {
+      logger = null;
+      teamWorkflowProviders.clear();
+   }
+
    public static List<ITeamWorkflowProvider> getTeamWorkflowProviders() {
+      return teamWorkflowProviders;
+   }
+
+   @Override
+   public List<ITeamWorkflowProvider> getProviders() {
       return teamWorkflowProviders;
    }
 

@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.agile.AgileService;
 import org.eclipse.osee.ats.impl.internal.convert.ConvertBaselineGuidToBaselineUuid;
@@ -71,7 +72,6 @@ import org.eclipse.osee.ats.impl.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
-import org.eclipse.osee.ats.impl.internal.util.TeamWorkflowProviders;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsVersionServiceImpl;
@@ -187,8 +187,9 @@ public class AtsServerImpl implements IAtsServer {
       workItemFactory = new WorkItemFactory(logger, this);
       configItemFactory = new ConfigItemFactory(logger, this);
 
-      workItemService = new AtsWorkItemServiceImpl(this, new TeamWorkflowProviders());
-      branchService = new AtsBranchServiceImpl(getServices(), orcsApi);
+      TeamWorkflowProviders teamWorkflowProvidersLazy = new TeamWorkflowProviders();
+      workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
+      branchService = new AtsBranchServiceImpl(getServices(), orcsApi, teamWorkflowProvidersLazy);
       reviewService = new AtsReviewServiceImpl(this, this, workItemService);
       workDefCacheProvider = new AtsWorkDefinitionCacheProvider(workDefService);
 
@@ -196,7 +197,8 @@ public class AtsServerImpl implements IAtsServer {
       relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
       workDefAdmin =
-         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService, attributeResolverService);
+         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService,
+            attributeResolverService, teamWorkflowProvidersLazy);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
@@ -420,7 +422,7 @@ public class AtsServerImpl implements IAtsServer {
       String result = null;
       @SuppressWarnings("unchecked")
       ArtifactReadable atsConfig =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+      orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;

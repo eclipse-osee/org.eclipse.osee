@@ -45,12 +45,6 @@
       </OseeTypes>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.core.client.AtsTeamWorkflowProvider">
-      <AtsTeamWorkflowProvider
-            classname="org.eclipse.osee.ats.client.demo.artifact.DemoTeamWorkflows">
-      </AtsTeamWorkflowProvider>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.client.demo.artifact.DemoArtifactImageProvider">

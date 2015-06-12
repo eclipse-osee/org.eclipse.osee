@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -26,10 +27,10 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactService;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
@@ -46,9 +48,11 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final IAtsWorkItemArtifactService workItemArtifactProvider;
+   private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
-   public AtsWorkItemServiceImpl(IAtsWorkItemArtifactService workItemArtifactProvider) {
+   public AtsWorkItemServiceImpl(IAtsWorkItemArtifactService workItemArtifactProvider, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.workItemArtifactProvider = workItemArtifactProvider;
+      this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    @Override
@@ -206,6 +210,12 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf) {
-      return TeamWorkFlowManager.getArtifactTypeShortName((TeamWorkFlowArtifact) teamWf.getStoreObject());
+      for (ITeamWorkflowProvider atsTeamWorkflow : teamWorkflowProvidersLazy.getProviders()) {
+         String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamWf);
+         if (Strings.isValid(typeName)) {
+            return typeName;
+         }
+      }
+      return null;
    }
 }

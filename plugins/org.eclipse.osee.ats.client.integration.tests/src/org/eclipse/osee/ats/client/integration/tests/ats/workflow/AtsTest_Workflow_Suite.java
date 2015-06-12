@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SMAPromptChangeStatusTest.class})
+@Suite.SuiteClasses({SMAPromptChangeStatusTest.class, TeamWorkflowProvidersTest.class})
 public class AtsTest_Workflow_Suite {
 
    @BeforeClass

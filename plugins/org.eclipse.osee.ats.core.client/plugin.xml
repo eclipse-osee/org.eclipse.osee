@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="AtsTeamWorkflowProvider" name="AtsTeamWorkflowProvider" schema="schema/AtsTeamWorkflowProvider.exsd"/>
    <extension-point id="AtsTransitionListener" name="AtsTransitionListener" schema="schema/AtsTransitionListener.exsd"/>
    <extension-point id="AtsXWidgetValidator" name="AtsXWidgetValidator" schema="schema/AtsXWidgetValidator.exsd"/>
    <extension-point id="AtsProgramManager" name="AtsProgramManager" schema="schema/AtsProgramManager.exsd"/>

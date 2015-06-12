@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -44,8 +45,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    private static final HashMap<Integer, List<ITransaction>> commitArtifactIdMap =
       new HashMap<Integer, List<ITransaction>>();
 
-   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi) {
-      super(atsServices);
+   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      super(atsServices, teamWorkflowProvidersLazy);
       this.orcsApi = orcsApi;
    }
 

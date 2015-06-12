@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -51,12 +52,14 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    private final IAtsWorkDefinitionService workDefinitionService;
    private final IAtsWorkItemService workItemService;
    private final IAttributeResolver attributeResolver;
+   private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
-   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver) {
+   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.cacheProvider = workDefCacheProvider;
       this.workItemService = workItemService;
       this.workDefinitionService = workDefinitionService;
       this.attributeResolver = attributeResolver;
+      this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    private AtsWorkDefinitionCache getCache() throws OseeCoreException {
@@ -267,7 +270,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       }
       if (!match.isMatched()) {
          // Check extensions for definition handling
-         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+         for (ITeamWorkflowProvider provider : teamWorkflowProvidersLazy.getProviders()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(workItem);
             if (Strings.isValid(workFlowDefId)) {
                match = getWorkDefinition(workFlowDefId);

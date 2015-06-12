@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -48,12 +48,14 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    protected IAtsServices atsServices;
    private static final int SHORT_NAME_LIMIT = 35;
    private static Set<IOseeBranch> branchesInCommit = new HashSet<IOseeBranch>();
+   private ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
    public AbstractAtsBranchService() {
    }
 
-   public AbstractAtsBranchService(IAtsServices atsServices) {
+   public AbstractAtsBranchService(IAtsServices atsServices, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsServices = atsServices;
+      this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    /**
@@ -84,7 +86,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
     * with the cache being updated by local and remote events.
-    * 
+    *
     * @param force == true does not used cached value
     */
    @Override
@@ -614,7 +616,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public String getBranchName(IAtsTeamWorkflow teamWf) {
-      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+      for (ITeamWorkflowProvider teamExtension : teamWorkflowProvidersLazy.getProviders()) {
          String name = teamExtension.getBranchName(teamWf);
          if (Strings.isValid(name)) {
             return name;

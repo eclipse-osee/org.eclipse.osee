@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProviders;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -33,6 +32,7 @@ import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
@@ -43,7 +43,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test case for {@link AtsWorkDefinitionAdminImpl}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionAdminImplTest {
@@ -63,10 +63,10 @@ public class AtsWorkDefinitionAdminImplTest {
    @Mock IAtsTeamWorkflow teamWf;
    @Mock IAtsWorkDefinition defaultPeerToPeerWorkDef;
    @Mock IAtsWorkDefinition myPeerToPeerWorkDef;
-   @Mock ITeamWorkflowProviders teamWorkflowProviders;
+   @Mock ITeamWorkflowProvidersLazy teamWorkflowProviders;
    @Mock CacheProvider<AtsWorkDefinitionCache> cacheProvider;
    @Mock IAttributeResolver attributeResolver;
-   
+
    private AtsWorkDefinitionAdminImpl workDefAmin;
 
    // @formatter:on
@@ -89,7 +89,8 @@ public class AtsWorkDefinitionAdminImplTest {
       when(cacheProvider.get()).thenReturn(cache);
 
       workDefAmin =
-         new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, attributeResolver);
+         new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, attributeResolver,
+            teamWorkflowProviders);
    }
 
    @Test
