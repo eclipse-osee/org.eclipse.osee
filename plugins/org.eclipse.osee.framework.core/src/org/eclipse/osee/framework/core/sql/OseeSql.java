@@ -8,15 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.internal;
+package org.eclipse.osee.framework.core.sql;
 
-import java.sql.DatabaseMetaData;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.jdbc.JdbcDbType;
 
 /**
  * @author Ryan D. Brooks
@@ -70,19 +68,38 @@ public enum OseeSql {
 
    private final String sql;
    private final String hints;
+   private final boolean isDynamicHint;
 
    private OseeSql(String sql, String hints) {
       this.sql = sql;
       this.hints = hints;
+      this.isDynamicHint = false;
    }
 
    private OseeSql(String sql) {
       this(sql, null);
    }
 
-   public static Properties getSqlProperties(DatabaseMetaData metaData) throws OseeCoreException {
+   private OseeSql(String sql, boolean isDynamicHint) {
+      this.sql = sql;
+      this.hints = null;
+      this.isDynamicHint = isDynamicHint;
+   }
+
+   public String getSql() {
+      return sql;
+   }
+
+   public String getHints() {
+      return hints;
+   }
+
+   public boolean getIsDynamicHint() {
+      return isDynamicHint;
+   }
+
+   public static Properties getSqlProperties(boolean areHintsSupported) throws OseeCoreException {
       Properties sqlProperties = new Properties();
-      boolean areHintsSupported = JdbcDbType.areHintsSupported(metaData);
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;
 
@@ -100,8 +117,8 @@ public enum OseeSql {
 
    private static String getHintsOrderedFirstRows() {
       return "/*+ ordered */";
-
    }
+
    private static class Strings {
       private static final String HINTS__ORDERED__INDEX__ARTIFACT_CONFLICT =
          " /*+ ordered index(atr1) index(atr2) index(txs2) */";
@@ -114,4 +131,5 @@ public enum OseeSql {
       private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
          "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
    }
+
 }

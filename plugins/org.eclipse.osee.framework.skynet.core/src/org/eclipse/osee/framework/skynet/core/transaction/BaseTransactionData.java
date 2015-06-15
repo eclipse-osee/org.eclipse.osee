@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
@@ -129,7 +129,7 @@ public abstract class BaseTransactionData {
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
-    * 
+    *
     * @param artifactEvent TODO
     */
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException;

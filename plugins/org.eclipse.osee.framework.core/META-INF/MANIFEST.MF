@@ -24,6 +24,7 @@ Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.ops,
+ org.eclipse.osee.framework.core.sql,
  org.eclipse.osee.framework.core.threading,
  org.eclipse.osee.framework.core.util
 Bundle-ActivationPolicy: lazy

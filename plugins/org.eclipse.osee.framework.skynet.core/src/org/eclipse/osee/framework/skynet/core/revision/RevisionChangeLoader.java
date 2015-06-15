@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
-import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
@@ -48,7 +48,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Acquires changes for either branches or transactions.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public final class RevisionChangeLoader {
@@ -134,20 +134,20 @@ public final class RevisionChangeLoader {
          switch (changeType) {
             case artifact:
                ArtifactChangeAcquirer artifactChangeAcquirer =
-                  new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                     changeBuilders, newAndDeletedArtifactIds);
+               new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                  changeBuilders, newAndDeletedArtifactIds);
                changeBuilders = artifactChangeAcquirer.acquireChanges();
                break;
             case attribute:
                AttributeChangeAcquirer attributeChangeAcquirer =
-                  new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                     changeBuilders, newAndDeletedArtifactIds);
+               new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                  changeBuilders, newAndDeletedArtifactIds);
                changeBuilders = attributeChangeAcquirer.acquireChanges();
                break;
             case relation:
                RelationChangeAcquirer relationChangeAcquirer =
-                  new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                     changeBuilders, newAndDeletedArtifactIds);
+               new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
+                  changeBuilders, newAndDeletedArtifactIds);
 
                changeBuilders = relationChangeAcquirer.acquireChanges();
                break;

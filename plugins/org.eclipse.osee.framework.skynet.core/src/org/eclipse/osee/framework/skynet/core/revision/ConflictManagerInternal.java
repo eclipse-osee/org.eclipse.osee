@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
-import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
@@ -103,7 +103,7 @@ public class ConflictManagerInternal {
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException("Source Branch = %s Destination Branch = %s",
             sourceBranch == null ? "NULL" : sourceBranch.getUuid(),
-            destinationBranch == null ? "NULL" : destinationBranch.getUuid());
+               destinationBranch == null ? "NULL" : destinationBranch.getUuid());
       }
       monitor.beginTask(
          String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
@@ -195,7 +195,7 @@ public class ConflictManagerInternal {
                artId = nextArtId;
 
                if (destModType == ModificationType.DELETED && sourceModType == ModificationType.MODIFIED || //
-               destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
+                  destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
 
                   artifactConflictBuilder =
                      new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
@@ -246,15 +246,15 @@ public class ConflictManagerInternal {
                String sourceValue =
                   chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
 
-               if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
-                  attrId = nextAttrId;
-                  attributeConflictBuilder =
-                     new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
-                        destinationBranch, sourceValue, attrId, attrTypeId);
+                  if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
+                     attrId = nextAttrId;
+                     attributeConflictBuilder =
+                        new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
+                           destinationBranch, sourceValue, attrId, attrTypeId);
 
-                  conflictBuilders.add(attributeConflictBuilder);
-                  artIdSet.add(artId);
-               }
+                     conflictBuilders.add(attributeConflictBuilder);
+                     artIdSet.add(artId);
+                  }
             } while (chStmt.next());
          }
       } finally {
@@ -266,7 +266,7 @@ public class ConflictManagerInternal {
    /**
     * Checks source branch hierarchy to see if the conflict gamma exists. If it does, its not a real conflict because
     * the source branch has already seen this change.
-    * 
+    *
     * @return Returns True if the AttributeConflict candidate is really a conflict.
     */
    private static boolean isAttributeConflictValid(int destinationGammaId, Branch sourceBranch) throws OseeCoreException {

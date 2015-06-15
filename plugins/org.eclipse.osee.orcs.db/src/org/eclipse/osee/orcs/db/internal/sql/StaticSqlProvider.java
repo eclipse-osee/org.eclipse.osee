@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;

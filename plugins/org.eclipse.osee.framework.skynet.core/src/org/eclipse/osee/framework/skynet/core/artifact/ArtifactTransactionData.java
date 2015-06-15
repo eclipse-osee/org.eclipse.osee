@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
-import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 
 /**
@@ -53,7 +53,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalClearDirtyState() {
-      // provided for subclass implementation      
+      // provided for subclass implementation
    }
 
    @Override

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.internal.OseeSql;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
@@ -37,7 +37,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Public API class for access to change data from branches and transactionIds
- * 
+ *
  * @author Jeff C. Phillips
  * @author Donald G. Dunne
  */
@@ -97,7 +97,7 @@ public final class ChangeManager {
    /**
     * For the given list of artifacts determine which transactions (on that artifact's branch) affected that artifact.
     * The branch's baseline transaction is excluded.
-    * 
+    *
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
@@ -141,7 +141,7 @@ public final class ChangeManager {
    /**
     * For the given list of artifacts determine which branches (in the branch hierarchy for that artifact) affected that
     * artifact.
-    * 
+    *
     * @return a map of artifact to collection of branches which affected the given artifact
     */
    public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
