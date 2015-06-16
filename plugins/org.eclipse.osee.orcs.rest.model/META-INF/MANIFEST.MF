@@ -17,4 +17,6 @@ Import-Package: javax.annotation.security;version="1.2.0",
  org.eclipse.osee.framework.core.model.change,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.framework.jdk.core.util
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.orcs.writer.model.config,
+ org.eclipse.osee.orcs.writer.model.reader

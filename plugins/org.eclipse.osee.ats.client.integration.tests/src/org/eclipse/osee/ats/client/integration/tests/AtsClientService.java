@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -24,6 +25,7 @@ public class AtsClientService {
    private static IAtsClient atsClient;
    private static AgileEndpointApi agile;
    private static JaxRsWebTarget target;
+   private static OrcsWriterEndpoint orcsWriter;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -48,6 +50,16 @@ public class AtsClientService {
          agile = getTarget().newProxy(AgileEndpointApi.class);
       }
       return agile;
+   }
+
+   public static OrcsWriterEndpoint getOrcsWriter() {
+      if (orcsWriter == null) {
+         String appServer = OseeClientProperties.getOseeApplicationServer();
+         String orcsUri = String.format("%s/orcs", appServer);
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         orcsWriter = jaxRsClient.target(orcsUri).newProxy(OrcsWriterEndpoint.class);
+      }
+      return orcsWriter;
    }
 
 }

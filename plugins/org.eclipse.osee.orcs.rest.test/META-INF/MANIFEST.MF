@@ -12,4 +12,5 @@ Require-Bundle: org.junit,
  org.objenesis
 Import-Package: org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.jdk.core.type,
- org.eclipse.osee.orcs.db.mock
+ org.eclipse.osee.orcs.db.mock,
+ org.eclipse.osee.orcs.writer

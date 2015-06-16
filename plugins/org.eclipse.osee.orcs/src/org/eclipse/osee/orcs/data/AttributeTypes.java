@@ -49,4 +49,10 @@ public interface AttributeTypes extends IdentityCollection<Long, IAttributeType>
 
    boolean isBooleanType(IAttributeType attrType) throws OseeCoreException;
 
+   boolean isIntegerType(IAttributeType attrType);
+
+   boolean isDateType(IAttributeType attrType);
+
+   boolean isFloatingType(IAttributeType attrType);
+
 }

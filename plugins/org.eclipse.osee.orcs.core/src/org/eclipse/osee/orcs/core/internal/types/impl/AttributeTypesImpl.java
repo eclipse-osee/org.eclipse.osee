@@ -201,4 +201,22 @@ public class AttributeTypesImpl implements AttributeTypes {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("boolean");
    }
+
+   @Override
+   public boolean isIntegerType(IAttributeType attrType) {
+      String baseType = getBaseAttributeTypeId(attrType);
+      return baseType != null && baseType.toLowerCase().contains("integer");
+   }
+
+   @Override
+   public boolean isDateType(IAttributeType attrType) {
+      String baseType = getBaseAttributeTypeId(attrType);
+      return baseType != null && baseType.toLowerCase().contains("date");
+   }
+
+   @Override
+   public boolean isFloatingType(IAttributeType attrType) {
+      String baseType = getBaseAttributeTypeId(attrType);
+      return baseType != null && baseType.toLowerCase().contains("floatingpoint");
+   }
 }

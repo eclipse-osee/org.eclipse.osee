@@ -18,10 +18,11 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 
 /**
  * Get application.wadl at this context to get rest documentation
- * 
+ *
  * @author Roberto E. Escobar
  */
 @ApplicationPath("orcs")
@@ -58,6 +59,7 @@ public class OrcsApplication extends Application {
       resources.add(new IdeClientEndpointImpl());
 
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager));
+      resources.add(new OrcsWriterEndpointImpl(orcsApi));
       resources.add(new TransactionEndpointImpl(orcsApi));
       resources.add(new TypesEndpointImpl(orcsApi));
 

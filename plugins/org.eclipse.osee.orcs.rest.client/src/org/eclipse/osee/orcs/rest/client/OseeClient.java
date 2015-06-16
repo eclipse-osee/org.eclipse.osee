@@ -19,6 +19,7 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
+import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -48,5 +49,7 @@ public interface OseeClient {
    DatastoreEndpoint getDatastoreEndpoint();
 
    WordUpdateEndpoint getWordUpdateEndpoint();
+
+   OrcsWriterEndpoint getOrcsWriterEndpoint();
 
 }

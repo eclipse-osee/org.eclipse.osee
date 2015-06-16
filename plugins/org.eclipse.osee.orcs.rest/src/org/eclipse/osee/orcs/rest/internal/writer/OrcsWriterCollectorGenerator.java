@@ -1,0 +1,253 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.rest.internal.writer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.writer.model.config.OrcsWriterInputConfig;
+import org.eclipse.osee.orcs.writer.model.config.OrcsWriterRelationSide;
+import org.eclipse.osee.orcs.writer.model.config.OrcsWriterToken;
+import org.eclipse.osee.orcs.writer.model.reader.OwArtifact;
+import org.eclipse.osee.orcs.writer.model.reader.OwArtifactToken;
+import org.eclipse.osee.orcs.writer.model.reader.OwArtifactType;
+import org.eclipse.osee.orcs.writer.model.reader.OwAttributeType;
+import org.eclipse.osee.orcs.writer.model.reader.OwBranch;
+import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.writer.model.reader.OwFactory;
+import org.eclipse.osee.orcs.writer.model.reader.OwRelation;
+import org.eclipse.osee.orcs.writer.model.reader.OwRelationType;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class OrcsWriterCollectorGenerator {
+   private OrcsApi orcsApi;
+   private final OrcsWriterInputConfig config;
+   private OwCollector collector;
+
+   public OrcsWriterCollectorGenerator() {
+      this(null);
+   }
+
+   public OrcsWriterCollectorGenerator(OrcsWriterInputConfig config) {
+      this.config = config;
+   }
+
+   private void init(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+      this.collector = new OwCollector();
+   }
+
+   public OwCollector run(OrcsApi providedOrcs) {
+      init(providedOrcs);
+      collector.setPersistComment("Put Comment Here");
+      collector.setAsUserId(SystemUser.OseeSystem.getUserId());
+      collector.getBranch().setName(CoreBranches.COMMON.getName());
+      collector.getBranch().setUuid(CoreBranches.COMMON.getUuid());
+      collector.getBranch().setData(
+         String.format("[%s]-[%s]", CoreBranches.COMMON.getName(), CoreBranches.COMMON.getUuid()));
+      createInstructions();
+      createCreateSheet();
+      createUpdateSheet();
+      createDeleteSheet();
+      createBranchSheet();
+      createArtifactTokenSheet();
+      createArtifactTypeSheet();
+      createAttributeTypeSheet();
+      createRelationTypeSheet();
+      return collector;
+   }
+
+   private void createInstructions() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("ORCS Writer provides Create, Update and Delete capabilities through JSON or an Excel spreadsheet\n");
+      sb.append("   - Download an Example Excel Workbook (<server>/orcs/writer/sheet) or ");
+      sb.append("Example JSON (<server>/orcs/writer/sheet.json)\n");
+      sb.append("   - Make modifications to the input. CREATE, MODIFY, DELETE, BRANCH tabs/structures are the only items\n");
+      sb.append("     that will be read. Token and Type tabs/structures are for reference only and should be used\n");
+      sb.append("     in the CREATE, MODIFY and DELETE tabs/structures.\n");
+      sb.append("   - NOTE: MODIFY and DELETE tabs are not yet implemented\n");
+      sb.append("   - On BRANCH tab, delete all but the single branch to apply changes to.\n");
+      sb.append("   - Use <server>/orcs/writer/ui/main.html to validate sheet/json and then apply changes to branch.");
+      collector.setInstructions(sb.toString());
+   }
+
+   private void createCreateSheet() {
+      OwArtifactToken folder = createFolder();
+      createSoftwareRequirement(folder, "1");
+      createSoftwareRequirement(folder, "2");
+   }
+
+   private void createSoftwareRequirement(OwArtifactToken folderToken, String number) {
+      Long reqUuid = Lib.generateArtifactIdAsInt();
+      String name = "Software Requirement " + number;
+      OwArtifact softwareReq = OwFactory.createArtifact(CoreArtifactTypes.SoftwareRequirement, name, reqUuid);
+      OwFactory.createAttribute(softwareReq, CoreAttributeTypes.StaticId, "static id field " + number);
+      collector.getCreate().add(softwareReq);
+
+      // add to new folder
+      OwRelation relation = new OwRelation();
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setArtToken(folderToken);
+      softwareReq.getRelations().add(relation);
+   }
+
+   private OwArtifactToken createFolder() {
+      Long folderUuid = Lib.generateArtifactIdAsInt();
+      String folderName = "Orcs Writer Import Folder";
+      OwArtifact folder = OwFactory.createArtifact(CoreArtifactTypes.Folder, folderName, folderUuid);
+      collector.getCreate().add(folder);
+
+      // add to default hierarchy root
+      OwRelation relation = new OwRelation();
+      relation.setType(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent));
+      relation.setArtToken(OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot));
+      folder.getRelations().add(relation);
+
+      return OwFactory.createArtifactToken(folderName, folderUuid);
+   }
+
+   private void createUpdateSheet() {
+      collector.getUpdate();
+   }
+
+   private void createDeleteSheet() {
+      collector.getDelete();
+   }
+
+   private void createArtifactTokenSheet() {
+      if (config == null) {
+         OwArtifactToken owToken = OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot);
+         collector.getArtTokens().add(owToken);
+      } else {
+         for (OrcsWriterToken token : config.getIncludeTokens()) {
+            OwArtifactToken owToken = OwFactory.createArtifactToken(token.getName(), token.getUuid());
+            collector.getArtTokens().add(owToken);
+         }
+      }
+   }
+
+   private void createArtifactTypeSheet() {
+      Map<String, IArtifactType> types = new HashMap<String, IArtifactType>(100);
+      if (config == null) {
+         for (IArtifactType type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
+            types.put(type.getName(), type);
+         }
+      } else {
+         for (Long typeUuid : config.getIncludeArtifactTypes()) {
+            IArtifactType type = orcsApi.getOrcsTypes().getArtifactTypes().getByUuid(typeUuid);
+            if (type != null) {
+               types.put(type.getName(), type);
+            }
+         }
+      }
+      List<String> typeNames = new ArrayList<String>();
+      typeNames.addAll(types.keySet());
+      Collections.sort(typeNames);
+      for (String typeName : typeNames) {
+         IArtifactType type = types.get(typeName);
+         OwArtifactType owType = OwFactory.createArtifactType(type);
+         collector.getArtTypes().add(owType);
+      }
+   }
+
+   private void createBranchSheet() {
+      Map<String, IOseeBranch> branches = new HashMap<String, IOseeBranch>(500);
+      for (IOseeBranch branch : orcsApi.getQueryFactory().branchQuery().getResults()) {
+         branches.put(branch.getName(), branch);
+      }
+
+      List<String> branchNames = new ArrayList<String>();
+      branchNames.addAll(branches.keySet());
+      Collections.sort(branchNames);
+      for (String branchName : branchNames) {
+         IOseeBranch type = branches.get(branchName);
+         OwBranch owBranch = OwFactory.createBranchToken(type);
+         collector.getBranches().add(owBranch);
+      }
+   }
+
+   private void createAttributeTypeSheet() {
+      Map<String, IAttributeType> types = new HashMap<String, IAttributeType>(100);
+      if (config == null) {
+         for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
+            types.put(type.getName(), type);
+         }
+      } else {
+         for (Long typeUuid : config.getIncludeAttributeTypes()) {
+            IAttributeType type = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(typeUuid);
+            if (type != null) {
+               types.put(type.getName(), type);
+            }
+         }
+
+      }
+
+      List<String> typeNames = new ArrayList<String>();
+      typeNames.addAll(types.keySet());
+      Collections.sort(typeNames);
+      for (String typeName : typeNames) {
+         IAttributeType type = types.get(typeName);
+         OwAttributeType owType = OwFactory.createAttributeType(type);
+         collector.getAttrTypes().add(owType);
+      }
+   }
+
+   private void createRelationTypeSheet() {
+      Map<String, IRelationType> types = new HashMap<String, IRelationType>(100);
+      if (config == null) {
+         for (IRelationType type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
+            types.put(type.getName(), type);
+         }
+      } else {
+         for (OrcsWriterRelationSide token : config.getIncludeRelationTypes()) {
+            Long relationTypeUuid = token.getRelationTypeUuid();
+            IRelationType type = orcsApi.getOrcsTypes().getRelationTypes().getByUuid(relationTypeUuid);
+            if (type != null) {
+               types.put(type.getName(), type);
+            }
+         }
+
+      }
+      List<String> typeNames = new ArrayList<String>();
+      typeNames.addAll(types.keySet());
+      Collections.sort(typeNames);
+      for (String typeName : typeNames) {
+         IRelationType type = types.get(typeName);
+         writeRelationType(type);
+      }
+   }
+
+   private void writeRelationType(IRelationType type) {
+      String sideAName = orcsApi.getOrcsTypes().getRelationTypes().getSideAName(type);
+      OwRelationType owType = OwFactory.createRelationType(type, sideAName, true);
+      collector.getRelTypes().add(owType);
+      String sideBName = orcsApi.getOrcsTypes().getRelationTypes().getSideBName(type);
+      owType = OwFactory.createRelationType(type, sideBName, false);
+      collector.getRelTypes().add(owType);
+   }
+
+}

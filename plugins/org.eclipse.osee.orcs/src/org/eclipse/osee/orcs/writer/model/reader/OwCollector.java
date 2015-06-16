@@ -1,0 +1,160 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.orcs.writer.model.reader;
+
+import java.util.LinkedList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * @author Donald G. Dunne
+ */
+@XmlRootElement
+public class OwCollector {
+
+   private String instructions;
+   private OwBranch branch;
+   private String persistComment;
+   private String asUserId;
+   private List<OwArtifact> create;
+   private List<OwArtifact> update;
+   private List<OwArtifactToken> delete;
+   private List<OwArtifactType> artTypes;
+   private List<OwAttributeType> attrTypes;
+   private List<OwRelationType> relTypes;
+   private List<OwBranch> branches;
+   private List<OwArtifactToken> artTokens;
+
+   public OwCollector() {
+      create = new LinkedList<>();
+      branch = new OwBranch();
+   }
+
+   public List<OwArtifact> getCreate() {
+      if (create == null) {
+         create = new LinkedList<OwArtifact>();
+      }
+      return create;
+   }
+
+   public void setCreate(List<OwArtifact> artifacts) {
+      this.create = artifacts;
+   }
+
+   public List<OwArtifactType> getArtTypes() {
+      if (artTypes == null) {
+         artTypes = new LinkedList<>();
+      }
+      return artTypes;
+   }
+
+   public void setArtTypes(List<OwArtifactType> artTypes) {
+      this.artTypes = artTypes;
+   }
+
+   public List<OwAttributeType> getAttrTypes() {
+      if (attrTypes == null) {
+         attrTypes = new LinkedList<>();
+      }
+      return attrTypes;
+   }
+
+   public void setAttrTypes(List<OwAttributeType> attrTypes) {
+      this.attrTypes = attrTypes;
+   }
+
+   public List<OwRelationType> getRelTypes() {
+      if (relTypes == null) {
+         relTypes = new LinkedList<>();
+      }
+      return relTypes;
+   }
+
+   public void setRelTypes(List<OwRelationType> relTypes) {
+      this.relTypes = relTypes;
+   }
+
+   public List<OwArtifactToken> getArtTokens() {
+      if (artTokens == null) {
+         artTokens = new LinkedList<>();
+      }
+      return artTokens;
+   }
+
+   public void setArtTokens(List<OwArtifactToken> artTokens) {
+      this.artTokens = artTokens;
+   }
+
+   public List<OwArtifact> getUpdate() {
+      return update;
+   }
+
+   public void setUpdate(List<OwArtifact> update) {
+      this.update = update;
+   }
+
+   public List<OwArtifactToken> getDelete() {
+      return delete;
+   }
+
+   public void setDelete(List<OwArtifactToken> delete) {
+      this.delete = delete;
+   }
+
+   public OwBranch getBranch() {
+      return branch;
+   }
+
+   public void setBranch(OwBranch branch) {
+      this.branch = branch;
+   }
+
+   public List<OwBranch> getBranches() {
+      if (branches == null) {
+         branches = new LinkedList<>();
+      }
+      return branches;
+   }
+
+   public void setBranches(List<OwBranch> branches) {
+      this.branches = branches;
+   }
+
+   public String getInstructions() {
+      return instructions;
+   }
+
+   public void setInstructions(String instructions) {
+      this.instructions = instructions;
+   }
+
+   @Override
+   public String toString() {
+      return "OwCollector [branch=" + branch + ", create=" + create + ", update=" + update + ", delete=" + delete + "]";
+   }
+
+   public String getPersistComment() {
+      return persistComment;
+   }
+
+   public void setPersistComment(String persistComment) {
+      this.persistComment = persistComment;
+   }
+
+   public String getAsUserId() {
+      return asUserId;
+   }
+
+   public void setAsUserId(String asUserId) {
+      this.asUserId = asUserId;
+   }
+
+}

@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
+import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.rest.model.ResourcesEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
@@ -192,6 +193,11 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public WordUpdateEndpoint getWordUpdateEndpoint() {
       return client.targetProxy(defineUri, WordUpdateEndpoint.class);
+   }
+
+   @Override
+   public OrcsWriterEndpoint getOrcsWriterEndpoint() {
+      return client.targetProxy(baseUri, OrcsWriterEndpoint.class);
    }
 
 }

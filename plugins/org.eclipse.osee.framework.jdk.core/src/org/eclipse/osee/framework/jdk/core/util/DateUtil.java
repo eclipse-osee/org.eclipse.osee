@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +41,12 @@ public class DateUtil {
 
    public static int getWorkingDaysBetween(Date fromDate, Date toDate) {
       return getWorkingDaysBetween(getCalendar(fromDate), getCalendar(toDate));
+   }
+
+   public static Date getDate(String format, String value) throws ParseException {
+      SimpleDateFormat formatter = new SimpleDateFormat(format);
+      Date date = formatter.parse(value);
+      return date;
    }
 
    public static int getWorkingDaysBetween(Calendar fromDate, Calendar toDate) {

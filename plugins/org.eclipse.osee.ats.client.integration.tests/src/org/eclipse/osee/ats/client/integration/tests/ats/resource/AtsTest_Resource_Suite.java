@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   OrcsWriterEndpointTest.class,
    ActionResourceTest.class,
    ActionUiResourceTest.class,
    ConvertResourceTest.class,
@@ -27,7 +28,7 @@ import org.junit.runners.Suite;
    WordUpdateEndpointTest.class})
 /**
  * This test suite contains test that can be run against any production db
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTest_Resource_Suite {

@@ -19,11 +19,14 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.model,
  org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.change,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.jdk.core.util.io.xml,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.mvc,
@@ -32,6 +35,10 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.rest.model,
  org.eclipse.osee.orcs.rest.model.search.artifact,
  org.eclipse.osee.orcs.search,
- org.eclipse.osee.orcs.transaction
-Osee-JaxRs-Resource: OSEE-INF/web/*;path=/orcs/script/ui
- OSEE-INF/web/example/*;path=/orcs/example/ui
+ org.eclipse.osee.orcs.transaction,
+ org.eclipse.osee.orcs.writer,
+ org.eclipse.osee.orcs.writer.model.config,
+ org.eclipse.osee.orcs.writer.model.reader
+Osee-JaxRs-Resource: OSEE-INF/web/*;path=/orcs/script/ui,
+ OSEE-INF/web/example/*;path=/orcs/example/ui,
+ OSEE-INF/web/writer/*;path=/orcs/writer/ui
