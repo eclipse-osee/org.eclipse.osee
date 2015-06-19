@@ -79,6 +79,7 @@ import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -256,18 +257,30 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifact(Object object) throws OseeCoreException {
+   public ArtifactReadable getArtifact(ArtifactId artifact) throws OseeCoreException {
       ArtifactReadable result = null;
-      if (object instanceof ArtifactReadable) {
-         result = (ArtifactReadable) object;
-      } else if (object instanceof IAtsObject) {
-         IAtsObject atsObject = (IAtsObject) object;
+      if (artifact instanceof ArtifactReadable) {
+         result = (ArtifactReadable) artifact;
+      } else if (artifact instanceof IAtsObject) {
+         IAtsObject atsObject = (IAtsObject) artifact;
          if (atsObject.getStoreObject() != null) {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
             result =
                orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(atsObject.getUuid()).getResults().getAtMostOneOrNull();
          }
+      }
+      return result;
+   }
+
+   @Override
+   public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
+      ArtifactReadable result = null;
+      if (atsObject.getStoreObject() != null) {
+         result = (ArtifactReadable) atsObject.getStoreObject();
+      } else {
+         result =
+            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(atsObject.getUuid()).getResults().getAtMostOneOrNull();
       }
       return result;
    }

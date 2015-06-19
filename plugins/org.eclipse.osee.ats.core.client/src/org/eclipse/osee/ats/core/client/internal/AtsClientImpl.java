@@ -86,7 +86,6 @@ import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverSe
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.client.program.internal.AtsProgramService;
-import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
@@ -104,6 +103,7 @@ import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -458,25 +458,15 @@ public class AtsClientImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(Object object) throws OseeCoreException {
+   public Artifact getArtifact(ArtifactId artifact) throws OseeCoreException {
+      return (Artifact) artifact;
+   }
+
+   @Override
+   public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
       Artifact results = null;
-      if (object instanceof Artifact) {
-         results = (Artifact) object;
-      } else if (object instanceof IAtsObject) {
-         IAtsObject atsObject = (IAtsObject) object;
-         if (atsObject.getStoreObject() != null) {
-            results = (Artifact) atsObject.getStoreObject();
-         } else {
-            if (atsObject instanceof Artifact) {
-               results = (Artifact) atsObject;
-            } else {
-               try {
-                  results = AtsArtifactQuery.getArtifactFromId(atsObject.getUuid());
-               } catch (ArtifactDoesNotExist ex) {
-                  // do nothing
-               }
-            }
-         }
+      if (atsObject.getStoreObject() != null) {
+         results = (Artifact) atsObject.getStoreObject();
       }
       return results;
    }
@@ -567,11 +557,11 @@ public class AtsClientImpl implements IAtsClient {
             AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService(),
                new IAtsEarnedValueServiceProvider() {
 
-               @Override
-               public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
-                  return fEarnedValueService;
-               }
-            });
+                  @Override
+                  public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+                     return fEarnedValueService;
+                  }
+               });
       }
       return columnUtilities;
    }

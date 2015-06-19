@@ -51,7 +51,7 @@ public class AgileFactory {
    public static IAgileTeam createAgileTeam(Log logger, IAtsServer atsServer, JaxNewAgileTeam newTeam) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
-      ArtifactReadable agileTeamArt = atsServer.getArtifact(newTeam);
+      ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(newTeam.getUuid());
       if (agileTeamArt == null) {
 
          TransactionBuilder transaction =

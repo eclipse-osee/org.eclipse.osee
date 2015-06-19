@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -59,7 +60,12 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    @Override
    public Object getRelatedOrNull(Object object, IRelationTypeSide relationType) {
       Object related = null;
-      ArtifactReadable artifact = atsServer.getArtifact(object);
+      ArtifactReadable artifact = null;
+      if (object instanceof ArtifactId) {
+         artifact = atsServer.getArtifact((ArtifactId) object);
+      } else if (object instanceof IAtsObject) {
+         artifact = atsServer.getArtifact((IAtsObject) object);
+      }
       if (artifact != null) {
          try {
             related = artifact.getRelated(relationType).getAtMostOneOrNull();

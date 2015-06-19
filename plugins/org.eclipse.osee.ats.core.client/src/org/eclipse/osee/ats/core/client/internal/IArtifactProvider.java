@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -18,5 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IArtifactProvider {
 
-   Artifact getArtifact(Object object) throws OseeCoreException;
+   Artifact getArtifact(ArtifactId artifact) throws OseeCoreException;
+
+   Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException;
 }

@@ -8,8 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.impl;
 
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -18,5 +20,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface IArtifactProvider {
 
-   ArtifactReadable getArtifact(Object object) throws OseeCoreException;
+   ArtifactReadable getArtifact(ArtifactId artifact) throws OseeCoreException;
+
+   ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException;
 }

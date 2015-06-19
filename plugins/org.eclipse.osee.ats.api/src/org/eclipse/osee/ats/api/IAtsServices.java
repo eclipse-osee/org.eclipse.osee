@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -48,7 +49,9 @@ public interface IAtsServices {
 
    IAtsVersionService getVersionService();
 
-   Object getArtifact(Object object) throws OseeCoreException;
+   ArtifactId getArtifact(ArtifactId artifact) throws OseeCoreException;
+
+   ArtifactId getArtifact(IAtsObject atsObject) throws OseeCoreException;
 
    void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
 

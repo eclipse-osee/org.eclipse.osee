@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
-import org.eclipse.osee.ats.impl.internal.workitem.IArtifactProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -50,9 +49,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    @Override
    IAtsWorkItemFactory getWorkItemFactory() throws OseeCoreException;
-
-   @Override
-   ArtifactReadable getArtifact(Object object) throws OseeCoreException;
 
    IAtsWorkDefinitionAdmin getWorkDefAdmin();
 
