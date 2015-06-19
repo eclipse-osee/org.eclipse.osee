@@ -12,17 +12,18 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAgileService {
 
-   IAgileTeam getAgileTeam(Object artifact);
+   IAgileTeam getAgileTeam(ArtifactId artifact);
 
    IAgileTeam updateAgileTeam(JaxAgileTeam team);
 
-   IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
+   IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact);
 
    IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid);
 
@@ -30,13 +31,13 @@ public interface IAgileService {
 
    void deleteAgileTeam(long uuid);
 
-   IAgileSprint getAgileSprint(Object artifact);
+   IAgileSprint getAgileSprint(ArtifactId artifact);
 
    IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid);
 
    IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid);
 
-   IAgileBacklog getAgileBacklog(Object artifact);
+   IAgileBacklog getAgileBacklog(ArtifactId artifact);
 
    JaxAgileItem updateItem(JaxAgileItem newItem);
 

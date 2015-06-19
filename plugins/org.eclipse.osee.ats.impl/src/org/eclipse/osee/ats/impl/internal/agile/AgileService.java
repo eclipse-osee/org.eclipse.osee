@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -55,7 +56,7 @@ public class AgileService implements IAgileService {
     ** Agile Team
     ***********************************/
    @Override
-   public IAgileTeam getAgileTeam(Object artifact) {
+   public IAgileTeam getAgileTeam(ArtifactId artifact) {
       return AgileFactory.getAgileTeam(logger, atsServer, artifact);
    }
 
@@ -125,7 +126,7 @@ public class AgileService implements IAgileService {
     ** Agile Feature Group
     ***********************************/
    @Override
-   public IAgileFeatureGroup getAgileFeatureGroup(Object artifact) {
+   public IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact) {
       return AgileFactory.getAgileFeatureGroup(logger, atsServer, artifact);
    }
 
@@ -179,7 +180,7 @@ public class AgileService implements IAgileService {
     ** Agile Sprint
     ***********************************/
    @Override
-   public IAgileSprint getAgileSprint(Object artifact) {
+   public IAgileSprint getAgileSprint(ArtifactId artifact) {
       return AgileFactory.getAgileSprint(logger, atsServer, artifact);
    }
 
@@ -217,7 +218,7 @@ public class AgileService implements IAgileService {
     ** Agile Backlog
     ***********************************/
    @Override
-   public IAgileBacklog getAgileBacklog(Object artifact) {
+   public IAgileBacklog getAgileBacklog(ArtifactId artifact) {
       return AgileFactory.getAgileBacklog(logger, atsServer, artifact);
    }
 
