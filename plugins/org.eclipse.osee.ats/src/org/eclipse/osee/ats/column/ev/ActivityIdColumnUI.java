@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -45,7 +46,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * Provides column to show selected Work Package and provides for the selection of valid Work Packages configured for
  * Team Def and AIs
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
@@ -74,7 +75,12 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return AtsClientService.get().getColumnUtilities().getActivityIdUtility().getColumnText(element);
+      String result = "";
+      if (element instanceof IAtsObject) {
+         result =
+            AtsClientService.get().getColumnUtilities().getActivityIdUtility().getColumnText((IAtsObject) element);
+      }
+      return result;
    }
 
    @Override

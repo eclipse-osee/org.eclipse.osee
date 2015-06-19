@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
@@ -131,6 +132,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public boolean isReview() {
       return this instanceof IAtsAbstractReview;
+   }
+
+   @Override
+   public boolean isGoal() {
+      return this instanceof IAtsGoal;
    }
 
    @Override

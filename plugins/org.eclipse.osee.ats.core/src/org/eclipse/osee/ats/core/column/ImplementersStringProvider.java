@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -17,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ImplementersStringProvider {
 
-   String getImplementersStr(Object object) throws OseeCoreException;
+   String getImplementersStr(IAtsObject atsObject) throws OseeCoreException;
 
 }

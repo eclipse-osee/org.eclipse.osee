@@ -71,4 +71,6 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    IAtsAction getParentAction();
 
+   boolean isGoal();
+
 }

@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -234,20 +234,20 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
+   public Collection<? extends Artifact> getMetricsWorkItems() {
       return getLoadedArtifacts();
    }
 
    @Override
-   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getMetricsVersion() throws OseeCoreException {
       IAtsVersion verArt = getWorldEditorProvider().getTargetedVersionArtifact();
       if (verArt != null) {
          return verArt;
       }
       for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof AbstractWorkflowArtifact && AtsClientService.get().getVersionService().hasTargetedVersion(
-            artifact)) {
-            return AtsClientService.get().getVersionService().getTargetedVersion(artifact);
+         IAtsWorkItem workItem = (IAtsWorkItem) artifact;
+         if (artifact instanceof IAtsWorkItem && AtsClientService.get().getVersionService().hasTargetedVersion(workItem)) {
+            return AtsClientService.get().getVersionService().getTargetedVersion(workItem);
          }
       }
       return null;

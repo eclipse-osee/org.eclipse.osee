@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.column;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
@@ -50,18 +51,21 @@ public class ActionableItemsColumnUI extends XViewerAtsAttributeValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         return ActionableItemsColumn.getColumnText(element);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      if (element instanceof IAtsObject) {
+         try {
+            return ActionableItemsColumn.getColumnText((IAtsObject) element);
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       }
+      return "";
    }
 
-   public static String getActionableItemsStr(Object element) throws OseeCoreException {
-      return ActionableItemsColumn.getActionableItemsStr(element);
+   public static String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
+      return ActionableItemsColumn.getActionableItemsStr(atsObject);
    }
 
-   public static Collection<IAtsActionableItem> getActionableItems(Object element) throws OseeCoreException {
-      return ActionableItemsColumn.getActionableItems(element);
+   public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
+      return ActionableItemsColumn.getActionableItems(atsObject);
    }
 }

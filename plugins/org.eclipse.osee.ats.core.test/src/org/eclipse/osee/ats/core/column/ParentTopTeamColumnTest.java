@@ -27,13 +27,13 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link ParentTopTeamColumn}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ParentTopTeamColumnTest {
 
    // @formatter:off
-   
+
    @Mock private IAtsTeamWorkflow teamWf1;
    @Mock private IAtsTeamDefinition teamDef_top;
    @Mock private IAtsTeamDefinition teamDef_child;
@@ -41,7 +41,7 @@ public class ParentTopTeamColumnTest {
    @Mock private IAtsActionableItem aia_parent;
    @Mock private IAtsVersion ver1;
    @Mock private IAtsAbstractReview rev1;
-   
+
    // @formatter:on
 
    @Before
@@ -116,16 +116,6 @@ public class ParentTopTeamColumnTest {
       when(aia1.getTeamDefinitionInherited()).thenReturn(teamDef_child);
 
       String columnText = ParentTopTeamColumn.getColumnText(rev1);
-
-      Assert.assertEquals("", columnText);
-   }
-
-   /**
-    * Test method works on unexpected object types
-    */
-   @org.junit.Test
-   public void testGetColumnText_invalidType() throws Exception {
-      String columnText = ParentTopTeamColumn.getColumnText("String");
 
       Assert.assertEquals("", columnText);
    }

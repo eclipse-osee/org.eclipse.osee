@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.IAtsObject;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsColumnUtility {
 
-   public String getColumnText(Object object);
+   public String getColumnText(IAtsObject atsObject);
 
    public String getDescription();
 

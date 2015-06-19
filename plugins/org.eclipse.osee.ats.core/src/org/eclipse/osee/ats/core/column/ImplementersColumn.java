@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.model.IActionGroup;
@@ -41,17 +42,17 @@ public class ImplementersColumn implements ImplementersStringProvider {
    public static ImplementersColumn instance = new ImplementersColumn();
 
    @Override
-   public String getImplementersStr(Object object) throws OseeCoreException {
-      List<IAtsUser> implementers = getImplementers(object);
+   public String getImplementersStr(IAtsObject atsObject) throws OseeCoreException {
+      List<IAtsUser> implementers = getImplementers(atsObject);
       return implementers.isEmpty() ? "" : AtsObjects.toString("; ", implementers);
    }
 
-   public List<IAtsUser> getImplementers(Object object) throws OseeCoreException {
+   public List<IAtsUser> getImplementers(IAtsObject atsObject) throws OseeCoreException {
       List<IAtsUser> implementers = new LinkedList<IAtsUser>();
-      if (object instanceof IActionGroup) {
-         implementers.addAll(getActionGroupImplementers((IActionGroup) object));
-      } else if (object instanceof IAtsWorkItem) {
-         implementers.addAll(getWorkItemImplementers((IAtsWorkItem) object));
+      if (atsObject instanceof IActionGroup) {
+         implementers.addAll(getActionGroupImplementers((IActionGroup) atsObject));
+      } else if (atsObject instanceof IAtsWorkItem) {
+         implementers.addAll(getWorkItemImplementers((IAtsWorkItem) atsObject));
       }
       implementers.remove(AtsCoreUsers.UNASSIGNED_USER);
       Collections.sort(implementers);

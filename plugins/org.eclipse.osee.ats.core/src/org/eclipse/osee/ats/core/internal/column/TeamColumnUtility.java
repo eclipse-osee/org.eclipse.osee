@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.internal.column;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -39,16 +40,16 @@ public class TeamColumnUtility implements IAtsColumnUtility {
    }
 
    @Override
-   public String getColumnText(Object object) {
+   public String getColumnText(IAtsObject atsObject) {
       String result = "";
       try {
-         if (object instanceof IAtsTeamWorkflow) {
-            result = workItemService.getTeamName((IAtsTeamWorkflow) object);
-         } else if (object instanceof IAtsWorkItem) {
-            result = getColumnText(((IAtsWorkItem) object).getParentTeamWorkflow());
+         if (atsObject instanceof IAtsTeamWorkflow) {
+            result = workItemService.getTeamName((IAtsTeamWorkflow) atsObject);
+         } else if (atsObject instanceof IAtsWorkItem) {
+            result = getColumnText(((IAtsWorkItem) atsObject).getParentTeamWorkflow());
          }
-         if (!Strings.isValid(result) && (object instanceof IAtsAbstractReview)) {
-            IAtsAbstractReview review = (IAtsAbstractReview) object;
+         if (!Strings.isValid(result) && (atsObject instanceof IAtsAbstractReview)) {
+            IAtsAbstractReview review = (IAtsAbstractReview) atsObject;
             if (reviewService.isStandAloneReview(review)) {
                List<IAtsTeamDefinition> teams = new ArrayList<IAtsTeamDefinition>();
                for (IAtsActionableItem ai : review.getActionableItems()) {

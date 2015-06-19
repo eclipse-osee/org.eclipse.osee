@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -30,12 +31,12 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumnUtil
    }
 
    @Override
-   public String getColumnText(Object object) {
+   public String getColumnText(IAtsObject atsObject) {
       String result = "";
       try {
-         if (object instanceof IAtsWorkItem) {
+         if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkPackage workPkg =
-               earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) object);
+               earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
             if (workPkg != null) {
                result = getColumnValue(workPkg);
             }

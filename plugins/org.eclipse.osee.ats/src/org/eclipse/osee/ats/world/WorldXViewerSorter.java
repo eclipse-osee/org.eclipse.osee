@@ -14,11 +14,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -40,8 +40,8 @@ public class WorldXViewerSorter extends XViewerSorter {
             return 0;
          }
          XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
-         Artifact m1 = (Artifact) o1;
-         Artifact m2 = (Artifact) o2;
+         IAtsWorkItem m1 = (IAtsWorkItem) o1;
+         IAtsWorkItem m2 = (IAtsWorkItem) o2;
 
          if (sortXCol.equals(AssigneeColumnUI.getInstance())) {
             int compareInt =

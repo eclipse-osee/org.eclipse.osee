@@ -50,7 +50,7 @@ public class WorkflowMetrics {
 
    Date estimatedReleaseDate;
    long daysTillRel = 0;
-   IAtsVersion versionArtifact = null;
+   IAtsVersion version = null;
    String str = "";
    Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
    Set<Artifact> actionArts = new HashSet<Artifact>();
@@ -67,9 +67,9 @@ public class WorkflowMetrics {
       HashSet.class, 100);
    private final double manHoursPerDay;
 
-   public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
+   public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion version, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
       this.manHoursPerDay = manHoursPerDay;
-      this.versionArtifact = versionArtifact;
+      this.version = version;
       this.estimatedReleaseDate = estimatedReleaseDate;
       if (artifacts.isEmpty()) {
          return;
@@ -128,8 +128,8 @@ public class WorkflowMetrics {
 
       Date today = new Date();
       daysTillRel = 0;
-      if (versionArtifact != null && estimatedReleaseDate == null) {
-         estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
+      if (version != null && estimatedReleaseDate == null) {
+         estimatedReleaseDate = version.getEstimatedReleaseDate();
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
@@ -145,8 +145,7 @@ public class WorkflowMetrics {
             hrsRemainFromEstimates,
             hrsSpent,
             (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
-            (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
-               versionArtifact.getName(),
+            (version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
                (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
    }
 
@@ -277,9 +276,9 @@ public class WorkflowMetrics {
          hrsRemainFromEstimates,
          manDaysNeeded,
          hrsSpent,
-         (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
-            versionArtifact.getName(),
-            (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
+         (version != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
+            version.getName(), (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)),
+            daysTillRel) : ""));
    }
 
    public Date getEstRelDate() {
@@ -315,11 +314,11 @@ public class WorkflowMetrics {
    }
 
    public IAtsVersion getVersionArtifact() {
-      return versionArtifact;
+      return version;
    }
 
    public void setVersionArtifact(IAtsVersion versionArtifact) {
-      this.versionArtifact = versionArtifact;
+      this.version = versionArtifact;
    }
 
    public int getNumTeamWfs() {

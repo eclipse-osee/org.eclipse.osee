@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -192,7 +193,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       AssigneeColumn column = new AssigneeColumn(new ImplementersStringProvider() {
 
          @Override
-         public String getImplementersStr(Object object) {
+         public String getImplementersStr(IAtsObject atsObject) {
             return null;
          }
       });

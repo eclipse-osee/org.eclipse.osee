@@ -240,4 +240,9 @@ public class MockWorkItem implements IAtsWorkItem {
       return null;
    }
 
+   @Override
+   public boolean isGoal() {
+      return false;
+   }
+
 }

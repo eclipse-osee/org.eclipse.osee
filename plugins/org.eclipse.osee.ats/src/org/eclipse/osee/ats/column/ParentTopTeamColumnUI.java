@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.ParentTopTeamColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -49,11 +50,15 @@ public class ParentTopTeamColumnUI extends XViewerAtsColumn implements IXViewerV
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         return ParentTopTeamColumn.getColumnText(element);
-      } catch (OseeCoreException ex) {
-         return XViewerCells.getCellExceptionString(ex);
+      String result = "";
+      if (element instanceof IAtsObject) {
+         try {
+            result = ParentTopTeamColumn.getColumnText((IAtsObject) element);
+         } catch (OseeCoreException ex) {
+            result = XViewerCells.getCellExceptionString(ex);
+         }
       }
+      return result;
    }
 
 }

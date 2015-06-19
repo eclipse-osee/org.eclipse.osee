@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsMetricsProvider {
 
-   public Collection<? extends Artifact> getMetricsArtifacts() throws OseeCoreException;
+   public Collection<? extends Artifact> getMetricsWorkItems() throws OseeCoreException;
 
-   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException;
+   public IAtsVersion getMetricsVersion() throws OseeCoreException;
 
    public double getManHoursPerDayPreference() throws OseeCoreException;
 }

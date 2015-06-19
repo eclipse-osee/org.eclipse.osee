@@ -619,7 +619,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
    }
 
    @Override
-   public Collection<? extends Artifact> getMetricsArtifacts() {
+   public Collection<? extends Artifact> getMetricsWorkItems() {
       if (awa.isOfType(AtsArtifactTypes.Goal)) {
          return ((GoalArtifact) awa).getMembers();
       }
@@ -627,7 +627,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
    }
 
    @Override
-   public IAtsVersion getMetricsVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getMetricsVersion() throws OseeCoreException {
       return AtsClientService.get().getVersionService().getTargetedVersion(awa);
    }
 

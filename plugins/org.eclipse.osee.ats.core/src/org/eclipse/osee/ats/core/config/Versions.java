@@ -31,19 +31,17 @@ public class Versions {
       return names;
    }
 
-   public static String getTargetedVersionStr(Object object, IAtsVersionService versionService) throws OseeCoreException {
-      if (object instanceof IAtsWorkItem) {
-         IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
-         if (teamWf != null) {
-            IAtsVersion version = versionService.getTargetedVersion(object);
-            if (version != null) {
-               if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
-                  String errStr =
-                     "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
-                  return "!Error " + errStr;
-               }
-               return version.getName();
+   public static String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService) throws OseeCoreException {
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      if (teamWf != null) {
+         IAtsVersion version = versionService.getTargetedVersion(workItem);
+         if (version != null) {
+            if (!teamWf.getStateMgr().getStateType().isCompletedOrCancelled() && versionService.isReleased(teamWf)) {
+               String errStr =
+                  "Workflow " + teamWf.getAtsId() + " targeted for released version, but not completed: " + version;
+               return "!Error " + errStr;
             }
+            return version.getName();
          }
       }
       return "";

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
@@ -30,19 +31,19 @@ public final class ParentTopTeamColumn {
       // do nothing
    }
 
-   public static String getColumnText(Object object) throws OseeCoreException {
+   public static String getColumnText(IAtsObject atsObject) throws OseeCoreException {
       String result = "";
       IAtsTeamDefinition teamDef = null;
-      if (object instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) object;
+      if (atsObject instanceof IAtsWorkItem) {
+         IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          IAtsTeamWorkflow teamArt = workItem.getParentTeamWorkflow();
          if (teamArt != null) {
             teamDef = teamArt.getTeamDefinition();
          }
       }
       result = getTopTeamDefName(teamDef);
-      if (!Strings.isValid(result) && (object instanceof IAtsActionableItemProvider)) {
-         IAtsActionableItemProvider provider = (IAtsActionableItemProvider) object;
+      if (!Strings.isValid(result) && (atsObject instanceof IAtsActionableItemProvider)) {
+         IAtsActionableItemProvider provider = (IAtsActionableItemProvider) atsObject;
          Set<IAtsActionableItem> actionableItems = provider.getActionableItems();
          if (!actionableItems.isEmpty()) {
             teamDef = actionableItems.iterator().next().getTeamDefinition();

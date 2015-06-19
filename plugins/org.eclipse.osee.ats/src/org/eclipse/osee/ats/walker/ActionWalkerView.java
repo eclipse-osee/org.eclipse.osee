@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
@@ -307,8 +308,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          return;
       }
       if (artifactEvent.isModifiedReloaded(activeAwa) ||
-      //
-      artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
+         //
+         artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -383,8 +384,9 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
 
    private String getTargetedVersion(Artifact artifact) {
       try {
-         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            String str = Versions.getTargetedVersionStr(artifact, AtsClientService.get().getVersionService());
+         if (artifact instanceof IAtsWorkItem) {
+            String str =
+               Versions.getTargetedVersionStr((IAtsWorkItem) artifact, AtsClientService.get().getVersionService());
             return str.isEmpty() ? "" : str;
          }
       } catch (OseeCoreException ex) {

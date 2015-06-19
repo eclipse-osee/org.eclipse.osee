@@ -623,7 +623,7 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public ChangeType getChangeType(IAtsAction fromAction) {
-      return ChangeTypeUtil.getChangeType((Artifact) fromAction.getStoreObject());
+      return ChangeTypeUtil.getChangeType(fromAction);
    }
 
    @Override
@@ -640,7 +640,7 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
-      ChangeTypeUtil.setChangeType((Artifact) atsObject.getStoreObject(), changeType);
+      ChangeTypeUtil.setChangeType(atsObject, changeType);
    }
 
    @Override

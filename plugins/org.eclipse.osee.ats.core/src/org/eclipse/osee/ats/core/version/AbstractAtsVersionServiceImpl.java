@@ -42,13 +42,11 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    }
 
    @Override
-   public IAtsVersion getTargetedVersion(Object object) throws OseeCoreException {
+   public IAtsVersion getTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException {
       IAtsVersion version = null;
-      if (object instanceof IAtsWorkItem) {
-         IAtsTeamWorkflow team = ((IAtsWorkItem) object).getParentTeamWorkflow();
-         if (team != null) {
-            version = getTargetedVersionByTeamWf(team);
-         }
+      IAtsTeamWorkflow team = workItem.getParentTeamWorkflow();
+      if (team != null) {
+         version = getTargetedVersionByTeamWf(team);
       }
       return version;
    }
@@ -103,8 +101,8 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    }
 
    @Override
-   public boolean hasTargetedVersion(Object object) throws OseeCoreException {
-      return getTargetedVersion(object) != null;
+   public boolean hasTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException {
+      return getTargetedVersion(workItem) != null;
    }
 
    @Override

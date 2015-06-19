@@ -14,6 +14,8 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
@@ -44,12 +46,13 @@ public class ActionArtifactRollup {
       resetDescriptionOffChildren();
    }
 
-   public static void resetChangeTypeOffChildren(Artifact actionArt) throws OseeCoreException {
+   public static void resetChangeTypeOffChildren(IAtsAction action) throws OseeCoreException {
+      Artifact actionArt = AtsClientService.get().getArtifact(action);
       if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
       }
       ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(actionArt);
+      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(action);
       if (teamArts.size() == 1) {
          changeType = ChangeTypeUtil.getChangeType(teamArts.iterator().next());
       } else {
@@ -63,8 +66,8 @@ public class ActionArtifactRollup {
             }
          }
       }
-      if (changeType != null && ChangeTypeUtil.getChangeType(actionArt) != changeType) {
-         ChangeTypeUtil.setChangeType(actionArt, changeType);
+      if (changeType != null && ChangeTypeUtil.getChangeType(action) != changeType) {
+         ChangeTypeUtil.setChangeType(action, changeType);
       }
    }
 

@@ -61,7 +61,6 @@ public class TeamColumnUtilityTest {
 
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(teamWf));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(review));
-      Assert.assertEquals("", utility.getColumnText("some object"));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(standAloneReview));
    }
 }

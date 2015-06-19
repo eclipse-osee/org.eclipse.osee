@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.column.ev;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
@@ -45,6 +46,11 @@ public class WorkPackageGuidColumnUI extends AbstractWorkPackageRelatedColumnUI 
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      return AtsClientService.get().getColumnUtilities().getWorkPackageGuidUtility().getColumnText(element);
+      String result = "";
+      if (element instanceof IAtsObject) {
+         result =
+            AtsClientService.get().getColumnUtilities().getWorkPackageGuidUtility().getColumnText((IAtsObject) element);
+      }
+      return result;
    }
 }

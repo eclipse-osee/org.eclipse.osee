@@ -41,16 +41,6 @@ public class CpaFactory {
       idToStoreObject.put(key, object);
    }
 
-   public static Object getStoreObject(Object obj) {
-      Object result = null;
-      if (obj instanceof IAtsProgram) {
-         result = idToStoreObject.get(((IAtsProgram) obj).getUuid());
-      } else if (obj instanceof CpaDecision) {
-         result = idToStoreObject.get(((CpaDecision) obj).getGuid());
-      }
-      return result;
-   }
-
    public static CpaDecision getDecision(IAtsTeamWorkflow teamWf) {
       return getDecision(teamWf, null);
    }

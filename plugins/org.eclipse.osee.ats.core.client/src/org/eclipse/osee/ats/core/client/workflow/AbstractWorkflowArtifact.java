@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -299,7 +300,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
-    * 
+    *
     * @return true if any object in SMA tree is dirty
     */
    public Result isSMAEditorDirty() {
@@ -721,6 +722,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public boolean isReview() {
       return this instanceof AbstractReviewArtifact;
+   }
+
+   @Override
+   public boolean isGoal() {
+      return this instanceof IAtsGoal;
    }
 
    protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) throws OseeCoreException {

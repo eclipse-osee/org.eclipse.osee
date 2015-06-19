@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -158,8 +159,8 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact) {
-            return AssigneeColumn.instance.getAssigneeStr(element);
+         if (element instanceof IAtsObject) {
+            return AssigneeColumn.instance.getAssigneeStr((IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

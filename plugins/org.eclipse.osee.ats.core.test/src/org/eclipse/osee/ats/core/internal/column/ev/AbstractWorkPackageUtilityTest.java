@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
@@ -19,6 +18,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,11 +44,6 @@ public abstract class AbstractWorkPackageUtilityTest {
    }
 
    public abstract IAtsColumnUtility getUtil();
-
-   @Test
-   public void testGetColumnText_notWorkItem() {
-      Assert.assertEquals("", getUtil().getColumnText(new Boolean(false)));
-   }
 
    @Test
    public void testGetDescription() {

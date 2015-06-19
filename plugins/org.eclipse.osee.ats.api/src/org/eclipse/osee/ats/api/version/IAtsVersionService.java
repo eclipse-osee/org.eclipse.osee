@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.version;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -22,9 +23,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsVersionService {
 
-   boolean hasTargetedVersion(Object object) throws OseeCoreException;
+   boolean hasTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException;
 
-   IAtsVersion getTargetedVersion(Object object) throws OseeCoreException;
+   IAtsVersion getTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) throws OseeCoreException;
 

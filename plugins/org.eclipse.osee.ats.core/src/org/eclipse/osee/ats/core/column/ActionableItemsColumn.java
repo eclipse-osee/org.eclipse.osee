@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
@@ -25,18 +26,18 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Provides for rollup of actionable items
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ActionableItemsColumn {
 
-   public static String getColumnText(Object object) throws OseeCoreException {
-      return getActionableItemsStr(object);
+   public static String getColumnText(IAtsObject atsObject) throws OseeCoreException {
+      return getActionableItemsStr(atsObject);
    }
 
-   public static String getActionableItemsStr(Object object) throws OseeCoreException {
+   public static String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
       List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
-      ais.addAll(getActionableItems(object));
+      ais.addAll(getActionableItems(atsObject));
       java.util.Collections.sort(ais, new Comparator<IAtsActionableItem>() {
 
          @Override
@@ -55,23 +56,23 @@ public class ActionableItemsColumn {
       return sb.toString().replace(", $", "");
    }
 
-   public static Collection<IAtsActionableItem> getActionableItems(Object object) throws OseeCoreException {
+   public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
       // If object has children team workflows, roll-up results of all ais
-      if (object instanceof IAtsTeamWorkflowProvider) {
-         for (IAtsTeamWorkflow team : ((IAtsTeamWorkflowProvider) object).getTeamWorkflows()) {
+      if (atsObject instanceof IAtsTeamWorkflowProvider) {
+         for (IAtsTeamWorkflow team : ((IAtsTeamWorkflowProvider) atsObject).getTeamWorkflows()) {
             ais.addAll(getActionableItems(team));
          }
       }
       // Or, add actionable items if provided by object
-      else if (object instanceof IAtsActionableItemProvider) {
-         ais.addAll(((IAtsActionableItemProvider) object).getActionableItems());
+      else if (atsObject instanceof IAtsActionableItemProvider) {
+         ais.addAll(((IAtsActionableItemProvider) atsObject).getActionableItems());
       }
 
       // Children work items inherit the actionable items of their parent team workflow
-      if (object instanceof IAtsWorkItem) {
-         IAtsTeamWorkflow teamWf = ((IAtsWorkItem) object).getParentTeamWorkflow();
-         if (teamWf != null && !teamWf.equals(object)) {
+      if (atsObject instanceof IAtsWorkItem) {
+         IAtsTeamWorkflow teamWf = ((IAtsWorkItem) atsObject).getParentTeamWorkflow();
+         if (teamWf != null && !teamWf.equals(atsObject)) {
             ais.addAll(getActionableItems(teamWf));
          }
       }

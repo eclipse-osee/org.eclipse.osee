@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -157,11 +158,14 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
       try {
-         Artifact useArt = getParentTeamWorkflowOrArtifact(element);
-         if (useArt != null) {
-            ChangeType changeType = ChangeTypeUtil.getChangeType(useArt);
-            if (changeType != null) {
-               return ChangeTypeToSwtImage.getImage(changeType);
+         if (element instanceof IAtsWorkItem) {
+            IAtsWorkItem workItem = (IAtsWorkItem) element;
+            Artifact useArt = getParentTeamWorkflowOrArtifact(workItem);
+            if (useArt != null) {
+               ChangeType changeType = ChangeTypeUtil.getChangeType(workItem);
+               if (changeType != null) {
+                  return ChangeTypeToSwtImage.getImage(changeType);
+               }
             }
          }
       } catch (OseeCoreException ex) {

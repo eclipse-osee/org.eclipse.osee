@@ -22,11 +22,13 @@ import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -186,8 +188,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String result = "";
       try {
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
+         if (element instanceof IAtsAction) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = Versions.getTargetedVersionStr(team, AtsClientService.get().getVersionService());
@@ -195,14 +198,15 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                   strs.add(str);
                }
             }
-            return Collections.toString(";", strs);
+            result = Collections.toString(";", strs);
 
-         } else {
-            return Versions.getTargetedVersionStr(element, AtsClientService.get().getVersionService());
+         } else if (element instanceof IAtsWorkItem) {
+            result = Versions.getTargetedVersionStr((IAtsWorkItem) element, AtsClientService.get().getVersionService());
          }
       } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
+         result = LogUtil.getCellExceptionString(ex);
       }
+      return result;
    }
 
    @Override

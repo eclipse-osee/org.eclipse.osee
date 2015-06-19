@@ -61,11 +61,6 @@ public class ImplementersColumnTest extends AbstractUserTest {
       Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr(null));
    }
 
-   @org.junit.Test
-   public void testGetImplementersStrFromInWorkWorkflow_blank() throws OseeCoreException {
-      Assert.assertEquals("", ImplementersColumn.instance.getImplementersStr("this"));
-   }
-
    /**
     * Should be blank if in Working state
     */
