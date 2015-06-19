@@ -61,6 +61,7 @@ Import-Package: com.google.inject,
  org.eclipse.osee.framework.ui.skynet.util,
  org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jdbc,
+ org.eclipse.osee.logger,
  org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.orcs.search,
  org.osgi.framework

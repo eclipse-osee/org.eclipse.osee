@@ -8,4 +8,5 @@
    </service>
    <reference bind="setAtsWorkDefinitionService" cardinality="1..1" interface="org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService" name="IAtsWorkDefinitionService" policy="static"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
 </scr:component>

@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -71,6 +75,32 @@ public class AtsProgramService implements IAtsProgramService {
    public IAtsProgram getProgramByGuid(String guid) {
       ArtifactReadable prgArt = atsServer.getArtifactById(guid);
       return atsServer.getConfigItemFactory().getProgram(prgArt);
+   }
+
+   @Override
+   public IAtsCountry getCountry(IAtsProgram atsProgram) {
+      IAtsCountry country = null;
+      ArtifactReadable artifact = ((ArtifactReadable) atsProgram.getStoreObject());
+      if (artifact != null) {
+         ArtifactReadable countryArt =
+            artifact.getRelated(AtsRelationTypes.CountryToProgram_Country).getAtMostOneOrNull();
+         if (countryArt != null) {
+            country = atsServer.getConfigItemFactory().getCountry(countryArt);
+         }
+      }
+      return country;
+   }
+
+   @Override
+   public List<IAtsProgram> getPrograms(IAtsCountry atsCountry) {
+      List<IAtsProgram> programs = new LinkedList<>();
+      ArtifactReadable artifact = ((ArtifactReadable) atsCountry.getStoreObject());
+      if (artifact != null) {
+         for (ArtifactReadable related : artifact.getRelated(AtsRelationTypes.CountryToProgram_Program)) {
+            programs.add(atsServer.getConfigItemFactory().getProgram(related));
+         }
+      }
+      return programs;
    }
 
 }

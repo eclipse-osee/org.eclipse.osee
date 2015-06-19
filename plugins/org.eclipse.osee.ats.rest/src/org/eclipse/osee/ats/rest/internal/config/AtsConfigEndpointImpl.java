@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.concurrent.Callable;
+import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -60,8 +61,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations get() {
-      ResultSet<ArtifactReadable> artifacts =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.Configuration).getResults();
+      ResultSet<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+         AtsArtifactTypes.Configuration).getResults();
       AtsConfigurations configs = new AtsConfigurations();
       for (ArtifactReadable art : artifacts) {
          AtsConfiguration config = new AtsConfiguration();
@@ -83,6 +84,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
+   @Path("")
    public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) {
 
       // get parameters
@@ -126,9 +128,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(newBranch, userArt, "Add ATS Configuration");
 
-      ArtifactId headingArt =
-         introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
-            CoreArtifactTokens.DefaultHierarchyRoot, null);
+      ArtifactId headingArt = introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.HeadingFolder, newBranch,
+         CoreArtifactTokens.DefaultHierarchyRoot, null);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopActionableItem, newBranch, null, headingArt);
       introduceAndRelateTo(tx, fromBranch, AtsArtifactToken.TopTeamDefinition, newBranch, null, headingArt);
       ArtifactId configArt =
@@ -165,8 +166,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          relateToArt =
             orcsApi.getQueryFactory().fromBranch(newBranch).andIds(relateToToken).getResults().getAtMostOneOrNull();
          if (relateToArt == null) {
-            relateToArt =
-               orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(relateToToken.getArtifactType()).andNameEquals(
+            relateToArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
+               relateToToken.getArtifactType()).andNameEquals(
                   relateToToken.getName()).getResults().getAtMostOneOrNull();
          }
       }

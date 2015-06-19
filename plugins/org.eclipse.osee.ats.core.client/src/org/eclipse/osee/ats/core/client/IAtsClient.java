@@ -169,6 +169,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    Artifact checkArtifactFromId(long uuid, IOseeBranch atsBranch);
 
+   @Override
    IAtsStoreService getStoreService();
 
    TeamWorkflowProviders getTeamWorkflowProviders();

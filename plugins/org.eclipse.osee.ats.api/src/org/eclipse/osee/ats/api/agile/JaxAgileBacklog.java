@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.api.agile;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxAgileBacklog extends AbstractAgileObject {
+public class JaxAgileBacklog extends JaxAtsObject {
 
    private long teamUuid;
 

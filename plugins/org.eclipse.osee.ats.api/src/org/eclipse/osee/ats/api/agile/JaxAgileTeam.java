@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.api.agile;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxAgileTeam extends AbstractAgileObject {
+public class JaxAgileTeam extends JaxAtsObject {
 
    private List<Long> atsTeamUuids = new ArrayList<Long>();
    private long backlogUuid = 0;

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -436,7 +437,7 @@ public class AtsServerImpl implements IAtsServer {
       String result = null;
       @SuppressWarnings("unchecked")
       ArtifactReadable atsConfig =
-      orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;
@@ -575,6 +576,11 @@ public class AtsServerImpl implements IAtsServer {
 
    private ArtifactReadable getArtifact(long uuid) {
       return getArtifactByUuid(uuid);
+   }
+
+   @Override
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+      return getConfig().getSoleByUuid(uuid, clazz);
    }
 
 }

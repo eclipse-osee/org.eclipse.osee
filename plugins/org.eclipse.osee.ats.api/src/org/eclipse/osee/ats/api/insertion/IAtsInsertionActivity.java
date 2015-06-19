@@ -16,5 +16,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  * @author David W. Miller
  */
 public interface IAtsInsertionActivity extends IAtsConfigObject {
-   // marker interface
+
+   long getInsertionUuid();
+
 }

@@ -11,6 +11,10 @@
 package org.eclipse.osee.ats.client.integration.tests;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.country.CountryEndpointApi;
+import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
+import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
+import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -26,6 +30,10 @@ public class AtsClientService {
    private static AgileEndpointApi agile;
    private static JaxRsWebTarget target;
    private static OrcsWriterEndpoint orcsWriter;
+   private static CountryEndpointApi countryEp;
+   private static ProgramEndpointApi programEp;
+   private static InsertionEndpointApi insertionEp;
+   private static InsertionActivityEndpointApi insertionActivityEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -60,6 +68,34 @@ public class AtsClientService {
          orcsWriter = jaxRsClient.target(orcsUri).newProxy(OrcsWriterEndpoint.class);
       }
       return orcsWriter;
+   }
+
+   public static CountryEndpointApi getCountryEp() {
+      if (countryEp == null) {
+         countryEp = getTarget().newProxy(CountryEndpointApi.class);
+      }
+      return countryEp;
+   }
+
+   public static ProgramEndpointApi getProgramEp() {
+      if (programEp == null) {
+         programEp = getTarget().newProxy(ProgramEndpointApi.class);
+      }
+      return programEp;
+   }
+
+   public static InsertionEndpointApi getInsertionEp() {
+      if (insertionEp == null) {
+         insertionEp = getTarget().newProxy(InsertionEndpointApi.class);
+      }
+      return insertionEp;
+   }
+
+   public static InsertionActivityEndpointApi getInsertionActivityEp() {
+      if (insertionActivityEp == null) {
+         insertionActivityEp = getTarget().newProxy(InsertionActivityEndpointApi.class);
+      }
+      return insertionActivityEp;
    }
 
 }

@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -106,6 +108,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public AtsNotificationCollector getNotifications() {
       return notifications;
+   }
+
+   @Override
+   public ArtifactId createArtifact(IArtifactToken token) {
+      return createArtifact(token.getArtifactType(), token.getName(), token.getGuid(), token.getUuid());
    }
 
 }

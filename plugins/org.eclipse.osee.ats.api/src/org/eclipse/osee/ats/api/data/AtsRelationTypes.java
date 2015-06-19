@@ -84,6 +84,9 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide TeamDefinitionToAtsConfigObject_TeamDefinition = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000170L, "TeamDefinitionAtsConfigObject");
    public static final IRelationTypeSide TeamDefinitionToAtsConfigObject_AtsConfigObject = TeamDefinitionToVersion_TeamDefinition.getOpposite();
 
+   public static final IRelationTypeSide CountryToProgram_Country = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000033300000169L, "CountryToProgram");
+   public static final IRelationTypeSide CountryToProgram_Program = CountryToProgram_Country.getOpposite();
+
    public static final IRelationTypeSide TeamLead_Team = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x2000000000000169L, "TeamLead");
    public static final IRelationTypeSide TeamLead_Lead = TeamLead_Team.getOpposite();
 

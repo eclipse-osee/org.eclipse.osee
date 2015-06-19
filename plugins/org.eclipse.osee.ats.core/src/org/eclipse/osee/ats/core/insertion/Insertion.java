@@ -8,21 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.impl.internal.workitem;
+package org.eclipse.osee.ats.core.insertion;
 
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author David W. Miller
  */
 public class Insertion extends AtsConfigObject implements IAtsInsertion {
 
-   public Insertion(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
-      super(logger, atsServer, artifact);
+   private long programUuid;
+
+   public Insertion(Log logger, IAtsServices atsServices, ArtifactId artifact) {
+      super(logger, atsServices, artifact);
    }
 
    @Override
@@ -30,4 +32,12 @@ public class Insertion extends AtsConfigObject implements IAtsInsertion {
       return "Insertion";
    }
 
+   @Override
+   public long getProgramUuid() {
+      return programUuid;
+   }
+
+   public void setProgramUuid(long programUuid) {
+      this.programUuid = programUuid;
+   }
 }

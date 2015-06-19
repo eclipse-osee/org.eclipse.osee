@@ -15,10 +15,11 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -46,22 +47,26 @@ public interface IAtsConfigItemFactory {
 
    IAtsInsertion getInsertion(ArtifactId artifact);
 
-   IAtsInsertion createInsertion(ArtifactId programArtifact, JaxNewInsertion newInsertion);
+   IAtsInsertion createInsertion(ArtifactId programArtifact, JaxInsertion newInsertion);
 
-   IAtsInsertion updateInsertion(JaxNewInsertion newInsertion);
+   IAtsInsertion updateInsertion(JaxInsertion newInsertion);
 
    void deleteInsertion(ArtifactId artifact);
 
    IAtsInsertionActivity getInsertionActivity(ArtifactId artifact);
 
-   IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxNewInsertionActivity newActivity);
+   IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxInsertionActivity newActivity);
 
-   IAtsInsertionActivity updateInsertionActivity(JaxNewInsertionActivity newFeature);
+   IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity newFeature);
 
    void deleteInsertionActivity(ArtifactId artifact);
 
    boolean isAtsConfigArtifact(ArtifactId artifact);
 
    List<IArtifactType> getAtsConfigArtifactTypes();
+
+   IAtsCountry getCountry(ArtifactId artifact);
+
+   IAtsCountry getCountry(long uuid);
 
 }

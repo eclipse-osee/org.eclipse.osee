@@ -22,4 +22,6 @@ public interface IAtsProgram extends IAtsConfigObject {
 
    public String getNamespace();
 
+   long getCountryUuid();
+
 }

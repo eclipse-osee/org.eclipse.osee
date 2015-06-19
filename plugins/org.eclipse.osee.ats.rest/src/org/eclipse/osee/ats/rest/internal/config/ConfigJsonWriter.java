@@ -20,7 +20,10 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -118,10 +121,66 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             }
             writer.writeEndArray();
          }
+      } else if (atsObject instanceof IAtsInsertionActivity) {
+         IAtsInsertionActivity activity = (IAtsInsertionActivity) atsObject;
+         writer.writeBooleanField("Active", activity.isActive());
+         if (!identityView) {
+            writer.writeArrayFieldStart("insertion");
+            for (ArtifactReadable insertion : artifact.getRelated(AtsRelationTypes.InsertionToInsertionActivity_Insertion)) {
+               addArtifactIdentity(writer, insertion);
+            }
+            writer.writeEndArray();
+            writer.writeArrayFieldStart("workpackage");
+            for (ArtifactReadable workPackage : artifact.getRelated(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
+               addArtifactIdentity(writer, workPackage);
+            }
+            writer.writeEndArray();
+         }
+      } else if (atsObject instanceof IAtsInsertion) {
+         IAtsInsertion insertion = (IAtsInsertion) atsObject;
+         writer.writeBooleanField("Active", insertion.isActive());
+         if (!identityView) {
+            writer.writeArrayFieldStart("program");
+            for (ArtifactReadable program : artifact.getRelated(AtsRelationTypes.ProgramToInsertion_Program)) {
+               addArtifactIdentity(writer, program);
+            }
+            writer.writeEndArray();
+            writer.writeArrayFieldStart("insertionactivity");
+            for (ArtifactReadable activity : artifact.getRelated(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
+               addArtifactIdentity(writer, activity);
+            }
+            writer.writeEndArray();
+         }
       } else if (atsObject instanceof IAtsProgram) {
          IAtsProgram program = (IAtsProgram) atsObject;
          writer.writeStringField("Namespace", program.getNamespace());
          writer.writeBooleanField("Active", program.isActive());
+         if (!identityView) {
+            writer.writeArrayFieldStart("country");
+            for (ArtifactReadable country : artifact.getRelated(AtsRelationTypes.CountryToProgram_Country)) {
+               addArtifactIdentity(writer, country);
+            }
+            writer.writeEndArray();
+            writer.writeArrayFieldStart("insertion");
+            for (ArtifactReadable insertion : artifact.getRelated(AtsRelationTypes.ProgramToInsertion_Insertion)) {
+               addArtifactIdentity(writer, insertion);
+            }
+            writer.writeEndArray();
+         }
+      } else if (atsObject instanceof IAtsCountry) {
+         IAtsCountry country = (IAtsCountry) atsObject;
+         if (!identityView) {
+            writer.writeArrayFieldStart("programs");
+            Collection<IAtsProgram> programs = atsServer.getProgramService().getPrograms(country);
+            for (IAtsProgram program : programs) {
+               writer.writeStartObject();
+               writer.writeNumberField("uuid", program.getUuid());
+               writer.writeStringField("Name", program.getName());
+               writer.writeBooleanField("active", program.isActive());
+               writer.writeEndObject();
+            }
+            writer.writeEndArray();
+         }
       } else if (atsObject instanceof IAgileTeam) {
          IAgileTeam team = (IAgileTeam) atsObject;
          writer.writeBooleanField("Active", team.isActive());
@@ -192,6 +251,10 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public static Long getUuid(IAtsObject atsObject) {
-      return ((ArtifactReadable) atsObject.getStoreObject()).getUuid();
+      long uuid = atsObject.getUuid();
+      if (uuid <= 0L) {
+         uuid = ((ArtifactReadable) atsObject.getStoreObject()).getUuid();
+      }
+      return uuid;
    }
 }

@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  * @author David W. Miller
  */
 public interface IAtsInsertion extends IAtsConfigObject {
-   // marker interface
+
+   long getProgramUuid();
 
 }

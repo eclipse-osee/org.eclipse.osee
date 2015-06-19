@@ -44,6 +44,11 @@ abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Ar
 	attribute "ats.Actionable"
 }
 
+artifactType "Country" extends "ats.Ats Config Artifact" {
+	uuid  0x44C69E6EBB2D8324
+	attribute "ats.Description"
+}
+
 artifactType "Program" extends "ats.Ats Config Artifact" {
 	uuid  0x0000BA123443210004
 	attribute "ats.Team Definition"
@@ -1295,6 +1300,16 @@ attributeType "ats.SW Enhancement" extends StringAttribute {
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
+}
+
+relationType "Country To Program" {
+	uuid 0x2000033300000169
+	sideAName "Country"
+	sideAArtifactType "Country"
+	sideBName "Program"
+	sideBArtifactType "Program"
+	defaultOrderType Unordered
+	multiplicity ONE_TO_MANY
 }
 
 relationType "Work Package" {

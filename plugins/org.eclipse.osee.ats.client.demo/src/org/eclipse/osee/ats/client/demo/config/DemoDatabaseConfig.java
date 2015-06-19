@@ -10,20 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import org.eclipse.osee.ats.api.country.CountryEndpointApi;
+import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
+import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
+import org.eclipse.osee.ats.api.program.JaxProgram;
+import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -39,7 +49,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DemoDatabaseConfig implements IDbInitializationTask {
@@ -60,9 +70,127 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
       AtsGroup.AtsTempAdmin.getArtifact().persist("Set Joe as Temp Admin");
 
+      AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
+
+      createUsgCountryConfig();
+      createCntryCountryConfig();
+
       // Create Work Packages
       createWorkPackages();
-      AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
+   }
+
+   // configure USG for country, program, insertion, activity and work package
+   private void createUsgCountryConfig() {
+      try {
+         CountryEndpointApi countryEp = AtsClientService.getCountryEp();
+         InsertionEndpointApi insertionEp = AtsClientService.getInsertionEp();
+         InsertionActivityEndpointApi insertionActivityEp = AtsClientService.getInsertionActivityEp();
+
+         // create country
+         createCountry(countryEp, DemoCountry.usg);
+
+         // relate country to programs
+         SkynetTransaction transaction =
+            TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create USG Country Config");
+         Artifact country = ArtifactQuery.getArtifactFromId(DemoCountry.usg.getUuid(), AtsUtilCore.getAtsBranch());
+         Artifact program =
+            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getUuid(), AtsUtilCore.getAtsBranch());
+         country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
+         program.persist(transaction);
+
+         program = ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getUuid(), AtsUtilCore.getAtsBranch());
+         country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
+         program.persist(transaction);
+         country.persist(transaction);
+         transaction.execute();
+
+         // create and relate insertion and insertion activities
+         DemoInsertion.getInsertions();
+         DemoInsertionActivity.getActivities();
+         for (DemoProgram demoProg : DemoCountry.usg.getPrograms()) {
+            createInsertions(insertionEp, insertionActivityEp, demoProg);
+         }
+
+      } catch (Exception ex) {
+         throw new OseeWrappedException("Error creating ATS USG Country Config", ex);
+      }
+   }
+
+   private void createCntryCountryConfig() {
+      try {
+         DemoCountry country = DemoCountry.cntry;
+         CountryEndpointApi countryEp = AtsClientService.getCountryEp();
+         ProgramEndpointApi programEp = AtsClientService.getProgramEp();
+         InsertionEndpointApi insertionEp = AtsClientService.getInsertionEp();
+         InsertionActivityEndpointApi insertionActivityEp = AtsClientService.getInsertionActivityEp();
+
+         // create country
+         createCountry(countryEp, country);
+
+         // create and relate programs
+         DemoInsertion.getInsertions();
+         DemoInsertionActivity.getActivities();
+         for (DemoProgram program : country.getPrograms()) {
+            createProgram(programEp, program);
+            createInsertions(insertionEp, insertionActivityEp, program);
+         }
+      } catch (Exception ex) {
+         throw new OseeWrappedException("Error creating ATS Cntry Country Config", ex);
+      }
+   }
+
+   private void createInsertions(InsertionEndpointApi insertionEp, InsertionActivityEndpointApi insertionActivityEp, DemoProgram demoProg) throws Exception {
+      for (DemoInsertion demoIns : demoProg.getInsertions()) {
+         createInsertion(insertionEp, demoIns);
+
+         // create and relate insertion activities
+         for (DemoInsertionActivity demoInsertionActivity : demoIns.getActivities()) {
+            createInsertionActivity(insertionActivityEp, demoInsertionActivity);
+         }
+      }
+   }
+
+   private JaxInsertionActivity createInsertionActivity(InsertionActivityEndpointApi insertionActivityEp, DemoInsertionActivity insertionActivity) throws Exception {
+      JaxInsertionActivity jaxInsertionActivity = new JaxInsertionActivity();
+      jaxInsertionActivity.setName(insertionActivity.getName());
+      jaxInsertionActivity.setUuid(insertionActivity.getUuid());
+      jaxInsertionActivity.setActive(insertionActivity.isActive());
+      jaxInsertionActivity.setDescription(insertionActivity.getDescription());
+      jaxInsertionActivity.setInsertionUuid(insertionActivity.getInsertionUuid());
+      insertionActivityEp.create(jaxInsertionActivity);
+      return jaxInsertionActivity;
+   }
+
+   private JaxInsertion createInsertion(InsertionEndpointApi insertionEp, DemoInsertion insertion) throws Exception {
+      JaxInsertion jaxInsertion = new JaxInsertion();
+      jaxInsertion.setName(insertion.getName());
+      jaxInsertion.setUuid(insertion.getUuid());
+      jaxInsertion.setActive(insertion.isActive());
+      jaxInsertion.setDescription(insertion.getDescription());
+      jaxInsertion.setProgramUuid(insertion.getProgramUuid());
+      insertionEp.create(jaxInsertion);
+      return jaxInsertion;
+   }
+
+   private JaxProgram createProgram(ProgramEndpointApi programEp, DemoProgram program) throws Exception {
+      JaxProgram jaxProgram = new JaxProgram();
+      jaxProgram.setName(program.getName());
+      jaxProgram.setUuid(program.getUuid());
+      jaxProgram.setActive(program.isActive());
+      jaxProgram.setDescription(program.getDescription());
+      jaxProgram.setCountryUuid(program.getCountryUuid());
+      programEp.create(jaxProgram);
+      return jaxProgram;
+   }
+
+   private JaxCountry createCountry(CountryEndpointApi countryEp, DemoCountry country) throws Exception {
+      JaxCountry jaxCountry = new JaxCountry();
+      jaxCountry.setName(country.getName());
+      jaxCountry.setUuid(country.getUuid());
+      jaxCountry.setActive(country.isActive());
+      jaxCountry.setDescription(country.getDescription());
+      countryEp.create(jaxCountry);
+      return jaxCountry;
    }
 
    private void createWorkPackages() throws OseeCoreException {
@@ -73,15 +201,18 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
       workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      relateInsertionActivity(workPkg1, DemoInsertionActivity.commPage);
       workPkg1.persist(transaction);
 
       Artifact workPkg2 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_02, "ASDHFA443");
       workPkg2.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      relateInsertionActivity(workPkg2, DemoInsertionActivity.commPage);
       workPkg2.persist(transaction);
 
       Artifact workPkg3 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_03, "ASDHFA443");
       workPkg3.setSoleAttributeValue(AtsAttributeTypes.Active, false);
       workPkg3.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
+      relateInsertionActivity(workPkg3, DemoInsertionActivity.commButton);
       workPkg3.persist(transaction);
 
       Artifact testTeamArt =
@@ -89,18 +220,26 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
       workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      relateInsertionActivity(workPkg11, DemoInsertionActivity.commPage);
       workPkg11.persist(transaction);
 
       Artifact workPkg21 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0B, "HAKSHD3");
       workPkg21.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      relateInsertionActivity(workPkg21, DemoInsertionActivity.commPage);
       workPkg21.persist(transaction);
 
       Artifact workPkg31 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C, "EHA4DS");
       workPkg31.setSoleAttributeValue(AtsAttributeTypes.Active, false);
       workPkg31.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);
+      relateInsertionActivity(workPkg31, DemoInsertionActivity.commButton);
       workPkg31.persist(transaction);
 
       transaction.execute();
+   }
+
+   private void relateInsertionActivity(Artifact workPackageArt, DemoInsertionActivity insertionActivity) {
+      Artifact insertionActivityArt = AtsClientService.get().getArtifact(insertionActivity.getUuid());
+      insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 
    private Artifact createWorkPackage(IArtifactToken workPackageToken, String activityId) throws OseeCoreException {
@@ -132,7 +271,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          Requirements.HARDWARE_REQUIREMENTS,
          "Verification Tests",
          "Validation Tests",
-         "Integration Tests"}) {
+      "Integration Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 

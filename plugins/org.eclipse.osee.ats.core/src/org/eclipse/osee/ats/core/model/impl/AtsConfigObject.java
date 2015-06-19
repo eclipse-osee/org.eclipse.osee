@@ -132,4 +132,8 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return artifact.getUuid();
    }
 
+   @Override
+   public String getDescription() {
+      return atsServices.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+   }
 }

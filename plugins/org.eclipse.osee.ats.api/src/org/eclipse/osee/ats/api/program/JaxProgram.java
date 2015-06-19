@@ -8,15 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.insertion;
+package org.eclipse.osee.ats.api.program;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
+import org.eclipse.osee.ats.api.config.JaxNewAtsConfigObject;
 
 /**
- * @author David W. Miller
+ * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxNewInsertion extends AbstractJaxNewAgileTeamObject {
-   // Nothing to implement
+public class JaxProgram extends JaxNewAtsConfigObject {
+
+   long countryUuid;
+
+   public long getCountryUuid() {
+      return countryUuid;
+   }
+
+   public void setCountryUuid(long countryUuid) {
+      this.countryUuid = countryUuid;
+   }
 }

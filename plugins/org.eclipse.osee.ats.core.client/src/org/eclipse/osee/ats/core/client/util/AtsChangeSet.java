@@ -296,4 +296,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       add(artifact);
    }
+   
+      @Override
+   public void deleteArtifact(ArtifactId artifact) {
+      getArtifact(artifact).delete();
+      add(getArtifact(artifact));
+   }
 }

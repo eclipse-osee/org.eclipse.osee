@@ -87,11 +87,11 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * {@link ArtifactTest}
- * 
+ *
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends FullyNamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact, ArtifactId {
+public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IAdaptable, IBasicGuidArtifact, ArtifactId {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -128,7 +128,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    /**
     * A historical artifact always corresponds to a fixed revision of an artifact
-    * 
+    *
     * @return whether this artifact represents a fixed revision
     */
    public final boolean isHistorical() {
@@ -500,7 +500,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    * 
+    *
     * @return attributes All attributes of the specified type name including deleted and artifact deleted
     */
    public final List<Attribute<?>> getAllAttributesIncludingHardDeleted(IAttributeType attributeType) throws OseeCoreException {
@@ -529,8 +529,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     */
    @Deprecated
    public final <T> List<Attribute<T>> getAttributes(IAttributeType attributeType) throws OseeCoreException {
-      return Collections.castAll(getAttributesByModificationType(attributeType,
-         ModificationType.getAllNotHardDeletedTypes()));
+      return Collections.castAll(
+         getAttributesByModificationType(attributeType, ModificationType.getAllNotHardDeletedTypes()));
    }
 
    private List<Attribute<?>> getAttributesByModificationType(Set<ModificationType> allowedModTypes) throws OseeCoreException {
@@ -600,8 +600,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    private <T> Attribute<T> getOrCreateSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       if (!isAttributeTypeValid(attributeType)) {
-         throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
-            attributeType, getArtifactTypeName());
+         throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]", attributeType,
+            getArtifactTypeName());
       }
       Attribute<T> attribute = getSoleAttribute(attributeType);
       if (attribute == null) {
@@ -647,7 +647,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * defaultReturnValue.<br>
     * <br>
     * Used for display purposes where toString() of attribute is to be displayed.
-    * 
+    *
     * @param defaultReturnValue return value if attribute instance does not exist
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
@@ -682,7 +682,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * defaultReturnValue.<br>
     * <br>
     * Used for purposes where attribute value of specified type is desired.
-    * 
+    *
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
    public final <T> T getSoleAttributeValue(IAttributeType attributeType, T defaultReturnValue) throws OseeCoreException {
@@ -690,9 +690,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       if (soleAttributes.size() == 1) {
          T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
-            OseeLog.log(
-               Activator.class,
-               Level.SEVERE,
+            OseeLog.log(Activator.class, Level.SEVERE,
                "Attribute \"" + attributeType + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
@@ -1169,7 +1167,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * silently you are provided a transaction.
     * <p>
     * Example:
-    * 
+    *
     * <pre>
     * ...
     * Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, ARTIFACT_BRANCH);
@@ -1181,7 +1179,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * <b>transaction.execute();</b>
     * ...
     * </pre>
-    * 
     * </p>
     */
    public final void persist(SkynetTransaction managedTransaction) throws OseeCoreException {
@@ -1192,7 +1189,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * Starting from this artifact, walks down the child hierarchy based on the list of child names provided and returns
     * the child of the last name provided. ArtifactDoesNotExist exception is thrown ff any child along the path does not
     * exist.
-    * 
+    *
     * @return child at the leaf (bottom) of the specified hierarchy.
     */
    public final Artifact getDescendant(String... names) throws OseeCoreException {
@@ -1436,7 +1433,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    private void copyAttributes(Artifact artifact, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (!excludeAttributeTypes.contains(attribute.getAttributeType()) && isCopyAllowed(attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
+         if (!excludeAttributeTypes.contains(attribute.getAttributeType()) && isCopyAllowed(
+            attribute) && artifact.isAttributeTypeValid(attribute.getAttributeType())) {
             artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
       }
@@ -1449,7 +1447,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    /**
     * An artifact reflected about its own branch returns itself. Otherwise a new artifact is introduced on the
     * destinationBranch
-    * 
+    *
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     */
    public final Artifact reflect(IOseeBranch destinationBranch) throws OseeCoreException {
@@ -1457,9 +1455,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
-      Artifact shallowArt =
-         ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(), artifactType, gammaId,
-            destinationBranch, modType);
+      Artifact shallowArt = ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(),
+         artifactType, gammaId, destinationBranch, modType);
       return shallowArt;
    }
 
@@ -1523,22 +1520,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    private static final Pattern safeNamePattern = Pattern.compile("[^A-Za-z0-9 ]");
-   private static final String[] NUMBER = new String[] {
-      "Zero",
-      "One",
-      "Two",
-      "Three",
-      "Four",
-      "Five",
-      "Six",
-      "Seven",
-      "Eight",
-      "Nine"};
+   private static final String[] NUMBER =
+      new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
 
    /**
     * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element
     * name
-    * 
+    *
     * @return artifact name in a form that is valid as an XML element
     */
    public final String getSafeName() {
@@ -1574,7 +1562,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     * Note: Artifact class does not implement the hashCode, but instead uses the one implemented by Identity. It can not
     * use the branch uuid due to the need for IArtifactTokens to match Artifact instances. In addition, the event system
     * requires that the DefaultBasicGuidArtifact and Artifact hashcode matches.
-    * 
+    *
     * @param obj the reference object with which to compare.
     * @return <code>true</code> if this artifact has the same GUID and branch <code>false</code> otherwise.
     */
@@ -1748,6 +1736,16 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    @Override
    public long getUuid() {
       return getArtId();
+   }
+
+   public Artifact getRelatedArtifactOrNull(IRelationTypeSide relationSide) {
+      Artifact artifact = null;
+      try {
+         artifact = getRelatedArtifact(relationSide);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return artifact;
    }
 
 }

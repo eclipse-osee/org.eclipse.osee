@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -77,5 +78,9 @@ public interface IAtsChangeSet {
    public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects);
 
    <T> void setAttribute(Object workItem, int attributeId, T value);
+   
+   ArtifactId createArtifact(IArtifactToken token);
+
+   void deleteArtifact(ArtifactId artifact);
 
 }

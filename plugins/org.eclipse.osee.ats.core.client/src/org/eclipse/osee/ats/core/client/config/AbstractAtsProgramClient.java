@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.config;
 
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.AbstractAtsProgram;
@@ -94,6 +95,16 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    @Override
    public String getDescription() {
       return artifact.getSoleAttributeValue(AtsAttributeTypes.Description, "");
+   }
+
+   @Override
+   public long getCountryUuid() {
+      long countryUuid = 0L;
+      Artifact countryArt = artifact.getRelatedArtifactOrNull(AtsRelationTypes.CountryToProgram_Country);
+      if (countryArt != null) {
+         countryUuid = countryArt.getUuid();
+      }
+      return countryUuid;
    }
 
 }

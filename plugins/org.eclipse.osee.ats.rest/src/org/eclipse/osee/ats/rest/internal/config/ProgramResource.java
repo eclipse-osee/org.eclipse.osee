@@ -10,49 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import java.net.URI;
-import java.util.LinkedList;
-import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.config.AbstractConfigResource;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
- * @author Donald G. Dunne
- * @author David W. Miller
+ * Donald G. Dunne
  */
 @Path("program")
 public class ProgramResource extends AbstractConfigResource {
-   @Context
-   private UriInfo uriInfo;
-
-   public void setUriInfo(UriInfo uriInfo) {
-      this.uriInfo = uriInfo;
-   }
 
    public ProgramResource(IAtsServer atsServer) {
       super(AtsArtifactTypes.Program, atsServer);

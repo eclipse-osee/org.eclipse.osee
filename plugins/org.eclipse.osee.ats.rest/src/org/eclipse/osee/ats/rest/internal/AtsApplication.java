@@ -17,8 +17,16 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
+import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
+import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.config.CountryResource;
+import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.config.InsertionActivityResource;
+import org.eclipse.osee.ats.rest.internal.config.InsertionEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.config.InsertionResource;
+import org.eclipse.osee.ats.rest.internal.config.ProgramEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
@@ -71,14 +79,15 @@ public class AtsApplication extends Application {
       ConvertCreateUpdateAtsConfig conversion = new ConvertCreateUpdateAtsConfig(atsServer);
       atsServer.addAtsDatabaseConversion(conversion);
 
-      // Agile resources
-      singletons.add(new AgileEndpointImpl(atsServer));
-
-      // Config resources
+      // Resources
       singletons.add(new VersionResource(atsServer));
       singletons.add(new TeamResource(atsServer));
-      singletons.add(new ProgramResource(atsServer));
       singletons.add(new ActionableItemResource(atsServer));
+
+      singletons.add(new CountryResource(atsServer));
+      singletons.add(new ProgramResource(atsServer));
+      singletons.add(new InsertionResource(atsServer));
+      singletons.add(new InsertionActivityResource(atsServer));
 
       singletons.add(new ActionResource(atsServer, orcsApi));
       singletons.add(new StateResource(atsServer));
@@ -86,8 +95,16 @@ public class AtsApplication extends Application {
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
 
+      // Endpoints
+      singletons.add(new AgileEndpointImpl(atsServer));
       singletons.add(new AtsEndpointImpl(atsServer, logger, registry, cpaRegistry));
+      singletons.add(new CountryEndpointImpl(atsServer));
+      singletons.add(new ProgramEndpointImpl(atsServer));
+      singletons.add(new InsertionEndpointImpl(atsServer));
+      singletons.add(new InsertionActivityEndpointImpl(atsServer));
+      singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, logger));
 
+      // UIs
       singletons.add(new ActionUiResource(atsServer, logger));
    }
 

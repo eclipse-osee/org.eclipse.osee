@@ -11,12 +11,22 @@
 package org.eclipse.osee.ats.api.insertion;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
  * @author David W. Miller
  */
 @XmlRootElement
-public class JaxNewInsertionActivity extends AbstractJaxNewAgileTeamObject {
-   // Nothing to implement
+public class JaxInsertion extends JaxAtsObject {
+
+   private long programUuid;
+
+   public long getProgramUuid() {
+      return programUuid;
+   }
+
+   public void setProgramUuid(long programUuid) {
+      this.programUuid = programUuid;
+   }
+
 }

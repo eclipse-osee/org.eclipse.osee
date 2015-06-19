@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
@@ -32,7 +31,7 @@ import org.junit.Test;
 
 /**
  * Test unit for AgileEndpointImpl
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AgileEndpointTest {
@@ -161,7 +160,6 @@ public class AgileEndpointTest {
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
       backlog.setName("My Backlog");
       backlog.setTeamUuid(teamUuid);
-      String guid = GUID.create();
       Long uuid = Lib.generateArtifactIdAsInt();
       backlog.setUuid(uuid);
 

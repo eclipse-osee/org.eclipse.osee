@@ -14,16 +14,21 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
+import org.eclipse.osee.ats.core.config.Country;
+import org.eclipse.osee.ats.core.config.Program;
+import org.eclipse.osee.ats.core.insertion.Insertion;
+import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsChangeSet;
@@ -73,6 +78,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
                configObject = getInsertion(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
                configObject = getInsertionActivity(artRead);
+            } else if (artRead.isOfType(AtsArtifactTypes.Country)) {
+               configObject = getCountry(artRead);
             }
          }
       } catch (OseeCoreException ex) {
@@ -119,7 +126,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsProgram getProgram(ArtifactId artifact) {
-      IAtsProgram program = null;
+      Program program = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Program)) {
@@ -155,11 +162,16 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertion getInsertion(ArtifactId artifact) {
-      IAtsInsertion insertion = null;
+      Insertion insertion = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.Insertion)) {
-            insertion = new Insertion(logger, atsServer, artRead);
+            insertion = new Insertion(logger, atsServer.getServices(), artRead);
+            ArtifactReadable programArt =
+               ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.ProgramToInsertion_Program).getOneOrNull();
+            if (programArt != null) {
+               insertion.setProgramUuid(programArt.getUuid());
+            }
          } else {
             throw new OseeCoreException("Requested uuid not Insertion");
          }
@@ -169,11 +181,16 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(ArtifactId artifact) {
-      IAtsInsertionActivity insertionActivity = null;
+      InsertionActivity insertionActivity = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
-            insertionActivity = new InsertionActivity(logger, atsServer, artRead);
+            insertionActivity = new InsertionActivity(logger, atsServer.getServices(), artRead);
+            ArtifactReadable insertionArt =
+               ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
+            if (insertionArt != null) {
+               insertionActivity.setInsertionUuid(insertionArt.getUuid());
+            }
          } else {
             throw new OseeCoreException("Requested uuid not Insertion Activity");
          }
@@ -182,7 +199,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertion createInsertion(ArtifactId programArtifact, JaxNewInsertion newInsertion) {
+   public IAtsInsertion createInsertion(ArtifactId programArtifact, JaxInsertion newInsertion) {
 
       Long uuid = newInsertion.getUuid();
       if (uuid == null || uuid <= 0) {
@@ -201,7 +218,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertion updateInsertion(JaxNewInsertion updatedInsertion) {
+   public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
       AtsChangeSet changes =
          (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
             atsServer.getUserService().getCurrentUser());
@@ -217,7 +234,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxNewInsertionActivity newActivity) {
+   public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxInsertionActivity newActivity) {
       Long uuid = newActivity.getUuid();
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
@@ -235,7 +252,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionActivity updateInsertionActivity(JaxNewInsertionActivity updatedActivity) {
+   public IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity updatedActivity) {
       AtsChangeSet changes =
          (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
             atsServer.getUserService().getCurrentUser());
@@ -274,4 +291,24 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public boolean isAtsConfigArtifact(ArtifactId artifact) {
       return getAtsConfigArtifactTypes().contains(((ArtifactReadable) artifact).getArtifactType());
    }
+
+   @Override
+   public IAtsCountry getCountry(ArtifactId artifact) {
+      IAtsCountry country = null;
+      if (artifact instanceof ArtifactReadable) {
+         ArtifactReadable artRead = (ArtifactReadable) artifact;
+         if (artRead.isOfType(AtsArtifactTypes.Country)) {
+            country = new Country(logger, atsServer.getServices(), artRead);
+         } else {
+            throw new OseeCoreException("Requested uuid not Country");
+         }
+      }
+      return country;
+   }
+
+   @Override
+   public IAtsCountry getCountry(long uuid) {
+      return getCountry(atsServer.getArtifactByUuid(uuid));
+   }
+
 }

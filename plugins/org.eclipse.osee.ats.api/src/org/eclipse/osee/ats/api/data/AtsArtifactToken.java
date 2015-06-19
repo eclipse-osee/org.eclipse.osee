@@ -29,6 +29,10 @@ public final class AtsArtifactToken {
       "Teams", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken TopActionableItem = TokenFactory.createArtifactToken(122894, "AAABER+37QEA8O7WSQaqJQ",
       "Actionable Items", AtsArtifactTypes.ActionableItem);
+   public static IArtifactToken CountryFolder = TokenFactory.createArtifactToken(7968155, "AYi8V8esln8KJkjesqAA",
+      "Countries", CoreArtifactTypes.Folder);
+   public static IArtifactToken ProgramFolder = TokenFactory.createArtifactToken(90442279, "AYi8V9LSJgjD2734BqQA",
+      "Programs", CoreArtifactTypes.Folder);
    public static IArtifactToken ConfigFolder = TokenFactory.createArtifactToken(113036, "AAABF4n18eYAc1ruQSSWdg",
       "Config", CoreArtifactTypes.Folder);
    public static IArtifactToken ConfigsFolder = TokenFactory.createArtifactToken(5086714, "BEmf1DEFnwkUqC9o3hwA",

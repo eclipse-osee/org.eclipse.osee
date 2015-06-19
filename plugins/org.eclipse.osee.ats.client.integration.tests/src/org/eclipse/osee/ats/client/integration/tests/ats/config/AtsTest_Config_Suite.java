@@ -22,7 +22,10 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    TeamResourceTest.class,
    VersionResourceTest.class,
+   CountryResourceTest.class,
    ProgramResourceTest.class,
+   InsertionResourceTest.class,
+   InsertionActivityResourceTest.class,
    ActionableItemResourceTest.class,
    AtsTest_Demo_Copy_Suite.class,
    AtsBranchConfigurationTest.class,

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.program.internal;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -56,6 +58,16 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgramByGuid(String guid) {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+   @Override
+   public IAtsCountry getCountry(IAtsProgram atsProgram) {
+      throw new UnsupportedOperationException("Not implemented yet");
+   }
+
+   @Override
+   public List<IAtsProgram> getPrograms(IAtsCountry atsCountry) {
       throw new UnsupportedOperationException("Not implemented yet");
    }
 

@@ -55,6 +55,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    ArtifactReadable getArtifactByGuid(String guid);
 
+   @Override
    IAtsStoreService getStoreService();
 
    @Override

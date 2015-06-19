@@ -122,6 +122,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
@@ -167,6 +168,7 @@ public class AtsClientImpl implements IAtsClient {
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private AtsStoreService atsStoreService;
    private TeamWorkflowProviders teamWorkflowProvidersLazy;
+   private Log logger;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -174,6 +176,10 @@ public class AtsClientImpl implements IAtsClient {
 
    public void setAtsWorkDefinitionService(IAtsWorkDefinitionService workDefService) {
       this.workDefService = workDefService;
+   }
+
+   public void setLogger(Log logger) {
+      this.logger = logger;
    }
 
    public void start() throws OseeCoreException {
@@ -195,7 +201,7 @@ public class AtsClientImpl implements IAtsClient {
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
       earnedValueService = new AtsEarnedValueImpl();
 
-      configItemFactory = new ConfigItemFactory(this);
+      configItemFactory = new ConfigItemFactory(logger, this);
       AtsVersionCache versionCache = new AtsVersionCache(configCacheProvider);
       versionService = new AtsVersionServiceImpl(this, configCacheProvider, versionCache);
 
@@ -559,11 +565,11 @@ public class AtsClientImpl implements IAtsClient {
             AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService(),
                new IAtsEarnedValueServiceProvider() {
 
-               @Override
-               public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
-                  return fEarnedValueService;
-               }
-            });
+                  @Override
+                  public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+                     return fEarnedValueService;
+                  }
+               });
       }
       return columnUtilities;
    }
@@ -772,6 +778,11 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public Artifact getArtifact(IArtifactToken token) throws OseeCoreException {
       return getArtifact(token.getUuid());
+   }
+
+   @Override
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+      return getConfig().getSoleByUuid(uuid, clazz);
    }
 
 }
