@@ -53,8 +53,9 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
 
    @Override
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException {
-      Collection<Object> versions =
-         services.getRelationResolver().getRelated(team, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+      Collection<IAtsVersion> versions =
+         services.getRelationResolver().getRelated(team, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+            IAtsVersion.class);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {
          if (versions.size() > 1) {
@@ -123,14 +124,8 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException {
-      IAtsTeamDefinition team = null;
-      Object teamArt =
-         services.getRelationResolver().getRelatedOrNull(version,
-            AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
-      if (teamArt != null) {
-         team = services.getConfigItemFactory().getTeamDef(teamArt);
-      }
-      return team;
+      return services.getRelationResolver().getRelatedOrNull(version,
+         AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, IAtsTeamDefinition.class);
    }
 
    @Override
@@ -146,9 +141,9 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
    @Override
    public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) throws OseeCoreException {
       List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<IAtsTeamWorkflow>();
-      for (Object teamArt : services.getRelationResolver().getRelated(verArt,
-         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
-         teamWorkflows.add(services.getWorkItemFactory().getTeamWf(teamArt));
+      for (IAtsTeamWorkflow teamWf : services.getRelationResolver().getRelated(verArt,
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
+         teamWorkflows.add(services.getWorkItemFactory().getTeamWf(teamWf));
       }
       return teamWorkflows;
    }

@@ -80,6 +80,7 @@ import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -565,6 +566,15 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IAtsQueryService getQueryService() {
       return atsQueryService;
+   }
+
+   @Override
+   public ArtifactReadable getArtifact(IArtifactToken token) {
+      return getArtifact(token.getUuid());
+   }
+
+   private ArtifactReadable getArtifact(long uuid) {
+      return getArtifactByUuid(uuid);
    }
 
 }

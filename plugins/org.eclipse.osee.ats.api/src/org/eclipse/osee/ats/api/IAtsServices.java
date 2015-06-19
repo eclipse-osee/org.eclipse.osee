@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -66,5 +67,7 @@ public interface IAtsServices {
    Object getArtifactById(String id);
 
    IAtsConfigItemFactory getConfigItemFactory();
+
+   ArtifactId getArtifact(IArtifactToken token);
 
 }

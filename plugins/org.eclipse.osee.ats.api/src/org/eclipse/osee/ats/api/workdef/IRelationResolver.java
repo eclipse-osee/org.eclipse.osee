@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 
 /**
@@ -18,10 +20,16 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
  */
 public interface IRelationResolver {
 
-   Collection<Object> getRelated(Object object, IRelationTypeSide relationType);
+   Collection<ArtifactId> getRelated(ArtifactId artifact, IRelationTypeSide relationType);
 
-   boolean areRelated(Object object1, IRelationTypeSide relationType, Object object2);
+   <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
-   Object getRelatedOrNull(Object object, IRelationTypeSide relationType);
+   boolean areRelated(ArtifactId artifact1, IRelationTypeSide relationType, ArtifactId artifact2);
+
+   boolean areRelated(IAtsObject atsObject1, IRelationTypeSide relationType, IAtsObject atsObject2);
+
+   ArtifactId getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType);
+
+   <T> T getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
 }

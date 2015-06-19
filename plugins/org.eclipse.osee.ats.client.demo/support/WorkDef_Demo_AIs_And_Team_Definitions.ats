@@ -36,16 +36,13 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Kay Jason"
 			workDefinition "WorkDef_Team_Default"
 			version "CIS_Bld_1" {
-				staticId "cis.teamDefHoldingVersions"
 				released True
 				baselineBranchUuid "4"
 			}
 			version "CIS_Bld_2" {
-				staticId "cis.teamDefHoldingVersions"
 				next True
 			}
 			version "CIS_Bld_3" {
-				staticId "cis.teamDefHoldingVersions"
 			}
 			children {
 

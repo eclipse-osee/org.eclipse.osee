@@ -258,8 +258,9 @@ public class WordUpdateArtifact {
          IAtsChangeSet changes =
             atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
                atsServer.getUserService().getUserById(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId)));
+         IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
          teamWorkflow =
-            atsServer.getActionFactory().createTeamWorkflow(atsServer.getActionFactory().getAction(teamWf), teamDef,
+            atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
                java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
 
                   @Override

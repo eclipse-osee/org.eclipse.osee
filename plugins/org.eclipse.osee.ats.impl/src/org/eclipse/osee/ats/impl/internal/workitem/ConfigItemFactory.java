@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.util.AtsChangeSet;
@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Donald G. Dunne
  * @author David W. Miller
  */
-public class ConfigItemFactory implements IAtsConfigItemFactory {
+public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    private final Log logger;
    private final IAtsServer atsServer;
@@ -268,5 +268,10 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
          atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), toDelete, comment);
       transaction.deleteArtifact(toDelete);
       transaction.commit();
+   }
+
+   @Override
+   public boolean isAtsConfigArtifact(ArtifactId artifact) {
+      return getAtsConfigArtifactTypes().contains(((ArtifactReadable) artifact).getArtifactType());
    }
 }

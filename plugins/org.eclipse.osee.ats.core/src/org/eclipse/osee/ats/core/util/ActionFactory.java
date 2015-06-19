@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -300,7 +301,8 @@ public class ActionFactory implements IAtsActionFactory {
    public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       // Auto-add this team artifact to configured goals
       IRelationResolver relationResolver = atsServices.getRelationResolver();
-      for (Object goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+      for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
+         IAtsGoal.class)) {
          if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
             changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
             changes.add(goal);
@@ -309,7 +311,8 @@ public class ActionFactory implements IAtsActionFactory {
 
       // Auto-add this actionable item to configured goals
       for (IAtsActionableItem aia : actionableItems) {
-         for (Object goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal)) {
+         for (IAtsGoal goal : relationResolver.getRelated(aia, AtsRelationTypes.AutoAddActionToGoal_Goal,
+            IAtsGoal.class)) {
             if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
                changes.relate(goal, AtsRelationTypes.Goal_Member, teamWf);
                changes.add(goal);
@@ -356,9 +359,9 @@ public class ActionFactory implements IAtsActionFactory {
    @Override
    public Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf) {
       List<IAtsTeamWorkflow> teams = new LinkedList<IAtsTeamWorkflow>();
-      Object action = getAction(teamWf);
-      for (Object teamArt : atsServices.getRelationResolver().getRelated(action,
-         AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+      IAtsAction action = getAction(teamWf);
+      for (IAtsTeamWorkflow teamArt : atsServices.getRelationResolver().getRelated(action,
+         AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
          if (!teamArt.equals(teamWf)) {
             teams.add(atsServices.getWorkItemFactory().getTeamWf(teamArt));
          }
@@ -368,12 +371,8 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public IAtsAction getAction(IAtsTeamWorkflow teamWf) {
-      Object actionArt =
-         atsServices.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action);
-      if (actionArt != null) {
-         return atsServices.getWorkItemFactory().getAction(actionArt);
-      }
-      return null;
+      return atsServices.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action,
+         IAtsAction.class);
    }
 
 }

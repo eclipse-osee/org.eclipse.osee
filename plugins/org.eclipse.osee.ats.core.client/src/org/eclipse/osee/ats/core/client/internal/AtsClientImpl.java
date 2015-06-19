@@ -104,6 +104,7 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -214,7 +215,7 @@ public class AtsClientImpl implements IAtsClient {
       teamWorkflowProvidersLazy = new TeamWorkflowProviders();
       workItemService = new AtsWorkItemServiceImpl(workItemArtifactProvider, teamWorkflowProvidersLazy);
       attributeResolverService = new AtsAttributeResolverServiceImpl();
-      relationResolver = new AtsRelationResolverServiceImpl();
+      relationResolver = new AtsRelationResolverServiceImpl(this);
 
       workDefAdmin =
          new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService,
@@ -557,11 +558,11 @@ public class AtsClientImpl implements IAtsClient {
             AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService(),
                new IAtsEarnedValueServiceProvider() {
 
-                  @Override
-                  public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
-                     return fEarnedValueService;
-                  }
-               });
+               @Override
+               public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
+                  return fEarnedValueService;
+               }
+            });
       }
       return columnUtilities;
    }
@@ -742,6 +743,11 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public TeamWorkflowProviders getTeamWorkflowProviders() {
       return teamWorkflowProvidersLazy;
+   }
+
+   @Override
+   public Artifact getArtifact(IArtifactToken token) throws OseeCoreException {
+      return getArtifact(token.getUuid());
    }
 
 }

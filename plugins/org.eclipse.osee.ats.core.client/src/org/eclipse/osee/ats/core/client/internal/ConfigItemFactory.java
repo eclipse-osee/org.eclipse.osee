@@ -20,13 +20,13 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.agile.AgileFeatureGroup;
 import org.eclipse.osee.ats.core.client.agile.AgileTeam;
 import org.eclipse.osee.ats.core.client.program.internal.Program;
+import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class ConfigItemFactory implements IAtsConfigItemFactory {
+public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    private final IAtsClient atsClient;
 
@@ -43,12 +43,25 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException {
+   public IAtsConfigObject getConfigObject(Object art) throws OseeCoreException {
       IAtsConfigObject configObject = null;
-      if (artifact instanceof IAtsConfigObject) {
-         configObject = (IAtsConfigObject) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Program)) {
-         return new Program(atsClient, (Artifact) artifact);
+      if (art instanceof IAtsConfigObject) {
+         configObject = (IAtsConfigObject) art;
+      } else if (art instanceof Artifact) {
+         Artifact artifact = (Artifact) art;
+         if (artifact.isOfType(AtsArtifactTypes.Program)) {
+            configObject = getProgram(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.Version)) {
+            configObject = getVersion(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
+            configObject = getTeamDef(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+            configObject = getActionableItem(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileTeam)) {
+            configObject = getAgileTeam(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+            configObject = getAgileFeatureGroup(artifact);
+         }
       }
       return configObject;
    }
@@ -158,4 +171,10 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    public void deleteInsertionActivity(ArtifactId artifact) {
       throw new UnsupportedOperationException("deleteInsertionActivity not implemented on client");
    }
+
+   @Override
+   public boolean isAtsConfigArtifact(ArtifactId artifact) {
+      return getAtsConfigArtifactTypes().contains(((Artifact) artifact).getArtifactType());
+   }
+
 }

@@ -80,13 +80,13 @@ public class SearchWorkPackageOperationTest {
 
       // Test Work Packages configured by AI
       addTest(data, "no work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), false, Active.Both, EMPYT_RESULTS);
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), false, Active.Both, EMPYT_RESULTS);
       addTest(data, "3 work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.Both, Arrays.asList(WP_0A, WP_0B, WP_0C));
       addTest(data, "2 active work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.Active, Arrays.asList(WP_0A, WP_0B));
       addTest(data, "1 in-active work packages should be returned", new ArrayList<Long>(), false,
-         Arrays.asList(DemoArtifactToken.SAW_SW_AI.getUuid()), true, Active.InActive, Arrays.asList(WP_0C));
+         Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getUuid()), true, Active.InActive, Arrays.asList(WP_0C));
 
       // Test configured by both
       addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getUuid()),

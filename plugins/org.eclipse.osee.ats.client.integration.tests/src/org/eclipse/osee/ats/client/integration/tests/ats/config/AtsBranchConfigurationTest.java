@@ -65,7 +65,7 @@ import org.junit.Before;
 
 /**
  * Run from the ATS Navigator after the DB is configured for either ATS - Dev or Demo
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsBranchConfigurationTest {
@@ -371,6 +371,9 @@ public class AtsBranchConfigurationTest {
             AtsClientService.get().getConfig().invalidate(
                AtsClientService.get().getConfig().getSoleByUuid(childArt.getUuid(), IAtsActionableItem.class));
          }
+
+         aiaArt.deleteAndPersist(transaction, false);
+
          AtsClientService.get().getConfig().invalidate(
             AtsClientService.get().getConfig().getSoleByUuid(aiaArt.getUuid(), IAtsActionableItem.class));
          transaction.execute();
