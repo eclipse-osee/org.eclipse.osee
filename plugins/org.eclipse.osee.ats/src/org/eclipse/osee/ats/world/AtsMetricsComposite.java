@@ -258,8 +258,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      XBarGraphTable table = new XBarGraphTable("Overview", "", "", lines);
-      table.setHeaderVisible(false);
+      XBarGraphTable table = new XBarGraphTable("Overview", "Item", "Value", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);

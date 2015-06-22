@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.agile.SprintMemberProvider;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -619,6 +620,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
 
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() {
+      if (awa.isOfType(AtsArtifactTypes.Goal)) {
+         return ((GoalArtifact) awa).getMembers();
+      }
       return Arrays.asList(awa);
    }
 

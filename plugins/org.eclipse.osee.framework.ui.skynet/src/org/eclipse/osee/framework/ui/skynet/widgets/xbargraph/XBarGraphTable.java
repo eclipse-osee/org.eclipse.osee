@@ -69,9 +69,11 @@ public class XBarGraphTable extends XButtonCommon {
       TableColumn column1 = new TableColumn(table, SWT.NONE);
       column1.setText(itemHeader);
       column1.setWidth(300);
+      column1.setResizable(true);
       final TableColumn column2 = new TableColumn(table, SWT.NONE);
       column2.setText(percentHeader);
-      column2.setWidth(500);
+      column2.setWidth(600);
+      column2.setResizable(true);
       for (XBarGraphLine line : lines) {
          TableItem item = new TableItem(table, SWT.NONE);
          item.setText(line.getName());

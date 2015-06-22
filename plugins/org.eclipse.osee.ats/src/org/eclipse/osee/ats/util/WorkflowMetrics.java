@@ -56,6 +56,7 @@ public class WorkflowMetrics {
    Set<Artifact> actionArts = new HashSet<Artifact>();
    Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
    Set<AbstractReviewArtifact> reviewArts = new HashSet<AbstractReviewArtifact>();
+   Set<GoalArtifact> goalArts = new HashSet<GoalArtifact>();
    Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
    Set<IAtsUser> assignees = new HashSet<IAtsUser>();
    Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<IAtsUser>();
@@ -73,25 +74,17 @@ public class WorkflowMetrics {
       if (artifacts.isEmpty()) {
          return;
       }
-      Set<Artifact> resolvedArts = new HashSet<Artifact>(artifacts);
       for (Artifact art : artifacts) {
-         if (art.isOfType(AtsArtifactTypes.Goal)) {
-            resolvedArts.addAll(((GoalArtifact) art).getMembers());
-         }
-      }
-
-      for (Artifact art : resolvedArts) {
-         if (art.isOfType(AtsArtifactTypes.Action)) {
-            actionArts.add(art);
-         }
-      }
-      for (Artifact art : resolvedArts) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teamArts.add((TeamWorkFlowArtifact) art);
          } else if (art.isOfType(AtsArtifactTypes.Task)) {
             taskArts.add((TaskArtifact) art);
-         } else if (art instanceof AbstractReviewArtifact) {
+         } else if (art.isOfType(AtsArtifactTypes.ReviewArtifact)) {
             reviewArts.add((AbstractReviewArtifact) art);
+         } else if (art.isOfType(AtsArtifactTypes.Goal)) {
+            goalArts.add((GoalArtifact) art);
+         } else if (art.isOfType(AtsArtifactTypes.Action)) {
+            actionArts.add(art);
          }
          if (art instanceof AbstractWorkflowArtifact) {
             awas.add((AbstractWorkflowArtifact) art);
@@ -270,8 +263,9 @@ public class WorkflowMetrics {
    }
 
    public String toStringObjectBreakout() {
-      return String.format("Actions: %s  - Team Workflows: %s - Task Workflows: %s - Review Workflows: %s ",
-         getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews());
+      return String.format(
+         "Actions: %s  - Team Workflows: %s - Task Workflows: %s - Review Workflows: %s  - Goal Workflows: %s ",
+         getNumActions(), getNumTeamWfs(), getNumTasks(), getNumReviews(), getGoals());
    }
 
    public String toStringLong() {
@@ -356,6 +350,10 @@ public class WorkflowMetrics {
 
    public int getNumReviews() {
       return reviewArts.size();
+   }
+
+   public int getGoals() {
+      return goalArts.size();
    }
 
    public double getEstHours() {
