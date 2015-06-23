@@ -39,7 +39,7 @@ public interface ITeamWorkflowProvider {
     */
    public String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
-   public String getBranchName(IAtsTeamWorkflow teamWf);
+   public String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName);
 
    public boolean isResponsibleFor(IAtsWorkItem workItem);
 }

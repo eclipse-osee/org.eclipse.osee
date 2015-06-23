@@ -616,22 +616,25 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public String getBranchName(IAtsTeamWorkflow teamWf) {
-      for (ITeamWorkflowProvider teamExtension : teamWorkflowProvidersLazy.getProviders()) {
-         String name = teamExtension.getBranchName(teamWf);
-         if (Strings.isValid(name)) {
-            return name;
-         }
-      }
+      String defaultBranchName = null;
       String smaTitle = teamWf.getName();
       if (smaTitle.length() > 40) {
          smaTitle = smaTitle.substring(0, 39) + "...";
       }
       String typeName = atsServices.getWorkItemService().getArtifactTypeShortName(teamWf);
       if (Strings.isValid(typeName)) {
-         return String.format("%s - %s - %s", teamWf.getAtsId(), typeName, smaTitle);
+         defaultBranchName = String.format("%s - %s - %s", teamWf.getAtsId(), typeName, smaTitle);
       } else {
-         return String.format("%s - %s", teamWf.getAtsId(), smaTitle);
+         defaultBranchName = String.format("%s - %s", teamWf.getAtsId(), smaTitle);
       }
+      for (ITeamWorkflowProvider teamExtension : teamWorkflowProvidersLazy.getProviders()) {
+         String name = teamExtension.getBranchName(teamWf, defaultBranchName);
+         if (Strings.isValid(name)) {
+            defaultBranchName = name;
+            break;
+         }
+      }
+      return defaultBranchName;
    }
 
 }

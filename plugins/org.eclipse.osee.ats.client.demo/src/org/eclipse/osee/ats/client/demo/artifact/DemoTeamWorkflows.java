@@ -26,16 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
 
    @Override
-   public String getPcrId(IAtsTeamWorkflow teamWf) {
-      return "";
-   }
-
-   @Override
-   public String getBranchName(IAtsTeamWorkflow teamWf) {
-      return null;
-   }
-
-   @Override
    public boolean isResponsibleFor(IAtsWorkItem workItem) {
       try {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem.getParentTeamWorkflow();
@@ -46,6 +36,18 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return false;
+   }
+
+   @Override
+   public String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName) {
+      try {
+         if (teamWf.getTeamDefinition().getName().contains("SAW Test")) {
+            return "SAW Test - " + defaultBranchName;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 
 }

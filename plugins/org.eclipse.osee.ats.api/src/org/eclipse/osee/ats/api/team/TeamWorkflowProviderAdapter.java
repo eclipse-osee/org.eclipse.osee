@@ -44,4 +44,9 @@ public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvid
       return null;
    }
 
+   @Override
+   public String getBranchName(IAtsTeamWorkflow teamWf, String defaultBranchName) {
+      return null;
+   }
+
 }

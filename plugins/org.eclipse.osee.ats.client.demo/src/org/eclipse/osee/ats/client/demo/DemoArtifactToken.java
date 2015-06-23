@@ -55,6 +55,7 @@ public final class DemoArtifactToken {
 
    public static final IArtifactToken CIS_Program = TokenFactory.createArtifactToken(8242414, "At2WHxCeMCHbcr02EkAA",
       "CIS Program", AtsArtifactTypes.Program);
+
    public static IArtifactToken CIS_SW = TokenFactory.createArtifactToken(695910, "At2WHxF7jmUa8jXR3iwA", "CIS_SW",
       AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken CIS_Code = TokenFactory.createArtifactToken(1629262, "At2WHxGo4A1nnGWYjgwA",

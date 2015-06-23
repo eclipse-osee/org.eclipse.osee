@@ -104,4 +104,5 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       return workItems;
 
    }
+
 }
