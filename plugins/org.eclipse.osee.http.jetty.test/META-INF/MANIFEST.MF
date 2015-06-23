@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Jetty Test
 Bundle-SymbolicName: org.eclipse.osee.http.jetty.test
-Bundle-Version: 0.22.0.qualifier
+Bundle-Version: 0.23.0.qualifier
 Fragment-Host: org.eclipse.osee.http.jetty;bundle-version="0.20.0"
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: javax.ws.rs;version="2.0.0",
