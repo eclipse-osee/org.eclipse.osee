@@ -102,11 +102,9 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       } else if (element instanceof ArtifactExplorerLinkNode) {
          ArtifactExplorerLinkNode smartifactLinkNode = (ArtifactExplorerLinkNode) element;
          RelationType relationType = smartifactLinkNode.getRelationType();
-         if (smartifactLinkNode.isParentIsOnSideA()) {
-            return relationType.getName() + ": " + relationType.getSideBName();
-         } else {
-            return relationType.getName() + ": " + relationType.getSideAName();
-         }
+         String sideName =
+            smartifactLinkNode.isParentIsOnSideA() ? relationType.getSideBName() : relationType.getSideAName();
+         return String.format("%s - [%s]", relationType.getName(), sideName);
       } else if (element != null) {
          return element.toString();
       } else {
