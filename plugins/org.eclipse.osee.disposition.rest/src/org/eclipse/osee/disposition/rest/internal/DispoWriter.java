@@ -23,6 +23,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface DispoWriter {
 
+   Long createDispoProgram(ArtifactReadable author, String name);
+
    Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor);
 
    void updateDispoSet(ArtifactReadable author, DispoProgram program, String dispoSetId, DispoSet data);

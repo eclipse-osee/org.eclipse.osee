@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -48,6 +49,8 @@ public interface DispoApi {
    DispoConfig getDispoConfig(DispoProgram program);
 
    // Writes
+   Long createDispoProgram(String name);
+
    Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
 
    String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation, String userName);
@@ -69,6 +72,8 @@ public interface DispoApi {
    boolean deleteDispoAnnotation(DispoProgram program, String itemId, String annotationId, String userName);
 
    // Utilities
+   boolean isUniqueProgramName(String name);
+
    boolean isUniqueSetName(DispoProgram program, String setName);
 
    boolean isUniqueItemName(DispoProgram program, String setId, String itemName);

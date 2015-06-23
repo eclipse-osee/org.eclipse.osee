@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -82,6 +83,10 @@ public class OrcsStorageImpl implements Storage {
 
    private TransactionFactory getTxFactory() {
       return orcsApi.getTransactionFactory();
+   }
+
+   private OrcsBranch getBranchFactory() {
+      return orcsApi.getBranchOps();
    }
 
    private void reloadTypes() {
@@ -140,12 +145,19 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public boolean isUniqueProgramName(String name) {
+      ResultSet<BranchReadable> results = getQuery().branchQuery().andNameEquals(name).getResults();
+
+      return results.isEmpty();
+   }
+
+   @Override
    public boolean isUniqueSetName(DispoProgram program, String name) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(DispoConstants.DispoSet)//
-      .andNameEquals(name)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoSet)//
+         .andNameEquals(name)//
+         .getResults();
 
       return results.isEmpty();
    }
@@ -154,11 +166,11 @@ public class OrcsStorageImpl implements Storage {
    public boolean isUniqueItemName(DispoProgram program, String setId, String name) {
       ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
-      .andTypeEquals(DispoConstants.DispoItem)//
-      .andNameEquals(name)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, setArt)//
+         .andTypeEquals(DispoConstants.DispoItem)//
+         .andNameEquals(name)//
+         .getResults();
 
       return results.isEmpty();
    }
@@ -166,9 +178,9 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public List<DispoSet> findDispoSets(DispoProgram program) {
       ResultSet<ArtifactReadable> results = getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(DispoConstants.DispoSet)//
-      .getResults();
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(DispoConstants.DispoSet)//
+         .getResults();
 
       List<DispoSet> toReturn = new ArrayList<DispoSet>();
       for (ArtifactReadable art : results) {
@@ -185,10 +197,10 @@ public class OrcsStorageImpl implements Storage {
 
    private ArtifactReadable findDispoArtifact(DispoProgram program, String setId, IArtifactType type) {
       return getQuery()//
-      .fromBranch(program.getUuid())//
-      .andTypeEquals(type)//
-      .andGuid(setId)//
-      .getResults().getOneOrNull();
+         .fromBranch(program.getUuid())//
+         .andTypeEquals(type)//
+         .andGuid(setId)//
+         .getResults().getOneOrNull();
    }
 
    @Override
@@ -203,6 +215,21 @@ public class OrcsStorageImpl implements Storage {
          toReturn.add(dispoItemArtifact);
       }
       return toReturn;
+   }
+
+   @Override
+   public Long createDispoProgram(ArtifactReadable author, String name) {
+      String normalizedName = "(DISPO)" + name;
+      BranchReadable dispoBranch = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getExactlyOne();
+      IOseeBranch branch = TokenFactory.createBranch(normalizedName);
+
+      try {
+         getBranchFactory().createWorkingBranch(branch, author, dispoBranch, null).call();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex);
+      }
+
+      return branch.getGuid();
    }
 
    @Override
@@ -422,7 +449,7 @@ public class OrcsStorageImpl implements Storage {
          .andRelatedTo(CoreRelationTypes.Default_Hierarchical__Parent, dispoSetArt).and(
             DispoConstants.DispoAnnotationsJson, keyword,//
             QueryOption.CONTAINS_MATCH_OPTIONS)//
-         .getResults();
+            .getResults();
 
       for (ArtifactReadable art : dispoArtifacts) {
          toReturn.add(new DispoItemArtifact(art));

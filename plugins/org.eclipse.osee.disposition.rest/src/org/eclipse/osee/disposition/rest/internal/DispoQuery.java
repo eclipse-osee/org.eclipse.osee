@@ -12,12 +12,12 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -30,6 +30,8 @@ public interface DispoQuery {
    ArtifactReadable findUser(String userId);
 
    ArtifactReadable findUnassignedUser();
+
+   boolean isUniqueProgramName(String name);
 
    boolean isUniqueSetName(DispoProgram program, String name);
 

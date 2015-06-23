@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -42,7 +43,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
@@ -104,6 +104,12 @@ public class DispoApiImpl implements DispoApi {
 
    private DispoWriter getWriter() {
       return storageProvider.get();
+   }
+
+   @Override
+   public Long createDispoProgram(String name) {
+      ArtifactReadable author = getQuery().findUser();
+      return getWriter().createDispoProgram(author, name);
    }
 
    @Override
@@ -342,6 +348,11 @@ public class DispoApiImpl implements DispoApi {
          toReturn = null;
       }
       return toReturn;
+   }
+
+   @Override
+   public boolean isUniqueProgramName(String name) {
+      return getQuery().isUniqueProgramName(name);
    }
 
    @Override

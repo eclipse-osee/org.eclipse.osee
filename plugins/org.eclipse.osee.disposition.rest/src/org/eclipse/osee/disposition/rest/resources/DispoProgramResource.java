@@ -23,10 +23,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.disposition.model.DispoMessages;
+import org.eclipse.osee.disposition.model.DispoProgamDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +48,43 @@ public class DispoProgramResource {
    }
 
    /**
+    * Create a new Disposition Set given a DispoSetDescriptor
+    *
+    * @param descriptor Descriptor Data which includes name and import path
+    * @return The created Disposition Set if successful. Error Code otherwise
+    * @response.representation.201.doc Created the Disposition Set
+    * @response.representation.409.doc Conflict, tried to create a Disposition Set with same name
+    * @response.representation.400.doc Bad Request, did not provide both a Name and a valid Import Path
+    */
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.TEXT_PLAIN)
+   public Response createProgram(DispoProgamDescriptorData programDescriptor) {
+      String name = programDescriptor.getName();
+      Response.Status status;
+      Response response;
+
+      if (!name.isEmpty()) {
+         boolean isUniqueName = dispoApi.isUniqueProgramName(name);
+         if (isUniqueName) {
+            long createdProgramId = dispoApi.createDispoProgram(name);
+            status = Status.CREATED;
+            response = Response.status(status).entity(createdProgramId).build();
+         } else {
+            status = Status.CONFLICT;
+            response = Response.status(status).entity(DispoMessages.Set_ConflictingNames).build();
+         }
+      } else {
+         status = Status.BAD_REQUEST;
+         response = Response.status(status).entity(DispoMessages.Set_EmptyNameOrPath).build();
+      }
+      return response;
+   }
+
+   /**
     * Get all Disposition Programs as JSON
-    * 
+    *
     * @return The Disposition Programs found
     * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Program

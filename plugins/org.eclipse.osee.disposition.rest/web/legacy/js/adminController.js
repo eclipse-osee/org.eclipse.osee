@@ -93,6 +93,7 @@
 		            width: 57,
 		            cellTemplate: dellCellTmpl
 		        }];
+		        
 		        $scope.createNewProgram = function() {
 		            if ($scope.newProgramName != "") {
 		        		    var loadingModal = $scope.showLoadingModal();
