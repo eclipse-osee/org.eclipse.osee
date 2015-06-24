@@ -1113,7 +1113,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
          Object obj = selection.getFirstElement();
-         if (obj != null) {
+         if (obj != null && obj instanceof Artifact) {
             Class<? extends Artifact> selectedClass = obj.getClass().asSubclass(Artifact.class);
 
             for (Class<? extends Artifact> artifactClass : menuItemMap.keySet()) {
@@ -1193,7 +1193,9 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object obj = selection.getFirstElement();
             boolean canModifyDH = false;
+            boolean isArtifact = false;
             if (obj instanceof Artifact) {
+               isArtifact = true;
                Artifact art = (Artifact) obj;
                AccessPolicy service = ServiceUtil.getAccessPolicy();
                canModifyDH =
@@ -1202,19 +1204,24 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
-            lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
+            if (isArtifact) {
+               lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
+            }
 
-            lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
+            lockMenuItem.setEnabled(isArtifact && permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
 
-            createMenuItem.setEnabled(permiss.isWritePermission() || canModifyDH);
+            createMenuItem.setEnabled(isArtifact && permiss.isWritePermission() || canModifyDH);
 
-            goIntoMenuItem.setEnabled(permiss.isReadPermission());
-            copyMenuItem.setEnabled(permiss.isReadPermission());
+            goIntoMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
+            copyMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
 
             boolean clipboardEmpty = artifactClipboard.isEmpty();
-            pasteMenuItem.setEnabled(canModifyDH && !clipboardEmpty);
-            pasteSpecialMenuItem.setEnabled(canModifyDH && !clipboardEmpty);
-            renameArtifactMenuItem.setEnabled(permiss.isWritePermission());
+            pasteMenuItem.setEnabled(isArtifact && canModifyDH && !clipboardEmpty);
+            pasteSpecialMenuItem.setEnabled(isArtifact && canModifyDH && !clipboardEmpty);
+            renameArtifactMenuItem.setEnabled(isArtifact && permiss.isWritePermission());
+            findOnAnotherBranch.setEnabled(isArtifact);
+            accessControlMenuItem.setEnabled(isArtifact);
+            refreshMenuItem.setEnabled(isArtifact);
 
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

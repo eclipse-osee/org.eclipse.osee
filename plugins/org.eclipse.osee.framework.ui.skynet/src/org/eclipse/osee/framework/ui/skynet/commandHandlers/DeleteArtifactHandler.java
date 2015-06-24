@@ -51,7 +51,11 @@ public class DeleteArtifactHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+      boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
+      if (!artifacts.isEmpty()) {
+         enabled = AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
+      }
+      return enabled;
    }
 }

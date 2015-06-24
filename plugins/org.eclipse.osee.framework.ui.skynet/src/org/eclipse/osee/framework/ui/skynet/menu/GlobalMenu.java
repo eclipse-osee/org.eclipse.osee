@@ -53,7 +53,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Provided so all OSEE context menus (and programatic manipulations) can share the same menu items, dialogs,
  * permissions checks and code.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class GlobalMenu {
@@ -109,16 +109,18 @@ public class GlobalMenu {
       public void menuShown(MenuEvent e) {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
+            Collection<Artifact> artifacts = globalMenuHelper.getArtifacts();
             if (deleteMenuItem != null) {
-               deleteMenuItem.setEnabled(permiss.isWritePermission());
+               deleteMenuItem.setEnabled(!artifacts.isEmpty() && permiss.isWritePermission());
             }
             if (purgeMenuItem != null) {
-               purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
+               purgeMenuItem.setEnabled(!artifacts.isEmpty() && permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
+
    }
 
    // Provided for addition to Menus
@@ -266,7 +268,7 @@ public class GlobalMenu {
    /**
     * This method is provided for programatic access to delete artifact. No permissions are checked. Preferred use is by
     * adding item as menu item.
-    * 
+    *
     * @return the deleteArtifactAction
     */
    public Action getDeleteArtifactAction() {
