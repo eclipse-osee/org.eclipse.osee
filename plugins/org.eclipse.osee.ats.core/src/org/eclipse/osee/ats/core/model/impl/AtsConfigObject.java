@@ -123,7 +123,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    @Override
-   public Object getStoreObject() {
+   public ArtifactId getStoreObject() {
       return (artifact != null ? artifact : super.getStoreObject());
    }
 

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
@@ -145,12 +146,12 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public Object getStoreObject() {
+   public ArtifactId getStoreObject() {
       return null;
    }
 
    @Override
-   public void setStoreObject(Object object) {
+   public void setStoreObject(ArtifactId artifact) {
       // do nothing
    }
 

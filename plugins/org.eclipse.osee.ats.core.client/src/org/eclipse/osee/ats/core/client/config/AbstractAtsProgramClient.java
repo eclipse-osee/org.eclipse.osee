@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.AbstractAtsProgram;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,13 +36,13 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    }
 
    @Override
-   public Object getStoreObject() {
+   public ArtifactId getStoreObject() {
       return artifact;
    }
 
    @Override
-   public void setStoreObject(Object object) {
-      this.artifact = (Artifact) object;
+   public void setStoreObject(ArtifactId artifact) {
+      this.artifact = (Artifact) artifact;
    }
 
    @Override

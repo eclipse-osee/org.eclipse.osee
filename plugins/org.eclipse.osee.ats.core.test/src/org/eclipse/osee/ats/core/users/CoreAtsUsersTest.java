@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
@@ -180,7 +181,7 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public void setStoreObject(Object object) {
+      public void setStoreObject(ArtifactId artifact) {
          // do nothing
       }
 
@@ -238,12 +239,12 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public Object getStoreObject() {
+      public ArtifactId getStoreObject() {
          return null;
       }
 
       @Override
-      public void setStoreObject(Object object) {
+      public void setStoreObject(ArtifactId artifact) {
          // do nothing
       }
 
