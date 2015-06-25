@@ -35,6 +35,8 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.utility.OrcsUtil;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Roberto E. Escobar
@@ -44,6 +46,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
    private Account bootstrapAccount;
+   private final Supplier<ResultSet<Account>> anonymousAccountSupplier = Suppliers.memoize(getAnonymousSupplier());
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -238,13 +241,22 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    public ResultSet<Account> getAnonymousAccount() {
       ResultSet<Account> toReturn;
       if (isInitialized()) {
-         ResultSet<ArtifactReadable> results =
-            newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(SystemUser.Anonymous.getGuid()).getResults();
-         toReturn = getFactory().newAccountResultSet(results);
+         toReturn = anonymousAccountSupplier.get();
       } else {
          toReturn = ResultSets.singleton(bootstrapAccount);
       }
       return toReturn;
+   }
+
+   private Supplier<ResultSet<Account>> getAnonymousSupplier() {
+      return new Supplier<ResultSet<Account>>() {
+         @Override
+         public ResultSet<Account> get() {
+            ResultSet<ArtifactReadable> results =
+               newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(SystemUser.Anonymous.getGuid()).getResults();
+            return getFactory().newAccountResultSet(results);
+         }
+      };
    }
 
 }
