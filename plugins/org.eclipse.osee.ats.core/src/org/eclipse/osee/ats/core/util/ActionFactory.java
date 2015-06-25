@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -96,7 +97,7 @@ public class ActionFactory implements IAtsActionFactory {
       // make it easier, all fields are automatically filled in for ATS developer
 
       Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
-      IAtsAction action = workItemFactory.getAction(actionArt);
+      IAtsAction action = workItemFactory.getAction((ArtifactId) actionArt);
       IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(config);
       utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
       changes.add(action);
@@ -363,7 +364,7 @@ public class ActionFactory implements IAtsActionFactory {
       for (IAtsTeamWorkflow teamArt : atsServices.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
          if (!teamArt.equals(teamWf)) {
-            teams.add(atsServices.getWorkItemFactory().getTeamWf(teamArt));
+            teams.add(atsServices.getWorkItemFactory().getTeamWf((ArtifactId) teamArt));
          }
       }
       return teams;

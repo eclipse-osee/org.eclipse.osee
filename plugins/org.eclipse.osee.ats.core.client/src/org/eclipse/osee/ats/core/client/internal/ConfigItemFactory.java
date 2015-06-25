@@ -43,7 +43,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(Object art) throws OseeCoreException {
+   public IAtsConfigObject getConfigObject(ArtifactId art) throws OseeCoreException {
       IAtsConfigObject configObject = null;
       if (art instanceof IAtsConfigObject) {
          configObject = (IAtsConfigObject) art;
@@ -67,40 +67,34 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsVersion getVersion(Object artifact) {
+   public IAtsVersion getVersion(ArtifactId artifact) {
       IAtsVersion version = null;
-      if (artifact instanceof IAtsVersion) {
-         version = (IAtsVersion) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
+      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
          version = (IAtsVersion) atsClient.getConfigObject((Artifact) artifact);
       }
       return version;
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDef(Object artifact) throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      if (artifact instanceof IAtsTeamDefinition) {
-         teamDef = (IAtsTeamDefinition) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
+      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
          teamDef = (IAtsTeamDefinition) atsClient.getConfigObject((Artifact) artifact);
       }
       return teamDef;
    }
 
    @Override
-   public IAtsActionableItem getActionableItem(Object artifact) throws OseeCoreException {
+   public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
       IAtsActionableItem ai = null;
-      if (artifact instanceof IAtsActionableItem) {
-         ai = (IAtsActionableItem) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
+      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
          ai = (IAtsActionableItem) atsClient.getConfigObject((Artifact) artifact);
       }
       return ai;
    }
 
    @Override
-   public IAtsProgram getProgram(Object object) {
+   public IAtsProgram getProgram(ArtifactId object) {
       IAtsProgram program = null;
       if (object instanceof IAtsProgram) {
          program = (IAtsProgram) object;
@@ -111,7 +105,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAgileTeam getAgileTeam(Object artifact) {
+   public IAgileTeam getAgileTeam(ArtifactId artifact) {
       IAgileTeam agileTeam = null;
       if (artifact instanceof IAgileTeam) {
          agileTeam = (IAgileTeam) artifact;
@@ -122,7 +116,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAgileFeatureGroup getAgileFeatureGroup(Object artifact) {
+   public IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact) {
       IAgileFeatureGroup group = null;
       if (artifact instanceof IAgileFeatureGroup) {
          group = (IAgileFeatureGroup) artifact;

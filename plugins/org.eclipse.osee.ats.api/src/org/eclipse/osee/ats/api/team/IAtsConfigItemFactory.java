@@ -30,19 +30,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsConfigItemFactory {
 
-   IAtsTeamDefinition getTeamDef(Object artifact) throws OseeCoreException;
+   IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsActionableItem getActionableItem(Object aiArt) throws OseeCoreException;
+   IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException;
+   IAtsConfigObject getConfigObject(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsVersion getVersion(Object artifact) throws OseeCoreException;
+   IAtsVersion getVersion(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsProgram getProgram(Object artifact);
+   IAtsProgram getProgram(ArtifactId artifact);
 
-   IAgileTeam getAgileTeam(Object artifact);
+   IAgileTeam getAgileTeam(ArtifactId artifact);
 
-   IAgileFeatureGroup getAgileFeatureGroup(Object artifact);
+   IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact);
 
    IAtsInsertion getInsertion(ArtifactId artifact);
 

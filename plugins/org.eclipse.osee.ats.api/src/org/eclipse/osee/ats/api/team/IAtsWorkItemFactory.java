@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -26,24 +27,24 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsWorkItemFactory {
 
-   IAtsTeamWorkflow getTeamWf(Object artifact) throws OseeCoreException;
+   IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsWorkItem getWorkItem(Object object) throws OseeCoreException;
+   IAtsWorkItem getWorkItem(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsTask getTask(Object artifact) throws OseeCoreException;
+   IAtsTask getTask(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsAbstractReview getReview(Object artifact) throws OseeCoreException;
+   IAtsAbstractReview getReview(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsGoal getGoal(Object artifact) throws OseeCoreException;
+   IAtsGoal getGoal(ArtifactId artifact) throws OseeCoreException;
 
-   IAtsAction getAction(Object artifact);
+   IAtsAction getAction(ArtifactId artifact);
 
    IAtsWorkItem getWorkItemByAtsId(String atsId);
 
-   IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException;
+   IAgileSprint getAgileSprint(ArtifactId artifact) throws OseeCoreException;
 
-   IAgileBacklog getAgileBacklog(Object artifact);
+   IAgileBacklog getAgileBacklog(ArtifactId artifact);
 
-   IAgileItem getAgileItem(Object art);
+   IAgileItem getAgileItem(ArtifactId artifact);
 
 }

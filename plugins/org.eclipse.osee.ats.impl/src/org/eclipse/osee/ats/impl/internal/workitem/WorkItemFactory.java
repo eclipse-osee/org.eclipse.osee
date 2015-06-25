@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.action.Action;
 import org.eclipse.osee.ats.impl.internal.agile.AgileBacklog;
 import org.eclipse.osee.ats.impl.internal.agile.AgileSprint;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -44,7 +45,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(Object artifact) throws OseeCoreException {
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamWorkflow team = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -56,7 +57,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsWorkItem getWorkItem(Object artifact) {
+   public IAtsWorkItem getWorkItem(ArtifactId artifact) {
       IAtsWorkItem workItem = null;
       try {
          if (artifact instanceof ArtifactReadable) {
@@ -80,7 +81,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsGoal getGoal(Object artifact) throws OseeCoreException {
+   public IAtsGoal getGoal(ArtifactId artifact) throws OseeCoreException {
       IAtsGoal goal = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -92,7 +93,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException {
+   public IAgileSprint getAgileSprint(ArtifactId artifact) throws OseeCoreException {
       IAgileSprint sprint = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -104,7 +105,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileItem getAgileItem(Object artifact) {
+   public IAgileItem getAgileItem(ArtifactId artifact) {
       IAgileItem item = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -117,7 +118,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileBacklog getAgileBacklog(Object artifact) throws OseeCoreException {
+   public IAgileBacklog getAgileBacklog(ArtifactId artifact) throws OseeCoreException {
       IAgileBacklog backlog = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -129,7 +130,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsTask getTask(Object artifact) throws OseeCoreException {
+   public IAtsTask getTask(ArtifactId artifact) throws OseeCoreException {
       IAtsTask task = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -141,7 +142,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsAbstractReview getReview(Object artifact) throws OseeCoreException {
+   public IAtsAbstractReview getReview(ArtifactId artifact) throws OseeCoreException {
       IAtsAbstractReview review = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -155,7 +156,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsAction getAction(Object artifact) {
+   public IAtsAction getAction(ArtifactId artifact) {
       IAtsAction action = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;

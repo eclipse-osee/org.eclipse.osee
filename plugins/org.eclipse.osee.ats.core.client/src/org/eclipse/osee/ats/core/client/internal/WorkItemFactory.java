@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.agile.AgileSprint;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -44,7 +45,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(Object artifact) throws OseeCoreException {
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamWorkflow team = null;
       if (artifact instanceof TeamWorkFlowArtifact) {
          team = (TeamWorkFlowArtifact) artifact;
@@ -53,16 +54,16 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsWorkItem getWorkItem(Object object) throws OseeCoreException {
+   public IAtsWorkItem getWorkItem(ArtifactId artifact) throws OseeCoreException {
       IAtsWorkItem workItem = null;
-      if (object instanceof AbstractWorkflowArtifact) {
-         workItem = (AbstractWorkflowArtifact) object;
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         workItem = (AbstractWorkflowArtifact) artifact;
       }
       return workItem;
    }
 
    @Override
-   public IAtsTask getTask(Object artifact) throws OseeCoreException {
+   public IAtsTask getTask(ArtifactId artifact) throws OseeCoreException {
       IAtsTask task = null;
       if (artifact instanceof IAtsTask) {
          task = (IAtsTask) artifact;
@@ -71,7 +72,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsAbstractReview getReview(Object artifact) throws OseeCoreException {
+   public IAtsAbstractReview getReview(ArtifactId artifact) throws OseeCoreException {
       IAtsAbstractReview review = null;
       if (artifact instanceof IAtsAbstractReview) {
          review = (IAtsAbstractReview) artifact;
@@ -80,7 +81,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsGoal getGoal(Object artifact) throws OseeCoreException {
+   public IAtsGoal getGoal(ArtifactId artifact) throws OseeCoreException {
       IAtsGoal goal = null;
       if (artifact instanceof IAtsGoal) {
          goal = (IAtsGoal) artifact;
@@ -89,7 +90,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileSprint getAgileSprint(Object artifact) throws OseeCoreException {
+   public IAgileSprint getAgileSprint(ArtifactId artifact) throws OseeCoreException {
       IAgileSprint sprint = null;
       if (artifact instanceof IAgileSprint) {
          sprint = (IAgileSprint) artifact;
@@ -100,7 +101,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileBacklog getAgileBacklog(Object artifact) throws OseeCoreException {
+   public IAgileBacklog getAgileBacklog(ArtifactId artifact) throws OseeCoreException {
       IAgileBacklog backlog = null;
       if (artifact instanceof IAgileBacklog) {
          backlog = (IAgileBacklog) artifact;
@@ -111,7 +112,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsAction getAction(Object artifact) {
+   public IAtsAction getAction(ArtifactId artifact) {
       IAtsAction action = null;
       if (artifact instanceof IAtsAction) {
          action = (IAtsAction) artifact;
@@ -127,7 +128,7 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileItem getAgileItem(Object artifact) {
+   public IAgileItem getAgileItem(ArtifactId artifact) {
       IAgileItem item = null;
       if (artifact instanceof IAgileItem) {
          item = (IAgileItem) artifact;

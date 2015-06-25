@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -62,7 +63,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = services.getConfigItemFactory().getVersion(versions.iterator().next());
+            version = versions.iterator().next();
          }
       }
       return version;
@@ -133,7 +134,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       IAtsVersion version = null;
       Object verArt = services.getArtifactById(id.getGuid());
       if (verArt != null) {
-         version = services.getConfigItemFactory().getVersion(verArt);
+         version = services.getConfigItemFactory().getVersion((ArtifactId) verArt);
       }
       return version;
    }
@@ -143,7 +144,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<IAtsTeamWorkflow>();
       for (IAtsTeamWorkflow teamWf : services.getRelationResolver().getRelated(verArt,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
-         teamWorkflows.add(services.getWorkItemFactory().getTeamWf(teamWf));
+         teamWorkflows.add(teamWf);
       }
       return teamWorkflows;
    }

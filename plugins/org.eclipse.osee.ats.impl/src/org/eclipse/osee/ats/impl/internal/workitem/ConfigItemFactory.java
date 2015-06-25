@@ -52,7 +52,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(Object artifact) throws OseeCoreException {
+   public IAtsConfigObject getConfigObject(ArtifactId artifact) throws OseeCoreException {
       IAtsConfigObject configObject = null;
       try {
          if (artifact instanceof ArtifactReadable) {
@@ -82,7 +82,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsVersion getVersion(Object artifact) {
+   public IAtsVersion getVersion(ArtifactId artifact) {
       IAtsVersion version = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -94,7 +94,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDef(Object artifact) throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -106,7 +106,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsActionableItem getActionableItem(Object artifact) throws OseeCoreException {
+   public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
       IAtsActionableItem ai = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -118,7 +118,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsProgram getProgram(Object artifact) {
+   public IAtsProgram getProgram(ArtifactId artifact) {
       IAtsProgram program = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -130,7 +130,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAgileTeam getAgileTeam(Object artifact) {
+   public IAgileTeam getAgileTeam(ArtifactId artifact) {
       IAgileTeam agileTeam = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -142,7 +142,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAgileFeatureGroup getAgileFeatureGroup(Object artifact) {
+   public IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact) {
       IAgileFeatureGroup agileTeam = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
