@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
-<setEntry value="com.google.guava:12.0.0.v201212092141:default:false"/>
+<setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
 <setEntry value="org.eclipse.ui.views.log:1.0.500.v20140512-1221:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
