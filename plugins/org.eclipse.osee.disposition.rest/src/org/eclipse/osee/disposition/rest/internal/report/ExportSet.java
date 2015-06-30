@@ -76,6 +76,10 @@ public class ExportSet {
             row[index++] = String.valueOf(item.getNeedsRerun());
             row[index++] = String.valueOf(item.getAborted());
             row[index++] = String.valueOf(item.getMachine());
+            row[index++] = String.valueOf(item.getElapsedTime());
+            row[index++] = String.valueOf(item.getCreationDate());
+            row[index++] = String.valueOf(item.getLastUpdate());
+            row[index++] = String.valueOf(item.getVersion());
             row[index++] = String.valueOf(prettifyAnnotations(item.getAnnotationsList()));
 
             sheetWriter.writeRow((Object[]) row);
@@ -182,32 +186,36 @@ public class ExportSet {
    private static String[] getHeadersDetailed() {
       String[] toReturn = {//
          "Script Name",//
-            "Category",//
-            "Status",//
-            "Total Test Points",//
-            "Failures",//
-            "Failed Points",//
-            "Remaining Count",//
-            "Remaining Points",//
-            "Assignee",//
-            "Item Notes",//
-            "Needs Rerun",//
-            "Aborted",//
-            "Station",//
-            "Dispositions"//
-         };
+         "Category",//
+         "Status",//
+         "Total Test Points",//
+         "Failures",//
+         "Failed Points",//
+         "Remaining Count",//
+         "Remaining Points",//
+         "Assignee",//
+         "Item Notes",//
+         "Needs Rerun",//
+         "Aborted",//
+         "Station",//
+         "Elapsed Time",//
+         "Creation Date",//
+         "Last Updated",//
+         "Version",//
+         "Dispositions"//
+      };
       return toReturn;
    }
 
    private static String[] getHeadersCoverage() {
       String[] toReturn = {//
          "Namespace",//
-            "Parent Coverage Unit",//
-            "Unit",//
-            "Method Number",//
-            "Execution Line Number",//
-            "Coverage Method",//
-            "Coverage Rationale"};
+         "Parent Coverage Unit",//
+         "Unit",//
+         "Method Number",//
+         "Execution Line Number",//
+         "Coverage Method",//
+      "Coverage Rationale"};
       return toReturn;
    }
 }
