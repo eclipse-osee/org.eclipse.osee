@@ -40,6 +40,9 @@ public class XtraBranchDataSqlHandler extends AbstractXtraTableSqlHandler {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+      if (txsAlias == null || txsAlias.isEmpty()) {
+         return false;
+      }
       writer.writeEquals(txsAlias, branchAlias, "branch_id");
       return true;
    }

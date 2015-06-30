@@ -101,6 +101,11 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
       write("\n WHERE \n");
       writePredicates(Iterables.concat(handlers, xtraHandlers));
+
+      if (toString().endsWith("\n WHERE \n")) {
+         removeDanglingSeparator("\n WHERE \n");
+      }
+
       writeGroupAndOrder();
    }
 
