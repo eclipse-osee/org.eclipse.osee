@@ -383,6 +383,12 @@ oseeEnumType "enum.ats.work.package.type" {
 	uuid 0x3000000000000195
 	entry "Discrete"
 	entryGuid "Bwht_BKlJhvXevH9wgwA"
+	entry "Discrete - % Complete"
+	entryGuid "BOsciRhe9TGNFHydWFAA"
+	entry "Discrete - 50-50"
+	entryGuid "BOsciRiFnUHFqODmPuQA"
+	entry "Discrete - 0-100"
+	entryGuid "BOsciRijrkK85LhqYegA"
 	entry "LOE"
 	entryGuid "Bwhv914yDlTLh0AfNZAA"
 }
