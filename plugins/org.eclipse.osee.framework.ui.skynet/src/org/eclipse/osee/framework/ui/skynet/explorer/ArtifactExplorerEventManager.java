@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;

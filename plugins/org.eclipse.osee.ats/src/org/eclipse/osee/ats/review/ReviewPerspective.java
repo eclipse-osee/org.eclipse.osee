@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.review;
 
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.ui.IFolderLayout;

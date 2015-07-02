@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,6 +79,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
+import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.IArtifactExplorerEventHandler;
+import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
@@ -86,6 +95,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
+import org.eclipse.osee.framework.ui.skynet.explorer.menu.CreateRelatedMenuItem;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
@@ -160,6 +170,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private Action upAction;
    private Artifact explorerRoot;
    private MenuItem createMenuItem;
+   private CreateRelatedMenuItem createRelatedMenuItem;
    private MenuItem accessControlMenuItem;
    private MenuItem lockMenuItem;
    private MenuItem goIntoMenuItem;
@@ -468,6 +479,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createNewChildMenuItem(popupMenu);
+      createNewRelatedMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
@@ -500,32 +512,32 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
          new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-            @Override
-            public void run() {
-               Job job = new UIJob("Open Quick Search") {
+         @Override
+         public void run() {
+            Job job = new UIJob("Open Quick Search") {
 
-                  @Override
-                  public IStatus runInUIThread(IProgressMonitor monitor) {
-                     IStatus status = Status.OK_STATUS;
-                     try {
-                        IViewPart viewPart =
-                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                              QuickSearchView.VIEW_ID);
-                        if (viewPart != null) {
-                           Branch branch = getBranch(monitor);
-                           if (branch != null) {
-                              ((QuickSearchView) viewPart).setBranch(branch);
-                           }
+               @Override
+               public IStatus runInUIThread(IProgressMonitor monitor) {
+                  IStatus status = Status.OK_STATUS;
+                  try {
+                     IViewPart viewPart =
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                           QuickSearchView.VIEW_ID);
+                     if (viewPart != null) {
+                        Branch branch = getBranch(monitor);
+                        if (branch != null) {
+                           ((QuickSearchView) viewPart).setBranch(branch);
                         }
-                     } catch (Exception ex) {
-                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                     return status;
+                  } catch (Exception ex) {
+                     status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                   }
-               };
-               Jobs.startJob(job);
-            }
-         };
+                  return status;
+               }
+            };
+            Jobs.startJob(job);
+         }
+      };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -689,6 +701,11 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             return parent;
          }
       });
+   }
+
+   private void createNewRelatedMenuItem(Menu parentMenu) {
+      createRelatedMenuItem = new CreateRelatedMenuItem(parentMenu, this);
+      needProjectListener.add(createRelatedMenuItem.getMenuItem());
    }
 
    private void createGoIntoMenuItem(Menu parentMenu) {
@@ -1192,12 +1209,12 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          try {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object obj = selection.getFirstElement();
+            AccessPolicy service = ServiceUtil.getAccessPolicy();
             boolean canModifyDH = false;
             boolean isArtifact = false;
             if (obj instanceof Artifact) {
                isArtifact = true;
                Artifact art = (Artifact) obj;
-               AccessPolicy service = ServiceUtil.getAccessPolicy();
                canModifyDH =
                   service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
             }
@@ -1223,11 +1240,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             accessControlMenuItem.setEnabled(isArtifact);
             refreshMenuItem.setEnabled(isArtifact);
 
+            createRelatedMenuItem.setCreateRelatedEnabled(obj, service);
+
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
 
       }
+
    }
 
    @Override
@@ -1311,10 +1331,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             return;
          }
          if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+            //
+            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+            //
+            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

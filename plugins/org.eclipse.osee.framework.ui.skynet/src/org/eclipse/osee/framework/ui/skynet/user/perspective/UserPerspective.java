@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.user.perspective;
 
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;

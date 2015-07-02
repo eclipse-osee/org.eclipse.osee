@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.internal;
 
 import org.eclipse.osee.coverage.navigate.CoverageNavigateView;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.search.ui.NewSearchUI;

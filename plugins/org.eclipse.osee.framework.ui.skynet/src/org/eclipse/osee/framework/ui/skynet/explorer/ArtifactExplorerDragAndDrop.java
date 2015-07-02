@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import java.io.File;
 import java.util.Arrays;
@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
+import org.eclipse.osee.framework.ui.skynet.ArtifactStructuredSelection;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationParameter;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;

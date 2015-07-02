@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
+
 /**
  * @author Donald G. Dunne
  */

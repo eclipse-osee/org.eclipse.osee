@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet;
+package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import java.util.ArrayList;
 import java.util.List;

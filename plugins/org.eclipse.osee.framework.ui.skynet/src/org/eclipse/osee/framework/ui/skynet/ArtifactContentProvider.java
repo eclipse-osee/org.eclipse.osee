@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactChangeListener;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorerLinkNode;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**

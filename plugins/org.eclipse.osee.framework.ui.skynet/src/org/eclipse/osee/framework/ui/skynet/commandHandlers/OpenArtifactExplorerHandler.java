@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 
 /**
  * @author Roberto E. Escobar

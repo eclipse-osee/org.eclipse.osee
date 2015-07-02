@@ -11,7 +11,7 @@
 package org.eclipse.osee.define.internal;
 
 import org.eclipse.osee.define.navigate.DefineNavigateView;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;

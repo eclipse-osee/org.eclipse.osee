@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
