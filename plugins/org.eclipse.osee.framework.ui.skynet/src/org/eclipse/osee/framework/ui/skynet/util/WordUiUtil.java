@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,6 +28,14 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Megumi Telles
  */
 public final class WordUiUtil {
+
+   public static void displayUnknownGuids(Artifact artifact, Collection<String> unknownGuids) {
+      if (Conditions.hasValues(unknownGuids)) {
+         displayUnhandledArtifacts(java.util.Collections.singleton(artifact), String.format(
+            "\nThe following referenced GUIDs cannot be found:  \n\n%s",
+            org.eclipse.osee.framework.jdk.core.util.Collections.toString("\t\n", unknownGuids)));
+      }
+   }
 
    public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {

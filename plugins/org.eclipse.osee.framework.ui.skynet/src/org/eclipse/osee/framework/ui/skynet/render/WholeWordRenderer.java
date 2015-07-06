@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.report.api.DataRightInput;
@@ -44,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordRendererUtil;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -104,8 +107,10 @@ public class WholeWordRenderer extends WordRenderer {
                   artifact.getName(), artifact.getBranch().getName());
             }
 
+            Set<String> unknownGuids = new HashSet<String>();
             LinkType linkType = LinkType.OSEE_SERVER_LINK;
-            content = WordMlLinkHandler.link(linkType, artifact, content);
+            content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
+            WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             String classification = WordRendererUtil.getDataRightsClassification(artifact);
             if (Strings.isValid(classification)) {

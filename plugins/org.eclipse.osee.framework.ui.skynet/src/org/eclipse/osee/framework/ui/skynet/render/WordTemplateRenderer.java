@@ -16,8 +16,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -50,7 +52,7 @@ import org.w3c.dom.Element;
 
 /**
  * Renders WordML content.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
@@ -171,7 +173,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             data = WordUtil.reassignBinDataID(data);
 
             LinkType linkType = (LinkType) getOption("linkType");
-            data = WordMlLinkHandler.link(linkType, artifact, data);
+            Set<String> unknownGuids = new HashSet<String>();
+            data = WordMlLinkHandler.link(linkType, artifact, data, unknownGuids);
+            WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
+
             data = WordUtil.reassignBookMarkID(data);
             data = data.concat(footer);
          }

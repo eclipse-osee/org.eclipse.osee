@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * This class converts between OSEE hyperlink markers into wordML style links. <br/>
  * <br/>
  * <b>Example:</b>
- * 
+ *
  * <pre>
  * LinkType linkType = LinkType.OSEE_SERVER_LINK;
  * 
@@ -46,17 +46,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * // Substitue wordML style hyperlinks with OSEE link markers
  * String original = WordMlLinkHandler.unLink(linkType, source, linkedDoc);
  * </pre>
- * 
+ *
  * <b>Link types handled</b> <br/>
  * <br/>
  * <ol>
  * <li><b>OSEE link:</b> This is a branch neutral marker placed in the wordML document.
- * 
+ *
  * <pre>
  *    OSEE_LINK([artifact_guid])
  * </pre>
  * <li><b>Legacy style links:</b>
- * 
+ *
  * <pre>
  * &lt;w:hlink w:dest=&quot;http://[server_address]:[server_port]/Define?guid=&quot;[artifact_guid]&quot;&gt;
  *    &lt;w:r&gt;
@@ -67,10 +67,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *    &lt;/w:r&gt;
  * &lt;/w:hlink&gt;
  * </pre>
- * 
+ *
  * </li>
  * </ol>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class WordMlLinkHandler {
@@ -91,7 +91,7 @@ public class WordMlLinkHandler {
     * Remove WordML hyperlinks and replace with OSEE_LINK marker. It is assumed that an unlink call will be made after a
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the
     * sourceLinkType.
-    * 
+    *
     * @param source artifact that produced the string content
     * @param content input
     * @return processed input
@@ -101,20 +101,20 @@ public class WordMlLinkHandler {
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(linkType, source, content, matchMap, true);
+         modified = modifiedContent(linkType, source, content, matchMap, true, null);
       }
       return modified;
    }
 
    /**
     * Replace OSEE_LINK marker or Legacy hyper-links with WordML hyperlinks.
-    * 
+    *
     * @param destLinkType type of link to produce
     * @param source artifact that produced the string content
     * @param content input
     * @return processed input
     */
-   public static String link(LinkType destLinkType, Artifact source, String content) throws OseeCoreException {
+   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids) throws OseeCoreException {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -131,7 +131,7 @@ public class WordMlLinkHandler {
       }
       OSEE_LINK_PATTERN.reset();
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(linkType, source, content, matchMap, false);
+         modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids);
       }
       if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
@@ -142,10 +142,10 @@ public class WordMlLinkHandler {
 
    /**
     * Find WordML links locations in content grouped by GUID
-    * 
+    *
     * @return locations where WordMlLinks were found grouped by GUID
     */
-   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
+   private static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
       HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
       OseeLinkParser linkParser = new OseeLinkParser();
       WORDML_LINK.reset(content);
@@ -196,7 +196,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
+   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown) throws OseeCoreException {
       Branch branch = source.getFullBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
@@ -227,10 +227,13 @@ public class WordMlLinkHandler {
             }
          } else {
             // Items not found
-            for (String guid : unknownGuids) {
-               for (MatchRange match : matchMap.getValues(guid)) {
-                  String link = linkBuilder.getUnknownArtifactLink(guid, branch);
-                  changeSet.replace(match.start(), match.end(), link);
+            if (!unknownGuids.isEmpty()) {
+               unknown.addAll(unknownGuids);
+               for (String guid : unknownGuids) {
+                  for (MatchRange match : matchMap.getValues(guid)) {
+                     String link = linkBuilder.getUnknownArtifactLink(guid, branch);
+                     changeSet.replace(match.start(), match.end(), link);
+                  }
                }
             }
          }
@@ -249,7 +252,6 @@ public class WordMlLinkHandler {
       }
       return changeSet.applyChangesToSelf().toString();
    }
-
    public static final class MatchRange {
       private final int start;
       private final int end;

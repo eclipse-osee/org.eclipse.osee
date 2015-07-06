@@ -12,6 +12,8 @@ package org.eclipse.osee.define.blam.operation;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -61,9 +63,14 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
             String content = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WholeWordContent, "");
             if (Strings.isValid(content)) {
-               content = WordMlLinkHandler.link(linkType, artifact, content);
+               Set<String> unknownGuids = new HashSet<String>();
+               content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
                artifact.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, content);
                artifact.persist(tx);
+               if (!unknownGuids.isEmpty()) {
+                  log(String.format("Unknown guids found in [%s] - %s", artifact,
+                     org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", unknownGuids)));
+               }
             }
          }
       }

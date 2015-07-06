@@ -16,19 +16,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -44,6 +55,9 @@ public class WordMlLinkHandlerTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public TestInfo method = new TestInfo();
 
    /**
     * Data driven test to check document link manager link/unlink methods
@@ -75,7 +89,7 @@ public class WordMlLinkHandlerTest {
             // input files.
             if (source != null) {
                if (isLinkTest) {
-                  WordMlLinkHandler.link(docType, source, input);
+                  WordMlLinkHandler.link(docType, source, input, new HashSet<String>());
                } else {
                   WordMlLinkHandler.unlink(docType, source, input);
                }
@@ -98,6 +112,29 @@ public class WordMlLinkHandlerTest {
                   // do nothing
                }
             }
+         }
+      }
+   }
+
+   @Test
+   public void testDetectMissingGuids() throws IOException {
+      IOseeBranch workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
+      try {
+         BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
+         Artifact addArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
+         InputStream inputStream = getClass().getResourceAsStream("testMissingArtifact.xml");
+         String wordData = Lib.inputStreamToString(inputStream);
+         wordData = wordData.replaceAll("A0UNsNvCigV4SyvaCCAA", addArtifact.getGuid());
+         addArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, wordData);
+         addArtifact.persist(method.getTestName());
+
+         Set<String> unknownGuids = new HashSet<String>();
+         WordMlLinkHandler.link(LinkType.OSEE_SERVER_LINK, addArtifact, wordData, unknownGuids);
+         Assert.assertTrue(unknownGuids.size() == 1);
+         Assert.assertTrue(unknownGuids.iterator().next().endsWith("BLAH"));
+      } finally {
+         if (BranchManager.branchExists(workingBranch)) {
+            BranchManager.purgeBranch(workingBranch);
          }
       }
    }
@@ -140,7 +177,8 @@ public class WordMlLinkHandlerTest {
       while (urls.hasMoreElements()) {
          URL url = (URL) urls.nextElement();
          String name = getFileName(url.getPath());
-         if (Strings.isValid(name) && (url.getPath().endsWith(".data.xml") || url.getPath().endsWith(".expected.xml"))) {
+         if (Strings.isValid(
+            name) && (url.getPath().endsWith(".data.xml") || url.getPath().endsWith(".expected.xml"))) {
             String key = name;
             int index = name.indexOf('.');
             if (index > 0) {
