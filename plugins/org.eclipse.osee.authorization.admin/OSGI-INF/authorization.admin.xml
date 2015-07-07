@@ -7,6 +7,6 @@
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="addAuthorizationProvider" cardinality="0..n" interface="org.eclipse.osee.authorization.admin.AuthorizationProvider" name="AuthorizationProvider" policy="dynamic" unbind="removeAuthorizationProvider"/>
    <property name="authorization.scheme.override" type="String" value="PERMIT_ALL"/>
-   <property name="authorization.scheme.allowed" type="String"/>
+   <property name="authorization.scheme.allowed" type="String" value="None"/>
    <property name="authorization.scheme.default" type="String" value="OSEE"/> 
 </scr:component>
