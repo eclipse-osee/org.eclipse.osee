@@ -94,6 +94,21 @@ public class WordUpdateEndpointTest extends AbstractRestTest {
       validateSafetyTeamWFExists();
    }
 
+   @Test
+   public void testMissingArtifact() throws Exception {
+      // get word xml
+      InputStream inputStream = getClass().getResourceAsStream("data/testMissingArtifact.xml");
+      String wordData = Lib.inputStreamToString(inputStream);
+      wordData = wordData.replaceAll("A0UNsNvCigV4SyvaCCAA", artReqt.getGuid());
+
+      List<Long> transferArts = Lists.newLinkedList();
+      transferArts.add(artReqt.getUuid());
+
+      WordUpdateChange change =
+         makeRequest(branch.getUuid(), transferArts, wordData, "Testing word update one artifact");
+      validateWordUpdateChange(change);
+   }
+
    private void validateWordUpdateChange(WordUpdateChange change) {
       List<WordArtifactChange> changes = change.getChangedArts();
       Assert.assertTrue(changes.size() == 1);
