@@ -10,10 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.nebula.widgets.xviewer.IXViewerLazyLoadColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.util.ColorColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.config.AtsConfigurationUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -23,10 +31,16 @@ import org.eclipse.swt.widgets.TreeColumn;
  * Eventually, when all ATS columns are converted to value columns, this class should implement IAltLeftClickProvider,
  * IXViewerValueColumn. Until then, just provide IXViewerValueColumn methods needed for subclasses to not have to
  * implement each.
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class XViewerAtsColumn extends XViewerColumn {
+
+   private Map<Object, String> elementToForegroundColor;
+   private Map<Object, String> elementToBackgroundColor;
+   private Map<String, Color> hexColorToColor;
+   private Boolean hasColorColumn = null;
+   private ColorColumn colorColumn;
 
    protected XViewerAtsColumn() {
       super();
@@ -51,7 +65,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    protected boolean isPersistViewer(XViewer xViewer) {
       return xViewer != null && //
       xViewer instanceof IPersistAltLeftClickProvider //
-         && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
+      && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
    }
 
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
@@ -59,10 +73,16 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    }
 
    public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
+      if (isColorColumn()) {
+         return getColor(element, true, columnIndex);
+      }
       return null;
    }
 
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
+      if (isColorColumn()) {
+         return getColor(element, false, columnIndex);
+      }
       return null;
    }
 
@@ -87,6 +107,71 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
     */
    public Object getBackingData(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
       return null;
+   }
+
+   private Color getColor(Object element, boolean background, int columnIndex) {
+      Color resultColor = null;
+      String hexColor = null;
+      if (background) {
+         hexColor = elementToBackgroundColor.get(element);
+      } else {
+         hexColor = elementToForegroundColor.get(element);
+      }
+      if (!Strings.isValid(hexColor)) {
+         Color color = hexColorToColor.get(hexColor);
+         if (color != null) {
+            resultColor = color;
+         } else {
+            try {
+               String value = null;
+               if (this instanceof IXViewerLazyLoadColumn) {
+                  IXViewerLazyLoadColumn ixViewerLazyLoadColumn = (IXViewerLazyLoadColumn) this;
+                  value = ixViewerLazyLoadColumn.getText(element, ixViewerLazyLoadColumn.getKey(element), "");
+               } else if (this instanceof IXViewerValueColumn) {
+                  IXViewerValueColumn valueColumn = (IXViewerValueColumn) this;
+                  value = valueColumn.getColumnText(element, this, columnIndex);
+               } else {
+                  value = getStyledText(element, this, 0).getString();
+               }
+               if (Strings.isValid(value)) {
+                  if (background) {
+                     hexColor = colorColumn.getBackgroundColorHex(value);
+                  } else {
+                     hexColor = colorColumn.getForgroundColorHex(value);
+                  }
+               }
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      if (Strings.isValid(hexColor)) {
+         resultColor = hexColorToColor.get(hexColor);
+         if (resultColor == null) {
+            resultColor = Displays.getColor(Integer.valueOf(hexColor.substring(1, 3), 16),
+               Integer.valueOf(hexColor.substring(3, 5), 16), Integer.valueOf(hexColor.substring(5, 7), 16));
+            hexColorToColor.put(hexColor, resultColor);
+            if (background) {
+               elementToBackgroundColor.put(element, hexColor);
+            } else {
+               elementToForegroundColor.put(element, hexColor);
+            }
+         }
+      }
+      return resultColor;
+   }
+
+   public boolean isColorColumn() {
+      if (hasColorColumn == null) {
+         colorColumn = AtsConfigurationUtil.getConfigurations().getColorColumns().getColumnById(getId());
+         hasColorColumn = colorColumn != null;
+         if (hasColorColumn) {
+            elementToForegroundColor = new HashMap<Object, String>(100);
+            elementToBackgroundColor = new HashMap<Object, String>(100);
+            hexColorToColor = new HashMap<>(25);
+         }
+      }
+      return hasColorColumn;
    }
 
 }

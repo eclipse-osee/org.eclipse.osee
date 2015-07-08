@@ -85,19 +85,18 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    private void createUserCreationDisabledConfig() {
-      AtsClientService.get().setConfigValue(
-         AtsUtilCore.USER_CREATION_DISABLED,
-         Collections.toString(";", Arrays.asList(AtsArtifactTypes.Action.getName(),
-            AtsArtifactTypes.TeamWorkflow.getName(), AtsArtifactTypes.Task.getName(),
-            AtsArtifactTypes.PeerToPeerReview.getName(), AtsArtifactTypes.DecisionReview.getName(),
-            AtsArtifactTypes.Goal.getName(), AtsArtifactTypes.AgileSprint.getName())));
+      AtsClientService.get().setConfigValue(AtsUtilCore.USER_CREATION_DISABLED,
+         Collections.toString(";",
+            Arrays.asList(AtsArtifactTypes.Action.getName(), AtsArtifactTypes.TeamWorkflow.getName(),
+               AtsArtifactTypes.Task.getName(), AtsArtifactTypes.PeerToPeerReview.getName(),
+               AtsArtifactTypes.DecisionReview.getName(), AtsArtifactTypes.Goal.getName(),
+               AtsArtifactTypes.AgileSprint.getName())));
    }
 
    private void createSafetyConfig() {
       List<String> versions = new ArrayList<String>();
-      AtsConfigOperation operation =
-         new AtsConfigOperation("Configure Safety For ATS", AtsArtifactToken.SafetyTeamDefinition, versions,
-            AtsArtifactToken.SafetyActionableItem);
+      AtsConfigOperation operation = new AtsConfigOperation("Configure Safety For ATS",
+         AtsArtifactToken.SafetyTeamDefinition, versions, AtsArtifactToken.SafetyActionableItem);
       Operations.executeWorkAndCheckStatus(operation);
    }
 

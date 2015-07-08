@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.column.CancelledByColumn;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.CategoryColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.column.ColorTeamColumnUI;
 import org.eclipse.osee.ats.column.CompletedByColumn;
 import org.eclipse.osee.ats.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.column.CompletedCancelledDateColumn;
@@ -261,7 +262,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 	  CountryColumnUI.getInstance(),
       ProgramColumnUI.getInstance(),
       InsertionColumnUI.getInstance(),
-      InsertionActivityColumnUI.getInstance()};
+      InsertionActivityColumnUI.getInstance(),
+	  ColorTeamColumnUI.getInstance()};
 
    public WorldXViewerFactory() {
       super(NAMESPACE);

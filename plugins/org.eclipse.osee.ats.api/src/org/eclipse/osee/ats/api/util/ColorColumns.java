@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,41 +8,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.config;
+package org.eclipse.osee.ats.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.ats.api.util.ColorColumns;
 
 /**
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AtsConfigurations {
+public class ColorColumns {
 
-   public final List<AtsConfiguration> configs = new ArrayList<AtsConfiguration>();
-   public AtsViews views = new AtsViews();
-   public ColorColumns colorColumns = new ColorColumns();
+   List<ColorColumn> colorColumns = new ArrayList<>();
 
-   public List<AtsConfiguration> getConfigs() {
-      return configs;
+   public void addColumn(ColorColumn column) {
+      colorColumns.add(column);
    }
 
-   public AtsViews getViews() {
-      return views;
-   }
-
-   public void setViews(AtsViews views) {
-      this.views = views;
-   }
-
-   public ColorColumns getColorColumns() {
+   public List<ColorColumn> getColorColumns() {
       return colorColumns;
    }
 
-   public void setColorColumns(ColorColumns colorColumns) {
+   public void setColorColumns(List<ColorColumn> colorColumns) {
       this.colorColumns = colorColumns;
    }
 
+   public ColorColumn getColumnById(String id) {
+      for (ColorColumn column : colorColumns) {
+         if (column.getColumnId().equals(id)) {
+            return column;
+         }
+      }
+      return null;
+   }
 }

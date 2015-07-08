@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.config;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.util.ColorColumn;
 
 /**
  * @author Donald G. Dunne
@@ -30,6 +31,7 @@ public class AtsAttributeValueColumn {
    private String booleanNotSetShow;
    private boolean columnMultiEdit;
    private String description;
+   private ColorColumn color;
 
    public long getAttrTypeId() {
       return attrTypeId;
@@ -138,6 +140,14 @@ public class AtsAttributeValueColumn {
    @Override
    public String toString() {
       return "AtsAttributeValueColumn [name=" + name + ", namespace=" + namespace + ", attrTypeId=" + attrTypeId + ", attrTypeName=" + attrTypeName + "]";
+   }
+
+   public ColorColumn getColor() {
+      return color;
+   }
+
+   public void setColor(ColorColumn color) {
+      this.color = color;
    }
 
 }

@@ -75,6 +75,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
       AtsViews views = update.getConfigViews();
       configs.setViews(views);
+      configs.setColorColumns(update.getColorColumns());
       return configs;
    }
 

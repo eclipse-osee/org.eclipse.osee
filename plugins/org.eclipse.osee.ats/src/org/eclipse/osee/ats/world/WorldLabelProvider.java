@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.graphics.Color;
@@ -62,6 +63,21 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                   return color;
                }
             }
+         }
+         if (xCol instanceof XViewerAtsColumn) {
+            return ((XViewerAtsColumn) xCol).getForeground(element, xCol, columnIndex);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
+   @Override
+   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
+      try {
+         if (xCol instanceof XViewerAtsColumn) {
+            return ((XViewerAtsColumn) xCol).getBackground(element, xCol, columnIndex);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
