@@ -185,4 +185,8 @@ public class XFilteredTree extends GenericXWidget {
       }
       return results;
    }
+
+   public FilteredTree getFilteredTree() {
+      return filteredTree;
+   }
 }
