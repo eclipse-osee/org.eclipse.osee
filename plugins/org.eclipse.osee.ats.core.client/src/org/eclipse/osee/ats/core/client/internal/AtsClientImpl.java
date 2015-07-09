@@ -119,6 +119,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -600,6 +601,29 @@ public class AtsClientImpl implements IAtsClient {
          }
       }
       return result;
+   }
+
+   @SuppressWarnings("deprecation")
+   @Override
+   public void setConfigValue(String key, String value) {
+      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, AtsUtilCore.getAtsBranch());
+      if (atsConfig != null) {
+         String keyValue = String.format("%s=%s", key, value);
+         boolean found = false;
+         List<Attribute<String>> attributes = atsConfig.getAttributes(CoreAttributeTypes.GeneralStringData);
+         for (Attribute<String> attr : attributes) {
+            String str = attr.getValue();
+            if (str.startsWith(key)) {
+               attr.setValue(keyValue);
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            atsConfig.addAttribute(CoreAttributeTypes.GeneralStringData, keyValue);
+         }
+      }
+      atsConfig.persist(String.format("Update AtsConfig [%s] Key", key));
    }
 
    @Override

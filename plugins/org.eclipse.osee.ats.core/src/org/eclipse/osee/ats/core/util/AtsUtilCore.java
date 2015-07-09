@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -35,6 +34,7 @@ public class AtsUtilCore {
    private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
+   public static final String USER_CREATION_DISABLED = "UserCreationDisabled";
 
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
@@ -131,8 +131,8 @@ public class AtsUtilCore {
 
    public static String getGuid(IAtsObject atsObject) {
       String guid = uuidToGuidMap.get(atsObject.getUuid());
-      if (!Strings.isValid(guid) && atsObject.getStoreObject() instanceof ArtifactId) {
-         guid = ((ArtifactId) atsObject.getStoreObject()).getGuid();
+      if (!Strings.isValid(guid) && atsObject.getStoreObject() != null) {
+         guid = atsObject.getStoreObject().getGuid();
       }
       return guid;
    }

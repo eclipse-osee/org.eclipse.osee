@@ -32,4 +32,9 @@ public class UserArtifactFactory extends ArtifactFactory {
       return new User(guid, branch, artifactType);
    }
 
+   @Override
+   public boolean isUserCreationEnabled(IArtifactType artifactType) {
+      return false;
+   }
+
 }

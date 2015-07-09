@@ -25,10 +25,9 @@ public abstract class AbstractConfigItemFactory implements IAtsConfigItemFactory
    public final List<IArtifactType> atsConfigArtifactTypes;
 
    public AbstractConfigItemFactory() {
-      atsConfigArtifactTypes =
-         Arrays.asList(AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem,
-            AtsArtifactTypes.Program, AtsArtifactTypes.AgileTeam, AtsArtifactTypes.AgileFeatureGroup,
-            AtsArtifactTypes.Insertion, AtsArtifactTypes.InsertionFeature);
+      atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition,
+         AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Program, AtsArtifactTypes.AgileTeam,
+         AtsArtifactTypes.AgileFeatureGroup, AtsArtifactTypes.Insertion, AtsArtifactTypes.InsertionActivity);
    }
 
    @Override

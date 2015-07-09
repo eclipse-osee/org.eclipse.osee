@@ -112,9 +112,9 @@ public class CreateRelatedMenuItem implements SelectionListener {
       // get valid artifact types for this relation
       List<IArtifactType> artifactTypes = new ArrayList<>();
       Branch branch = artifactExplorer.getBranch();
-      for (ArtifactType artType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
-         if (relationType.isArtifactTypeAllowed(relationSide, artType)) {
-            artifactTypes.add(artType);
+      for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
+         if (relationType.isArtifactTypeAllowed(relationSide, artifactType) && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+            artifactTypes.add(artifactType);
          }
       }
 

@@ -114,7 +114,7 @@ public abstract class ArtifactFactory {
     * call to the persistence manager to acquire the <code>Artifact</code> or else an infinite loop will occur since
     * this method is used by the persistence manager when it needs a new instance of the class to work with and can not
     * come up with it on its own.
-    * 
+    *
     * @param branch branch on which this instance of this artifact will be associated
     * @param hrid
     */
@@ -145,5 +145,7 @@ public abstract class ArtifactFactory {
    public Collection<IArtifactType> getEternalArtifactTypes() {
       return Collections.emptyList();
    }
+
+   public abstract boolean isUserCreationEnabled(IArtifactType artifactType);
 
 }

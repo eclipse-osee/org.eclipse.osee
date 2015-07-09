@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -51,7 +50,7 @@ import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
  * ConfigurationPersistenceManager to here.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
@@ -190,11 +189,11 @@ public class ArtifactTypeManager {
    /**
     * Given a set of artifact types, they will be converted to the new artifact type and the old artifact types will be
     * purged
-    * 
+    *
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws CoreException, OseeCoreException {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
       for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
@@ -243,6 +242,17 @@ public class ArtifactTypeManager {
       OseeClient oseeClient = ServiceUtil.getOseeClient();
       TypesEndpoint typesEndpoint = oseeClient.getTypesEndpoint();
       return new OseeTypesExportOperation(typesEndpoint, outputStream);
+   }
+
+   public static boolean isUserCreationAllowed(IArtifactType artifactType) {
+      boolean userCreationoAllowed = false;
+      ArtifactFactory factory = factoryManager.getFactory(artifactType);
+      if (factory != null && factory.isUserCreationEnabled(artifactType)) {
+         userCreationoAllowed = true;
+      } else if (factory == null) {
+         userCreationoAllowed = true;
+      }
+      return userCreationoAllowed;
    }
 
 }

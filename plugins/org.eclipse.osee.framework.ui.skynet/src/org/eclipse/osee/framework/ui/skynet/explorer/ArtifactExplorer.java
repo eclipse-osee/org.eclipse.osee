@@ -39,7 +39,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -50,6 +49,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -512,32 +512,32 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
          new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-         @Override
-         public void run() {
-            Job job = new UIJob("Open Quick Search") {
+            @Override
+            public void run() {
+               Job job = new UIJob("Open Quick Search") {
 
-               @Override
-               public IStatus runInUIThread(IProgressMonitor monitor) {
-                  IStatus status = Status.OK_STATUS;
-                  try {
-                     IViewPart viewPart =
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                           QuickSearchView.VIEW_ID);
-                     if (viewPart != null) {
-                        Branch branch = getBranch(monitor);
-                        if (branch != null) {
-                           ((QuickSearchView) viewPart).setBranch(branch);
+                  @Override
+                  public IStatus runInUIThread(IProgressMonitor monitor) {
+                     IStatus status = Status.OK_STATUS;
+                     try {
+                        IViewPart viewPart =
+                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                              QuickSearchView.VIEW_ID);
+                        if (viewPart != null) {
+                           Branch branch = getBranch(monitor);
+                           if (branch != null) {
+                              ((QuickSearchView) viewPart).setBranch(branch);
+                           }
                         }
+                     } catch (Exception ex) {
+                        status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
                      }
-                  } catch (Exception ex) {
-                     status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error opening quick search", ex);
+                     return status;
                   }
-                  return status;
-               }
-            };
-            Jobs.startJob(job);
-         }
-      };
+               };
+               Jobs.startJob(job);
+            }
+         };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -671,15 +671,16 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          }
 
          private FilteredTreeArtifactTypeEntryDialog getDialog() throws OseeCoreException {
-            Collection<? extends IArtifactType> artifactTypes =
-               ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
-
-            artifactTypes.remove(CoreArtifactTypes.RootArtifact);
+            List<IArtifactType> artifactTypes = new ArrayList<>();
+            for (IArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData())) {
+               if (ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+                  artifactTypes.add(artifactType);
+               }
+            }
 
             FilteredTreeArtifactTypeEntryDialog dialog =
                new FilteredTreeArtifactTypeEntryDialog("New Child", "Enter name and select Artifact type to create",
-                  "Artifact Name");
-            dialog.setInput(artifactTypes);
+                  "Artifact Name", artifactTypes);
             return dialog;
          }
 
@@ -965,7 +966,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          for (Object object : selection.toArray()) {
             if (object instanceof Artifact) {
                artifact = (Artifact) object;
-
+               if (!ArtifactTypeManager.isUserCreationAllowed(artifact.getArtifactType())) {
+                  throw new OseeArgumentException("Artifact Type [%s] can not be copied",
+                     artifact.getArtifactTypeName());
+               }
                artifactTransferData.add(artifact);
             }
          }
@@ -1008,6 +1012,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          Object object = selection.getFirstElement();
 
          if (object instanceof Artifact) {
+            Artifact artifact = (Artifact) object;
+            if (!ArtifactTypeManager.isUserCreationAllowed(artifact.getArtifactType())) {
+               throw new OseeArgumentException("Artifact Type [%s] can not be copied", artifact.getArtifactTypeName());
+            }
             destinationArtifact = (Artifact) object;
          }
       }
@@ -1331,10 +1339,10 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             return;
          }
          if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
-            //
-            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-            //
-            accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

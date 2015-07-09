@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -75,6 +74,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    /**
     * @return corresponding Artifact or null if not found
     */
+   @Override
    Artifact getArtifact(IArtifactToken token) throws OseeCoreException;
 
    /**
@@ -172,5 +172,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IAtsStoreService getStoreService();
 
    TeamWorkflowProviders getTeamWorkflowProviders();
+
+   void setConfigValue(String key, String value);
 
 }

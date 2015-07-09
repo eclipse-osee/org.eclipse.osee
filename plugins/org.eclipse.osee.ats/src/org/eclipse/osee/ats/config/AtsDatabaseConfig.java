@@ -18,7 +18,9 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -35,6 +37,7 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +77,20 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());
 
+      ActivityLogJaxRsService.createActivityType(AtsActivity.ATSNAVIGATEITEM);
+
+      createUserCreationDisabledConfig();
+
       createSafetyConfig();
+   }
+
+   private void createUserCreationDisabledConfig() {
+      AtsClientService.get().setConfigValue(
+         AtsUtilCore.USER_CREATION_DISABLED,
+         Collections.toString(";", Arrays.asList(AtsArtifactTypes.Action.getName(),
+            AtsArtifactTypes.TeamWorkflow.getName(), AtsArtifactTypes.Task.getName(),
+            AtsArtifactTypes.PeerToPeerReview.getName(), AtsArtifactTypes.DecisionReview.getName(),
+            AtsArtifactTypes.Goal.getName(), AtsArtifactTypes.AgileSprint.getName())));
    }
 
    private void createSafetyConfig() {

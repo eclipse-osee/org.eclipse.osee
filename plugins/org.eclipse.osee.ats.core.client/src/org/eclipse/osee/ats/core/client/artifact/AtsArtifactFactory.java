@@ -17,15 +17,19 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -33,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Ryan D. Brooks
+ * @author Donald G. Dunne
  */
 public class AtsArtifactFactory extends ArtifactFactory {
 
@@ -81,4 +86,21 @@ public class AtsArtifactFactory extends ArtifactFactory {
       return artifactTypes;
    }
 
+   @Override
+   public boolean isUserCreationEnabled(IArtifactType artifactType) {
+      ArtifactType forArtifactType = ArtifactTypeManager.getType(artifactType);
+      String configValue = AtsClientService.get().getConfigValue(AtsUtilCore.USER_CREATION_DISABLED);
+      if (Strings.isValid(configValue)) {
+         for (String artifactTypeName : configValue.split(";")) {
+            ArtifactType configArtifactType = ArtifactTypeManager.getType(artifactTypeName);
+            if (configArtifactType == null) {
+               OseeLog.logf(Activator.class, Level.SEVERE,
+                  "Artifact Type Name [%s] specified in AtsConfig.[%s] is invalid", AtsUtilCore.USER_CREATION_DISABLED);
+            } else if (forArtifactType.inheritsFrom(configArtifactType)) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
 }
