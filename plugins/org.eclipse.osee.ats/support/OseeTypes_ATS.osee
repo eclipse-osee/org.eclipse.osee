@@ -9,7 +9,7 @@ artifactType "Insertion" extends "ats.Ats Config Artifact" {
 	attribute "ats.Description"
 }
 
-artifactType "Insertion Feature" extends "ats.Ats Config Artifact" {
+artifactType "Insertion Activity" extends "ats.Ats Config Artifact" {
 	uuid  0x36B9D38A2B7789FC
 	attribute "ats.Description"
 }
@@ -1361,20 +1361,20 @@ relationType "Program To Insertion" {
 	multiplicity ONE_TO_MANY
 }
 
-relationType "Insertion To Insertion Feature" {
+relationType "Insertion To Insertion Activity" {
 	uuid 0x128D9B3123EADEB1
 	sideAName "Insertion"
 	sideAArtifactType "Insertion"
-	sideBName "Insertion Feature"
-	sideBArtifactType "Insertion Feature"
+	sideBName "Insertion Activity"
+	sideBArtifactType "Insertion Activity"
 	defaultOrderType Unordered
 	multiplicity ONE_TO_MANY
 }
 
-relationType "Insertion Feature To Work Package" {
+relationType "Insertion Activity To Work Package" {
 	uuid 0x7B681B61D762880F
-	sideAName "Insertion Feature"
-	sideAArtifactType "Insertion Feature"
+	sideAName "Insertion Activity"
+	sideAArtifactType "Insertion Activity"
 	sideBName "Work Package"
 	sideBArtifactType "Work Package"
 	defaultOrderType Unordered

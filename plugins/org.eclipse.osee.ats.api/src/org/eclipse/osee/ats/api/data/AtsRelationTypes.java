@@ -24,8 +24,8 @@ public final class AtsRelationTypes {
    public static final IRelationTypeSide ProgramToInsertion_Program = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x7BD0963A0F884A2BL, "Program To Insertion");
    public static final IRelationTypeSide ProgramToInsertion_Insertion = ProgramToInsertion_Program.getOpposite();
 
-   public static final IRelationTypeSide InsertionToInsertionFeature_Insertion = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x128D9B3123EADEB1L, "Insertion To Insertion Feature");
-   public static final IRelationTypeSide InsertionToInsertionFeature_InsertionFeature = InsertionToInsertionFeature_Insertion.getOpposite();
+   public static final IRelationTypeSide InsertionToInsertionActivity_Insertion = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x128D9B3123EADEB1L, "Insertion To Insertion Activity");
+   public static final IRelationTypeSide InsertionToInsertionActivity_InsertionActivity = InsertionToInsertionActivity_Insertion.getOpposite();
 
    public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, 0x200000000000016DL, "ActionToWorkflow");
    public static final IRelationTypeSide ActionToWorkflow_WorkFlow = ActionToWorkflow_Action.getOpposite();

@@ -16,9 +16,9 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -125,8 +125,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionFeature getInsertionFeature(ArtifactId object) {
-      throw new UnsupportedOperationException("getInsertionFeature not implemented on client");
+   public IAtsInsertionActivity getInsertionActivity(ArtifactId object) {
+      throw new UnsupportedOperationException("getInsertionActivity not implemented on client");
    }
 
    @Override
@@ -145,17 +145,17 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionFeature createInsertionFeature(ArtifactId insertion, JaxNewInsertionFeature newFeature) {
-      throw new UnsupportedOperationException("createInsertionFeature not implemented on client");
+   public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxNewInsertionActivity newActivity) {
+      throw new UnsupportedOperationException("createInsertionActivity not implemented on client");
    }
 
    @Override
-   public IAtsInsertionFeature updateInsertionFeature(JaxNewInsertionFeature newFeature) {
-      throw new UnsupportedOperationException("updateInsertionFeature not implemented on client");
+   public IAtsInsertionActivity updateInsertionActivity(JaxNewInsertionActivity newActivity) {
+      throw new UnsupportedOperationException("updateInsertionActivity not implemented on client");
    }
 
    @Override
-   public void deleteInsertionFeature(ArtifactId artifact) {
-      throw new UnsupportedOperationException("deleteInsertionFeature not implemented on client");
+   public void deleteInsertionActivity(ArtifactId artifact) {
+      throw new UnsupportedOperationException("deleteInsertionActivity not implemented on client");
    }
 }

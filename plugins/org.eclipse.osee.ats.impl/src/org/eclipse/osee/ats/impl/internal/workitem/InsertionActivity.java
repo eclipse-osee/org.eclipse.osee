@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.logger.Log;
@@ -19,15 +19,15 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author David W. Miller
  */
-public class InsertionFeature extends AtsConfigObject implements IAtsInsertionFeature {
+public class InsertionActivity extends AtsConfigObject implements IAtsInsertionActivity {
 
-   public InsertionFeature(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
+   public InsertionActivity(Log logger, IAtsServer atsServer, ArtifactReadable artifact) {
       super(logger, atsServer, artifact);
    }
 
    @Override
    public String getTypeName() {
-      return "Insertion Feature";
+      return "Insertion Activity";
    }
 
 }

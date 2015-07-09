@@ -17,6 +17,6 @@ import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
  * @author David W. Miller
  */
 @XmlRootElement
-public class JaxNewInsertionFeature extends AbstractJaxNewAgileTeamObject {
+public class JaxNewInsertionActivity extends AbstractJaxNewAgileTeamObject {
    // Nothing to implement
 }

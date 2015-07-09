@@ -15,9 +15,9 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -50,12 +50,12 @@ public interface IAtsConfigItemFactory {
 
    void deleteInsertion(ArtifactId artifact);
 
-   IAtsInsertionFeature getInsertionFeature(ArtifactId artifact);
+   IAtsInsertionActivity getInsertionActivity(ArtifactId artifact);
 
-   IAtsInsertionFeature createInsertionFeature(ArtifactId insertion, JaxNewInsertionFeature newFeature);
+   IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxNewInsertionActivity newActivity);
 
-   IAtsInsertionFeature updateInsertionFeature(JaxNewInsertionFeature newFeature);
+   IAtsInsertionActivity updateInsertionActivity(JaxNewInsertionActivity newFeature);
 
-   void deleteInsertionFeature(ArtifactId artifact);
+   void deleteInsertionActivity(ArtifactId artifact);
 
 }

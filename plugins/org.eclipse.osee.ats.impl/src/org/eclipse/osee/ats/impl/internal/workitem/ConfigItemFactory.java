@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxNewInsertion;
-import org.eclipse.osee.ats.api.insertion.JaxNewInsertionFeature;
+import org.eclipse.osee.ats.api.insertion.JaxNewInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -71,8 +71,8 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
                configObject = getAgileFeatureGroup(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.Insertion)) {
                configObject = getInsertion(artRead);
-            } else if (artRead.isOfType(AtsArtifactTypes.InsertionFeature)) {
-               configObject = getInsertionFeature(artRead);
+            } else if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
+               configObject = getInsertionActivity(artRead);
             }
          }
       } catch (OseeCoreException ex) {
@@ -168,17 +168,17 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionFeature getInsertionFeature(ArtifactId artifact) {
-      IAtsInsertionFeature insertionFeature = null;
+   public IAtsInsertionActivity getInsertionActivity(ArtifactId artifact) {
+      IAtsInsertionActivity insertionActivity = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
-         if (artRead.isOfType(AtsArtifactTypes.InsertionFeature)) {
-            insertionFeature = new InsertionFeature(logger, atsServer, artRead);
+         if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
+            insertionActivity = new InsertionActivity(logger, atsServer, artRead);
          } else {
-            throw new OseeCoreException("Requested uuid not Insertion Feature");
+            throw new OseeCoreException("Requested uuid not Insertion Activity");
          }
       }
-      return insertionFeature;
+      return insertionActivity;
    }
 
    @Override
@@ -217,42 +217,42 @@ public class ConfigItemFactory implements IAtsConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertionFeature createInsertionFeature(ArtifactId insertion, JaxNewInsertionFeature newFeature) {
-      Long uuid = newFeature.getUuid();
+   public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxNewInsertionActivity newActivity) {
+      Long uuid = newActivity.getUuid();
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
       AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion Feature",
+         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion Activity",
             atsServer.getUserService().getCurrentUser());
-      ArtifactReadable insertionFeatureArt =
-         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionFeature, newFeature.getName(),
+      ArtifactReadable insertionActivityArt =
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(),
             GUID.create(), uuid);
 
-      changes.relate(insertion, AtsRelationTypes.InsertionToInsertionFeature_InsertionFeature, insertionFeatureArt);
+      changes.relate(insertion, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity, insertionActivityArt);
       changes.execute();
-      return getInsertionFeature(insertionFeatureArt);
+      return getInsertionActivity(insertionActivityArt);
    }
 
    @Override
-   public IAtsInsertionFeature updateInsertionFeature(JaxNewInsertionFeature updatedFeature) {
+   public IAtsInsertionActivity updateInsertionActivity(JaxNewInsertionActivity updatedActivity) {
       AtsChangeSet changes =
          (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
             atsServer.getUserService().getCurrentUser());
-      ArtifactReadable insertionFeatureArt =
-         atsServer.getQuery().andUuid(updatedFeature.getUuid()).getResults().getExactlyOne();
+      ArtifactReadable insertionActivityArt =
+         atsServer.getQuery().andUuid(updatedActivity.getUuid()).getResults().getExactlyOne();
 
-      changes.getTransaction().setSoleAttributeValue(insertionFeatureArt, CoreAttributeTypes.Name,
-         updatedFeature.getName());
-      changes.setSoleAttributeValue(atsServer.getConfig().getSoleByUuid(updatedFeature.getUuid()),
-         CoreAttributeTypes.Name, updatedFeature.getName());
+      changes.getTransaction().setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name,
+         updatedActivity.getName());
+      changes.setSoleAttributeValue(atsServer.getConfig().getSoleByUuid(updatedActivity.getUuid()),
+         CoreAttributeTypes.Name, updatedActivity.getName());
       changes.execute();
-      return getInsertionFeature(atsServer.getQuery().andUuid(updatedFeature.getUuid()).getResults().getExactlyOne());
+      return getInsertionActivity(atsServer.getQuery().andUuid(updatedActivity.getUuid()).getResults().getExactlyOne());
    }
 
    @Override
-   public void deleteInsertionFeature(ArtifactId artifact) {
-      deleteConfigObject(artifact.getUuid(), "Delete Insertion Feature", AtsArtifactTypes.InsertionFeature);
+   public void deleteInsertionActivity(ArtifactId artifact) {
+      deleteConfigObject(artifact.getUuid(), "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
    }
 
    private void deleteConfigObject(long uuid, String comment, IArtifactType type) {

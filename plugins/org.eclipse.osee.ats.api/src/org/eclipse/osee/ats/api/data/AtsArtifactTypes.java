@@ -41,7 +41,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType AgileSprint = TokenFactory.createArtifactType(0x7E213FC7506C5E43L, "Agile Sprint");
 
    public static final IArtifactType Insertion = TokenFactory.createArtifactType(0x18160B4E220FEDD8L, "Insertion");
-   public static final IArtifactType InsertionFeature = TokenFactory.createArtifactType(0x36B9D38A2B7789FCL, "Insertion Feature");
+   public static final IArtifactType InsertionActivity = TokenFactory.createArtifactType(0x36B9D38A2B7789FCL, "Insertion Activity");
 
    // @formatter:on
 

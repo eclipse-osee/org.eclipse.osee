@@ -92,31 +92,31 @@ public class ProgramResourceTest extends AbstractConfigurationRestTest {
    }
 
    @Test
-   public void testAtsProgramInsertionFeatureNegativeInsertionRestCall() throws Exception {
+   public void testAtsProgramInsertionActivityNegativeInsertionRestCall() throws Exception {
       String result =
          doRequestString(
-            "/ats/program/" + getSawProgram().getUuid() + "/insertion/" + Integer.toString(-5) + "/feature",
+            "/ats/program/" + getSawProgram().getUuid() + "/insertion/" + Integer.toString(-5) + "/activity",
             HttpMethod.GET, null, javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
       Assert.assertTrue(result.contains("SERVER_ERROR"));
    }
 
    @Test
-   public void testAtsProgramInsertionFeatureBadInsertionRestCall() throws Exception {
+   public void testAtsProgramInsertionActivityBadInsertionRestCall() throws Exception {
       String result =
-         doRequestString("/ats/program/" + getSawProgram().getUuid() + "/insertion/" + getSawTeam() + "/feature",
+         doRequestString("/ats/program/" + getSawProgram().getUuid() + "/insertion/" + getSawTeam() + "/activity",
             HttpMethod.GET, null, javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
       Assert.assertTrue(result.contains("SERVER_ERROR"));
    }
 
    @Test
-   public void testAtsProgramInsertionFeatureCrudRestCalls() throws Exception {
+   public void testAtsProgramInsertionActivityCrudRestCalls() throws Exception {
       String insertion = "{\"name\":\"JAX Insertion\",\"uuid\":1234567800}";
-      String insertionFeature = "{\"name\":\"JAX Insertion Feature\",\"uuid\":87654321}";
-      String insertionFeatureUpdate = "{\"name\":\"Renamed Insertion Feature\",\"uuid\":87654321}";
-      testCreateInsertionFeature(insertion, insertionFeature);
-      testGetInsertionFeature();
-      testUpdateInsertionFeature(insertionFeatureUpdate);
-      testDeleteInsertionFeature();
+      String insertionActivity = "{\"name\":\"JAX Insertion Activity\",\"uuid\":87654321}";
+      String insertionActivityUpdate = "{\"name\":\"Renamed Insertion Activity\",\"uuid\":87654321}";
+      testCreateInsertionActivity(insertion, insertionActivity);
+      testGetInsertionActivity();
+      testUpdateInsertionActivity(insertionActivityUpdate);
+      testDeleteInsertionActivity();
    }
 
    private Artifact getSawProgram() {
@@ -156,34 +156,34 @@ public class ProgramResourceTest extends AbstractConfigurationRestTest {
       deleteAndCheck(url);
    }
 
-   private void testCreateInsertionFeature(String insertion, String insertionFeature) throws Exception {
+   private void testCreateInsertionActivity(String insertion, String insertionActivity) throws Exception {
       String urlInsertion = "/ats/program/" + getSawProgram().getUuid() + "/insertion";
-      String urlFeature = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/feature";
+      String urlActivity = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/activity";
       JsonArray setup = postAndCheck(urlInsertion, Entity.entity(insertion, MediaType.APPLICATION_JSON_TYPE));
-      JsonArray array = postAndCheck(urlFeature, Entity.entity(insertionFeature, MediaType.APPLICATION_JSON_TYPE));
+      JsonArray array = postAndCheck(urlActivity, Entity.entity(insertionActivity, MediaType.APPLICATION_JSON_TYPE));
       Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("JAX Insertion Feature", array);
-      Assert.assertNotNull("Did not find value Jax Insertion Feature", obj);
+      JsonObject obj = getObjectNamed("JAX Insertion Activity", array);
+      Assert.assertNotNull("Did not find value Jax Insertion Activity", obj);
    }
 
-   private void testGetInsertionFeature() throws Exception {
-      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/feature";
+   private void testGetInsertionActivity() throws Exception {
+      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/activity";
       JsonArray array = getAndCheck(url);
       Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("JAX Insertion Feature", array);
-      Assert.assertNotNull("Did not find value Jax Insertion Feature", obj);
+      JsonObject obj = getObjectNamed("JAX Insertion Activity", array);
+      Assert.assertNotNull("Did not find value Jax Insertion Activity", obj);
    }
 
-   private void testUpdateInsertionFeature(String insertion) throws Exception {
-      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/feature";
+   private void testUpdateInsertionActivity(String insertion) throws Exception {
+      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/activity";
       JsonArray array = putAndCheck(url, Entity.entity(insertion, MediaType.APPLICATION_JSON_TYPE));
       Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("Renamed Insertion Feature", array);
-      Assert.assertNotNull("Did not find value Renamed Insertion Feature", obj);
+      JsonObject obj = getObjectNamed("Renamed Insertion Activity", array);
+      Assert.assertNotNull("Did not find value Renamed Insertion Activity", obj);
    }
 
-   private void testDeleteInsertionFeature() throws Exception {
-      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/feature/87654321";
+   private void testDeleteInsertionActivity() throws Exception {
+      String url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800/activity/87654321";
       deleteAndCheck(url);
       // clean up insertion, too
       url = "/ats/program/" + getSawProgram().getUuid() + "/insertion/1234567800";
