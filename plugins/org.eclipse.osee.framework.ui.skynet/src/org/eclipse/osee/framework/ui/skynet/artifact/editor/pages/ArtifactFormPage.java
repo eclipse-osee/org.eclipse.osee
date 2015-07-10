@@ -175,10 +175,10 @@ public class ArtifactFormPage extends FormPage {
       try {
          Artifact artifact = getEditor().getEditorInput().getArtifact();
          description =
-            String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>GUID:</b> %s</p></form>",
+            String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
                !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
                ReservedCharacters.encodeXmlEntities(artifact.getFullBranch().getShortName()),
-               artifact.getArtifactTypeName(), artifact.getGuid());
+               artifact.getArtifactTypeName(), artifact.getUuid());
       } catch (Exception ex) {
          description = Lib.exceptionToString(ex);
       }

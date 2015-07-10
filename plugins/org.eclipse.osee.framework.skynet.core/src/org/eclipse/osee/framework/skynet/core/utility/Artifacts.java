@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
- * 
+ *
  * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
@@ -171,7 +171,7 @@ public final class Artifacts {
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
          details.put("Branch", String.valueOf(Xml.escape(artifact.getBranch().toString())));
          details.put("Branch Uuid", String.valueOf(artifact.getFullBranch().getUuid()));
-         details.put("Artifact Id", String.valueOf(artifact.getArtId()));
+         details.put("Artifact UUID", String.valueOf(artifact.getArtId()));
          details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
          details.put("Artifact Type Id", String.valueOf(artifact.getArtTypeId()));
          details.put("Gamma Id", String.valueOf(artifact.getGammaId()));
