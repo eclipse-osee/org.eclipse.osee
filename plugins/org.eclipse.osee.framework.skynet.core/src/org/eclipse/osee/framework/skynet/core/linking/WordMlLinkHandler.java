@@ -36,13 +36,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  *
  * <pre>
  * LinkType linkType = LinkType.OSEE_SERVER_LINK;
- * 
+ *
  * Artifact source = ... // Artifact that contains original
  * String original = ... //Doc containing osee link markers
- * 
+ *
  * // Substitue OSEE link markers with wordML style hyperlinks requesting content to the OSEE application server
  * String linkedDoc = WordMlLinkHandler.link(linkType, source, original);
- * 
+ *
  * // Substitue wordML style hyperlinks with OSEE link markers
  * String original = WordMlLinkHandler.unLink(linkType, source, linkedDoc);
  * </pre>
@@ -79,7 +79,8 @@ public class WordMlLinkHandler {
    private static final Matcher WORDML_LINK = Pattern.compile(
       "<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
    private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
-      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+(\")?(.+?)(\")?\\s*</w:instrText></w:r>", Pattern.DOTALL).matcher("");
+      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
+      Pattern.DOTALL).matcher("");
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
@@ -163,7 +164,7 @@ public class WordMlLinkHandler {
 
       HYPERLINK_PATTERN.reset(content);
       while (HYPERLINK_PATTERN.find()) {
-         String link = HYPERLINK_PATTERN.group(2);
+         String link = HYPERLINK_PATTERN.group(1);
          if (Strings.isValid(link)) {
             linkParser.parse(link);
             String guid = linkParser.getGuid();
