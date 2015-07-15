@@ -45,7 +45,7 @@ import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_archive_state;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_associated_art_id;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_baseline_tx_id;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_id;
-import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_inherit_access_control;
+import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_inherit_access_cntrl;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_name;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_parent_id;
 import static org.eclipse.osee.orcs.script.dsl.OsFieldEnum.branch_parent_tx_id;
@@ -125,7 +125,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link OrcsScriptInterpreterImpl} {@link OrcsScriptAssemblerImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsScriptInterpreterTest {
@@ -134,11 +134,11 @@ public class OrcsScriptInterpreterTest {
    @Mock private DataModule dataModule;
    @Mock private OrcsTypes orcsTypes;
    @Mock private OrcsScriptOutputHandler output;
-   
+
    @Mock private ArtifactTypes artTypes;
    @Mock private AttributeTypes attrTypes;
    @Mock private RelationTypes relTypes;
-   
+
    //@formatter:on
 
    private OrcsScriptAssemblerImpl assembler;
@@ -199,17 +199,17 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, data.hasChildren());
 
       checkNamesAndLevels(data.getChildren(), 0, //
-         branch_archive_state,// 
+         branch_archive_state,//
          branch_associated_art_id,//
          branch_baseline_tx_id,//
-         branch_id, // 
-         branch_inherit_access_control, // 
+         branch_id, //
+         branch_inherit_access_cntrl, //
          branch_name, //
          branch_parent_id, //
          branch_parent_tx_id, //
          branch_state,//
          branch_type //
-      );
+         );
    }
 
    @Test
@@ -243,7 +243,7 @@ public class OrcsScriptInterpreterTest {
          tx_date, //
          tx_id, //
          tx_type //
-      );
+         );
    }
 
    @Test
@@ -322,7 +322,7 @@ public class OrcsScriptInterpreterTest {
          art_tx_date, //
          art_tx_id, //
          art_tx_type //
-      );
+         );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -393,7 +393,7 @@ public class OrcsScriptInterpreterTest {
          art_tx_date, //
          art_tx_id, //
          art_tx_type //
-      );
+         );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -414,7 +414,7 @@ public class OrcsScriptInterpreterTest {
          attr_tx_date, //
          attr_tx_id, //
          attr_tx_type //
-      );
+         );
 
       DynamicObject rels = asObject(Iterables.get(data.getChildren(), 3, null));
       assertEquals(true, rels.hasParent());
@@ -435,7 +435,7 @@ public class OrcsScriptInterpreterTest {
          rel_tx_date, //
          rel_tx_id, //
          rel_tx_type //
-      );
+         );
    }
 
    @Test
@@ -480,7 +480,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, artTxs.hasChildren());
       checkNamesAndLevels(artTxs.getChildren(), 1, //
          art_tx_id //
-      );
+         );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -494,7 +494,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, attrTxs.hasChildren());
       checkNamesAndLevels(attrTxs.getChildren(), 1, //
          attr_tx_id //
-      );
+         );
 
       DynamicObject rels = asObject(Iterables.get(data.getChildren(), 3, null));
       assertEquals(true, rels.hasParent());
@@ -508,7 +508,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, relTxs.hasChildren());
       checkNamesAndLevels(relTxs.getChildren(), 1, //
          rel_tx_id //
-      );
+         );
    }
 
    private Integer intVal(int integer) {

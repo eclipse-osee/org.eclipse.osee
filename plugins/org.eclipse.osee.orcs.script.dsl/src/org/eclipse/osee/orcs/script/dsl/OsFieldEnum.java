@@ -37,7 +37,7 @@ public enum OsFieldEnum implements OsField {
    branch_parent_id("parent-id"),
    branch_parent_tx_id("parent-tx-id"),
    branch_baseline_tx_id("baseline-tx-id"),
-   branch_inherit_access_control("inherits-access-control"),
+   branch_inherit_access_cntrl("inherits-access-control"),
    branch_associated_art_id("assoc-id"),
 
    tx_id("id"),

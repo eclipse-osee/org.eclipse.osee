@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 
 /**
  * Test Case for {@link OrcsScriptDslFormatter}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @InjectWith(OrcsScriptDslInjectorProvider.class)
@@ -99,7 +99,7 @@ public class OsFieldResolverTest {
    @Test
    public void testGetAllowedCollectTypes() {
       OsCollectType[] expecteds =
-         {OsCollectType.BRANCHES, OsCollectType.TXS, OsCollectType.ARTIFACTS, OsCollectType.ARTIFACTS};
+      {OsCollectType.BRANCHES, OsCollectType.TXS, OsCollectType.ARTIFACTS, OsCollectType.ARTIFACTS};
       int index = 0;
       for (Scope scope : Scope.values()) {
          OsCollectClause clause = newCollectClause(scope, "object-name");
@@ -121,7 +121,7 @@ public class OsFieldResolverTest {
       assertEquals(expected, allowedFields);
 
       // spot check
-      assertEquals(true, allowedFields.contains(OsFieldEnum.branch_inherit_access_control));
+      assertEquals(true, allowedFields.contains(OsFieldEnum.branch_inherit_access_cntrl));
       assertEquals(true, allowedFields.contains(OsFieldEnum.branch_type));
 
       Set<? extends OsField> declaredFields = resolver.getDeclaredFields(object);
@@ -142,7 +142,7 @@ public class OsFieldResolverTest {
       assertEquals(OsFieldEnum.branch_id, iterator.next());
       assertEquals(OsFieldEnum.branch_archive_state, iterator.next());
       assertEquals(OsFieldEnum.branch_parent_tx_id, iterator.next());
-      assertEquals(OsFieldEnum.branch_inherit_access_control, iterator.next());
+      assertEquals(OsFieldEnum.branch_inherit_access_cntrl, iterator.next());
       assertEquals(ERROR_FIELD, iterator.next());
 
       notAllowed = resolver.getNotAllowedDeclaredFields(object);

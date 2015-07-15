@@ -33,7 +33,7 @@ public enum ObjectField {
    branch_parent_id(TableEnum.BRANCH_TABLE, "parent_branch_id"),
    branch_parent_tx_id(TableEnum.BRANCH_TABLE, "parent_transaction_id"),
    branch_baseline_tx_id(TableEnum.BRANCH_TABLE, "baseline_transaction_id"),
-   branch_inherit_access_control(TableEnum.BRANCH_TABLE, "inherit_access_control"),
+   branch_inherit_access_cntrl(TableEnum.BRANCH_TABLE, "inherit_access_control"),
    branch_associated_art_id(TableEnum.BRANCH_TABLE, "associated_art_id"),
 
    tx_type(TableEnum.TX_DETAILS_TABLE, "tx_type"),
