@@ -44,7 +44,7 @@ public class CpaDuplicator {
 
    public XResultData duplicate() {
       XResultData rd = new XResultData(false);
-      ArtifactReadable cpaArt = atsServer.getArtifactById(duplicate.getCpaUuid());
+      ArtifactReadable cpaArt = (ArtifactReadable) atsServer.getArtifactById(duplicate.getCpaUuid());
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
       String duplicatePcrId = "";
       if (!Strings.isValid(atsId)) {
@@ -56,27 +56,24 @@ public class CpaDuplicator {
             if (cpaService == null) {
                rd.logErrorWithFormat("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
             } else {
-               IAtsChangeSet changes =
-                  atsServer.getStoreService().createAtsChangeSet("Duplicate for CPA " + duplicate.getCpaUuid(),
-                     AtsCoreUsers.SYSTEM_USER);
+               IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(
+                  "Duplicate for CPA " + duplicate.getCpaUuid(), AtsCoreUsers.SYSTEM_USER);
                IAtsTeamWorkflow cpaWf = atsServer.getWorkItemFactory().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
                if (Strings.isValid(duplicatePcrId)) {
                   rd.logErrorWithFormat("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
                } else {
                   String originatingPcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.OriginatingPcrId);
-                  duplicatePcrId =
-                     cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), duplicate.getVersionUuid(),
-                        originatingPcrId, rd);
+                  duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), duplicate.getVersionUuid(),
+                     originatingPcrId, rd);
                   if (Strings.isValid(duplicatePcrId)) {
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.DuplicatedPcrId, duplicatePcrId);
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.ApplicableToProgram, "Yes");
                   }
                   if (duplicate.isCompleteCpa()) {
-                     TransitionHelper helper =
-                        new TransitionHelper("Complete Applicability Workflow", Arrays.asList(cpaWf), "Completed",
-                           new ArrayList<IAtsUser>(), "", changes, atsServer.getServices(),
-                           TransitionOption.OverrideAssigneeCheck);
+                     TransitionHelper helper = new TransitionHelper("Complete Applicability Workflow",
+                        Arrays.asList(cpaWf), "Completed", new ArrayList<IAtsUser>(), "", changes,
+                        atsServer.getServices(), TransitionOption.OverrideAssigneeCheck);
                      IAtsUser asUser = atsServer.getUserService().getUserById(duplicate.getUserId());
                      if (asUser == null) {
                         rd.logErrorWithFormat("Invalid userId [%s].  Skipping.", asUser);

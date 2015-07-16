@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -76,7 +77,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    ArtifactReadable getArtifactByAtsId(String id);
 
    @Override
-   ArtifactReadable getArtifactById(String id);
+   ArtifactId getArtifactById(String id);
 
    QueryBuilder getQuery();
 

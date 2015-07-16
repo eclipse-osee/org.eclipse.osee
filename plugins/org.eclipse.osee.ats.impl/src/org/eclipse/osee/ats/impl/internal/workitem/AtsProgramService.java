@@ -35,8 +35,8 @@ import com.google.common.cache.CacheBuilder;
 public class AtsProgramService implements IAtsProgramService {
 
    private final IAtsServer atsServer;
-   private final Cache<IAtsTeamDefinition, IAtsProgram> cache = CacheBuilder.newBuilder().expireAfterAccess(1,
-      TimeUnit.HOURS).build();
+   private final Cache<IAtsTeamDefinition, IAtsProgram> cache =
+      CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).build();
 
    public AtsProgramService(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -73,7 +73,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgramByGuid(String guid) {
-      ArtifactReadable prgArt = atsServer.getArtifactById(guid);
+      ArtifactReadable prgArt = (ArtifactReadable) atsServer.getArtifactById(guid);
       return atsServer.getConfigItemFactory().getProgram(prgArt);
    }
 

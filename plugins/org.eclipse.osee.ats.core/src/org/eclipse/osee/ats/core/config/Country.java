@@ -22,8 +22,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class Country extends AtsConfigObject implements IAtsCountry {
 
-   public Country(Log logger, IAtsServices atsServer, ArtifactId artifact) {
-      super(logger, atsServer, artifact);
+   public Country(Log logger, IAtsServices services, ArtifactId artifact) {
+      super(logger, services, artifact);
    }
 
    @Override

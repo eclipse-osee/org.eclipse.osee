@@ -199,9 +199,8 @@ public class AtsServerImpl implements IAtsServer {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
-      workDefAdmin =
-         new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService,
-            attributeResolverService, teamWorkflowProvidersLazy);
+      workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService,
+         attributeResolverService, teamWorkflowProvidersLazy);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
@@ -218,9 +217,8 @@ public class AtsServerImpl implements IAtsServer {
       };
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
       actionableItemManager = new ActionableItemManager(config, attributeResolverService, atsStoreService);
-      actionFactory =
-         new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService, actionableItemManager,
-            userService, attributeResolverService, atsStateFactory, config, getServices());
+      actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService,
+         actionableItemManager, userService, attributeResolverService, atsStateFactory, config, getServices());
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
@@ -268,8 +266,8 @@ public class AtsServerImpl implements IAtsServer {
          if (atsObject.getStoreObject() != null) {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            result =
-               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(atsObject.getUuid()).getResults().getAtMostOneOrNull();
+            result = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+               atsObject.getUuid()).getResults().getAtMostOneOrNull();
          }
       }
       return result;
@@ -281,8 +279,8 @@ public class AtsServerImpl implements IAtsServer {
       if (atsObject.getStoreObject() != null) {
          result = (ArtifactReadable) atsObject.getStoreObject();
       } else {
-         result =
-            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(atsObject.getUuid()).getResults().getAtMostOneOrNull();
+         result = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+            atsObject.getUuid()).getResults().getAtMostOneOrNull();
       }
       return result;
    }
@@ -318,8 +316,8 @@ public class AtsServerImpl implements IAtsServer {
    public ArtifactReadable getArtifactByAtsId(String id) {
       ArtifactReadable artifact = null;
       try {
-         artifact =
-            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId, id).getResults().getOneOrNull();
+         artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(AtsAttributeTypes.AtsId,
+            id).getResults().getOneOrNull();
       } catch (ItemDoesNotExist ex) {
          // do nothing
       }
@@ -377,7 +375,7 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifactById(String id) {
+   public ArtifactId getArtifactById(String id) {
       ArtifactReadable action = null;
       if (GUID.isValid(id)) {
          action = getArtifactByGuid(id);
@@ -399,7 +397,8 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifactByUuid(long uuid) {
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(new Long(uuid).intValue()).getResults().getOneOrNull();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+         new Long(uuid).intValue()).getResults().getOneOrNull();
    }
 
    @Override
@@ -419,7 +418,7 @@ public class AtsServerImpl implements IAtsServer {
       for (String id : ids.split(",")) {
          id = id.replaceAll("^ +", "");
          id = id.replaceAll(" +$", "");
-         ArtifactReadable action = getArtifactById(id);
+         ArtifactReadable action = (ArtifactReadable) getArtifactById(id);
          if (action != null) {
             actions.add(action);
          }
@@ -436,8 +435,8 @@ public class AtsServerImpl implements IAtsServer {
    public String getConfigValue(String key) {
       String result = null;
       @SuppressWarnings("unchecked")
-      ArtifactReadable atsConfig =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+      ArtifactReadable atsConfig = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+         AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;
@@ -468,9 +467,8 @@ public class AtsServerImpl implements IAtsServer {
          } else {
             workItemNotificationProcessor =
                new WorkItemNotificationProcessor(logger, this, workItemFactory, userService, attributeResolverService);
-            notificationEventProcessor =
-               new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
-                  getConfigValue("NoReplyEmail"));
+            notificationEventProcessor = new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
+               getConfigValue("NoReplyEmail"));
             notificationEventProcessor.sendNotifications(notifications, notifiers);
          }
       }

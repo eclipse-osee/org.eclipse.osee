@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core;
 
 import org.eclipse.osee.ats.core.ai.AtsCore_AI_Suite;
 import org.eclipse.osee.ats.core.column.AtsCore_Column_JT_Suite;
+import org.eclipse.osee.ats.core.config.AtsCore_Config_JT_Suite;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsCore_InternalColumnEv_JT_Suite;
 import org.eclipse.osee.ats.core.internal.log.AtsTest_Internal_Log_Suite;
 import org.eclipse.osee.ats.core.internal.state.AtsCore_Internal_State_Suite;
@@ -31,6 +32,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsCore_AI_Suite.class,
    AtsCore_Column_JT_Suite.class,
+   AtsCore_Config_JT_Suite.class,
    AtsTest_Internal_Log_Suite.class,
    AtsCore_Internal_State_Suite.class,
    AtsCore_Internal_Util_Suite.class,
@@ -45,7 +47,7 @@ import org.junit.runners.Suite;
    AtsCore_Workflow_JT_Suite.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AllAtsCoreTestSuite {

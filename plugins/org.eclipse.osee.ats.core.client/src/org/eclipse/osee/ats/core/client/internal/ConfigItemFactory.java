@@ -27,7 +27,10 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.agile.AgileFeatureGroup;
 import org.eclipse.osee.ats.core.client.agile.AgileTeam;
 import org.eclipse.osee.ats.core.config.AbstractConfigItemFactory;
+import org.eclipse.osee.ats.core.config.Country;
 import org.eclipse.osee.ats.core.config.Program;
+import org.eclipse.osee.ats.core.insertion.Insertion;
+import org.eclipse.osee.ats.core.insertion.InsertionActivity;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -137,13 +140,25 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsInsertion getInsertion(ArtifactId object) {
-      throw new UnsupportedOperationException("getInsertion not implemented on client");
+   public IAtsInsertion getInsertion(ArtifactId artifact) {
+      IAtsInsertion result = null;
+      if (artifact instanceof IAtsInsertion) {
+         result = (IAtsInsertion) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Insertion)) {
+         result = new Insertion(logger, atsClient.getServices(), artifact);
+      }
+      return result;
    }
 
    @Override
-   public IAtsInsertionActivity getInsertionActivity(ArtifactId object) {
-      throw new UnsupportedOperationException("getInsertionActivity not implemented on client");
+   public IAtsInsertionActivity getInsertionActivity(ArtifactId artifact) {
+      IAtsInsertionActivity result = null;
+      if (artifact instanceof IAtsInsertionActivity) {
+         result = (IAtsInsertionActivity) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.InsertionActivity)) {
+         result = new InsertionActivity(logger, atsClient.getServices(), artifact);
+      }
+      return result;
    }
 
    @Override
@@ -184,8 +199,10 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsCountry getCountry(ArtifactId artifact) {
       IAtsCountry country = null;
-      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Country)) {
-         country = (IAtsCountry) atsClient.getConfigObject((Artifact) artifact);
+      if (artifact instanceof IAtsCountry) {
+         country = (IAtsCountry) artifact;
+      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Country)) {
+         country = new Country(logger, atsClient.getServices(), artifact);
       }
       return country;
    }

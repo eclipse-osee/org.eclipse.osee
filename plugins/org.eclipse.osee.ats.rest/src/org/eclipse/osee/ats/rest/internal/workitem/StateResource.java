@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -83,7 +83,7 @@ public final class StateResource {
       }
 
       if (operation.equals("transition")) {
-         ArtifactReadable action = atsServer.getArtifactById(id);
+         ArtifactId action = atsServer.getArtifactById(id);
          if (action == null) {
             return RestUtil.returnBadRequest(String.format("Action by id [%s] does not exist", id));
          }
@@ -91,9 +91,8 @@ public final class StateResource {
 
          IAtsChangeSet changes =
             atsServer.getStoreService().createAtsChangeSet("Transition Action - Server", transitionUser);
-         TransitionHelper helper =
-            new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState, workItem.getAssignees(),
-               reason, changes, atsServer.getServices(), TransitionOption.None);
+         TransitionHelper helper = new TransitionHelper("Transition " + id, Collections.singleton(workItem), toState,
+            workItem.getAssignees(), reason, changes, atsServer.getServices(), TransitionOption.None);
          helper.setTransitionUser(transitionUser);
          IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = mgr.handleAll();

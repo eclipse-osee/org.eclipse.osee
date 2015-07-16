@@ -65,7 +65,7 @@ public interface IAtsServices {
 
    IAtsWorkItemFactory getWorkItemFactory();
 
-   Object getArtifactById(String id);
+   ArtifactId getArtifactById(String id);
 
    IAtsConfigItemFactory getConfigItemFactory();
 

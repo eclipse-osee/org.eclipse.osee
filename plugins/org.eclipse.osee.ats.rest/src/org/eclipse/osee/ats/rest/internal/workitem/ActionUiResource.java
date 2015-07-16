@@ -67,8 +67,7 @@ public final class ActionUiResource {
       }
       if (workItems.size() == 1) {
          ActionPage page =
-            new ActionPage(logger, atsServer, (ArtifactReadable) workItems.iterator().next().getStoreObject(),
-               false);
+            new ActionPage(logger, atsServer, (ArtifactReadable) workItems.iterator().next().getStoreObject(), false);
          return page.generate();
       } else {
          String idStr = "";
@@ -92,7 +91,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getActionWithDetails(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = atsServer.getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsServer.getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
@@ -159,7 +158,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getTransition(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = atsServer.getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsServer.getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.column.CompletedByColumn;
 import org.eclipse.osee.ats.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
+import org.eclipse.osee.ats.column.CountryColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.DaysInCurrentStateColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
@@ -49,6 +50,8 @@ import org.eclipse.osee.ats.column.HoursSpentStateTasksColumn;
 import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.ImplementorColumnUI;
+import org.eclipse.osee.ats.column.InsertionActivityColumnUI;
+import org.eclipse.osee.ats.column.InsertionColumnUI;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.LocChangedColumn;
@@ -81,6 +84,7 @@ import org.eclipse.osee.ats.column.PercentCompleteWorkflowColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.ProgramColumnUI;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.ReleaseDateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
@@ -251,7 +255,11 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       RemainingPointsTotalColumn.getInstance(),
       PercentCompleteReviewsColumn.getInstance(),
       PercentCompleteTasksColumn.getInstance(),
-      PercentCompleteTasksReviewsColumn.getInstance()};
+      PercentCompleteTasksReviewsColumn.getInstance(),
+	  CountryColumnUI.getInstance(),
+      ProgramColumnUI.getInstance(),
+      InsertionColumnUI.getInstance(),
+      InsertionActivityColumnUI.getInstance()};
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
