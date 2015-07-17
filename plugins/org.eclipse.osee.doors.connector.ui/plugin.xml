@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.osee.doors.connector.ui.category"
+            name="Doors Result View">
+      </category>
+      <view
+            class="org.eclipse.osee.doors.connector.ui.perspectives.Doors"
+            icon="icons/hierarchical.gif"
+            id="org.eclipse.osee.doors.connector.ui.Doors"
+            name="Doors"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.osee.doors.connector.ui.perspectives.DoorsPerspective"
+            icon="icons/opendoor.gif"
+            id="org.eclipse.osee.doors.connector.ui.perspective"
+            name="Doors">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.osee.doors.connector.ui.perspective">
+         <view
+               id="org.eclipse.osee.doors.connector.ui.Doors"
+               minimized="false"
+               ratio="0.3f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.osee.doors.connector.core.doorsCommand"
+            name="Doors OSLC">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.doors.connector.ui.handler.DoorsOSLCUIHandler"
+            commandId="org.eclipse.osee.doors.connector.core.doorsCommand">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="org.eclipse.osee.doors.connector.ui.Doorsmenu"
+               label="Doors">
+            <command
+                  commandId="org.eclipse.osee.doors.connector.core.doorsCommand"
+                  label="Doors OSLC"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.eclipse.osee.doors.connector.ui.DoorsViewAction"
+            targetID="org.eclipse.osee.doors.connector.ui.Doors">
+         <action
+               class="org.eclipse.osee.doors.connector.ui.handler.RefreshAction"
+               icon="icons/refresh.gif"
+               id="org.eclipse.osee.doors.connector.ui.refreshAction"
+               label="Refresh"
+               state="false"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Refresh the browser">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.osee.doors.connector.core.DWAConstants">
+      <class
+            class="org.eclipse.osee.doors.connector.core.oauth.AbstractOSLCDWAProviderInfo">
+      </class>
+   </extension>
+
+</plugin>
