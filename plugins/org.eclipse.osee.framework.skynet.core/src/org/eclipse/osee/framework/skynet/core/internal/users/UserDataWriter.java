@@ -62,9 +62,8 @@ public class UserDataWriter {
          user.setActive(userToken.isActive());
       } else {
          String guid = GUID.isValid(userToken.getGuid()) ? userToken.getGuid() : GUID.create();
-         user =
-            (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
-               userToken.getName(), guid);
+         user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
+            userToken.getName(), guid);
          user.setActive(userToken.isActive());
          user.setUserID(userToken.getUserId());
          user.setEmail(userToken.getEmail());
@@ -103,10 +102,10 @@ public class UserDataWriter {
    }
 
    private void addUserToUserGroups(Artifact user) throws OseeCoreException {
-      Collection<Artifact> userGroups =
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.UserGroup,
-            CoreAttributeTypes.DefaultGroup, "true", CoreBranches.COMMON);
-      for (Artifact userGroup : userGroups) {
+      Collection<Artifact> defaultGroups =
+         ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.DefaultGroup, "true", CoreBranches.COMMON);
+
+      for (Artifact userGroup : defaultGroups) {
          userGroup.addRelation(CoreRelationTypes.Users_User, user);
       }
    }
