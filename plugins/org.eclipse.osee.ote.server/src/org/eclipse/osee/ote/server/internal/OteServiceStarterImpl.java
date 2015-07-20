@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.URI;
@@ -192,7 +193,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		      strUri = String.format("tcp://%s:%d", addressAsString, brokerPort);
 		      try {
 		         brokerService.addConnector(strUri);
-		         OseeLog.log(getClass(), Level.INFO, "Added TCP connector: " + strUri);			
+		         OseeLog.log(getClass(), Level.FINE, "Added TCP connector: " + strUri);			
 		      } catch (Exception e) {
 		         OseeLog.log(getClass(), Level.SEVERE, "could not add connector for " + strUri, e);
 		         strUri = "vm://localhost?broker.persistent=false";
@@ -241,7 +242,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			      masterURI = new URI(masterURIStr);
 			      oteServerEntry = createOTEServer(nodeInfo, environmentCreationParameter, propertyParameter, service.getServiceID().toString());
 			      lookupRegistration = new LookupRegistration(masterURI, masterServer, oteServerEntry, service);
-			      taskToCancel = executor.scheduleAtFixedRate(lookupRegistration, 0, 30, TimeUnit.SECONDS);
+			      taskToCancel = executor.scheduleWithFixedDelay(lookupRegistration, 0, 30, TimeUnit.SECONDS);
 			   } catch(Throwable th){
 			      OseeLog.log(getClass(), Level.SEVERE, th);
 			   }
@@ -254,7 +255,8 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		}
 		
 		FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(IHostTestEnvironment.class, service, null);
-		
+		System.out.printf("TEST SERVER INITIALIZATION COMPLETE\n");
+
 		return service;
 	}
 	
@@ -420,7 +422,15 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
          try{
             if(run){
                server.setConnectedUsers(service.getProperties().getProperty("user_list", "N.A.").toString());
-               masterServer.addServer(uri, server);
+               Future<OTEMasterServerResult> result = masterServer.addServer(uri, server);
+               OTEMasterServerResult addServerResult = result.get(30, TimeUnit.SECONDS);
+               if(!(addServerResult != null && addServerResult.isSuccess())){
+                  try{
+                     Thread.sleep(1000*60*3);//wait 3 minutes before trying again
+                  } catch(Throwable th){
+                     //don't care if we're woken up
+                  }
+               }
             }
          } catch (Throwable th){
             th.printStackTrace();
