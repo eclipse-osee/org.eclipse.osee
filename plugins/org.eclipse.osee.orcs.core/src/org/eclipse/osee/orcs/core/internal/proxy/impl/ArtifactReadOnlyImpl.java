@@ -41,7 +41,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author Megumi Telles
  */
-public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements ArtifactReadable {
+public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements ArtifactReadable {
 
    private final RelationManager relationManager;
 
@@ -288,6 +288,14 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public long getUuid() {
       return getLocalId();
+   }
+
+   /*
+    * Provide easy way to display/report [name][uuid]
+    */
+   @Override
+   public final String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getUuid());
    }
 
 }

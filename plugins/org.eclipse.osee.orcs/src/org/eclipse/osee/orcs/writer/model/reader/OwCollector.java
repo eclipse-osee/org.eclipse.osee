@@ -94,6 +94,9 @@ public class OwCollector {
    }
 
    public List<OwArtifact> getUpdate() {
+      if (update == null) {
+         update = new LinkedList<OwArtifact>();
+      }
       return update;
    }
 

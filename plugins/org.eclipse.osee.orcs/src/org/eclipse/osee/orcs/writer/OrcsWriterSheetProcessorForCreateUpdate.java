@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.writer.model.reader.OwRelationType;
 /**
  * @author Donald G. Dunne
  */
-public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
+public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
 
    private final OwCollector collector;
    private final Map<Integer, OwAttributeType> columnToAttributeType = new HashMap<>();
@@ -39,9 +39,11 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
    private Integer artTokenColumn = null, nameColumn = null;
    private int rowCount = 0;
    private final OrcsWriterFactory factory;
+   private final boolean createSheet;
 
-   public OrcsWriterSheetProcessorForCreate(OwCollector collector, XResultData result) {
+   public OrcsWriterSheetProcessorForCreateUpdate(OwCollector collector, XResultData result, boolean createSheet) {
       this.collector = collector;
+      this.createSheet = createSheet;
       this.factory = new OrcsWriterFactory(collector);
    }
 
@@ -78,11 +80,10 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
       rowCount++;
       for (int colCount = 0; colCount < headerRow.length; colCount++) {
          String value = headerRow[colCount];
-         System.err.println(String.format("Header [%s]", value));
          if (value != null) {
             if (value.toLowerCase().equals("name")) {
                if (nameColumn != null) {
-                  throw new OseeArgumentException("Can't have multiple Name columns");
+                  throw new OseeArgumentException("Can't have multiple Name columns on %s sheet", getSheetName());
                }
                nameColumn = colCount;
             } else if (value.toLowerCase().equals("attribute")) {
@@ -97,18 +98,23 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
                collector.getRelTypes().add(relType);
             } else if (value.toLowerCase().startsWith("new art token")) {
                if (artTokenColumn != null) {
-                  throw new OseeArgumentException("Can't have multiple \"New Art Token\" columns");
+                  throw new OseeArgumentException("Can't have multiple \"New Art Token\" columns on %s sheet",
+                     getSheetName());
                }
                artTokenColumn = colCount;
             }
          }
       }
       if (nameColumn == null) {
-         throw new OseeArgumentException("Name column must be present");
+         throw new OseeArgumentException("Name column must be present on %s sheet", getSheetName());
       }
       if (artTokenColumn == null) {
-         throw new OseeArgumentException("Artifact Token column must be present");
+         throw new OseeArgumentException("Artifact Token column must be present on %s sheet", getSheetName());
       }
+   }
+
+   private String getSheetName() {
+      return createSheet ? "CREATE" : "UPDATE";
    }
 
    @Override
@@ -131,20 +137,43 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
             }
          }
       } else if (rowCount > 2) {
-         collector.getCreate().add(artifact);
+         if (createSheet) {
+            collector.getCreate().add(artifact);
+         } else {
+            collector.getUpdate().add(artifact);
+         }
          for (int colCount = 0; colCount < row.length; colCount++) {
-            System.err.print(colCount + ", ");
             if (colCount == 0) {
                String value = row[0];
-               if (!Strings.isValid(value)) {
-                  throw new OseeArgumentException("First column must contain artifact type.  row number " + rowCount);
-               } else {
-                  OwArtifactType artType = factory.getOrCreateArtifactType(value);
-                  if (artType == null) {
-                     throw new OseeArgumentException("Invalid Artifact Type row %d value [%s]; expected [name]-[uuid]",
-                        rowCount, value);
+               // First column of create sheet is artifact type token
+               if (createSheet) {
+                  if (!Strings.isValid(value)) {
+                     throw new OseeArgumentException(
+                        "First column must contain artifact type.  row number on CREATE sheet" + rowCount);
+                  } else {
+                     OwArtifactType artType = factory.getOrCreateArtifactType(value);
+                     if (artType == null) {
+                        throw new OseeArgumentException(
+                           "Invalid Artifact Type row %d value [%s]; expected [name]-[uuid] on CREATE sheet", rowCount,
+                           value);
+                     }
+                     artifact.setType(artType);
                   }
-                  artifact.setType(artType);
+               }
+               // Else, first column of update sheet is artifact token
+               else {
+                  if (!Strings.isValid(value)) {
+                     throw new OseeArgumentException(
+                        "First column must contain artifact token.  row number %d on UPDATE sheet", rowCount);
+                  } else {
+                     OwArtifactToken artifactToken = factory.getOrCreateToken(value);
+                     if (artifactToken == null) {
+                        throw new OseeArgumentException(
+                           "Invalid Artifact Token row %d value [%s]; expected [name]-[uuid] on UPDATE sheet", rowCount,
+                           value);
+                     }
+                     artifact.setUuid(artifactToken.getUuid());
+                  }
                }
             }
             if (artTokenColumn == colCount) {
@@ -154,8 +183,8 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
                   if (token.getUuid() > 0L) {
                      artifact.setUuid(token.getUuid());
                   } else {
-                     System.out.println(String.format("Unexpected string [%s] at %s; expected [name]-[uuid]", value,
-                        OrcsWriterUtil.getRowColumnStr(colCount, colCount)));
+                     throw new OseeStateException("Unexpected string [%s] at %s; expected [name]-[uuid] on sheet",
+                        value, OrcsWriterUtil.getRowColumnStr(colCount, colCount), getSheetName());
                   }
                }
             }
@@ -164,23 +193,21 @@ public class OrcsWriterSheetProcessorForCreate implements RowProcessor {
                if (Strings.isValid(value)) {
                   artifact.setName(value);
                } else {
-                  System.out.println(String.format("Unexpected Name [%s] at %s", value,
-                     OrcsWriterUtil.getRowColumnStr(colCount, colCount)));
+                  throw new OseeStateException("Unexpected Name [%s] at %s on %s sheet", value,
+                     OrcsWriterUtil.getRowColumnStr(colCount, colCount), getSheetName());
                }
             }
             if (colCount > 2) {
                if (isAttributeColumn(colCount)) {
                   OwAttributeType attrType = columnToAttributeType.get(colCount);
                   if (attrType.getName().equals(CoreAttributeTypes.Name.getName())) {
-                     throw new OseeStateException("Name cannot also exist as attribute column at %s",
-                        OrcsWriterUtil.getRowColumnStr(rowCount, colCount));
+                     throw new OseeStateException("Name cannot also exist as attribute column at %s on %s sheet",
+                        OrcsWriterUtil.getRowColumnStr(rowCount, colCount), getSheetName());
                   }
                   String value = row[colCount];
-                  if (Strings.isValid(value)) {
-                     OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
-                     attr.getValues().add(value);
-                     attr.setData(OrcsWriterUtil.getData(rowCount, colCount, attr.getData()));
-                  }
+                  OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
+                  attr.getValues().add(value);
+                  attr.setData(OrcsWriterUtil.getData(rowCount, colCount, attr.getData()));
                } else if (isRelationColumn(colCount)) {
                   OwRelationType relType = columnToRelationType.get(colCount);
                   String value = row[colCount];

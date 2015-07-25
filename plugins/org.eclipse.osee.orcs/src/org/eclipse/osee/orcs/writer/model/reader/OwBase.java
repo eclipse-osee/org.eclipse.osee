@@ -31,6 +31,10 @@ public class OwBase implements UuidIdentity {
       return uuid;
    }
 
+   public boolean uuidIsSet() {
+      return uuid != 0L;
+   }
+
    public void setUuid(long uuid) {
       this.uuid = uuid;
    }

@@ -57,10 +57,11 @@ public class OrcsWriterExcelReader {
    private static final class ExcelRowProcessor implements RowProcessor {
 
       private final OwCollector collector;
-      private OrcsWriterSheetProcessorForCreate createSheet;
+      private OrcsWriterSheetProcessorForCreateUpdate createSheet;
       private OrcsWriterSheetProcessorForSettings settingsSheet;
       private String sheetName = "";
       private final XResultData result;
+      private OrcsWriterSheetProcessorForCreateUpdate updateSheet;
 
       public ExcelRowProcessor(OwCollector collector, XResultData result) {
          this.collector = collector;
@@ -77,7 +78,10 @@ public class OrcsWriterExcelReader {
          System.out.println("Processing Sheet " + sheetName);
          this.sheetName = sheetName;
          if (sheetName.equals(OrcsWriterUtil.CREATE_SHEET_NAME)) {
-            createSheet = new OrcsWriterSheetProcessorForCreate(collector, result);
+            createSheet = new OrcsWriterSheetProcessorForCreateUpdate(collector, result, true);
+            return;
+         } else if (sheetName.equals(OrcsWriterUtil.UPDATE_SHEET_NAME)) {
+            updateSheet = new OrcsWriterSheetProcessorForCreateUpdate(collector, result, false);
             return;
          } else if (sheetName.equals(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME)) {
             settingsSheet = new OrcsWriterSheetProcessorForSettings(collector, result);
@@ -99,11 +103,17 @@ public class OrcsWriterExcelReader {
       public void processHeaderRow(String[] headerRow) {
          if (isCreateSheet()) {
             createSheet.processHeaderRow(headerRow);
+         } else if (isUpdateSheet()) {
+            updateSheet.processHeaderRow(headerRow);
          }
       }
 
       private boolean isCreateSheet() {
          return sheetName.equals(OrcsWriterUtil.CREATE_SHEET_NAME);
+      }
+
+      private boolean isUpdateSheet() {
+         return sheetName.equals(OrcsWriterUtil.UPDATE_SHEET_NAME);
       }
 
       private boolean isSettingsSheet() {
@@ -113,10 +123,20 @@ public class OrcsWriterExcelReader {
       @Override
       public void processRow(String[] row) throws OseeCoreException {
          if (isCreateSheet()) {
-            createSheet.processRow(row);
+            processCreateSheetRow(row);
+         } else if (isUpdateSheet()) {
+            processUpdateSheetRow(row);
          } else if (isSettingsSheet()) {
             settingsSheet.processRow(row);
          }
+      }
+
+      private void processUpdateSheetRow(String[] row) {
+         updateSheet.processRow(row);
+      }
+
+      private void processCreateSheetRow(String[] row) {
+         createSheet.processRow(row);
       }
 
       @Override
