@@ -30,7 +30,7 @@ public class EndpointComponent implements OteUdpEndpoint {
             port = PortUtil.getInstance().getValidPort();
          }
          receiver = new OteUdpEndpointReceiverImpl(new InetSocketAddress(InetAddress.getLocalHost(), port));
-      } catch (IOException e) {
+      } catch (Throwable e) {
          e.printStackTrace();
       }
    }
