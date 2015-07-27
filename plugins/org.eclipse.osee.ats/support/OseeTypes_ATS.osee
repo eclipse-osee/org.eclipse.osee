@@ -231,6 +231,8 @@ artifactType "Work Package" extends "Artifact" {
 	attribute "Notes"
 	attribute "ats.Points Numeric"
 	attribute "ats.Description"
+   attribute "ats.Estimated Hours"
+	attribute "ats.IPT"
 }
 
 artifactType "Task" extends "ats.State Machine" {
