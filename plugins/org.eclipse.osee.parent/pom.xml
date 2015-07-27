@@ -538,30 +538,6 @@
 			</build>
 		</profile>
 
-		<profile>
-			<id>sonar</id>
-			<activation>
-				<property>
-					<name>allow-sonar</name>
-				</property>
-			</activation>
-			<properties>
-				<sonar.language>java</sonar.language>
-				<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-				<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-
-				<sonar.jdbc.url>jdbc:postgresql://osee-build.msc.az.boeing.com:5432/sonar</sonar.jdbc.url>
-				<sonar.jdbc.driverClassName>org.postgresql.Driver</sonar.jdbc.driverClassName>
-				<sonar.jdbc.username>sonar</sonar.jdbc.username>
-				<sonar.jdbc.password>sonar</sonar.jdbc.password>
-
-				<sonar.host.url>http://osee-build.msc.az.boeing.com:9000/sonar</sonar.host.url>
-
-				<sonar.jacoco.reportPath>${project.build.directory}/coverage/jacoco.exec</sonar.jacoco.reportPath>
-				<sonar.surefire.reportsPath>../${project.artifactId}.tests/target/surefire-reports/</sonar.surefire.reportsPath>
-				<sonar.skippedModules>${project.artifactId}.test</sonar.skippedModules>
-			</properties>
-		</profile>
 
 		<profile>
 			<id>code-coverage</id>
