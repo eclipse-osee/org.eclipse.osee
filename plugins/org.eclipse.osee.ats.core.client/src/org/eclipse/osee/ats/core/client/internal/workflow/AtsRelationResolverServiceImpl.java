@@ -144,4 +144,14 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       return related;
    }
 
+   @Override
+   public int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType) {
+      Artifact artifact = getArtifact(workItem);
+      int count = 0;
+      if (artifact != null) {
+         count = artifact.getRelatedArtifactsCount(relationType);
+      }
+      return count;
+   }
+
 }

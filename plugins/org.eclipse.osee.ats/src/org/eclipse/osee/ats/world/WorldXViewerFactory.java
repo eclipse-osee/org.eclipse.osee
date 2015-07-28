@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsIdColumn;
+import org.eclipse.osee.ats.column.BacklogColumnUI;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
 import org.eclipse.osee.ats.column.CancelledByColumn;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
@@ -162,6 +163,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ResolutionColumn.getInstance(),
       GroupsColumn.getInstance(),
       GoalsColumn.getInstance(),
+      BacklogColumnUI.getInstance(),
       SprintColumn.getInstance(),
       EstimatedReleaseDateColumn.getInstance(),
       EstimatedCompletionDateColumn.getInstance(),

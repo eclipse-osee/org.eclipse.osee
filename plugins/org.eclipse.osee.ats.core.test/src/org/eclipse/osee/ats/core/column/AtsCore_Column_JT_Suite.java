@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    ActionableItemsColumnTest.class,
    AssigneeColumnTest.class,
+   BacklogColumnTest.class,
    CountryColumnTest.class,
    ImplementersColumnTest.class,
    InsertionColumnTest.class,
