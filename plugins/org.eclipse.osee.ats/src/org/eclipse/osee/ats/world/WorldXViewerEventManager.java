@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * Common location for event handling for task and world composites in order to keep number of registrations and
  * processing to a minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorldXViewerEventManager {
@@ -107,7 +107,7 @@ public class WorldXViewerEventManager {
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.Goal_Member)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
-               if (cachedArt.isOfType(AtsArtifactTypes.Goal)) {
+               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.Goal)) {
                   goalMemberReordered.add(cachedArt);
                }
             }
@@ -116,7 +116,7 @@ public class WorldXViewerEventManager {
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.AgileSprintToItem_AtsItem)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
-               if (cachedArt.isOfType(AtsArtifactTypes.Goal)) {
+               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.Goal)) {
                   sprintMemberReordered.add(cachedArt);
                }
             }
