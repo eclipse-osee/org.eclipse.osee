@@ -21,6 +21,10 @@ public class EndpointComponent implements OteUdpEndpoint {
    private boolean debug = false;
    
    public EndpointComponent(){
+     
+   }
+   
+   public void start(){
       int port;
       try {
          String strPort = OtePropertiesCore.endpointPort.getValue(Integer.toString(PortUtil.getInstance().getValidPort()));
@@ -30,14 +34,11 @@ public class EndpointComponent implements OteUdpEndpoint {
             port = PortUtil.getInstance().getValidPort();
          }
          receiver = new OteUdpEndpointReceiverImpl(new InetSocketAddress(InetAddress.getLocalHost(), port));
+         receiver.start();
+         setDebugOutput(false);
       } catch (Throwable e) {
          e.printStackTrace();
       }
-   }
-   
-   public void start(){
-      receiver.start();
-      setDebugOutput(false);
    }
    
    public synchronized void stop(){
