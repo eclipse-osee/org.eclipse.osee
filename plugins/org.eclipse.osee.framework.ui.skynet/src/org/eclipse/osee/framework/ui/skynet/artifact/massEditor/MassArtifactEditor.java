@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -158,6 +159,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
+            ArtifactQuery.reloadArtifacts(xViewer.getArtifacts(), false);
             xViewer.refresh();
          }
       });
@@ -188,10 +190,10 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
    public void dispose() {
       super.dispose();
 
-      for (Artifact taskArt : xViewer.getArtifacts()) {
+      for (Artifact artifact : xViewer.getArtifacts()) {
          try {
-            if (taskArt != null && !taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
-               taskArt.reloadAttributesAndRelations();
+            if (artifact != null && !artifact.isDeleted() && artifact.hasDirtyAttributes()) {
+               artifact.reloadAttributesAndRelations();
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -205,8 +207,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
 
    @Override
    public boolean isDirty() {
-      for (Artifact taskArt : xViewer.getArtifacts()) {
-         if (!taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
+      for (Artifact artifact : xViewer.getArtifacts()) {
+         if (!artifact.isDeleted() && artifact.hasDirtyAttributes()) {
             return true;
          }
       }

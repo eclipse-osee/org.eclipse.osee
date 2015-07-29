@@ -522,12 +522,12 @@ public class ArtifactQuery {
       QueryOption matchWordOrder = QueryOption.getTokenOrderType(isMatchWordOrder);
       Collection<IAttributeType> typesToSearch =
          attributeTypes.length == 0 ? Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
-      queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
-      List<Artifact> toReturn = new LinkedList<Artifact>();
-      for (Artifact art : queryBuilder.getResults()) {
-         toReturn.add(art);
-      }
-      return toReturn;
+         queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
+         List<Artifact> toReturn = new LinkedList<Artifact>();
+         for (Artifact art : queryBuilder.getResults()) {
+            toReturn.add(art);
+         }
+         return toReturn;
    }
 
    /**
@@ -553,13 +553,13 @@ public class ArtifactQuery {
 
       Collection<IAttributeType> typesToSearch =
          Conditions.hasValues(options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-      queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
+         queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
 
-      if (Conditions.hasValues(options.getArtifactTypeFilter())) {
-         queryBuilder.andIsOfType(options.getArtifactTypeFilter());
-      }
+         if (Conditions.hasValues(options.getArtifactTypeFilter())) {
+            queryBuilder.andIsOfType(options.getArtifactTypeFilter());
+         }
 
-      return queryBuilder.getMatches();
+         return queryBuilder.getMatches();
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
@@ -570,6 +570,10 @@ public class ArtifactQuery {
    }
 
    public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      return reloadArtifacts(artifacts, true);
+   }
+
+   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts, boolean sendRemoteEvent) throws OseeCoreException {
       Collection<Artifact> reloadedArts = new ArrayList<Artifact>(artifacts.size());
       HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
       if (artifacts.isEmpty()) {
@@ -589,7 +593,9 @@ public class ArtifactQuery {
          ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, ALL);
 
          reloadedArts.addAll(query.reloadArtifacts(artIds.size()));
-         OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         if (sendRemoteEvent) {
+            OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         }
          artIds.clear();
       }
       return reloadedArts;
