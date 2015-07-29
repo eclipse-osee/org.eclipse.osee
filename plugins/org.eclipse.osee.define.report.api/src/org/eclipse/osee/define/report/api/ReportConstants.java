@@ -22,6 +22,7 @@ public class ReportConstants {
    //regex
    public static final String FTR = "<w:ftr[\\s\\S]+?</w:ftr>";
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
+   public static final String ENTIRE_FTR = "<w:sectPr[\\s\\S]+?<w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
 
    //wordml
    public static final String PG_SZ = "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/>";

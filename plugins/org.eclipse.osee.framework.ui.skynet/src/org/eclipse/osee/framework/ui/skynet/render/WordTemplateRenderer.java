@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -178,6 +179,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             data = WordUtil.reassignBookMarkID(data);
+            // remove any existing footers and replace with the current one
+            data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.concat(footer);
          }
 
