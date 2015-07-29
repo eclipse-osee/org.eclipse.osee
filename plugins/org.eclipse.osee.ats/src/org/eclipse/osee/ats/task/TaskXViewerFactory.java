@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
+import org.eclipse.osee.ats.world.WorldXViewerUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 
@@ -40,11 +41,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
-   public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns = Arrays.asList(
-      TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumnUI.getInstance(),
-      PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
-      EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
-      NotesColumn.getInstance());
+   public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns =
+      Arrays.asList(TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumnUI.getInstance(),
+         PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
+         EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
+         NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {
@@ -75,6 +76,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      WorldXViewerUtil.registerConfigurationsColumns(this);
       registerAllAttributeColumns();
    }
 
