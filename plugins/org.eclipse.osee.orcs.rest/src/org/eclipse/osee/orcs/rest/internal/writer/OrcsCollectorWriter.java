@@ -73,7 +73,11 @@ public class OrcsCollectorWriter {
    private void processUpdate(XResultData results) {
       for (OwArtifact owArtifact : collector.getUpdate()) {
          ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
-            owArtifact.getUuid()).getResults().getExactlyOne();
+            owArtifact.getUuid()).getResults().getAtMostOneOrNull();
+
+         if (artifact == null) {
+            throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
+         }
 
          for (OwAttribute owAttribute : owArtifact.getAttributes()) {
             IAttributeType attrType = getAttributeType(owAttribute.getType());
@@ -234,6 +238,7 @@ public class OrcsCollectorWriter {
          } else {
             otherArtifact = orcsApi.getQueryFactory().fromBranch(branchUuid).andUuid(
                artToken.getUuid()).getResults().getExactlyOne();
+            uuidToArtifact.put(artToken.getUuid(), otherArtifact);
          }
          if (relation.getType().isSideA()) {
             getTransaction().relate(otherArtifact, relType, artifact);
@@ -247,7 +252,8 @@ public class OrcsCollectorWriter {
       for (OwAttribute owAttribute : owArtifact.getAttributes()) {
          if (!CoreAttributeTypes.Name.getGuid().equals(owAttribute.getType().getUuid())) {
             OwAttributeType owAttrType = owAttribute.getType();
-            IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(owAttrType.getUuid());
+            IAttributeType attrType = getAttributeType(owAttrType);
+
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {
                if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {

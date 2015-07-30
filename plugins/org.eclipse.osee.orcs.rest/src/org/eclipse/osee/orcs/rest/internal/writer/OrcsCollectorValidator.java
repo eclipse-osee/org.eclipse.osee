@@ -153,10 +153,13 @@ public class OrcsCollectorValidator {
       for (OwAttribute attribute : artifact.getAttributes()) {
          OwAttributeType attrType = attribute.getType();
          if (attrType == null || attrType.getUuid() <= 0L) {
-            results.logErrorWithFormat("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
+            if (!helper.isAttributeTypeExists(attrType.getName())) {
+               results.logErrorWithFormat("Invalid Attribute Type uuid [%s] for artifact [%s].\n", attrType, artifact);
+            }
          } else {
             if (!helper.isAttributeTypeExists(attrType.getUuid())) {
-               results.logErrorWithFormat("Attribute Type [%s] does not exist for artifact [%s].\n", attrType, artifact);
+               results.logErrorWithFormat("Attribute Type [%s] does not exist for artifact [%s].\n", attrType,
+                  artifact);
             }
          }
       }
@@ -164,7 +167,8 @@ public class OrcsCollectorValidator {
 
    private boolean validateBranch(XResultData results) {
       boolean valid = true;
-      if (collector.getBranch() == null || collector.getBranch().getUuid() <= 0L || !helper.isBranchExists(collector.getBranch().getUuid())) {
+      if (collector.getBranch() == null || collector.getBranch().getUuid() <= 0L || !helper.isBranchExists(
+         collector.getBranch().getUuid())) {
          results.logErrorWithFormat("Branch [%s] not valid.\n", collector.getBranch());
          valid = false;
       }
