@@ -50,8 +50,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -90,7 +89,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
          return;
       }
       if (resultNonAtsArts.size() > 0) {
-         RendererManager.openInJob(new ArrayList<Artifact>(resultNonAtsArts), PresentationType.DEFAULT_OPEN);
+         MassArtifactEditor.editArtifacts("Open Artifact(s)", new ArrayList<Artifact>(resultNonAtsArts));
       }
       if (resultAtsArts.size() > 0) {
          // If requested world editor and it's already been opened there,
@@ -114,16 +113,16 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-               if (AtsClientService.get().getBranchService().isCommittedBranchExists(team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
-                  team)) {
+               if (AtsClientService.get().getBranchService().isCommittedBranchExists(
+                  team) || AtsClientService.get().getBranchService().isWorkingBranchInWork(team)) {
                   addedArts.add(team);
                }
             }
          }
          if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
-               teamArt)) {
+            if (AtsClientService.get().getBranchService().isCommittedBranchExists(
+               teamArt) || AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
                addedArts.add(artifact);
             }
          }
@@ -147,10 +146,9 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                artDecorator.setShowArtBranch(true);
                artDecorator.setShowArtType(true);
                artDecorator.setShowRelations(false);
-               FilteredCheckboxTreeDialog dialog =
-                  new FilteredCheckboxTreeDialog("Select Available Change Reports",
-                     "Select available Change Reports to run.", new ArrayTreeContentProvider(),
-                     new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
+               FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog("Select Available Change Reports",
+                  "Select available Change Reports to run.", new ArrayTreeContentProvider(),
+                  new ArtifactLabelProvider(artDecorator), new AtsObjectNameSorter());
                dialog.setInput(addedArts);
                if (dialog.open() == 0) {
                   if (dialog.getResult().length == 0) {
@@ -208,8 +206,8 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    }
 
    private void searchAndSplitResults() throws OseeCoreException {
-      resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(),
-         (Collection<IAtsTeamDefinition>) null));
+      resultAtsArts.addAll(
+         LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(), (Collection<IAtsTeamDefinition>) null));
 
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
