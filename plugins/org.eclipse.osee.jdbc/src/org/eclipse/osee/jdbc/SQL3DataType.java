@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
-import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,7 +24,7 @@ public enum SQL3DataType {
    TINYINT(java.sql.Types.TINYINT, Integer.class),
    SMALLINT(java.sql.Types.SMALLINT, Integer.class),
    INTEGER(java.sql.Types.INTEGER, Integer.class),
-   BIGINT(java.sql.Types.BIGINT, BigInteger.class),
+   BIGINT(java.sql.Types.BIGINT, Long.class),
    FLOAT(java.sql.Types.FLOAT, Float.class),
    REAL(java.sql.Types.REAL, Double.class),
    DOUBLE(java.sql.Types.DOUBLE, Double.class),

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getObjectField;
+import java.sql.Timestamp;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -93,30 +94,52 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    private Object getValue(JdbcStatement chStmt, ObjectField field, String columnName) {
-      Object object = chStmt.getObject(columnName);
+      Object object = null;
       switch (field) {
          case branch_type:
-            object = getBranchType(object);
+            object = getBranchType(chStmt, columnName);
             break;
          case branch_state:
-            object = getBranchState(object);
+            object = getBranchState(chStmt, columnName);
             break;
          case branch_archive_state:
-            object = getBranchArchivedState(object);
+            object = getBranchArchivedState(chStmt, columnName);
             break;
          case tx_type:
-            object = getTxType(object);
+            object = getTxType(chStmt, columnName);
             break;
          case tx_current:
-            object = getTxCurrent(object);
+            object = getTxCurrent(chStmt, columnName);
             break;
          case art_mod_type:
          case attr_mod_type:
          case rel_mod_type:
-            object = getModType(object);
+            object = getModType(chStmt, columnName);
             break;
          default:
+            object = getObjectByType(chStmt, field, columnName);
             break;
+      }
+      return object;
+   }
+
+   private Object getObjectByType(JdbcStatement chStmt, ObjectField field, String columnName) {
+      Object object;
+      Class<?> clazz = field.getSQLType().getJavaEquivalentClass();
+      if (clazz.equals(Boolean.class)) {
+         object = chStmt.getBoolean(columnName);
+      } else if (clazz.equals(Integer.class)) {
+         object = chStmt.getInt(columnName);
+      } else if (clazz.equals(Long.class)) {
+         object = chStmt.getLong(columnName);
+      } else if (clazz.equals(Double.class)) {
+         object = chStmt.getDouble(columnName);
+      } else if (clazz.equals(Timestamp.class)) {
+         object = chStmt.getTimestamp(columnName);
+      } else if (clazz.equals(String.class)) {
+         object = chStmt.getString(columnName);
+      } else {
+         object = chStmt.getObject(columnName);
       }
       return object;
    }
@@ -147,28 +170,27 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
       return proxyFactory.createProxy(typeUuid, value, uri);
    }
 
-   private BranchType getBranchType(Object object) {
-      return BranchType.valueOf((Integer) object);
+   private BranchType getBranchType(JdbcStatement chStmt, String columnName) {
+      return BranchType.valueOf(chStmt.getInt(columnName));
    }
 
-   private BranchState getBranchState(Object object) {
-      return BranchState.getBranchState((Integer) object);
+   private BranchState getBranchState(JdbcStatement chStmt, String columnName) {
+      return BranchState.getBranchState(chStmt.getInt(columnName));
    }
 
-   private BranchArchivedState getBranchArchivedState(Object object) {
-      return BranchArchivedState.valueOf((Integer) object);
+   private BranchArchivedState getBranchArchivedState(JdbcStatement chStmt, String columnName) {
+      return BranchArchivedState.valueOf(chStmt.getInt(columnName));
    }
 
-   private TransactionDetailsType getTxType(Object object) {
-      return TransactionDetailsType.toEnum((Integer) object);
+   private TransactionDetailsType getTxType(JdbcStatement chStmt, String columnName) {
+      return TransactionDetailsType.toEnum(chStmt.getInt(columnName));
    }
 
-   private ModificationType getModType(Object object) {
-      return ModificationType.getMod((Integer) object);
+   private ModificationType getModType(JdbcStatement chStmt, String columnName) {
+      return ModificationType.getMod(chStmt.getInt(columnName));
    }
 
-   private TxChange getTxCurrent(Object object) {
-      return TxChange.getChangeType((Integer) object);
+   private TxChange getTxCurrent(JdbcStatement chStmt, String columnName) {
+      return TxChange.getChangeType(chStmt.getInt(columnName));
    }
-
 }

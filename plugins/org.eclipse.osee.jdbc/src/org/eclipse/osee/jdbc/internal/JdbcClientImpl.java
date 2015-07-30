@@ -285,8 +285,6 @@ public final class JdbcClientImpl implements JdbcClient {
                dataType = SQL3DataType.BIGINT;
             } else if (classValue.isAssignableFrom(Double.class)) {
                dataType = SQL3DataType.DOUBLE;
-            } else if (classValue.isAssignableFrom(Number.class)) {
-               dataType = SQL3DataType.NUMERIC;
             } else if (classValue.isAssignableFrom(Date.class)) {
                dataType = SQL3DataType.TIMESTAMP;
             } else {
