@@ -287,7 +287,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
       if (imageData != null) {
          Node srcAttribute = imageData.getAttributes().getNamedItem(SRC);
-         imgId = srcAttribute.getNodeValue();
+         if (srcAttribute != null) {
+            imgId = srcAttribute.getNodeValue();
+         }
       }
       return imgId;
    }
@@ -297,7 +299,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
       if (imageData != null) {
          Node srcAttribute = imageData.getAttributes().getNamedItem(TITLE);
-         guid = srcAttribute.getNodeValue();
+         if (srcAttribute != null) {
+            guid = srcAttribute.getNodeValue();
+         }
       }
    }
 
