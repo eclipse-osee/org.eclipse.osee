@@ -157,8 +157,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new TaskSearchWorldSearchItem()));
          items.add(new SearchNavigateItem(item, new GroupWorldSearchItem((Branch) null)));
          items.add(new SearchNavigateItem(item, new TeamWorkflowSearchWorkflowSearchItem()));
-         items.add(new SearchNavigateItem(item, new ActionableItemWorldSearchItem("Actionable Item Search", null,
-            false, false, false)));
+         items.add(new SearchNavigateItem(item,
+            new ActionableItemWorldSearchItem("Actionable Item Search", null, false, false, false)));
 
          createGoalsSection(item, items);
          createVersionsSection(item, items);
@@ -176,8 +176,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
                "Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
          items.add(new XNavigateItemOperation(item, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
             new MultipleIdSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
-         items.add(new XNavigateItemOperation(item, AtsImage.GLOBE, "Quick Search",
-            new AtsQuickSearchOperationFactory()));
+         items.add(
+            new XNavigateItemOperation(item, AtsImage.GLOBE, "Quick Search", new AtsQuickSearchOperationFactory()));
 
          items.add(new ArtifactImpactToActionSearchItem(null));
 
@@ -210,12 +210,12 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new AtsRemoteEventTestItem(adminItems);
 
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
-         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
-            AtsArtifactTypes.DecisionReview));
-         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
-            AtsArtifactTypes.PeerToPeerReview));
-         new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
-            AtsArtifactTypes.TeamWorkflow));
+         new SearchNavigateItem(adminItems,
+            new ArtifactTypeSearchItem("Show all Decision Review", AtsArtifactTypes.DecisionReview));
+         new SearchNavigateItem(adminItems,
+            new ArtifactTypeSearchItem("Show all PeerToPeer Review", AtsArtifactTypes.PeerToPeerReview));
+         new SearchNavigateItem(adminItems,
+            new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows", AtsArtifactTypes.TeamWorkflow));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
          new CreateActionUsingAllActionableItems(adminItems);
 
@@ -298,8 +298,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       try {
          XNavigateItem releaseItems = new XNavigateItem(parent, "Versions", FrameworkImage.VERSION);
          new MassEditTeamVersionItem("Team Versions", releaseItems, (IAtsTeamDefinition) null, FrameworkImage.VERSION);
-         new SearchNavigateItem(releaseItems, new VersionTargetedForTeamSearchItem(null, null, false,
-            LoadView.WorldEditor));
+         new SearchNavigateItem(releaseItems,
+            new VersionTargetedForTeamSearchItem(null, null, false, LoadView.WorldEditor));
          new SearchNavigateItem(releaseItems, new NextVersionSearchItem(null, LoadView.WorldEditor));
          new ReleaseVersionItem(releaseItems, null);
          new CreateNewVersionItem(releaseItems, null);
@@ -327,11 +327,11 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createGoalsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem goalItem = new XNavigateItem(parent, "Goals", AtsImage.GOAL);
-         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(),
-            false, null));
+         new SearchNavigateItem(goalItem,
+            new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(), false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
-         new SearchNavigateItem(goalItem, new MyFavoritesGoalsSearchItem("Favorites",
-            AtsClientService.get().getUserService().getCurrentUser()));
+         new SearchNavigateItem(goalItem,
+            new MyFavoritesGoalsSearchItem("Favorites", AtsClientService.get().getUserService().getCurrentUser()));
          items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
