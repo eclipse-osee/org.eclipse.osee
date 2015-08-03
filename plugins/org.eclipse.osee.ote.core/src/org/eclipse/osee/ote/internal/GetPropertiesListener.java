@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import org.eclipse.osee.ote.OTEApi;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpointInlineSender;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointSender;
 import org.eclipse.osee.ote.message.event.OteEventMessage;
 import org.eclipse.osee.ote.message.event.OteEventMessageUtil;
@@ -32,7 +33,7 @@ public class GetPropertiesListener implements EventHandler {
       if(host != null){
          try {
             properties.setResponse(oteEventMessage);
-            OteUdpEndpointSender oteEndpointSender = endpoint.getOteEndpointSender(oteEventMessage.getHeader().getSourceInetSocketAddress());
+            OteUdpEndpointInlineSender oteEndpointSender =endpoint.getOteEndpointInlineSender(oteEventMessage.getHeader().getSourceInetSocketAddress());
             properties.setObject(host.getProperties());
             oteEndpointSender.send(properties);            
          } catch (RemoteException e) {

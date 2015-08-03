@@ -61,7 +61,7 @@ Require-Bundle: org.eclipse.osee.framework.jdk.core,
  org.eclipse.osee.ote.connection.service,
  net.jini;bundle-version="2.1.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ote.core.internal.Activator
 Import-Package: javax.xml.parsers,
  org.apache.xml.serialize,

@@ -9,6 +9,7 @@ import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.ote.core.CopyOnWriteNoIteratorList;
 import org.eclipse.osee.ote.endpoint.EndpointDataProcessor;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
+import org.eclipse.osee.ote.endpoint.OteUdpEndpointInlineSender;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointReceiverImpl;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointSender;
 import org.eclipse.osee.ote.properties.OtePropertiesCore;
@@ -86,6 +87,11 @@ public class EndpointComponent implements OteUdpEndpoint {
       return sender;
    }
 
+   @Override
+   public OteUdpEndpointInlineSender getOteEndpointInlineSender(InetSocketAddress address) {
+      return new OteUdpEndpointInlineSender(address);
+   }
+   
    @Override
    public void addBroadcast(OteUdpEndpointSender sender) {
       if(!isAlreadyInBroadcastList(sender)){

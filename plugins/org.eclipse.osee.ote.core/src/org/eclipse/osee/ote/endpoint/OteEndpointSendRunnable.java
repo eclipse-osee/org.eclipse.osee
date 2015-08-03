@@ -8,21 +8,22 @@ import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.collections.ObjectPool;
 
-public class OteEndpointSendRunnable implements Runnable {
+final class OteEndpointSendRunnable implements Runnable {
 
    private static final int SEND_BUFFER_SIZE = 1024 * 512;
    
-   private ArrayBlockingQueue<AddressBuffer> toSend;
-   private ObjectPool<AddressBuffer> buffers;
+   private final ArrayBlockingQueue<AddressBuffer> toSend;
+   private final ObjectPool<AddressBuffer> buffers;
 
    private boolean debug = false;
 
-   public OteEndpointSendRunnable(ArrayBlockingQueue<AddressBuffer> toSend, ObjectPool<AddressBuffer> buffers, boolean debug) {
+   OteEndpointSendRunnable(ArrayBlockingQueue<AddressBuffer> toSend, ObjectPool<AddressBuffer> buffers, boolean debug) {
       this.toSend = toSend;
       this.buffers = buffers;
       this.debug = debug;
@@ -42,7 +43,14 @@ public class OteEndpointSendRunnable implements Runnable {
                if (toSend.drainTo(dataToSend) < 1) {
                   try {
                      // block until something is available
-                     dataToSend.add(toSend.take());                    
+                     AddressBuffer addrBuf = toSend.poll(15, TimeUnit.SECONDS);
+                     if (addrBuf == null) {
+                        // no activity for a while so lets clean ourselves up. Our master will restart
+                        // a new thread if another event comes along after we self terminate
+                        keepRunning = false;
+                     } else {
+                        dataToSend.add(addrBuf);
+                     }
                   } catch (InterruptedException e) {
                      keepRunning = false;
                      continue;

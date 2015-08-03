@@ -27,7 +27,7 @@ public class OteEndpointReceiveRunnable implements Runnable {
    private volatile boolean run = true; 
    private volatile boolean debugOutput = false;
    private Class<OteEndpointReceiveRunnable> logger = OteEndpointReceiveRunnable.class;
-   private InetSocketAddress address;
+   private final InetSocketAddress address;
    
    private CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<EndpointDataProcessor>();
 

@@ -9,6 +9,7 @@ public interface OteUdpEndpoint {
    public void setDebugOutput(boolean enable);
    public InetSocketAddress getLocalEndpoint();
    public OteUdpEndpointSender getOteEndpointSender(InetSocketAddress address);
+   OteUdpEndpointInlineSender getOteEndpointInlineSender(InetSocketAddress address);
    public void addBroadcast(OteUdpEndpointSender sender);
    public void removeBroadcast(OteUdpEndpointSender sender);
    public CopyOnWriteNoIteratorList<OteUdpEndpointSender> getBroadcastSenders();

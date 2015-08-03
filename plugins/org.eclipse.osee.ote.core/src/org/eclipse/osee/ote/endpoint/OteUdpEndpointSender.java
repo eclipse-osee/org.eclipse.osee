@@ -28,6 +28,8 @@ public class OteUdpEndpointSender {
 
    private volatile boolean isClosed = false;
 
+   private volatile Thread thread;
+
    public OteUdpEndpointSender(InetSocketAddress address){
       toSend = new ArrayBlockingQueue<AddressBuffer>(5000);
       buffers = new ObjectPool<AddressBuffer>(new ObjectPoolConfiguration<AddressBuffer>(50,true) {
@@ -40,10 +42,10 @@ public class OteUdpEndpointSender {
    }
    
    public void start(){
-      Thread th = new Thread(new OteEndpointSendRunnable(toSend, buffers, debug));
-      th.setName(String.format("OTE Endpoint Sender[%s]", address.toString()));
-      th.setDaemon(true);
-      th.start();
+      thread = new Thread(new OteEndpointSendRunnable(toSend, buffers, debug));
+      thread.setName(String.format("OTE Endpoint Sender[%s]", address.toString()));
+      thread.setDaemon(true);
+      thread.start();
    }
    
    public void stop() throws InterruptedException{
@@ -68,6 +70,11 @@ public class OteUdpEndpointSender {
          toSend.put(obj);
       } catch (InterruptedException e) {
          throw new OTEException(e);
+      }
+      
+      if (!thread.isAlive()) {
+         // our thread has sat idle for too long and self terminated go ahead and start a new one
+         start();
       }
    }
 
