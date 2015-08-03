@@ -52,13 +52,11 @@
 		<platform-version-name>mars</platform-version-name>
 <!-- 		<orbit-version>R20150124073747</orbit-version> -->
 		<orbit-version>R20130517111416</orbit-version>
-		<xtext-version>2.0.0</xtext-version>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
 		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
-		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
 		<osee-create-help-docs>true</osee-create-help-docs>
 
@@ -97,11 +95,6 @@
 			<id>eclipse</id>
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
-		</repository>
-		<repository>
-			<id>itemis</id>
-			<layout>p2</layout>
-			<url>${itemis-site}</url>
 		</repository>
 	</repositories>
 <!-- 	<pluginRepositories> -->

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -31,6 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.eclipse.xtext.resource.XtextResource;
+import org.eclipse.xtext.resource.XtextResourceSet;
 import org.eclipse.xtext.ui.editor.XtextSourceViewer;
 import org.eclipse.xtext.ui.editor.embedded.EmbeddedEditor;
 import org.eclipse.xtext.ui.editor.embedded.EmbeddedEditorFactory;
@@ -146,7 +146,7 @@ public class XDslEditorWidget extends XText {
          @Override
          public XtextResource createResource() {
             try {
-               ResourceSet resourceSet = new ResourceSetImpl();
+               ResourceSet resourceSet = new XtextResourceSet();
                Resource resource = resourceSet.createResource(getUri(), grammar.getExtension());
                return (XtextResource) resource;
             } catch (Exception e) {
