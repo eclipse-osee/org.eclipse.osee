@@ -18,7 +18,7 @@ import org.eclipse.osee.activity.api.ActivityType;
  * @author Donald G. Dunne
  */
 public enum AtsActivity implements ActivityType {
-   ATSNAVIGATEITEM(91L, INFO, "osee.ats.XNavigateItem", "ATS XNavigateItem [%s]");
+   ATSNAVIGATEITEM(45L, INFO, "osee.ats.XNavigateItem", "ATS XNavigateItem [%s]");
 
    private final Long typeId;
    private final Long logLevel;

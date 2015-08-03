@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.util.AtsActivityLogUtil;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -63,9 +62,8 @@ public class AtsNavigateComposite extends XNavigateComposite {
       }
       ActivityEntryId activityId = null;
       try {
-         long uuid = Lib.generateUuid();
          activityId =
-            AtsActivityLogUtil.create(AtsActivity.ATSNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
+            AtsActivityLogUtil.create(AtsActivity.ATSNAVIGATEITEM, 0L, ActivityLog.INITIAL_STATUS, item.getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Eror creating activity log entry", ex);
       }
