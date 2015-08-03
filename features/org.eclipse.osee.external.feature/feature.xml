@@ -29,6 +29,7 @@
       <import plugin="org.apache.xml.serializer" version="2.7.1" match="compatible"/>
       <import feature="org.eclipse.nebula.widgets.xviewer.feature" version="0.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.nebula.widgets.ganttchart.feature" version="0.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.graphiti.feature" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
