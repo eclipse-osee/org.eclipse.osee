@@ -3,10 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Launch
 Bundle-SymbolicName: jms.activemq.launch;singleton:=true
 Bundle-Version: 0.23.0.qualifier
-Require-Bundle: org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.jms;version="1.1.1",
+Import-Package: javax.jms,
  org.apache.activemq,
  org.apache.activemq.advisory,
  org.apache.activemq.blob,
@@ -87,4 +86,5 @@ Import-Package: javax.jms;version="1.1.1",
  org.apache.activemq.usage,
  org.apache.activemq.util,
  org.apache.activemq.wireformat,
- org.apache.activemq.xbean
+ org.apache.activemq.xbean,
+ org.eclipse.equinox.app

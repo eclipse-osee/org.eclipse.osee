@@ -29,4 +29,4 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.codec.binary,
- org.apache.xml.serialize;version="2.9.0"
+ org.apache.xml.serialize
