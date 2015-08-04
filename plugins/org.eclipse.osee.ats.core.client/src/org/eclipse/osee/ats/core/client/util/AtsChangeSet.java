@@ -302,4 +302,5 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       getArtifact(artifact).delete();
       add(getArtifact(artifact));
    }
+
 }

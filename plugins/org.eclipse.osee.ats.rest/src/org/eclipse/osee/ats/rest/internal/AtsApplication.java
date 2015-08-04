@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.workitem.ActionResource;
 import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -103,6 +104,7 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionEndpointImpl(atsServer));
       singletons.add(new InsertionActivityEndpointImpl(atsServer));
       singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, logger));
+      singletons.add(new AtsTaskEndpointImpl(atsServer));
 
       // UIs
       singletons.add(new ActionUiResource(atsServer, logger));

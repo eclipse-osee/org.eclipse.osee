@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Non-artifact base user service
- * 
+ *
  * @author Donald G Dunne
  */
 public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
@@ -61,9 +61,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
       IAtsUser atsUser = null;
       User user = null;
       try {
-         user =
-            (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name, name,
-               AtsUtilCore.getAtsBranch());
+         user = (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Name,
+            name, AtsUtilCore.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -76,9 +75,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    protected IAtsUser loadUserByUserIdFromDb(String userId) {
       IAtsUser atsUser = null;
-      User user =
-         (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
-            userId, AtsUtilCore.getAtsBranch());
+      User user = (User) ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+         CoreAttributeTypes.UserId, userId, AtsUtilCore.getAtsBranch());
 
       if (user != null) {
          atsUser = getUserFromOseeUser(user);
@@ -119,9 +117,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
             Artifact userArt = null;
             try {
-               userArt =
-                  ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId,
-                     userId, configAtsBranch);
+               userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+                  CoreAttributeTypes.UserId, userId, configAtsBranch);
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }
@@ -208,7 +205,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    protected synchronized void ensureLoaded() {
       if (!loaded) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User,
+            AtsUtilCore.getAtsBranch())) {
             User user = (User) art;
             AtsUser atsUser = new AtsUser(user);
             userIdToAtsUser.put(user.getUserId(), atsUser);
@@ -230,7 +228,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
-      for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
+      for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(
+         AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
       }
       return arts;

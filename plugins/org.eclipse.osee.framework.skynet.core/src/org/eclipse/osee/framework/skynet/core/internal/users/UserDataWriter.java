@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,8 +63,9 @@ public class UserDataWriter {
          user.setActive(userToken.isActive());
       } else {
          String guid = GUID.isValid(userToken.getGuid()) ? userToken.getGuid() : GUID.create();
+         long uuid = userToken.getUuid() > 0L ? userToken.getUuid() : Lib.generateArtifactIdAsInt();
          user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
-            userToken.getName(), guid);
+            userToken.getName(), guid, uuid);
          user.setActive(userToken.isActive());
          user.setUserID(userToken.getUserId());
          user.setEmail(userToken.getEmail());
@@ -83,7 +85,6 @@ public class UserDataWriter {
       if (transaction != null) {
          user.persist(transaction);
       }
-
       return user;
    }
 

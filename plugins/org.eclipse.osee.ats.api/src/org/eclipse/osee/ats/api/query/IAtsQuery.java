@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
  * @author Donald G. Dunne
@@ -49,5 +50,7 @@ public interface IAtsQuery {
    IAtsQuery andUuids(Long... uuid);
 
    IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption);
+   
+   <T extends IAtsWorkItem> ResultSet<T> getResults();
 
 }

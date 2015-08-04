@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
+import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -34,6 +35,7 @@ public class AtsClientService {
    private static ProgramEndpointApi programEp;
    private static InsertionEndpointApi insertionEp;
    private static InsertionActivityEndpointApi insertionActivityEp;
+   private static AtsTaskEndpointApi taskEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -96,6 +98,13 @@ public class AtsClientService {
          insertionActivityEp = getTarget().newProxy(InsertionActivityEndpointApi.class);
       }
       return insertionActivityEp;
+   }
+
+   public static AtsTaskEndpointApi getTaskEp() {
+      if (taskEp == null) {
+         taskEp = getTarget().newProxy(AtsTaskEndpointApi.class);
+      }
+      return taskEp;
    }
 
 }

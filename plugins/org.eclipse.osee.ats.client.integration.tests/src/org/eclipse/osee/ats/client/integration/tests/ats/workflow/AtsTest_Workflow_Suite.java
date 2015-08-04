@@ -21,7 +21,11 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SMAPromptChangeStatusTest.class, TeamWorkflowProvidersTest.class, AtsRelationResolverServiceTest.class})
+@Suite.SuiteClasses({
+   AtsTaskEndpointImplTest.class,
+   SMAPromptChangeStatusTest.class,
+   TeamWorkflowProvidersTest.class,
+   AtsRelationResolverServiceTest.class})
 public class AtsTest_Workflow_Suite {
 
    @BeforeClass

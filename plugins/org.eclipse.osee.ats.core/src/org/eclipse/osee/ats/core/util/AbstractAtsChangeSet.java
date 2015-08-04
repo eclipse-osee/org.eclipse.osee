@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.util;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -113,6 +114,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public ArtifactId createArtifact(IArtifactToken token) {
       return createArtifact(token.getArtifactType(), token.getName(), token.getGuid(), token.getUuid());
+   }
+
+   @Override
+   public void deleteArtifact(IAtsWorkItem task) {
+      deleteArtifact(task.getStoreObject());
    }
 
 }

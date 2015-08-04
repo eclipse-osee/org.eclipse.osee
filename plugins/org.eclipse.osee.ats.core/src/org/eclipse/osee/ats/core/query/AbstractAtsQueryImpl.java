@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 
 /**
  * @author Donald G. Dunne
@@ -153,6 +155,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption) {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
+   }
+   
+   @Override
+   public <T extends IAtsWorkItem> ResultSet<T> getResults() {
+      return ResultSets.newResultSet(getItems());
    }
 
 }

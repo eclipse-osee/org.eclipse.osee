@@ -35,7 +35,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * Non-artifact base user service
- * 
+ *
  * @author Donald G Dunne
  */
 public class AtsUserServiceImpl extends AbstractAtsUserService {
@@ -107,9 +107,9 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       ensureLoaded();
       Boolean admin = userIdToAdmin.get(user.getUserId());
       if (admin == null) {
-         admin =
-            orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(
-               AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User, getUserArt(user)).getCount() == 1;
+         admin = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuid(
+            AtsArtifactToken.AtsAdmin.getGuid()).andRelatedTo(CoreRelationTypes.Users_User,
+               getUserArt(user)).getCount() == 1;
          userIdToAdmin.put(user.getUserId(), admin);
       }
       return admin;
@@ -120,7 +120,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(user.getUuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+         user.getUuid()).getResults().getExactlyOne();
    }
 
    @Override
@@ -169,7 +170,8 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
       ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
-      for (ArtifactReadable art : ((ArtifactReadable) workItem.getStoreObject()).getRelated(AtsRelationTypes.SubscribedUser_User)) {
+      for (ArtifactReadable art : ((ArtifactReadable) workItem.getStoreObject()).getRelated(
+         AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));
       }
       return arts;
