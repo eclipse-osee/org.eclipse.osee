@@ -13,16 +13,22 @@ package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 import org.eclipse.osee.orcs.writer.model.reader.OwArtifact;
 import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
+import org.eclipse.osee.orcs.writer.model.reader.OwFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,5 +101,29 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));
       assertEquals("test annotation", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, null));
 
+   }
+
+   @Test
+   public void testDelete() throws Exception {
+      Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, CoreBranches.COMMON,
+         getClass().getSimpleName());
+      artifact.persist(getClass().getSimpleName());
+
+      Artifact artifactFromId1 = ArtifactQuery.getArtifactFromId(artifact.getUuid(), CoreBranches.COMMON);
+      assertNotNull(artifactFromId1);
+
+      OwCollector collector = getDefaultOwCollector();
+      collector.getCreate().clear();
+      collector.getUpdate().clear();
+      collector.getDelete().add(OwFactory.createArtifactToken(artifact.getName(), artifact.getUuid()));
+
+      Response response = writer.getOrcsWriterPersist(collector);
+      assertEquals(javax.ws.rs.core.Response.Status.OK.getStatusCode(), response.getStatus());
+
+      ArtifactCache.deCache(artifactFromId1);
+
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromIds(Collections.singleton((int) artifact.getUuid()), CoreBranches.COMMON);
+      assertTrue(artifacts.iterator().next().isDeleted());
    }
 }

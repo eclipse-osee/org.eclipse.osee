@@ -65,9 +65,23 @@ public class OrcsCollectorWriter {
       XResultData results = new XResultData(false);
       processCreate(results);
       processUpdate(results);
+      processDelete(results);
 
       getTransaction().commit();
       return results;
+   }
+
+   private void processDelete(XResultData results) {
+      for (OwArtifactToken owArtifact : collector.getDelete()) {
+         ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(getBranch()).andUuid(
+            owArtifact.getUuid()).getResults().getAtMostOneOrNull();
+         if (artifact == null) {
+            results.logWarningWithFormat("Delete Artifact Token %s does not exist in database.  Skipping", owArtifact);
+         } else {
+            getTransaction().deleteArtifact(artifact);
+            results.logWithFormat("Deleted artifact %s", owArtifact);
+         }
+      }
    }
 
    private void processUpdate(XResultData results) {

@@ -62,6 +62,7 @@ public class OrcsWriterExcelReader {
       private String sheetName = "";
       private final XResultData result;
       private OrcsWriterSheetProcessorForCreateUpdate updateSheet;
+      private OrcsWriterSheetProcessorForDelete deleteSheet;
 
       public ExcelRowProcessor(OwCollector collector, XResultData result) {
          this.collector = collector;
@@ -86,6 +87,9 @@ public class OrcsWriterExcelReader {
          } else if (sheetName.equals(OrcsWriterUtil.INSTRUCTIONS_AND_SETTINGS_SHEET_NAME)) {
             settingsSheet = new OrcsWriterSheetProcessorForSettings(collector, result);
             return;
+         } else if (sheetName.equals(OrcsWriterUtil.DELETE_SHEET_NAME)) {
+            deleteSheet = new OrcsWriterSheetProcessorForDelete(collector, result);
+            return;
          }
       }
 
@@ -105,11 +109,17 @@ public class OrcsWriterExcelReader {
             createSheet.processHeaderRow(headerRow);
          } else if (isUpdateSheet()) {
             updateSheet.processHeaderRow(headerRow);
+         } else if (isDeleteSheet()) {
+            deleteSheet.processHeaderRow(headerRow);
          }
       }
 
       private boolean isCreateSheet() {
          return sheetName.equals(OrcsWriterUtil.CREATE_SHEET_NAME);
+      }
+
+      private boolean isDeleteSheet() {
+         return sheetName.equals(OrcsWriterUtil.DELETE_SHEET_NAME);
       }
 
       private boolean isUpdateSheet() {
@@ -128,7 +138,13 @@ public class OrcsWriterExcelReader {
             processUpdateSheetRow(row);
          } else if (isSettingsSheet()) {
             settingsSheet.processRow(row);
+         } else if (isDeleteSheet()) {
+            processDeleteSheetRow(row);
          }
+      }
+
+      private void processDeleteSheetRow(String[] row) {
+         deleteSheet.processRow(row);
       }
 
       private void processUpdateSheetRow(String[] row) {

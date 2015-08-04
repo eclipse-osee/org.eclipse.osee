@@ -105,6 +105,9 @@ public class OwCollector {
    }
 
    public List<OwArtifactToken> getDelete() {
+      if (delete == null) {
+         delete = new LinkedList<>();
+      }
       return delete;
    }
 
