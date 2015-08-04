@@ -27,7 +27,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
 import org.eclipse.osee.orcs.script.dsl.resource.OrcsScriptResourceImpl;
@@ -157,7 +156,7 @@ public final class OrcsScriptUtil {
          if (resource != null) {
             resource.setURI(storageUri);
          } else {
-            ResourceSet resourceSet = new ResourceSetImpl();
+            ResourceSet resourceSet = new XtextResourceSet();
             resource = resourceSet.createResource(storageUri);
             resource.getContents().add(model);
          }

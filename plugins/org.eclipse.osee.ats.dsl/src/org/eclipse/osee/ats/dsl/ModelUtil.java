@@ -17,9 +17,9 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.xtext.resource.SaveOptions;
+import org.eclipse.xtext.resource.XtextResourceSet;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +46,7 @@ public final class ModelUtil {
    public static void saveModel(AtsDsl model, String uri, OutputStream outputStream) throws IOException {
       AtsDslStandaloneSetup.doSetup();
 
-      ResourceSet resourceSet = new ResourceSetImpl();
+      ResourceSet resourceSet = new XtextResourceSet();
       Resource resource = resourceSet.createResource(URI.createURI(uri));
       resource.getContents().add(model);
 

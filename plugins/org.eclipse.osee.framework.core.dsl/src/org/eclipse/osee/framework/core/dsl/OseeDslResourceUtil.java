@@ -19,7 +19,6 @@ import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.core.dsl.internal.OseeDslResourceImpl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -79,15 +78,15 @@ public final class OseeDslResourceUtil {
          Resource resource = resourceImpl.getResource();
          saveResource(resource, outputStream, compressOnSave);
       } else {
-         throw new IllegalArgumentException(String.format("Unsupported dslResource class [%s]",
-            dslResource != null ? dslResource.getClass() : "null"));
+         throw new IllegalArgumentException(
+            String.format("Unsupported dslResource class [%s]", dslResource != null ? dslResource.getClass() : "null"));
       }
    }
 
    public static void saveModel(OseeDsl model, String uri, OutputStream outputStream, boolean compressOnSave) throws Exception {
       OseeDslStandaloneSetup.doSetup();
 
-      ResourceSet resourceSet = new ResourceSetImpl();
+      ResourceSet resourceSet = new XtextResourceSet();
       Resource resource = resourceSet.createResource(URI.createURI(uri));
       resource.getContents().add(model);
 
