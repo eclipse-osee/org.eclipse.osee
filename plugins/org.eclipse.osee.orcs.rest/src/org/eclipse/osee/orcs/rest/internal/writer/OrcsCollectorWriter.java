@@ -79,6 +79,11 @@ public class OrcsCollectorWriter {
             throw new OseeArgumentException("Artifact not found for OwArtifact %s", owArtifact);
          }
 
+         if (!owArtifact.getName().equals(artifact.getName())) {
+            getTransaction().setName(artifact, owArtifact.getName());
+            logChange(artifact, CoreAttributeTypes.Name, artifact.getName(), owArtifact.getName());
+         }
+
          for (OwAttribute owAttribute : owArtifact.getAttributes()) {
             IAttributeType attrType = getAttributeType(owAttribute.getType());
 
@@ -153,8 +158,8 @@ public class OrcsCollectorWriter {
    }
 
    private void logChange(ArtifactReadable artifact, IAttributeType attrType, String currValue, String newValue) {
-      results.logWithFormat("Attr Values not same; Current [%s], new [%s] for attr type [%s] and artifact %s",
-         currValue, newValue, attrType, artifact.toStringWithId());
+      results.log(String.format("Attr Values not same; Current [%s], New [%s] for attr type [%s] and artifact %s",
+         currValue, newValue, attrType, artifact.toStringWithId()));
    }
 
    private Integer getInteger(String value) {

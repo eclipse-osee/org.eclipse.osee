@@ -86,7 +86,8 @@ public class OrcsWriterCollectorGenerator {
       sb.append("ORCS Writer provides Create, Update and Delete capabilities through JSON or an Excel spreadsheet\n");
       sb.append("   - Download an Example Excel Workbook (<server>/orcs/writer/sheet) or ");
       sb.append("Example JSON (<server>/orcs/writer/sheet.json)\n");
-      sb.append("   - Make modifications to the input. CREATE, MODIFY, DELETE, BRANCH tabs/structures are the only items\n");
+      sb.append(
+         "   - Make modifications to the input. CREATE, MODIFY, DELETE, BRANCH tabs/structures are the only items\n");
       sb.append("     that will be read. Token and Type tabs/structures are for reference only and should be used\n");
       sb.append("     in the CREATE, MODIFY and DELETE tabs/structures.\n");
       sb.append("   - NOTE: MODIFY and DELETE tabs are not yet implemented\n");
@@ -131,7 +132,11 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createUpdateSheet() {
-      collector.getUpdate();
+      OwArtifact userGroupArt = OwFactory.createArtifact(CoreArtifactTypes.Folder,
+         CoreArtifactTokens.UserGroups.getName(), CoreArtifactTokens.UserGroups.getUuid());
+      OwFactory.createAttribute(userGroupArt, CoreAttributeTypes.StaticId, "test static id");
+      OwFactory.createAttribute(userGroupArt, CoreAttributeTypes.Annotation, "test annotation");
+      collector.getUpdate().add(userGroupArt);
    }
 
    private void createDeleteSheet() {

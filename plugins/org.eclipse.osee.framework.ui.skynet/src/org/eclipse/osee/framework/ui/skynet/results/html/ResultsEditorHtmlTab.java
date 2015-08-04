@@ -37,6 +37,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
@@ -133,6 +134,20 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
       });
 
       item = new ToolItem(toolBar, SWT.PUSH);
+      Image excelImage = ImageManager.getProgramImage("xls");
+      if (excelImage == null) {
+         excelImage = ImageManager.getProgramImage("xlsx");
+      }
+      item.setImage(excelImage);
+      item.setToolTipText("Export as Excel csv");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            xResultPage.handleExportExcel();
+         }
+      });
+
+      item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getProgramImage("html"));
       item.setToolTipText("Export as HTML");
       item.addSelectionListener(new SelectionAdapter() {
@@ -164,8 +179,8 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
                if (html.equals("")) {
                   throw new IllegalStateException("Empty file");
                }
-               resultsEditor.addResultsTab(new ResultsEditorHtmlTab(new XResultPage(filename, html,
-                  Manipulations.RAW_HTML)));
+               resultsEditor.addResultsTab(
+                  new ResultsEditorHtmlTab(new XResultPage(filename, html, Manipulations.RAW_HTML)));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

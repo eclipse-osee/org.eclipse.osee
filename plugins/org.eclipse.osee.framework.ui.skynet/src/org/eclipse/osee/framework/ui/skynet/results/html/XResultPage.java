@@ -33,7 +33,7 @@ import org.eclipse.swt.program.Program;
 public class XResultPage {
 
    public static enum Manipulations {
-      NONE, // 
+      NONE, //
       GUID_CMD_HYPER,
       // Replace all GUID strings with hyperlinks; ATS=<guid> opens Action editor
       // ART=<guid> opens Artifact editor, BOTH=<guid> allows either
@@ -72,7 +72,7 @@ public class XResultPage {
 
    /**
     * Create and display result page with given Manipulations
-    * 
+    *
     * @param title title of the page (include date/time due or something unique due to multi-page view of results)
     * @param html html to display (minus manipulations). this html MUST already handle new lines (eg
     * text.replaceAll("\n",AHTML.newLine())) or use the CONVERT_NEWLINES manipultion
@@ -253,6 +253,10 @@ public class XResultPage {
 
    public void handleExport() {
       Dialogs.exportHtmlTableDialog(title, html, true);
+   }
+
+   public void handleExportExcel() {
+      Dialogs.exportHtmlExcelTableDialog(title, html, true);
    }
 
    public void saveToFile() {

@@ -38,10 +38,11 @@ public class HtmlExportTable {
    private final String html;
    private final boolean openInSystem;
    private final boolean popupConfirm;
+   private boolean excelTextFields = false;
 
    /**
     * Given html and title, export embedded table into csv file and open in system editor
-    * 
+    *
     * @param shell used to request where to save file
     * @param title for the top of the exported file
     * @param html html that contains table - only first table will be exported
@@ -63,6 +64,11 @@ public class HtmlExportTable {
       return export(",", "csv");
    }
 
+   public Result exportExcelCsv() {
+      excelTextFields = true;
+      return export(",", "csv");
+   }
+
    public Result exportTsv() {
       return export("\t", "tsv");
    }
@@ -78,20 +84,20 @@ public class HtmlExportTable {
                htmlStr);
          if (m.find()) {
             String csv = m.group();
-            Matcher rowM =
-               Pattern.compile("<tr.*?>(.*?)</tr>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
-                  csv);
+            Matcher rowM = Pattern.compile("<tr.*?>(.*?)</tr>",
+               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(csv);
             while (rowM.find()) {
                String row = rowM.group(1);
                row = row.replaceAll("[\n\r]*", "");
                // Handle all the headers
                for (String tag : elementTags) {
-                  Matcher thM =
-                     Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
-                        Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
+                  Matcher thM = Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
+                     Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                   String csvRow = "";
                   while (thM.find()) {
-                     csvRow += "\"" + removeLeadTrailSpaces(thM.group(1)) + "\"" + speratorChar;
+                     String cellStr = removeLeadTrailSpaces(thM.group(1));
+                     String excelTextPrefix = (excelTextFields && !cellStr.contains(",")) ? "=" : "";
+                     csvRow += excelTextPrefix + "\"" + cellStr + "\"" + speratorChar;
                   }
                   if (!csvRow.equals("")) {
                      csvRow = csvRow.replaceFirst(speratorChar + "$", "\n");

@@ -105,12 +105,19 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
             }
          }
       }
-      if (nameColumn == null) {
+      if (isCreateSheet() && nameColumn == null) {
          throw new OseeArgumentException("Name column must be present on %s sheet", getSheetName());
       }
-      if (artTokenColumn == null) {
+      if (isCreateSheet() && artTokenColumn == null) {
          throw new OseeArgumentException("Artifact Token column must be present on %s sheet", getSheetName());
       }
+      if (!isCreateSheet() && artTokenColumn != null) {
+         throw new OseeArgumentException("Artifact Token column should NOT be present on %s sheet", getSheetName());
+      }
+   }
+
+   private boolean isCreateSheet() {
+      return createSheet;
    }
 
    private String getSheetName() {
@@ -124,16 +131,14 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
       artifact.setData("Row " + rowCount);
       if (rowCount == 2) {
          for (int colCount = 0; colCount < row.length; colCount++) {
-            if (colCount > 2) {
-               if (isAttributeColumn(colCount)) {
-                  OwAttributeType attrType = columnToAttributeType.get(colCount);
-                  String value = row[colCount];
-                  factory.processAttributeType(attrType, value);
-               } else if (isRelationColumn(colCount)) {
-                  OwRelationType relType = columnToRelationType.get(colCount);
-                  String value = row[colCount];
-                  factory.processRelationType(relType, value);
-               }
+            if (isAttributeColumn(colCount)) {
+               OwAttributeType attrType = columnToAttributeType.get(colCount);
+               String value = row[colCount];
+               factory.processAttributeType(attrType, value);
+            } else if (isRelationColumn(colCount)) {
+               OwRelationType relType = columnToRelationType.get(colCount);
+               String value = row[colCount];
+               factory.processRelationType(relType, value);
             }
          }
       } else if (rowCount > 2) {
@@ -176,7 +181,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                   }
                }
             }
-            if (artTokenColumn == colCount) {
+            if (isCreateSheet() && artTokenColumn == colCount) {
                String value = row[colCount];
                if (Strings.isValid(value)) {
                   OwArtifactToken token = factory.getOrCreateToken(value);
@@ -197,25 +202,23 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
                      OrcsWriterUtil.getRowColumnStr(colCount, colCount), getSheetName());
                }
             }
-            if (colCount > 2) {
-               if (isAttributeColumn(colCount)) {
-                  OwAttributeType attrType = columnToAttributeType.get(colCount);
-                  if (attrType.getName().equals(CoreAttributeTypes.Name.getName())) {
-                     throw new OseeStateException("Name cannot also exist as attribute column at %s on %s sheet",
-                        OrcsWriterUtil.getRowColumnStr(rowCount, colCount), getSheetName());
-                  }
-                  String value = row[colCount];
-                  OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
-                  attr.getValues().add(value);
-                  attr.setData(OrcsWriterUtil.getData(rowCount, colCount, attr.getData()));
-               } else if (isRelationColumn(colCount)) {
-                  OwRelationType relType = columnToRelationType.get(colCount);
-                  String value = row[colCount];
-                  if (Strings.isValid(value)) {
-                     OwRelation relation = factory.createRelationType(relType, value);
-                     relation.setData(OrcsWriterUtil.getData(rowCount, colCount, relation.getData()));
-                     artifact.getRelations().add(relation);
-                  }
+            if (isAttributeColumn(colCount)) {
+               OwAttributeType attrType = columnToAttributeType.get(colCount);
+               if (attrType.getName().equals(CoreAttributeTypes.Name.getName())) {
+                  throw new OseeStateException("Name cannot also exist as attribute column at %s on %s sheet",
+                     OrcsWriterUtil.getRowColumnStr(rowCount, colCount), getSheetName());
+               }
+               String value = row[colCount];
+               OwAttribute attr = factory.getOrCreateAttribute(artifact, attrType);
+               attr.getValues().add(value);
+               attr.setData(OrcsWriterUtil.getData(rowCount, colCount, attr.getData()));
+            } else if (isRelationColumn(colCount)) {
+               OwRelationType relType = columnToRelationType.get(colCount);
+               String value = row[colCount];
+               if (Strings.isValid(value)) {
+                  OwRelation relation = factory.createRelationType(relType, value);
+                  relation.setData(OrcsWriterUtil.getData(rowCount, colCount, relation.getData()));
+                  artifact.getRelations().add(relation);
                }
             }
          }

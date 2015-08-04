@@ -38,7 +38,6 @@ public class OrcsWriterWorkbookGenerator {
 
    // @formatter:off
    private final String[] instructionHeadings = {"Instructions and Settings", " "};
-   private final String[] updateSheetHeadings = {"Artifact Token", "Attr/Rel", "Attr/Rel"};
    private final String[] deleteSheetHeadings = {"Artifact Token - List Artifact Tokens for artifacts to delete"};
    private final String[] branchSheetHeadings = {"Branch Token - Copy one to Settings Sheet"};
    private final String[] artifactTokenSheetHeadings = {"Artifact Token - Copy for relations columns"};
@@ -143,10 +142,26 @@ public class OrcsWriterWorkbookGenerator {
    }
 
    private void createUpdateSheet(ISheetWriter writer) throws IOException {
+      // @formatter:off
+      String[] updateSheetHeadings = {null, "Name", "Attribute", "Attribute"};
+      // @formatter:on
       writer.startSheet(OrcsWriterUtil.UPDATE_SHEET_NAME, updateSheetHeadings.length);
       writer.writeRow((Object[]) updateSheetHeadings);
-      writer.writeCell("This sheet is not yet implemented");
+
+      // row 2
+      writer.writeCell("Artifact Token");
+      writer.writeCell(CoreAttributeTypes.Name.getName());
+      writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.StaticId).getData());
+      writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.Annotation).getData());
       writer.endRow();
+
+      // row 3 - Add static id and annotation to User Groups folder
+      writer.writeCell(OwFactory.createArtifactToken(CoreArtifactTokens.UserGroups).getData());
+      writer.writeCell(CoreArtifactTokens.UserGroups.getName());
+      writer.writeCell("test static id");
+      writer.writeCell("test annotation");
+      writer.endRow();
+
       writer.endSheet();
    }
 

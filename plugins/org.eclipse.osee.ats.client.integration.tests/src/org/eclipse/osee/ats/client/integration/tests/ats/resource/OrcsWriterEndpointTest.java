@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -82,10 +83,17 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
             assertNotNull(folderArt);
             assertEquals(2, folderArt.getChildren().size());
             for (Artifact child : folderArt.getChildren()) {
-               assertTrue(child.getName().equals("Software Requirement 1") || child.getName().equals(
-                  "Software Requirement 2"));
+               assertTrue(
+                  child.getName().equals("Software Requirement 1") || child.getName().equals("Software Requirement 2"));
             }
          }
       }
+
+      OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
+      Artifact userGroupArt = AtsClientService.get().getArtifact(userGroupOwArt.getUuid());
+      assertNotNull(userGroupArt);
+      assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));
+      assertEquals("test annotation", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, null));
+
    }
 }

@@ -51,6 +51,9 @@ app.controller("FormController", function($scope, $http) {
 				}
 			}).success(function(data, status, headers, config) {
 				$scope.message += "\nValidation Passed";
+				if (!validate) {
+					$scope.message += "...Execution Succeeded";
+				}
 			}).error(function(data, status, headers, config) {
 				var message = 'error - status: ' + status + ' ' + data;
 				if (data.exception) {

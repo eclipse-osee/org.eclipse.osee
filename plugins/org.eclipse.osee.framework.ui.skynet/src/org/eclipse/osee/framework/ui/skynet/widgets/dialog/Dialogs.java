@@ -42,7 +42,7 @@ public class Dialogs {
 
    /**
     * Allows user to save html from a file selection dialog
-    * 
+    *
     * @param openInSystem true if desire to open resulting file in system browser after saving
     */
    public static Result saveHtmlDialog(String htmlText, boolean openInSystem) {
@@ -88,6 +88,14 @@ public class Dialogs {
          return Result.FalseResult;
       }
       return new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem).exportCsv();
+   }
+
+   public static Result exportHtmlExcelTableDialog(String title, String htmlText, boolean openInSystem) {
+      if (!Strings.isValid(htmlText)) {
+         AWorkbench.popup("ERROR", "Save data is empty.  Nothing to export.");
+         return Result.FalseResult;
+      }
+      return new HtmlExportTable((title.equals("") ? "Exported Text" : title), htmlText, openInSystem).exportExcelCsv();
    }
 
    public static IStructuredSelection getCurrentSelection() throws Exception {
