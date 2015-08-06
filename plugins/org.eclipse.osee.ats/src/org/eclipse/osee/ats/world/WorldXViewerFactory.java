@@ -81,6 +81,10 @@ import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.ReleaseDateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
+import org.eclipse.osee.ats.column.RemainingPointsNumericTotalColumn;
+import org.eclipse.osee.ats.column.RemainingPointsNumericWorkflowColumn;
+import org.eclipse.osee.ats.column.RemainingPointsTotalColumn;
+import org.eclipse.osee.ats.column.RemainingPointsWorkflowColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.column.ReviewAuthorColumn;
 import org.eclipse.osee.ats.column.ReviewDeciderColumn;
@@ -237,7 +241,11 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       ActionableItemOwner.getInstance(),
       AtsIdColumn.getInstance(),
       AgileFeatureGroupColumn.getInstance(),
-      SprintOrderColumn.getInstance()};
+      SprintOrderColumn.getInstance(),
+      RemainingPointsNumericWorkflowColumn.getInstance(),
+      RemainingPointsNumericTotalColumn.getInstance(),
+      RemainingPointsWorkflowColumn.getInstance(),
+      RemainingPointsTotalColumn.getInstance()};
 
    public WorldXViewerFactory() {
       super(NAMESPACE);
