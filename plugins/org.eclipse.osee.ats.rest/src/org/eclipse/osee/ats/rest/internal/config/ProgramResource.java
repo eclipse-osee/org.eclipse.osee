@@ -66,7 +66,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (programArt == null) {
          throw new OseeCoreException("Given uuid not found");
       }
-      if (!programArt.getArtifactType().equals(AtsArtifactTypes.Program)) {
+      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given uuid not program type");
       }
       // get the insertions related to the given program
@@ -90,7 +90,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (programArt == null) {
          throw new OseeCoreException("Given uuid not found");
       }
-      if (!programArt.getArtifactType().equals(AtsArtifactTypes.Program)) {
+      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given uuid not program type");
       }
       ResultSet<?> results = atsServer.getQuery().andUuid(newInsertion.getUuid()).getResults();
@@ -110,7 +110,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertionArt == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
-      if (!insertionArt.getArtifactType().equals(AtsArtifactTypes.Insertion)) {
+      if (!insertionArt.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given insertion uuid not insertion type");
       }
       Response response = null;
@@ -153,7 +153,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
-      if (!insertion.getArtifactType().equals(AtsArtifactTypes.Insertion)) {
+      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given uuid not insertion type");
       }
       // get the insertions related to the given program
@@ -178,7 +178,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
-      if (!insertion.getArtifactType().equals(AtsArtifactTypes.Insertion)) {
+      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given uuid not insertion type");
       }
       ResultSet<?> results = atsServer.getQuery().andUuid(newActivity.getUuid()).getResults();
@@ -198,7 +198,7 @@ public class ProgramResource extends AbstractConfigResource {
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity uuid not found");
       }
-      if (!insertionActivityArt.getArtifactType().equals(AtsArtifactTypes.InsertionActivity)) {
+      if (!insertionActivityArt.isOfType(AtsArtifactTypes.InsertionActivity)) {
          throw new OseeCoreException("Given insertion activity uuid not insertion activity type");
       }
       Response response = null;
