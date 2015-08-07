@@ -1,9 +1,9 @@
 app.controller('mainController', [
 		'$rootScope',
-		'$cookieStore',
+		'$localStorage',
 	    '$modal',
 
-		function($rootScope, $cookieStore, $modal) {
+		function($rootScope, $localStorage, $modal) {
 			$rootScope.type = 'testScript';
 			
 			$rootScope.searchResults = [];
@@ -12,7 +12,7 @@ app.controller('mainController', [
 				$rootScope.attempts = 0;
 				while(($rootScope.cachedName == null || $rootScope.cachedName == "") && $rootScope.attempts < 5) {
 					var nameEnter=prompt("Please enter your name","");
-					$cookieStore.put('cachedName', nameEnter);
+					$localStorage.cachedName = nameEnter;
 					$rootScope.cachedName = nameEnter;
 					$rootScope.attempts++;
 				}
@@ -22,7 +22,7 @@ app.controller('mainController', [
 				
 			}
 			
-			$rootScope.cachedName = $cookieStore.get('cachedName');
+			$rootScope.cachedName = $localStorage.cachedName;
 			$rootScope.setUserName();
 			
 			$rootScope.resetUserName = function() {

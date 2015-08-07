@@ -70,6 +70,9 @@ app.controller('userController', [
             }, function(data) {
             	loadingModal.close();
                 $scope.sets = data;
+            }, function(data) {
+            	loadingModal.close();
+            	alert(data.statusText);
             });
         };
         

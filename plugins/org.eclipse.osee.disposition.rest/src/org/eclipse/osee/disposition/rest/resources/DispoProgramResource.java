@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -50,7 +56,13 @@ public class DispoProgramResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response getAllPrograms() throws JSONException {
-      ResultSet<IOseeBranch> allPrograms = dispoApi.getDispoPrograms();
+      List<IOseeBranch> allPrograms = dispoApi.getDispoPrograms();
+      Collections.sort(allPrograms, new Comparator<IOseeBranch>() {
+         @Override
+         public int compare(IOseeBranch o1, IOseeBranch o2) {
+            return o1.getName().compareTo(o2.getName());
+         }
+      });
       JSONArray jarray = new JSONArray();
 
       for (IOseeBranch branch : allPrograms) {

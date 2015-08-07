@@ -54,7 +54,7 @@ public class DispoSetResource {
 
    /**
     * Create a new Disposition Set given a DispoSetDescriptor
-    * 
+    *
     * @param descriptor Descriptor Data which includes name and import path
     * @return The created Disposition Set if successful. Error Code otherwise
     * @response.representation.201.doc Created the Disposition Set
@@ -92,7 +92,7 @@ public class DispoSetResource {
 
    /**
     * Get a specific Disposition Set given a setId
-    * 
+    *
     * @param setId The Id of the Disposition Set to search for
     * @return The found Disposition Set if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Disposition Set
@@ -114,7 +114,7 @@ public class DispoSetResource {
 
    /**
     * Get all Disposition Sets on the given program branch
-    * 
+    *
     * @return The Disposition Sets found on the program branch
     * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Sets
@@ -137,7 +137,7 @@ public class DispoSetResource {
          }
       }
       Status status;
-      if (allDispoSets.isEmpty()) {
+      if (jarray.length() <= 0) {
          status = Status.NOT_FOUND;
       } else {
          status = Status.OK;
@@ -147,7 +147,7 @@ public class DispoSetResource {
 
    /**
     * Edit a specific Disposition Set given a setId and new Disposition Set Data
-    * 
+    *
     * @param setId The Id of the Disposition Set to search for
     * @param newDispositionSet The data for the new Disposition Set
     * @return The updated Disposition Set if successful. Error Code otherwise
@@ -173,7 +173,7 @@ public class DispoSetResource {
 
    /**
     * Delete a specific Disposition Set given a setId
-    * 
+    *
     * @param setId The Id of the Disposition Set to search for
     * @return Response Code
     * @response.representation.200.doc OK, Found Disposition Set
@@ -205,7 +205,7 @@ public class DispoSetResource {
 
    /**
     * Get a specific Dispositionable Item given a key word within the Dispositions
-    * 
+    *
     * @param itemId The Id of the Dispositionable Item to search for
     * @return The found Dispositionable Item if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Dispositionable Item

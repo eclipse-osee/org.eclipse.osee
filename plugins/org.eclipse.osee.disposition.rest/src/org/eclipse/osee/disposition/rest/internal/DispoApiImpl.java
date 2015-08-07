@@ -285,7 +285,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public ResultSet<IOseeBranch> getDispoPrograms() {
+   public List<IOseeBranch> getDispoPrograms() {
       return getQuery().getDispoBranches();
    }
 

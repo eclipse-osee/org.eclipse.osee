@@ -43,7 +43,7 @@ public interface DispoQuery {
 
    DispoItem findDispoItemById(DispoProgram program, String itemId);
 
-   ResultSet<IOseeBranch> getDispoBranches();
+   List<IOseeBranch> getDispoBranches();
 
    Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword);
 

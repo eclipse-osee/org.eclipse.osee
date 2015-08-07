@@ -32,8 +32,6 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
@@ -125,9 +123,9 @@ public class DispoApiTest {
 
    @Test
    public void testGetDispoPrograms() {
-      ResultSet<IOseeBranch> programsSet = ResultSets.singleton(mockBranch);
+      List<IOseeBranch> programsSet = Collections.singletonList(mockBranch);
       when(storage.getDispoBranches()).thenAnswer(newAnswer(programsSet));
-      ResultSet<IOseeBranch> actual = dispoApi.getDispoPrograms();
+      List<IOseeBranch> actual = dispoApi.getDispoPrograms();
       assertEquals(programsSet.iterator().next(), actual.iterator().next());
    }
 
@@ -273,9 +271,9 @@ public class DispoApiTest {
       when(dispoItem.getDiscrepanciesList()).thenReturn(jsonObject);
       when(dataFactory.createUpdatedItem(eq(jsonArray), eq(jsonObject))).thenReturn(dispoItem);
       when(dispoConnector.connectAnnotation(annotationToCreate, jsonObject)).thenReturn(false);
-      annotationToCreate.setIsConnected(true); //Assume this Annotation was connected 
+      annotationToCreate.setIsConnected(true); //Assume this Annotation was connected
 
-      // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE 
+      // Only need to createUpdatedItem with updateStatus = True when annotation is valid and current status is INCOMPLETE
       annotationToCreate.setResolution("VALID");
       when(dispoItem.getStatus()).thenReturn("COMPLETE");
       when(validator.validate(Matchers.any(DispoAnnotationData.class))).thenReturn(true);

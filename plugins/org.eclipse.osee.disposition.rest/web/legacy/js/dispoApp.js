@@ -1,7 +1,7 @@
 /**
  * Dispo app definition
  */
-var app = angular.module('dispoApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'ngGrid', 'mc.resizer', 'ngCookies', ]);
+var app = angular.module('dispoApp', ['ngRoute', 'ngResource', 'ui.bootstrap', 'ngGrid', 'mc.resizer', 'ngStorage', ]);
 
 
 app.config(['$routeProvider',

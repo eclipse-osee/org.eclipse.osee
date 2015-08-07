@@ -7,6 +7,9 @@
             <div class="row">
                 <h5>Select ATS Version</h5>
                 <select class="form-control" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
+            	 <div>
+                	<u ng-click="toggleAddNew()">Add New</u> <div  ng-show="addNew"><input class="form-control" ng-model="newProgramName" type="text" name="newProgram"><button ng-click="createNewProgram()" class="form-control">Submit</button></div>
+                </div>
             </div>
             <div class="row" id=reportRow>
                 <div ng-show="sets.length > 0" class="col-sm-10 col-sm-offset-2" id=reportContainer>
@@ -21,7 +24,7 @@
             
             <div class="row" id=setCopyRow>
                 <div class="col-sm-10 col-sm-offset-2" id=setCopyContainer>
-                    <button ng-click="openCopySetModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=generateReportBtn>Merge Annotations</button>
+                    <button ng-disabled="isCopying" ng-click="openCopySetModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=generateReportBtn>Merge Annotations</button>
                 </div>
             </div>
             

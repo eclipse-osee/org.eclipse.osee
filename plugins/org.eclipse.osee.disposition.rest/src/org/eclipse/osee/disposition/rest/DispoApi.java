@@ -24,7 +24,6 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
  * @author Angel Avila
@@ -32,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 public interface DispoApi {
 
    // Queries
-   ResultSet<IOseeBranch> getDispoPrograms();
+   List<IOseeBranch> getDispoPrograms();
 
    List<DispoSet> getDispoSets(DispoProgram program);
 

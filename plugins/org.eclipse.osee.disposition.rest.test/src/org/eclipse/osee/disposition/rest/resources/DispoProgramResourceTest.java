@@ -12,14 +12,14 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
+import java.util.Collections;
+import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +55,7 @@ public class DispoProgramResourceTest {
    @Test
    public void testGetAll() throws JSONException {
       // No Sets
-      ResultSet<IOseeBranch> emptyResultSet = ResultSets.emptyResultSet();
+      List<IOseeBranch> emptyResultSet = Collections.emptyList();
       when(dispoApi.getDispoPrograms()).thenReturn(emptyResultSet);
       Response noProgramsResponse = resource.getAllPrograms();
       String messageActual = (String) noProgramsResponse.getEntity();
@@ -63,7 +63,7 @@ public class DispoProgramResourceTest {
       assertEquals("[]", messageActual);
 
       IOseeBranch branch = TokenFactory.createBranch(id1.getUuid(), "testBranch");
-      ResultSet<IOseeBranch> branchList = ResultSets.singleton(branch);
+      List<IOseeBranch> branchList = Collections.singletonList(branch);
 
       when(dispoApi.getDispoPrograms()).thenReturn(branchList);
       Response oneSetResponse = resource.getAllPrograms();

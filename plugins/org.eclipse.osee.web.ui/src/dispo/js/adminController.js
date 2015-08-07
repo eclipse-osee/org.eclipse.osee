@@ -5,7 +5,10 @@
 		        $scope.modalShown = false;
 		        $scope.primarySet = "";
 		        $scope.secondarySet = "";
-		        $scope.sets = [];
+		        $scope.sets = {};
+			     $scope.addNew = false;
+		        $scope.newProgramName = ""
+		        $scope.isCopying = false;
 
 		        $scope.cachedValue = "";
 
@@ -90,6 +93,33 @@
 		            width: 57,
 		            cellTemplate: dellCellTmpl
 		        }];
+		        
+		        $scope.createNewProgram = function() {
+		            if ($scope.newProgramName != "") {
+		        		    var loadingModal = $scope.showLoadingModal();
+		                var newProgram = new Program;
+		                newProgram.name = $scope.newProgramName;
+		                newProgram.$save({
+		                    name: $scope.newProgramName
+		                }, function() {
+		                 		$scope.newProgramName = "";
+		                		$scope.addNew = false;
+		                	  loadingModal.close();
+		                    $scope.programs = Program.query();
+		                }, function() {
+		                	  loadingModal.close();
+		                    alert("Oops...Something went wrong");
+		                });
+		            }
+		        }
+		        
+		        $scope.toggleAddNew = function() {
+		        		if($scope.addNew) {
+		        			 $scope.addNew = false;
+		        		} else {
+		        			$scope.addNew = true;
+		        		}
+		        }
 
 		        $scope.columnDefs = $scope.columnDefs1;
 
@@ -128,16 +158,19 @@
 		        
 		        
 		        $scope.updateProgram = function updateProgram() {
+		        		var loadingModal = $scope.showLoadingModal();
 		            $scope.loading = true;
-		        	$scope.items = {};
-		        	$scope.sets = {};
-		            Set.query({
-		                programId: $scope.programSelection,
-		                type: $rootScope.type
-		            }, function(data) {
-		                $scope.loading = false;
-		                $scope.sets = data;
-		            });
+			        	$scope.items = {};
+			            Set.query({
+			                programId: $scope.programSelection,
+			                type: $rootScope.type
+			            }, function(data) {
+			            	loadingModal.close();
+			                $scope.sets = data;
+			            }, function(data) {
+			            	loadingModal.close();
+			            	alert(data.statusText);
+			            });
 		        };
 
 		        $scope.editSet = function editSet(set) {
@@ -204,13 +237,14 @@
 		                newSet.dispoType = $rootScope.type;
 		                newSet.$save({
 		                    programId: $scope.programSelection
-		                }, function() {
-		                    $scope.sets.push(newSet);
+		                }, function(data) {
+		                    $scope.sets.push(data);
 		                });
 		            }
 		        };
 		        
 		        $scope.copySet = function(inputs)	 {
+		        	$scope.isCopying = true;
 		        	var copySetOp = new CopySet;
 		        	copySetOp.annotationParam = inputs.annotationParam;
 		        	copySetOp.categoryParam = inputs.categoryParam;
@@ -222,10 +256,26 @@
 		                destinationSet: inputs.destinationSet,
 		                sourceSet: inputs.sourceSet,
 		            }, function(data) {
+		            	$scope.isCopying = false;
 		            	var reportUrl = data.operationStatus;
 			            window.open(reportUrl);
 		            	console.log(data);
+		            }, function(data) {
+		               $scope.isCopying = false;
+		            	alert("Oops...Something went wrong");
 		            });
+		        }
+		        
+		        // Loading Modal
+		        $scope.showLoadingModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'loadingModal.html',
+		                size: 'sm',
+		                windowClass: 'needsRerunModal',
+		                backdrop: 'static'
+		            });
+		            
+		            return modalInstance;
 		        }
 
 		        // Create Set Modal

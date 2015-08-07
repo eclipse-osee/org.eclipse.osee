@@ -2,7 +2,6 @@ app.controller('userController', [
     '$scope',
     '$modal',
     '$rootScope',
-    '$cookieStore',
     'Program',
     'Set',
     'Item',
@@ -10,7 +9,7 @@ app.controller('userController', [
     'SetSearch',
     'SourceFile',
     'Config',
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, Config) {
+    function($scope, $modal, $rootScope, Program, Set, Item, Annotation, SetSearch, SourceFile, Config) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -70,6 +69,9 @@ app.controller('userController', [
             }, function(data) {
             	loadingModal.close();
                 $scope.sets = data;
+            }, function(data) {
+            	loadingModal.close();
+            	alert(data.statusText);
             });
             
             // Try to get custom config

@@ -145,7 +145,7 @@ public class DispoSetCopier {
                 * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting the
                 * annotation
                 */
-               // Make location ref negative to indicate this 
+               // Make location ref negative to indicate this
                String locationRefs = sourceAnnotation.getLocationRefs();
                Integer locationRefAsInt = Integer.valueOf(locationRefs);
                if (locationRefAsInt > 0) {
@@ -258,40 +258,42 @@ public class DispoSetCopier {
             String sourceCategory = sourceItem.getCategory();
             String newCategory;
 
-            switch (option) {
-               case OVERRIDE:
-                  newCategory = sourceCategory;
-                  break;
-               case OVERRIDE_EMPTY:
-                  if (!Strings.isValid(currentCategory)) {
+            if (Strings.isValid(sourceCategory)) {
+               switch (option) {
+                  case OVERRIDE:
                      newCategory = sourceCategory;
-                  } else {
+                     break;
+                  case OVERRIDE_EMPTY:
+                     if (!Strings.isValid(currentCategory)) {
+                        newCategory = sourceCategory;
+                     } else {
+                        newCategory = currentCategory;
+                     }
+                     break;
+                  case MERGE:
+                     if (!Strings.isValid(currentCategory)) {
+                        newCategory = sourceCategory;
+                     } else {
+                        newCategory = currentCategory + "::" + sourceCategory;
+                     }
+                     break;
+                  case NONE:
+                  default:
                      newCategory = currentCategory;
-                  }
-                  break;
-               case MERGE:
-                  if (!Strings.isValid(currentCategory)) {
-                     newCategory = sourceCategory;
-                  } else {
-                     newCategory = currentCategory + "::" + sourceCategory;
-                  }
-                  break;
-               case NONE:
-               default:
-                  newCategory = currentCategory;
-                  break;
-            }
+                     break;
+               }
 
-            // Check to see if this item is already set to be edited
-            DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
-            if (matchingToEdit != null) {
-               ((DispoItemData) matchingToEdit).setCategory(newCategory);
-            } else {
-               DispoItemData newToEdit = new DispoItemData();
-               newToEdit.setGuid(destItem.getGuid());
-               newToEdit.setName(destItem.getName());
-               newToEdit.setCategory(newCategory);
-               toEdit.put(newToEdit.getName(), newToEdit);
+               // Check to see if this item is already set to be edited
+               DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
+               if (matchingToEdit != null) {
+                  ((DispoItemData) matchingToEdit).setCategory(newCategory);
+               } else {
+                  DispoItemData newToEdit = new DispoItemData();
+                  newToEdit.setGuid(destItem.getGuid());
+                  newToEdit.setName(destItem.getName());
+                  newToEdit.setCategory(newCategory);
+                  toEdit.put(newToEdit.getName(), newToEdit);
+               }
             }
          }
       }
@@ -306,35 +308,37 @@ public class DispoSetCopier {
             String sourceAssignee = sourceItem.getAssignee();
             String newAssignee;
 
-            switch (option) {
-               case OVERRIDE:
-                  newAssignee = sourceAssignee;
-                  break;
-               case OVERRIDE_EMPTY:
-                  if (currentAssignee.equalsIgnoreCase("UNASSIGNED")) {
+            if (!sourceAssignee.equalsIgnoreCase("UNASSIGNED")) {
+               switch (option) {
+                  case OVERRIDE:
                      newAssignee = sourceAssignee;
-                  } else {
+                     break;
+                  case OVERRIDE_EMPTY:
+                     if (currentAssignee.equalsIgnoreCase("UNASSIGNED")) {
+                        newAssignee = sourceAssignee;
+                     } else {
+                        newAssignee = currentAssignee;
+                     }
+                     break;
+                  case MERGE:
+                     // Should not get here
+                  case NONE:
+                  default:
                      newAssignee = currentAssignee;
-                  }
-                  break;
-               case MERGE:
-                  // Should not get here
-               case NONE:
-               default:
-                  newAssignee = currentAssignee;
-                  break;
-            }
+                     break;
+               }
 
-            // Check to see if this item is already set to be edited
-            DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
-            if (matchingToEdit != null) {
-               ((DispoItemData) matchingToEdit).setAssignee(newAssignee);
-            } else {
-               DispoItemData newToEdit = new DispoItemData();
-               newToEdit.setGuid(destItem.getGuid());
-               newToEdit.setName(destItem.getName());
-               newToEdit.setAssignee(newAssignee);
-               toEdit.put(newToEdit.getName(), newToEdit);
+               // Check to see if this item is already set to be edited
+               DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
+               if (matchingToEdit != null) {
+                  ((DispoItemData) matchingToEdit).setAssignee(newAssignee);
+               } else {
+                  DispoItemData newToEdit = new DispoItemData();
+                  newToEdit.setGuid(destItem.getGuid());
+                  newToEdit.setName(destItem.getName());
+                  newToEdit.setAssignee(newAssignee);
+                  toEdit.put(newToEdit.getName(), newToEdit);
+               }
             }
          }
       }
@@ -349,40 +353,42 @@ public class DispoSetCopier {
             String sourceItemNotes = sourceItem.getItemNotes();
             String newItemNotes;
 
-            switch (option) {
-               case OVERRIDE:
-                  newItemNotes = sourceItemNotes;
-                  break;
-               case OVERRIDE_EMPTY:
-                  if (!Strings.isValid(currentItemNotes)) {
+            if (Strings.isValid(sourceItemNotes)) {
+               switch (option) {
+                  case OVERRIDE:
                      newItemNotes = sourceItemNotes;
-                  } else {
+                     break;
+                  case OVERRIDE_EMPTY:
+                     if (!Strings.isValid(currentItemNotes)) {
+                        newItemNotes = sourceItemNotes;
+                     } else {
+                        newItemNotes = currentItemNotes;
+                     }
+                     break;
+                  case MERGE:
+                     if (!Strings.isValid(currentItemNotes)) {
+                        newItemNotes = sourceItemNotes;
+                     } else {
+                        newItemNotes = currentItemNotes + "::" + sourceItemNotes;
+                     }
+                     break;
+                  case NONE:
+                  default:
                      newItemNotes = currentItemNotes;
-                  }
-                  break;
-               case MERGE:
-                  if (!Strings.isValid(currentItemNotes)) {
-                     newItemNotes = sourceItemNotes;
-                  } else {
-                     newItemNotes = currentItemNotes + "::" + sourceItemNotes;
-                  }
-                  break;
-               case NONE:
-               default:
-                  newItemNotes = currentItemNotes;
-                  break;
-            }
+                     break;
+               }
 
-            // Check to see if this item is already set to be edited
-            DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
-            if (matchingToEdit != null) {
-               ((DispoItemData) matchingToEdit).setItemNotes(newItemNotes);
-            } else {
-               DispoItemData newToEdit = new DispoItemData();
-               newToEdit.setGuid(destItem.getGuid());
-               newToEdit.setName(destItem.getName());
-               newToEdit.setItemNotes(newItemNotes);
-               toEdit.put(newToEdit.getName(), newToEdit);
+               // Check to see if this item is already set to be edited
+               DispoItem matchingToEdit = toEdit.get(sourceItem.getName());
+               if (matchingToEdit != null) {
+                  ((DispoItemData) matchingToEdit).setItemNotes(newItemNotes);
+               } else {
+                  DispoItemData newToEdit = new DispoItemData();
+                  newToEdit.setGuid(destItem.getGuid());
+                  newToEdit.setName(destItem.getName());
+                  newToEdit.setItemNotes(newItemNotes);
+                  toEdit.put(newToEdit.getName(), newToEdit);
+               }
             }
          }
       }
