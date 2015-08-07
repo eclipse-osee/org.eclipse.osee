@@ -83,6 +83,6 @@ public interface IAtsChangeSet {
 
    void deleteArtifact(ArtifactId artifact);
 
-   void deleteArtifact(IAtsWorkItem task);
+   void deleteArtifact(IAtsWorkItem workItem);
 
 }

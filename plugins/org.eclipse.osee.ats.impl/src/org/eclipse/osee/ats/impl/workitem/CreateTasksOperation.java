@@ -33,6 +33,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CreateTasksOperation {
 
    private XResultData resultData;
@@ -44,9 +47,6 @@ public class CreateTasksOperation {
    private IAtsTeamWorkflow teamWf;
    private Date createdByDate;
 
-   /**
-    * @author Donald G. Dunne
-    */
    public CreateTasksOperation(NewTaskData newTaskData, IAtsServer atsServer, XResultData resultData) {
       this.newTaskData = newTaskData;
       this.atsServer = atsServer;

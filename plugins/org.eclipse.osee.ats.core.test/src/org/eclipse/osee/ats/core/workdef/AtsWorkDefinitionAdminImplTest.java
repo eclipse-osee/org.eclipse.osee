@@ -78,9 +78,8 @@ public class AtsWorkDefinitionAdminImplTest {
       when(projTeamDef.getParentTeamDef()).thenReturn(topTeamDef);
       when(featureTeamDef.getParentTeamDef()).thenReturn(projTeamDef);
       // always return default when requested
-      when(
-         workDefinitionService.getWorkDef(eq(IAtsWorkDefinitionAdmin.PeerToPeerDefaultWorkflowDefinitionId),
-            any(XResultData.class))).thenReturn(defaultPeerToPeerWorkDef);
+      when(workDefinitionService.getWorkDef(eq(IAtsWorkDefinitionAdmin.PeerToPeerDefaultWorkflowDefinitionId),
+         any(XResultData.class))).thenReturn(defaultPeerToPeerWorkDef);
       // always return myPeerToPeerWorkDef when requested
       when(workDefinitionService.getWorkDef(eq(MyPeerToPeerWorkDefId), any(XResultData.class))).thenReturn(
          myPeerToPeerWorkDef);
@@ -88,9 +87,8 @@ public class AtsWorkDefinitionAdminImplTest {
       AtsWorkDefinitionCache cache = new AtsWorkDefinitionCache();
       when(cacheProvider.get()).thenReturn(cache);
 
-      workDefAmin =
-         new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService, attributeResolver,
-            teamWorkflowProviders);
+      workDefAmin = new AtsWorkDefinitionAdminImpl(cacheProvider, workItemService, workDefinitionService,
+         attributeResolver, teamWorkflowProviders);
    }
 
    @Test
@@ -104,7 +102,7 @@ public class AtsWorkDefinitionAdminImplTest {
     */
    @Test
    public void testGetWorkDefinitionForPeerToPeerReview_deafault() throws Exception {
-      when(workItemService.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
+      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
          Collections.emptyList());
 
       IWorkDefinitionMatch match = workDefAmin.getWorkDefinitionForPeerToPeerReview(peerReview);
@@ -118,8 +116,9 @@ public class AtsWorkDefinitionAdminImplTest {
    @Test
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreated() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
-      when(workItemService.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
 
       IWorkDefinitionMatch match = workDefAmin.getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamWf);
 
@@ -133,7 +132,8 @@ public class AtsWorkDefinitionAdminImplTest {
    public void testGetWorkDefinitionForPeerToPeerReviewIAtsTeamWorkflowIAtsPeerToPeerReview__fromReview() throws Exception {
       List<Object> attrValues = new ArrayList<Object>();
       attrValues.add(MyPeerToPeerWorkDefId);
-      when(workItemService.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(attrValues);
+      when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
+         attrValues);
 
       IWorkDefinitionMatch match = workDefAmin.getWorkDefinitionForPeerToPeerReview(peerReview);
 
@@ -148,8 +148,9 @@ public class AtsWorkDefinitionAdminImplTest {
       when(teamWf.getTeamDefinition()).thenReturn(featureTeamDef);
       List<Object> attrValues = new ArrayList<Object>();
       attrValues.add(MyPeerToPeerWorkDefId);
-      when(workItemService.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         attrValues);
+      when(
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            attrValues);
       when(actionableItem.getTeamDefinitionInherited()).thenReturn(topTeamDef);
       when(topTeamDef.getRelatedPeerWorkDefinition()).thenReturn(MyPeerToPeerWorkDefId);
 
@@ -166,25 +167,30 @@ public class AtsWorkDefinitionAdminImplTest {
    @Test
    public void testGetPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse() throws Exception {
       // Setup all teamDefinitions to not have values defined
-      when(workItemService.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         Collections.emptyList());
-      when(workItemService.getAttributeValues(projTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         Collections.emptyList());
-      when(workItemService.getAttributeValues(featureTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
+      when(
+         attributeResolver.getAttributeValues(projTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
+      when(attributeResolver.getAttributeValues(featureTeamDef,
+         AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(Collections.emptyList());
 
       // Test that no-match is returned
       IWorkDefinitionMatch peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse =
          workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(topTeamDef);
       assertFalse(peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse.isMatched());
-      assertFalse(workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef).isMatched());
-      assertFalse(workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).isMatched());
+      assertFalse(
+         workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef).isMatched());
+      assertFalse(
+         workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).isMatched());
 
       // Setup that top team definition has WorkDefinition defined
       List<Object> attrValues = new ArrayList<Object>();
       attrValues.add(MyPeerToPeerWorkDefId);
-      when(workItemService.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         attrValues);
+      when(
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            attrValues);
       when(workDefinitionService.getWorkDef(eq(MyPeerToPeerWorkDefId), any(XResultData.class))).thenReturn(
          myPeerToPeerWorkDef);
       when(topTeamDef.getRelatedPeerWorkDefinition()).thenReturn(MyPeerToPeerWorkDefId);
@@ -193,22 +199,23 @@ public class AtsWorkDefinitionAdminImplTest {
       peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse =
          workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(topTeamDef);
       assertTrue(peerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse.isMatched());
-      assertTrue(workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef).isMatched());
-      assertTrue(workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).isMatched());
-      assertEquals(
-         myPeerToPeerWorkDef,
-         workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).getWorkDefinition());
+      assertTrue(
+         workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(projTeamDef).isMatched());
+      assertTrue(
+         workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).isMatched());
+      assertEquals(myPeerToPeerWorkDef, workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(
+         featureTeamDef).getWorkDefinition());
    }
 
    @Test
    public void testGetWorkDefinitionIAtsWorkItem() throws Exception {
-      when(workItemService.getParentTeamWorkflow(peerReview)).thenReturn(teamWf);
+      when(peerReview.getParentTeamWorkflow()).thenReturn(teamWf);
       when(teamWf.getTeamDefinition()).thenReturn(topTeamDef);
-      when(workItemService.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
-         Collections.emptyList());
       when(
-         workDefinitionService.getWorkDef(Matchers.eq(IAtsWorkDefinitionAdmin.PeerToPeerDefaultWorkflowDefinitionId),
-            (XResultData) Matchers.anyObject())).thenReturn(defaultPeerToPeerWorkDef);
+         attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
+            Collections.emptyList());
+      when(workDefinitionService.getWorkDef(Matchers.eq(IAtsWorkDefinitionAdmin.PeerToPeerDefaultWorkflowDefinitionId),
+         (XResultData) Matchers.anyObject())).thenReturn(defaultPeerToPeerWorkDef);
 
       IWorkDefinitionMatch match = workDefAmin.getWorkDefinition(peerReview);
       assertEquals(defaultPeerToPeerWorkDef, match.getWorkDefinition());

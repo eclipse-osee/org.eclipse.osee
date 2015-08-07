@@ -55,7 +55,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
          for (Artifact art : useArt.getRelatedArtifacts(relationType)) {
             IAtsObject object = getAtsObject(art);
             if (object != null) {
-               results.add((T) art);
+               results.add((T) object);
             }
          }
       }

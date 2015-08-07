@@ -120,7 +120,7 @@ public class PercentCompleteTotalUtil {
    /**
     * Return Percent Complete on all things (including children SMAs) related to stateName. Total Percent for state,
     * tasks and reviews / 1 + # Tasks + # Reviews
-    * 
+    *
     * @param services JavaTip
     */
    public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, IAtsServices services) throws OseeCoreException {
@@ -183,11 +183,11 @@ public class PercentCompleteTotalUtil {
       int percent = 0;
       if (atsObject instanceof IAtsAction) {
          IAtsAction action = (IAtsAction) atsObject;
-         if (services.getWorkItemService().getTeams(action).size() == 1) {
+         if (((IAtsAction) atsObject).getTeamWorkflows().size() == 1) {
             return getPercentCompleteSMAState(services.getWorkItemService().getFirstTeam(action), services);
          } else {
             int items = 0;
-            for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams(action)) {
+            for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
                if (!team.getStateMgr().getStateType().isCancelled()) {
                   percent += getPercentCompleteSMAState(team, services);
                   items++;

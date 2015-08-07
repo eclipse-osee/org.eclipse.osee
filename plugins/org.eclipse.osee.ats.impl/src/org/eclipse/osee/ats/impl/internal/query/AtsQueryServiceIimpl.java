@@ -36,7 +36,7 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
 
    @Override
    public IAtsWorkItemFilter createFilter(List<IAtsWorkItem> workItems) {
-      return new AtsWorkItemFilter(workItems, atsServer.getWorkItemService());
+      return new AtsWorkItemFilter(workItems, atsServer.getServices());
    }
 
 }

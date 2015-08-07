@@ -113,7 +113,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
          writer.writeStringField("ChangeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
          writer.writeStringField("Priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
-         writer.writeStringField("State", atsServer.getWorkItemService().getCurrentStateName(workItem));
+         writer.writeStringField("State", workItem.getStateMgr().getCurrentStateName());
          writer.writeStringField("CreatedDate", DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYY));
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();

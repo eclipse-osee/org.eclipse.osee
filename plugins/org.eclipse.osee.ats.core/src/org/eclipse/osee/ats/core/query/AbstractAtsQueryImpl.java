@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -51,13 +51,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected final HashMap<IRelationTypeSide, IAtsObject> andRels = new HashMap<IRelationTypeSide, IAtsObject>();
    protected IAtsTeamDefinition teamDef;
    protected StateType[] stateType;
-   private final IAtsWorkItemService workItemService;
    protected Class<? extends IAtsWorkItem> clazz;
    protected IArtifactType[] artifactTypes;
    protected Long[] uuids;
+   private final IAtsServices services;
 
-   public AbstractAtsQueryImpl(IAtsWorkItemService workItemService) {
-      this.workItemService = workItemService;
+   public AbstractAtsQueryImpl(IAtsServices services) {
+      this.services = services;
    }
 
    @Override
@@ -119,7 +119,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsWorkItemFilter andFilter() throws OseeCoreException {
-      return new AtsWorkItemFilter(getItems(), workItemService);
+      return new AtsWorkItemFilter(getItems(), services);
    }
 
    protected List<IArtifactType> getArtifactTypes() {

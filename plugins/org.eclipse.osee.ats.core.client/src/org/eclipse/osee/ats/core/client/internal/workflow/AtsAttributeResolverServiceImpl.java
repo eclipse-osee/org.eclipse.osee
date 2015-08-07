@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -213,6 +214,15 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    @Override
    public <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType) {
+      Assert.isNotNull(artifact, "Artifact can not be null");
+      Assert.isNotNull(attributeType, "Attribute Type can not be null");
       return AtsClientService.get().getArtifact(artifact).getAttributeValues(attributeType);
+   }
+
+   @Override
+   public Collection<Object> getAttributeValues(IAtsObject atsObject, IAttributeType attributeType) {
+      Assert.isNotNull(atsObject, "ATS Object can not be null");
+      Assert.isNotNull(attributeType, "Attribute Type can not be null");
+      return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 }

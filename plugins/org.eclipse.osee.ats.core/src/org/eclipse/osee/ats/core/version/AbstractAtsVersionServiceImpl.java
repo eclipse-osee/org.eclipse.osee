@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,16 +55,18 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
 
    @Override
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException {
-      Collection<IAtsVersion> versions =
-         services.getRelationResolver().getRelated(team, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            IAtsVersion.class);
+      if (team == null) {
+         throw new OseeArgumentException("Team Workflow can not be null %s", team);
+      }
+      Collection<ArtifactId> versions = services.getRelationResolver().getRelated((team.getStoreObject()),
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {
          if (versions.size() > 1) {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = versions.iterator().next();
+            version = services.getConfigItemFactory().getVersion(versions.iterator().next());
          }
       }
       return version;
@@ -151,9 +154,8 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
 
    @Override
    public Long getBranchId(IAtsVersion version) {
-      Long branchUuid =
-         Long.valueOf(services.getAttributeResolver().getSoleAttributeValue(version,
-            AtsAttributeTypes.BaselineBranchUuid, "0"));
+      Long branchUuid = Long.valueOf(
+         services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "0"));
       if (branchUuid <= 0) {
          branchUuid = null;
       }

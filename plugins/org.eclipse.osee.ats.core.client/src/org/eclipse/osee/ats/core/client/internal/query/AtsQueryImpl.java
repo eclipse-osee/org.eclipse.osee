@@ -41,7 +41,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    private final IAtsClient atsClient;
 
    public AtsQueryImpl(IAtsClient atsClient) {
-      super(atsClient.getWorkItemService());
+      super(atsClient.getServices());
       this.atsClient = atsClient;
    }
 

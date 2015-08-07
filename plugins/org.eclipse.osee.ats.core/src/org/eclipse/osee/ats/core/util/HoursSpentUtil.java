@@ -23,7 +23,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentTotal(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
                hours += getHoursSpentTotal(team, services);
             }
@@ -42,9 +42,8 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours =
-            getHoursSpentTotalSMAState(hours, workItem) + getHoursSpentFromTasks(atsObject, services) + getHoursSpentReview(
-               atsObject, services);
+         hours = getHoursSpentTotalSMAState(hours, workItem) + getHoursSpentFromTasks(atsObject,
+            services) + getHoursSpentReview(atsObject, services);
       }
       return hours;
    }
@@ -66,7 +65,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateTotal(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
                hours += getHoursSpentStateTotal(team, services);
             }
@@ -85,9 +84,8 @@ public class HoursSpentUtil {
       double hours = 0.0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours =
-            getHoursSpentSMAState(workItem, state) + getHoursSpentFromStateTasks(workItem, state, services) + getHoursSpentStateReview(
-               workItem, state, services);
+         hours = getHoursSpentSMAState(workItem, state) + getHoursSpentFromStateTasks(workItem, state,
+            services) + getHoursSpentStateReview(workItem, state, services);
       }
       return hours;
    }
@@ -98,7 +96,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateReview(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
                hours += getHoursSpentStateReview(team, services);
             }
@@ -116,7 +114,8 @@ public class HoursSpentUtil {
    public static double getHoursSpentStateReview(IAtsObject atsObject, IStateToken state, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsAbstractReview review : services.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject, state)) {
+         for (IAtsAbstractReview review : services.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject,
+            state)) {
             hours += review.getStateMgr().getHoursSpent(state.getName());
          }
       }
@@ -142,7 +141,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentSMAState(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
                hours += getHoursSpentSMAState(team, services);
             }
@@ -172,7 +171,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
-         for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams((IAtsAction) atsObject)) {
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
                hours += getHoursSpentFromStateTasks(team, services);
             }
@@ -187,7 +186,7 @@ public class HoursSpentUtil {
 
    /**
     * Return Hours Spent for Tasks of "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Hours Spent
     */
@@ -203,7 +202,7 @@ public class HoursSpentUtil {
 
    /**
     * Returns Hours Spent for all Tasks
-    * 
+    *
     * @return Returns the Hours Spent
     */
    public static double getHoursSpentFromTasks(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {

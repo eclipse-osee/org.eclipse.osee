@@ -187,7 +187,7 @@ public class ActionResourceTest extends AbstractRestTest {
       String urlStr = response.getLocation().toString();
       URL url = new URL(urlStr);
       String path = url.getPath();
-      Assert.assertTrue(String.format("Invalid url [%s]", url), path.startsWith("/ats/ui/action/ATS"));
+      Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/ATS"));
       String atsId = path.replaceFirst("^.*/", "");
 
       Artifact teamArt =
@@ -203,9 +203,8 @@ public class ActionResourceTest extends AbstractRestTest {
    private Response post(Form form) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri = UriBuilder.fromUri(appServer).path("/ats/action").build();
-      Response response =
-         JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(MediaType.APPLICATION_JSON_TYPE).post(
-            Entity.form(form));
+      Response response = JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(
+         MediaType.APPLICATION_JSON_TYPE).post(Entity.form(form));
       return response;
    }
 

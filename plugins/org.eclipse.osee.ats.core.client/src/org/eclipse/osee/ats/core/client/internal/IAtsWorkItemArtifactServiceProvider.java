@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 public interface IAtsWorkItemArtifactServiceProvider {
 
-   IAtsWorkItemArtifactService getWorkItemArtifactService() throws OseeStateException;
+   IArtifactResolver getArtifactResolver() throws OseeStateException;
 }

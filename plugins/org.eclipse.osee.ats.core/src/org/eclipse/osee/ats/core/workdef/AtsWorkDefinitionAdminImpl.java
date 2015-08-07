@@ -111,7 +111,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
                if (workDef != null) {
                   match.setWorkDefinition(workDef);
                   if (!resultData.isEmpty()) {
-                     match.addTrace((String.format("from DSL provider loaded id [%s] [%s]", id, resultData.toString())));
+                     match.addTrace(
+                        (String.format("from DSL provider loaded id [%s] [%s]", id, resultData.toString())));
                   } else {
                      match.addTrace((String.format("from DSL provider loaded id [%s]", id)));
                   }
@@ -164,7 +165,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = null;
       Collection<Object> attributeValues =
-         workItemService.getAttributeValues(workItem, AtsAttributeTypes.WorkflowDefinition);
+         attributeResolver.getAttributeValues(workItem, AtsAttributeTypes.WorkflowDefinition);
       if (!attributeValues.isEmpty()) {
          workFlowDefId = (String) attributeValues.iterator().next();
       }
@@ -182,7 +183,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = null;
       Collection<Object> attributeValues =
-         workItemService.getAttributeValues(workItem, AtsAttributeTypes.RelatedTaskWorkDefinition);
+         attributeResolver.getAttributeValues(workItem, AtsAttributeTypes.RelatedTaskWorkDefinition);
       if (!attributeValues.isEmpty()) {
          workFlowDefId = (String) attributeValues.iterator().next();
       }
@@ -213,7 +214,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
    @Override
    public IWorkDefinitionMatch getWorkDefinitionForTask(IAtsTask task) throws OseeCoreException {
-      IAtsTeamWorkflow teamWf = workItemService.getParentTeamWorkflow(task);
+      IAtsTeamWorkflow teamWf = task.getParentTeamWorkflow();
       return getWorkDefinitionForTask(teamWf, task);
    }
 
@@ -235,8 +236,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
          if (Strings.isValid(workFlowDefId)) {
             match = getWorkDefinition(workFlowDefId);
-            match.addTrace((String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(),
-               workFlowDefId)));
+            match.addTrace(
+               (String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId)));
             break;
          }
       }
@@ -354,8 +355,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    @Override
    public IWorkDefinitionMatch getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(IAtsActionableItem actionableItem) throws OseeCoreException {
       Conditions.notNull(actionableItem, AtsWorkDefinitionAdminImpl.class.getSimpleName());
-      IWorkDefinitionMatch match =
-         getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(actionableItem.getTeamDefinitionInherited());
+      IWorkDefinitionMatch match = getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(
+         actionableItem.getTeamDefinitionInherited());
       if (!match.isMatched()) {
          match = getDefaultPeerToPeerWorkflowDefinitionMatch();
       }

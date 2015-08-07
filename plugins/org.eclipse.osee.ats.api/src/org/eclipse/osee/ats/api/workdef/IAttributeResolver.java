@@ -70,6 +70,8 @@ public interface IAttributeResolver {
 
    <T> T getSoleAttributeValue(ArtifactId artifact, IAttributeType attributeType, T defaultValue);
 
-   <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType staticid);
+   <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType);
+
+   Collection<Object> getAttributeValues(IAtsObject atsObject, IAttributeType attributeType);
 
 }

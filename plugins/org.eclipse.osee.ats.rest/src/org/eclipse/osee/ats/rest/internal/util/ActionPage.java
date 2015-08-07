@@ -92,7 +92,7 @@ public class ActionPage {
       page.param("title", action.getSoleAttributeAsString(AtsAttributeTypes.Title, ""));
       page.param("team", getTeamStr(atsServer, action));
       page.param("ais", getAIStr(action));
-      page.param("state", atsServer.getWorkItemService().getCurrentStateName(workItem));
+      page.param("state", workItem.getStateMgr().getCurrentStateName());
       page.param("assignees", getAssigneesStr(workItem, action));
       page.param("id", workItem.getUuid());
       page.param("atsId", workItem.getAtsId());
@@ -231,15 +231,13 @@ public class ActionPage {
             if (stateName.equals(stateMgr.getCurrentStateName())) {
                stateName = String.format("CURRENT STATE => <b>%s</b>", stateName);
                if (stateMgr.getStateType().isCompleted()) {
-                  stateName =
-                     String.format("%s - on <b>%s</b> - by <b>%s</b>", stateName,
-                        DateUtil.getMMDDYYHHMM(workItem.getCompletedDate()), workItem.getCompletedBy().getName());
+                  stateName = String.format("%s - on <b>%s</b> - by <b>%s</b>", stateName,
+                     DateUtil.getMMDDYYHHMM(workItem.getCompletedDate()), workItem.getCompletedBy().getName());
                } else if (stateMgr.getStateType().isCancelled()) {
-                  stateName =
-                     String.format("%s - on <b>%s</b> - by <b>%s</b><br/>from <b>%s</b> - reason <b>[%s]</b>",
-                        stateName, DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
-                        workItem.getCancelledBy().getName(), workItem.getCancelledFromState(),
-                        workItem.getCancelledReason());
+                  stateName = String.format("%s - on <b>%s</b> - by <b>%s</b><br/>from <b>%s</b> - reason <b>[%s]</b>",
+                     stateName, DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()),
+                     workItem.getCancelledBy().getName(), workItem.getCancelledFromState(),
+                     workItem.getCancelledReason());
                }
             }
             stateHtmlTemplate = stateHtmlTemplate.replace("TITLE", stateName);

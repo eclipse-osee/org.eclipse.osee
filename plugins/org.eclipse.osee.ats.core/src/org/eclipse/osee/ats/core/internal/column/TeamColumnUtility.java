@@ -44,7 +44,7 @@ public class TeamColumnUtility implements IAtsColumnUtility {
       String result = "";
       try {
          if (atsObject instanceof IAtsTeamWorkflow) {
-            result = workItemService.getTeamName((IAtsTeamWorkflow) atsObject);
+            result = ((IAtsTeamWorkflow) atsObject).getTeamDefinition().getName();
          } else if (atsObject instanceof IAtsWorkItem) {
             result = getColumnText(((IAtsWorkItem) atsObject).getParentTeamWorkflow());
          }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,21 +35,25 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.ActionFactory;
@@ -56,6 +61,7 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
+import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.internal.agile.AgileService;
@@ -66,6 +72,7 @@ import org.eclipse.osee.ats.impl.internal.notify.AtsNotifierServiceImpl;
 import org.eclipse.osee.ats.impl.internal.notify.IAtsNotifierServer;
 import org.eclipse.osee.ats.impl.internal.notify.WorkItemNotificationProcessor;
 import org.eclipse.osee.ats.impl.internal.query.AtsQueryServiceIimpl;
+import org.eclipse.osee.ats.impl.internal.util.ArtifactResolverImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.impl.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsBranchServiceImpl;
@@ -76,7 +83,6 @@ import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsVersionServiceImpl;
-import org.eclipse.osee.ats.impl.internal.workitem.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
 import org.eclipse.osee.ats.impl.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.impl.internal.workitem.WorkItemFactory;
@@ -140,6 +146,7 @@ public class AtsServerImpl implements IAtsServer {
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
+   private IArtifactResolver artifactResolver;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -191,6 +198,7 @@ public class AtsServerImpl implements IAtsServer {
       configItemFactory = new ConfigItemFactory(logger, this);
 
       TeamWorkflowProviders teamWorkflowProvidersLazy = new TeamWorkflowProviders();
+      artifactResolver = new ArtifactResolverImpl(this, orcsApi);
       workItemService = new AtsWorkItemServiceImpl(this, teamWorkflowProvidersLazy);
       branchService = new AtsBranchServiceImpl(getServices(), orcsApi, teamWorkflowProvidersLazy);
       reviewService = new AtsReviewServiceImpl(this, this, workItemService);
@@ -217,8 +225,8 @@ public class AtsServerImpl implements IAtsServer {
       };
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
       actionableItemManager = new ActionableItemManager(config, attributeResolverService, atsStoreService);
-      actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, workItemService,
-         actionableItemManager, userService, attributeResolverService, atsStateFactory, config, getServices());
+      actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
+         userService, attributeResolverService, atsStateFactory, config, getServices());
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 
@@ -579,6 +587,26 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
       return getConfig().getSoleByUuid(uuid, clazz);
+   }
+
+   @Override
+   public Collection<ITransitionListener> getTransitionListeners() {
+      return Collections.emptyList();
+   }
+
+   @Override
+   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
+      return Collections.emptyList();
+   }
+
+   @Override
+   public void clearImplementersCache(IAtsWorkItem workItem) {
+      // do nothing; no cache on server
+   }
+
+   @Override
+   public IArtifactResolver getArtifactResolver() {
+      return artifactResolver;
    }
 
 }

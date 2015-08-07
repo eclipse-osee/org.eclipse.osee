@@ -76,7 +76,8 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public void setXWidgetNameBasedOnAttributeName(String attributeName, IAtsWidgetDefinition widgetDef) {
       try {
          if (!Strings.isValid(widgetDef.getXWidgetName())) {
-            widgetDef.setXWidgetName(AttributeTypeToXWidgetName.getXWidgetName(orcsApi, getAttributeType(attributeName)));
+            widgetDef.setXWidgetName(
+               AttributeTypeToXWidgetName.getXWidgetName(orcsApi, getAttributeType(attributeName)));
          }
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error setXWidgetNameBasedOnAttributeName - attributeName [%s] widgetDef[%s]", attributeName,
@@ -211,6 +212,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType) {
       return getArtifact(artifact).getAttributeValues(attributeType);
+   }
+
+   @Override
+   public Collection<Object> getAttributeValues(IAtsObject atsObject, IAttributeType attributeType) {
+      return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 
 }

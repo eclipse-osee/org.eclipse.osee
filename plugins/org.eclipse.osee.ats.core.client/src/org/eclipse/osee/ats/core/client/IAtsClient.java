@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
@@ -175,5 +176,8 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    TeamWorkflowProviders getTeamWorkflowProviders();
 
    void setConfigValue(String key, String value);
+
+   @Override
+   IArtifactResolver getArtifactResolver();
 
 }

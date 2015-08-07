@@ -49,7 +49,7 @@ public class TeamColumnUtilityTest {
       when(teamDef.toString()).thenReturn(TEAM_NAME);
       when(standAloneReview.getParentTeamWorkflow()).thenReturn(null);
       when(standAloneReview.getActionableItems()).thenReturn(Collections.singleton(ai));
-      when(workItemService.getTeamName(teamWf)).thenReturn(TEAM_NAME);
+      when(teamDef.getName()).thenReturn(TEAM_NAME);
       when(reviewService.isStandAloneReview(standAloneReview)).thenReturn(true);
       when(ai.getTeamDefinitionInherited()).thenReturn(teamDef);
       when(ai.getTeamDefinition()).thenReturn(teamDef);

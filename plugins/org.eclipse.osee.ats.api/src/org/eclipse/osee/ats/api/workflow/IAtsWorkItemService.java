@@ -11,15 +11,12 @@
 package org.eclipse.osee.ats.api.workflow;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
@@ -28,17 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkItemService {
 
-   IArtifactType getArtifactType(IAtsWorkItem workItem) throws OseeCoreException;
-
-   Collection<Object> getAttributeValues(IAtsObject workItem, IAttributeType attributeType) throws OseeCoreException;
-
-   boolean isOfType(IAtsWorkItem item, IArtifactType matchType) throws OseeCoreException;
-
-   IAtsTeamWorkflow getParentTeamWorkflow(IAtsWorkItem workItem) throws OseeCoreException;
-
    int getTransactionNumber(IAtsWorkItem workItem) throws OseeCoreException;
-
-   Collection<IAtsTeamWorkflow> getTeams(IAtsAction action) throws OseeCoreException;
 
    IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
 
@@ -52,8 +39,6 @@ public interface IAtsWorkItemService {
 
    IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
 
-   String getCurrentStateName(IAtsWorkItem workItem);
-
    void clearImplementersCache(IAtsWorkItem workItem);
 
    Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException;
@@ -63,8 +48,6 @@ public interface IAtsWorkItemService {
    Collection<ITransitionListener> getTransitionListeners();
 
    String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException;
-
-   String getTeamName(IAtsTeamWorkflow teamWf);
 
    Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
 

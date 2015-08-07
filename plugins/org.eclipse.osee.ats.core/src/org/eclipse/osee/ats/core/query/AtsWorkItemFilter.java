@@ -17,11 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -33,15 +33,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    private final Collection<? extends IAtsWorkItem> items;
-   private final IAtsWorkItemService workItemService;
+   private IAtsServices services;
 
-   public AtsWorkItemFilter(IAtsWorkItemService workItemService) {
-      this(null, workItemService);
+   public AtsWorkItemFilter(IAtsServices services) {
+      this(null, services);
+      this.services = services;
    }
 
-   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, IAtsWorkItemService workItemService) {
+   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, IAtsServices services) {
       this.items = workItems;
-      this.workItemService = workItemService;
+      this.services = services;
    }
 
    @Override
@@ -49,7 +50,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          for (IArtifactType matchType : artifactType) {
-            if (workItemService.isOfType(item, matchType)) {
+            if (services.getArtifactResolver().isOfType(item, matchType)) {
                found = true;
                break;
             }
@@ -115,7 +116,8 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    public IAtsWorkItemFilter withOrValue(IAttributeType attributeType, Collection<? extends Object> matchValues) throws OseeCoreException {
       if (matchValues != null && !matchValues.isEmpty()) {
          for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
-            Collection<Object> currAttrValues = workItemService.getAttributeValues(workItem, attributeType);
+            Collection<Object> currAttrValues =
+               services.getAttributeResolver().getAttributeValues(workItem, attributeType);
             boolean found = false;
             for (Object matchValue : matchValues) {
                if (currAttrValues.contains(matchValue)) {

@@ -59,7 +59,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
          for (ArtifactReadable art : useArt.getRelated(relationType)) {
             IAtsObject object = getAtsObject(art);
             if (object != null) {
-               results.add((T) art);
+               results.add((T) object);
             }
          }
       }
@@ -120,7 +120,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
 
    private IAtsObject getAtsObject(ArtifactReadable artifact) {
       IAtsObject result = null;
-      if (artifact instanceof IAtsWorkItem) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          result = atsServer.getWorkItemFactory().getWorkItem(artifact);
       } else if (atsServer.getConfigItemFactory().isAtsConfigArtifact(artifact)) {
          result = atsServer.getConfigItemFactory().getConfigObject(artifact);

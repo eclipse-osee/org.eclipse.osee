@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -69,7 +68,6 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUtilService utilService;
    private final ISequenceProvider sequenceProvider;
-   private final IAtsWorkItemService workItemService;
    private final ActionableItemManager actionableItemManager;
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
@@ -77,11 +75,10 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsConfig config;
    private final IAtsServices atsServices;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsWorkItemService workItemService, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
-      this.workItemService = workItemService;
       this.actionableItemManager = actionableItemManager;
       this.userService = userService;
       this.attrResolver = attrResolver;
@@ -117,9 +114,8 @@ public class ActionFactory implements IAtsActionFactory {
       List<IAtsTeamWorkflow> teamWfs = new ArrayList<IAtsTeamWorkflow>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          List<IAtsUser> leads = new LinkedList<IAtsUser>(teamDef.getLeads(actionableItems));
-         IAtsTeamWorkflow teamWf =
-            createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate, createdBy,
-               newActionListener);
+         IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
+            createdBy, newActionListener);
          teamWfs.add(teamWf);
          changes.add(teamWf);
       }
@@ -138,9 +134,8 @@ public class ActionFactory implements IAtsActionFactory {
       IArtifactType teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
 
       // NOTE: The persist of the workflow will auto-email the assignees
-      IAtsTeamWorkflow teamWf =
-         createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy, null,
-            teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
+      IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy,
+         null, teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
       return teamWf;
    }
 
@@ -174,7 +169,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
-         for (IAtsTeamWorkflow teamArt : workItemService.getTeams(action)) {
+         for (IAtsTeamWorkflow teamArt : action.getTeamWorkflows()) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
                   atsServices.getAtsId(action));
@@ -233,9 +228,8 @@ public class ActionFactory implements IAtsActionFactory {
 
       changes.add(teamWf);
 
-      changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(AtsCoreUsers.SYSTEM_USER, teamWf,
-            AtsNotifyType.SubscribedTeamOrAi));
+      changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
+         AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
 
       return teamWf;
    }
@@ -290,9 +284,8 @@ public class ActionFactory implements IAtsActionFactory {
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedDate)) {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
-      changes.getNotifications().addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(userService.getCurrentUser(), workItem,
-            AtsNotifyType.Originator));
+      changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
+         userService.getCurrentUser(), workItem, AtsNotifyType.Originator));
    }
 
    /**
@@ -361,10 +354,10 @@ public class ActionFactory implements IAtsActionFactory {
    public Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf) {
       List<IAtsTeamWorkflow> teams = new LinkedList<IAtsTeamWorkflow>();
       IAtsAction action = getAction(teamWf);
-      for (IAtsTeamWorkflow teamArt : atsServices.getRelationResolver().getRelated(action,
+      for (IAtsTeamWorkflow teamChild : atsServices.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
-         if (!teamArt.equals(teamWf)) {
-            teams.add(atsServices.getWorkItemFactory().getTeamWf((ArtifactId) teamArt));
+         if (!teamChild.equals(teamWf)) {
+            teams.add(teamChild);
          }
       }
       return teams;

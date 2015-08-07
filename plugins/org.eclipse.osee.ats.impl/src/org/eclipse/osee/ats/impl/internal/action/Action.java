@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.action;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
@@ -32,7 +33,8 @@ public class Action extends AtsObject implements IAtsAction {
 
    @Override
    public Collection<IAtsTeamWorkflow> getTeamWorkflows() throws OseeCoreException {
-      return atsServer.getWorkItemService().getTeams(this);
+      return atsServer.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_WorkFlow,
+         IAtsTeamWorkflow.class);
    }
 
    @Override
