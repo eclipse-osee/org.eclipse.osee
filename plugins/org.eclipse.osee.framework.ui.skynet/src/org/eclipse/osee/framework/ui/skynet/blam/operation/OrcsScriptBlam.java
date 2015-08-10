@@ -39,7 +39,7 @@ public class OrcsScriptBlam extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Orcs Script (Experimental)";
+      return "Orcs Script";
    }
 
    @Override
