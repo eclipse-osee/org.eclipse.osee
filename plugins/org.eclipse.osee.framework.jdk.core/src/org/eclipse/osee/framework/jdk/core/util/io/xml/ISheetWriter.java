@@ -23,6 +23,8 @@ public interface ISheetWriter {
 
    public void endSheet() throws IOException;
 
+   public void setActiveSheet(int sheetNum);
+
    public void writeRow(Object... row) throws IOException;
 
    public void writeRow(Collection<Object> row) throws IOException;

@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -88,6 +89,9 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    private int richTextCell = -1;
 
+   private int numSheetsWritten = 0;
+   private int activeSheetNum = -1;
+
    public ExcelXmlWriter(File file) throws IOException {
       this(new FileWriter(file));
    }
@@ -98,7 +102,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    /**
     * Calls original constructor with provided style.
-    * 
+    *
     * @param writer output
     * @param style Excel Style XML of form <Styles><Style/><Style/></Styles>
     */
@@ -173,6 +177,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       out.write(" </Worksheet>\n");
       inSheet = false;
       numColumns = -1;
+      ++numSheetsWritten;
    }
 
    @Override
@@ -180,6 +185,11 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       try {
          if (inSheet) {
             endSheet();
+         }
+         if (activeSheetNum >= 0) {
+            out.write(" <ExcelWorkbook xmlns=\"urn:schemas-microsoft-com:office:excel\">\n");
+            out.write("  <ActiveSheet>" + activeSheetNum + "</ActiveSheet>\n");
+            out.write(" </ExcelWorkbook>\n");
          }
          out.write("</Workbook>\n");
       } finally {
@@ -344,5 +354,19 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    public BufferedWriter getOut() {
       return out;
+   }
+
+   /*
+    * @param sheetNum - the sheet number uses 0 based counting, i.e. 0 is the first sheet.
+    */
+   @Override
+   public void setActiveSheet(int sheetNum) {
+      if (sheetNum >= 0 && sheetNum < numSheetsWritten) {
+         activeSheetNum = sheetNum;
+      } else if (sheetNum < 0) {
+         throw new OseeArgumentException("Cannot set active sheet less than zero");
+      } else {
+         throw new OseeArgumentException("Cannot set active sheet higher than the number of sheets written");
+      }
    }
 }

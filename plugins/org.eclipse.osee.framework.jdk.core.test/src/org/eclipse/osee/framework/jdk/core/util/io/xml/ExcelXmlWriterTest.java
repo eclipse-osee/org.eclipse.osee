@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -142,6 +143,72 @@ public final class ExcelXmlWriterTest {
       String result = resultBuffer.toString();
       assertTrue(!result.contains("222222"));
       assertTrue(countCells(result) == 2);
+   }
+
+   @Test
+   public void testSetActiveSheet() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("test", 2);
+      excelWriter.writeCell("111");
+      excelWriter.writeCell("222");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.startSheet("second", 2);
+      excelWriter.writeCell("one");
+      excelWriter.writeCell("two");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.setActiveSheet(1);
+      excelWriter.startSheet("third", 2);
+      excelWriter.writeCell("uno");
+      excelWriter.writeCell("dos");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(result.contains("<ActiveSheet>1</ActiveSheet>"));
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testSetInvalidSheetNoSheet() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.setActiveSheet(0);
+      excelWriter.startSheet("first", 2);
+      excelWriter.writeCell("one");
+      excelWriter.writeCell("two");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(!result.contains("<ActiveSheet>1</ActiveSheet>"));
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testSetInvalidSheetGTNumSheets() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("first", 2);
+      excelWriter.writeCell("one");
+      excelWriter.writeCell("two");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.setActiveSheet(1);
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(!result.contains("<ActiveSheet>1</ActiveSheet>"));
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testSetInvalidSheetLTZero() throws Exception {
+      excelWriter = new ExcelXmlWriter(resultBuffer);
+      excelWriter.startSheet("first", 2);
+      excelWriter.writeCell("one");
+      excelWriter.writeCell("two");
+      excelWriter.endRow();
+      excelWriter.endSheet();
+      excelWriter.setActiveSheet(-1);
+      excelWriter.endWorkbook();
+      String result = resultBuffer.toString();
+      assertTrue(!result.contains("<ActiveSheet>1</ActiveSheet>"));
    }
 
    private int countCells(String xml) {

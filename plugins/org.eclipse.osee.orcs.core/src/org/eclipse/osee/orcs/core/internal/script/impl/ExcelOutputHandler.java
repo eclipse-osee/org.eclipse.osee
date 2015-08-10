@@ -60,6 +60,8 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    private boolean isDebugModeEnabled;
    private boolean isScriptOutputEnabled;
    private int queriesRun = 1;
+   private int numSheets;
+   private int querySheetNum;
    private final HeaderCollector headers = new HeaderCollector();
    private final List<Map<String, Object>> providedData = new LinkedList<Map<String, Object>>();
 
@@ -71,6 +73,8 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
 
    private void initalizeData() {
       isScriptOutputEnabled = true;
+      numSheets = -1;
+      querySheetNum = -1;
 
       Object debug = context.getAttribute(OUTPUT_DEBUG);
       isDebugModeEnabled = Boolean.parseBoolean(String.valueOf(debug));
@@ -113,6 +117,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       if (isScriptOutputEnabled) {
          try {
             writer.startSheet("script", 4);
+            ++numSheets;
             writeScriptData(model);
             writer.endSheet();
          } catch (IOException ex) {
@@ -192,6 +197,8 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       try {
          try {
             writer.startSheet("Query " + Integer.toString(queriesRun++), headers.size());
+            ++numSheets;
+            querySheetNum = numSheets;
             for (String s : headers.getHeaders()) {
                writer.writeCell(s);
             }
@@ -211,6 +218,9 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
             try {
                writeErrors();
                writeDebug();
+               if (querySheetNum >= 0) {
+                  writer.setActiveSheet(querySheetNum);
+               }
             } finally {
                writer.endWorkbook();
             }
@@ -337,6 +347,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
             }
          } else {
             writer.startSheet("errors", 1);
+            ++numSheets;
             writer.writeCell("errors:");
             writer.endRow();
             for (Throwable th : errors) {
@@ -352,6 +363,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       if (debugInfo != null) {
          List<LoadDescription> descriptions = debugInfo.getDescriptions();
          writer.startSheet("Debug", 2);
+         ++numSheets;
          writer.writeCell("debug:");
          writer.endRow();
 

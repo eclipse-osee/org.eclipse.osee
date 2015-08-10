@@ -84,4 +84,9 @@ public class WordMlTableWriter extends AbstractSheetWriter {
    public void endWorkbook() {
       // do nothing
    }
+
+   @Override
+   public void setActiveSheet(int sheetNum) {
+      //
+   }
 }
