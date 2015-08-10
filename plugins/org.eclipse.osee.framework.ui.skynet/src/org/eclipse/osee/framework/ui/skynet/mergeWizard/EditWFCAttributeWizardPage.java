@@ -51,7 +51,7 @@ public class EditWFCAttributeWizardPage extends WizardPage {
    private Label imageLabel;
    private static final String EDIT_TEXT = "Edit Merge Artifact";
    private static final String EDIT_TOOLTIP = "Make additional changes using the Document/Merge Editor";
-   private static final String MERGE_TEXT = "Generate Three Way Merge (Developmental)";
+   private static final String MERGE_TEXT = "Generate Three Way Merge";
    private static final String MERGE_TOOLTIP = "Use the new inline merging";
    private static final String CLEAR_TEXT = "Clear the Merge Artifact";
    private static final String CLEAR_TOOLTIP = "Reinitializes the merge for this Document";
