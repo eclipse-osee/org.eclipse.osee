@@ -1,6 +1,6 @@
-var app = angular.module('OrcsWriterApp', []);
+var app = angular.module('OrcsWriterApp', ['ngFileUpload']);
 
-app.controller("FormController", function($scope, $http) {
+app.controller("FormController", ['$scope', '$http', 'Upload', function($scope, $http, Upload) {
 
 	$scope.formData = {
 		filename : '',
@@ -16,17 +16,6 @@ app.controller("FormController", function($scope, $http) {
 		$scope.run(false);
 	}
 
-	$scope.setFiles = function(element) {
-		$scope.$apply(function() {
-			console.log('files:', element.files);
-			$scope.formData.filename = "";
-			$scope.formData.asJson = false;
-			if (element.files[0]) {
-				$scope.formData.filename = element.files[0];
-			}
-		});
-	};
-
 	$scope.run = function(validate) {
 		$scope.message = '';
 		var url = "";
@@ -36,7 +25,7 @@ app.controller("FormController", function($scope, $http) {
 			url = "../../writer";
 		}
 		var data = {};
-		if (!$scope.formData.json && !$scope.formData.filename) {
+		if (!$scope.formData.json && !$scope.file) {
 			$scope.message = "ERROR: Must select Excel or enter JSON";
 		} else if ($scope.formData.json) {
 			$scope.message = "Processing JSON";
@@ -61,9 +50,10 @@ app.controller("FormController", function($scope, $http) {
 				}
 				$scope.message += '\n' + message;
 			});
-		} else if ($scope.formData.filename) {
-			$scope.message = "Processing Excel - NOT IMPLEMENTED YET";
-			$scope.message += '\nExcel Output Generated';
+		} else if ($scope.file) {
+			Upload.upload({
+                url: url + '/excel',
+                file: $scope.file});
 		}
 	}
-});
+}]);

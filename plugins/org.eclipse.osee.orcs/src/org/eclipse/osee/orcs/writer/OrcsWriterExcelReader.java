@@ -34,7 +34,7 @@ public class OrcsWriterExcelReader {
    private OwCollector collector;
    private final XResultData result;
 
-   public OrcsWriterExcelReader(XResultData result) throws Exception {
+   public OrcsWriterExcelReader(XResultData result) {
       this.result = result;
    }
 

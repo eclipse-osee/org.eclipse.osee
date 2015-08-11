@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.writer;
 
+import java.io.InputStream;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
+import org.eclipse.osee.orcs.writer.OrcsWriterExcelReader;
 import org.eclipse.osee.orcs.writer.model.config.OrcsWriterInputConfig;
 import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
 
@@ -77,6 +80,57 @@ public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
    public Response getOrcsWriterPersist(OwCollector collector) {
       OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
       XResultData results = validator.run();
+      if (results.isErrors()) {
+         throw new OseeArgumentException(results.toString());
+      }
+      OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
+      writer.run();
+      if (results.isErrors()) {
+         return Response.notModified().entity(results.toString()).build();
+      }
+      return Response.ok().entity(results.toString()).build();
+   }
+
+   @Override
+   public Response validateExcelInput(Attachment attachment) {
+      InputStream stream = attachment.getObject(InputStream.class);
+
+      XResultData results = new XResultData();
+      OrcsWriterExcelReader reader = new OrcsWriterExcelReader(results);
+      try {
+         reader.run(stream);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      OwCollector collector = reader.getCollector();
+      OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
+      results = validator.run();
+      if (results.isErrors()) {
+         throw new OseeArgumentException(results.toString());
+      }
+      OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
+      writer.run();
+      if (results.isErrors()) {
+         return Response.notModified().entity(results.toString()).build();
+      }
+      return Response.ok().entity(results.toString()).build();
+   }
+
+   @Override
+   public Response persistExcelInput(Attachment attachment) {
+      InputStream stream = attachment.getObject(InputStream.class);
+
+      XResultData results = new XResultData();
+      OrcsWriterExcelReader reader = new OrcsWriterExcelReader(results);
+      try {
+         reader.run(stream);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      OwCollector collector = reader.getCollector();
+
+      OrcsCollectorValidator validator = new OrcsCollectorValidator(orcsApi, collector);
+      results = validator.run();
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }

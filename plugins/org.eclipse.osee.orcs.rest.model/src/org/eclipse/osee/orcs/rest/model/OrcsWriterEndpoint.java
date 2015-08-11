@@ -17,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.orcs.writer.model.config.OrcsWriterInputConfig;
 import org.eclipse.osee.orcs.writer.model.reader.OwCollector;
 
@@ -61,5 +62,13 @@ public interface OrcsWriterEndpoint {
    @Path("writer")
    @Consumes({MediaType.APPLICATION_JSON})
    Response getOrcsWriterPersist(OwCollector collector);
+
+   @POST
+   @Path("writer/validate/excel")
+   Response validateExcelInput(Attachment attachment);
+
+   @POST
+   @Path("writer/excel")
+   Response persistExcelInput(Attachment attachment);
 
 }
