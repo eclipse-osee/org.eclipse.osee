@@ -174,9 +174,11 @@ public class AttributeFormPart extends AbstractFormPart {
          HelpUtil.setHelp(internalComposite, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
          xWidgetsMap.put(attributeType, internalComposite);
       }
-      //refresh(); <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
+      //      refresh(); // <-- This call reverts unsaved changes to all widgets.  Not the behavior we want here.
       decorator.refresh();
       getManagedForm().getForm().getBody().layout(true, true);
+      getManagedForm().getForm().layout(true, true);
+      getManagedForm().reflow(true);
    }
 
    @Override
