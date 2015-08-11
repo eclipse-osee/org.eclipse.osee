@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class SubscribeManager {
 
    public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
-      if (!workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
+      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
          changes.add(workflow);
@@ -43,15 +39,7 @@ public class SubscribeManager {
    }
 
    public static boolean isSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user) throws OseeCoreException {
-      return workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user);
-   }
-
-   public static List<IAtsUser> getSubscribed(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
-      for (Artifact art : workflow.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art));
-      }
-      return arts;
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user);
    }
 
    public static boolean amISubscribed(AbstractWorkflowArtifact workflow) {

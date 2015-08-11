@@ -97,7 +97,7 @@ public class FavoritesManager {
    }
 
    public static void addFavorite(AbstractWorkflowArtifact workflow, IAtsUser user, SkynetTransaction transaction) throws OseeCoreException {
-      if (!workflow.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user)) {
+      if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.FavoriteUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
          workflow.persist(transaction);
@@ -111,12 +111,12 @@ public class FavoritesManager {
    }
 
    public static boolean isFavorite(AbstractWorkflowArtifact workflow, IAtsUser user) throws OseeCoreException {
-      return workflow.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user);
+      return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User).contains(user);
    }
 
    public static List<User> getFavorites(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : workflow.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User)) {
+      for (Artifact art : workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User)) {
          arts.add((User) art);
       }
       return arts;
