@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.column;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.nebula.widgets.xviewer.IXViewerLazyLoadColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
@@ -27,7 +27,7 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerLazyLoadColumn {
+public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    public static final Integer DEFAULT_WIDTH = 45;
    Map<Long, String> workItemUuidToColorTeam = new HashMap<Long, String>(100);
@@ -86,11 +86,6 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerLazyL
             LogUtil.getCellExceptionString(ex);
          }
       }
-   }
-
-   @Override
-   public void setLoading(boolean loading) {
-      this.loading = loading;
    }
 
 }

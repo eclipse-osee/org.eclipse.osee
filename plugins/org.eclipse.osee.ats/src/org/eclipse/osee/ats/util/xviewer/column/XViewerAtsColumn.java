@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.nebula.widgets.xviewer.IXViewerLazyLoadColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -124,9 +124,9 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
          } else {
             try {
                String value = null;
-               if (this instanceof IXViewerLazyLoadColumn) {
-                  IXViewerLazyLoadColumn ixViewerLazyLoadColumn = (IXViewerLazyLoadColumn) this;
-                  value = ixViewerLazyLoadColumn.getText(element, ixViewerLazyLoadColumn.getKey(element), "");
+               if (this instanceof IXViewerPreComputedColumn) {
+                  IXViewerPreComputedColumn ixViewerPreComputedColumn = (IXViewerPreComputedColumn) this;
+                  value = ixViewerPreComputedColumn.getText(element, ixViewerPreComputedColumn.getKey(element), "");
                } else if (this instanceof IXViewerValueColumn) {
                   IXViewerValueColumn valueColumn = (IXViewerValueColumn) this;
                   value = valueColumn.getColumnText(element, this, columnIndex);
