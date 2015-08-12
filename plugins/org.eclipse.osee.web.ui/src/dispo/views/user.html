@@ -46,7 +46,8 @@
                   <th>{{ annotationHeaders.resolutionType }}</th>
                   <th>{{ annotationHeaders.resolution }}</th>
                   <th>Developer Notes</th>
-                  <th>Customer Notes</th>
+                  <th ng-show="type != 'codeCoverage'"Customer Notes</th>
+                  <th ng-show="type == 'codeCoverage'">Text</th>                 
                   <th width="50px;">Delete</th>
                   <tr ng-repeat="annotation in annotations">
                      <td>
@@ -61,8 +62,11 @@
                      <td>
                         <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.developerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
                      </td>
-                     <td>
-                        <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null" ng-model="annotation.customerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     <td ng-show="type != 'codeCoverage'">
+                        <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null || type == 'codeCoverage'" ng-model="annotation.customerNotes" type=text ng-model-onblur ng-change="editAnnotation(annotation)" ng-dblclick="toggleDetails(annotation)"></textarea>
+                     </td>
+                     <td ng-show="type == 'codeCoverage'">
+                        <textarea ng-class="{annotationInput: true, details: annotation.showDeets}" ng-disabled="true" type=text ng-dblclick="getText(annotation)">{{ getText(annotation) }}</textarea>
                      </td>
                      <td>
                         <button ng-class="{annotationDelete: true, details: annotation.showDeets}" ng-disabled="annotation.guid == null || isDefaultResolution(annotation);" ng-click="deleteAnnotation(annotation)">X</button>

@@ -18,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -45,11 +46,11 @@ public class DispoItemResource {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoItems() throws Exception {
+   public Response getAllDispoItems(@QueryParam("isDetailed") Boolean isDetailed) throws Exception {
       List<DispoItem> dispoItems = dispoApi.getDispoItems(program, setId);
       JSONArray jarray = new JSONArray();
       for (DispoItem dispoItem : dispoItems) {
-         jarray.put(DispoUtil.dispoItemToJsonObj(dispoItem));
+         jarray.put(DispoUtil.dispoItemToJsonObj(dispoItem, isDetailed));
       }
 
       ResponseBuilder builder = Response.ok(jarray.toString());
@@ -58,7 +59,7 @@ public class DispoItemResource {
 
    /**
     * Get a specific Dispositionable Item given a itemId
-    * 
+    *
     * @param itemId The Id of the Dispositionable Item to search for
     * @return The found Dispositionable Item if successful. Error Code otherwise
     * @response.representation.200.doc OK, Found Dispositionable Item
@@ -80,7 +81,7 @@ public class DispoItemResource {
 
    /**
     * Edit a specific Dispositionable Item given a itemId and new Dispositionable Item Data
-    * 
+    *
     * @param itemId The Id of the Dispositionable Item to search for
     * @param newDispoItem The data for the new Dispositionable Item
     * @return The updated Dispositionable Item if successful. Error Code otherwise
@@ -103,7 +104,7 @@ public class DispoItemResource {
 
    /**
     * Delete a specific Dispositionable Item given a itemId
-    * 
+    *
     * @param itemId The Id of the Dispositionable Item to search for
     * @return Response Code
     * @response.representation.200.doc OK, Found Dispositionable Item

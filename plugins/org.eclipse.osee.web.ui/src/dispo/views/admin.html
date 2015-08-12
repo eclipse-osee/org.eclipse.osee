@@ -28,6 +28,12 @@
                 </div>
             </div>
             
+            <div ng-show="false" class="row" id=setCopyRow>
+                <div class="col-sm-10 col-sm-offset-2" id=setCopyCoverageContainer>
+                    <button ng-click="openCopyCoverageModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=generateReportBtn>Import From Coverage</button>
+                </div>
+            </div>
+            
         </div>
         <div class="col-md-6 col-md-offset-1">
             <div class="row">
@@ -90,6 +96,32 @@
                 <select class="form-control" ng-model="noteParam" ng-options="obj.value as obj.text for obj in noteOptions"></select>
 			</div>
 
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+
+    </script>
+    
+    <script type="text/ng-template" id="copySetCoverage.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Copy From Coverage</h3>
+        </div>
+        <div class="modal-body" overflow: auto;">
+            <div class="form-group">
+					 Select Destination Set
+                <select class="form-control" ng-model="destinationSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+					 </select>
+            </div>
+            <div class="form-group">
+					 Enter Source Branch
+                <input class="form-control" ng-model="sourceBranch" placeholder="Enter Branch Uuid"></input>
+            </div>
+            <div class="form-group">
+					 Enter Coverage Package id
+                <input class="form-control" ng-model="sourcePackage" placeholder="Enter Coverage Package Uuid"></input>
+            </div>            
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>

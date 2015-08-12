@@ -198,7 +198,7 @@ public class DispoConnector {
       while (locationRefsStack.size() > 0) {
          LocationRange locRef = locationRefsStack.pop();
          if (locRef.getEnd() < startIndex) {
-            // go to next 
+            // go to next
          } else {
             if (locRef.getStart() == firstUncoveredIndex) {
                if (locRef.getEnd() == endIndex) {

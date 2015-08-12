@@ -138,7 +138,7 @@ public class DispoAnnotationData implements Identifiable<String> {
    }
 
    public boolean isValid() {
-      return isConnected && isResolutionValid && isResolutionTypeValid();
+      return (isConnected || isDefault) && isResolutionValid && isResolutionTypeValid();
    }
 
    public boolean isResolutionTypeValid() {

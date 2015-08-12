@@ -17,14 +17,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoConstants;
+import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -513,5 +516,28 @@ public class OrcsStorageImpl implements Storage {
             newRerpotArt.getGuid(), contentsAsAttribute.getLocalId(), commit.getGuid());
       return toReturn;
 
+   }
+
+   @Override
+   public Map<String, ArtifactReadable> getCoverageUnits(long branchUuid, String artifactUuid) {
+      ArtifactReadable coveragePackage =
+         getQuery().fromBranch(branchUuid).andGuid(artifactUuid).getResults().getOneOrNull();
+
+      List<ArtifactReadable> descendants = coveragePackage.getDescendants();
+      return getChildrenRecurse(descendants);
+   }
+
+   private Map<String, ArtifactReadable> getChildrenRecurse(List<ArtifactReadable> descendants) {
+      Map<String, ArtifactReadable> toReturn = new HashMap<String, ArtifactReadable>();
+
+      for (ArtifactReadable descendant : descendants) {
+         if (!descendant.getAttributeValues(CoverageUtil.Item).isEmpty()) {
+            ArtifactReadable parent = descendant.getParent();
+            String fullName = String.format("%s.%s", parent.getName(), descendant.getName());
+            toReturn.put(fullName, descendant);
+         }
+      }
+
+      return toReturn;
    }
 }

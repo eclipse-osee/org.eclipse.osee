@@ -62,7 +62,7 @@ public class DispoItemResourceTest {
       // No Items
       List<DispoItem> emptyResultSet = new ArrayList<DispoItem>();
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
-      Response noItemsResponse = resource.getAllDispoItems();
+      Response noItemsResponse = resource.getAllDispoItems(false);
       assertEquals(Response.Status.OK.getStatusCode(), noItemsResponse.getStatus());
 
       DispoItemData item = new DispoItemData();
@@ -72,7 +72,7 @@ public class DispoItemResourceTest {
       List<DispoItem> resultSet = Collections.singletonList((DispoItem) item);
 
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(resultSet);
-      Response response = resource.getAllDispoItems();
+      Response response = resource.getAllDispoItems(false);
       JSONArray entity = new JSONArray((String) response.getEntity());
       JSONObject itemFromResponse = entity.getJSONObject(0);
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

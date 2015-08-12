@@ -36,6 +36,7 @@ import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
+import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdapter;
 import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
@@ -488,6 +489,23 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public DispoFactory getDispoFactory() {
       return dispoFactory;
+   }
+
+   @Override
+   public String copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params) {
+      Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageGuid);
+      List<DispoItem> destItems = getDispoItems(destDispProgram, destination.getGuid());
+
+      OperationReport report = new OperationReport();
+
+      CoverageAdapter coverageAdapter = new CoverageAdapter(dispoConnector);
+      List<DispoItem> copyData = coverageAdapter.copyData(coverageUnits, destItems, report);
+
+      if (!copyData.isEmpty()) {
+         editDispoItems(destDispProgram, copyData, false);
+      }
+
+      return generateReportArt(destDispProgram, getQuery().findUser(), report, "Import Coverage Package");
    }
 
    @Override

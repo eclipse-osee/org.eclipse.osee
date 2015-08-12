@@ -18,7 +18,7 @@ app.controller('userController', [
         $scope.lastFocused = null;
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
-		$scope.isSearchView = false;
+		  $scope.isSearchView = false;
 		
         $scope.getDispoType = function() {
         	if($rootScope.type == 'codeCoverage') {
@@ -92,7 +92,8 @@ app.controller('userController', [
         	} else {
                 Item.query({
                     programId: $scope.programSelection,
-                    setId: $scope.setSelection
+                    setId: $scope.setSelection,
+                    isDetailed: $rootScope.type == 'codeCoverage'
                 }, function(data) {
                 	loadingModal.close();
                     $scope.items = data;
@@ -702,6 +703,7 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 value: value,
+                isDetailed: $rootScope.type == 'codeCoverage',
             }, function(data) {
             	if($scope.isSearchView) {
             		$scope.items = data;

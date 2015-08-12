@@ -153,7 +153,6 @@ public class AnnotationResourceTest {
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_InComplete);
       Response response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      assertEquals(DispoStrings.Item_InComplete, response.getEntity());
 
       when(dispositionApi.deleteDispoAnnotation(program, "itemId", annotationToEdit.getId(), "name")).thenReturn(false);
       response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");

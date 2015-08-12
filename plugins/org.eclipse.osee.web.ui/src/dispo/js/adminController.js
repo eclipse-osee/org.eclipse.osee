@@ -1,5 +1,5 @@
-		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet) {
+		app.controller('adminController', ['$scope', '$rootScope', '$modal', 'Program', 'Set', 'Report', 'CopySet', 'CopySetCoverage',
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
@@ -277,6 +277,20 @@
 		            
 		            return modalInstance;
 		        }
+		        $scope.copySetCoverage = function(inputs)	 {
+			        	var copySetOp = new CopySetCoverage;
+			        	
+			        	copySetOp.$save({
+			                programId: $scope.programSelection,
+			                destinationSet: inputs.destinationSet,
+			                sourceBranch: inputs.sourceBranch,
+			                sourcePackage: inputs.sourcePackage,
+			            }, function(data) {
+			            	var reportUrl = data.operationStatus;
+				            window.open(reportUrl);
+			            	console.log(data);
+			            });
+		        }
 
 		        // Create Set Modal
 		        $scope.createNewSetModal = function() {
@@ -348,6 +362,44 @@
 		                inputs.categoryParam = this.categoryParam;
 		                inputs.noteParam = this.noteParam;
 		                inputs.assigneeParam = this.assigneeParam;
+		                
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        };
+		        
+		        
+		        // Copy Coverage Modal
+		        $scope.openCopyCoverageModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'copySetCoverage.html',
+		                controller: CopyCoverageModalCtrl,
+		                size: 'md',
+		                windowClass: 'copyCoverageModal',
+		                resolve: {
+		                	sets: function() {
+		                		return $scope.sets;
+		                	}
+		                }
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		                $scope.copySetCoverage(inputs);
+		            });
+		        }
+		        
+		        
+		        var CopyCoverageModalCtrl = function($scope, $modalInstance, sets) {
+		            $scope.setsLocal = angular.copy(sets);
+		            
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.destinationSet = this.destinationSet;
+		                inputs.sourceBranch = this.sourceBranch;
+		                inputs.sourcePackage = this.sourcePackage;
 		                
 		                $modalInstance.close(inputs);
 		            };

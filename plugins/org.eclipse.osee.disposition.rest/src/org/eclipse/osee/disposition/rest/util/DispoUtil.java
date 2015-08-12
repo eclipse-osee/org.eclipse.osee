@@ -241,10 +241,13 @@ public final class DispoUtil {
       return dispoSet;
    }
 
-   public static JSONObject dispoItemToJsonObj(DispoItem dispoItem) {
+   public static JSONObject dispoItemToJsonObj(DispoItem dispoItem, boolean isDeatailed) {
       JSONObject jsonObject = new JSONObject();
       try {
          jsonObject.put("discrepanciesAsRanges", discrepanciesToString(dispoItem.getDiscrepanciesList()));
+         if (isDeatailed) {
+            jsonObject.put("discrepancies", dispoItem.getDiscrepanciesList());
+         }
          jsonObject.put("failureCount", dispoItem.getDiscrepanciesList().length());
          jsonObject.put("name", dispoItem.getName());
          jsonObject.put("status", dispoItem.getStatus());
@@ -325,6 +328,9 @@ public final class DispoUtil {
          if (object.has("isConnected")) {
             dispoAnnotation.setIsConnected(object.getBoolean("isConnected"));
          }
+         if (object.has("isDefault")) {
+            dispoAnnotation.setIsDefault(object.getBoolean("isDefault"));
+         }
          if (object.has("isResolutionValid")) {
             dispoAnnotation.setIsResolutionValid(object.getBoolean("isResolutionValid"));
          }
@@ -384,5 +390,31 @@ public final class DispoUtil {
       configData.setValidResolutions(Collections.singletonList(defaultMethod));
 
       return configData;
+   }
+
+   public static List<DispoAnnotationData> asAnnotationsList(JSONArray annotations) {
+      List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
+      for (int i = 0; i < annotations.length(); i++) {
+         try {
+            toReturn.add(jsonObjToDispoAnnotationData(annotations.getJSONObject(i)));
+         } catch (JSONException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
+
+      return toReturn;
+   }
+
+   public static JSONArray listAsJsonArray(List<DispoAnnotationData> annotations) {
+      JSONArray toReturn = new JSONArray();
+      for (DispoAnnotationData annotation : annotations) {
+         try {
+            toReturn.put(annotation.getIndex(), annotationToJsonObj(annotation));
+         } catch (JSONException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
+
+      return toReturn;
    }
 }

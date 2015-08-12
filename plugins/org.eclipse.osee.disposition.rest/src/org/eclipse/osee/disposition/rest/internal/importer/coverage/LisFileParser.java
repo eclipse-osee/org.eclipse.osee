@@ -199,16 +199,18 @@ public class LisFileParser implements DispoImporterApi {
          }
 
          for (VCastFunction function : functions) {
-            processFunction(lisFileName, lisFileParser, fileNum, dataStore, instrumentedFile, function, report);
+            processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function, report);
          }
       }
    }
 
-   private void processFunction(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, OperationReport report) {
+   private void processFunction(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, VCastFunction function, OperationReport report) {
       int functionNum = function.getFindex();
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(new JSONArray());
-      newItem.setName(lisFileName + "." + function.getName());
+      VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
+      lisFile.getLISFile();
+      newItem.setName(sourceFileJoin.getDisplayName() + "." + function.getName());
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
 
@@ -228,15 +230,15 @@ public class LisFileParser implements DispoImporterApi {
       Map<String, JSONObject> discrepancies = new HashMap<String, JSONObject>();
 
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
-         processStatement(lisFileName, lisFileParser, fileNum, functionNum, function, statementCoverageItem,
-            discrepancies, report);
+         processStatement(lisFile, lisFileParser, fileNum, functionNum, function, statementCoverageItem, discrepancies,
+            report);
       }
 
-      newItem.setDiscrepanciesList(new JSONObject(discrepancies));
       // add discrepancies to item
+      newItem.setDiscrepanciesList(new JSONObject(discrepancies));
    }
 
-   private void processStatement(String lisFileName, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, JSONObject> discrepancies, OperationReport report) {
+   private void processStatement(VCastInstrumentedFile lisFile, VCastLisFileParser lisFileParser, int fileNum, int functionNum, VCastFunction function, VCastStatementCoverage statementCoverageItem, Map<String, JSONObject> discrepancies, OperationReport report) {
       // Create discrepancy for every line, annotate with test unit or exception handled
       Integer functionNumber = function.getFindex();
       Integer lineNumber = statementCoverageItem.getLine();
@@ -247,7 +249,8 @@ public class LisFileParser implements DispoImporterApi {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (Exception ex) {
-         report.addOtherMessage("Error parsing LIS file: [%s], on function [%s]", lisFileName, function.getName());
+         report.addOtherMessage("Error parsing LIS file: [%s], on function [%s]", lisFile.getLISFile(),
+            function.getName());
       }
 
       if (lineData != null) {

@@ -90,6 +90,15 @@ app.provider('CopySet', function() {
     ];
 });
 
+app.provider('CopySetCoverage', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var CopySetCoverage = $resource('/dispo/program/:programId/admin/copyCoverage', {}, {});
+            return CopySetCoverage;
+        }
+    ];
+});
+
 app.provider('Set', function() {
     this.$get = ['$resource',
         function($resource) {

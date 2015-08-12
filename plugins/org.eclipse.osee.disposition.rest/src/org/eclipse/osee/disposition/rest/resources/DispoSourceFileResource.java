@@ -48,7 +48,7 @@ public class DispoSourceFileResource {
 
    /**
     * Get a specific Source File given a file name
-    * 
+    *
     * @param fileName The name of the Source File to search for
     * @return The found Source File if successful. Error Code otherwise
     * @throws FileNotFoundException
@@ -60,7 +60,7 @@ public class DispoSourceFileResource {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getDispoItemsById(@PathParam("fileName") String fileName) {
       if (!fileName.endsWith(".LIS")) {
-         fileName = fileName.replaceAll(".LIS.*", ".LIS");
+         fileName = fileName.replaceAll("\\.(ada|c)", ".LIS");
       }
 
       DispoSet set = dispoApi.getDispoSetById(program, setId);

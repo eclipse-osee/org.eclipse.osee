@@ -25,7 +25,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
-import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
@@ -49,7 +48,7 @@ public class AnnotationResource {
 
    /**
     * Create a new Annotation given an AnnotationData object
-    * 
+    *
     * @param annotation AnnotationData which must include location reference
     * @return The created Annotation if successful. Error Code otherwise
     * @response.representation.201.doc Created the Annotation
@@ -80,7 +79,7 @@ public class AnnotationResource {
 
    /**
     * Get all Annotations for the DisposionableItem
-    * 
+    *
     * @return The Annotation found for the DisposionableItem
     * @throws JSONException
     * @throws IOException
@@ -103,7 +102,7 @@ public class AnnotationResource {
 
    /**
     * Get a specific Annotation given an Id
-    * 
+    *
     * @param id The Id of the Annotation to search for
     * @return The found Annotation if successful. Error Code otherwise
     * @response.representation.200.doc OK, found Annotation
@@ -125,7 +124,7 @@ public class AnnotationResource {
 
    /**
     * Edit a specific Annotation given an Id and new Annotation Data
-    * 
+    *
     * @param id The Id of the Annotation to update
     * @param newAnnotation The data for the new Annotation
     * @return The updated Annotation if successful. Error Code otherwise
@@ -149,7 +148,7 @@ public class AnnotationResource {
 
    /**
     * Delete a specific Annotation given an Id
-    * 
+    *
     * @param id The Id of the Annotation to delete
     * @return Response Code
     * @response.representation.200.doc OK
@@ -161,8 +160,7 @@ public class AnnotationResource {
       Response response;
       boolean wasEdited = dispoApi.deleteDispoAnnotation(program, itemId, annotationId, userName);
       if (wasEdited) {
-         DispoItem dispoItemById = dispoApi.getDispoItemById(program, itemId);
-         response = Response.status(Response.Status.OK).entity(dispoItemById.getStatus()).build();
+         response = Response.status(Response.Status.OK).build();
       } else {
          response = Response.status(Response.Status.NOT_MODIFIED).build();
       }

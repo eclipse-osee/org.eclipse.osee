@@ -17,7 +17,8 @@ directives.directive('osee', [
 		'Endpoint',
 		'$localStorage',
 		'$sessionStorage',
-		function($rootScope, $compile, $http, $location, $templateCache, AccessToken, Profile, Endpoint, $localStorage, $sessionStorage) {
+		'$cookieStore',
+		function($rootScope, $compile, $http, $location, $templateCache, AccessToken, Profile, Endpoint, $localStorage, $sessionStorage, $cookieStore) {
 			var definition = {
 				restrict : 'E',
 				replace : true,
@@ -145,6 +146,7 @@ directives.directive('osee', [
 				scope.$on("oauth:authorized", function(event, token) {
 					Profile.find(scope.profileUri).success(function(response) {
 						scope.profile = response;
+						$cookieStore.put("name", scope.profile.name);
 					});
 					if($localStorage.continueTo) {
 						// Change the state to the continueTo we caught when User first tried to get into page
@@ -154,11 +156,13 @@ directives.directive('osee', [
 				})
 				scope.$on("oauth:logout", function() {
 					scope.profile = scope.anonymousUser;
-					var fr = AccessToken.destroy();
+					$cookieStore.put("name", scope.profile.name);
+					AccessToken.destroy();
 					$location.path("/");
 				})
 				scope.$on("oauth:denied", function(event, token) {
 					scope.profile = scope.anonymousUser;
+					$cookieStore.put("name", scope.profile.name);
 					AccessToken.destroy();
 				});
 

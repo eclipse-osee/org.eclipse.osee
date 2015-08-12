@@ -96,6 +96,27 @@ public class DispoAdminResource {
       return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
    }
 
+   @Path("/copyCoverage")
+   @POST
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") Long sourceBranch, @QueryParam("sourcePackage") String sourcePackage, CopySetParams params) {
+      Response.Status status;
+      final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
+
+      String reportUrl = dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, program, destination, params);
+      DispoSetData responseSet = new DispoSetData();
+      responseSet.setOperationStatus(reportUrl);
+
+      if (Strings.isValid(reportUrl)) {
+         status = Status.OK;
+      } else {
+         status = Status.NOT_FOUND;
+      }
+      return Response.status(status).entity(responseSet).build();
+   }
+
    @Path("/copy")
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)

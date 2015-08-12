@@ -63,6 +63,8 @@ public interface DispoApi {
 
    String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params);
 
+   String copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
+
    // Deletes
 
    boolean deleteDispoSet(DispoProgram program, String dispoSetId);

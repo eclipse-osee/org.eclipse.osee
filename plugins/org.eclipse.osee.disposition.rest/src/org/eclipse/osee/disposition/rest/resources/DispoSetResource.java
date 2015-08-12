@@ -214,7 +214,7 @@ public class DispoSetResource {
    @Path("{setId}/search")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value) {
+   public Response getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
       Response response;
       Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(program, setId, value);
       if (foundItems.isEmpty()) {
@@ -222,7 +222,7 @@ public class DispoSetResource {
       } else {
          JSONArray jArray = new JSONArray();
          for (DispoItem item : foundItems) {
-            jArray.put(DispoUtil.dispoItemToJsonObj(item));
+            jArray.put(DispoUtil.dispoItemToJsonObj(item, isDetailed));
          }
 
          response = Response.status(Response.Status.OK).entity(jArray.toString()).build();

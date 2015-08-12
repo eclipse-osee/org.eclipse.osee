@@ -10,7 +10,8 @@ app.controller('userController', [
     'SetSearch',
     'SourceFile',
     'ColumnFactory',
-    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, ColumnFactory) {
+    'Config',
+    function($scope, $modal, $rootScope, $cookieStore, Program, Set, Item, Annotation, SetSearch, SourceFile, ColumnFactory, Config) {
     	$scope.unselectingItem = false;
     	$scope.editItems = false;
     	$scope.selectedItems = [];
@@ -19,7 +20,8 @@ app.controller('userController', [
         $scope.lastFocused = null;
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
-		$scope.isSearchView = false;
+		  $scope.isSearchView = false;
+		  $rootScope.cachedName = $cookieStore.get("name");
 		
         $scope.getDispoType = function() {
         	if($rootScope.type == 'codeCoverage') {
@@ -74,6 +76,14 @@ app.controller('userController', [
             	loadingModal.close();
             	alert(data.statusText);
             });
+            
+            // Try to get custom config
+            Config.get({
+                programId: $scope.programSelection,
+                type: $rootScope.type
+            }, function(data) {
+                $scope.coverageResolutionTypes = data.validResolutions;
+            });
         };
         
         $scope.updateSet = function updateSet() {
@@ -85,7 +95,8 @@ app.controller('userController', [
         	} else {
                 Item.query({
                     programId: $scope.programSelection,
-                    setId: $scope.setSelection
+                    setId: $scope.setSelection,
+                    isDetailed: $rootScope.type == 'codeCoverage'
                 }, function(data) {
                 	loadingModal.close();
                     $scope.items = data;
@@ -305,7 +316,7 @@ app.controller('userController', [
         }
         
         $scope.getResolutionTypes = function getResolutionTypes() {
-        	if($scope.dispoType == 'codeCoverage') {
+        	if($scope.type == 'codeCoverage') {
         		return $scope.coverageResolutionTypes;
         	} else {
         		return $scope.testResolutionTypes;
@@ -319,7 +330,7 @@ app.controller('userController', [
                 itemId: $scope.selectedItem.guid,
                 annotationId: annotation.guid,
                 userName: $rootScope.cachedName,
-            }, function() {
+            }, function(data) {
                 var index = $scope.annotations.indexOf(annotation);
                 if (index > -1) {
                     $scope.annotations.splice(index, 1);
@@ -376,7 +387,7 @@ app.controller('userController', [
 
         $scope.getInvalidLocRefs = function getInvalidLocRefs(annotation) {
         	if(annotation.isConnected != null) {
-        		return !annotation.isConnected && annotation.locationRefs != null;
+        		return !annotation.isConnected && !annotation.isDefault && annotation.locationRefs != null;
         	} else {
         		return false;
         	}
@@ -502,6 +513,7 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 value: value,
+                isDetailed: $rootScope.type == 'codeCoverage',
             }, function(data) {
             	if($scope.isSearchView) {
             		$scope.items = data;
@@ -526,6 +538,17 @@ app.controller('userController', [
         			loadingModal.close();
         		}
             });
+        }
+        
+        $scope.getText = function(annotation) {
+        		if(annotation.customerNotes == "") { 
+	        		var discrepancies = $scope.selectedItem.discrepancies;
+	        		var covered = annotation.idsOfCoveredDiscrepancies[0]
+	        		
+	        		return discrepancies[covered].text;        		
+        		} else {
+        			return annotation.customerNotes;
+        		}
         }
         
         $scope.emptyItems = [{"name": "NONE FOUND"}]
