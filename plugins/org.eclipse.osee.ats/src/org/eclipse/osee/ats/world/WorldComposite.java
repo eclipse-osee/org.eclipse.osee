@@ -344,13 +344,13 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       if (!goalMemberReordered.isEmpty()) {
          XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(GoalOrderColumn.COLUMN_ID);
          if (column != null && column.isShow() == true) {
-            getXViewer().refreshColumnLazy((GoalOrderColumn) column);
+            getXViewer().refreshColumnsWithPreCompute();
          }
       }
       if (!sprintMemberReordered.isEmpty()) {
          XViewerColumn column = getXViewer().getCustomizeMgr().getCurrentTableColumn(SprintOrderColumn.COLUMN_ID);
          if (column != null && column.isShow() == true) {
-            getXViewer().refreshColumnLazy((SprintOrderColumn) column);
+            getXViewer().refreshColumnsWithPreCompute();
          }
       }
    }

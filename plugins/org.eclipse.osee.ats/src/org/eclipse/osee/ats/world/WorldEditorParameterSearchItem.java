@@ -58,7 +58,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      // do nothing
+      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
    }
 
    @Override

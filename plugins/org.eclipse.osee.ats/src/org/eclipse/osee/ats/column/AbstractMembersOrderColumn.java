@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerLazyLoadColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.artifact.MembersManager;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IXViewerLazyLoadColumn, IAltLeftClickProvider {
+public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider {
 
    public static final Integer DEFAULT_WIDTH = 45;
    Map<Long, String> multiGoalValueMap = new HashMap<Long, String>();
@@ -97,11 +97,6 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
             LogUtil.getCellExceptionString(ex);
          }
       }
-   }
-
-   @Override
-   public void setLoading(boolean loading) {
-      this.loading = loading;
    }
 
 }

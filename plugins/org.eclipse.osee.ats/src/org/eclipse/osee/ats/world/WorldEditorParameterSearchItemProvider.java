@@ -73,6 +73,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
       this.worldEditor = worldEditor;
+      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
       if (firstTime) {
          firstTime = false;
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
@@ -99,6 +100,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       job.schedule();
       if (forcePend) {
          try {
+            worldEditor.getWorldComposite().getXViewer().setForcePend(true);
             job.join();
          } catch (InterruptedException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

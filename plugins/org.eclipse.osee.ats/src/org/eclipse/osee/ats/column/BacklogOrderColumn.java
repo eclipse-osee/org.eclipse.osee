@@ -29,4 +29,15 @@ public class BacklogOrderColumn extends GoalOrderColumn {
       super(true, COLUMN_ID, "Backlog Order");
    }
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    */
+   @Override
+   public BacklogOrderColumn copy() {
+      BacklogOrderColumn newXCol = new BacklogOrderColumn();
+      super.copy(this, newXCol);
+      return newXCol;
+   }
+
 }

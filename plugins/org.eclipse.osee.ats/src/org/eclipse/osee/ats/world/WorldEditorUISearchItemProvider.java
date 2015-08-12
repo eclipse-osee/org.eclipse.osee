@@ -89,6 +89,7 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
       job.schedule();
       if (options.contains(TableLoadOption.ForcePend)) {
          try {
+            worldEditor.getWorldComposite().getXViewer().setForcePend(true);
             job.join();
          } catch (InterruptedException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -51,6 +51,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
+      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
       worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
    }
 
