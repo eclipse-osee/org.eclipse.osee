@@ -113,7 +113,7 @@
 		        $scope.generateReport = function() {
 		        	var requst = [];
 		        	requst.push(
-		        	  "program/",
+		        	  "/dispo/program/",
 		        	  $scope.programSelection,
 		        	  "/admin/report?primarySet=",
 		        	  $scope.primarySet,
@@ -185,7 +185,7 @@
 		        $scope.exportSet = function importSet(set) {
 		        	var requst = [];
 		        	requst.push(
-		        	  "program/",
+		        	  "/dispo/program/",
 		        	  $scope.programSelection,
 		        	  "/admin/export?primarySet=",
 		        	  set.guid,
