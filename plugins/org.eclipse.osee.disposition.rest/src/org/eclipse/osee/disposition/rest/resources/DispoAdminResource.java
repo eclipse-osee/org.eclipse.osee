@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Encoded;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -52,7 +53,7 @@ public class DispoAdminResource {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getDispoSetReport(@QueryParam("primarySet") String primarySet, @QueryParam("secondarySet") String secondarySet) {
+   public Response getDispoSetReport(@Encoded @QueryParam("primarySet") String primarySet, @Encoded @QueryParam("secondarySet") String secondarySet) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final DispoSet dispoSet2 = dispoApi.getDispoSetById(program, secondarySet);
       final STRSReport writer = new STRSReport(dispoApi);
@@ -76,7 +77,7 @@ public class DispoAdminResource {
    @GET
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response postDispoSetExport(@QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
+   public Response postDispoSetExport(@Encoded @QueryParam("primarySet") String primarySet, @QueryParam("option") String option) {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
@@ -100,7 +101,7 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
+   public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
