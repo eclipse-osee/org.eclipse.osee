@@ -15,7 +15,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -29,4 +31,18 @@ public interface TransactionFactory {
    Callable<Integer> purgeTransaction(Collection<? extends ITransaction> transactions);
 
    Callable<Void> setTransactionComment(ITransaction transaction, String comment);
+
+   CompareResults compareTxs(int txId1, int txId2);
+
+   ResultSet<TransactionReadable> getAllTxs();
+
+   TransactionReadable getTx(int txId);
+
+   TransactionReadable getTxById(int txId);
+
+   boolean setTxComment(int txId, String comment);
+
+   boolean replaceWithBaselineTxVersion(String userId, long branchId, int txId, int artId, String comment);
+
+   boolean purgeTxs(String txIds);
 }

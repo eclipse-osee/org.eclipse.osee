@@ -60,7 +60,7 @@ public class OrcsApplication extends Application {
 
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
-      resources.add(new TransactionEndpointImpl(orcsApi));
+            resources.add(new TransactionEndpointImpl(orcsApi));
       resources.add(new TypesEndpointImpl(orcsApi));
 
       resources.add(new IndexerEndpointImpl(orcsApi));

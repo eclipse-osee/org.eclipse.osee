@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.orcs.transaction.CompareResults;
 
 /**
  * @author Roberto E. Escobar
@@ -38,7 +39,7 @@ public interface BranchEndpoint {
 
    /**
     * Perform a branch query based on query parameter input
-    * 
+    *
     * @param branchUuids comma separated list of branch uuids
     * @param branchTypes comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchType BranchType}
     * @param branchStates comma separated list of {@link org.eclipse.osee.framework.core.enums.BranchState BranchState}

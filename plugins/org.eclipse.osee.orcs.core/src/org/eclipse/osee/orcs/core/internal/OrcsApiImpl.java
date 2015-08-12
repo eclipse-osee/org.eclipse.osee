@@ -257,6 +257,7 @@ public class OrcsApiImpl implements OrcsApi {
          @Override
          protected final FutureTask<ArtifactReadable> createLoaderTask() {
             Callable<ArtifactReadable> callable = new Callable<ArtifactReadable>() {
+               @SuppressWarnings("unchecked")
                @Override
                public ArtifactReadable call() throws Exception {
                   return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
@@ -274,7 +275,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
-      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule);
+      return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule, getQueryFactory(),
+         getBranchOps());
    }
 
    @Override
@@ -343,5 +345,4 @@ public class OrcsApiImpl implements OrcsApi {
    public ScriptEngine getScriptEngine() {
       return manager.getEngineByName(ScriptEngines.ORCS_SCRIPT_ENGINE_ID);
    }
-
 }

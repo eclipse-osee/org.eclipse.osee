@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.rest.model;
+package org.eclipse.osee.orcs.transaction;
 
 import java.util.Collections;
 import java.util.List;

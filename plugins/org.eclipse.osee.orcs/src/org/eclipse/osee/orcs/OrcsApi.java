@@ -36,5 +36,4 @@ public interface OrcsApi {
    OrcsTypes getOrcsTypes();
 
    ScriptEngine getScriptEngine();
-
 }

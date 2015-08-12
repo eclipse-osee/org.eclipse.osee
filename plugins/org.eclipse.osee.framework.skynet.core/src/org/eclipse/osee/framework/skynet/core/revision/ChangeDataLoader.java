@@ -46,8 +46,8 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.CompareResults;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.transaction.CompareResults;
 
 /**
  * @author Jeff C. Phillips
@@ -198,8 +198,8 @@ public class ChangeDataLoader extends AbstractOperation {
       switch (item.getChangeType()) {
          case ARTIFACT_CHANGE:
             change =
-               new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
-                  changeArtifact, artifactDelta);
+            new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
+               changeArtifact, artifactDelta);
             break;
          case ATTRIBUTE_CHANGE:
             String isValue = item.getCurrentVersion().getValue();

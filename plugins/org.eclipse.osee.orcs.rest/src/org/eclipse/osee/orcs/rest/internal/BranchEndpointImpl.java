@@ -62,13 +62,13 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchExportOptions;
 import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
 import org.eclipse.osee.orcs.rest.model.BranchQueryData;
-import org.eclipse.osee.orcs.rest.model.CompareResults;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 import org.eclipse.osee.orcs.rest.model.NewTransaction;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
+import org.eclipse.osee.orcs.transaction.CompareResults;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import com.google.common.collect.Lists;
@@ -131,9 +131,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private BranchReadable getBranchById(long branchUuid) {
       ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return results.getExactlyOne();
    }
 
@@ -149,9 +149,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return asBranches(results);
    }
 
@@ -212,20 +212,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBaselineBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.BASELINE)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.BASELINE)//
+         .getResults();
       return asBranches(results);
    }
 
    @Override
    public List<Branch> getWorkingBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.WORKING)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.WORKING)//
+         .getResults();
       return asBranches(results);
    }
 
@@ -504,9 +504,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
       ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
-      .includeArchived()//
-      .includeDeleted()//
-      .getResultsAsId();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResultsAsId();
       return Lists.newLinkedList(resultsAsId);
    }
 

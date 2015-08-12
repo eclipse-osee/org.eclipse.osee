@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.rest.internal.config.InsertionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.InsertionResource;
 import org.eclipse.osee.ats.rest.internal.config.ProgramEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ProgramResource;
+import org.eclipse.osee.ats.rest.internal.config.ReportResource;
 import org.eclipse.osee.ats.rest.internal.config.TeamResource;
 import org.eclipse.osee.ats.rest.internal.config.UserResource;
 import org.eclipse.osee.ats.rest.internal.config.VersionResource;
@@ -108,6 +109,7 @@ public class AtsApplication extends Application {
 
       // UIs
       singletons.add(new ActionUiResource(atsServer, logger));
+      singletons.add(new ReportResource(orcsApi, atsServer));
    }
 
    public void stop() {

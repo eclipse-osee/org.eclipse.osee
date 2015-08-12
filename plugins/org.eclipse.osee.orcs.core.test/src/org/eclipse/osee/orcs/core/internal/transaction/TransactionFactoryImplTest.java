@@ -19,9 +19,11 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.junit.Before;
 import org.junit.Rule;
@@ -31,7 +33,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link TransactionFactoryImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class TransactionFactoryImplTest {
@@ -45,7 +47,9 @@ public class TransactionFactoryImplTest {
    @Mock private TxDataManager txDataManager;
    @Mock private TxCallableFactory txCallableFactory;
    @Mock private QueryModule query;
-   
+   @Mock private QueryFactory queryFactory;
+   @Mock private OrcsBranch orcsBranch;
+
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private TxData txData;
    // @formatter:on
@@ -56,7 +60,7 @@ public class TransactionFactoryImplTest {
    @Before
    public void init() {
       initMocks(this);
-      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query);
+      factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch);
 
    }
 
