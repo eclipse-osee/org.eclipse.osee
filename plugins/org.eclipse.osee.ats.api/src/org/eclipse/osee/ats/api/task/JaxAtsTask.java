@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.api.task;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
@@ -26,6 +28,11 @@ public class JaxAtsTask extends JaxAtsObject {
    private Date createdDate;
    private String createdByUserId;
    private String relatedToState;
+   Map<String, Object> attrTypeToObject;
+
+   public JaxAtsTask() {
+      attrTypeToObject = new HashMap<>();
+   }
 
    public Date getCreatedDate() {
       return createdDate;
@@ -62,6 +69,14 @@ public class JaxAtsTask extends JaxAtsObject {
 
    public void setAssigneeUserIds(List<String> assigneeUserIds) {
       this.assigneeUserIds = assigneeUserIds;
+   }
+
+   public Map<String, Object> getAttrTypeToObject() {
+      return attrTypeToObject;
+   }
+
+   public void setAttrTypeToObject(Map<String, Object> attrTypeToObject) {
+      this.attrTypeToObject = attrTypeToObject;
    }
 
 }

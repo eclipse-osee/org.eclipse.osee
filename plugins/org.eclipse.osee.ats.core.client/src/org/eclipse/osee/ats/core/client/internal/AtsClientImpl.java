@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -90,6 +91,7 @@ import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheP
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.program.internal.AtsProgramService;
+import org.eclipse.osee.ats.core.client.task.AtsTaskService;
 import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
@@ -175,6 +177,7 @@ public class AtsClientImpl implements IAtsClient {
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private AtsStoreService atsStoreService;
    private TeamWorkflowProviders teamWorkflowProvidersLazy;
+   private IAtsTaskService taskService;
    private Log logger;
 
    public void setJdbcService(JdbcService jdbcService) {
@@ -255,6 +258,7 @@ public class AtsClientImpl implements IAtsClient {
 
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
          userService, attributeResolverService, atsStateFactory, configProxy, getServices());
+      taskService = new AtsTaskService(this);
 
    }
 
@@ -803,6 +807,11 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactResolver getArtifactResolver() {
       return artifactResolver;
+   }
+
+   @Override
+   public IAtsTaskService getTaskService() {
+      return taskService;
    }
 
 }

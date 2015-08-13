@@ -73,6 +73,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 public class ArtifactQuery {
 
    private static Map<String, Long> guidToUuid;
+   private static Map<Long, String> uuidToGuid;
 
    public static Artifact getArtifactFromToken(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
       return getArtifactFromId(artifactToken.getGuid(), branch);
@@ -209,8 +210,8 @@ public class ArtifactQuery {
     * @throws MultipleArtifactsExist if more than one artifact is found
     */
    public static Artifact getArtifactFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
-         QueryType.GET);
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+         options).getOrCheckArtifact(QueryType.GET);
    }
 
    /**
@@ -221,8 +222,8 @@ public class ArtifactQuery {
     */
    public static Artifact getArtifactFromTypeAndNameNoException(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
       try {
-         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
-            QueryType.GET);
+         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+            options).getOrCheckArtifact(QueryType.GET);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -230,8 +231,8 @@ public class ArtifactQuery {
    }
 
    public static List<Integer> selectArtifactIdsFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch, options).selectArtifacts(
-         2);
+      return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch,
+         options).selectArtifacts(2);
    }
 
    public static List<Integer> selectArtifactIdsFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
@@ -245,8 +246,8 @@ public class ArtifactQuery {
     * @return one artifact based on its type and name if it exists, otherwise null
     */
    public static Artifact checkArtifactFromTypeAndName(IArtifactType artifactTypeToken, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch, options).getOrCheckArtifact(
-         QueryType.CHECK);
+      return queryFromTypeAndAttribute(artifactTypeToken, CoreAttributeTypes.Name, artifactName, branch,
+         options).getOrCheckArtifact(QueryType.CHECK);
    }
 
    /**
@@ -293,7 +294,8 @@ public class ArtifactQuery {
    }
 
    public static Artifact getHistoricalArtifactFromId(String guid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.GET);
+      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
+         QueryType.GET);
    }
 
    public static Artifact checkHistoricalArtifactFromId(int artifactId, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
@@ -301,12 +303,13 @@ public class ArtifactQuery {
    }
 
    public static Artifact checkHistoricalArtifactFromId(String guid, TransactionRecord transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.CHECK);
+      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
+         QueryType.CHECK);
    }
 
    public static List<Artifact> getArtifactListFromName(String artifactName, IOseeBranch branch, DeletionFlag allowDeleted, QueryOption... options) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, ALL, allowDeleted, new AttributeCriteria(CoreAttributeTypes.Name,
-         artifactName, options)).getArtifacts(30, null);
+      return new ArtifactQueryBuilder(branch, ALL, allowDeleted,
+         new AttributeCriteria(CoreAttributeTypes.Name, artifactName, options)).getArtifacts(30, null);
    }
 
    public static List<Artifact> getArtifactListFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
@@ -438,8 +441,8 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getRelatedArtifactList(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifact.getBranch(), ALL, EXCLUDE_DELETED, new RelationCriteria(
-         artifact.getArtId(), relationType, relationSide)).getArtifacts(1000, null);
+      return new ArtifactQueryBuilder(artifact.getBranch(), ALL, EXCLUDE_DELETED,
+         new RelationCriteria(artifact.getArtId(), relationType, relationSide)).getArtifacts(1000, null);
    }
 
    /**
@@ -448,8 +451,8 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromRelation(IRelationType relationType, RelationSide relationSide, IOseeBranch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED, new RelationCriteria(relationType, relationSide)).getArtifacts(
-         1000, null);
+      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
+         new RelationCriteria(relationType, relationSide)).getArtifacts(1000, null);
    }
 
    /**
@@ -458,13 +461,13 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactType, branch, ALL, new AttributeCriteria(attributeType, attributeValue,
-         options)).getArtifacts(100, null);
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValue, options)).getArtifacts(100, null);
    }
 
    public static List<Artifact> getArtifactListFromAttribute(IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED, new AttributeCriteria(attributeType,
-         attributeValue, options)).getArtifacts(300, null);
+      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
+         new AttributeCriteria(attributeType, attributeValue, options)).getArtifacts(300, null);
    }
 
    /**
@@ -476,18 +479,18 @@ public class ArtifactQuery {
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, String attributeValue, IOseeBranch branch, QueryOption... options) {
-      return new ArtifactQueryBuilder(artifactType, branch, ALL, new AttributeCriteria(attributeType, attributeValue,
-         options));
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValue, options));
    }
 
    public static List<Artifact> getArtifactListFromTypeAndAttribute(IArtifactType artifactType, IAttributeType attributeType, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactType, branch, ALL, new AttributeCriteria(attributeType, attributeValues)).getArtifacts(
-         artifactCountEstimate, null);
+      return new ArtifactQueryBuilder(artifactType, branch, ALL,
+         new AttributeCriteria(attributeType, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
 
    public static List<Artifact> getArtifactListFromAttributeValues(IAttributeType attributeType, Collection<String> attributeValues, IOseeBranch branch, int artifactCountEstimate) throws OseeCoreException {
-      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED, new AttributeCriteria(attributeType,
-         attributeValues)).getArtifacts(artifactCountEstimate, null);
+      return new ArtifactQueryBuilder(branch, ALL, EXCLUDE_DELETED,
+         new AttributeCriteria(attributeType, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
 
    /**
@@ -520,14 +523,14 @@ public class ArtifactQuery {
       queryBuilder.includeDeleted(deletionFlag.areDeletedAllowed());
       QueryOption matchCase = QueryOption.getCaseType(isCaseSensitive);
       QueryOption matchWordOrder = QueryOption.getTokenOrderType(isMatchWordOrder);
-      Collection<IAttributeType> typesToSearch =
-         attributeTypes.length == 0 ? Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
-         queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
-         List<Artifact> toReturn = new LinkedList<Artifact>();
-         for (Artifact art : queryBuilder.getResults()) {
-            toReturn.add(art);
-         }
-         return toReturn;
+      Collection<IAttributeType> typesToSearch = attributeTypes.length == 0 ? Collections.singleton(
+         QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
+      queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
+      List<Artifact> toReturn = new LinkedList<Artifact>();
+      for (Artifact art : queryBuilder.getResults()) {
+         toReturn.add(art);
+      }
+      return toReturn;
    }
 
    /**
@@ -551,15 +554,16 @@ public class ArtifactQuery {
          matchExact = QueryOption.TOKEN_DELIMITER__EXACT;
       }
 
-      Collection<IAttributeType> typesToSearch =
-         Conditions.hasValues(options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(QueryBuilder.ANY_ATTRIBUTE_TYPE);
-         queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
+      Collection<IAttributeType> typesToSearch = Conditions.hasValues(
+         options.getAttributeTypeFilter()) ? options.getAttributeTypeFilter() : Collections.singleton(
+            QueryBuilder.ANY_ATTRIBUTE_TYPE);
+      queryBuilder.and(typesToSearch, searchRequest.getRawSearch(), matchCase, matchWordOrder, matchExact);
 
-         if (Conditions.hasValues(options.getArtifactTypeFilter())) {
-            queryBuilder.andIsOfType(options.getArtifactTypeFilter());
-         }
+      if (Conditions.hasValues(options.getArtifactTypeFilter())) {
+         queryBuilder.andIsOfType(options.getArtifactTypeFilter());
+      }
 
-         return queryBuilder.getMatches();
+      return queryBuilder.getMatches();
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
@@ -752,6 +756,23 @@ public class ArtifactQuery {
          if (art != null) {
             result = art.getUuid();
             guidToUuid.put(guid, result);
+         }
+      }
+      return result;
+   }
+
+   public static String getGuidFromUuid(long uuid, IOseeBranch branch) {
+      if (uuidToGuid == null) {
+         uuidToGuid = new HashMap<Long, String>(200);
+      }
+      String result = null;
+      if (uuidToGuid.containsKey(uuid)) {
+         result = uuidToGuid.get(uuid);
+      } else {
+         Artifact art = getArtifactFromId(uuid, branch);
+         if (art != null) {
+            result = art.getGuid();
+            uuidToGuid.put(uuid, result);
          }
       }
       return result;

@@ -13,16 +13,15 @@ package org.eclipse.osee.ats.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -99,18 +98,15 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   return;
                }
                try {
-                  final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  AtsChangeSet changes = new AtsChangeSet("Import Tasks from Simple List");
-                  Date createdDate = new Date();
-                  IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
-                  teamArt.createTasks(titles, assignees, createdDate, createdBy, stateCombo.get(), changes);
-                  changes.add(teamArt);
-                  changes.execute();
+                  IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(artifact);
+                  AtsClientService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
+                     AtsClientService.get().getUserService().getCurrentUser(), null, getClass().getSimpleName());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;
                }
 
+               artifact.reloadAttributesAndRelations();
                SMAEditor.editArtifact(artifact);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -161,8 +157,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumn.RELATED_TO_STATE_SELECTION + "\" />");
+      buffer.append(
+         "<XWidget xwidgetType=\"XText\" fill=\"Vertically\" height=\"80\" displayName=\"" + TASK_IMPORT_TITLES + "\" />");
+      buffer.append(
+         "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"2\" labelAfter=\"true\" height=\"80\" displayName=\"" + RelatedToStateColumn.RELATED_TO_STATE_SELECTION + "\" />");
       buffer.append("<XWidget xwidgetType=\"XHyperlabelMemberSelection\" displayName=\"" + ASSIGNEES + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();

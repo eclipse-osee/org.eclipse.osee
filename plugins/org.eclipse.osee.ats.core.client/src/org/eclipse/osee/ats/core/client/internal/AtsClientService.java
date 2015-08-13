@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 
 /**
  * @author Donald G. Dunne
@@ -18,6 +22,8 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 public class AtsClientService {
 
    private static IAtsClient atsClient;
+   private static JaxRsWebTarget target;
+   private static AtsTaskEndpointApi taskEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -25,6 +31,23 @@ public class AtsClientService {
 
    public static IAtsClient get() {
       return atsClient;
+   }
+
+   private static JaxRsWebTarget getTarget() {
+      if (target == null) {
+         String appServer = OseeClientProperties.getOseeApplicationServer();
+         String atsUri = String.format("%s/ats", appServer);
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         target = jaxRsClient.target(atsUri);
+      }
+      return target;
+   }
+
+   public static AtsTaskEndpointApi getTaskEp() {
+      if (taskEp == null) {
+         taskEp = getTarget().newProxy(AtsTaskEndpointApi.class);
+      }
+      return taskEp;
    }
 
 }

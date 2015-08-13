@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.demo.DemoActionableItems;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -63,14 +65,12 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      Collection<Artifact> robotArtifacts =
-         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot",
-            DemoSawBuilds.SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
+      Collection<Artifact> robotArtifacts = ArtifactQuery.getArtifactListFromTypeAndName(
+         CoreArtifactTypes.SoftwareRequirement, "Robot", DemoSawBuilds.SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
       if (robotArtifacts.size() < 6) {
-         return new Result(
-            String.format(
-               "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
-               robotArtifacts.size()));
+         return new Result(String.format(
+            "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
+            robotArtifacts.size()));
       }
       return Result.TrueResult;
    }
@@ -102,8 +102,8 @@ public class DemoTestUtil {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-               AtsClientService.get().getConfig()), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+               AtsClientService.get().getConfig()),
+            new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
@@ -143,13 +143,15 @@ public class DemoTestUtil {
    /**
     * Create tasks named title + <num>
     */
-   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState, IAtsChangeSet changes) throws Exception {
+   public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState) throws Exception {
       List<String> names = new ArrayList<String>();
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
-      return teamArt.createTasks(names, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()),
-         new Date(), AtsClientService.get().getUserService().getCurrentUser(), relatedToState, changes);
+      Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(teamArt, names,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), relatedToState, "DemoTestUtil.creatSimpleTasks");
+      return Collections.castAll(createTasks);
    }
 
    public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
@@ -218,7 +220,8 @@ public class DemoTestUtil {
             AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
-         fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
+         fail(
+            "Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
 
    }
@@ -228,9 +231,8 @@ public class DemoTestUtil {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results =
-               AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
-                  IAtsTeamDefinition.class);
+            results = AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
+               IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          }

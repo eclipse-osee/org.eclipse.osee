@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteNetworkSender1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -53,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 public final class FrameworkEventUtil {
 
    private FrameworkEventUtil() {
-      // Utility Class   
+      // Utility Class
    }
 
    public static RemoteAccessControlEvent1 getRemoteAccessControlEvent(AccessControlEvent accessControlEvent) {
@@ -95,9 +96,8 @@ public final class FrameworkEventUtil {
    public static BranchEvent getBranchEvent(RemoteBranchEvent1 branchEvent) {
       BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getEventTypeGuid());
       if (branchEventType != null) {
-         BranchEvent event =
-            new BranchEvent(branchEventType, getBranchUuidFromRemoteEvent(branchEvent.getBranchGuid()),
-               getBranchUuidFromRemoteEvent(branchEvent.getDestinationBranchGuid()));
+         BranchEvent event = new BranchEvent(branchEventType, getBranchUuidFromRemoteEvent(branchEvent.getBranchGuid()),
+            getBranchUuidFromRemoteEvent(branchEvent.getDestinationBranchGuid()));
          event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
          return event;
       } else {
@@ -147,9 +147,8 @@ public final class FrameworkEventUtil {
       event.setTransactionId(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
-            event.getArtifacts().add(
-               getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt.getBasicGuidArtifact(),
-                  ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()));
+            event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(),
+               guidArt.getBasicGuidArtifact(), ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()));
          } else if (guidArt.getModType() == EventModType.ChangeType) {
             EventChangeTypeBasicGuidArtifact changeGuidArt = (EventChangeTypeBasicGuidArtifact) guidArt;
             RemoteBasicGuidArtifact1 remGuidArt =
@@ -307,6 +306,11 @@ public final class FrameworkEventUtil {
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
       return new DefaultBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
          remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
+   }
+
+   public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
+      return new DefaultBasicGuidArtifact(artifact.getBranch().getUuid(), artifact.getArtTypeGuid(),
+         artifact.getGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {

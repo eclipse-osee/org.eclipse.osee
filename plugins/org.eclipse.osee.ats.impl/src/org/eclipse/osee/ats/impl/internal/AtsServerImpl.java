@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
@@ -81,6 +82,7 @@ import org.eclipse.osee.ats.impl.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.impl.internal.util.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsProgramService;
+import org.eclipse.osee.ats.impl.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.impl.internal.workitem.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.impl.internal.workitem.ChangeTypeUtil;
@@ -140,6 +142,7 @@ public class AtsServerImpl implements IAtsServer {
    private JdbcClient jdbcClient;
    private IAgileService agileService;
    private IAtsQueryService atsQueryService;
+   private IAtsTaskService taskService;
 
    private volatile boolean emailEnabled = true;
 
@@ -233,6 +236,7 @@ public class AtsServerImpl implements IAtsServer {
       agileService = new AgileService(logger, this);
       atsQueryService = new AtsQueryServiceIimpl(this);
       versionService = new AtsVersionServiceImpl(getServices());
+      taskService = new AtsTaskService(this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
@@ -607,6 +611,11 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public IArtifactResolver getArtifactResolver() {
       return artifactResolver;
+   }
+
+   @Override
+   public IAtsTaskService getTaskService() {
+      return taskService;
    }
 
 }

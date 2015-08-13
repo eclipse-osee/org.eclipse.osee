@@ -78,11 +78,8 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test02ChangeTaskStatusNoResolution() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4,
-            teamArt.getCurrentStateName(), changes);
-      changes.execute();
+      Collection<TaskArtifact> tasks = DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4,
+         teamArt.getCurrentStateName());
 
       assertTrue(tasks.size() == 4);
 
@@ -112,16 +109,14 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test03ChangeStatusFailsIfTaskCancelled() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, null, changes);
-      changes.execute();
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, null);
 
       assertTrue(tasks.size() == 2);
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      changes.clear();
+      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       TransitionHelper helper =
          new TransitionHelper("Transition to Cancelled", Arrays.asList(cancelTask), TaskStates.Cancelled.getName(),
             null, null, changes, AtsClientService.get().getServices(), TransitionOption.None);
@@ -137,11 +132,8 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test04ChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2,
-            teamArt.getCurrentStateName(), changes);
-      changes.execute();
+      Collection<TaskArtifact> tasks = DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState",
+         2, teamArt.getCurrentStateName());
 
       assertTrue(tasks.size() == 2);
       TaskArtifact taskArt = tasks.iterator().next();
@@ -156,10 +148,8 @@ public class SMAPromptChangeStatusTest {
 
    @Test
    public void test05ChangeStatusPassesIfTaskNotUsingRelatedToState() throws Exception {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Collection<TaskArtifact> tasks =
-         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, "", changes);
-      changes.execute();
+         DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, "");
 
       assertTrue(tasks.size() == 2);
 

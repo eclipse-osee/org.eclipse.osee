@@ -33,7 +33,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-AtsCoreClient_Suite.class, //
+   AtsCoreClient_Suite.class, //
    AtsTest_Ats_Suite.class //
 })
 public class AtsTest_AllAts_Suite {

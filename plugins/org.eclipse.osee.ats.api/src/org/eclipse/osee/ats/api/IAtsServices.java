@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -86,5 +87,7 @@ public interface IAtsServices {
    void clearImplementersCache(IAtsWorkItem workItem);
 
    IArtifactResolver getArtifactResolver();
+
+   IAtsTaskService getTaskService();
 
 }

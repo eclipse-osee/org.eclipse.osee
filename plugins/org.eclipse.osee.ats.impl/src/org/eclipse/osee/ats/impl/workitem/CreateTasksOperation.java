@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -24,10 +25,14 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -118,9 +123,27 @@ public class CreateTasksOperation {
             resultData.logErrorWithFormat("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds),
                task);
          }
+
+         for (Entry<String, Object> entry : task.getAttrTypeToObject().entrySet()) {
+            IAttributeType attrType = getAttributeType(atsServer, entry);
+            if (attrType == null) {
+               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s", entry.getKey(),
+                  task);
+            }
+         }
       }
 
       return resultData;
+   }
+
+   private static IAttributeType getAttributeType(IAtsServer atsServer, Entry<String, Object> entry) {
+      for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAttributeTypes(
+         AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch())) {
+         if (attrType.getName().equals(entry.getKey())) {
+            return attrType;
+         }
+      }
+      return null;
    }
 
    public List<JaxAtsTask> getTasks() {
@@ -128,13 +151,35 @@ public class CreateTasksOperation {
    }
 
    public void run() {
+      XResultData results = validate();
+      if (results.isErrors()) {
+         throw new OseeArgumentException(results.toString());
+      }
+
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), asUser);
 
+      createTasks(changes);
+      if (changes.isEmpty()) {
+         throw new OseeStateException(getClass().getSimpleName() + " Error - No Tasks to Create");
+      }
+      changes.execute();
+
+      for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+         JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getUuid(), atsServer);
+         if (newJaxTask == null) {
+            throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
+         }
+         this.tasks.add(newJaxTask);
+      }
+   }
+
+   private void createTasks(IAtsChangeSet changes) {
       for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
 
          Long uuid = jaxTask.getUuid();
          if (uuid <= 0L) {
             uuid = Lib.generateArtifactIdAsInt();
+            jaxTask.setUuid(uuid);
          }
          ArtifactId taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
          IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
@@ -158,17 +203,14 @@ public class CreateTasksOperation {
          if (Strings.isValid(jaxTask.getRelatedToState())) {
             changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jaxTask.getRelatedToState());
          }
+
+         for (Entry<String, Object> entry : jaxTask.getAttrTypeToObject().entrySet()) {
+            IAttributeType attrType = getAttributeType(atsServer, entry);
+            changes.setSoleAttributeValue(task, attrType, entry.getValue());
+         }
+
          changes.add(taskArt);
 
-      }
-      changes.execute();
-
-      for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
-         JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getUuid(), atsServer);
-         if (newJaxTask == null) {
-            throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
-         }
-         this.tasks.add(newJaxTask);
       }
    }
 
@@ -187,6 +229,10 @@ public class CreateTasksOperation {
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(taskArt);
          for (IAtsUser user : workItem.getAssignees()) {
             newJaxTask.getAssigneeUserIds().add(user.getUserId());
+         }
+         for (IAttributeType type : taskArt.getExistingAttributeTypes()) {
+            newJaxTask.getAttrTypeToObject().put(type.getName(),
+               Collections.toString(", ", taskArt.getAttributeValues(type)));
          }
          return newJaxTask;
       }

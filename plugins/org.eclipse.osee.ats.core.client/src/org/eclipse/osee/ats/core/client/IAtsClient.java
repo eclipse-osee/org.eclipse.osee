@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -180,4 +181,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    @Override
    IArtifactResolver getArtifactResolver();
 
+   @Override
+   IAtsTaskService getTaskService();
 }

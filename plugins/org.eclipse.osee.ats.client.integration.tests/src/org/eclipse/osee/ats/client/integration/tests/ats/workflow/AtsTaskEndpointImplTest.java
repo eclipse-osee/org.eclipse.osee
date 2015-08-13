@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.After;
@@ -73,6 +75,7 @@ public class AtsTaskEndpointImplTest {
 
       JaxAtsTask task3 = createJaxAtsTask(taskUuid3, "Task 3", null, createdByUserId, createdDate,
          Arrays.asList(DemoUsers.Alex_Kay.getUserId()));
+      task3.getAttrTypeToObject().put(CoreAttributeTypes.StaticId.getName(), "my static id");
       data.getNewTasks().add(task3);
 
       Response response = taskEp.create(data);
@@ -110,6 +113,16 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());
       Assert.assertEquals(1, task3R.getAssigneeUserIds().size());
+      Assert.assertEquals(9, task3R.getAttrTypeToObject().size());
+      boolean found = false;
+      for (Entry<String, Object> entry : task3R.getAttrTypeToObject().entrySet()) {
+         if (entry.getKey().equals(CoreAttributeTypes.StaticId.getName())) {
+            Assert.assertEquals("my static id", entry.getValue().toString());
+            found = true;
+            break;
+         }
+      }
+      Assert.assertTrue("Static Id attribute not found", found);
       Assert.assertEquals(DemoUsers.Alex_Kay.getUserId(), task3R.getAssigneeUserIds().iterator().next());
 
       // Test Delete
