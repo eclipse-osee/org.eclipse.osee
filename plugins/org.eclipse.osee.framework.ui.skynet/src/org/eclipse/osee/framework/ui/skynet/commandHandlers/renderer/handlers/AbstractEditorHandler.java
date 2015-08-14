@@ -18,12 +18,11 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
 /**
  * This abstract class provides the basic functionality for opening renderer editors.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public abstract class AbstractEditorHandler extends CommandHandler {
@@ -38,8 +37,7 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
-         PermissionEnum perEnum = ArtifactDoubleClick.getPermissionEnum(artifacts.iterator().next());
-         return AccessControlManager.hasPermission(artifacts, perEnum);
+         return AccessControlManager.hasPermission(artifacts, getPermissionLevel());
       }
       return false;
    }

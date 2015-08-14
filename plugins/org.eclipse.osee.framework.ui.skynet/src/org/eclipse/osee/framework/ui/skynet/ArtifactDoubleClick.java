@@ -17,10 +17,8 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,13 +53,7 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
 
    public static void open(Artifact artifact) {
       PresentationType type = getPresentationType(artifact);
-      PermissionEnum permissionEnum = getPermissionEnum(artifact);
-      if (AccessControlManager.hasPermission(artifact, permissionEnum)) {
-         RendererManager.openInJob(artifact, type);
-      } else {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
-            "The user " + UserManager.getUser() + " does not have " + permissionEnum + " access to " + artifact);
-      }
+      RendererManager.openInJob(artifact, type);
    }
 
    public static PermissionEnum getPermissionEnum(Artifact artifact) {
