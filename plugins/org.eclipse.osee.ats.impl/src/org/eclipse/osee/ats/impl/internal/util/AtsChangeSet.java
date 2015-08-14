@@ -32,9 +32,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -167,6 +169,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       return artifact;
    }
 
+   @Override
    public void deleteAttributes(IAtsObject atsObject, IAttributeType attributeType) {
       ArtifactReadable artifact = getArtifact(atsObject);
       getTransaction().deleteAttributes(artifact, attributeType);
@@ -240,4 +243,22 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       getTransaction().unrelate(getArtifact(object1), relationType, getArtifact(object2));
       add(object1);
    }
+
+   @Override
+   public <T> void setAttribute(Object object, int attributeId, T value) {
+      ArtifactReadable artifact = getArtifact(object);
+      boolean found = false;
+      for (AttributeReadable<Object> attribute : artifact.getAttributes()) {
+         if (attribute.getGammaId() == attributeId) {
+            getTransaction().setAttributeById(artifact, attribute, value);
+            found = true;
+            break;
+         }
+      }
+      if (!found) {
+         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, object);
+      }
+      add(object);
+   }
+
 }

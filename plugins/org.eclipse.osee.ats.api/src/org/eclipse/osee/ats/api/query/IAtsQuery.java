@@ -34,7 +34,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
-   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... options) throws OseeCoreException;
+   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... queryOption) throws OseeCoreException;
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -47,5 +47,7 @@ public interface IAtsQuery {
    IAtsQuery isOfType(IArtifactType... artifactType);
 
    IAtsQuery andUuids(Long... uuid);
+
+   IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption);
 
 }

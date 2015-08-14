@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -275,5 +276,24 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       artifact.setRelations(null, relationSide, artifacts);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> void setAttribute(Object object, int attributeId, T value) {
+      Artifact artifact = getArtifact(object);
+      Conditions.checkNotNull(artifact, "artifact");
+      boolean found = false;
+      for (Attribute<?> attribute : artifact.getAttributes()) {
+         if (attribute.getId() == attributeId) {
+            ((Attribute<T>) attribute).setValue(value);
+            found = true;
+            break;
+         }
+      }
+      if (!found) {
+         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, object);
+      }
+      add(artifact);
    }
 }
