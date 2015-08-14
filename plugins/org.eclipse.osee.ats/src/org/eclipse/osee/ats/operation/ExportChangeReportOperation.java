@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -58,21 +59,17 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final boolean reverse;
    private final boolean writeChangeReports;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, Appendable resultFolder) {
-      super("Exporting Change Report(s)", Activator.PLUGIN_ID);
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, Appendable resultFolder, OperationLogger logger) {
+      super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
       this.workflows = workflows;
       this.reverse = reverse;
       this.writeChangeReports = writeChangeReports;
       this.resultFolder = resultFolder;
    }
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse) {
-      this(workflows, reverse, true, new StringBuilder());
-   }
-
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      logf("%d workflows.", workflows.size());
+      logf("Starting %s, processing %d workflows.", getClass().getSimpleName(), workflows.size());
 
       sortWorkflows();
 
@@ -96,6 +93,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Set<Integer> artIds = new HashSet<Integer>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
+            logf("Exporting: %s", workflow.toStringWithId());
             String id = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {

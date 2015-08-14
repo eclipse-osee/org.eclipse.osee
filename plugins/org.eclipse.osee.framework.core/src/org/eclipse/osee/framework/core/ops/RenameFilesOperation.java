@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.ops;
 import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Operation that renames files matching a regex.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class RenameFilesOperation extends AbstractOperation {
@@ -37,7 +36,7 @@ public class RenameFilesOperation extends AbstractOperation {
     * All parameters of this operation are not used until the operation is run. This enables the operation to be
     * constructed prior to its execution with parameters whose values are not yet set. This is needed for constructing
     * composite operations where results of prior sub-operations are used in subsequent sub-operations
-    * 
+    *
     * @param logger passed along the the super class and used by this class by calling one of AbstractOperation's log
     * methods
     * @param parentFolderPath parent folder that will be searched using the pathPattern
@@ -53,6 +52,7 @@ public class RenameFilesOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      logf("Starting %s", getClass().getSimpleName());
       Rule rule = new ReplaceAll(Pattern.compile(pathPattern.toString()), replacement.toString());
       File parentFolder = new File(parentFolderPath.toString()).getCanonicalFile();
       List<File> files = Lib.recursivelyListFiles(parentFolder);
@@ -76,6 +76,6 @@ public class RenameFilesOperation extends AbstractOperation {
             }
          }
       }
-      logf("Changed %d files.", renamedFileCount);
+      logf("Renamed %d files.", renamedFileCount);
    }
 }
