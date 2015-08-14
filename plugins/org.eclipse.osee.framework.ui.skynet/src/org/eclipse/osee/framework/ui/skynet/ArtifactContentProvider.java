@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * The basis for the comments in this class can be found at
  * http://www.eclipse.org/articles/treeviewer-cg/TreeViewerArticle.htm
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class ArtifactContentProvider implements ITreeContentProvider, ArtifactChangeListener {
@@ -59,7 +59,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * model-specific means), and deregistering the viewer from the old input. In response to these change notifications,
     * the content provider propagates the changes to the viewer.
     * </p>
-    * 
+    *
     * @param viewer the viewer
     * @param oldInput the old input element, or <code>null</code> if the viewer did not previously have an input
     * @param newInput the new input element, or <code>null</code> if the viewer does not have an input
@@ -74,7 +74,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * The tree viewer calls its content provider&#8217;s getChildren method when it needs to create or display the child
     * elements of the domain object, <b>parent </b>. This method should answer an array of domain objects that represent
     * the unfiltered children of <b>parent </b>
-    * 
+    *
     * @see ITreeContentProvider#getChildren(Object)
     */
    @Override
@@ -90,7 +90,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                   allChildren.addAll(children);
                }
 
-               if (artifactDecorator != null && artifactDecorator.showRelations()) {
+               if (isShowRelations()) {
                   addRelations(parentItem, relationsAll, allChildren);
                }
                return allChildren.toArray();
@@ -108,6 +108,10 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
          return ((Collection<?>) parentElement).toArray();
       }
       return EMPTY_ARRAY;
+   }
+
+   private boolean isShowRelations() {
+      return artifactDecorator != null && artifactDecorator.showRelations();
    }
 
    private void addRelations(Artifact parentItem, List<RelationLink> relationsAll, List<Object> allChildren) {
@@ -162,7 +166,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * The tree viewer asks its content provider if the domain object represented by <b>element </b> has any children.
     * This method is used by the tree viewer to determine whether or not a plus or minus should appear on the tree
     * widget.
-    * 
+    *
     * @see ITreeContentProvider#hasChildren(Object)
     */
    @Override
@@ -180,18 +184,16 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                }
                if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Default_Hierarchical__Child) > 0) {
                   return true;
-               } else {
+               } else if (isShowRelations()) {
                   List<RelationLink> relationsAll = artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
                   for (RelationLink link : relationsAll) {
-                     if (!link.getRelationType().getName().equals("Default Hierarchical")) {
+                     if (link.getRelationType().getId() != CoreRelationTypes.Default_Hierarchical__Child.getGuid()) {
                         return true;
                      }
                   }
-                  return false;
                }
-            } else {
-               return false;
             }
+            return false;
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             // Assume it has children if an error happens
@@ -211,7 +213,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
     * a similar way. Depending on your domain objects, you may have the <b>getElements </b> simply return the result of
     * calling <b>getChildren </b>. The two methods are kept distinct because it provides a clean way to differentiate
     * between the root domain object and all other domain objects.
-    * 
+    *
     * @see IStructuredContentProvider#getElements(Object)
     */
    @Override
