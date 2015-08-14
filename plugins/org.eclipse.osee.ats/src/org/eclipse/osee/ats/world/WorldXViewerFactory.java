@@ -70,9 +70,12 @@ import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
 import org.eclipse.osee.ats.column.ParentTopTeamColumnUI;
 import org.eclipse.osee.ats.column.ParentWorkDefColumn;
+import org.eclipse.osee.ats.column.PercentCompleteReviewsColumn;
 import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
 import org.eclipse.osee.ats.column.PercentCompleteStateReviewColumn;
 import org.eclipse.osee.ats.column.PercentCompleteStateTasksColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTasksColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTasksReviewsColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.PercentCompleteWorkflowColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
@@ -245,7 +248,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       RemainingPointsNumericWorkflowColumn.getInstance(),
       RemainingPointsNumericTotalColumn.getInstance(),
       RemainingPointsWorkflowColumn.getInstance(),
-      RemainingPointsTotalColumn.getInstance()};
+      RemainingPointsTotalColumn.getInstance(),
+      PercentCompleteReviewsColumn.getInstance(),
+      PercentCompleteTasksColumn.getInstance(),
+      PercentCompleteTasksReviewsColumn.getInstance()};
 
    public WorldXViewerFactory() {
       super(NAMESPACE);

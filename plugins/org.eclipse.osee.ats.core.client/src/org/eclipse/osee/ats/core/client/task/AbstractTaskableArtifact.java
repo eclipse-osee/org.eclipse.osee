@@ -168,7 +168,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Estimated Task Hours of "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
@@ -196,7 +196,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Remain Task Hours of "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Remain Hours
     */
@@ -222,7 +222,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
 
    /**
     * Return Total Percent Complete / # Tasks for "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
@@ -260,6 +260,18 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
          changes.add(taskArt);
       }
       return tasks;
+   }
+
+   public int getPercentCompleteFromTasks() {
+      int spent = 0;
+      Collection<TaskArtifact> taskArts = getTaskArtifacts();
+      for (TaskArtifact taskArt : taskArts) {
+         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
+      }
+      if (spent == 0) {
+         return 0;
+      }
+      return spent / taskArts.size();
    }
 
 }

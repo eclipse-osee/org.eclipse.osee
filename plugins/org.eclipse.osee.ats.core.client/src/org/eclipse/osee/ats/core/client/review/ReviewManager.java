@@ -52,7 +52,7 @@ public class ReviewManager {
 
    /**
     * Return Estimated Review Hours of "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
@@ -116,7 +116,7 @@ public class ReviewManager {
 
    /**
     * Return Hours Spent for Reviews of "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     */
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
@@ -129,7 +129,7 @@ public class ReviewManager {
 
    /**
     * Return Total Percent Complete / # Reviews for "Related to State" stateName
-    * 
+    *
     * @param relatedToState state name of parent workflow's state
     */
    public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
@@ -149,5 +149,18 @@ public class ReviewManager {
          return (AbstractReviewArtifact) artifact;
       }
       return null;
+   }
+
+   public static int getPercentComplete(TeamWorkFlowArtifact teamWf) {
+      int spent = 0;
+      Collection<AbstractReviewArtifact> reviewArts = getReviews(teamWf);
+      for (AbstractReviewArtifact reviewArt : reviewArts) {
+         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(reviewArt, AtsClientService.get().getServices());
+      }
+      if (spent == 0) {
+         return 0;
+      }
+      return spent / reviewArts.size();
+
    }
 }
