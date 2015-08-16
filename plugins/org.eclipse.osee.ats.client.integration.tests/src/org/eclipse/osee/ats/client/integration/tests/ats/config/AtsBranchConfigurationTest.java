@@ -156,15 +156,14 @@ public class AtsBranchConfigurationTest {
             "Create new Action and target for version " + versionToTarget);
       }
 
-      Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get().getConfig());
+      Collection<IAtsActionableItem> selectedActionableItems = ActionableItems.getActionableItems(
+         appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get().getConfig());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.clear();
-      Artifact actionArt =
-         ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
-            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      Artifact actionArt = ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes",
+         "description", ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), null, changes);
       TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, versionToTarget);
       changes.execute();
@@ -189,9 +188,8 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
-      Artifact blk3MainArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
-            BRANCH_VIA_VERSIONS.getName() + " Requirement");
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
+         teamWf.getWorkingBranch(), BRANCH_VIA_VERSIONS.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());
 
@@ -210,9 +208,9 @@ public class AtsBranchConfigurationTest {
       Collection<Artifact> newArts = changeData.getArtifacts(KindType.Artifact, ModificationType.NEW);
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
-      TestUtil.severeLoggingEnd(monitor, Arrays.asList(
-         "Version [[" + version1Uuid + "][BranchViaVersions - Ver1]] has no related team defininition",
-         "Version [[" + version2Uuid + "][BranchViaVersions - Ver2]] has no related team defininition"));
+      TestUtil.severeLoggingEnd(monitor,
+         Arrays.asList("Version [[" + version1Uuid + "][BranchViaVersions - Ver1]] has no related team defininition",
+            "Version [[" + version2Uuid + "][BranchViaVersions - Ver2]] has no related team defininition"));
    }
 
    @org.junit.Test
@@ -267,18 +265,16 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
       }
-      Collection<IAtsActionableItem> selectedActionableItems =
-         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"),
-            AtsClientService.get().getConfig());
+      Collection<IAtsActionableItem> selectedActionableItems = ActionableItems.getActionableItems(
+         appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"), AtsClientService.get().getConfig());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.reset("Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       changes.clear();
-      Artifact actionArt =
-         ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
-            changes);
+      Artifact actionArt = ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false,
+         null, selectedActionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null,
+         changes);
       changes.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
@@ -300,9 +296,8 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Make new requirement artifact");
       }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(teamWf.getWorkingBranch());
-      Artifact blk3MainArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, teamWf.getWorkingBranch(),
-            BRANCH_VIA_TEAM_DEFINITION.getName() + " Requirement");
+      Artifact blk3MainArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement,
+         teamWf.getWorkingBranch(), BRANCH_VIA_TEAM_DEFINITION.getName() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
       blk3MainArt.persist(getClass().getSimpleName());
 
@@ -324,9 +319,8 @@ public class AtsBranchConfigurationTest {
 
    public static void cleanupBranchTest(IOseeBranch branch) throws Exception {
       String namespace = "org.branchTest." + branch.getName().toLowerCase();
-      Artifact aArt =
-         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, branch.getName() + " Req Changes",
-            AtsUtilCore.getAtsBranch());
+      Artifact aArt = ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
+         branch.getName() + " Req Changes", AtsUtilCore.getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
@@ -357,8 +351,11 @@ public class AtsBranchConfigurationTest {
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
-         AtsClientService.get().getConfig().invalidate(
-            AtsClientService.get().getConfig().getSoleByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class));
+         IAtsTeamDefinition soleByUuid =
+            AtsClientService.get().getConfig().getSoleByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class);
+         if (soleByUuid != null) {
+            AtsClientService.get().getConfig().invalidate(soleByUuid);
+         }
       }
       transaction.execute();
 
@@ -368,8 +365,11 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
-            AtsClientService.get().getConfig().invalidate(
-               AtsClientService.get().getConfig().getSoleByUuid(childArt.getUuid(), IAtsActionableItem.class));
+            IAtsActionableItem soleByUuid =
+               AtsClientService.get().getConfig().getSoleByUuid(childArt.getUuid(), IAtsActionableItem.class);
+            if (soleByUuid != null) {
+               AtsClientService.get().getConfig().invalidate(soleByUuid);
+            }
          }
 
          aiaArt.deleteAndPersist(transaction, false);
@@ -412,9 +412,8 @@ public class AtsBranchConfigurationTest {
    }
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
-      IOperation op =
-         AtsBranchManager.commitWorkingBranch(teamWf, false, true,
-            BranchManager.getParentBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
+      IOperation op = AtsBranchManager.commitWorkingBranch(teamWf, false, true,
+         BranchManager.getParentBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
       Operations.executeWorkAndCheckStatus(op);
    }
 

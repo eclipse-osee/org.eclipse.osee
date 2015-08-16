@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Donald G. Dunne
@@ -29,19 +30,23 @@ public class AtsConfigCache implements IAtsConfig {
    private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
    private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
       new HashCollection<String, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
-   private final HashCollection<Long, IAtsConfigObject> idToConfigObject = new HashCollection<Long, IAtsConfigObject>(
-      true, CopyOnWriteArrayList.class);
+   private final HashCollection<Long, IAtsConfigObject> idToConfigObject =
+      new HashCollection<Long, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
 
    public void cache(IAtsConfigObject configObject) {
+      Conditions.checkNotNull(configObject, "configObject");
       configObjects.add(configObject);
       cacheById(configObject.getUuid(), configObject);
    }
 
    public void cacheByTag(String tag, IAtsConfigObject configObject) {
+      Conditions.checkNotNull(tag, "tag");
+      Conditions.checkNotNull(configObject, "configObject");
       tagToConfigObject.put(tag, configObject);
    }
 
    public void cacheById(long id, IAtsConfigObject configObject) {
+      Conditions.checkNotNull(configObject, "configObject");
       idToConfigObject.put(id, configObject);
    }
 
@@ -53,6 +58,8 @@ public class AtsConfigCache implements IAtsConfig {
     * Clear out all values cached by tag and add sole tag to this configObject
     */
    public void cacheSoleByTag(String tag, IAtsConfigObject configObject) {
+      Conditions.checkNotNull(tag, "tag");
+      Conditions.checkNotNull(configObject, "configObject");
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
          values.clear();
@@ -63,6 +70,7 @@ public class AtsConfigCache implements IAtsConfig {
    @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
+      Conditions.checkNotNull(tag, "tag");
       List<A> objs = new ArrayList<A>();
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
@@ -93,6 +101,7 @@ public class AtsConfigCache implements IAtsConfig {
    @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> A getSoleByTag(String tag, Class<A> clazz) {
+      Conditions.checkNotNull(tag, "tag");
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
          for (IAtsConfigObject obj : values) {
@@ -129,6 +138,7 @@ public class AtsConfigCache implements IAtsConfig {
 
    @Override
    public void invalidate(IAtsConfigObject atsObject) {
+      Conditions.checkNotNull(atsObject, "atsObject");
       configObjects.remove(atsObject);
       List<String> keysToRemove = new ArrayList<String>();
       for (Entry<String, Collection<IAtsConfigObject>> entry : tagToConfigObject.entrySet()) {
@@ -136,12 +146,14 @@ public class AtsConfigCache implements IAtsConfig {
             keysToRemove.add(entry.getKey());
          }
       }
+      invalidateByUuid(atsObject.getUuid());
       for (String key : keysToRemove) {
          tagToConfigObject.removeValue(key, atsObject);
       }
    }
 
    public void invalidateByTag(String tag) {
+      Conditions.checkNotNull(tag, "tag");
       tagToConfigObject.removeValues(tag);
    }
 
