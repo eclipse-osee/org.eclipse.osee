@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
@@ -50,13 +49,11 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
    private final CacheProvider<AtsWorkDefinitionCache> cacheProvider;
    private final IAtsWorkDefinitionService workDefinitionService;
-   private final IAtsWorkItemService workItemService;
    private final IAttributeResolver attributeResolver;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
-   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkItemService workItemService, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.cacheProvider = workDefCacheProvider;
-      this.workItemService = workItemService;
       this.workDefinitionService = workDefinitionService;
       this.attributeResolver = attributeResolver;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;

@@ -186,7 +186,8 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          try {
             match = getAtsServer().getWorkDefAdmin().getWorkDefinition(this);
          } catch (Exception ex) {
-            logger.error("Error getting work definition match for artifact[%s]", artifact);
+            logger.error("Error getting work definition match for artifact[%s]: Exception %s", artifact,
+               ex.getLocalizedMessage());
          }
       }
       return match;

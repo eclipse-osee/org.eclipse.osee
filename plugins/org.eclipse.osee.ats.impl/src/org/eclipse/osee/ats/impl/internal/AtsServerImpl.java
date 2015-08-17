@@ -207,8 +207,8 @@ public class AtsServerImpl implements IAtsServer {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
       relationResolver = new AtsRelationResolverServiceImpl(this);
       attributeResolverService.setOrcsApi(orcsApi);
-      workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workItemService, workDefService,
-         attributeResolverService, teamWorkflowProvidersLazy);
+      workDefAdmin = new AtsWorkDefinitionAdminImpl(workDefCacheProvider, workDefService, attributeResolverService,
+         teamWorkflowProvidersLazy);
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
