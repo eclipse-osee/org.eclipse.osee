@@ -108,11 +108,6 @@ public class OrcsWriterEndpointImpl implements OrcsWriterEndpoint {
       if (results.isErrors()) {
          throw new OseeArgumentException(results.toString());
       }
-      OrcsCollectorWriter writer = new OrcsCollectorWriter(orcsApi, collector, results);
-      writer.run();
-      if (results.isErrors()) {
-         return Response.notModified().entity(results.toString()).build();
-      }
       return Response.ok().entity(results.toString()).build();
    }
 
