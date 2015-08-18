@@ -62,7 +62,11 @@ public class ChangeReportHandler extends CommandHandler {
             if (selection.size() == 2) {
                Object[] items = selection.toArray();
                if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
-                  ChangeUiUtil.open((TransactionRecord) items[0], (TransactionRecord) items[1]);
+                  TransactionRecord tx1 = (TransactionRecord) items[0];
+                  TransactionRecord tx2 = (TransactionRecord) items[1];
+                  TransactionRecord startTx = tx1.getId() < tx2.getId() ? tx1 : tx2;
+                  TransactionRecord endTx = startTx.getId() == tx1.getId() ? tx2 : tx1;
+                  ChangeUiUtil.open(startTx, endTx);
                }
             } else {
                Object selectedObject = selection.getFirstElement();
