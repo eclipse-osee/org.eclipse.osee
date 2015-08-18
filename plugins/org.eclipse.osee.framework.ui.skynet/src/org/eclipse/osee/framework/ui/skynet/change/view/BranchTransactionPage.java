@@ -267,4 +267,8 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
       }
    }
 
+   public void setSelectionProvider() {
+      getSite().setSelectionProvider(xBranchWidget.getXViewer());
+   }
+
 }

@@ -127,7 +127,7 @@ public class ChangeReportPage extends FormPage {
       control.setMenu(menu);
 
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView", manager, xviewer);
-      getSite().setSelectionProvider(xviewer);
+      getSite().setSelectionProvider(changeReportTable.getXViewer());
    }
 
    private static final class ChangeReportMenuListener implements IMenuListener {
@@ -259,6 +259,10 @@ public class ChangeReportPage extends FormPage {
          };
          Operations.scheduleJob(job, false, Job.SHORT, null);
       }
+   }
+
+   public void setSelectionProvider() {
+      getSite().setSelectionProvider(changeReportTable.getXViewer());
    }
 
 }

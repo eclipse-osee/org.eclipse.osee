@@ -207,6 +207,11 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    protected void pageChange(int newPageIndex) {
       super.pageChange(newPageIndex);
       getEditorInput().setTransactionTabActive(newPageIndex == 1);
+      if (newPageIndex == 0) {
+         changeReportPage.setSelectionProvider();
+      } else {
+         branchTransactionPage.setSelectionProvider();
+      }
    }
 
 }
