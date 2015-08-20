@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.agile;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 
 /**
  * @author Donald G. Dunne
@@ -74,5 +75,7 @@ public interface IAgileService {
    void deleteSprint(long sprintUuid);
 
    IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam);
+
+   IAttributeType getAgileTeamPointsAttributeType(IAgileTeam team);
 
 }

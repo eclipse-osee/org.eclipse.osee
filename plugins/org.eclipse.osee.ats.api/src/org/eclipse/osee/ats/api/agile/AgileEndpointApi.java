@@ -66,6 +66,11 @@ public interface AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
 
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/summary")
+   @Produces(MediaType.TEXT_HTML)
+   public Response getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
    @POST
    @Path("team")
    @Consumes(MediaType.APPLICATION_JSON)

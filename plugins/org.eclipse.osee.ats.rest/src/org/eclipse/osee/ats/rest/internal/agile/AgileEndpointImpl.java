@@ -41,12 +41,18 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
+import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.template.engine.PageCreator;
+import org.eclipse.osee.template.engine.PageFactory;
 
 /**
  * Donald G. Dunne
@@ -56,9 +62,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Context
    private UriInfo uriInfo;
    private final IAtsServer atsServer;
+   private final IResourceRegistry resourceRegistry;
 
-   public AgileEndpointImpl(IAtsServer atsServer) {
+   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry) {
       this.atsServer = atsServer;
+      this.resourceRegistry = resourceRegistry;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -179,9 +187,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
-      IAgileFeatureGroup team =
-         atsServer.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(), newFeatureGroup.getName(),
-            guid, uuid);
+      IAgileFeatureGroup team = atsServer.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(),
+         newFeatureGroup.getName(), guid, uuid);
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(team.getName());
       newGroup.setUuid(team.getUuid());
@@ -189,9 +196,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       newGroup.setTeamUuid(team.getTeamUuid());
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location =
-         builder.path("teams").path(String.valueOf(newGroup.getTeamUuid())).path("features").path(
-            String.valueOf(newGroup.getUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamUuid())).path("features").path(
+         String.valueOf(newGroup.getUuid())).build();
       return Response.created(location).entity(newGroup).build();
    }
 
@@ -237,9 +243,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location =
-         builder.path("teams").path(String.valueOf(newSprint.getTeamUuid())).path("sprints").path(
-            String.valueOf(sprint.getUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamUuid())).path("sprints").path(
+         String.valueOf(sprint.getUuid())).build();
       return Response.created(location).entity(created).build();
    }
 
@@ -262,6 +267,34 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          sprints.add(toJaxSprint(sprint));
       }
       return sprints;
+   }
+
+   @Override
+   public Response getSprintSummary(long teamUuid, long sprintUuid) {
+
+      if (teamUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+      }
+      if (sprintUuid <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
+      }
+
+      ArtifactReadable sprint = getSprint(sprintUuid);
+      SprintPageBuilder page = new SprintPageBuilder(atsServer, sprint);
+      PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
+      String result =
+         page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
+
+      return Response.ok().entity(result).build();
+   }
+
+   private ArtifactReadable getSprint(long sprintUuid) {
+      ArtifactReadable sprint = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
+         new Long(sprintUuid).intValue()).getResults().getAtMostOneOrNull();
+      if (sprint == null) {
+         throw new OseeCoreException("Sprint for id:%d not found", sprintUuid);
+      }
+      return sprint;
    }
 
    @Override

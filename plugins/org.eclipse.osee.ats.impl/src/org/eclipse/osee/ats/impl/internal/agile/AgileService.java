@@ -27,14 +27,18 @@ import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -96,9 +100,8 @@ public class AgileService implements IAgileService {
       if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
       }
-      TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), team,
-            "Delete Agile Team");
+      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+         AtsUtilCore.getAtsBranch(), team, "Delete Agile Team");
       deleteRecurse(transaction, team.getChildren());
       transaction.deleteArtifact(team);
       transaction.commit();
@@ -122,6 +125,31 @@ public class AgileService implements IAgileService {
       return teams;
    }
 
+   @Override
+   public IAttributeType getAgileTeamPointsAttributeType(IAgileTeam team) {
+      IAttributeType type = AtsAttributeTypes.Points;
+      String attrTypeName =
+         atsServer.getAttributeResolver().getSoleAttributeValue(team, AtsAttributeTypes.PointsAttributeType, null);
+      if (Strings.isValid(attrTypeName)) {
+         type = getTypeFromName(attrTypeName);
+      }
+      return type;
+   }
+
+   private IAttributeType getTypeFromName(String attrTypeName) {
+      IAttributeType type = null;
+      for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
+         if (attrType.getName().equals(attrTypeName)) {
+            type = attrType;
+            break;
+         }
+      }
+      if (type == null) {
+         throw new OseeCoreException("Invalid attribute type name provided: %s", attrTypeName);
+      }
+      return type;
+   }
+
    /********************************
     ** Agile Feature Group
     ***********************************/
@@ -136,9 +164,8 @@ public class AgileService implements IAgileService {
       if (!featureGroup.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
       }
-      TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), featureGroup,
-            "Delete Agile Feature Group");
+      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+         AtsUtilCore.getAtsBranch(), featureGroup, "Delete Agile Feature Group");
       transaction.deleteArtifact(featureGroup);
       transaction.commit();
    }
@@ -311,9 +338,8 @@ public class AgileService implements IAgileService {
    public void deleteSprint(long sprintUuid) {
       ArtifactReadable sprint = atsServer.getArtifactByUuid(sprintUuid);
       if (sprint != null) {
-         TransactionBuilder transaction =
-            atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), sprint,
-               "Delete Agile Sprint");
+         TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+            AtsUtilCore.getAtsBranch(), sprint, "Delete Agile Sprint");
          transaction.deleteArtifact(sprint);
          transaction.commit();
       }

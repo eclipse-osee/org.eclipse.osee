@@ -96,6 +96,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType PercentComplete = createType(0x10000000000000CFL, "Percent Complete");
 
    public static final IAttributeType Points = createType(0x10000000000000CAL, "Points", "Abstract value that describes risk, complexity, and size of Actions.");
+   public static final IAttributeType PointsAttributeType = createType(0x1000000FF0000001L, "Points Attribute Type", "Used to store the agile points type name (ats.Points or ats.Points Numeric).");
    public static final IAttributeType PointsNumeric = createType(0x17FDE8592A26FCB3L, "Points Numeric", "Abstract value that describes risk, complexity, and size of Actions as float.");
    public static final IAttributeType PriorityType = createType(0x10000000000000CBL, "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = createType(0x10000000000000D9L, "Problem", "Problem found during analysis.");

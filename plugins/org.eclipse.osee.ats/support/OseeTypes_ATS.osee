@@ -17,6 +17,7 @@ artifactType "Insertion Activity" extends "ats.Ats Config Artifact" {
 artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	uuid  0x68D469C51DA01041
 	attribute "ats.Description"
+	attribute "ats.Points Attribute Type"
 }
 
 artifactType "Agile Feature Group" extends "ats.Ats Config Artifact" {
@@ -867,6 +868,14 @@ attributeType "ats.Points Numeric" extends FloatingPointAttribute {
 	min 0
 	max 1
 	defaultValue "0.0"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Points Attribute Type" extends StringAttribute {
+	uuid 0x1000000FF0000001
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	mediaType "text/plain"
 }
 

@@ -98,7 +98,7 @@ public class AtsApplication extends Application {
       singletons.add(new UserResource(atsServer.getUserService()));
 
       // Endpoints
-      singletons.add(new AgileEndpointImpl(atsServer));
+      singletons.add(new AgileEndpointImpl(atsServer, registry));
       singletons.add(new AtsEndpointImpl(atsServer, logger, registry, cpaRegistry));
       singletons.add(new CountryEndpointImpl(atsServer));
       singletons.add(new ProgramEndpointImpl(atsServer));

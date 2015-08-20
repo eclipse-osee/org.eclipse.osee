@@ -31,6 +31,7 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
 
    private final IAtsServer atsServer;
    private final Log logger;
+   private final IResourceRegistry registry;
    private AtsNotifyEndpointImpl atsNotifyEndpointImpl;
    private AtsConfigEndpointImpl atsConfigEndpointImpl;
    private AtsCpaEndpointApi atsCpaEndpointApi;
@@ -42,6 +43,7 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
       this.atsServer = atsServer;
       this.logger = logger;
       this.cpaRegistry = cpaRegistry;
+      this.registry = registry;
    }
 
    @Override
@@ -79,7 +81,7 @@ public class AtsEndpointImpl implements AtsJaxRsApi {
    @Override
    public AgileEndpointApi getAgile() {
       if (agileEndpointApi == null) {
-         agileEndpointApi = new AgileEndpointImpl(atsServer);
+         agileEndpointApi = new AgileEndpointImpl(atsServer, registry);
       }
       return agileEndpointApi;
 

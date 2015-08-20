@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+    </head>
+    <body>
+        <div class="container">
+            
+            <h1> <?sprintName?> Summary </h1>
+            <h4> Sprint Time Frame: <strong><?beginDate?></strong> to <strong><?endDate?></strong></h4>
+            <br>
+            <table class="table table-striped custab">
+                <tbody><tr>
+                    <td>Planned work completed</td> <td> <?workCompleted?> points</td>
+                </tr>
+                <tr>
+                    <td>Walk-up work completed</td> <td> <?walkupCompleted?> points </td>
+                </tr>
+                <tr>
+                    <td>Actions closed</td> <td> <?numActionsCompleted?> actions</td>
+                </tr>
+                <tr>
+                    <td>Actions originated</td> <td> <?numActionsStarted?> actions</td>
+                </tr>
+                <tr>
+                    <td>Current Open Actions in Backlog</td> <td><?numActionsBacklog?> actions</td>
+                </tr>
+            </tbody></table>
+            <h4> Work completed in <?sprintName?> by theme: </h4>
+            <table class="table table-striped custab">
+                <tbody><tr>
+                    <th align="Left" width="70">Theme (grouping)</th>
+                    <th align="Left" width="240">Description</th>
+                    <th align="Left" width="40">Points Completed</th>
+                </tr>
+                <?tableContent?>
+            </tbody></table>
+            <div class="well">
+                Customer representatives are implored to engage with the
+ user communities they represent both to keep them informed of sprint
+activities as well as to be knowledgeable of their needs for use in the
+sprint planning process.
+            </div>
+        </div>
+</body></html>
