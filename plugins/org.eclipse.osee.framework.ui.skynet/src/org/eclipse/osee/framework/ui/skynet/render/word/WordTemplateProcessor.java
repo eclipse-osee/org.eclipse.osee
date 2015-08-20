@@ -467,7 +467,6 @@ public class WordTemplateProcessor {
    }
 
    private void populateRequest(List<Artifact> artifacts, DataRightInput request) {
-      boolean isDataRightsPresent = false;
       if (request.isEmpty()) {
          List<Artifact> allArtifacts = new ArrayList<Artifact>();
          if (recurseChildren) {
@@ -489,15 +488,9 @@ public class WordTemplateProcessor {
             request.addData(artifact.getGuid(), classification, orientation, index);
             index++;
 
-            if (Strings.isValid(classification)) {
-               isDataRightsPresent = true;
-            }
          }
       }
 
-      if (!isDataRightsPresent) {
-         request.clear();
-      }
    }
 
    private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {

@@ -23,6 +23,8 @@ public class ReportConstants {
    public static final String FTR = "<w:ftr[\\s\\S]+?</w:ftr>";
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
    public static final String ENTIRE_FTR = "<w:sectPr[\\s\\S]+?<w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
+   public static final String NO_DATA_RIGHTS =
+      "<w:p>[\\s||\\S]+?<w:p><w:r><w:t>NO DATA RIGHTS ARTIFACT FOUND</w:t></w:r></w:p>[\\s\\S]+?</w:p>";
 
    //wordml
    public static final String PG_SZ = "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/>";
