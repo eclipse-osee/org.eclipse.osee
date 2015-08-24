@@ -90,9 +90,6 @@ public class NewActionPage3 extends WizardPage {
          if (page == null) {
             StringBuffer stringBuffer = new StringBuffer(500);
             stringBuffer.append("<WorkPage>");
-            // sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\"
-            // xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\""
-            // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
             for (IAtsWizardItem item : wizardExtensionItems) {
                try {
                   if (item.hasWizardXWidgetExtensions(wizard.getSelectedIAtsActionableItems())) {

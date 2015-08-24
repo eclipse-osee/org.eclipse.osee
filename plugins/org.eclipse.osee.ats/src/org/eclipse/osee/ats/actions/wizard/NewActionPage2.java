@@ -40,7 +40,11 @@ public class NewActionPage2 extends WizardPage {
    private XWidgetPage page;
    private final NewActionWizard wizard;
    private boolean debugPopulated = false;
-   private final static String DESCRIPTION = "Description";
+   protected final static String DESCRIPTION = "Description";
+   protected static final String CHANGE_TYPE = "Change Type";
+   protected static final String PRIORITY = "Priority";
+   protected static final String DEADLINE = "Deadline";
+   protected static final String VALIDATION_REQUIRED = "Validation Required";
 
    public NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -75,12 +79,17 @@ public class NewActionPage2 extends WizardPage {
    protected String getWidgetXml() {
       StringBuffer stringBuffer = new StringBuffer(800);
       stringBuffer.append("<WorkPage>");
-      stringBuffer.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
+      stringBuffer.append(
+         "<XWidget displayName=\"" + DESCRIPTION + "\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
       appendCustomWidgetXml(stringBuffer);
-      stringBuffer.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
-      stringBuffer.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
-      stringBuffer.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
-      stringBuffer.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" fill=\"Vertically\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
+      stringBuffer.append(
+         "<XWidget displayName=\"" + CHANGE_TYPE + "\"  storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
+      stringBuffer.append(
+         "<XWidget displayName=\"" + PRIORITY + "\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
+      stringBuffer.append(
+         "<XWidget displayName=\"" + DEADLINE + "\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
+      stringBuffer.append(
+         "<XWidget displayName=\"" + VALIDATION_REQUIRED + "\" xwidgetType=\"XCheckBox\" fill=\"Vertically\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
       stringBuffer.append("</WorkPage>");
       return stringBuffer.toString();
    }
@@ -129,8 +138,8 @@ public class NewActionPage2 extends WizardPage {
       try {
          ((XText) getXWidget(DESCRIPTION)).set("See title");
          // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-         ((XCombo) getXWidget("ats.Priority")).set("4");
-         ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
+         ((XCombo) getXWidget(PRIORITY)).set("4");
+         ((XCombo) getXWidget(CHANGE_TYPE)).set("Improvement");
          debugPopulated = true;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -145,9 +154,9 @@ public class NewActionPage2 extends WizardPage {
       return true;
    }
 
-   protected XWidget getXWidget(String attrName) throws OseeCoreException {
+   protected XWidget getXWidget(String displayName) throws OseeCoreException {
       Conditions.checkNotNull(page, "WorkPage");
-      return page.getLayoutData(attrName).getXWidget();
+      return page.getLayoutData(displayName).getXWidget();
    }
 
 }

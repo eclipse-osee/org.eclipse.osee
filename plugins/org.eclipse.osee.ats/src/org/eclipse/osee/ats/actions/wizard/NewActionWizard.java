@@ -55,9 +55,8 @@ public class NewActionWizard extends Wizard implements INewWizard {
             AWorkbench.popup(result);
             return false;
          }
-         job =
-            new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-               getValidation(), getSelectedIAtsActionableItems(), this, newActionListener);
+         job = new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
+            getValidation(), getSelectedIAtsActionableItems(), this, newActionListener);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -98,7 +97,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public String getTitle() throws OseeCoreException {
-      return ((XText) page1.getXWidget("Title")).get();
+      return ((XText) page1.getXWidget(NewActionPage1.TITLE)).get();
    }
 
    public Set<IAtsActionableItem> getSelectedIAtsActionableItems() {
@@ -106,25 +105,25 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public String getDescription() throws OseeCoreException {
-      return ((XText) page2.getXWidget("Description")).get();
+      return ((XText) page2.getXWidget(NewActionPage2.DESCRIPTION)).get();
    }
 
    public String getPriority() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      return ((XCombo) page2.getXWidget("ats.Priority")).get();
+      return ((XCombo) page2.getXWidget(NewActionPage2.PRIORITY)).get();
    }
 
    public ChangeType getChangeType() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      return ChangeType.getChangeType(((XCombo) page2.getXWidget("ats.Change Type")).get());
+      return ChangeType.getChangeType(((XCombo) page2.getXWidget(NewActionPage2.CHANGE_TYPE)).get());
    }
 
    public boolean getValidation() throws OseeCoreException {
-      return ((XCheckBox) page2.getXWidget("Validation Required")).isChecked();
+      return ((XCheckBox) page2.getXWidget(NewActionPage2.VALIDATION_REQUIRED)).isChecked();
    }
 
    public Date getNeedBy() throws OseeCoreException {
-      return ((XDate) page2.getXWidget("Deadline")).getDate();
+      return ((XDate) page2.getXWidget(NewActionPage2.DEADLINE)).getDate();
    }
 
    public void notifyAtsWizardItemExtensions(Artifact action, IAtsChangeSet changes) {

@@ -33,7 +33,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    private XWidgetRendererItem createDynamicXWidgetLayout(IAttributeType attributeType, int minOccurrence) {
       XWidgetRendererItem defaultData = new XWidgetRendererItem(null);
-      defaultData.setName(attributeType.getName());
+      defaultData.setName(attributeType.getUnqualifiedName());
       defaultData.setStoreName(attributeType.getName());
       defaultData.setToolTip(attributeType.getDescription());
       if (minOccurrence > 0) {
@@ -44,7 +44,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    public static boolean useMultiLineWidget(IAttributeType attributeType) throws OseeCoreException {
-      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
+      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(
+         CoreAttributeTypes.RelationOrder) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override

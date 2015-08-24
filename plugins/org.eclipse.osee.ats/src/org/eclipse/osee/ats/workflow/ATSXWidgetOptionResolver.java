@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.workflow;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
@@ -33,14 +33,28 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
    @Override
    public String[] getWidgetOptions(XWidgetRendererItem xWidgetData) {
 
-      if (xWidgetData.getXWidgetName().contains(OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains(
-         "ACTIVE_USER_COMMUNITIES")) {
-         Set<String> options;
+      if (xWidgetData.getXWidgetName().contains(
+         OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains("ACTIVE_USER_COMMUNITIES")) {
+         Set<String> options = null;
          try {
-            options = AttributeTypeManager.getEnumerationValues(xWidgetData.getStoreName());
-         } catch (OseeCoreException ex) {
-            options = new HashSet<String>();
-            options.add(ex.getLocalizedMessage());
+            String storeName = xWidgetData.getStoreName();
+            if (Strings.isValid(storeName)) {
+               options = AttributeTypeManager.getEnumerationValues(storeName);
+            } else {
+               String displayName = xWidgetData.getName();
+               if (Strings.isValid(displayName)) {
+                  options = AttributeTypeManager.getEnumerationValues(displayName);
+               }
+            }
+         } catch (Exception ex) {
+            throw new OseeArgumentException(
+               "Exception determining Attribute Type from storeName [%s] or Name [%s] and widget [%s]: %s",
+               xWidgetData.getStoreName(), xWidgetData.getName(), xWidgetData, ex.getLocalizedMessage());
+         }
+         if (options == null) {
+            throw new OseeArgumentException(
+               "Attribute Type can not be determined from storeName [%s] or Name [%s] and is needed for OPTIONS_FROM_ATTRIBUTE_VALIDITY for widget [%s]",
+               xWidgetData.getStoreName(), xWidgetData.getName(), xWidgetData);
          }
          String optStrs[] = options.toArray(new String[options.size()]);
          Arrays.sort(optStrs);

@@ -107,17 +107,14 @@ public class XWidgetParser {
          Node node = attributes.item(x);
          String nodeName = node.getNodeName();
          if (nodeName.equals("displayName")) {
-            dynamicXWidgetLayoutData.setName(node.getNodeValue());
+            String displayNamevalue = node.getNodeValue();
+            dynamicXWidgetLayoutData.setName(displayNamevalue);
             if (!Strings.isValid(dynamicXWidgetLayoutData.getStoreName())) {
-               String storeName = node.getNodeValue();
-               dynamicXWidgetLayoutData.setStoreName(storeName);
+               dynamicXWidgetLayoutData.setStoreName(displayNamevalue);
             }
          } else if (nodeName.equals("storageName")) {
-            String storeName = node.getNodeValue();
-            dynamicXWidgetLayoutData.setStoreName(storeName);
-            if (dynamicXWidgetLayoutData.getName().equals("")) {
-               dynamicXWidgetLayoutData.setName(node.getNodeValue());
-            }
+            String storeNameValue = node.getNodeValue();
+            dynamicXWidgetLayoutData.setStoreName(storeNameValue);
          } else if (nodeName.equals("toolTip")) {
             dynamicXWidgetLayoutData.setToolTip(node.getNodeValue());
          } else if (nodeName.equals("id")) {
@@ -160,8 +157,8 @@ public class XWidgetParser {
             } else if (value.equalsIgnoreCase("Vertically")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
             } else {
-               OseeLog.log(Activator.class, Level.WARNING, new IllegalArgumentException(
-                  "Unknown Fill Value \"" + value + "\""));
+               OseeLog.log(Activator.class, Level.WARNING,
+                  new IllegalArgumentException("Unknown Fill Value \"" + value + "\""));
             }
          } else if (nodeName.equals("height")) {
             dynamicXWidgetLayoutData.setHeight(Integer.parseInt(node.getNodeValue()));
@@ -174,16 +171,16 @@ public class XWidgetParser {
             } else if (value.equalsIgnoreCase("Center")) {
                dynamicXWidgetLayoutData.getXOptionHandler().add(XOption.ALIGN_CENTER);
             } else {
-               OseeLog.log(Activator.class, Level.WARNING, new IllegalArgumentException(
-                  "Unknown Align Value \"" + value + "\""));
+               OseeLog.log(Activator.class, Level.WARNING,
+                  new IllegalArgumentException("Unknown Align Value \"" + value + "\""));
             }
          } else if (nodeName.equals("defaultValue")) {
             dynamicXWidgetLayoutData.setDefaultValue(node.getNodeValue());
          } else if (nodeName.equals("keyedBranch")) {
             dynamicXWidgetLayoutData.setKeyedBranchName(node.getNodeValue());
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE, new OseeArgumentException(
-               "Unsupported XWidget attribute \"" + nodeName + "\""));
+            OseeLog.log(Activator.class, Level.SEVERE,
+               new OseeArgumentException("Unsupported XWidget attribute \"" + nodeName + "\""));
          }
       }
 

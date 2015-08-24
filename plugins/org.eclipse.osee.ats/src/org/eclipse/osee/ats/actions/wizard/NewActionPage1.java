@@ -69,6 +69,7 @@ public class NewActionPage1 extends WizardPage {
    private boolean debugPopulated = false;
    private static IAtsActionableItem atsAi;
    private static final String ATS_Actionable_Item_Guid_For_Training_And_Demos = "AAABER+4zV8A8O7WAtxxaA";
+   protected static final String TITLE = "Title";
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -85,8 +86,8 @@ public class NewActionPage1 extends WizardPage {
 
    protected String getWidgetXml() {
       return "<WorkPage>" + //
-         "<XWidget displayName=\"Title\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
-         "</WorkPage>";
+      "<XWidget displayName=\"" + TITLE + "\" storeName=\"Name\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
+      "</WorkPage>";
    }
 
    @Override
@@ -101,7 +102,7 @@ public class NewActionPage1 extends WizardPage {
          page = new XWidgetPage(xWidgetXml, ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
-         ((XText) getXWidget("Title")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+         ((XText) getXWidget(TITLE)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
@@ -115,9 +116,8 @@ public class NewActionPage1 extends WizardPage {
          aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
          new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
-         treeViewer =
-            new FilteredCheckboxTree(aiComp,
-               SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+         treeViewer = new FilteredCheckboxTree(aiComp,
+            SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
          treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
@@ -164,7 +164,7 @@ public class NewActionPage1 extends WizardPage {
          if (wizard.getInitialAias() != null) {
             treeViewer.setInitalChecked(wizard.getInitialAias());
          }
-         ((XText) getXWidget("Title")).setFocus();
+         ((XText) getXWidget(TITLE)).setFocus();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -179,10 +179,10 @@ public class NewActionPage1 extends WizardPage {
          return;
       }
       try {
-         ((XText) getXWidget("Title")).set("tt");
+         ((XText) getXWidget(TITLE)).set("tt");
          if (atsAi == null) {
-            Long uuid =
-               AtsClientService.get().getStoreService().getUuidFromGuid(ATS_Actionable_Item_Guid_For_Training_And_Demos);
+            Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(
+               ATS_Actionable_Item_Guid_For_Training_And_Demos);
             atsAi = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));

@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.ui.skynet.renderer.RendererTestSuite;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsTestSuite;
 import org.eclipse.osee.framework.ui.skynet.util.UtilTestSuite;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetsUtilTestSuite;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.XMergeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,6 +25,7 @@ import org.junit.runners.Suite;
    RendererTestSuite.class,
    ResultsTestSuite.class,
    UtilTestSuite.class,
+   XWidgetsUtilTestSuite.class,
    XMergeTestSuite.class})
 /**
  * @author Roberto E. Escobar

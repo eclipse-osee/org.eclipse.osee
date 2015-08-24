@@ -131,7 +131,7 @@ public class CreateNewUser extends AbstractBlam {
 
       // Add all rest of attributes to fill
       for (IAttributeType attributeType : attributeTypes) {
-         widgetXml += "<XWidget xwidgetType=\"XText\" displayName=\"" + attributeType + "\"/>";
+         widgetXml += "<XWidget xwidgetType=\"XText\" displayName=\"" + attributeType.getUnqualifiedName() + "\"/>";
       }
       // Add groups to belong to
       try {

@@ -106,13 +106,11 @@ public class SwtXWidgetRenderer {
       return outComp;
    }
 
-   private XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable) throws OseeCoreException {
+   protected XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable) throws OseeCoreException {
       XWidget xWidget = xWidgetLayoutData.getXWidget();
       xWidgets.add(xWidget);
 
-      if (Strings.isValid(xWidgetLayoutData.getName())) {
-         xWidget.setLabel(xWidgetLayoutData.getName().replaceFirst("^.*?\\.", ""));
-      }
+      setName(xWidget, xWidgetLayoutData.getName());
 
       if (Strings.isValid(xWidgetLayoutData.getToolTip())) {
          xWidget.setToolTip(xWidgetLayoutData.getToolTip());
@@ -122,6 +120,12 @@ public class SwtXWidgetRenderer {
       xWidget.setEditable(xWidgetLayoutData.getXOptionHandler().contains(XOption.EDITABLE) && isEditable);
 
       return xWidget;
+   }
+
+   protected void setName(XWidget xWidget, String name) {
+      if (Strings.isValid(name)) {
+         xWidget.setLabel(name);
+      }
    }
 
    public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
@@ -330,7 +334,8 @@ public class SwtXWidgetRenderer {
             IStatus valid = data.getXWidget().isValid();
             if (!valid.isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!isOrGroupFromAttrNameComplete(data.getStoreName()) && !isXOrGroupFromAttrNameComplete(data.getStoreName())) {
+               if (!isOrGroupFromAttrNameComplete(data.getStoreName()) && !isXOrGroupFromAttrNameComplete(
+                  data.getStoreName())) {
                   return valid;
                }
             }
@@ -361,9 +366,9 @@ public class SwtXWidgetRenderer {
       this.datas.add(data);
    }
 
-   public XWidgetRendererItem getLayoutData(String attrName) {
+   public XWidgetRendererItem getLayoutData(String displayName) {
       for (XWidgetRendererItem layoutData : datas) {
-         if (layoutData.getStoreName().equals(attrName)) {
+         if (layoutData.getName().equals(displayName)) {
             return layoutData;
          }
       }

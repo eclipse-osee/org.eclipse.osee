@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 /**
  * Instantiation of a workpagedefinition for a given workflow. This contains UI components that are specific to the
  * instantiation.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XWidgetPage implements IDynamicWidgetLayoutListener {
@@ -119,7 +119,9 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
          for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStoreName())) {
+               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(
+                  layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(
+                     layoutData.getStoreName())) {
                   return new Result(layoutData.getXWidget().isValid().getMessage());
                }
             }

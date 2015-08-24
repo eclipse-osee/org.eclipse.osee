@@ -65,7 +65,7 @@ public class XWidgetRendererItem implements Cloneable {
    }
 
    public String getName() {
-      return name.replaceFirst("^.*?\\.", "");
+      return name;
    }
 
    public String getStoreName() {
