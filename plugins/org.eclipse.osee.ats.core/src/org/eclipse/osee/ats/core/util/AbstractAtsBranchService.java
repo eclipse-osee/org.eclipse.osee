@@ -99,7 +99,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             branch =
                getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED, BranchState.PURGED,
                   BranchState.COMMIT_IN_PROGRESS, BranchState.CREATION_IN_PROGRESS, BranchState.DELETE_IN_PROGRESS,
-                  BranchState.PURGE_IN_PROGRESS);
+                  BranchState.PURGE_IN_PROGRESS, BranchState.REBASELINE_IN_PROGRESS);
          } catch (ItemDoesNotExist ex) {
             // do nothing
          }

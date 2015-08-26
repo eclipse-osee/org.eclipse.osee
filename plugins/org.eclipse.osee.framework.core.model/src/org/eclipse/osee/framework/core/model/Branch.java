@@ -311,4 +311,8 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
       return getGuid();
    }
 
+   public String toStringWithDetails() {
+      return "Branch [name=" + getShortName() + ", type=" + getBranchType() + ", state=" + getBranchState() + ", archived=" + getArchiveState() + ", assocArtId=" + getAssociatedArtifactId() + ", uuid=" + getUuid() + "]";
+   }
+
 }

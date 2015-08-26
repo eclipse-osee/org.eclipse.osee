@@ -61,7 +61,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted working branches found for workflow [%s]", teamWf.getAtsId());
+            "Unexpected multiple associated un-deleted working branches found for workflow [%s]. Branches [%s].",
+            teamWf.getAtsId(), getBranchesStr(branches));
       } else {
          return branches.get(0);
       }
@@ -77,10 +78,20 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted working branches found for workflow [%s]", teamWf.getAtsId());
+            "Unexpected multiple associated un-deleted committed working branches found for workflow [%s]. Branches [%s].",
+            teamWf.getAtsId(), getBranchesStr(branches));
       } else {
          return branches.get(0);
       }
+   }
+
+   private String getBranchesStr(List<Branch> branches) {
+      StringBuilder sb = new StringBuilder();
+      for (Branch branch : branches) {
+         sb.append(branch.toStringWithDetails());
+         sb.append(",");
+      }
+      return sb.toString();
    }
 
    @Override
