@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider {
 
    public static final Integer DEFAULT_WIDTH = 45;
-   Map<Long, String> multiGoalValueMap = new HashMap<Long, String>();
+   Map<Long, String> multiMembersValueMap = new HashMap<Long, String>();
    boolean loading = false;
 
    public AbstractMembersOrderColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -60,13 +59,13 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
          XViewer xViewer = getXViewer();
          if (obj instanceof Artifact && xViewer instanceof WorldXViewer) {
             WorldXViewer worldXViewer = (WorldXViewer) xViewer;
-            GoalArtifact parentMembersArtifact = (GoalArtifact) getParentMembersArtifact(worldXViewer);
+            CollectorArtifact parentMembersArtifact = (CollectorArtifact) getParentMembersArtifact(worldXViewer);
             if (parentMembersArtifact != null) {
                if (Strings.isValid(cachedValue)) {
                   result = cachedValue;
                }
             } else {
-               String cachedObjectValue = multiGoalValueMap.get(((Artifact) obj).getUuid());
+               String cachedObjectValue = multiMembersValueMap.get(((Artifact) obj).getUuid());
                if (Strings.isValid(cachedObjectValue)) {
                   result = cachedObjectValue;
                }
@@ -84,13 +83,13 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
          try {
             if (element instanceof Artifact && getXViewer() instanceof WorldXViewer) {
                WorldXViewer worldXViewer = (WorldXViewer) getXViewer();
-               GoalArtifact parentGoalArtifact = worldXViewer.getParentGoalArtifact();
-               if (parentGoalArtifact != null) {
-                  String value = manager.getMemberOrder(parentGoalArtifact, (Artifact) element);
+               CollectorArtifact parentMembersArtifact = (CollectorArtifact) getParentMembersArtifact(worldXViewer);
+               if (parentMembersArtifact != null) {
+                  String value = manager.getMemberOrder(parentMembersArtifact, (Artifact) element);
                   preComputedValueMap.put(getKey(element), value);
                } else {
                   String value = manager.getMemberOrder((Artifact) element);
-                  multiGoalValueMap.put(getKey(element), value);
+                  multiMembersValueMap.put(getKey(element), value);
                }
             }
          } catch (OseeCoreException ex) {
