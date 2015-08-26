@@ -19,7 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.config.AtsConfigurationUtil;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
@@ -163,7 +163,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    public boolean isColorColumn() {
       if (hasColorColumn == null) {
-         colorColumn = AtsConfigurationUtil.getConfigurations().getColorColumns().getColumnById(getId());
+         colorColumn = AtsClientService.getConfigEndpoint().get().getColorColumns().getColumnById(getId());
          hasColorColumn = colorColumn != null;
          if (hasColorColumn) {
             elementToForegroundColor = new HashMap<Object, String>(100);

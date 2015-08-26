@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsJaxRsService;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,22 +58,21 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
             activeTeams.add(agTeam);
          }
       }
-      FilteredTreeArtifactDialog dialog =
-         new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams, new ArtifactTreeContentProvider(),
-            new ArtifactLabelProvider());
+      FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
+         new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
       if (dialog.open() == 0) {
 
          EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Sprint name(s) (comma delimited)");
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+                  AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
                   JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
                   int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);
                      newSprint.setTeamUuid(teamUuid);
-                     Response response = teamApi.createSprint(new Long(teamUuid), newSprint);
+                     Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
                      JaxAgileSprint sprint = response.readEntity(JaxAgileSprint.class);
                      if (sprint != null) {
                         long uuid = sprint.getUuid();

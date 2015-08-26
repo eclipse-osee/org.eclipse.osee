@@ -589,7 +589,7 @@ public class AtsClientImpl implements IAtsClient {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               AtsJaxRsService.get().getNotify().sendNotifications(notifications);
+               AtsClientService.getNotifyEndpoint().sendNotifications(notifications);
                return Status.OK_STATUS;
             }
          }, false);

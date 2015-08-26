@@ -16,6 +16,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +63,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
          public void widgetSelected(SelectionEvent e) {
             try {
                AtsConfigurationDialog dialog =
-                  new AtsConfigurationDialog(AtsConfigurationUtil.getConfigurations().getConfigs());
+                  new AtsConfigurationDialog(AtsClientService.getConfigEndpoint().get().getConfigs());
 
                if (dialog.open() == 0) {
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];
@@ -109,7 +110,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
    /**
     * Creates composite control and sets the default layout data.
-    * 
+    *
     * @param parent the parent of the new composite
     * @param numColumns the number of columns for the new composite
     * @return the newly-created composite

@@ -36,14 +36,14 @@ public interface AtsConfigEndpointApi {
     * @return html5 action entry page
     * @throws Exception
     */
-   @Path("ui/NewAtsBranchConfig")
    @GET
+   @Path("ui/NewAtsBranchConfig")
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource() throws Exception;
 
    /**
     * Create new ATS configuration branch and ATS config object on Common branch
-    * 
+    *
     * @param form containing information to configure new ATS branch
     * @param form.fromBranchUuid of branch to get config artifacts from
     * @param form.newBranchName of new branch
@@ -52,6 +52,7 @@ public interface AtsConfigEndpointApi {
     * @return json object with new branchUuid
     */
    @POST
+   @Path("branch")
    @Consumes("application/x-www-form-urlencoded")
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo);

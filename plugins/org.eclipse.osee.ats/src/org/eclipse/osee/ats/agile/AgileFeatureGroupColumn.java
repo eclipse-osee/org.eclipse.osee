@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.internal.AtsJaxRsService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -125,11 +124,11 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
          return false;
       }
 
-      AgileEndpointApi agileApi = AtsJaxRsService.get().getAgile();
+      AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<JaxAgileFeatureGroup>();
       long teamUuid = items.getCommonBacklog().getTeamUuid();
       try {
-         for (JaxAgileFeatureGroup feature : agileApi.getFeatureGroups(items.getCommonBacklog().getTeamUuid())) {
+         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(items.getCommonBacklog().getTeamUuid())) {
             if (feature.isActive()) {
                activeFeatureGroups.add(feature);
             }
@@ -139,9 +138,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
          return false;
       }
 
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Feature Group(s)",
-            new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameSorter());
+      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog("Select Feature Group(s)",
+         "Select Feature Group(s)", new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameSorter());
       dialog.setInput(activeFeatureGroups);
       Collection<IAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
       if (!selectedFeatureGroups.isEmpty()) {
@@ -164,7 +162,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       }
 
       try {
-         agileApi.updateItem(teamUuid, updateItem);
+         agileEp.updateItem(teamUuid, updateItem);
          ArtifactQuery.reloadArtifacts(awas);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -202,9 +200,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
             return Collections.toString(", ", strs);
 
          } else {
-            return Collections.toString(
-               ", ",
-               ((Artifact) ((IAtsWorkItem) element)).getRelatedArtifacts(AtsRelationTypes.AgileFeatureToItem_FeatureGroup));
+            return Collections.toString(", ", ((Artifact) ((IAtsWorkItem) element)).getRelatedArtifacts(
+               AtsRelationTypes.AgileFeatureToItem_FeatureGroup));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

@@ -45,7 +45,7 @@ public class AtsClientService {
       if (target == null) {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
          target = jaxRsClient.target(atsUri);
       }
       return target;

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
+import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -24,6 +26,8 @@ public class AtsClientService {
    private static IAtsClient atsClient;
    private static JaxRsWebTarget target;
    private static AtsTaskEndpointApi taskEp;
+   private static AtsConfigEndpointApi configEp;
+   private static AgileEndpointApi agileEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -37,7 +41,7 @@ public class AtsClientService {
       if (target == null) {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
+         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
          target = jaxRsClient.target(atsUri);
       }
       return target;
@@ -48,6 +52,20 @@ public class AtsClientService {
          taskEp = getTarget().newProxy(AtsTaskEndpointApi.class);
       }
       return taskEp;
+   }
+
+   public static AtsConfigEndpointApi getConfigEndpoint() {
+      if (configEp == null) {
+         configEp = getTarget().newProxy(AtsConfigEndpointApi.class);
+      }
+      return configEp;
+   }
+
+   public static AgileEndpointApi getAgileEndpoint() {
+      if (agileEp == null) {
+         agileEp = getTarget().newProxy(AgileEndpointApi.class);
+      }
+      return agileEp;
    }
 
 }

@@ -86,7 +86,7 @@ public class NewActionPage1 extends WizardPage {
 
    protected String getWidgetXml() {
       return "<WorkPage>" + //
-      "<XWidget displayName=\"" + TITLE + "\" storeName=\"Name\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
+      "<XWidget displayName=\"" + TITLE + "\" storageName=\"Name\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
       "</WorkPage>";
    }
 

@@ -11,8 +11,12 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.concurrent.Callable;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -59,6 +63,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       this.logger = logger;
    }
 
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
    @Override
    public AtsConfigurations get() {
       ResultSet<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
@@ -79,13 +85,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return configs;
    }
 
+   @GET
+   @Path("ui/NewAtsBranchConfig")
    @Override
    public ViewModel getNewSource() throws Exception {
       return new ViewModel("templates/newConfigBranch.html");
    }
 
+   @POST
+   @Path("branch")
    @Override
-   @Path("")
    public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) {
 
       // get parameters
@@ -200,6 +209,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return config;
    }
 
+   @POST
    @Override
    public Response createUpdateConfig() {
       XResultData resultData = new XResultData(false);

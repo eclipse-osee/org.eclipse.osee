@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsJaxRsService;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,16 +58,15 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
             activeTeams.add(agTeam);
          }
       }
-      FilteredTreeArtifactDialog dialog =
-         new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams, new ArtifactTreeContentProvider(),
-            new ArtifactLabelProvider());
+      FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
+         new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
       if (dialog.open() == 0) {
 
          EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Feature Group name(s) (comma delimited)");
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+                  AgileEndpointApi teamApi = AtsClientService.getAgileEndpoint();
                   JaxNewAgileFeatureGroup newGroup = new JaxNewAgileFeatureGroup();
                   for (String name : ed.getEntry().split(",")) {
                      newGroup.setName(name);
@@ -77,9 +76,8 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                      Object entity = response.readEntity(JaxAgileFeatureGroup.class);
                      if (entity != null) {
                         JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
-                        Artifact groupArt =
-                           ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
-                              AtsUtilCore.getAtsBranch());
+                        Artifact groupArt = ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
+                           AtsUtilCore.getAtsBranch());
                         groupArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {

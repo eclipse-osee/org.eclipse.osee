@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateCompletedColumn;
-import org.eclipse.osee.ats.config.AtsConfigurationUtil;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -76,15 +76,14 @@ public class WorldXViewerUtil {
    }
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
-      List<AtsAttributeValueColumn> columns = AtsConfigurationUtil.getConfigurations().getViews().getAttrColumns();
+      List<AtsAttributeValueColumn> columns = AtsClientService.getConfigEndpoint().get().getViews().getAttrColumns();
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<XViewerAtsAttributeValueColumn>();
       for (AtsAttributeValueColumn column : columns) {
          try {
             AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
-            XViewerAtsAttributeValueColumn valueColumn =
-               new XViewerAtsAttributeValueColumn(attrType, column.getWidth(), getSwtAlign(column.getAlign()),
-                  column.isVisible(), SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(),
-                  column.getDescription());
+            XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
+               getSwtAlign(column.getAlign()), column.isVisible(), SortDataType.valueOf(column.getSortDataType()),
+               column.isColumnMultiEdit(), column.getDescription());
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
             valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());

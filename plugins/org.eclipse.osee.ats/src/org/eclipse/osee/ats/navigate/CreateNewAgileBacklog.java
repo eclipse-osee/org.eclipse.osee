@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsJaxRsService;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -58,27 +58,25 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
             activeTeams.add(agTeam);
          }
       }
-      FilteredTreeArtifactDialog dialog =
-         new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams, new ArtifactTreeContentProvider(),
-            new ArtifactLabelProvider());
+      FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog(getName(), "Select Agile Team", activeTeams,
+         new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
       if (dialog.open() == 0) {
 
          EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Backlog name");
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi teamApi = AtsJaxRsService.get().getAgile();
+                  AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
                   JaxNewAgileBacklog newBacklog = new JaxNewAgileBacklog();
                   newBacklog.setName(ed.getEntry());
                   int teamUuid = ((Artifact) dialog.getSelectedFirst()).getArtId();
                   newBacklog.setTeamUuid(teamUuid);
-                  Response response = teamApi.createBacklog(new Long(teamUuid), newBacklog);
+                  Response response = agileEp.createBacklog(new Long(teamUuid), newBacklog);
                   Object entity = response.readEntity(JaxAgileBacklog.class);
                   if (entity != null) {
                      JaxAgileBacklog backlog = (JaxAgileBacklog) entity;
-                     Artifact backlogart =
-                        ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
-                           AtsUtilCore.getAtsBranch());
+                     Artifact backlogart = ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
+                        AtsUtilCore.getAtsBranch());
                      backlogart.getParent().reloadAttributesAndRelations();
                      AtsUtil.openArtifact(backlog.getUuid(), OseeCmEditor.CmPcrEditor);
                   } else {

@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.internal.AtsJaxRsService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -119,7 +118,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       transaction.execute();
 
-      Response response = AtsJaxRsService.get().getConfig().createUpdateConfig();
+      Response response = AtsClientService.getConfigEndpoint().createUpdateConfig();
       try {
          String message = Lib.inputStreamToString((InputStream) response.getEntity());
          if (message.toLowerCase().contains("error")) {
