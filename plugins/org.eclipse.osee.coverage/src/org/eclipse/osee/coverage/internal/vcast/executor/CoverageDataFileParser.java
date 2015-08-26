@@ -53,7 +53,7 @@ public class CoverageDataFileParser {
       if (!coverageDataFile.exists()) {
          String errStr =
             String.format("VectorCast vcast/<code file>.xml file doesn't exist [%s]", coverageDataFilename);
-         coverageImport.getLog().logError(AHTML.textToHtml(errStr));
+         coverageImport.getLog().error(AHTML.textToHtml(errStr));
          return;
       }
 
@@ -76,7 +76,7 @@ public class CoverageDataFileParser {
                      String.format(
                         "Subprogram name not found for subprogram number %d in vcast/<code file>.xml for <code file> [%s]. Skipping",
                         subprogramNum, coverageDataFile);
-                  coverageImport.getLog().logError(AHTML.textToHtml(errStr));
+                  coverageImport.getLog().error(AHTML.textToHtml(errStr));
                } else {
                   CoverageDataSubProgram coverageDataSubProgram = new CoverageDataSubProgram(subprogramName);
                   String lineNumbersToBranches = Jaxp.getChildText(subprogram, "line_numbers_to_branches");
@@ -87,7 +87,7 @@ public class CoverageDataFileParser {
                         String errStr =
                            String.format("Unhandled branches [%s] for lineNum [%s] subprogram [%s]", m.group(1),
                               m.group(1), subprogramName);
-                        coverageImport.getLog().logError(errStr);
+                        coverageImport.getLog().error(errStr);
                      }
                      int lineNum = Integer.parseInt(m.group(1));
                      int branches = Integer.parseInt(m.group(2));
@@ -102,7 +102,7 @@ public class CoverageDataFileParser {
                      String errStr =
                         String.format("Unhandled coverage_type [%s] for subprogram [%s].  Skipping",
                            coverageElement.getAttribute("coverage_type"), subprogramName);
-                     coverageImport.getLog().logError(errStr);
+                     coverageImport.getLog().error(errStr);
                      continue;
                   }
                   String coveredElement = Jaxp.getChildText(coverageElement, "covered");

@@ -66,7 +66,7 @@ public class VcpResultsFileWorker extends AbstractVcpFileWorker<VcpResultsFile> 
       try {
          getProcessed().add(resultsFile);
       } catch (Exception ex) {
-         getLogger().logError("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
+         getLogger().error("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
@@ -83,7 +83,7 @@ public class VcpResultsFileWorker extends AbstractVcpFileWorker<VcpResultsFile> 
             if (Strings.isValid(resultsLine)) {
                Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
                if (!datFileSyntaxResult.isTrue()) {
-                  getLogger().logErrorWithFormat("Invalid VCast DAT file syntax - %s -  [%s] ",
+                  getLogger().errorf("Invalid VCast DAT file syntax - %s -  [%s] ",
                      datFileSyntaxResult.getText(), testUnitName);
                } else {
                   valueMatcher.reset(resultsLine);
@@ -94,12 +94,12 @@ public class VcpResultsFileWorker extends AbstractVcpFileWorker<VcpResultsFile> 
 
                      CoverageUnit coverageUnit = getFileNumToCoverageUnit().get(fileNum);
                      if (coverageUnit == null) {
-                        getLogger().logErrorWithFormat("coverageUnit doesn't exist for unit_number [%s]", fileNum);
+                        getLogger().errorf("coverageUnit doesn't exist for unit_number [%s]", fileNum);
                      } else {
                         // Find or create new coverage item for method num /execution line
                         CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
                         if (coverageItem == null) {
-                           getLogger().logErrorWithFormat(
+                           getLogger().errorf(
                               "Either Method [%s] or Line [%s] do not exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
                               methodNum, executeNum, coverageUnit, testUnitName);
                         } else {
@@ -107,7 +107,7 @@ public class VcpResultsFileWorker extends AbstractVcpFileWorker<VcpResultsFile> 
                            try {
                               coverageItem.addTestUnitName(testUnitName);
                            } catch (OseeCoreException ex) {
-                              getLogger().logErrorWithFormat(
+                              getLogger().errorf(
                                  "Can't store test unit [%s] for coverageUnit [%s]; exception [%s]", testUnitName,
                                  coverageUnit, ex.getLocalizedMessage());
                            }

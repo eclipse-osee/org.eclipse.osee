@@ -96,14 +96,14 @@ public class CoveragePackageOrderValidator {
             maxNum = orderNum;
          }
          if (maxNumToFound.containsKey(orderNum)) {
-            rd.logErrorWithFormat("Found duplicate [%s] order num [%s] for %s", name, orderNum,
+            rd.errorf("Found duplicate [%s] order num [%s] for %s", name, orderNum,
                coverage.toStringNoPackage());
          }
          maxNumToFound.put(orderNum, true);
       }
       for (int x = 1; x <= orderNums.size(); x++) {
          if (!maxNumToFound.containsKey(x)) {
-            rd.logErrorWithFormat("[%s] order num [%s] not found for %s", name, x, coverage.toStringNoPackage());
+            rd.errorf("[%s] order num [%s] not found for %s", name, x, coverage.toStringNoPackage());
          }
       }
    }

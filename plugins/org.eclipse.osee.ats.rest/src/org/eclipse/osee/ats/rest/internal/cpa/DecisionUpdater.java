@@ -87,7 +87,7 @@ public class DecisionUpdater {
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
-               rd.logError(results.toString());
+               rd.error(results.toString());
             }
 
          } else {
@@ -102,7 +102,7 @@ public class DecisionUpdater {
             IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
             TransitionResults results = mgr.handleAll();
             if (!results.isEmpty()) {
-               rd.logError(results.toString());
+               rd.error(results.toString());
             }
          }
       }
@@ -114,7 +114,7 @@ public class DecisionUpdater {
          for (String userId : update.getAssignees()) {
             IAtsUser user = atsServer.getUserService().getUserById(userId);
             if (user == null) {
-               rd.logErrorWithFormat("Invalid userId [%s]", userId);
+               rd.errorf("Invalid userId [%s]", userId);
             }
             assignees.add(user);
          }

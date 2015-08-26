@@ -69,7 +69,7 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
                String.format(
                   "Can't process vcast/<code file>.xml file for source file [%s] exception [%s] (see Error Log)",
                   vcpSourceFile.getFilename(), ex.getLocalizedMessage());
-            getLogger().logError(AHTML.textToHtml(errorStr));
+            getLogger().error(AHTML.textToHtml(errorStr));
             OseeLog.log(Activator.class, Level.SEVERE, errorStr, ex);
          }
 
@@ -77,7 +77,7 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
             try {
                getProcessed().add(coverageDataFile.getFile());
             } catch (Exception ex) {
-               getLogger().logError("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
+               getLogger().error("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
 
@@ -91,7 +91,7 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
             vcpSourceFile.cleanup();
          }
       } catch (Exception ex) {
-         getLogger().logError(
+         getLogger().error(
             String.format("Error processing coverage for [%s].  " + ex.getLocalizedMessage(), vcpSourceFile));
       }
    }
@@ -112,7 +112,7 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
       try {
          getProcessed().add(vcpSourceLisFile.getFile());
       } catch (Exception ex) {
-         getLogger().logError("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
+         getLogger().error("Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
@@ -138,7 +138,7 @@ public class VcpSourceFileWorker extends AbstractVcpFileWorker<VcpSourceFile> {
             // Need to get rid of line method num and line num before storing
             sourceLineMatcher.reset(sourceLine);
             if (!sourceLineMatcher.find()) {
-               getLogger().logError(String.format("Coverage line doesn't match \"n n <line>\" [%s].  ", sourceLine));
+               getLogger().error(String.format("Coverage line doesn't match \"n n <line>\" [%s].  ", sourceLine));
             } else {
                coverageItem.setLineNumber(lineData.getLineNumber());
                coverageItem.setName(sourceLineMatcher.group(1));

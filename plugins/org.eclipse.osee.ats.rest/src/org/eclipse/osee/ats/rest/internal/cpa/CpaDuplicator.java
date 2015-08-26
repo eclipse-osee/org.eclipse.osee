@@ -48,20 +48,20 @@ public class CpaDuplicator {
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
       String duplicatePcrId = "";
       if (!Strings.isValid(atsId)) {
-         rd.logErrorWithFormat("AtsId %s is not valid.  Skipping.", atsId);
+         rd.errorf("AtsId %s is not valid.  Skipping.", atsId);
       } else {
          if (cpaArt.getSoleAttributeValue(AtsAttributeTypes.ApplicabilityWorkflow, false)) {
             String toolId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.PcrToolId);
             IAtsCpaService cpaService = cpaRegistry.getServiceById(toolId);
             if (cpaService == null) {
-               rd.logErrorWithFormat("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
+               rd.errorf("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
             } else {
                IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(
                   "Duplicate for CPA " + duplicate.getCpaUuid(), AtsCoreUsers.SYSTEM_USER);
                IAtsTeamWorkflow cpaWf = atsServer.getWorkItemFactory().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
                if (Strings.isValid(duplicatePcrId)) {
-                  rd.logErrorWithFormat("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
+                  rd.errorf("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
                } else {
                   String originatingPcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.OriginatingPcrId);
                   duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), duplicate.getVersionUuid(),
@@ -76,7 +76,7 @@ public class CpaDuplicator {
                         atsServer.getServices(), TransitionOption.OverrideAssigneeCheck);
                      IAtsUser asUser = atsServer.getUserService().getUserById(duplicate.getUserId());
                      if (asUser == null) {
-                        rd.logErrorWithFormat("Invalid userId [%s].  Skipping.", asUser);
+                        rd.errorf("Invalid userId [%s].  Skipping.", asUser);
                      }
                      helper.setTransitionUser(asUser);
                      TransitionManager mgr = new TransitionManager(helper);
@@ -88,7 +88,7 @@ public class CpaDuplicator {
                }
             }
          } else {
-            rd.logErrorWithFormat("Workflow %s is not an applicability workflow.  Skipping.", atsId);
+            rd.errorf("Workflow %s is not an applicability workflow.  Skipping.", atsId);
          }
       }
       return rd;

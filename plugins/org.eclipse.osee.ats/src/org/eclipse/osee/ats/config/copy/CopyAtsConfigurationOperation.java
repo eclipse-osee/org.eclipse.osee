@@ -143,7 +143,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
-            resultData.logWarningWithFormat(
+            resultData.warningf(
                "No related Team Definition [%s] in scope for AI [%s].  Configure by hand.", fromTeamDefArt, newAiArt);
          } else {
             Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
@@ -231,7 +231,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {
             if (artifact.isInDb()) {
-               resultData.logErrorWithFormat("Attempt to purge artifact in db [%s]", artifact);
+               resultData.errorf("Attempt to purge artifact in db [%s]", artifact);
             } else {
                resultData.log("purging " + artifact.toStringWithId());
                artifact.purgeFromBranch();
@@ -242,7 +242,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
                resultData.log("undoing changes " + artifact.toStringWithId());
                artifact.reloadAttributesAndRelations();
             } else {
-               resultData.logErrorWithFormat("Attempt to reload artifact not in db [%s]", artifact);
+               resultData.errorf("Attempt to reload artifact not in db [%s]", artifact);
             }
          }
       }

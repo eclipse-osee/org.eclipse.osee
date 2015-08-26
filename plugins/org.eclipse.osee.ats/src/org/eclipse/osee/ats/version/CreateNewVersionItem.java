@@ -110,11 +110,11 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {
-            resultData.logError("Version name can't be blank");
+            resultData.error("Version name can't be blank");
          }
          for (IAtsVersion verArt : teamDefHoldingVersions.getVersions()) {
             if (verArt.getName().equals(newVer)) {
-               resultData.logError(String.format("Version [%s] already exists", newVer));
+               resultData.error(String.format("Version [%s] already exists", newVer));
             }
          }
       }

@@ -95,7 +95,7 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
             String workPackageGuid = workItemArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid);
             WorkPackageData data = loader.getWorkPackageData(workPackageGuid);
             if (data == null) {
-               results.logErrorWithFormat("Work Package with guid [%s] from workflow %s does not exist.  Ignoring...\n",
+               results.errorf("Work Package with guid [%s] from workflow %s does not exist.  Ignoring...\n",
                   workPackageGuid, item.toStringWithId());
             } else {
                rows.add(new ResultsXViewerRow(new String[] {
@@ -120,7 +120,7 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
             String errorStr = String.format("Exception processing workflow %s - %s.  See log for details.\n",
                workItemArt.toStringWithId(), ex.getMessage());
             OseeLog.log(Activator.class, Level.SEVERE, errorStr, ex);
-            results.logErrorWithFormat(errorStr);
+            results.errorf(errorStr);
          }
       }
       if (!results.isErrors()) {

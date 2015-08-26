@@ -127,8 +127,8 @@ public class AtsConfigCache implements IAtsConfig {
 
    @Override
    public void getReport(XResultData rd) {
-      rd.logWithFormat("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
-      rd.logWithFormat("ConfigObjects size %d\n", configObjects.size());
+      rd.logf("TagToConfigObject size %d\n", tagToConfigObject.keySet().size());
+      rd.logf("ConfigObjects size %d\n", configObjects.size());
    }
 
    @Override

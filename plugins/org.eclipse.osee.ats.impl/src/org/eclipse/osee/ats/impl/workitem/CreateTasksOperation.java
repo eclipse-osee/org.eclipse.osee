@@ -65,23 +65,23 @@ public class CreateTasksOperation {
       }
       Long teamWfUuid = newTaskData.getTeamWfUuid();
       if (teamWfUuid == null) {
-         resultData.logError("Team Workflow uuid not specified");
+         resultData.error("Team Workflow uuid not specified");
       }
       teamWfArt = atsServer.getArtifactByUuid(teamWfUuid);
       if (teamWfArt == null) {
-         resultData.logErrorWithFormat("Team Workflow uuid %d does not exist", teamWfUuid);
+         resultData.errorf("Team Workflow uuid %d does not exist", teamWfUuid);
       }
       teamWf = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
       String asUserId = newTaskData.getAsUserId();
       if (asUserId == null) {
-         resultData.logError("As User Id uuid not specified");
+         resultData.error("As User Id uuid not specified");
       }
       asUser = atsServer.getUserService().getUserById(asUserId);
       if (asUser == null) {
-         resultData.logErrorWithFormat("As User Id uuid %d does not exist", asUserId);
+         resultData.errorf("As User Id uuid %d does not exist", asUserId);
       }
       if (!Strings.isValid(newTaskData.getCommitComment())) {
-         resultData.logErrorWithFormat("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
+         resultData.errorf("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
       }
 
       for (JaxAtsTask task : newTaskData.getNewTasks()) {
@@ -89,40 +89,38 @@ public class CreateTasksOperation {
          if (teamWfUuid != null && taskUuid > 0L) {
             ArtifactReadable taskArt = atsServer.getArtifactByUuid(taskUuid);
             if (taskArt != null) {
-               resultData.logErrorWithFormat("Task with uuid %d already exists for %s", taskUuid, task);
+               resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
             }
          }
          if (!Strings.isValid(task.getName())) {
-            resultData.logErrorWithFormat("Task name [%s] is invalid for %s", task.getName(), task);
+            resultData.errorf("Task name [%s] is invalid for %s", task.getName(), task);
          }
          IAtsUser createdBy = atsServer.getUserService().getUserById(task.getCreatedByUserId());
          if (createdBy == null) {
-            resultData.logErrorWithFormat("Task Created By user id %d does not exist in %s", createdBy, task);
+            resultData.errorf("Task Created By user id %d does not exist in %s", createdBy, task);
          }
          createdByDate = task.getCreatedDate();
          if (createdByDate == null) {
-            resultData.logErrorWithFormat("Task Created By Date %s does not exist in %s", createdByDate, task);
+            resultData.errorf("Task Created By Date %s does not exist in %s", createdByDate, task);
          }
          IAtsTeamWorkflow teamWorkflow = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
          String relatedToState = task.getRelatedToState();
          if (Strings.isValid(relatedToState)) {
             if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
-               resultData.logErrorWithFormat("Task Related To State %s invalid for Team Workflow %d", relatedToState,
-                  teamWfUuid);
+               resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState, teamWfUuid);
             }
          }
          List<String> assigneeUserIds = task.getAssigneeUserIds();
          if (assigneeUserIds == null || assigneeUserIds.isEmpty()) {
-            resultData.logErrorWithFormat("Task Assignees can not be empty in %s", createdByDate, task);
+            resultData.errorf("Task Assignees can not be empty in %s", createdByDate, task);
          }
          if (assigneeUserIds == null) {
-            resultData.logErrorWithFormat("Task Assignees must be specified in %s", createdByDate, task);
+            resultData.errorf("Task Assignees must be specified in %s", createdByDate, task);
          }
 
          Collection<IAtsUser> assignees = atsServer.getUserService().getUsersByUserIds(assigneeUserIds);
          if (assigneeUserIds.size() != assignees.size()) {
-            resultData.logErrorWithFormat("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds),
-               task);
+            resultData.errorf("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds), task);
          }
 
          IAtsWorkDefinition workDefinition = null;
@@ -131,23 +129,23 @@ public class CreateTasksOperation {
                XResultData rd = new XResultData();
                workDefinition = atsServer.getWorkDefService().getWorkDef(task.getTaskWorkDef(), rd);
                if (rd.isErrors()) {
-                  resultData.logErrorWithFormat("Error finding Task Work Def [%s].  Exception: %s",
-                     task.getTaskWorkDef(), rd.toString());
+                  resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
+                     rd.toString());
                }
             } catch (Exception ex) {
-               resultData.logErrorWithFormat("Exception finding Task Work Def [%s].  Exception: %s",
-                  task.getTaskWorkDef(), ex.getMessage());
+               resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
+                  ex.getMessage());
             }
             if (workDefinition == null) {
-               resultData.logErrorWithFormat("Task Work Def [%s] does not exist", task.getTaskWorkDef());
+               resultData.errorf("Task Work Def [%s] does not exist", task.getTaskWorkDef());
             }
          }
 
          for (JaxAttribute attribute : task.getAttributes()) {
             IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
             if (attrType == null) {
-               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s",
-                  attribute.getAttrTypeName(), task);
+               resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attribute.getAttrTypeName(),
+                  task);
             }
          }
       }
@@ -238,8 +236,8 @@ public class CreateTasksOperation {
          for (JaxAttribute attribute : jaxTask.getAttributes()) {
             IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
             if (attrType == null) {
-               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s",
-                  attribute.getAttrTypeName(), task);
+               resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attribute.getAttrTypeName(),
+                  task);
             }
             changes.setValues(task, attrType, attribute.getValues());
          }

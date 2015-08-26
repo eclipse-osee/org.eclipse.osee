@@ -43,7 +43,7 @@ public class CoverageMethodValidator {
       } else {
          rd.log(AHTML.newline() + AHTML.bold("Coverage Method Validation: ") + AHTML.newline());
          for (String str : orderErrors) {
-            rd.logError(str);
+            rd.error(str);
          }
       }
    }

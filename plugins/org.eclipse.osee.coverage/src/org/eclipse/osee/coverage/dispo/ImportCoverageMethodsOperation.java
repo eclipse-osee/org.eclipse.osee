@@ -122,7 +122,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
                new OseeCoveragePackageStore(toPackage, BranchManager.getBranch(toPackageArt.getBranch()));
             Result results = persistStore.save(title, toPackageStore.getCoverageOptionManager());
             if (results.isFalse()) {
-               data.logErrorWithFormat("Error persisting [%s]", results.toString());
+               data.errorf("Error persisting [%s]", results.toString());
             }
          }
 
@@ -166,7 +166,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         data.logErrorWithFormat("Exception [%s] (see log)", ex.getLocalizedMessage());
+         data.errorf("Exception [%s] (see log)", ex.getLocalizedMessage());
          XResultDataUI.report(data, "Merge Dispositions - Error");
       } finally {
          monitor.done();
@@ -181,7 +181,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
          CoverageItem fromCoverageItem = (CoverageItem) fromCoverage;
          if (isManualDisp(fromCoverageItem)) {
             counter.numDispo++;
-            data.logWithFormat("%s - Merge disp [%s] ", CoverageUtil.getFullPath(fromCoverageItem, false),
+            data.logf("%s - Merge disp [%s] ", CoverageUtil.getFullPath(fromCoverageItem, false),
                fromCoverageItem.getCoverageMethod().name);
             importDisposition(counter, data, fromCoverageItem, toPackage);
          }
@@ -213,11 +213,11 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
       ImportMatch matchItem = findMatch(fromItem, toPackage);
       if (matchItem.isMatch()) {
          counter.numMatch++;
-         data.logWithFormat("MATCH [%s][%s]", matchItem.getFromItem().getOrderNumber(),
+         data.logf("MATCH [%s][%s]", matchItem.getFromItem().getOrderNumber(),
             matchItem.getToItem().getOrderNumber());
          CoverageItem toItem = (CoverageItem) matchItem.getToItem();
          if (toItem.getCoverageMethod().name.equals(CoverageOptionManager.Test_Unit.name) || toItem.getCoverageMethod().name.equals(CoverageOptionManager.Exception_Handling.name)) {
-            data.logWithFormat(" - KEEP CURRENT [%s]\n", toItem.getCoverageMethod().name);
+            data.logf(" - KEEP CURRENT [%s]\n", toItem.getCoverageMethod().name);
          } else if (toItem.getCoverageMethod().getName().equals(fromItem.getCoverageMethod().getName())) {
             data.log(" - ALREADY SET");
          } else {
@@ -235,7 +235,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
 
             toItem.setCoverageMethod(fromItem.getCoverageMethod());
             if (!toItem.getRationale().equals(fromItem.getRationale())) {
-               data.logWithFormat("   --> Updated notes from [%s] to [%s]\n", toItem.getRationale(),
+               data.logf("   --> Updated notes from [%s] to [%s]\n", toItem.getRationale(),
                   fromItem.getRationale());
                toItem.setRationale(fromItem.getRationale());
             }
@@ -246,7 +246,7 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
                }
                String fromTaskGuid = fromItem.getWorkProductTaskGuid();
                if (!toTaskGuid.equals(fromTaskGuid)) {
-                  data.logWithFormat("   --> Updated task from [%s][%s] to [%s][%s]\n", toTaskGuid,
+                  data.logf("   --> Updated task from [%s][%s] to [%s][%s]\n", toTaskGuid,
                      toItem.getWorkProductTaskStr(), fromTaskGuid, fromItem.getWorkProductTaskStr());
                   toItem.setWorkProductTaskGuid(fromTaskGuid);
                }
@@ -264,9 +264,9 @@ public class ImportCoverageMethodsOperation extends org.eclipse.osee.framework.c
             }
          }
          counter.fileToErrorCount.put(fromFile.getName());
-         data.logErrorWithFormat("NO MATCH [%s]", matchItem.getDescription());
-         data.logWithFormat("   --> Notes [%s]\n", getNonNullValue(fromItem.getNotes()));
-         data.logWithFormat("   --> Task [%s][%s]\n", getNonNullValue(fromItem.getWorkProductTaskGuid()),
+         data.errorf("NO MATCH [%s]", matchItem.getDescription());
+         data.logf("   --> Notes [%s]\n", getNonNullValue(fromItem.getNotes()));
+         data.logf("   --> Task [%s][%s]\n", getNonNullValue(fromItem.getWorkProductTaskGuid()),
             getNonNullValue(fromItem.getWorkProductTaskStr()));
       }
    }

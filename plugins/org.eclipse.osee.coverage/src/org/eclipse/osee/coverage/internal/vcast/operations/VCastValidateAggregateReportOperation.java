@@ -150,7 +150,7 @@ public class VCastValidateAggregateReportOperation extends AbstractOperation {
 
       CoverageUnit coverageUnit = coverageNameToCoverageUnit.get(result.getName());
       if (coverageUnit == null) {
-         logger.logError(String.format("Aggregate Check: Can't locate Coverage Unit for Aggregate unit [%s]",
+         logger.error(String.format("Aggregate Check: Can't locate Coverage Unit for Aggregate unit [%s]",
             result.getName()));
          toReturn = true;
       } else {
@@ -162,7 +162,7 @@ public class VCastValidateAggregateReportOperation extends AbstractOperation {
          if (result.getNumLines() == null || result.getNumLines() != importCuItems || result.getNumCovered() == null || result.getNumCovered() != importCuCovered) {
             // Don't display error if this is the known ignore case
             if (!isVectorCastIgnoreCase(result.getNotes(), importCuCovered, result.getNumCovered())) {
-               logger.logError(String.format(
+               logger.error(String.format(
                   "Aggregate Check: Unit [%s] Import [%d] of [%d] doesn't match Aggregate [%d] of [%d] [%s]",
                   result.getName(), importCuCovered, importCuItems, result.getNumCovered(), result.getNumLines(),
                   Strings.isValid(result.getNotes()) ? " - " + result.getNotes() : ""));

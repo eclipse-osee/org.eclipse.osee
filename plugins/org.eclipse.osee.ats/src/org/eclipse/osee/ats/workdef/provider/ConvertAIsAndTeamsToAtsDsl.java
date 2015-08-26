@@ -64,7 +64,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {
-         resultData.logError("Exception: " + ex.getLocalizedMessage());
+         resultData.error("Exception: " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return atsDsl;

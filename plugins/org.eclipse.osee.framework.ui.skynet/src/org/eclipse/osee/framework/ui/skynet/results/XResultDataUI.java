@@ -131,8 +131,8 @@ public class XResultDataUI {
       try {
          XResultData rd = new XResultData();
          rd.log("This is just a normal log message");
-         rd.logWarning("This is a warning");
-         rd.logError("This is an error");
+         rd.warning("This is a warning");
+         rd.error("This is an error");
 
          rd.log("\n\nExample of hyperlinked guid: " + getHyperlink(UserManager.getUser()));
 

@@ -821,7 +821,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       List<Integer> artIds = getCommonArtifactIds(xResultData);
       if (artIds.isEmpty()) {
-         xResultData.logError("Error: Artifact load returned 0 artifacts to check");
+         xResultData.error("Error: Artifact load returned 0 artifacts to check");
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Completed " + DateUtil.getMMDDYYHHMM());
       return Collections.subDivide(artIds, 4000);

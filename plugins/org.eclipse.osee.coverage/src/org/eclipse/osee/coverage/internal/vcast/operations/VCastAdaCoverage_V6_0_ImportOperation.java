@@ -101,7 +101,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       try {
          sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
       } catch (OseeDataStoreException ex) {
-         coverageImport.getLog().logError(
+         coverageImport.getLog().error(
             "SQL error while reading source_files for instrumented_file id:" + instrumentedFile.getId() + " " + ex.getMessage());
       }
 
@@ -113,7 +113,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
 
          String lisFileName_badPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileName_badPath)) {
-            coverageImport.getLog().logError(
+            coverageImport.getLog().error(
                "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
          }
 
@@ -135,7 +135,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
          try {
             functions = dataStore.getFunctions(instrumentedFile);
          } catch (OseeDataStoreException ex) {
-            coverageImport.getLog().logError(
+            coverageImport.getLog().error(
                "SQL error while reading functions for instrumented_file id:" + instrumentedFile.getId() + " " + ex.getMessage());
          }
          for (VCastFunction function : functions) {
@@ -156,7 +156,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       try {
          statementCoverageItems = dataStore.getStatementCoverageLines(function);
       } catch (OseeCoreException ex) {
-         coverageImport.getLog().logError(
+         coverageImport.getLog().error(
             "SQL error while reading statement_coverages for instrumented_file id:" + instrumentedFile.getId() + " and function id: " + function.getId() + " " + ex.getMessage());
       }
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
@@ -173,11 +173,11 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (OseeArgumentException ex) {
-         coverageImport.getLog().logError(
+         coverageImport.getLog().error(
             String.format("Error(OseeArgumentException) parsing *.LIS file: [%s]. %s", function.getName(),
                ex.getMessage()));
       } catch (IOException ex) {
-         coverageImport.getLog().logError(
+         coverageImport.getLog().error(
             String.format("Error(IOException) parsing *.LIS file: [%s]. %s", function.getName(), ex.getMessage()));
       }
 
@@ -187,7 +187,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
          try {
             lineCoverageItem.setName(lineData.getFirst());
          } catch (OseeCoreException ex) {
-            coverageImport.getLog().logError(
+            coverageImport.getLog().error(
                String.format("Error(OseeCoreException) when trying to set the line of code for %s", function.getName(),
                   ex.getMessage()));
          }
@@ -205,7 +205,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       String resultPathAbs = input.getVCastDirectory() + File.separator + resultPath;
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         coverageImport.getLog().logError(String.format("Error: Missing result *.DAT file: %s", resultPathAbs));
+         coverageImport.getLog().error(String.format("Error: Missing result *.DAT file: %s", resultPathAbs));
       } else {
          coverageImport.getImportRecordFiles().add(resultsFile);
 
@@ -220,7 +220,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
                if (Strings.isValid(resultsLine)) {
                   Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
                   if (!datFileSyntaxResult.isTrue()) {
-                     coverageImport.getLog().logError(
+                     coverageImport.getLog().error(
                         String.format("Invalid VCast DAT file syntax - %s -  [%s] ", datFileSyntaxResult.getText(),
                            resultPath));
                   } else {
@@ -232,13 +232,13 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
 
                         CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
                         if (coverageUnit == null) {
-                           coverageImport.getLog().logError(
+                           coverageImport.getLog().error(
                               String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
                         } else {
                            // Find or create new coverage item for method num /execution line
                            CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
                            if (coverageItem == null) {
-                              coverageImport.getLog().logError(
+                              coverageImport.getLog().error(
                                  String.format(
                                     "Either Method [%s] or Line [%s] do not exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
                                     methodNum, executeNum, coverageUnit, resultPath));
@@ -247,7 +247,7 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
                               try {
                                  coverageItem.addTestUnitName(resultPath);
                               } catch (OseeCoreException ex) {
-                                 coverageImport.getLog().logError(
+                                 coverageImport.getLog().error(
                                     String.format("Can't store test unit [%s] for coverageUnit [%s]; exception [%s]",
                                        resultPath, coverageUnit, ex.getLocalizedMessage()));
                               }
@@ -296,10 +296,10 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
          //Note: the LIS_file field of the instrumentedFiles may have a fictious absolute path - but the path is ignored and only the file name is used.
          instrumentedFiles = dataStore.getAllInstrumentedFiles();
       } catch (OseeCoreException ex) {
-         coverageImport.getLog().logError("SQL error while reading instrumented_files " + ex.getMessage());
+         coverageImport.getLog().error("SQL error while reading instrumented_files " + ex.getMessage());
       }
       if (instrumentedFiles.isEmpty()) {
-         coverageImport.getLog().logWarning("Warning: SQL lite table 'instrumented_files' is empty.");
+         coverageImport.getLog().warning("Warning: SQL lite table 'instrumented_files' is empty.");
       }
       return instrumentedFiles;
    }
@@ -309,10 +309,10 @@ public class VCastAdaCoverage_V6_0_ImportOperation extends AbstractOperation {
       try {
          results = dataStore.getAllResults();
       } catch (OseeCoreException ex) {
-         coverageImport.getLog().logError("SQL error while reading results " + ex.getMessage());
+         coverageImport.getLog().error("SQL error while reading results " + ex.getMessage());
       }
       if (results.isEmpty()) {
-         coverageImport.getLog().logWarning("Warning: SQL lite table 'results' is empty.");
+         coverageImport.getLog().warning("Warning: SQL lite table 'results' is empty.");
       }
       return results;
    }

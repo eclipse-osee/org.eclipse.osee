@@ -34,19 +34,19 @@ public class ConfigData {
 
    public void validateData(XResultData resultData) {
       if (teamDef == null) {
-         resultData.logError("Must Select Team Definition");
+         resultData.error("Must Select Team Definition");
       }
       if (actionableItem == null) {
-         resultData.logError("Must Select Actionable Item");
+         resultData.error("Must Select Actionable Item");
       }
       if (!Strings.isValid(searchStr)) {
-         resultData.logError("Must Enter Search String");
+         resultData.error("Must Enter Search String");
       }
       if (!Strings.isValid(replaceStr)) {
-         resultData.logError("Must Enter Replace String");
+         resultData.error("Must Enter Replace String");
       }
       if (searchStr != null && replaceStr != null && searchStr.equals(replaceStr)) {
-         resultData.logErrorWithFormat("Search string [%s] can't equal replace string [%s]", searchStr, replaceStr);
+         resultData.errorf("Search string [%s] can't equal replace string [%s]", searchStr, replaceStr);
       }
    }
 

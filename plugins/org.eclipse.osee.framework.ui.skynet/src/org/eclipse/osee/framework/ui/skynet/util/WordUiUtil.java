@@ -43,7 +43,7 @@ public final class WordUiUtil {
             @Override
             public void run() {
                XResultData rd = new XResultData(false);
-               rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
+               rd.warning("\nYou chose to preview/edit artifacts that could not be handled: ");
                rd.log(warningString + "\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "GUID"}));

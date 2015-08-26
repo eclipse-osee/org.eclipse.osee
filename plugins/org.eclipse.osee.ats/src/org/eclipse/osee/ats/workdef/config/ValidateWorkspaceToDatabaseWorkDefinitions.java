@@ -63,7 +63,7 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
             // do nothing;
          }
          if (workDefArt == null) {
-            resultData.logError(" No Artifact Found with name [" + sheet.getName() + "]");
+            resultData.error(" No Artifact Found with name [" + sheet.getName() + "]");
             continue;
          }
          String sheetText = AtsDslUtil.getString(sheet);
@@ -71,7 +71,7 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
          String artText = workDefArt.getSoleAttributeValueAsString(AtsAttributeTypes.DslSheet, "");
          artText = artText.replaceAll("\r\n", "\n");
          if (!sheetText.equals(artText)) {
-            resultData.logError(" Different (see opened diff editor)");
+            resultData.error(" Different (see opened diff editor)");
             CompareHandler compareHandler =
                new CompareHandler("Compare [" + sheet.getName() + "] Work Definition file/artifact", new CompareItem(
                   "File contents", sheetText, System.currentTimeMillis()), new CompareItem("Artifact contents",

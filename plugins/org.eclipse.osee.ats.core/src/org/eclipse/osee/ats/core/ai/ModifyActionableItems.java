@@ -75,10 +75,10 @@ public class ModifyActionableItems {
       // determine AIs that already have a team workflow associated
       for (IAtsActionableItem checkAi : newAIs) {
          if (!checkAi.isActionable()) {
-            results.logErrorWithFormat("Actionable Item [%s] is not actionable; select item lower in hierarchy",
+            results.errorf("Actionable Item [%s] is not actionable; select item lower in hierarchy",
                checkAi);
          } else if (!checkAi.isAllowUserActionCreation()) {
-            results.logErrorWithFormat("Actionable Item [%s] is not actionable by users; select another item", checkAi);
+            results.errorf("Actionable Item [%s] is not actionable by users; select another item", checkAi);
          } else {
             if (currAIsForAllWfs.contains(checkAi)) {
                duplicatedAIs.add(checkAi);
@@ -106,7 +106,7 @@ public class ModifyActionableItems {
          results.log(String.format("Create New Team Workflow for Actionable Item(s) %s", data.getActionableItems()));
          for (IAtsActionableItem ai : data.getActionableItems()) {
             if (duplicatedAIs.contains(ai)) {
-               results.logWithFormat("   - Note: Actionable Item [%s] is impacted by an existing Team Workflow\n", ai);
+               results.logf("   - Note: Actionable Item [%s] is impacted by an existing Team Workflow\n", ai);
             }
          }
       }
@@ -127,17 +127,17 @@ public class ModifyActionableItems {
    private void processAisAddedRemovedFromSelectedTeamWf() throws OseeCoreException {
       Set<IAtsActionableItem> currAIs = teamWf.getActionableItems();
       if (currWorkflowDesiredAIs.isEmpty()) {
-         results.logError("All AIs can not be removed from a Team Workflow; Cancel workflow instead");
+         results.error("All AIs can not be removed from a Team Workflow; Cancel workflow instead");
       } else {
          for (IAtsActionableItem checkedAi : currWorkflowDesiredAIs) {
             if (!currAIs.contains(checkedAi)) {
-               results.logWithFormat("Add Actionable Item [%s] to the selected Team Workflow\n", checkedAi);
+               results.logf("Add Actionable Item [%s] to the selected Team Workflow\n", checkedAi);
                addAis.add(checkedAi);
             }
          }
          for (IAtsActionableItem currAi : currAIs) {
             if (!currWorkflowDesiredAIs.contains(currAi)) {
-               results.logWithFormat("Remove Actionable Item [%s] to the selected Team Workflow\n", currAi);
+               results.logf("Remove Actionable Item [%s] to the selected Team Workflow\n", currAi);
                removeAis.add(currAi);
             }
          }

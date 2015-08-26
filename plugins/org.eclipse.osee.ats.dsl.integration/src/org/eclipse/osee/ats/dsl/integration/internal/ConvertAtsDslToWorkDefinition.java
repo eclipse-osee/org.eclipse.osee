@@ -261,14 +261,14 @@ public class ConvertAtsDslToWorkDefinition {
                }
             }
             if (!found) {
-               resultData.logErrorWithFormat("Could not find WidgetRef [%s] in WidgetDefs", widgetName);
+               resultData.errorf("Could not find WidgetRef [%s] in WidgetDefs", widgetName);
             }
          } else if (layoutItem instanceof AttrWidget) {
             AttrWidget attrWidget = (AttrWidget) layoutItem;
             String attributeName = Strings.unquote(attrWidget.getAttributeName());
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (1)",
+                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (1)",
                      attributeName, SHEET_NAME);
                } else {
                   WidgetDefinition widgetDef = new WidgetDefinition(attrResolver.getUnqualifiedName(attributeName));
@@ -278,7 +278,7 @@ public class ConvertAtsDslToWorkDefinition {
                   stateItems.add(widgetDef);
                }
             } catch (Exception ex) {
-               resultData.logErrorWithFormat("Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName,
+               resultData.errorf("Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName,
                   SHEET_NAME);
             }
          } else if (layoutItem instanceof Composite) {
@@ -304,7 +304,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         resultData.logWarningWithFormat("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType);
+         resultData.warningf("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType);
       }
       revDef.setBlockingType(blockType);
 
@@ -313,7 +313,7 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         resultData.logWarningWithFormat("Unknown StateEventType [%s]; Defaulting to None", dslEventType);
+         resultData.warningf("Unknown StateEventType [%s]; Defaulting to None", dslEventType);
       }
       revDef.setStateEventType(eventType);
       Collection<String> userIds = getAssigneesFromUserRefs(dslRevDef.getAssigneeRefs());
@@ -328,36 +328,36 @@ public class ConvertAtsDslToWorkDefinition {
             UserByName byName = (UserByName) UserRef;
             String name = Strings.unquote(byName.getUserName());
             if (!Strings.isValid(name)) {
-               resultData.logWarningWithFormat("Unhandled UserByName name [%s]", name);
+               resultData.warningf("Unhandled UserByName name [%s]", name);
                continue;
             }
             try {
                if (userService.isUserNameValid(name)) {
                   userIds.add(userService.getUserByName(name).getUserId());
                } else {
-                  resultData.logWarningWithFormat("No user by name [%s]", name);
+                  resultData.warningf("No user by name [%s]", name);
                }
             } catch (OseeCoreException ex) {
-               resultData.logErrorWithFormat("Exception user by name [%s]", name);
+               resultData.errorf("Exception user by name [%s]", name);
             }
          } else if (UserRef instanceof UserByUserId) {
             UserByUserId byUserId = (UserByUserId) UserRef;
             String userId = Strings.unquote(byUserId.getUserId());
             if (!Strings.isValid(userId)) {
-               resultData.logWarningWithFormat("Unhandled UserByUserId id [%s]", userId);
+               resultData.warningf("Unhandled UserByUserId id [%s]", userId);
                continue;
             }
             try {
                if (userService.isUserIdValid(userId)) {
                   userIds.add(userId);
                } else {
-                  resultData.logWarningWithFormat("No user by id [%s]", userId);
+                  resultData.warningf("No user by id [%s]", userId);
                }
             } catch (OseeCoreException ex) {
-               resultData.logErrorWithFormat("Exception user by id [%s]", name);
+               resultData.errorf("Exception user by id [%s]", name);
             }
          } else {
-            resultData.logWarningWithFormat("Unhandled UserRef type [%s]", UserRef);
+            resultData.warningf("Unhandled UserRef type [%s]", UserRef);
          }
       }
       return userIds;
@@ -386,7 +386,7 @@ public class ConvertAtsDslToWorkDefinition {
             widgetDef.setDescription(attrResolver.getDescription(attributeName));
          }
       } catch (Exception ex) {
-         resultData.logErrorWithFormat("Exception [%s] in WorkDefinition [%s]", ex.getLocalizedMessage(), SHEET_NAME);
+         resultData.errorf("Exception [%s] in WorkDefinition [%s]", ex.getLocalizedMessage(), SHEET_NAME);
       }
 
       String xWidgetName = Strings.unquote(dslWidgetDef.getXWidgetName());
@@ -396,17 +396,17 @@ public class ConvertAtsDslToWorkDefinition {
          if (Strings.isValid(attributeName)) {
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (2)",
+                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (2)",
                      attributeName, SHEET_NAME);
                } else {
                   attrResolver.setXWidgetNameBasedOnAttributeName(attributeName, widgetDef);
                }
             } catch (Exception ex) {
-               resultData.logErrorWithFormat("Error resolving attribute name [%s] in WorkDefinition [%s]",
+               resultData.errorf("Error resolving attribute name [%s] in WorkDefinition [%s]",
                   attributeName, SHEET_NAME);
             }
          } else {
-            resultData.logErrorWithFormat("Invalid attribute name [%s] in WorkDefinition [%s] (3)", attributeName,
+            resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (3)", attributeName,
                SHEET_NAME);
          }
       }
@@ -440,7 +440,7 @@ public class ConvertAtsDslToWorkDefinition {
             option = WidgetOption.valueOf(value);
             widgetDef.getOptions().add(option);
          } catch (IllegalArgumentException ex) {
-            resultData.logWarningWithFormat("Unexpected value [%s] in WorkDefinition [%s]", value, SHEET_NAME);
+            resultData.warningf("Unexpected value [%s] in WorkDefinition [%s]", value, SHEET_NAME);
          }
       }
    }

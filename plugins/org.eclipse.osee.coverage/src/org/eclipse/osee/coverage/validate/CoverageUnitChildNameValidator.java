@@ -81,7 +81,7 @@ public class CoverageUnitChildNameValidator {
 
       for (String errorStr : errorStrs) {
          uniqueResults.add(errorStr);
-         rd.logError(errorStr);
+         rd.error(errorStr);
       }
 
       return rd;

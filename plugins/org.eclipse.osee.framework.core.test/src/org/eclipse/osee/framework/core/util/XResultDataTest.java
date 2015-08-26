@@ -42,35 +42,35 @@ public class XResultDataTest {
    @Test
    public void testLogWithFormat() {
       XResultData rd = new XResultData();
-      rd.logWithFormat("log %s string", "this");
+      rd.logf("log %s string", "this");
       Assert.assertEquals("log this string", rd.toString());
    }
 
    @Test
    public void testLogError() {
       XResultData rd = new XResultData();
-      rd.logError("log string");
+      rd.error("log string");
       Assert.assertEquals("Error: log string\n", rd.toString());
    }
 
    @Test
    public void testLogErrorWithFormat() {
       XResultData rd = new XResultData();
-      rd.logErrorWithFormat("log %s string", "this");
+      rd.errorf("log %s string", "this");
       Assert.assertEquals("Error: log this string\n", rd.toString());
    }
 
    @Test
    public void testLogWarning() {
       XResultData rd = new XResultData();
-      rd.logWarning("log string");
+      rd.warning("log string");
       Assert.assertEquals("Warning: log string\n", rd.toString());
    }
 
    @Test
    public void testLogWarningWithFormat() {
       XResultData rd = new XResultData();
-      rd.logWarningWithFormat("log %s string", "this");
+      rd.warningf("log %s string", "this");
       Assert.assertEquals("Warning: log this string\n", rd.toString());
    }
 
@@ -79,9 +79,9 @@ public class XResultDataTest {
       XResultData rd = new XResultData();
       Assert.assertEquals(0, rd.getNumErrors());
 
-      rd.logError("log string");
-      rd.logError("log string");
-      rd.logError("log string");
+      rd.error("log string");
+      rd.error("log string");
+      rd.error("log string");
       Assert.assertEquals(3, rd.getNumErrors());
    }
 
@@ -112,9 +112,9 @@ public class XResultDataTest {
       XResultData rd = new XResultData();
       Assert.assertEquals(0, rd.getNumWarnings());
 
-      rd.logWarning("log string");
-      rd.logWarning("log string");
-      rd.logWarning("log string");
+      rd.warning("log string");
+      rd.warning("log string");
+      rd.warning("log string");
       Assert.assertEquals(3, rd.getNumWarnings());
    }
 
@@ -123,9 +123,9 @@ public class XResultDataTest {
       XResultData rd = new XResultData();
       Assert.assertFalse(rd.isErrors());
 
-      rd.logError("log string");
+      rd.error("log string");
       rd.log("log string");
-      rd.logWarning("log string");
+      rd.warning("log string");
       Assert.assertTrue(rd.isErrors());
    }
 

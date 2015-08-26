@@ -66,7 +66,7 @@ public class SendNotificationEvents {
          }
          XResultData resultData = new XResultData();
          if (isTesting()) {
-            resultData.logErrorWithFormat("Testing Results Report for Osee Notification; Email to user [%s].<br>",
+            resultData.errorf("Testing Results Report for Osee Notification; Email to user [%s].<br>",
                testingUserEmail);
          }
          for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {

@@ -79,7 +79,7 @@ public class AtsConfig2Operation extends AbstractOperation {
             changes.execute();
          }
       } catch (Exception ex) {
-         data.getResultData().logError("Exception " + ex.getLocalizedMessage());
+         data.getResultData().error("Exception " + ex.getLocalizedMessage());
       }
       XResultDataUI.report(data.getResultData(), getName());
       monitor.worked(calculateWork(0.10));

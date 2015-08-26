@@ -57,7 +57,7 @@ public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
    public void processHeaderRow(String[] headerRow) {
       rowCount++;
       if (headerRow.length > 1) {
-         result.logWarning("More than 1 column found in DELETE sheet.  Only column 1 is processed");
+         result.warning("More than 1 column found in DELETE sheet.  Only column 1 is processed");
       }
    }
 

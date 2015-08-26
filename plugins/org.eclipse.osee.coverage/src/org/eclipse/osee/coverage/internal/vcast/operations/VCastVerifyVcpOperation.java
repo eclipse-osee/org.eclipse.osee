@@ -45,7 +45,7 @@ public class VCastVerifyVcpOperation extends AbstractOperation {
             input.getVCastDirectory() + File.separator + "vcast" + File.separator + "results" + File.separator),
             new MatchFilter(".*\\.(DAT||dat)"), false);
       if (numVcastVcpDatFiles != filenames.size()) {
-         logger.logError(String.format(
+         logger.error(String.format(
             "Number of results files in Vcast.vcp [%d] doesn't match number of vcast/results/*.dat files [%d]",
             numVcastVcpDatFiles, filenames.size()));
       } else {

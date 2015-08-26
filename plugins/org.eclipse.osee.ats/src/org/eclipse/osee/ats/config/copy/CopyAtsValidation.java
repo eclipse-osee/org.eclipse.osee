@@ -70,7 +70,7 @@ public class CopyAtsValidation {
    private void validateTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
       String newName = CopyAtsUtil.getConvertedName(configData, teamDef.getName());
       if (newName.equals(teamDef.getName())) {
-         resultData.logErrorWithFormat("Could not get new name from name conversion for Team Definition [%s]",
+         resultData.errorf("Could not get new name from name conversion for Team Definition [%s]",
             teamDef.getName());
       }
       for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
@@ -83,7 +83,7 @@ public class CopyAtsValidation {
    private void validateActionableItem(IAtsActionableItem aiArt) throws OseeCoreException {
       String newName = CopyAtsUtil.getConvertedName(configData, aiArt.getName());
       if (newName.equals(aiArt.getName())) {
-         resultData.logErrorWithFormat("Could not get new name from name conversion for ActionableItem [%s]",
+         resultData.errorf("Could not get new name from name conversion for ActionableItem [%s]",
             aiArt.getName());
       }
       for (IAtsActionableItem childAiArt : ActionableItems.getActionableItemsFromItemAndChildren(aiArt)) {

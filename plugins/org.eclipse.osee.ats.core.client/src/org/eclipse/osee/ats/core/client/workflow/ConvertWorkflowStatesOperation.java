@@ -66,11 +66,11 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
          transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
       }
       if (fromStateToStateMap.isEmpty()) {
-         rd.logError("Must enter FromToState pairs");
+         rd.error("Must enter FromToState pairs");
       } else if (!stateNamesAreValid(fromStateToStateMap, rd)) {
          return;
       } else if (workflows.isEmpty()) {
-         rd.logError("No workflows entered");
+         rd.error("No workflows entered");
       } else {
          try {
             for (AbstractWorkflowArtifact awa : workflows) {
@@ -84,7 +84,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
                }
             }
          } catch (OseeCoreException ex) {
-            rd.logError(ex.getLocalizedMessage() + " (see error log)");
+            rd.error(ex.getLocalizedMessage() + " (see error log)");
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
@@ -111,7 +111,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    private boolean stateNameIsValid(String stateName, XResultData rd) {
       Matcher m = pattern.matcher(stateName);
       if (!m.find()) {
-         rd.logErrorWithFormat(
+         rd.errorf(
             "State name must be alpha-numeric with dashes, spaces or underscores.  Invalid for [%s]", stateName);
          return false;
       }
@@ -128,7 +128,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       }
       if (!logStr.equals(resultLogStr)) {
          awa.setSoleAttributeValue(AtsAttributeTypes.Log, resultLogStr);
-         rd.logWithFormat("Converted <can't display>\n", AXml.xmlToText(logStr), AXml.xmlToText(resultLogStr));
+         rd.logf("Converted <can't display>\n", AXml.xmlToText(logStr), AXml.xmlToText(resultLogStr));
       }
    }
 
@@ -140,7 +140,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
                String fromStr = ((String) attribute.getValue());
                String toStr = fromStr.replaceFirst(fromToState.getKey() + ";", fromToState.getValue() + ";");
                attribute.setValue(toStr);
-               rd.logWithFormat("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
+               rd.logf("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
             }
          }
       }
@@ -172,7 +172,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
                   String fromStr = ((String) attribute.getValue());
                   String toStr = fromToState.getValue();
                   attribute.setValue(toStr);
-                  rd.logWithFormat("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
+                  rd.logf("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
                }
             }
          }

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 /**
  * Used to log Info, Warning and Errors to multiple locations (logger, stderr/out and XResultView). Upon completion, a
  * call to report(title) will open results in the ResultsView
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XResultData {
@@ -77,7 +77,7 @@ public class XResultData {
       List<IHealthStatus> stats = monitorLog.getAllLogs();
       for (IHealthStatus stat : new ArrayList<IHealthStatus>(stats)) {
          if (stat.getException() != null) {
-            logError("Exception: " + Lib.exceptionToString(stat.getException()));
+            error("Exception: " + Lib.exceptionToString(stat.getException()));
          }
       }
    }
@@ -89,27 +89,36 @@ public class XResultData {
       }
    }
 
+   /**
+    * Adds string with newline to log
+    */
    public void log(String str) {
       logStr(Type.Info, str + "\n");
    }
 
-   public void logWithFormat(String formatStr, Object... objs) {
+   public void logf(String formatStr, Object... objs) {
       logStr(Type.Info, String.format(formatStr, objs));
    }
 
-   public void logError(String str) {
+   /**
+    * Adds string with newline to log as error
+    */
+   public void error(String str) {
       logStr(Type.Severe, str + "\n");
    }
 
-   public void logErrorWithFormat(String formatStr, Object... objs) {
+   public void errorf(String formatStr, Object... objs) {
       logStr(Type.Severe, String.format(formatStr + "\n", objs));
    }
 
-   public void logWarning(String str) {
+   /**
+    * Adds string with newline to log as warning
+    */
+   public void warning(String str) {
       logStr(Type.Warning, str + "\n");
    }
 
-   public void logWarningWithFormat(String formatStr, Object... objs) {
+   public void warningf(String formatStr, Object... objs) {
       logStr(Type.Warning, String.format(formatStr + "\n", objs));
    }
 

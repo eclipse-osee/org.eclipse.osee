@@ -47,7 +47,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
          data.log("REPORT ONLY - Changes not persisted\n");
       }
       if (!getOrcsApi().getOrcsTypes().getAttributeTypes().exists(AtsAttributeTypes.BaselineBranchUuid)) {
-         data.logError("ats.BaselineBranchUuid is not configured for this database");
+         data.error("ats.BaselineBranchUuid is not configured for this database");
          return;
       }
       TransactionBuilder tx = createTransactionBuilder();
@@ -64,17 +64,17 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
                   // do nothing
                }
                if (branch == null) {
-                  data.logErrorWithFormat("Branch with guid %s can't be found", guid);
+                  data.errorf("Branch with guid %s can't be found", guid);
                } else {
                   long branchUuid = branch.getUuid();
                   String uuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, null);
                   if (!Strings.isValid(uuid) || isUuidDifferent(uuid, branchUuid)) {
                      if (!Strings.isValid(uuid)) {
-                        data.logWithFormat(
+                        data.logf(
                            "Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
                            art.getArtifactType(), art.getName(), art.getGuid());
                      } else if (isUuidDifferent(uuid, branchUuid)) {
-                        data.logWithFormat(
+                        data.logf(
                            "Updating uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
                            art.getArtifactType(), art.getName(), art.getGuid());
                      }

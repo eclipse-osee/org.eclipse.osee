@@ -84,7 +84,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          if (GUID.isValid(value)) {
             convert(data, reportOnly, tx, art, attr, value);
          } else {
-            data.logWithFormat(
+            data.logf(
                "Not a guid attribute value.  Actual value [%s] for artifact type [%s] name [%s] id [%s] NOT converted to uuid.\n \n",
                value, art.getArtifactType(), art.getName(), art.getGuid());
          }
@@ -108,13 +108,13 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
    private void addUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) throws OseeCoreException {
       numChanges++;
       Long branchUuid = branch.getUuid();
-      data.logWithFormat("Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
+      data.logf("Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
          art.getArtifactType(), art.getName(), art.getGuid());
       if (!reportOnly) {
          try {
             tx.setAttributeById(art, attr, String.valueOf(branchUuid));
          } catch (OseeCoreException ex) {
-            data.logErrorWithFormat(
+            data.errorf(
                "Error building transaction for convert to uuid attribute of value %d for artifact type [%s] name [%s] id [%s]\n",
                branch.getUuid(), art.getArtifactType(), art.getName(), art.getGuid());
          }
@@ -123,12 +123,12 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
 
    private void removeAttrForNonExistentBranch(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value) throws OseeCoreException {
       try {
-         data.logWithFormat("No Branch found with value [%s]. Recommend removing attribute.\n", value);
+         data.logf("No Branch found with value [%s]. Recommend removing attribute.\n", value);
          if (!reportOnly) {
             tx.deleteByAttributeId(art, attr);
          }
       } catch (OseeCoreException ex) {
-         data.logErrorWithFormat("Error building transaction to remove guid [%s] for branch that no longer exists\n",
+         data.errorf("Error building transaction to remove guid [%s] for branch that no longer exists\n",
             value);
       }
    }

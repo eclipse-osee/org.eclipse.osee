@@ -57,7 +57,7 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
             try {
                IStatus result = check.isDeleteable(artifacts);
                if (!result.isOK()) {
-                  rd.logError(result.getMessage());
+                  rd.error(result.getMessage());
                }
             } catch (Exception ex) {
                log(ex);

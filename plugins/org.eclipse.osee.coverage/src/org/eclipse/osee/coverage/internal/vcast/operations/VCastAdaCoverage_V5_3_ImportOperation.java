@@ -48,14 +48,14 @@ public class VCastAdaCoverage_V5_3_ImportOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!Strings.isValid(input.getVCastDirectory())) {
-         coverageImport.getLog().logError("VectorCast directory must be specified");
+         coverageImport.getLog().error("VectorCast directory must be specified");
          throw new OseeArgumentException("VectorCast directory must be specified");
       }
 
       File file = new File(input.getVCastDirectory());
       if (!file.exists()) {
          String message = String.format("VectorCast directory doesn't exist [%s]", input.getVCastDirectory());
-         coverageImport.getLog().logError(message);
+         coverageImport.getLog().error(message);
          throw new OseeArgumentException(message);
       }
 
@@ -71,7 +71,7 @@ public class VCastAdaCoverage_V5_3_ImportOperation extends AbstractOperation {
          try {
             coverageImport.addImportRecordFile(vCastVcp.getFile());
          } catch (Exception ex) {
-            coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+            coverageImport.getLog().error("Error Adding Import Record File: " + ex.getLocalizedMessage());
          }
 
          coverageImport.setLocation(input.getVCastDirectory());
@@ -126,7 +126,7 @@ public class VCastAdaCoverage_V5_3_ImportOperation extends AbstractOperation {
             int totalCoverageItems = methodCoverageUnit.getCoverageItems(false).size();
             int coveredCoverageItems = methodCoverageUnit.getCoverageItemsCount(false, CoverageOptionManager.Test_Unit);
             if (totalCoverageItems != coverageDataSubProgram.getTotal() || coveredCoverageItems != coverageDataSubProgram.getCovered()) {
-               coverageImport.getLog().logError(
+               coverageImport.getLog().error(
                   String.format(
                      "Imported covered/total items [%d/%d] doesn't match VectorCast [%d/%d] reported in .xml file for coverage unit [%s]",
                      coveredCoverageItems, totalCoverageItems, coverageDataSubProgram.getCovered(),
@@ -152,7 +152,7 @@ public class VCastAdaCoverage_V5_3_ImportOperation extends AbstractOperation {
          Operations.executeWorkAndCheckStatus(op);
          toReturn = vCastVcp;
       } catch (Exception ex) {
-         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
+         coverageImport.getLog().error("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
       }
       return toReturn;
    }
@@ -162,13 +162,13 @@ public class VCastAdaCoverage_V5_3_ImportOperation extends AbstractOperation {
       try {
          coverageImport.addImportRecordFile(new File(input.getVCastDirectory() + File.separator + "CCAST_.CFG"));
       } catch (Exception ex) {
-         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+         coverageImport.getLog().error("Error Adding Import Record File: " + ex.getLocalizedMessage());
       }
       try {
          coverageImport.addImportRecordFile(new File(
             input.getVCastDirectory() + File.separator + "vcast" + File.separator + "build_info.xml"));
       } catch (Exception ex) {
-         coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+         coverageImport.getLog().error("Error Adding Import Record File: " + ex.getLocalizedMessage());
       }
    }
 

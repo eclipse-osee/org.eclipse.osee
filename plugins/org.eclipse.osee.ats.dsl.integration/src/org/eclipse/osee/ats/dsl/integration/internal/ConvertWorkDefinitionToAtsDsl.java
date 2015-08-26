@@ -266,7 +266,7 @@ public class ConvertWorkDefinitionToAtsDsl {
          IAtsCompositeLayoutItem composite = (IAtsCompositeLayoutItem) stateItem;
          processCompositeStateItem(layout, dslComposite, composite);
       } else {
-         resultData.logError("Unexpected stateItem => " + stateItem.getName());
+         resultData.error("Unexpected stateItem => " + stateItem.getName());
       }
    }
 

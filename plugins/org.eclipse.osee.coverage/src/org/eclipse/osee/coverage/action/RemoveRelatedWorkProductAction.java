@@ -99,15 +99,15 @@ public class RemoveRelatedWorkProductAction extends Action {
             WorkProductTask task =
                coverageEditorWorkProductTab.getCoveragePackage().getWorkProductTaskProvider().getWorkProductTask(guid);
             if (task == null) {
-               resultData.logError(String.format("No valid Work Product Task [%s] for item %s", guid, coverage));
+               resultData.error(String.format("No valid Work Product Task [%s] for item %s", guid, coverage));
             } else {
                WorkProductAction wpa = task.getParent();
                if (wpa == null) {
-                  resultData.logError(String.format(
+                  resultData.error(String.format(
                      "No related Work Product Action for Work Product Task [%s] for item %s", guid, coverage));
                } else {
                   if (selActions.contains(wpa)) {
-                     resultData.logError(String.format(
+                     resultData.error(String.format(
                         "Related Work Product Action [%s] has related Work Product Task [%s].", wpa, task));
                   }
                }

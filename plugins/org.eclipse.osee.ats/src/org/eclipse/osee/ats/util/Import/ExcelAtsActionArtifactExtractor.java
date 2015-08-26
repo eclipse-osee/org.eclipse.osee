@@ -93,11 +93,11 @@ public class ExcelAtsActionArtifactExtractor {
       for (ActionData aData : actionDatas) {
          rowNum++;
          if (aData.title.equals("")) {
-            rd.logError("Row " + rowNum + "; Invalid Title");
+            rd.error("Row " + rowNum + "; Invalid Title");
          }
          Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
          if (aData.actionableItems.isEmpty()) {
-            rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
+            rd.error("Row " + rowNum + ": Must have at least one ActionableItem defined");
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
@@ -111,21 +111,21 @@ public class ExcelAtsActionArtifactExtractor {
                      }
                   }
                   if (aias.isEmpty()) {
-                     rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
+                     rd.error("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {
-                     rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
+                     rd.error("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   } else {
                      IAtsActionableItem aia = aias.iterator().next();
                      teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
                      if (teamDefs.isEmpty()) {
-                        rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
+                        rd.error("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                      } else if (teamDefs.size() > 1) {
-                        rd.logError("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
+                        rd.error("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
                      }
                   }
 
                } catch (Exception ex) {
-                  rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
+                  rd.error("Row " + rowNum + " - " + ex.getLocalizedMessage());
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }
@@ -134,16 +134,16 @@ public class ExcelAtsActionArtifactExtractor {
             try {
                for (IAtsTeamDefinition teamDef : teamDefs) {
                   if (teamDef.getTeamDefinitionHoldingVersions() == null) {
-                     rd.logErrorWithFormat("No Team Definitions Holding Versions found for Team Definition [%s]",
+                     rd.errorf("No Team Definitions Holding Versions found for Team Definition [%s]",
                         teamDef);
                   }
                   if (teamDef.getTeamDefinitionHoldingVersions().getVersion(aData.version) == null) {
-                     rd.logErrorWithFormat("No version [%s] configured for Team Definition [%s]", aData.version,
+                     rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version,
                         teamDef);
                   }
                }
             } catch (Exception ex) {
-               rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
+               rd.error("Row " + rowNum + " - " + ex.getLocalizedMessage());
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
@@ -156,12 +156,12 @@ public class ExcelAtsActionArtifactExtractor {
                   assignee = assignee.replaceFirst(" *$", "");
                   IAtsUser user = AtsClientService.get().getUserService().getUserByName(assignee);
                   if (user == null) {
-                     rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
+                     rd.error("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
                   } else {
                      aData.assignees.add(user);
                   }
                } catch (UserNotInDatabase ex) {
-                  rd.logError("Row " + rowNum + ": " + ex.getLocalizedMessage());
+                  rd.error("Row " + rowNum + ": " + ex.getLocalizedMessage());
                }
             }
          }
@@ -287,7 +287,7 @@ public class ExcelAtsActionArtifactExtractor {
             xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
          } catch (SAXException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-            rd.logError("Exception in parsing import (see log for details) " + (Strings.isValid(ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
+            rd.error("Exception in parsing import (see log for details) " + (Strings.isValid(ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
          }
          if (!rd.isEmpty()) {
             XResultDataUI.report(rd, "Action Import Validation Errors");
@@ -398,7 +398,7 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
          if (!fullRow) {
-            resultData.logWarning("Empty Row Found => " + rowNum + " skipping...");
+            resultData.warning("Empty Row Found => " + rowNum + " skipping...");
             return;
          }
 
@@ -427,7 +427,7 @@ public class ExcelAtsActionArtifactExtractor {
                } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
                   processAssignees(cols, aData, i);
                } else {
-                  resultData.logError("Unhandled column => " + headerRow[i]);
+                  resultData.error("Unhandled column => " + headerRow[i]);
                }
             }
          }

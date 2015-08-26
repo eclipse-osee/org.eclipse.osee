@@ -270,7 +270,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
-         resultData.logError("Remote Event Service is not connected");
+         resultData.error("Remote Event Service is not connected");
          return;
       }
       resultData.log("Remote Event Service connected");
@@ -286,7 +286,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
-         resultData.logError("Remote Event Service is not connected");
+         resultData.error("Remote Event Service is not connected");
          return;
       }
       resultData.log("Remote Event Service connected");
@@ -312,7 +312,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void testEquals(String name, Object expected, Object actual) {
       if (!expected.equals(actual)) {
-         resultData.logError(String.format("Error: [%s] - expected [%s] actual[%s]", name, expected, actual));
+         resultData.error(String.format("Error: [%s] - expected [%s] actual[%s]", name, expected, actual));
       } else {
          resultData.log(String.format("Valid: [%s] - expected [%s] actual[%s]", name, expected, actual));
       }
@@ -327,7 +327,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
 
       if (actionArt == null) {
-         resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
+         resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));
       } else {
          resultData.log("Loaded Action " + actionArt);
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
@@ -345,7 +345,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtilCore.getAtsBranch());
 
       if (actionArt == null) {
-         resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
+         resultData.error(String.format("Couldn't load Action named [%s]", actionTitle));
       } else {
          resultData.log("Loaded Action " + actionArt);
          AtsUtil.openATSAction(actionArt, AtsOpenOption.OpenOneOrPopupSelect);
