@@ -206,7 +206,7 @@ public class AtsDeleteManagerTest {
 
       AtsClientService.get().getTaskService().createTasks(teamArt,
          Arrays.asList(testName.name() + " Task 1", testName.name() + " Task 2"), (List<IAtsUser>) null, createdDate,
-         createdBy, null, getClass().getSimpleName());
+         createdBy, null, null, null, getClass().getSimpleName());
 
       return teamArt;
 

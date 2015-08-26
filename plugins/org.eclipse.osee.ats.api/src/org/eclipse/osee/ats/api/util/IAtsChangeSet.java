@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.util;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -84,5 +85,7 @@ public interface IAtsChangeSet {
    void deleteArtifact(ArtifactId artifact);
 
    void deleteArtifact(IAtsWorkItem workItem);
+
+   void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values);
 
 }

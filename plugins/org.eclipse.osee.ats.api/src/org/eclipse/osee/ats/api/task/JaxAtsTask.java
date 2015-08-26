@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
@@ -28,10 +27,11 @@ public class JaxAtsTask extends JaxAtsObject {
    private Date createdDate;
    private String createdByUserId;
    private String relatedToState;
-   Map<String, Object> attrTypeToObject;
+   private String taskWorkDef;
+   List<JaxAttribute> attributes;
 
    public JaxAtsTask() {
-      attrTypeToObject = new HashMap<>();
+      attributes = new ArrayList<>();
    }
 
    public Date getCreatedDate() {
@@ -71,12 +71,34 @@ public class JaxAtsTask extends JaxAtsObject {
       this.assigneeUserIds = assigneeUserIds;
    }
 
-   public Map<String, Object> getAttrTypeToObject() {
-      return attrTypeToObject;
+   public String getTaskWorkDef() {
+      return taskWorkDef;
    }
 
-   public void setAttrTypeToObject(Map<String, Object> attrTypeToObject) {
-      this.attrTypeToObject = attrTypeToObject;
+   public void setTaskWorkDef(String taskWorkDef) {
+      this.taskWorkDef = taskWorkDef;
+   }
+
+   public List<JaxAttribute> getAttributes() {
+      return attributes;
+   }
+
+   public void setAttributes(List<JaxAttribute> attributes) {
+      this.attributes = attributes;
+   }
+
+   public void addAttributes(String attrTypeName, List<String> values) {
+      JaxAttribute attr = new JaxAttribute();
+      attr.setAttrTypeName(attrTypeName);
+      attr.getValues().addAll(values);
+      attributes.add(attr);
+   }
+
+   public void addAttribute(String attrTypeName, String value) {
+      JaxAttribute attr = new JaxAttribute();
+      attr.setAttrTypeName(attrTypeName);
+      attr.getValues().add(value);
+      attributes.add(attr);
    }
 
 }

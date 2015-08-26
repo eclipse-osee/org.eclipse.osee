@@ -100,7 +100,8 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                try {
                   IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(artifact);
                   AtsClientService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
-                     AtsClientService.get().getUserService().getCurrentUser(), null, getClass().getSimpleName());
+                     AtsClientService.get().getUserService().getCurrentUser(), null, null, null,
+                     getClass().getSimpleName());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

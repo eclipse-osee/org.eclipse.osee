@@ -8,6 +8,8 @@ package org.eclipse.osee.ats.api.task;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -21,13 +23,14 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String commitComment) {
-      NewTaskData newTaskData = getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState);
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, String commitComment) {
+      NewTaskData newTaskData =
+         getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState, taskWorkDef, attributes);
       return createTasks(newTaskData);
    }
 
    @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState) {
+   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes) {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setCommitComment("Import Tasks from Simple List");
       newTaskData.setAsUserId(createdBy.getUserId());
@@ -51,7 +54,15 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
          }
          task.setCreatedByUserId(createdBy.getUserId());
          task.setCreatedDate(createdDate);
+         if (Strings.isValid(taskWorkDef)) {
+            task.setTaskWorkDef(taskWorkDef);
+         }
          newTaskData.getNewTasks().add(task);
+         if (attributes != null) {
+            for (Entry<String, List<String>> entry : attributes.entrySet()) {
+               task.addAttributes(entry.getKey(), entry.getValue());
+            }
+         }
       }
       return newTaskData;
    }

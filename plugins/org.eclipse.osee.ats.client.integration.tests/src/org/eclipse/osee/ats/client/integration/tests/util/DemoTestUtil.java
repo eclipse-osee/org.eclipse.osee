@@ -150,7 +150,8 @@ public class DemoTestUtil {
       }
       Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(teamArt, names,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), relatedToState, "DemoTestUtil.creatSimpleTasks");
+         AtsClientService.get().getUserService().getCurrentUser(), relatedToState, null, null,
+         "DemoTestUtil.creatSimpleTasks");
       return Collections.castAll(createTasks);
    }
 

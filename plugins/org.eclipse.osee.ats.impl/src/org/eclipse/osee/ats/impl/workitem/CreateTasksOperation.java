@@ -13,16 +13,18 @@ package org.eclipse.osee.ats.impl.workitem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -32,7 +34,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -124,11 +125,29 @@ public class CreateTasksOperation {
                task);
          }
 
-         for (Entry<String, Object> entry : task.getAttrTypeToObject().entrySet()) {
-            IAttributeType attrType = getAttributeType(atsServer, entry);
+         IAtsWorkDefinition workDefinition = null;
+         if (Strings.isValid(task.getTaskWorkDef())) {
+            try {
+               XResultData rd = new XResultData();
+               workDefinition = atsServer.getWorkDefService().getWorkDef(task.getTaskWorkDef(), rd);
+               if (rd.isErrors()) {
+                  resultData.logErrorWithFormat("Error finding Task Work Def [%s].  Exception: %s",
+                     task.getTaskWorkDef(), rd.toString());
+               }
+            } catch (Exception ex) {
+               resultData.logErrorWithFormat("Exception finding Task Work Def [%s].  Exception: %s",
+                  task.getTaskWorkDef(), ex.getMessage());
+            }
+            if (workDefinition == null) {
+               resultData.logErrorWithFormat("Task Work Def [%s] does not exist", task.getTaskWorkDef());
+            }
+         }
+
+         for (JaxAttribute attribute : task.getAttributes()) {
+            IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
             if (attrType == null) {
-               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s", entry.getKey(),
-                  task);
+               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s",
+                  attribute.getAttrTypeName(), task);
             }
          }
       }
@@ -136,10 +155,10 @@ public class CreateTasksOperation {
       return resultData;
    }
 
-   private static IAttributeType getAttributeType(IAtsServer atsServer, Entry<String, Object> entry) {
+   private static IAttributeType getAttributeType(IAtsServer atsServer, String attrTypeName) {
       for (IAttributeType attrType : atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAttributeTypes(
          AtsArtifactTypes.Task, AtsUtilCore.getAtsBranch())) {
-         if (attrType.getName().equals(entry.getKey())) {
+         if (attrType.getName().equals(attrTypeName)) {
             return attrType;
          }
       }
@@ -194,24 +213,38 @@ public class CreateTasksOperation {
             assignees.addAll(atsServer.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
          }
 
+         IAtsWorkDefinition workDefinition = null;
+         if (Strings.isValid(jaxTask.getTaskWorkDef())) {
+            try {
+               workDefinition = atsServer.getWorkDefService().getWorkDef(jaxTask.getTaskWorkDef(), new XResultData());
+            } catch (Exception ex) {
+               throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
+            }
+         }
          if (Strings.isValid(jaxTask.getDescription())) {
             changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
          }
-         atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, asUser, changes);
+         atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, asUser, workDefinition,
+            changes);
 
          // Set parent state task is related to if set
          if (Strings.isValid(jaxTask.getRelatedToState())) {
             changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jaxTask.getRelatedToState());
          }
 
-         for (Entry<String, Object> entry : jaxTask.getAttrTypeToObject().entrySet()) {
-            IAttributeType attrType = getAttributeType(atsServer, entry);
-            changes.setSoleAttributeValue(task, attrType, entry.getValue());
+         for (JaxAttribute attribute : jaxTask.getAttributes()) {
+            IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
+            if (attrType == null) {
+               resultData.logErrorWithFormat("Attribute Type [%s] not valid for Task creation in %s",
+                  attribute.getAttrTypeName(), task);
+            }
+            changes.setValues(task, attrType, attribute.getValues());
          }
 
          changes.add(taskArt);
 
       }
+
    }
 
    public static JaxAtsTask createNewJaxTask(Long uuid, IAtsServer atsServer) {
@@ -231,8 +264,11 @@ public class CreateTasksOperation {
             newJaxTask.getAssigneeUserIds().add(user.getUserId());
          }
          for (IAttributeType type : taskArt.getExistingAttributeTypes()) {
-            newJaxTask.getAttrTypeToObject().put(type.getName(),
-               Collections.toString(", ", taskArt.getAttributeValues(type)));
+            List<String> attributeValues = new LinkedList<>();
+            for (Object value : taskArt.getAttributeValues(type)) {
+               attributeValues.add(value.toString());
+            }
+            newJaxTask.addAttributes(type.getName(), attributeValues);
          }
          return newJaxTask;
       }

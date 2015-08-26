@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -104,7 +105,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) {
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, IAtsChangeSet changes, Map<String, List<String>> attributes) {
       throw new UnsupportedOperationException("Not Supported on Client");
    }
 

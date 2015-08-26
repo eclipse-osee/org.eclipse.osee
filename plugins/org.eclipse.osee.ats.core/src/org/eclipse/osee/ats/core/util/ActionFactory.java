@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -250,10 +251,21 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      initializeNewStateMachine(workItem, assignees, createdDate, createdBy, null, changes);
+   }
+
+   @Override
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");
-      IAtsStateDefinition startState = workItem.getWorkDefinition().getStartState();
+      IAtsStateDefinition startState = null;
+      if (workDefinition == null) {
+         startState = workItem.getWorkDefinition().getStartState();
+      } else {
+         startState = workDefinition.getStartState();
+         changes.addAttribute(workItem, AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
+      }
       IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
       workItem.setStateManager(stateManager);
       StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,

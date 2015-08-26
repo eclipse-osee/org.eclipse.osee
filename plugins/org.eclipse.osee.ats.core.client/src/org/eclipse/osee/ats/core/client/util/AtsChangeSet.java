@@ -303,4 +303,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(getArtifact(artifact));
    }
 
+   @Override
+   public void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values) {
+      Artifact artifact = getArtifact(atsObject);
+      artifact.setAttributeValues(attrType, values);
+      add(artifact);
+   }
+
 }

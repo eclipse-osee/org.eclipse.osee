@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.util;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -264,6 +265,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
     @Override
    public void deleteArtifact(ArtifactId artifact) {
       getTransaction().deleteArtifact(artifact);
+      add(artifact);
+   }
+
+   @Override
+   public void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values) {
+      ArtifactReadable artifact = getArtifact(atsObject);
+      getTransaction().setAttributesFromValues(artifact, attrType, values);
       add(artifact);
    }
 

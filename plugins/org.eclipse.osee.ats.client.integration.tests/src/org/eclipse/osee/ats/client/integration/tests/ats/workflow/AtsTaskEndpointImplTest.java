@@ -14,10 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
@@ -68,6 +69,7 @@ public class AtsTaskEndpointImplTest {
       data.setTeamWfUuid(codeTeamWfUuid);
 
       JaxAtsTask task = createJaxAtsTask(taskUuid1, "Task 1", "description", createdByUserId, createdDate, null);
+      task.setTaskWorkDef("WorkDef_Task_Default");
       data.getNewTasks().add(task);
 
       JaxAtsTask task2 = createJaxAtsTask(taskUuid2, "Task 2", "description", createdByUserId, createdDate, null);
@@ -75,7 +77,7 @@ public class AtsTaskEndpointImplTest {
 
       JaxAtsTask task3 = createJaxAtsTask(taskUuid3, "Task 3", null, createdByUserId, createdDate,
          Arrays.asList(DemoUsers.Alex_Kay.getUserId()));
-      task3.getAttrTypeToObject().put(CoreAttributeTypes.StaticId.getName(), "my static id");
+      task3.addAttribute(CoreAttributeTypes.StaticId.getName(), "my static id");
       data.getNewTasks().add(task3);
 
       Response response = taskEp.create(data);
@@ -94,6 +96,19 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(createdDateStr, taskDateStr);
       Assert.assertEquals(1, task1R.getAssigneeUserIds().size());
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getUserId(), task1R.getAssigneeUserIds().iterator().next());
+      List<JaxAttribute> attributes = task1R.getAttributes();
+      // Work Definition should be set
+      boolean found = false;
+      for (JaxAttribute attr : attributes) {
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
+            found = true;
+            Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default", "WorkDef_Task_Default",
+               attr.getValues().iterator().next());
+         }
+      }
+      if (!found) {
+         Assert.fail("Attribute WorkDefintiion wasn't found");
+      }
 
       JaxAtsTask task2R = taskEp.get(taskUuid2).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task2R);
@@ -104,6 +119,15 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(true, task2R.isActive());
       Assert.assertEquals(1, task2R.getAssigneeUserIds().size());
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getUserId(), task2R.getAssigneeUserIds().iterator().next());
+      // Work Definition attribute should NOT be set
+      attributes = task2R.getAttributes();
+      found = false;
+      for (JaxAttribute attr : attributes) {
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
+            Assert.fail(
+               String.format("WorkDefintiion should not be set but is [%s]", attr.getValues().iterator().next()));
+         }
+      }
 
       JaxAtsTask task3R = taskEp.get(taskUuid3).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task3R);
@@ -113,11 +137,11 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());
       Assert.assertEquals(1, task3R.getAssigneeUserIds().size());
-      Assert.assertEquals(9, task3R.getAttrTypeToObject().size());
-      boolean found = false;
-      for (Entry<String, Object> entry : task3R.getAttrTypeToObject().entrySet()) {
-         if (entry.getKey().equals(CoreAttributeTypes.StaticId.getName())) {
-            Assert.assertEquals("my static id", entry.getValue().toString());
+      Assert.assertEquals(9, task3R.getAttributes().size());
+      found = false;
+      for (JaxAttribute attribute : task3R.getAttributes()) {
+         if (attribute.getAttrTypeName().equals(CoreAttributeTypes.StaticId.getName())) {
+            Assert.assertEquals("my static id", attribute.getValues().iterator().next());
             found = true;
             break;
          }

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -57,9 +58,9 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) {
-      NewTaskData tasks =
-         atsServer.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState);
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, IAtsChangeSet changes, Map<String, List<String>> attributes) {
+      NewTaskData tasks = atsServer.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
+         relatedToState, taskWorkDef, attributes);
       return createTasks(tasks);
    }
 
