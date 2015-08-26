@@ -10,10 +10,10 @@ package org.eclipse.osee.ats.dsl.atsDsl;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetRef#getWidget <em>Widget</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getWidgetRef()
  * @model

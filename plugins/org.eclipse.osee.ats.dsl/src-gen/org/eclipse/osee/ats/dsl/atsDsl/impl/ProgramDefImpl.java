@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getProgramDefOption <em>Program Def Option</em>}</li>
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getTeamDefinition <em>Team Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ProgramDefImpl#getAttributes <em>Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.PeerReviewDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.PeerReviewDefImpl#getTitle <em>Title</em>}</li>
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.PeerReviewDefImpl#getStateEvent <em>State Event</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.PeerReviewDefImpl#getAssigneeRefs <em>Assignee Refs</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -12,6 +12,8 @@
         eType="#//WorkDef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="program" upperBound="-1"
         eType="#//ProgramDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rule" upperBound="-1" eType="#//Rule"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UserDef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -35,6 +37,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="uuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="values" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="OnEventType">
+    <eLiterals name="CreateBranch" literal="CreateBranch"/>
+    <eLiterals name="CommitBranch" value="1" literal="CommitBranch"/>
+    <eLiterals name="CreateWorkflow" value="2" literal="CreateWorkflow"/>
+    <eLiterals name="TransitionTo" value="3" literal="TransitionTo"/>
+    <eLiterals name="Manual" value="4" literal="Manual"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ProgramDef">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -73,6 +82,8 @@
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="version" upperBound="-1"
         eType="#//VersionDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rules" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
         eType="#//TeamDef" containment="true"/>
   </eClassifiers>
@@ -93,6 +104,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="teamDef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="accessContextId" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rules" unique="false" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
         eType="#//ActionableItemDef" containment="true"/>
   </eClassifiers>
@@ -245,5 +258,46 @@
         eType="#//LayoutItem" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="options" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RuleLocation">
+    <eLiterals name="StateDefinition" literal="StateDefinition"/>
+    <eLiterals name="TeamDefinition" value="1" literal="TeamDefinition"/>
+    <eLiterals name="ActionableItem" value="2" literal="ActionableItem"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleDef" eSuperTypes="#//Rule"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CreateTaskRule" eSuperTypes="#//Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assignees" upperBound="-1"
+        eType="#//UserDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relatedState" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="taskWorkDef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="onEvent" unique="false"
+        upperBound="-1" eType="#//OnEventType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//AttrDef" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CreateDecisionReviewRule" eSuperTypes="#//ReviewRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="autoTransitionToDecision"
+        eType="#//BooleanDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="options" upperBound="-1"
+        eType="#//DecisionReviewOpt" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CreatePeerReviewRule" eSuperTypes="#//ReviewRule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReviewRule" eSuperTypes="#//Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assignees" upperBound="-1"
+        eType="#//UserDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="relatedToState" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="blockingType" eType="#//ReviewBlockingType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stateEvent" eType="#//WorkflowEventType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//AttrDef" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rule">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ruleLocation" unique="false"
+        upperBound="-1" eType="#//RuleLocation"/>
   </eClassifiers>
 </ecore:EPackage>

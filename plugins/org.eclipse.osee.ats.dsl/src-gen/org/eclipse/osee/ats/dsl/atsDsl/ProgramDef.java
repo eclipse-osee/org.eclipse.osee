@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getProgramDefOption <em>Program Def Option</em>}</li>
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getTeamDefinition <em>Team Definition</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ProgramDef#getAttributes <em>Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getProgramDef()
  * @model

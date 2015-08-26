@@ -13,8 +13,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.AttrDefOptions;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Attr Def Options</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

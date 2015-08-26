@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef#getTitle <em>Title</em>}</li>
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef#getAutoTransitionToDecision <em>Auto Transition To Decision</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef#getOptions <em>Options</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getDecisionReviewDef()
  * @model

@@ -26,11 +26,11 @@ import org.eclipse.osee.ats.dsl.atsDsl.ToState;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ToStateImpl#getState <em>State</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ToStateImpl#getOptions <em>Options</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

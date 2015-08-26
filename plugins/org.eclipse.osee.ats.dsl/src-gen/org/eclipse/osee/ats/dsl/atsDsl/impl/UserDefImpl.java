@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl#getUserDefOption <em>User Def Option</em>}</li>
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl#getEmail <em>Email</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl#getAdmin <em>Admin</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

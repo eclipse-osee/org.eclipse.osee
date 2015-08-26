@@ -21,11 +21,11 @@ import org.eclipse.osee.ats.dsl.atsDsl.FollowupRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewOptImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewOptImpl#getFollowup <em>Followup</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

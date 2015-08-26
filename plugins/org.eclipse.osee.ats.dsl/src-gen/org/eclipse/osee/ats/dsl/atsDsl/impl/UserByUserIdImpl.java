@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserByUserIdImpl#getUserId <em>User Id</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -225,6 +225,36 @@ public class AtsDslAdapterFactory extends AdapterFactoryImpl
         return createCompositeAdapter();
       }
       @Override
+      public Adapter caseRuleDef(RuleDef object)
+      {
+        return createRuleDefAdapter();
+      }
+      @Override
+      public Adapter caseCreateTaskRule(CreateTaskRule object)
+      {
+        return createCreateTaskRuleAdapter();
+      }
+      @Override
+      public Adapter caseCreateDecisionReviewRule(CreateDecisionReviewRule object)
+      {
+        return createCreateDecisionReviewRuleAdapter();
+      }
+      @Override
+      public Adapter caseCreatePeerReviewRule(CreatePeerReviewRule object)
+      {
+        return createCreatePeerReviewRuleAdapter();
+      }
+      @Override
+      public Adapter caseReviewRule(ReviewRule object)
+      {
+        return createReviewRuleAdapter();
+      }
+      @Override
+      public Adapter caseRule(Rule object)
+      {
+        return createRuleAdapter();
+      }
+      @Override
       public Adapter defaultCase(EObject object)
       {
         return createEObjectAdapter();
@@ -692,6 +722,96 @@ public class AtsDslAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createCompositeAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.RuleDef <em>Rule Def</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.RuleDef
+   * @generated
+   */
+  public Adapter createRuleDefAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule <em>Create Task Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule
+   * @generated
+   */
+  public Adapter createCreateTaskRuleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule <em>Create Decision Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule
+   * @generated
+   */
+  public Adapter createCreateDecisionReviewRuleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule <em>Create Peer Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule
+   * @generated
+   */
+  public Adapter createCreatePeerReviewRuleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule <em>Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule
+   * @generated
+   */
+  public Adapter createReviewRuleAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule <em>Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule
+   * @generated
+   */
+  public Adapter createRuleAdapter()
   {
     return null;
   }

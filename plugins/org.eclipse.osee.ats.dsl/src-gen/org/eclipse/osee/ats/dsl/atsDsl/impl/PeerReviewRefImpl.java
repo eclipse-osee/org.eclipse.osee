@@ -20,10 +20,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.PeerReviewRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.PeerReviewRefImpl#getPeerReview <em>Peer Review</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

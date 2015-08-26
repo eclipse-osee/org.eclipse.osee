@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAiDefOption <em>Ai Def Option</em>}</li>
@@ -25,9 +26,9 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAccessContextId <em>Access Context Id</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getChildren <em>Children</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getActionableItemDef()
  * @model
@@ -276,6 +277,22 @@ public interface ActionableItemDef extends EObject
    * @generated
    */
   EList<String> getAccessContextId();
+
+  /**
+   * Returns the value of the '<em><b>Rules</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Rules</em>' attribute list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rules</em>' attribute list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getActionableItemDef_Rules()
+   * @model unique="false"
+   * @generated
+   */
+  EList<String> getRules();
 
   /**
    * Returns the value of the '<em><b>Children</b></em>' containment reference list.

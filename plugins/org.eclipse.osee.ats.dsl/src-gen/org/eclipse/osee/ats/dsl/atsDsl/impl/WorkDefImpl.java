@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl#getId <em>Id</em>}</li>
@@ -41,7 +42,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl#getPeerReviewDefs <em>Peer Review Defs</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl#getStates <em>States</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -20,10 +20,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewRefImpl#getDecisionReview <em>Decision Review</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

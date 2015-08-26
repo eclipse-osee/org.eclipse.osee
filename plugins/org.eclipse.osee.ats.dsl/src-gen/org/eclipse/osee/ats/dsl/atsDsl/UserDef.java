@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef#getUserDefOption <em>User Def Option</em>}</li>
@@ -21,7 +22,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef#getEmail <em>Email</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef#getAdmin <em>Admin</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getUserDef()
  * @model

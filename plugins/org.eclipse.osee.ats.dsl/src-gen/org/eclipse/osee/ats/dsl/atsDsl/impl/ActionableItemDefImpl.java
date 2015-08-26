@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAiDefOption <em>Ai Def Option</em>}</li>
@@ -42,9 +43,9 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getChildren <em>Children</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -219,6 +220,16 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected EList<String> accessContextId;
+
+  /**
+   * The cached value of the '{@link #getRules() <em>Rules</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRules()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> rules;
 
   /**
    * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
@@ -464,6 +475,20 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<String> getRules()
+  {
+    if (rules == null)
+    {
+      rules = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES);
+    }
+    return rules;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<ActionableItemDef> getChildren()
   {
     if (children == null)
@@ -525,6 +550,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return getTeamDef();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
         return getAccessContextId();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES:
+        return getRules();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         return getChildren();
     }
@@ -580,6 +607,10 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         getAccessContextId().clear();
         getAccessContextId().addAll((Collection<? extends String>)newValue);
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES:
+        getRules().clear();
+        getRules().addAll((Collection<? extends String>)newValue);
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         getChildren().clear();
         getChildren().addAll((Collection<? extends ActionableItemDef>)newValue);
@@ -631,6 +662,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
         getAccessContextId().clear();
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES:
+        getRules().clear();
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         getChildren().clear();
         return;
@@ -670,6 +704,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return TEAM_DEF_EDEFAULT == null ? teamDef != null : !TEAM_DEF_EDEFAULT.equals(teamDef);
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
         return accessContextId != null && !accessContextId.isEmpty();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES:
+        return rules != null && !rules.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         return children != null && !children.isEmpty();
     }
@@ -705,6 +741,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
     result.append(teamDef);
     result.append(", accessContextId: ");
     result.append(accessContextId);
+    result.append(", rules: ");
+    result.append(rules);
     result.append(')');
     return result.toString();
   }

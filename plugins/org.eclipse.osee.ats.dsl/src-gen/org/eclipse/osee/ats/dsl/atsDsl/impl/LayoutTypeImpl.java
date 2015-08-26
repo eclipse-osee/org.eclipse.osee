@@ -13,8 +13,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Layout Type</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

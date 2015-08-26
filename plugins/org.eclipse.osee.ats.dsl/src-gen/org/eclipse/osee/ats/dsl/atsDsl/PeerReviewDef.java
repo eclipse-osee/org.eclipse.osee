@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef#getTitle <em>Title</em>}</li>
@@ -23,7 +24,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef#getStateEvent <em>State Event</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef#getAssigneeRefs <em>Assignee Refs</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getPeerReviewDef()
  * @model

@@ -21,6 +21,9 @@ import org.eclipse.osee.ats.dsl.atsDsl.AttrValueDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
+import org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule;
+import org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule;
+import org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule;
 import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef;
 import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewOpt;
 import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewRef;
@@ -29,10 +32,15 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutCopy;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutDef;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutItem;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
+import org.eclipse.osee.ats.dsl.atsDsl.OnEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.PeerReviewDef;
 import org.eclipse.osee.ats.dsl.atsDsl.PeerReviewRef;
 import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ReviewBlockingType;
+import org.eclipse.osee.ats.dsl.atsDsl.ReviewRule;
+import org.eclipse.osee.ats.dsl.atsDsl.Rule;
+import org.eclipse.osee.ats.dsl.atsDsl.RuleDef;
+import org.eclipse.osee.ats.dsl.atsDsl.RuleLocation;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ToState;
@@ -269,6 +277,55 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass ruleDefEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass createTaskRuleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass createDecisionReviewRuleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass createPeerReviewRuleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass reviewRuleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass ruleEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum onEventTypeEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EEnum booleanDefEEnum = null;
 
   /**
@@ -284,6 +341,13 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * @generated
    */
   private EEnum reviewBlockingTypeEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum ruleLocationEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -406,6 +470,16 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
   public EReference getAtsDsl_Program()
   {
     return (EReference)atsDslEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getAtsDsl_Rule()
+  {
+    return (EReference)atsDslEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -823,9 +897,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getTeamDef_Rules()
+  {
+    return (EAttribute)teamDefEClass.getEStructuralFeatures().get(14);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getTeamDef_Children()
   {
-    return (EReference)teamDefEClass.getEStructuralFeatures().get(14);
+    return (EReference)teamDefEClass.getEStructuralFeatures().get(15);
   }
 
   /**
@@ -953,9 +1037,19 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getActionableItemDef_Rules()
+  {
+    return (EAttribute)actionableItemDefEClass.getEStructuralFeatures().get(11);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EReference getActionableItemDef_Children()
   {
-    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(11);
+    return (EReference)actionableItemDefEClass.getEStructuralFeatures().get(12);
   }
 
   /**
@@ -1893,6 +1987,246 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getRuleDef()
+  {
+    return ruleDefEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getCreateTaskRule()
+  {
+    return createTaskRuleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getCreateTaskRule_Assignees()
+  {
+    return (EReference)createTaskRuleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCreateTaskRule_RelatedState()
+  {
+    return (EAttribute)createTaskRuleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCreateTaskRule_TaskWorkDef()
+  {
+    return (EAttribute)createTaskRuleEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCreateTaskRule_OnEvent()
+  {
+    return (EAttribute)createTaskRuleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getCreateTaskRule_Attributes()
+  {
+    return (EReference)createTaskRuleEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getCreateDecisionReviewRule()
+  {
+    return createDecisionReviewRuleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCreateDecisionReviewRule_AutoTransitionToDecision()
+  {
+    return (EAttribute)createDecisionReviewRuleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getCreateDecisionReviewRule_Options()
+  {
+    return (EReference)createDecisionReviewRuleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getCreatePeerReviewRule()
+  {
+    return createPeerReviewRuleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCreatePeerReviewRule_Location()
+  {
+    return (EAttribute)createPeerReviewRuleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getReviewRule()
+  {
+    return reviewRuleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getReviewRule_Assignees()
+  {
+    return (EReference)reviewRuleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getReviewRule_RelatedToState()
+  {
+    return (EAttribute)reviewRuleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getReviewRule_BlockingType()
+  {
+    return (EAttribute)reviewRuleEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getReviewRule_StateEvent()
+  {
+    return (EAttribute)reviewRuleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getReviewRule_Attributes()
+  {
+    return (EReference)reviewRuleEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getRule()
+  {
+    return ruleEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRule_Name()
+  {
+    return (EAttribute)ruleEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRule_Title()
+  {
+    return (EAttribute)ruleEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRule_Description()
+  {
+    return (EAttribute)ruleEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getRule_RuleLocation()
+  {
+    return (EAttribute)ruleEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getOnEventType()
+  {
+    return onEventTypeEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getBooleanDef()
   {
     return booleanDefEEnum;
@@ -1916,6 +2250,16 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
   public EEnum getReviewBlockingType()
   {
     return reviewBlockingTypeEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getRuleLocation()
+  {
+    return ruleLocationEEnum;
   }
 
   /**
@@ -1954,6 +2298,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEReference(atsDslEClass, ATS_DSL__ACTIONABLE_ITEM_DEF);
     createEReference(atsDslEClass, ATS_DSL__WORK_DEF);
     createEReference(atsDslEClass, ATS_DSL__PROGRAM);
+    createEReference(atsDslEClass, ATS_DSL__RULE);
 
     userDefEClass = createEClass(USER_DEF);
     createEAttribute(userDefEClass, USER_DEF__NAME);
@@ -2002,6 +2347,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(teamDefEClass, TEAM_DEF__TEAM_WORKFLOW_ARTIFACT_TYPE);
     createEAttribute(teamDefEClass, TEAM_DEF__ACCESS_CONTEXT_ID);
     createEReference(teamDefEClass, TEAM_DEF__VERSION);
+    createEAttribute(teamDefEClass, TEAM_DEF__RULES);
     createEReference(teamDefEClass, TEAM_DEF__CHILDREN);
 
     actionableItemDefEClass = createEClass(ACTIONABLE_ITEM_DEF);
@@ -2016,6 +2362,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__STATIC_ID);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__TEAM_DEF);
     createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID);
+    createEAttribute(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__RULES);
     createEReference(actionableItemDefEClass, ACTIONABLE_ITEM_DEF__CHILDREN);
 
     versionDefEClass = createEClass(VERSION_DEF);
@@ -2132,10 +2479,41 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEReference(compositeEClass, COMPOSITE__LAYOUT_ITEMS);
     createEAttribute(compositeEClass, COMPOSITE__OPTIONS);
 
+    ruleDefEClass = createEClass(RULE_DEF);
+
+    createTaskRuleEClass = createEClass(CREATE_TASK_RULE);
+    createEReference(createTaskRuleEClass, CREATE_TASK_RULE__ASSIGNEES);
+    createEAttribute(createTaskRuleEClass, CREATE_TASK_RULE__RELATED_STATE);
+    createEAttribute(createTaskRuleEClass, CREATE_TASK_RULE__TASK_WORK_DEF);
+    createEAttribute(createTaskRuleEClass, CREATE_TASK_RULE__ON_EVENT);
+    createEReference(createTaskRuleEClass, CREATE_TASK_RULE__ATTRIBUTES);
+
+    createDecisionReviewRuleEClass = createEClass(CREATE_DECISION_REVIEW_RULE);
+    createEAttribute(createDecisionReviewRuleEClass, CREATE_DECISION_REVIEW_RULE__AUTO_TRANSITION_TO_DECISION);
+    createEReference(createDecisionReviewRuleEClass, CREATE_DECISION_REVIEW_RULE__OPTIONS);
+
+    createPeerReviewRuleEClass = createEClass(CREATE_PEER_REVIEW_RULE);
+    createEAttribute(createPeerReviewRuleEClass, CREATE_PEER_REVIEW_RULE__LOCATION);
+
+    reviewRuleEClass = createEClass(REVIEW_RULE);
+    createEReference(reviewRuleEClass, REVIEW_RULE__ASSIGNEES);
+    createEAttribute(reviewRuleEClass, REVIEW_RULE__RELATED_TO_STATE);
+    createEAttribute(reviewRuleEClass, REVIEW_RULE__BLOCKING_TYPE);
+    createEAttribute(reviewRuleEClass, REVIEW_RULE__STATE_EVENT);
+    createEReference(reviewRuleEClass, REVIEW_RULE__ATTRIBUTES);
+
+    ruleEClass = createEClass(RULE);
+    createEAttribute(ruleEClass, RULE__NAME);
+    createEAttribute(ruleEClass, RULE__TITLE);
+    createEAttribute(ruleEClass, RULE__DESCRIPTION);
+    createEAttribute(ruleEClass, RULE__RULE_LOCATION);
+
     // Create enums
+    onEventTypeEEnum = createEEnum(ON_EVENT_TYPE);
     booleanDefEEnum = createEEnum(BOOLEAN_DEF);
     workflowEventTypeEEnum = createEEnum(WORKFLOW_EVENT_TYPE);
     reviewBlockingTypeEEnum = createEEnum(REVIEW_BLOCKING_TYPE);
+    ruleLocationEEnum = createEEnum(RULE_LOCATION);
   }
 
   /**
@@ -2176,6 +2554,11 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     layoutDefEClass.getESuperTypes().add(this.getLayoutType());
     layoutCopyEClass.getESuperTypes().add(this.getLayoutType());
     compositeEClass.getESuperTypes().add(this.getLayoutItem());
+    ruleDefEClass.getESuperTypes().add(this.getRule());
+    createTaskRuleEClass.getESuperTypes().add(this.getRule());
+    createDecisionReviewRuleEClass.getESuperTypes().add(this.getReviewRule());
+    createPeerReviewRuleEClass.getESuperTypes().add(this.getReviewRule());
+    reviewRuleEClass.getESuperTypes().add(this.getRule());
 
     // Initialize classes and features; add operations and parameters
     initEClass(atsDslEClass, AtsDsl.class, "AtsDsl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2184,6 +2567,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEReference(getAtsDsl_ActionableItemDef(), this.getActionableItemDef(), null, "actionableItemDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_WorkDef(), this.getWorkDef(), null, "workDef", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getAtsDsl_Program(), this.getProgramDef(), null, "program", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getAtsDsl_Rule(), this.getRule(), null, "rule", null, 0, -1, AtsDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(userDefEClass, UserDef.class, "UserDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUserDef_Name(), ecorePackage.getEString(), "name", null, 0, 1, UserDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -2232,6 +2616,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getTeamDef_TeamWorkflowArtifactType(), ecorePackage.getEString(), "teamWorkflowArtifactType", null, 0, 1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTeamDef_AccessContextId(), ecorePackage.getEString(), "accessContextId", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Version(), this.getVersionDef(), null, "version", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getTeamDef_Rules(), ecorePackage.getEString(), "rules", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTeamDef_Children(), this.getTeamDef(), null, "children", null, 0, -1, TeamDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(actionableItemDefEClass, ActionableItemDef.class, "ActionableItemDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2246,6 +2631,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getActionableItemDef_StaticId(), ecorePackage.getEString(), "staticId", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_TeamDef(), ecorePackage.getEString(), "teamDef", null, 0, 1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getActionableItemDef_AccessContextId(), ecorePackage.getEString(), "accessContextId", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getActionableItemDef_Rules(), ecorePackage.getEString(), "rules", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getActionableItemDef_Children(), this.getActionableItemDef(), null, "children", null, 0, -1, ActionableItemDef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(versionDefEClass, VersionDef.class, "VersionDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -2362,7 +2748,43 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEReference(getComposite_LayoutItems(), this.getLayoutItem(), null, "layoutItems", null, 0, -1, Composite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getComposite_Options(), ecorePackage.getEString(), "options", null, 0, -1, Composite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+    initEClass(ruleDefEClass, RuleDef.class, "RuleDef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(createTaskRuleEClass, CreateTaskRule.class, "CreateTaskRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getCreateTaskRule_Assignees(), this.getUserDef(), null, "assignees", null, 0, -1, CreateTaskRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCreateTaskRule_RelatedState(), ecorePackage.getEString(), "relatedState", null, 0, 1, CreateTaskRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCreateTaskRule_TaskWorkDef(), ecorePackage.getEString(), "taskWorkDef", null, 0, 1, CreateTaskRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCreateTaskRule_OnEvent(), this.getOnEventType(), "onEvent", null, 0, -1, CreateTaskRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCreateTaskRule_Attributes(), this.getAttrDef(), null, "attributes", null, 0, -1, CreateTaskRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(createDecisionReviewRuleEClass, CreateDecisionReviewRule.class, "CreateDecisionReviewRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getCreateDecisionReviewRule_AutoTransitionToDecision(), this.getBooleanDef(), "autoTransitionToDecision", null, 0, 1, CreateDecisionReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getCreateDecisionReviewRule_Options(), this.getDecisionReviewOpt(), null, "options", null, 0, -1, CreateDecisionReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(createPeerReviewRuleEClass, CreatePeerReviewRule.class, "CreatePeerReviewRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getCreatePeerReviewRule_Location(), ecorePackage.getEString(), "location", null, 0, 1, CreatePeerReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(reviewRuleEClass, ReviewRule.class, "ReviewRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getReviewRule_Assignees(), this.getUserDef(), null, "assignees", null, 0, -1, ReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getReviewRule_RelatedToState(), ecorePackage.getEString(), "relatedToState", null, 0, 1, ReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getReviewRule_BlockingType(), this.getReviewBlockingType(), "blockingType", null, 0, 1, ReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getReviewRule_StateEvent(), this.getWorkflowEventType(), "stateEvent", null, 0, 1, ReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getReviewRule_Attributes(), this.getAttrDef(), null, "attributes", null, 0, -1, ReviewRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(ruleEClass, Rule.class, "Rule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRule_Name(), ecorePackage.getEString(), "name", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRule_Title(), ecorePackage.getEString(), "title", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRule_Description(), ecorePackage.getEString(), "description", null, 0, 1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRule_RuleLocation(), this.getRuleLocation(), "ruleLocation", null, 0, -1, Rule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
     // Initialize enums and add enum literals
+    initEEnum(onEventTypeEEnum, OnEventType.class, "OnEventType");
+    addEEnumLiteral(onEventTypeEEnum, OnEventType.CREATE_BRANCH);
+    addEEnumLiteral(onEventTypeEEnum, OnEventType.COMMIT_BRANCH);
+    addEEnumLiteral(onEventTypeEEnum, OnEventType.CREATE_WORKFLOW);
+    addEEnumLiteral(onEventTypeEEnum, OnEventType.TRANSITION_TO);
+    addEEnumLiteral(onEventTypeEEnum, OnEventType.MANUAL);
+
     initEEnum(booleanDefEEnum, BooleanDef.class, "BooleanDef");
     addEEnumLiteral(booleanDefEEnum, BooleanDef.NONE);
     addEEnumLiteral(booleanDefEEnum, BooleanDef.TRUE);
@@ -2376,6 +2798,11 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEEnum(reviewBlockingTypeEEnum, ReviewBlockingType.class, "ReviewBlockingType");
     addEEnumLiteral(reviewBlockingTypeEEnum, ReviewBlockingType.TRANSITION);
     addEEnumLiteral(reviewBlockingTypeEEnum, ReviewBlockingType.COMMIT);
+
+    initEEnum(ruleLocationEEnum, RuleLocation.class, "RuleLocation");
+    addEEnumLiteral(ruleLocationEEnum, RuleLocation.STATE_DEFINITION);
+    addEEnumLiteral(ruleLocationEEnum, RuleLocation.TEAM_DEFINITION);
+    addEEnumLiteral(ruleLocationEEnum, RuleLocation.ACTIONABLE_ITEM);
 
     // Create resource
     createResource(eNS_URI);

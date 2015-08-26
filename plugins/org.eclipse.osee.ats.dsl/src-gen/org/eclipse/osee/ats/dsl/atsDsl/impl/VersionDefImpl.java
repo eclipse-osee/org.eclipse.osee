@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getGuid <em>Guid</em>}</li>
@@ -37,7 +38,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

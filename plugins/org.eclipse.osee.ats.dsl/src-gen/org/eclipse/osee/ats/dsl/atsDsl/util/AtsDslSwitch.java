@@ -50,7 +50,7 @@ public class AtsDslSwitch<T> extends Switch<T>
    * Checks whether this is a switch for the given package.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @parameter ePackage the package in question.
+   * @param ePackage the package in question.
    * @return whether this is a switch for the given package.
    * @generated
    */
@@ -288,6 +288,55 @@ public class AtsDslSwitch<T> extends Switch<T>
         Composite composite = (Composite)theEObject;
         T result = caseComposite(composite);
         if (result == null) result = caseLayoutItem(composite);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.RULE_DEF:
+      {
+        RuleDef ruleDef = (RuleDef)theEObject;
+        T result = caseRuleDef(ruleDef);
+        if (result == null) result = caseRule(ruleDef);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.CREATE_TASK_RULE:
+      {
+        CreateTaskRule createTaskRule = (CreateTaskRule)theEObject;
+        T result = caseCreateTaskRule(createTaskRule);
+        if (result == null) result = caseRule(createTaskRule);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.CREATE_DECISION_REVIEW_RULE:
+      {
+        CreateDecisionReviewRule createDecisionReviewRule = (CreateDecisionReviewRule)theEObject;
+        T result = caseCreateDecisionReviewRule(createDecisionReviewRule);
+        if (result == null) result = caseReviewRule(createDecisionReviewRule);
+        if (result == null) result = caseRule(createDecisionReviewRule);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.CREATE_PEER_REVIEW_RULE:
+      {
+        CreatePeerReviewRule createPeerReviewRule = (CreatePeerReviewRule)theEObject;
+        T result = caseCreatePeerReviewRule(createPeerReviewRule);
+        if (result == null) result = caseReviewRule(createPeerReviewRule);
+        if (result == null) result = caseRule(createPeerReviewRule);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.REVIEW_RULE:
+      {
+        ReviewRule reviewRule = (ReviewRule)theEObject;
+        T result = caseReviewRule(reviewRule);
+        if (result == null) result = caseRule(reviewRule);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case AtsDslPackage.RULE:
+      {
+        Rule rule = (Rule)theEObject;
+        T result = caseRule(rule);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -771,6 +820,102 @@ public class AtsDslSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseComposite(Composite object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule Def</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule Def</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRuleDef(RuleDef object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Create Task Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Create Task Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCreateTaskRule(CreateTaskRule object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Create Decision Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Create Decision Review Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCreateDecisionReviewRule(CreateDecisionReviewRule object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Create Peer Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Create Peer Review Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCreatePeerReviewRule(CreatePeerReviewRule object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Review Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseReviewRule(ReviewRule object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Rule</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Rule</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRule(Rule object)
   {
     return null;
   }

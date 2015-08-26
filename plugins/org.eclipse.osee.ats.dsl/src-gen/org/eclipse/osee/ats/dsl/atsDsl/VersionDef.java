@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getGuid <em>Guid</em>}</li>
@@ -25,7 +26,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchUuid <em>Baseline Branch Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef()
  * @model

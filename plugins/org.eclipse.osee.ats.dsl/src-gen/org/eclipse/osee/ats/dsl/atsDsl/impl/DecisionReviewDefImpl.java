@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewDefImpl#getTitle <em>Title</em>}</li>
@@ -44,7 +45,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewDefImpl#getAutoTransitionToDecision <em>Auto Transition To Decision</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.DecisionReviewDefImpl#getOptions <em>Options</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

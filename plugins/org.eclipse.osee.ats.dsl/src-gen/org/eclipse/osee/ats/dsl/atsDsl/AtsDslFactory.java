@@ -293,6 +293,60 @@ public interface AtsDslFactory extends EFactory
   Composite createComposite();
 
   /**
+   * Returns a new object of class '<em>Rule Def</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule Def</em>'.
+   * @generated
+   */
+  RuleDef createRuleDef();
+
+  /**
+   * Returns a new object of class '<em>Create Task Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Create Task Rule</em>'.
+   * @generated
+   */
+  CreateTaskRule createCreateTaskRule();
+
+  /**
+   * Returns a new object of class '<em>Create Decision Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Create Decision Review Rule</em>'.
+   * @generated
+   */
+  CreateDecisionReviewRule createCreateDecisionReviewRule();
+
+  /**
+   * Returns a new object of class '<em>Create Peer Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Create Peer Review Rule</em>'.
+   * @generated
+   */
+  CreatePeerReviewRule createCreatePeerReviewRule();
+
+  /**
+   * Returns a new object of class '<em>Review Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Review Rule</em>'.
+   * @generated
+   */
+  ReviewRule createReviewRule();
+
+  /**
+   * Returns a new object of class '<em>Rule</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Rule</em>'.
+   * @generated
+   */
+  Rule createRule();
+
+  /**
    * Returns the package supported by this factory.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

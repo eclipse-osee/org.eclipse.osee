@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetRefImpl#getWidget <em>Widget</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

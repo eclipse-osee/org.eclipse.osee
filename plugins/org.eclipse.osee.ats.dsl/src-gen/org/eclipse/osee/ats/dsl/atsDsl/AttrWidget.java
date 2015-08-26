@@ -11,11 +11,11 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AttrWidget#getAttributeName <em>Attribute Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AttrWidget#getOption <em>Option</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAttrWidget()
  * @model

@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamDefOption <em>Team Def Option</em>}</li>
@@ -28,9 +29,9 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getChildren <em>Children</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef()
  * @model
@@ -334,6 +335,22 @@ public interface TeamDef extends EObject
    * @generated
    */
   EList<VersionDef> getVersion();
+
+  /**
+   * Returns the value of the '<em><b>Rules</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Rules</em>' attribute list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rules</em>' attribute list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getTeamDef_Rules()
+   * @model unique="false"
+   * @generated
+   */
+  EList<String> getRules();
 
   /**
    * Returns the value of the '<em><b>Children</b></em>' containment reference list.

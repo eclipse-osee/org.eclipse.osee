@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.ToState;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getDescription <em>Description</em>}</li>
@@ -46,7 +47,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.ToState;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getColor <em>Color</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.StateDefImpl#getLayout <em>Layout</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.dsl.atsDsl.AttrFullDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl#getUuid <em>Uuid</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrFullDefImpl#getValues <em>Values</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

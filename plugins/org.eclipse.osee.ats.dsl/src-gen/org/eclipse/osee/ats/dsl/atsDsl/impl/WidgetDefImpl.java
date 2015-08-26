@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getAttributeName <em>Attribute Name</em>}</li>
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getMinConstraint <em>Min Constraint</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WidgetDefImpl#getMaxConstraint <em>Max Constraint</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

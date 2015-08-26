@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrWidgetImpl#getAttributeName <em>Attribute Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AttrWidgetImpl#getOption <em>Option</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.FollowupRefImpl#getAssigneeRefs <em>Assignee Refs</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

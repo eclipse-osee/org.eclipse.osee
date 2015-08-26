@@ -95,6 +95,12 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
       case AtsDslPackage.LAYOUT_COPY: return createLayoutCopy();
       case AtsDslPackage.LAYOUT_ITEM: return createLayoutItem();
       case AtsDslPackage.COMPOSITE: return createComposite();
+      case AtsDslPackage.RULE_DEF: return createRuleDef();
+      case AtsDslPackage.CREATE_TASK_RULE: return createCreateTaskRule();
+      case AtsDslPackage.CREATE_DECISION_REVIEW_RULE: return createCreateDecisionReviewRule();
+      case AtsDslPackage.CREATE_PEER_REVIEW_RULE: return createCreatePeerReviewRule();
+      case AtsDslPackage.REVIEW_RULE: return createReviewRule();
+      case AtsDslPackage.RULE: return createRule();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -110,12 +116,16 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case AtsDslPackage.ON_EVENT_TYPE:
+        return createOnEventTypeFromString(eDataType, initialValue);
       case AtsDslPackage.BOOLEAN_DEF:
         return createBooleanDefFromString(eDataType, initialValue);
       case AtsDslPackage.WORKFLOW_EVENT_TYPE:
         return createWorkflowEventTypeFromString(eDataType, initialValue);
       case AtsDslPackage.REVIEW_BLOCKING_TYPE:
         return createReviewBlockingTypeFromString(eDataType, initialValue);
+      case AtsDslPackage.RULE_LOCATION:
+        return createRuleLocationFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -131,12 +141,16 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case AtsDslPackage.ON_EVENT_TYPE:
+        return convertOnEventTypeToString(eDataType, instanceValue);
       case AtsDslPackage.BOOLEAN_DEF:
         return convertBooleanDefToString(eDataType, instanceValue);
       case AtsDslPackage.WORKFLOW_EVENT_TYPE:
         return convertWorkflowEventTypeToString(eDataType, instanceValue);
       case AtsDslPackage.REVIEW_BLOCKING_TYPE:
         return convertReviewBlockingTypeToString(eDataType, instanceValue);
+      case AtsDslPackage.RULE_LOCATION:
+        return convertRuleLocationToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -477,6 +491,94 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public RuleDef createRuleDef()
+  {
+    RuleDefImpl ruleDef = new RuleDefImpl();
+    return ruleDef;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CreateTaskRule createCreateTaskRule()
+  {
+    CreateTaskRuleImpl createTaskRule = new CreateTaskRuleImpl();
+    return createTaskRule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CreateDecisionReviewRule createCreateDecisionReviewRule()
+  {
+    CreateDecisionReviewRuleImpl createDecisionReviewRule = new CreateDecisionReviewRuleImpl();
+    return createDecisionReviewRule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CreatePeerReviewRule createCreatePeerReviewRule()
+  {
+    CreatePeerReviewRuleImpl createPeerReviewRule = new CreatePeerReviewRuleImpl();
+    return createPeerReviewRule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ReviewRule createReviewRule()
+  {
+    ReviewRuleImpl reviewRule = new ReviewRuleImpl();
+    return reviewRule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Rule createRule()
+  {
+    RuleImpl rule = new RuleImpl();
+    return rule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OnEventType createOnEventTypeFromString(EDataType eDataType, String initialValue)
+  {
+    OnEventType result = OnEventType.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertOnEventTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public BooleanDef createBooleanDefFromString(EDataType eDataType, String initialValue)
   {
     BooleanDef result = BooleanDef.get(initialValue);
@@ -534,6 +636,28 @@ public class AtsDslFactoryImpl extends EFactoryImpl implements AtsDslFactory
    * @generated
    */
   public String convertReviewBlockingTypeToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RuleLocation createRuleLocationFromString(EDataType eDataType, String initialValue)
+  {
+    RuleLocation result = RuleLocation.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertRuleLocationToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

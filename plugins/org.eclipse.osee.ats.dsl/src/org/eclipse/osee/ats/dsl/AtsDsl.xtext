@@ -3,11 +3,11 @@ grammar org.eclipse.osee.ats.dsl.AtsDsl with org.eclipse.xtext.common.Terminals
 generate atsDsl "http://www.eclipse.org/osee/ats/dsl/AtsDsl"
 
 AtsDsl:
-	('userDefinition' userDef+=UserDef)*
+	(('userDefinition' userDef+=UserDef)*
 	('teamDefinition' teamDef+=TeamDef)*
 	('actionableItem' actionableItemDef+=ActionableItemDef)*
 	('workDefinition' workDef+=WorkDef)*
-	('program' program+=ProgramDef)*;
+	('program' program+=ProgramDef)*) | ('rule' rule+=Rule)*;
 
 USER_DEF_REFERENCE:
 	STRING;
@@ -39,6 +39,9 @@ AttrFullDef:
 		('value' values+=STRING)+
 	'}';
 
+enum OnEventType:
+	CreateBranch | CommitBranch | CreateWorkflow | TransitionTo | Manual;
+	
 PROGRAM_REFERENCE:
 	STRING;
 	
@@ -72,6 +75,7 @@ TeamDef:
 		('teamWorkflowArtifactType' teamWorkflowArtifactType=STRING)?
 		('accessContextId' accessContextId+=STRING)*
 		('version' version+=VersionDef)*
+	   ('rule' rules+=RuleRef)*
 		('children' '{'
 		   ('teamDefinition' children+=TeamDef)+
 		   '}'
@@ -93,6 +97,7 @@ ActionableItemDef:
 		('staticId' staticId+=STRING)*
 		('team' teamDef=STRING)?
 		('accessContextId' accessContextId+=STRING)*
+	   ('rule' rules+=RuleRef)*
 		('children' '{'
 		   ('actionableItem' children+=ActionableItemDef)+
 		   '}'
@@ -153,7 +158,7 @@ StateDef:
 	'type' pageType=PageType
 	'ordinal' ordinal=INT
 	(transitionStates+=ToState)*
-	('rule' rules+=Rule)*
+	('rule' rules+=RuleRef)*
 	(decisionReviews+=DecisionReviewRef)*
 	(peerReviews+=PeerReviewRef)*
 	('percentWeight' percentWeight=INT)?
@@ -303,12 +308,67 @@ TRANSITION_OPTION_NAME:
 TransitionOption:
 	'AsDefault' | 'OverrideAttributeValidation' | TRANSITION_OPTION_NAME;
 
-RULE_NAME:
+
+RULE_NAME_REFERENCE:
 	STRING;
 	
+enum RuleLocation:
+	StateDefinition | TeamDefinition | ActionableItem;
+	
 	// STRING is for future expansion
+	
+RuleDef returns RuleDef:
+	('name' name=RULE_NAME_REFERENCE)
+	'{'
+	('title' title=STRING)
+	('description' description=STRING)?
+	('ruleLocation' ruleLocation+=RuleLocation)+
+	 '}';
+	
+CreateTaskRuleDef returns CreateTaskRule:
+	('name' name=RULE_NAME_REFERENCE)
+	'{'
+	('title' title=STRING)
+	('description' description=STRING)?
+	('ruleLocation' ruleLocation+=RuleLocation)+
+	('assignees' assignees+=UserDef)*
+	('relatedState' relatedState=STATE_NAME_REFERENCE)?
+	('taskWorkDef' taskWorkDef=STRING)?
+	('onEvent' onEvent+=OnEventType)*
+	('attribute' attributes+=AttrDef)*
+	'}';
+
+CreateDecisionReviewRuleDef returns CreateDecisionReviewRule:
+	('name' name=RULE_NAME_REFERENCE)
+	'{'
+	('title' title=STRING)
+	('description' description=STRING)?
+	('ruleLocation' ruleLocation+=RuleLocation)+
+	('assignees' assignees+=UserDef)*
+	('relatedToState' relatedToState=STATE_NAME_REFERENCE)?
+	'blockingType' blockingType=ReviewBlockingType
+	'onEvent' stateEvent=WorkflowEventType
+	('autoTransitionToDecision' autoTransitionToDecision=BooleanDef)
+	(options+=DecisionReviewOpt)+
+	('attribute' attributes+=AttrDef)*
+   '}';
+	
+CreatePeerReviewRuleDef returns CreatePeerReviewRule:
+	('name' name=RULE_NAME_REFERENCE)
+	'{'
+	('title' title=STRING)
+	('description' description=STRING)?
+	('ruleLocation' ruleLocation+=RuleLocation)+
+	('assignees' assignees+=UserDef)*
+	('relatedToState' relatedToState=STATE_NAME_REFERENCE)?
+	('location' location=STRING)?
+	'blockingType' blockingType=ReviewBlockingType
+	'onEvent' stateEvent=WorkflowEventType
+	('attribute' attributes+=AttrDef)*
+   '}';
+	
 // WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
-Rule:
+RuleRef:
 	'RequireStateHourSpentPrompt' |
 	'AddDecisionValidateBlockingReview' |
 	'AddDecisionValidateNonBlockingReview' |
@@ -321,7 +381,17 @@ Rule:
 	'AllowEditToAll' |
 	'AllowAssigneeToAll' |
 	'AllowTransitionWithoutTaskCompletion' |
-	RULE_NAME;
+  	RULE_NAME_REFERENCE;
+
+ReviewRule:
+	(CreateDecisionReviewRuleDef | CreatePeerReviewRuleDef)
+;
+
+Rule:
+	( RuleDef | CreateTaskRuleDef | ReviewRule);
+
+//RuleRef:
+//	( Rule | bool?=Boolean_Rule); //(cardinality=('?'|'+'|'*'));
 
 WIDGET_OPTION_NAME:
 	STRING;

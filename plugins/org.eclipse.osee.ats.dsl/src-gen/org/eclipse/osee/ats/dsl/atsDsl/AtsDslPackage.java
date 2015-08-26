@@ -113,13 +113,22 @@ public interface AtsDslPackage extends EPackage
   int ATS_DSL__PROGRAM = 4;
 
   /**
+   * The feature id for the '<em><b>Rule</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATS_DSL__RULE = 5;
+
+  /**
    * The number of structural features of the '<em>Ats Dsl</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ATS_DSL_FEATURE_COUNT = 5;
+  int ATS_DSL_FEATURE_COUNT = 6;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl <em>User Def</em>}' class.
@@ -552,13 +561,22 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__VERSION = 13;
 
   /**
+   * The feature id for the '<em><b>Rules</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEAM_DEF__RULES = 14;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__CHILDREN = 14;
+  int TEAM_DEF__CHILDREN = 15;
 
   /**
    * The number of structural features of the '<em>Team Def</em>' class.
@@ -567,7 +585,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF_FEATURE_COUNT = 15;
+  int TEAM_DEF_FEATURE_COUNT = 16;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl <em>Actionable Item Def</em>}' class.
@@ -679,13 +697,22 @@ public interface AtsDslPackage extends EPackage
   int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 10;
 
   /**
+   * The feature id for the '<em><b>Rules</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTIONABLE_ITEM_DEF__RULES = 11;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__CHILDREN = 11;
+  int ACTIONABLE_ITEM_DEF__CHILDREN = 12;
 
   /**
    * The number of structural features of the '<em>Actionable Item Def</em>' class.
@@ -694,7 +721,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 12;
+  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 13;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl <em>Version Def</em>}' class.
@@ -1744,6 +1771,553 @@ public interface AtsDslPackage extends EPackage
   int COMPOSITE_FEATURE_COUNT = LAYOUT_ITEM_FEATURE_COUNT + 3;
 
   /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.RuleImpl <em>Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.RuleImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRule()
+   * @generated
+   */
+  int RULE = 35;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE__NAME = 0;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE__TITLE = 1;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE__DESCRIPTION = 2;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE__RULE_LOCATION = 3;
+
+  /**
+   * The number of structural features of the '<em>Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_FEATURE_COUNT = 4;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.RuleDefImpl <em>Rule Def</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.RuleDefImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRuleDef()
+   * @generated
+   */
+  int RULE_DEF = 30;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_DEF__NAME = RULE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_DEF__TITLE = RULE__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_DEF__DESCRIPTION = RULE__DESCRIPTION;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_DEF__RULE_LOCATION = RULE__RULE_LOCATION;
+
+  /**
+   * The number of structural features of the '<em>Rule Def</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RULE_DEF_FEATURE_COUNT = RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreateTaskRuleImpl <em>Create Task Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreateTaskRuleImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreateTaskRule()
+   * @generated
+   */
+  int CREATE_TASK_RULE = 31;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__NAME = RULE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__TITLE = RULE__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__DESCRIPTION = RULE__DESCRIPTION;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__RULE_LOCATION = RULE__RULE_LOCATION;
+
+  /**
+   * The feature id for the '<em><b>Assignees</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__ASSIGNEES = RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Related State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__RELATED_STATE = RULE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Task Work Def</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__TASK_WORK_DEF = RULE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>On Event</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__ON_EVENT = RULE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE__ATTRIBUTES = RULE_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Create Task Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_TASK_RULE_FEATURE_COUNT = RULE_FEATURE_COUNT + 5;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ReviewRuleImpl <em>Review Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.ReviewRuleImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getReviewRule()
+   * @generated
+   */
+  int REVIEW_RULE = 34;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__NAME = RULE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__TITLE = RULE__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__DESCRIPTION = RULE__DESCRIPTION;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__RULE_LOCATION = RULE__RULE_LOCATION;
+
+  /**
+   * The feature id for the '<em><b>Assignees</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__ASSIGNEES = RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Related To State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__RELATED_TO_STATE = RULE_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Blocking Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__BLOCKING_TYPE = RULE_FEATURE_COUNT + 2;
+
+  /**
+   * The feature id for the '<em><b>State Event</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__STATE_EVENT = RULE_FEATURE_COUNT + 3;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE__ATTRIBUTES = RULE_FEATURE_COUNT + 4;
+
+  /**
+   * The number of structural features of the '<em>Review Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REVIEW_RULE_FEATURE_COUNT = RULE_FEATURE_COUNT + 5;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreateDecisionReviewRuleImpl <em>Create Decision Review Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreateDecisionReviewRuleImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreateDecisionReviewRule()
+   * @generated
+   */
+  int CREATE_DECISION_REVIEW_RULE = 32;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__NAME = REVIEW_RULE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__TITLE = REVIEW_RULE__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__DESCRIPTION = REVIEW_RULE__DESCRIPTION;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__RULE_LOCATION = REVIEW_RULE__RULE_LOCATION;
+
+  /**
+   * The feature id for the '<em><b>Assignees</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__ASSIGNEES = REVIEW_RULE__ASSIGNEES;
+
+  /**
+   * The feature id for the '<em><b>Related To State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__RELATED_TO_STATE = REVIEW_RULE__RELATED_TO_STATE;
+
+  /**
+   * The feature id for the '<em><b>Blocking Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__BLOCKING_TYPE = REVIEW_RULE__BLOCKING_TYPE;
+
+  /**
+   * The feature id for the '<em><b>State Event</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__STATE_EVENT = REVIEW_RULE__STATE_EVENT;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__ATTRIBUTES = REVIEW_RULE__ATTRIBUTES;
+
+  /**
+   * The feature id for the '<em><b>Auto Transition To Decision</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__AUTO_TRANSITION_TO_DECISION = REVIEW_RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Options</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE__OPTIONS = REVIEW_RULE_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Create Decision Review Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_DECISION_REVIEW_RULE_FEATURE_COUNT = REVIEW_RULE_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreatePeerReviewRuleImpl <em>Create Peer Review Rule</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreatePeerReviewRuleImpl
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreatePeerReviewRule()
+   * @generated
+   */
+  int CREATE_PEER_REVIEW_RULE = 33;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__NAME = REVIEW_RULE__NAME;
+
+  /**
+   * The feature id for the '<em><b>Title</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__TITLE = REVIEW_RULE__TITLE;
+
+  /**
+   * The feature id for the '<em><b>Description</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__DESCRIPTION = REVIEW_RULE__DESCRIPTION;
+
+  /**
+   * The feature id for the '<em><b>Rule Location</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__RULE_LOCATION = REVIEW_RULE__RULE_LOCATION;
+
+  /**
+   * The feature id for the '<em><b>Assignees</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__ASSIGNEES = REVIEW_RULE__ASSIGNEES;
+
+  /**
+   * The feature id for the '<em><b>Related To State</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__RELATED_TO_STATE = REVIEW_RULE__RELATED_TO_STATE;
+
+  /**
+   * The feature id for the '<em><b>Blocking Type</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__BLOCKING_TYPE = REVIEW_RULE__BLOCKING_TYPE;
+
+  /**
+   * The feature id for the '<em><b>State Event</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__STATE_EVENT = REVIEW_RULE__STATE_EVENT;
+
+  /**
+   * The feature id for the '<em><b>Attributes</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__ATTRIBUTES = REVIEW_RULE__ATTRIBUTES;
+
+  /**
+   * The feature id for the '<em><b>Location</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE__LOCATION = REVIEW_RULE_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Create Peer Review Rule</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CREATE_PEER_REVIEW_RULE_FEATURE_COUNT = REVIEW_RULE_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.OnEventType <em>On Event Type</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.OnEventType
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getOnEventType()
+   * @generated
+   */
+  int ON_EVENT_TYPE = 36;
+
+  /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.BooleanDef <em>Boolean Def</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1751,7 +2325,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getBooleanDef()
    * @generated
    */
-  int BOOLEAN_DEF = 30;
+  int BOOLEAN_DEF = 37;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType <em>Workflow Event Type</em>}' enum.
@@ -1761,7 +2335,7 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getWorkflowEventType()
    * @generated
    */
-  int WORKFLOW_EVENT_TYPE = 31;
+  int WORKFLOW_EVENT_TYPE = 38;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewBlockingType <em>Review Blocking Type</em>}' enum.
@@ -1771,7 +2345,17 @@ public interface AtsDslPackage extends EPackage
    * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getReviewBlockingType()
    * @generated
    */
-  int REVIEW_BLOCKING_TYPE = 32;
+  int REVIEW_BLOCKING_TYPE = 39;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.RuleLocation <em>Rule Location</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.ats.dsl.atsDsl.RuleLocation
+   * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRuleLocation()
+   * @generated
+   */
+  int RULE_LOCATION = 40;
 
 
   /**
@@ -1838,6 +2422,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EReference getAtsDsl_Program();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getRule <em>Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getRule()
+   * @see #getAtsDsl()
+   * @generated
+   */
+  EReference getAtsDsl_Rule();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.UserDef <em>User Def</em>}'.
@@ -2284,6 +2879,17 @@ public interface AtsDslPackage extends EPackage
   EReference getTeamDef_Version();
 
   /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRules <em>Rules</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Rules</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getRules()
+   * @see #getTeamDef()
+   * @generated
+   */
+  EAttribute getTeamDef_Rules();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getChildren <em>Children</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2424,6 +3030,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getActionableItemDef_AccessContextId();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getRules <em>Rules</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Rules</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getRules()
+   * @see #getActionableItemDef()
+   * @generated
+   */
+  EAttribute getActionableItemDef_Rules();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getChildren <em>Children</em>}'.
@@ -3439,6 +4056,263 @@ public interface AtsDslPackage extends EPackage
   EAttribute getComposite_Options();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.RuleDef <em>Rule Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Rule Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.RuleDef
+   * @generated
+   */
+  EClass getRuleDef();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule <em>Create Task Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Create Task Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule
+   * @generated
+   */
+  EClass getCreateTaskRule();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getAssignees <em>Assignees</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Assignees</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getAssignees()
+   * @see #getCreateTaskRule()
+   * @generated
+   */
+  EReference getCreateTaskRule_Assignees();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getRelatedState <em>Related State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Related State</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getRelatedState()
+   * @see #getCreateTaskRule()
+   * @generated
+   */
+  EAttribute getCreateTaskRule_RelatedState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getTaskWorkDef <em>Task Work Def</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Task Work Def</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getTaskWorkDef()
+   * @see #getCreateTaskRule()
+   * @generated
+   */
+  EAttribute getCreateTaskRule_TaskWorkDef();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getOnEvent <em>On Event</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>On Event</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getOnEvent()
+   * @see #getCreateTaskRule()
+   * @generated
+   */
+  EAttribute getCreateTaskRule_OnEvent();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getAttributes <em>Attributes</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Attributes</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule#getAttributes()
+   * @see #getCreateTaskRule()
+   * @generated
+   */
+  EReference getCreateTaskRule_Attributes();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule <em>Create Decision Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Create Decision Review Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule
+   * @generated
+   */
+  EClass getCreateDecisionReviewRule();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule#getAutoTransitionToDecision <em>Auto Transition To Decision</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Auto Transition To Decision</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule#getAutoTransitionToDecision()
+   * @see #getCreateDecisionReviewRule()
+   * @generated
+   */
+  EAttribute getCreateDecisionReviewRule_AutoTransitionToDecision();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule#getOptions <em>Options</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Options</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreateDecisionReviewRule#getOptions()
+   * @see #getCreateDecisionReviewRule()
+   * @generated
+   */
+  EReference getCreateDecisionReviewRule_Options();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule <em>Create Peer Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Create Peer Review Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule
+   * @generated
+   */
+  EClass getCreatePeerReviewRule();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule#getLocation <em>Location</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Location</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.CreatePeerReviewRule#getLocation()
+   * @see #getCreatePeerReviewRule()
+   * @generated
+   */
+  EAttribute getCreatePeerReviewRule_Location();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule <em>Review Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Review Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule
+   * @generated
+   */
+  EClass getReviewRule();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getAssignees <em>Assignees</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Assignees</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getAssignees()
+   * @see #getReviewRule()
+   * @generated
+   */
+  EReference getReviewRule_Assignees();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getRelatedToState <em>Related To State</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Related To State</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getRelatedToState()
+   * @see #getReviewRule()
+   * @generated
+   */
+  EAttribute getReviewRule_RelatedToState();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getBlockingType <em>Blocking Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Blocking Type</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getBlockingType()
+   * @see #getReviewRule()
+   * @generated
+   */
+  EAttribute getReviewRule_BlockingType();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getStateEvent <em>State Event</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>State Event</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getStateEvent()
+   * @see #getReviewRule()
+   * @generated
+   */
+  EAttribute getReviewRule_StateEvent();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getAttributes <em>Attributes</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Attributes</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ReviewRule#getAttributes()
+   * @see #getReviewRule()
+   * @generated
+   */
+  EReference getReviewRule_Attributes();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule <em>Rule</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Rule</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule
+   * @generated
+   */
+  EClass getRule();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule#getName()
+   * @see #getRule()
+   * @generated
+   */
+  EAttribute getRule_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule#getTitle <em>Title</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Title</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule#getTitle()
+   * @see #getRule()
+   * @generated
+   */
+  EAttribute getRule_Title();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule#getDescription <em>Description</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Description</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule#getDescription()
+   * @see #getRule()
+   * @generated
+   */
+  EAttribute getRule_Description();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.Rule#getRuleLocation <em>Rule Location</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Rule Location</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.Rule#getRuleLocation()
+   * @see #getRule()
+   * @generated
+   */
+  EAttribute getRule_RuleLocation();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.ats.dsl.atsDsl.OnEventType <em>On Event Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>On Event Type</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.OnEventType
+   * @generated
+   */
+  EEnum getOnEventType();
+
+  /**
    * Returns the meta object for enum '{@link org.eclipse.osee.ats.dsl.atsDsl.BooleanDef <em>Boolean Def</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3467,6 +4341,16 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EEnum getReviewBlockingType();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.ats.dsl.atsDsl.RuleLocation <em>Rule Location</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Rule Location</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.RuleLocation
+   * @generated
+   */
+  EEnum getRuleLocation();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -3540,6 +4424,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EReference ATS_DSL__PROGRAM = eINSTANCE.getAtsDsl_Program();
+
+    /**
+     * The meta object literal for the '<em><b>Rule</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference ATS_DSL__RULE = eINSTANCE.getAtsDsl_Rule();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserDefImpl <em>User Def</em>}' class.
@@ -3884,6 +4776,14 @@ public interface AtsDslPackage extends EPackage
     EReference TEAM_DEF__VERSION = eINSTANCE.getTeamDef_Version();
 
     /**
+     * The meta object literal for the '<em><b>Rules</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TEAM_DEF__RULES = eINSTANCE.getTeamDef_Rules();
+
+    /**
      * The meta object literal for the '<em><b>Children</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3988,6 +4888,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = eINSTANCE.getActionableItemDef_AccessContextId();
+
+    /**
+     * The meta object literal for the '<em><b>Rules</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACTIONABLE_ITEM_DEF__RULES = eINSTANCE.getActionableItemDef_Rules();
 
     /**
      * The meta object literal for the '<em><b>Children</b></em>' containment reference list feature.
@@ -4784,6 +5692,212 @@ public interface AtsDslPackage extends EPackage
     EAttribute COMPOSITE__OPTIONS = eINSTANCE.getComposite_Options();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.RuleDefImpl <em>Rule Def</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.RuleDefImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRuleDef()
+     * @generated
+     */
+    EClass RULE_DEF = eINSTANCE.getRuleDef();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreateTaskRuleImpl <em>Create Task Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreateTaskRuleImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreateTaskRule()
+     * @generated
+     */
+    EClass CREATE_TASK_RULE = eINSTANCE.getCreateTaskRule();
+
+    /**
+     * The meta object literal for the '<em><b>Assignees</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CREATE_TASK_RULE__ASSIGNEES = eINSTANCE.getCreateTaskRule_Assignees();
+
+    /**
+     * The meta object literal for the '<em><b>Related State</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CREATE_TASK_RULE__RELATED_STATE = eINSTANCE.getCreateTaskRule_RelatedState();
+
+    /**
+     * The meta object literal for the '<em><b>Task Work Def</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CREATE_TASK_RULE__TASK_WORK_DEF = eINSTANCE.getCreateTaskRule_TaskWorkDef();
+
+    /**
+     * The meta object literal for the '<em><b>On Event</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CREATE_TASK_RULE__ON_EVENT = eINSTANCE.getCreateTaskRule_OnEvent();
+
+    /**
+     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CREATE_TASK_RULE__ATTRIBUTES = eINSTANCE.getCreateTaskRule_Attributes();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreateDecisionReviewRuleImpl <em>Create Decision Review Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreateDecisionReviewRuleImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreateDecisionReviewRule()
+     * @generated
+     */
+    EClass CREATE_DECISION_REVIEW_RULE = eINSTANCE.getCreateDecisionReviewRule();
+
+    /**
+     * The meta object literal for the '<em><b>Auto Transition To Decision</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CREATE_DECISION_REVIEW_RULE__AUTO_TRANSITION_TO_DECISION = eINSTANCE.getCreateDecisionReviewRule_AutoTransitionToDecision();
+
+    /**
+     * The meta object literal for the '<em><b>Options</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CREATE_DECISION_REVIEW_RULE__OPTIONS = eINSTANCE.getCreateDecisionReviewRule_Options();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CreatePeerReviewRuleImpl <em>Create Peer Review Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.CreatePeerReviewRuleImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getCreatePeerReviewRule()
+     * @generated
+     */
+    EClass CREATE_PEER_REVIEW_RULE = eINSTANCE.getCreatePeerReviewRule();
+
+    /**
+     * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CREATE_PEER_REVIEW_RULE__LOCATION = eINSTANCE.getCreatePeerReviewRule_Location();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ReviewRuleImpl <em>Review Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.ReviewRuleImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getReviewRule()
+     * @generated
+     */
+    EClass REVIEW_RULE = eINSTANCE.getReviewRule();
+
+    /**
+     * The meta object literal for the '<em><b>Assignees</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference REVIEW_RULE__ASSIGNEES = eINSTANCE.getReviewRule_Assignees();
+
+    /**
+     * The meta object literal for the '<em><b>Related To State</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REVIEW_RULE__RELATED_TO_STATE = eINSTANCE.getReviewRule_RelatedToState();
+
+    /**
+     * The meta object literal for the '<em><b>Blocking Type</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REVIEW_RULE__BLOCKING_TYPE = eINSTANCE.getReviewRule_BlockingType();
+
+    /**
+     * The meta object literal for the '<em><b>State Event</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REVIEW_RULE__STATE_EVENT = eINSTANCE.getReviewRule_StateEvent();
+
+    /**
+     * The meta object literal for the '<em><b>Attributes</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference REVIEW_RULE__ATTRIBUTES = eINSTANCE.getReviewRule_Attributes();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.RuleImpl <em>Rule</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.RuleImpl
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRule()
+     * @generated
+     */
+    EClass RULE = eINSTANCE.getRule();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RULE__NAME = eINSTANCE.getRule_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Title</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RULE__TITLE = eINSTANCE.getRule_Title();
+
+    /**
+     * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RULE__DESCRIPTION = eINSTANCE.getRule_Description();
+
+    /**
+     * The meta object literal for the '<em><b>Rule Location</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RULE__RULE_LOCATION = eINSTANCE.getRule_RuleLocation();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.OnEventType <em>On Event Type</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.OnEventType
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getOnEventType()
+     * @generated
+     */
+    EEnum ON_EVENT_TYPE = eINSTANCE.getOnEventType();
+
+    /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.BooleanDef <em>Boolean Def</em>}' enum.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -4812,6 +5926,16 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EEnum REVIEW_BLOCKING_TYPE = eINSTANCE.getReviewBlockingType();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.RuleLocation <em>Rule Location</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.ats.dsl.atsDsl.RuleLocation
+     * @see org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslPackageImpl#getRuleLocation()
+     * @generated
+     */
+    EEnum RULE_LOCATION = eINSTANCE.getRuleLocation();
 
   }
 

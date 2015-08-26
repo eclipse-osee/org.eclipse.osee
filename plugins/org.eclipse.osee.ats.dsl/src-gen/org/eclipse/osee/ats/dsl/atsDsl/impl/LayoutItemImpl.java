@@ -13,8 +13,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutItem;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Layout Item</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

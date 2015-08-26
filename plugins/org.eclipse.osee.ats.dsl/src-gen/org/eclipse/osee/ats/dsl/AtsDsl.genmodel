@@ -3,10 +3,17 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.osee.ats.dsl/src-gen" editDirectory="/org.eclipse.osee.ats.dsl.edit/src"
     editorDirectory="/org.eclipse.osee.ats.dsl.editor/src" modelPluginID="org.eclipse.osee.ats.dsl"
     forceOverwrite="true" modelName="AtsDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.ats.dsl.edit"
-    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.9">
+    complianceLevel="6.0" copyrightFields="false" editPluginID="org.eclipse.osee.ats.dsl.edit"
+    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.11">
   <genPackages prefix="AtsDsl" basePackage="org.eclipse.osee.ats.dsl" disposableProviderFactory="true"
       ecorePackage="AtsDsl.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//OnEventType">
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//OnEventType/CreateBranch"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//OnEventType/CommitBranch"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//OnEventType/CreateWorkflow"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//OnEventType/TransitionTo"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//OnEventType/Manual"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//BooleanDef">
       <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//BooleanDef/None"/>
       <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//BooleanDef/True"/>
@@ -21,12 +28,18 @@
       <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//ReviewBlockingType/Transition"/>
       <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//ReviewBlockingType/Commit"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//RuleLocation">
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//RuleLocation/StateDefinition"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//RuleLocation/TeamDefinition"/>
+      <genEnumLiterals ecoreEnumLiteral="AtsDsl.ecore#//RuleLocation/ActionableItem"/>
+    </genEnums>
     <genClasses ecoreClass="AtsDsl.ecore#//AtsDsl">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/userDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/teamDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/actionableItemDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/workDef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/program"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//AtsDsl/rule"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//UserDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//UserDef/name"/>
@@ -74,6 +87,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/teamWorkflowArtifactType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/accessContextId"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/rules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//TeamDef/children"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//ActionableItemDef">
@@ -88,6 +102,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/staticId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/teamDef"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/accessContextId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/rules"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ActionableItemDef/children"/>
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//VersionDef">
@@ -200,6 +215,34 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Composite/numColumns"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//Composite/layoutItems"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Composite/options"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//RuleDef"/>
+    <genClasses ecoreClass="AtsDsl.ecore#//CreateTaskRule">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//CreateTaskRule/assignees"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//CreateTaskRule/relatedState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//CreateTaskRule/taskWorkDef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//CreateTaskRule/onEvent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//CreateTaskRule/attributes"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//CreateDecisionReviewRule">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//CreateDecisionReviewRule/autoTransitionToDecision"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//CreateDecisionReviewRule/options"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//CreatePeerReviewRule">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//CreatePeerReviewRule/location"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//ReviewRule">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ReviewRule/assignees"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ReviewRule/relatedToState"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ReviewRule/blockingType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ReviewRule/stateEvent"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference AtsDsl.ecore#//ReviewRule/attributes"/>
+    </genClasses>
+    <genClasses ecoreClass="AtsDsl.ecore#//Rule">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Rule/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Rule/title"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Rule/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//Rule/ruleLocation"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

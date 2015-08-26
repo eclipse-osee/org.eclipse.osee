@@ -13,8 +13,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>User Ref</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

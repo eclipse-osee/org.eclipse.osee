@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
 import org.eclipse.osee.ats.dsl.atsDsl.ProgramDef;
+import org.eclipse.osee.ats.dsl.atsDsl.Rule;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
@@ -30,14 +31,15 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getUserDef <em>User Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getActionableItemDef <em>Actionable Item Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getWorkDef <em>Work Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getProgram <em>Program</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslImpl#getRule <em>Rule</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -92,6 +94,16 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
    * @ordered
    */
   protected EList<ProgramDef> program;
+
+  /**
+   * The cached value of the '{@link #getRule() <em>Rule</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRule()
+   * @generated
+   * @ordered
+   */
+  protected EList<Rule> rule;
 
   /**
    * <!-- begin-user-doc -->
@@ -189,6 +201,20 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<Rule> getRule()
+  {
+    if (rule == null)
+    {
+      rule = new EObjectContainmentEList<Rule>(Rule.class, this, AtsDslPackage.ATS_DSL__RULE);
+    }
+    return rule;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -204,6 +230,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return ((InternalEList<?>)getWorkDef()).basicRemove(otherEnd, msgs);
       case AtsDslPackage.ATS_DSL__PROGRAM:
         return ((InternalEList<?>)getProgram()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.ATS_DSL__RULE:
+        return ((InternalEList<?>)getRule()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -228,6 +256,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return getWorkDef();
       case AtsDslPackage.ATS_DSL__PROGRAM:
         return getProgram();
+      case AtsDslPackage.ATS_DSL__RULE:
+        return getRule();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -263,6 +293,10 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         getProgram().clear();
         getProgram().addAll((Collection<? extends ProgramDef>)newValue);
         return;
+      case AtsDslPackage.ATS_DSL__RULE:
+        getRule().clear();
+        getRule().addAll((Collection<? extends Rule>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -292,6 +326,9 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
       case AtsDslPackage.ATS_DSL__PROGRAM:
         getProgram().clear();
         return;
+      case AtsDslPackage.ATS_DSL__RULE:
+        getRule().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -316,6 +353,8 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
         return workDef != null && !workDef.isEmpty();
       case AtsDslPackage.ATS_DSL__PROGRAM:
         return program != null && !program.isEmpty();
+      case AtsDslPackage.ATS_DSL__RULE:
+        return rule != null && !rule.isEmpty();
     }
     return super.eIsSet(featureID);
   }

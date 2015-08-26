@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getTeamDefOption <em>Team Def Option</em>}</li>
@@ -46,9 +47,9 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getTeamWorkflowArtifactType <em>Team Workflow Artifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getChildren <em>Children</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -263,6 +264,16 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * @ordered
    */
   protected EList<VersionDef> version;
+
+  /**
+   * The cached value of the '{@link #getRules() <em>Rules</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getRules()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> rules;
 
   /**
    * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
@@ -559,6 +570,20 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<String> getRules()
+  {
+    if (rules == null)
+    {
+      rules = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__RULES);
+    }
+    return rules;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<TeamDef> getChildren()
   {
     if (children == null)
@@ -630,6 +655,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getAccessContextId();
       case AtsDslPackage.TEAM_DEF__VERSION:
         return getVersion();
+      case AtsDslPackage.TEAM_DEF__RULES:
+        return getRules();
       case AtsDslPackage.TEAM_DEF__CHILDREN:
         return getChildren();
     }
@@ -696,6 +723,10 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         getVersion().clear();
         getVersion().addAll((Collection<? extends VersionDef>)newValue);
         return;
+      case AtsDslPackage.TEAM_DEF__RULES:
+        getRules().clear();
+        getRules().addAll((Collection<? extends String>)newValue);
+        return;
       case AtsDslPackage.TEAM_DEF__CHILDREN:
         getChildren().clear();
         getChildren().addAll((Collection<? extends TeamDef>)newValue);
@@ -756,6 +787,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__VERSION:
         getVersion().clear();
         return;
+      case AtsDslPackage.TEAM_DEF__RULES:
+        getRules().clear();
+        return;
       case AtsDslPackage.TEAM_DEF__CHILDREN:
         getChildren().clear();
         return;
@@ -801,6 +835,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return accessContextId != null && !accessContextId.isEmpty();
       case AtsDslPackage.TEAM_DEF__VERSION:
         return version != null && !version.isEmpty();
+      case AtsDslPackage.TEAM_DEF__RULES:
+        return rules != null && !rules.isEmpty();
       case AtsDslPackage.TEAM_DEF__CHILDREN:
         return children != null && !children.isEmpty();
     }
@@ -838,6 +874,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
     result.append(teamWorkflowArtifactType);
     result.append(", accessContextId: ");
     result.append(accessContextId);
+    result.append(", rules: ");
+    result.append(rules);
     result.append(')');
     return result.toString();
   }

@@ -28,12 +28,12 @@ import org.eclipse.osee.ats.dsl.atsDsl.LayoutItem;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CompositeImpl#getNumColumns <em>Num Columns</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CompositeImpl#getLayoutItems <em>Layout Items</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.CompositeImpl#getOptions <em>Options</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

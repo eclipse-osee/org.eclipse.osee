@@ -13,14 +13,15 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getUserDef <em>User Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getTeamDef <em>Team Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getActionableItemDef <em>Actionable Item Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getWorkDef <em>Work Def</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getProgram <em>Program</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.AtsDsl#getRule <em>Rule</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAtsDsl()
  * @model
@@ -107,5 +108,21 @@ public interface AtsDsl extends EObject
    * @generated
    */
   EList<ProgramDef> getProgram();
+
+  /**
+   * Returns the value of the '<em><b>Rule</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.ats.dsl.atsDsl.Rule}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Rule</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Rule</em>' containment reference list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getAtsDsl_Rule()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Rule> getRule();
 
 } // AtsDsl

@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getAttributeName <em>Attribute Name</em>}</li>
@@ -24,7 +25,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMinConstraint <em>Min Constraint</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.WidgetDef#getMaxConstraint <em>Max Constraint</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getWidgetDef()
  * @model

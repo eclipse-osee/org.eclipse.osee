@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.LayoutCopyImpl#getState <em>State</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
