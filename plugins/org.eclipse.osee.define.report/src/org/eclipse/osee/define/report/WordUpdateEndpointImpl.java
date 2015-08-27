@@ -41,9 +41,9 @@ public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
       return updateArt.updateArtifacts(data, atsServer);
    }
 
-   private void validate(WordUpdateData data) {
+   protected void validate(WordUpdateData data) {
       Conditions.checkNotNull(data, "WordUpdateData");
-      Conditions.checkNotNull(data.getComment(), "WordUpdateData comment");
+      Conditions.checkNotNullOrEmpty(data.getComment(), "WordUpdateData comment");
       Conditions.checkNotNullOrEmpty(data.getArtifacts(), "WordUpdateData artifacts");
       Conditions.checkExpressionFailOnTrue(data.getUserArtId() <= 0, "WordUpdateData invalid user id %d",
          data.getUserArtId());

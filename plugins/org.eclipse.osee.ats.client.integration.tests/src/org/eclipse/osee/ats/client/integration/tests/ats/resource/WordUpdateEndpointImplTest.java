@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
-import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,43 +39,15 @@ import com.google.common.collect.Lists;
  *
  * @author David W. Miller
  */
-public class WordUpdateEndpointTest extends AbstractRestTest {
+public class WordUpdateEndpointImplTest extends AbstractRestTest {
    private Artifact artReqt = null;
    private Branch branch = null;
 
    @Before
    public void setup() {
       branch = getWorkingBranch();
-      artReqt =
-         ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.SoftwareRequirement, CoreAttributeTypes.Name,
-            "Claw Interface Init 15", branch);
-   }
-
-   @Test(expected = OseeWebApplicationException.class)
-   public void testInvalidData() throws Exception {
-      HttpWordUpdateRequest.updateWordArtifacts(null);
-   }
-
-   @Test(expected = OseeWebApplicationException.class)
-   public void testInvalidDataElements() throws Exception {
-      WordUpdateData wud = new WordUpdateData();
-      wud.setBranch(570L);
-      wud.setThreeWayMerge(false);
-      wud.setComment("other data invalid");
-      wud.setMultiEdit(false);
-      wud.setUserArtId((long) UserManager.getUser().getArtId());
-      HttpWordUpdateRequest.updateWordArtifacts(wud);
-   }
-
-   @Test(expected = OseeWebApplicationException.class)
-   public void testBadGuid() throws Exception {
-      // get word xml
-      String wordData = getResource();
-      // get branch and artifact
-      Branch branch = getWorkingBranch();
-      List<Long> transferArts = Lists.newLinkedList();
-      transferArts.add(artReqt.getUuid());
-      makeRequest(branch.getUuid(), transferArts, wordData, "Testing word update one artifact");
+      artReqt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.SoftwareRequirement,
+         CoreAttributeTypes.Name, "Claw Interface Init 15", branch);
    }
 
    @Test
