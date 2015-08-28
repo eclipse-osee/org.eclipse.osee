@@ -32,6 +32,7 @@
 								<plugin id="org.apache.xml.resolver" />
 								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.json" />
+								<plugin id="org.eclipse.persistence.antlr" />
 								<plugin id="org.eclipse.persistence.asm" />
 								<plugin id="org.eclipse.persistence.core" />
 								<plugin id="org.eclipse.persistence.moxy" />
