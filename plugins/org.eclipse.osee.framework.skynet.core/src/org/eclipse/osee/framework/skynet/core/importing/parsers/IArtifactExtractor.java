@@ -14,6 +14,7 @@ import java.io.FileFilter;
 import java.net.URI;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
@@ -40,6 +41,6 @@ public interface IArtifactExtractor {
    public boolean hasDelegate();
 
    // return true if theArtifact has been modifed
-   public boolean artifactCreated(Artifact theArtifact);
+   public boolean artifactCreated(Artifact theArtifact, RoughArtifact source);
 
 }

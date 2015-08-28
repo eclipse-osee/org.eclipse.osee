@@ -80,12 +80,14 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
 
    /**********************************************************
     * Called after the rough artifact is converted to a real artifact
-    * 
+    *
     * @param theArtifact The artifact that has been created
-    * @return true if theArtifact has been modified
+    * @param source The rough artifact source for the created artifact
+    * @return true if the artifact has been modified
     */
+
    @Override
-   public boolean artifactCreated(Artifact theArtifact) {
+   public boolean artifactCreated(Artifact theArtifact, RoughArtifact source) {
       return false;
    }
 
@@ -118,4 +120,5 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
          }
       }
    }
+
 }

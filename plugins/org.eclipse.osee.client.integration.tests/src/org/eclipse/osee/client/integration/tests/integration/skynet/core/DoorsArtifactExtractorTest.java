@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -18,20 +19,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsArtifactExtractor;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -87,6 +96,11 @@ public class DoorsArtifactExtractorTest {
 
    private static final String DOCUMENT_APPLICABILITY = "Document 1";
 
+   private Artifact theArtifact;
+
+   private final List<String> content = Arrays.asList("<img src=\"Image Content_0>\"");
+   private final Collection<InputStream> imageList = new LinkedList<InputStream>();
+
    @ClassRule
    public static TemporaryFolder folder = new TemporaryFolder();
 
@@ -106,10 +120,21 @@ public class DoorsArtifactExtractorTest {
    }
 
    @Before
-   public void setUp() {
+   public void setUp() throws UnsupportedEncodingException {
       extractor = new DoorsArtifactExtractor();
       collector = new RoughArtifactCollector(null);
+      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
+      String image = new String("String to represent binary image data");
+      imageList.add(Lib.stringToInputStream(image));
+      theArtifact.setAttributeFromValues(CoreAttributeTypes.ImageContent, imageList);
+      theArtifact.setAttributeValues(CoreAttributeTypes.HTMLContent, content);
+   }
 
+   @After
+   public void tearDown() throws Exception {
+      if (theArtifact != null) {
+         theArtifact.deleteAndPersist();
+      }
    }
 
    @Test
@@ -136,6 +161,7 @@ public class DoorsArtifactExtractorTest {
           */
          if (PRIME_ITEM_DIAGRAM.equals(actualName)) {
             checkPrimeItemDiagram(artifact);
+            assertTrue(extractor.artifactCreated(theArtifact, artifact));
          } else if (VOICE_STATUS.equals(actualName)) {
             checkList(artifact);
          }

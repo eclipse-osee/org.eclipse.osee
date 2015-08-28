@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -44,7 +45,7 @@ import org.jsoup.nodes.Node;
  */
 public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
-   private final Vector<String> postProcessGuids = new Vector<>();
+   private final Vector<String> postProcessImages = new Vector<>();
    private String uriDirectoryName = "";
    private OperationLogger logger;
    private final static String NAME_TAG = "<a name=";
@@ -120,9 +121,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          // this is used later with the images to set the image URI
          String fileName = "file://" + source.getPath();
          uriDirectoryName = fileName.substring(0, fileName.lastIndexOf('/') + 1);
-         // we only need to post process the images, so we will add the guid of each 
+         // we only need to post process the images, so we will add the uri of each
          // rough artifact that has an image to the list for post processing
-         postProcessGuids.clear();
+         postProcessImages.clear();
          this.logger = logger;
          htmlStream = source.toURL().openStream();
          DoorsTableRowCollector rowCollector = new DoorsTableRowCollector(this);
@@ -158,31 +159,36 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public boolean artifactCreated(Artifact theArtifact) {
-      String artifactGuid = theArtifact.getGuid();
+   public boolean artifactCreated(Artifact theArtifact, RoughArtifact source) {
       boolean toReturn = false;
-      if (postProcessGuids.contains(artifactGuid)) {
-         /**********************************************************
-          * need to modify the HTML so the image references the data stored in the artifact.
-          **************************************/
-         try {
-            List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
-            List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HTMLContent);
-            for (String htmlVal : HTML) {
-               int iCount = 0;
-               for (Integer imageNumber : Ids) {
-                  htmlVal = htmlVal.replaceAll(IMAGE_BASE_NAME + Integer.toString(iCount), imageNumber.toString());
-                  iCount++;
-               }
-               if (iCount > 0 || toReturn) {
-                  theArtifact.deleteAttributes(CoreAttributeTypes.HTMLContent);
+      String content = "";
+      Collection<URI> imageURIs = source.getURIAttributes();
+      if (imageURIs.size() > 0) {
+         URI uri = source.getURIAttributes().iterator().next();
+         if (uri != null) {
+            content = uri.toASCIIString();
+         }
+         if (postProcessImages.contains(content)) {
+            /**********************************************************
+             * need to modify the HTML so the image references the data stored in the artifact.
+             **************************************/
+            try {
+               List<Integer> Ids = theArtifact.getAttributeIds(CoreAttributeTypes.ImageContent);
+               List<String> HTML = theArtifact.getAttributeValues(CoreAttributeTypes.HTMLContent);
+               theArtifact.deleteAttributes(CoreAttributeTypes.HTMLContent);
+               for (String htmlVal : HTML) {
+                  int iCount = 0;
+                  for (Integer imageNumber : Ids) {
+                     htmlVal = htmlVal.replaceAll(IMAGE_BASE_NAME + Integer.toString(iCount), imageNumber.toString());
+                     iCount++;
+                     toReturn = true;
+                  }
                   theArtifact.addAttribute(CoreAttributeTypes.HTMLContent, htmlVal);
-                  toReturn = true;
                }
-            }
-         } catch (OseeCoreException e) {
-            if (logger != null) {
-               logger.log(e);
+            } catch (OseeCoreException e) {
+               if (logger != null) {
+                  logger.log(e);
+               }
             }
          }
       }
@@ -209,16 +215,16 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       StringBuilder returnString = new StringBuilder(inputValue.trim());
       //@formatter:off
       /********************************************************************************
-       * The Doors export outputs a list as pure text (e.g. a. list item). Convert this to an HTML list 
-       * 
-       * Assumptions: 
-       * 1) The format of the list is either a. or 1. 
-       * 2) There is no embedded 1. or a. in the text of the list. 
+       * The Doors export outputs a list as pure text (e.g. a. list item). Convert this to an HTML list
+       *
+       * Assumptions:
+       * 1) The format of the list is either a. or 1.
+       * 2) There is no embedded 1. or a. in the text of the list.
        *    That is if 1. shows up in a alpha list it means there is a new list starting or if b.
        *    shows up after a. then it the next item
        */
-    //@formatter:on
-      // find first text char 
+      //@formatter:on
+      // find first text char
       char[] theChars = stringBuilderToChars(returnString);
       int[] startEnd = findEndOfList(theChars, 0);
       int iPos = startEnd[0];
@@ -385,7 +391,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       boolean notFirst = false;
       boolean foundNonTagItem = false;
       while (iPos < theChars.length) {
-         while ((iPos < theChars.length) && ((theChars[iPos] == '\t') || (theChars[iPos] == '\n') || (Character.isWhitespace(theChars[iPos])))) {
+         while ((iPos < theChars.length) && ((theChars[iPos] == '\t') || (theChars[iPos] == '\n') || (Character.isWhitespace(
+            theChars[iPos])))) {
             iPos++;
          }
          if (iPos >= theChars.length) {
@@ -428,7 +435,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                   iPos++;
                }
                iReturn[1] = iPos - 1;
-               // find the end of the tag 
+               // find the end of the tag
                iReturn[2] = iPos;
                while ((iReturn[2] < theChars.length) && (theChars[iReturn[2]] != '>')) {
                   iReturn[2] = iReturn[2] + 1;
@@ -488,8 +495,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber, String currentLetter, listData listData) {
       //@formatter:off
       /****************************************************************************
-       * Now the tricky part.  We are looking for 
-       * 1) <space><next value>.<space or &nbsp; or &#something> 
+       * Now the tricky part.  We are looking for
+       * 1) <space><next value>.<space or &nbsp; or &#something>
        * 2) <space><next level value>.
        */
       //@formatter:on
@@ -614,10 +621,11 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             try {
                URI imageURI = new URI(theImage);
                roughArtifact.addAttribute(CoreAttributeTypes.ImageContent.getName(), imageURI);
+
                rowValue = rowValue.replace(replaceName, IMAGE_BASE_NAME + Integer.toString(imageNumber));
                imageNumber++;
                // put it into the post processing list
-               postProcessGuids.add(roughArtifact.getGuid());
+               postProcessImages.add(imageURI.toASCIIString());
             } catch (URISyntaxException e) {
                if (logger != null) {
                   logger.log(e);
@@ -651,7 +659,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        */
       for (int i = 0; i < VERIFICATION_KEYWORDS.length; i++) {
          // special case Criteria is a string attribute
-         if ((FIELD_TYPE[i] == null) && !((VERIFICATION_KEYWORDS[i].equals(CRITERIA)) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
+         if ((FIELD_TYPE[i] == null) && !((VERIFICATION_KEYWORDS[i].equals(
+            CRITERIA)) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
             continue;
          }
          int iStart = trimmed.indexOf(VERIFICATION_KEYWORDS[i]);
@@ -669,7 +678,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                // find the data
                int colon = rest.indexOf(':');
                if (colon == -1) {
-                  if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
+                  if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(
+                     VERIFICATION_ACCEPTANCE_CRITERIA)) {
                      // special case Criteria is a string attribute
                      roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
                   } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.QualificationMethod)) {
@@ -687,7 +697,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      if (theIndex != -1 && (theIndex == (colon - VERIFICATION_KEYWORDS[j].length() + 1))) {
                         int index = rest.indexOf(VERIFICATION_KEYWORDS[j]);
                         if (index >= 0) {
-                           if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA)) {
+                           if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(
+                              VERIFICATION_ACCEPTANCE_CRITERIA)) {
                               // special case Criteria is a string attribute
                               roughArtifact.addAttribute("Verification Acceptance Criteria", rest.substring(0, index));
                            } else if (FIELD_TYPE[i].equals(CoreAttributeTypes.QualificationMethod)) {
@@ -705,7 +716,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                      }
                   }
                   if (!foundKeyword) {
-                     if (VERIFICATION_KEYWORDS[i].equals("Criteria:") || VERIFICATION_KEYWORDS[i].equals("Verification Acceptance Criteria:")) {
+                     if (VERIFICATION_KEYWORDS[i].equals("Criteria:") || VERIFICATION_KEYWORDS[i].equals(
+                        "Verification Acceptance Criteria:")) {
                         // special case Criteria is a string attribute
                         roughArtifact.addAttribute("Verification Acceptance Criteria", rest);
                      } else {
@@ -846,9 +858,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
       }
 
-      //@formatter:off 
+      //@formatter:off
       /************************************************************************************
-       * change <br />spacespace 
+       * change <br />spacespace
        * to <br />space
        */
       //@formatter:on
