@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -81,7 +82,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link RelationManagerImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationManagerImplTest {
@@ -96,40 +97,40 @@ public class RelationManagerImplTest {
    @Mock private RelationTypeValidity validity;
    @Mock private RelationResolver resolver;
    @Mock private OrderManagerFactory orderFactory;
-  
+
    @Mock private RelationFactory relationFactory;
    @Mock private OrcsSession session;
    @Mock private QueryModuleProvider provider;
    @Mock private ProxyProvider proxy;
-   
+
    @Mock private GraphData graph;
-   
+
    @Mock private RelationNode node1;
    @Mock private RelationNode node2;
    @Mock private RelationNode node3;
    @Mock private RelationNode node4;
    @Mock private RelationNode node5;
    @Mock private RelationNode node6;
-   
+
    @Mock private RelationNodeAdjacencies container1;
    @Mock private RelationNodeAdjacencies container2;
-   
+
    @Mock private IArtifactType artifactType1;
    @Mock private IArtifactType artifactType2;
-   
+
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    @Mock private Relation relation4;
-   
+
    @Mock private IRelationType relType1;
    @Mock private IRelationType relType2;
-   
+
    @Mock private IRelationTypeSide typeAndSide1;
-   
+
    @Mock private ResultSet<Relation> rSet1;
    @Mock private ResultSet<Relation> rSet2;
-   
+
    @Mock private OrderManager orderManager1;
    @Captor private ArgumentCaptor<List<? extends Identifiable<String>>> sortedListCaptor;
    // @formatter:on
@@ -489,12 +490,12 @@ public class RelationManagerImplTest {
       when(node1.getBranch()).thenReturn(COMMON);
       when(node2.getBranch()).thenReturn(COMMON);
 
-      OseeCoreException myException = new OseeCoreException("Test Multiplicity Exception");
+      thrown.expect(OseeStateException.class);
 
-      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node1, SIDE_B, 1);
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(1);
 
-      thrown.expect(OseeCoreException.class);
-      thrown.expectMessage("Test Multiplicity Exception");
       manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
@@ -511,12 +512,7 @@ public class RelationManagerImplTest {
       when(container1.getResultSet(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
 
-      OseeCoreException myException = new OseeCoreException("Test Multiplicity Exception");
-
-      doThrow(myException).when(validity).checkRelationTypeMultiplicity(TYPE_1, node2, SIDE_A, 1);
-
-      thrown.expect(OseeCoreException.class);
-      thrown.expectMessage("Test Multiplicity Exception");
+      thrown.expect(OseeStateException.class);
       manager.relate(session, node1, TYPE_1, node2);
 
       verify(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
@@ -549,6 +545,11 @@ public class RelationManagerImplTest {
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
+
       manager.relate(session, node1, TYPE_1, node2, LEXICOGRAPHICAL_ASC);
 
       IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
@@ -575,6 +576,11 @@ public class RelationManagerImplTest {
 
       IRelationTypeSide typeSide = RelationUtil.asTypeSide(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
+
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.relate(session, node1, TYPE_1, node2);
 
@@ -603,6 +609,11 @@ public class RelationManagerImplTest {
 
       List<RelationNode> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
+
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.relate(session, node1, TYPE_1, node2, USER_DEFINED);
 
@@ -639,6 +650,11 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
+
       manager.addChild(session, node1, node2);
 
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
@@ -660,6 +676,11 @@ public class RelationManagerImplTest {
       when(relationFactory.createRelation(node1, DEFAULT_HIERARCHY, node2)).thenReturn(relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
+
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
 
       List<? extends RelationNode> children = Arrays.asList(node2);
       manager.addChildren(session, node1, children);
@@ -685,6 +706,11 @@ public class RelationManagerImplTest {
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
+
+      when(node1.getArtifactType()).thenReturn(artifactType1);
+      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(10);
+      when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType2, SIDE_B)).thenReturn(10);
 
       manager.addChild(session, node1, node2);
 

@@ -53,7 +53,9 @@ public final class TestUtil {
    public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, IOseeBranch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
-      softArt.addAttribute(CoreAttributeTypes.Subsystem, "Electrical");
+      if (softArt.isAttributeTypeValid(CoreAttributeTypes.Subsystem)) {
+         softArt.setSoleAttributeFromString(CoreAttributeTypes.Subsystem, "Electrical");
+      }
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationTypes.Default_Hierarchical__Child, softArt);
       return softArt;

@@ -25,13 +25,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -107,9 +110,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       }
       Branch txBranch = getBranch();
       if (!artifact.getBranch().equals(txBranch)) {
-         String msg =
-            String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
-               artifact.getGuid(), artifact.getBranch(), txBranch);
+         String msg = String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
+            artifact.getGuid(), artifact.getBranch(), txBranch);
          throw new OseeStateException(msg);
       }
 
@@ -143,8 +145,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       boolean toReturn = true;
       if (!UserManager.duringMainUserCreation()) {
          Branch fullBranch = BranchManager.getBranch(branch);
-         toReturn =
-            getAccess().hasBranchPermission(branch, PermissionEnum.WRITE, Level.FINE).matched() && fullBranch.isEditable();
+         toReturn = getAccess().hasBranchPermission(branch, PermissionEnum.WRITE,
+            Level.FINE).matched() && fullBranch.isEditable();
       }
       return toReturn;
    }
@@ -156,16 +158,14 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       checkBranch(link);
       Branch txBranch = getBranch();
       if (!link.getBranch().equals(txBranch)) {
-         String msg =
-            String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
-               link.getId(), link.getBranch(), txBranch);
+         String msg = String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
+            link.getId(), link.getBranch(), txBranch);
          throw new OseeStateException(msg);
       }
 
       RelationSide sideToCheck = link.getSide(artifact).oppositeSide();
-      PermissionStatus status =
-         getAccess().canRelationBeModified(artifact, null, new RelationTypeSide(link.getRelationType(), sideToCheck),
-            Level.FINE);
+      PermissionStatus status = getAccess().canRelationBeModified(artifact, null,
+         new RelationTypeSide(link.getRelationType(), sideToCheck), Level.FINE);
 
       if (!status.matched()) {
          throw new OseeCoreException(
@@ -253,10 +253,36 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       }
    }
 
+   private void checkMultiplicity(Artifact artifact, Attribute<?> attr) {
+      if (attr.getAttributeType().getMaxOccurrences() == 1 && artifact.getAttributeCount(attr.getAttributeType()) > 1) {
+         throw new OseeStateException("Artifact [%s] can only have 1 [%s] attribute but has %d", artifact.getName(),
+            attr.getAttributeType().getName(), artifact.getAttributeCount(attr.getAttributeType()));
+      }
+   }
+
+   private void checkMultiplicity(Artifact art, RelationLink link) {
+      RelationType relationType = link.getRelationType();
+      RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
+
+      RelationSide sideToCheck = link.getOppositeSide(art);
+      int limitToCheck = sideToCheck.isSideA() ? multiplicity.getSideALimit() : multiplicity.getSideBLimit();
+      if (limitToCheck == 1) {
+         int count = art.getRelatedArtifactsCount(
+            TokenFactory.createRelationTypeSide(sideToCheck, relationType.getGuid(), relationType.getName()));
+         if (count > 1) {
+            throw new OseeStateException("Artifact [%s] can only have 1 [%s] on [%s] but has %d", art.getName(),
+               link.getSideNameFor(art), sideToCheck.name(), count);
+         }
+      }
+   }
+
    private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
       if (attribute.isDeleted() && !attribute.isInDb()) {
          return;
       }
+
+      checkMultiplicity(artifact, attribute);
+
       if (attribute.getId() == 0) {
          attribute.internalSetAttributeId(getNewAttributeId(artifact, attribute));
       }
@@ -317,6 +343,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
             if (link.isDeleted()) {
                return;
             }
+            checkMultiplicity(artifact, link);
             link.internalSetRelationId(getNewRelationId());
             modificationType = NEW;
             relationEventType = RelationEventType.Added;

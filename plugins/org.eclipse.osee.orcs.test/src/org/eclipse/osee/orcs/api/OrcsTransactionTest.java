@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -1073,6 +1074,24 @@ public class OrcsTransactionTest {
       TransactionReadable actual = query.transactionQuery().andTxId(transaction.getGuid()).getResults().getExactlyOne();
       assertEquals(transaction.getGuid(), actual.getGuid());
       assertEquals(expectedComment, actual.getComment());
+   }
+
+   @Test(expected = OseeStateException.class)
+   public void testAttributeMultiplicity() {
+      TransactionBuilder tx = createTx();
+      ArtifactId art1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "SwReq");
+      tx.createAttribute(art1, CoreAttributeTypes.ParagraphNumber, "1.1");
+      tx.createAttribute(art1, CoreAttributeTypes.ParagraphNumber, "2.2");
+   }
+
+   @Test(expected = OseeStateException.class)
+   public void testRelationMultiplicity() {
+      TransactionBuilder tx = createTx();
+      ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Child");
+      ArtifactId parent1 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent1");
+      ArtifactId parent2 = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Parent2");
+      tx.relate(parent1, Default_Hierarchical__Parent, child);
+      tx.relate(parent2, Default_Hierarchical__Parent, child);
    }
 
    private TransactionBuilder createTx() throws OseeCoreException {

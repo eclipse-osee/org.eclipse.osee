@@ -20,6 +20,9 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -131,6 +134,34 @@ public final class SkynetTransactionTest {
 
       artifact1.purgeFromBranch();
       artifact2.purgeFromBranch();
+   }
+
+   @Test(expected = OseeStateException.class)
+   public void testAttributeMultiplicity() {
+      Artifact swReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH);
+      swReq.addAttribute(CoreAttributeTypes.ParagraphNumber, "1.1");
+      swReq.addAttribute(CoreAttributeTypes.ParagraphNumber, "2.2");
+      try {
+         swReq.persist("testAttributeMultiplicity");
+      } finally {
+         swReq.purgeFromBranch();
+      }
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testRelationMultiplicity() {
+      Artifact parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "parent1");
+      Artifact parent2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "parent2");
+      Artifact child = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "child");
+      try {
+         parent1.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child);
+         parent2.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child);
+         child.persist("testRelationMultiplicity");
+      } finally {
+         child.purgeFromBranch();
+         parent1.purgeFromBranch();
+         parent2.purgeFromBranch();
+      }
    }
 
    @Test

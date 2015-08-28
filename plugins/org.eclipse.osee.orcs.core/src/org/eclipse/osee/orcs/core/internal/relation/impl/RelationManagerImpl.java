@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -231,8 +232,7 @@ public class RelationManagerImpl implements RelationManager {
       validity.checkRelationTypeValid(type, bNode, SIDE_B);
 
       // Check we can create the type on other side of each node
-      checkMultiplicityCanAdd(session, type, aNode, SIDE_B);
-      checkMultiplicityCanAdd(session, type, bNode, SIDE_A);
+      checkMultiplicityCanAdd(session, type, aNode, bNode);
 
       Relation relation = getRelation(session, aNode, type, bNode, INCLUDE_DELETED).getOneOrNull();
       boolean updated = false;
@@ -257,9 +257,22 @@ public class RelationManagerImpl implements RelationManager {
       return aNode.getGraph().getTransaction() > bNode.getGraph().getTransaction() ? aNode.getGraph() : bNode.getGraph();
    }
 
-   private void checkMultiplicityCanAdd(OrcsSession session, IRelationType type, RelationNode node, RelationSide side) throws OseeCoreException {
-      int currentCount = getRelatedCount(session, type, node, side);
-      validity.checkRelationTypeMultiplicity(type, node, side, currentCount + 1);
+   private void checkMultiplicityCanAdd(OrcsSession session, IRelationType type, RelationNode aNode, RelationNode bNode) {
+      int bSideCount = getRelations(session, type, aNode, SIDE_A, EXCLUDE_DELETED).size();
+      int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
+
+      if (bSideCount >= bSideMax) {
+         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type.getName(),
+            SIDE_B, aNode.getExceptionString());
+      }
+
+      int aSideCount = getRelations(session, type, bNode, SIDE_B, EXCLUDE_DELETED).size();
+      int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactType(), SIDE_A);
+
+      if (aSideCount >= aSideMax) {
+         throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type.getName(),
+            SIDE_A, bNode.getExceptionString());
+      }
    }
 
    ///////////////////////// UNRELATE NODES ///////////////////
@@ -490,7 +503,7 @@ public class RelationManagerImpl implements RelationManager {
       int artIdA = rel.getOrcsData().getArtIdA();
       int artIdB = rel.getOrcsData().getArtIdB();
       int checkArtId = destination.getLocalId() == artIdA ? artIdB : artIdA;
-      // need to check if artifact to relate to exists 
+      // need to check if artifact to relate to exists
       ArtifactReadable readable =
          provider.getQueryFactory(session).fromBranch(branch).andUuid(checkArtId).getResults().getOneOrNull();
       return readable;
