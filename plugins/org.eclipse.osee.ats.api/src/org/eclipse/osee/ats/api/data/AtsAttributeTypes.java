@@ -148,6 +148,8 @@ public final class AtsAttributeTypes {
    public static final IAttributeType ProgramUuid = createType(0x10000089157000AAL, "Program Uuid");
    public static final IAttributeType Rationale = createType(0x10000089159900AAL, "Rationale");
 
+   public static final IAttributeType ColorTeam = createType(0x12EDF6163776C27FL, "Color Team");
+
    // Program
    public static final IAttributeType Namespace = createType(0x40E507303063999EL, "Namespace");
 
