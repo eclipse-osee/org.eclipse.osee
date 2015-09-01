@@ -46,7 +46,7 @@ public class AtsAttributeColumnUtility {
                   }
                }
                boolean modified =
-                  PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) item,
+                  PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) useArt,
                      attrColumn.getAttributeType(), false, multiLineStringAttribute);
                if (modified && persist) {
                   useArt.persist("persist attribute via alt-left-click");
