@@ -24,8 +24,10 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
+import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
@@ -72,7 +74,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
+      return Strings.truncate(String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName()),
+         WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    /**
