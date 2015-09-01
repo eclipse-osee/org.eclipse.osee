@@ -79,4 +79,10 @@ public interface IAtsWorkDefinitionAdmin {
 
    Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
+   IAtsRuleDefinition getRuleDefinition(String name);
+
+   Collection<IAtsRuleDefinition> getAllRuleDefinitions();
+
+   void clearRuleDefinitionsCache();
+
 }

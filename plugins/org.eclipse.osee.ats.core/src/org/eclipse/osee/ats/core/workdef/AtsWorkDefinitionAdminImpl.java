@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -22,6 +25,7 @@ import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
+import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -29,6 +33,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -41,6 +46,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -51,6 +58,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    private final IAtsWorkDefinitionService workDefinitionService;
    private final IAttributeResolver attributeResolver;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
+   private final Cache<String, IAtsRuleDefinition> ruleDefinitionCache =
+      CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
    public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.cacheProvider = workDefCacheProvider;
@@ -90,6 +99,33 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
          getCache().cache(workItem, toReturn);
       }
       return toReturn;
+   }
+
+   @Override
+   public IAtsRuleDefinition getRuleDefinition(String name) {
+      IAtsRuleDefinition ruleDef = null;
+      try {
+         ruleDef = ruleDefinitionCache.get(name, new Callable<IAtsRuleDefinition>() {
+            @Override
+            public IAtsRuleDefinition call() {
+               List<IAtsRuleDefinition> ruleDefinitions = workDefinitionService.getRuleDefinitions();
+               IAtsRuleDefinition ruleDefinition = NullRuleDefinition.getInstance();
+               for (IAtsRuleDefinition ruleDef : ruleDefinitions) {
+                  if (!(ruleDef instanceof NullRuleDefinition)) {
+                     ruleDefinitionCache.put(ruleDef.getName(), ruleDef);
+                  }
+                  if (ruleDef.getName().equals(name)) {
+                     ruleDefinition = ruleDef;
+                  }
+               }
+               return ruleDefinition;
+            }
+         });
+
+      } catch (ExecutionException ex) {
+         OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.WARNING, "Could not load Rule Definition [%s]", name);
+      }
+      return ruleDef;
    }
 
    @Override
@@ -423,5 +459,23 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
    @Override
    public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
       return workDefinitionService.getAllValidStateNames(resultData);
+   }
+
+   @Override
+   public void clearRuleDefinitionsCache() {
+      ruleDefinitionCache.invalidateAll();
+   }
+
+   @Override
+   public Collection<IAtsRuleDefinition> getAllRuleDefinitions() {
+      if (ruleDefinitionCache.size() == 0) {
+         // If no rules exists then load all rules and put in the cache
+         List<IAtsRuleDefinition> ruleDefinitions = workDefinitionService.getRuleDefinitions();
+         for (IAtsRuleDefinition ruleDef : ruleDefinitions) {
+            ruleDefinitionCache.put(ruleDef.getName(), ruleDef);
+         }
+      }
+      Collection<IAtsRuleDefinition> ruleDefs = ruleDefinitionCache.asMap().values();
+      return ruleDefs;
    }
 }

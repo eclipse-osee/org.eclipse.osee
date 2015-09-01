@@ -13,9 +13,11 @@ package org.eclipse.osee.ats.core.client.internal.workdef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +35,8 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
       for (Artifact workDefArt : ArtifactQuery.getArtifactListFromType(Arrays.asList(AtsArtifactTypes.WorkDefinition),
          AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
-         nameToWorkDefStr.add(new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
+         nameToWorkDefStr.add(
+            new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
       return nameToWorkDefStr;
    }
@@ -49,9 +52,8 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
    }
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
-      Artifact artifact =
-         ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
-            AtsUtilCore.getAtsBranch());
+      Artifact artifact = ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
+         AtsUtilCore.getAtsBranch());
       return loadWorkDefinitionFromArtifact(artifact);
    }
 
@@ -61,6 +63,12 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
          modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
       }
       return modelText;
+   }
+
+   @Override
+   public String loadRuleDefinitionString() throws OseeCoreException {
+      Artifact artifact = AtsClientService.get().getArtifact(AtsArtifactToken.RuleDefinitions);
+      return artifact.getSoleAttributeValueAsString(AtsAttributeTypes.DslSheet, "");
    };
 
 }

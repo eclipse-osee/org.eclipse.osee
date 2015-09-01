@@ -23,5 +23,7 @@ public interface IAtsWorkDefinitionStore {
 
    String loadWorkDefinitionString(String workDefId) throws OseeCoreException;
 
+   String loadRuleDefinitionString() throws OseeCoreException;
+
    List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException;
 }

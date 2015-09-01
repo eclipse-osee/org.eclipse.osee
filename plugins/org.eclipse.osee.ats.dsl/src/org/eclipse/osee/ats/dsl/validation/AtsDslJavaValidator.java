@@ -18,11 +18,14 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.osee.ats.dsl.AttributeResolverService;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
+import org.eclipse.osee.ats.dsl.atsDsl.AttrDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
+import org.eclipse.osee.ats.dsl.atsDsl.CreateTaskRule;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutDef;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutItem;
 import org.eclipse.osee.ats.dsl.atsDsl.LayoutType;
+import org.eclipse.osee.ats.dsl.atsDsl.ReviewRule;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.ToState;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
@@ -128,6 +131,28 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
                validateAttributeNames(((LayoutDef) layout).getLayoutItems());
             }
          }
+      }
+   }
+
+   @Check
+   public void checkAttributeNameValidity(CreateTaskRule createRule) {
+      if (createRule.getAttributes().isEmpty()) {
+         return;
+      }
+      for (AttrDef attribute : createRule.getAttributes()) {
+         validateAttributeName(Strings.unquote(attribute.getName()), createRule,
+            AtsDslPackage.Literals.CREATE_TASK_RULE__ATTRIBUTES, AtsDslPackage.CREATE_TASK_RULE__ATTRIBUTES);
+      }
+   }
+
+   @Check
+   public void checkAttributeNameValidity(ReviewRule reviewRule) {
+      if (reviewRule.getAttributes().isEmpty()) {
+         return;
+      }
+      for (AttrDef attribute : reviewRule.getAttributes()) {
+         validateAttributeName(Strings.unquote(attribute.getName()), reviewRule,
+            AtsDslPackage.Literals.REVIEW_RULE__ATTRIBUTES, AtsDslPackage.REVIEW_RULE__ATTRIBUTES);
       }
    }
 

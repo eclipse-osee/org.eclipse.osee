@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.internal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.IAtsClient;
@@ -42,16 +43,16 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * Updates ATS Cache based on Artifact Events. Registers for service via ats.cache.update.listener osgi registration.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
-   private static List<Long> configReloadRelationTypeGuids = Arrays.asList(
-      AtsRelationTypes.ActionableItemLead_Lead.getGuid(), AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(),
-      AtsRelationTypes.TeamActionableItem_Team.getGuid(), AtsRelationTypes.PrivilegedMember_Team.getGuid(),
-      AtsRelationTypes.TeamLead_Team.getGuid(), AtsRelationTypes.ParallelVersion_Child.getGuid(),
-      AtsRelationTypes.ParallelVersion_Parent.getGuid());
+   private static List<Long> configReloadRelationTypeGuids =
+      Arrays.asList(AtsRelationTypes.ActionableItemLead_Lead.getGuid(),
+         AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(), AtsRelationTypes.TeamActionableItem_Team.getGuid(),
+         AtsRelationTypes.PrivilegedMember_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
+         AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private static List<Long> configReloadArtifactTypeGuids = Arrays.asList(AtsArtifactTypes.Version.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid(), AtsArtifactTypes.ActionableItem.getGuid());
 
@@ -182,6 +183,9 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          awa.clearCaches();
+      }
+      if (artifact != null && artifact.equals(AtsArtifactToken.RuleDefinitions)) {
+         AtsClientService.get().getWorkDefinitionAdmin().clearRuleDefinitionsCache();
       }
    }
 

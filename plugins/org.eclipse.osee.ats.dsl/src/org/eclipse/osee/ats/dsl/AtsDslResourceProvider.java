@@ -14,9 +14,13 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
+import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 import com.google.inject.Injector;
@@ -46,11 +50,17 @@ public class AtsDslResourceProvider implements IResourceProvider {
       Injector injector = setup.createInjectorAndDoEMFRegistration();
       XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
 
-      //         set.setClasspathURIContext(ModelUtil.class);
       set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
       resource = set.createResource(URI.createURI(uri));
       resource.load(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), set.getLoadOptions());
-      return (AtsDsl) resource.getContents().get(0);
+      EList<EObject> contents = resource.getContents();
+      if (contents.size() == 1) {
+         return (AtsDsl) contents.get(0);
+      } else if (contents.isEmpty()) {
+         return AtsDslFactoryImpl.init().createAtsDsl();
+      } else {
+         throw new OseeArgumentException("Unexpected contents size > 1 in AtsDslResourceProvicer", contents.toString());
+      }
    }
 
 }

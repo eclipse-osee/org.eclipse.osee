@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.ai;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.rule.IAtsRules;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsActionableItem extends IAtsConfigObject {
+public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
 
    /*****************************
     * Name, Full Name, Description

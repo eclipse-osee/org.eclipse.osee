@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -55,9 +57,27 @@ public class UpdateAtsConfiguration {
 
    public XResultData createUpdateConfig(XResultData rd) {
       ArtifactReadable userArt = atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER);
-      getOrCreateConfigFolder(userArt, rd);
+      ArtifactId configFolder = getOrCreateConfigFolder(userArt, rd);
       getOrCreateAtsConfig(userArt, rd);
+      importRuleDefinitions(userArt, configFolder, rd);
       return rd;
+   }
+
+   private void importRuleDefinitions(ArtifactReadable userArt, ArtifactId configFolderArt, XResultData rd) {
+      try {
+         TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
+            userArt, "Add Rule Definitions");
+         ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);
+         String ruleDefs = RestUtil.getResource("support/ruleDefinitions.ats");
+         tx.createAttribute(ruleDefConfigArt, AtsAttributeTypes.DslSheet, ruleDefs);
+         if (rd.isErrors()) {
+            throw new OseeStateException(rd.toString());
+         }
+         tx.relate(configFolderArt, CoreRelationTypes.Default_Hierarchical__Child, ruleDefConfigArt);
+         tx.commit();
+      } catch (Exception ex) {
+         throw new OseeWrappedException("Error loading column ruleDefinitions.ats file", ex);
+      }
    }
 
    private TransactionBuilder setConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, TransactionBuilder tx, XResultData rd) throws OseeCoreException {

@@ -34,6 +34,11 @@ artifactType "Work Definition" extends "Artifact" {
 	attribute "ats.DSL Sheet"
 }
 
+artifactType "Rule Definition" extends "Artifact" {
+	uuid 0x586836F761A0982E
+	attribute "ats.DSL Sheet"
+}
+
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 	uuid 0x000000000000003F
 	attribute "ats.Description"
@@ -43,6 +48,7 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
 abstract artifactType "ats.Ats Team Definition or AI" extends "ats.Ats Config Artifact" {
 	uuid  0x0000000000000323
 	attribute "ats.Actionable"
+	attribute "ats.Rule Definition"
 }
 
 artifactType "Country" extends "ats.Ats Config Artifact" {
@@ -115,7 +121,6 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Related Task Workflow Definition"
 	attribute "ats.Related Peer Workflow Definition"
 	attribute "ats.Workflow Definition"
-	attribute "ats.Rule Definition"
 	attribute "ats.Id Prefix"
 	attribute "ats.Id Sequence Name"
 	attribute "ats.Team Workflow Artifact Type"

@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -83,6 +84,8 @@ public interface IAtsChangeSet {
    ArtifactId createArtifact(IArtifactToken token);
 
    void deleteArtifact(ArtifactId artifact);
+
+   void addWorkflowCreated(IAtsTeamWorkflow teamWf);
 
    void deleteArtifact(IAtsWorkItem workItem);
 

@@ -12,10 +12,12 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 
@@ -33,6 +35,7 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    private final Set<IAtsUser> leads = new HashSet<IAtsUser>();
    private final Set<IAtsUser> subscribed = new HashSet<IAtsUser>();
    private final Set<IAtsActionableItem> childrenActionableItems = new HashSet<IAtsActionableItem>();
+   private final RuleManager ruleMgr = new RuleManager();
 
    public ActionableItem(String name, String guid, long uuid) {
       super(name, uuid);
@@ -114,6 +117,29 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    @Override
    public void setAllowUserActionCreation(boolean allowUserActionCreation) {
       this.allowUserActionCreation = allowUserActionCreation;
+   }
+
+   /**
+    * Rules
+    */
+   @Override
+   public void removeRule(String rule) {
+      ruleMgr.removeRule(rule);
+   }
+
+   @Override
+   public List<String> getRules() {
+      return ruleMgr.getRules();
+   }
+
+   @Override
+   public void addRule(String rule) {
+      ruleMgr.addRule(rule);
+   }
+
+   @Override
+   public boolean hasRule(String rule) {
+      return ruleMgr.hasRule(rule);
    }
 
 }

@@ -99,7 +99,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
-      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid());
+      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(),
+         token.getUuid());
    }
 
    @Override
@@ -329,7 +330,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, IOseeBranch branch, ArtifactId id) {
-      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(id.getGuid()).getResults().getOneOrNull();
+      return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(
+         id.getGuid()).getResults().getOneOrNull();
    }
 
 }

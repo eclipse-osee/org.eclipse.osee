@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -36,6 +37,7 @@ public class AtsClientService {
    private static InsertionEndpointApi insertionEp;
    private static InsertionActivityEndpointApi insertionActivityEp;
    private static AtsTaskEndpointApi taskEp;
+   private static AtsRuleEndpointApi ruleEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -107,4 +109,10 @@ public class AtsClientService {
       return taskEp;
    }
 
+   public static AtsRuleEndpointApi getRuleEp() {
+      if (ruleEp == null) {
+         ruleEp = getTarget().newProxy(AtsRuleEndpointApi.class);
+      }
+      return ruleEp;
+   }
 }

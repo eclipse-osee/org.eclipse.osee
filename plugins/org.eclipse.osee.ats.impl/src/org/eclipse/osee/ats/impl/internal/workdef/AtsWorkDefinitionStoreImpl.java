@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.impl.internal.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
@@ -45,7 +46,8 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
       List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
       for (ArtifactReadable workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.WorkDefinition).getResults()) {
-         nameToWorkDefStr.add(new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
+         nameToWorkDefStr.add(
+            new Pair<String, String>(workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
       return nameToWorkDefStr;
    }
@@ -61,9 +63,9 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
    }
 
    private String loadWorkDefinitionFromArtifact(String name) throws OseeCoreException {
-      ArtifactReadable artifact =
-         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
-            AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name, QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
+         AtsArtifactTypes.WorkDefinition).and(CoreAttributeTypes.Name, name,
+            QueryOption.EXACT_MATCH_OPTIONS).getResults().getExactlyOne();
       return loadWorkDefinitionFromArtifact(artifact);
    }
 
@@ -73,6 +75,18 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
          modelText = artifact.getSoleAttributeAsString(AtsAttributeTypes.DslSheet);
       }
       return modelText;
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public String loadRuleDefinitionString() throws OseeCoreException {
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIds(
+         AtsArtifactToken.RuleDefinitions).getResults().getOneOrNull();
+      if (artifact != null) {
+         return artifact.getSoleAttributeValue(AtsAttributeTypes.DslSheet, null);
+      } else {
+         return null;
+      }
    };
 
 }

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -18,6 +20,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,6 +37,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<IExecuteListener>();
    protected final IAtsUser user;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
+   protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
 
    public AbstractAtsChangeSet(String comment, IAtsUser user) {
       this.comment = comment;
@@ -119,6 +123,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void deleteArtifact(IAtsWorkItem task) {
       deleteArtifact(task.getStoreObject());
+   }
+   
+   @Override
+   public void addWorkflowCreated(IAtsTeamWorkflow teamWf) {
+      workItemsCreated.add(teamWf);
    }
 
 }

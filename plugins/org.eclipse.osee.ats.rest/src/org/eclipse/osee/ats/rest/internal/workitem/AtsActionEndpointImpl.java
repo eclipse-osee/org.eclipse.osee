@@ -48,13 +48,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Donald G. Dunne
  */
 @Path("action")
-public final class ActionResource implements AtsActionEndpointApi {
+public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final IAtsServer atsServer;
    private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
-   public ActionResource(IAtsServer atsServer, OrcsApi orcsApi) {
+   public AtsActionEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi) {
       this.atsServer = atsServer;
       this.orcsApi = orcsApi;
    }
@@ -74,7 +74,6 @@ public final class ActionResource implements AtsActionEndpointApi {
    @Path("{ids}")
    @IdentityView
    @GET
-   @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
       return workItems;
@@ -166,8 +165,8 @@ public final class ActionResource implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest("actionableItems is not valid");
       }
       List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
-      ArtifactReadable aiArt =
-         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(actionableItems).getResults().getOneOrNull();
+      ArtifactReadable aiArt = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(
+         actionableItems).getResults().getOneOrNull();
       if (aiArt == null) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
       }
@@ -209,9 +208,8 @@ public final class ActionResource implements AtsActionEndpointApi {
       }
 
       // create action
-      IAtsAction action =
-         atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority, false, null,
-            aias, new Date(), atsUser, null, changes).getFirst();
+      IAtsAction action = atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority,
+         false, null, aias, new Date(), atsUser, null, changes).getFirst();
       changes.execute();
 
       // Redirect to action ui

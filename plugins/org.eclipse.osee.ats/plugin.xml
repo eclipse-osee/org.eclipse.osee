@@ -173,6 +173,7 @@
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.editor.renderer.AtsWERenderer"/>
       <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionDslRenderer"/>
+      <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsRuleDefinitionDslRenderer"/>
       <Renderer
             classname="org.eclipse.osee.ats.task.AtsTaskEditorRenderer">
       </Renderer>
@@ -230,6 +231,10 @@
       <command
             id="org.eclipse.osee.ats.workDefDslEditor.command"
             name="ATS Work Definition DSL Editor">
+      </command>
+      <command
+            id="org.eclipse.osee.ats.ruleDefDslEditor.command"
+            name="ATS Rule Definition DSL Editor">
       </command>
       <command
             id="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command"
@@ -314,6 +319,18 @@
       <handler
             class="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionDslHandler"
             commandId="org.eclipse.osee.ats.workDefDslEditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.eclipse.osee.ats.workdef.editor.AtsRuleDefinitionDslHandler"
+            commandId="org.eclipse.osee.ats.ruleDefDslEditor.command">
          <enabledWhen>
             <with
                   variable="selection">

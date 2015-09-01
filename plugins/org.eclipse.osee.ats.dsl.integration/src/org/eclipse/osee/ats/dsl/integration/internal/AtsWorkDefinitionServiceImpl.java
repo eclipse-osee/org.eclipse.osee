@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
+import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -42,7 +43,7 @@ import org.eclipse.osee.logger.Log;
 
 /**
  * Provides new and stored Work Definitions
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
@@ -106,6 +107,23 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
          return this.string.toString();
       }
    };
+
+   @Override
+   public List<IAtsRuleDefinition> getRuleDefinitions() {
+      List<IAtsRuleDefinition> ruleDefs = new ArrayList<>();
+      String ruleDefintionsDslStr = workDefStore.loadRuleDefinitionString();
+      if (Strings.isValid(ruleDefintionsDslStr)) {
+         AtsDsl atsDsl;
+         try {
+            atsDsl = ModelUtil.loadModel("Rule Definitions" + ".ats", ruleDefintionsDslStr);
+            ConvertAtsDslToRuleDefinition convert = new ConvertAtsDslToRuleDefinition(atsDsl, ruleDefs, userService);
+            ruleDefs = convert.convert();
+         } catch (Exception ex) {
+            OseeLog.log(AtsWorkDefinitionServiceImpl.class, Level.SEVERE, ex);
+         }
+      }
+      return ruleDefs;
+   }
 
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
@@ -213,9 +231,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public IAtsWorkDefinition getWorkDefinition(String workDefinitionDsl) throws Exception {
       AtsDsl atsDsl = ModelUtil.loadModel("model.ats", workDefinitionDsl);
       XResultData result = new XResultData(false);
-      ConvertAtsDslToWorkDefinition convert =
-         new ConvertAtsDslToWorkDefinition(Strings.unquote(atsDsl.getWorkDef().iterator().next().getName()), atsDsl,
-            result, attrResolver, userService);
+      ConvertAtsDslToWorkDefinition convert = new ConvertAtsDslToWorkDefinition(
+         Strings.unquote(atsDsl.getWorkDef().iterator().next().getName()), atsDsl, result, attrResolver, userService);
       if (!result.isEmpty()) {
          throw new IllegalStateException(result.toString());
       }

@@ -44,6 +44,8 @@ public final class AtsArtifactTypes {
    public static final IArtifactType Insertion = TokenFactory.createArtifactType(0x18160B4E220FEDD8L, "Insertion");
    public static final IArtifactType InsertionActivity = TokenFactory.createArtifactType(0x36B9D38A2B7789FCL, "Insertion Activity");
 
+   public static final IArtifactType RuleDefinition = TokenFactory.createArtifactType   (0x586836F761A0982EL, "Rule Definition");
+
    // @formatter:on
 
    private AtsArtifactTypes() {

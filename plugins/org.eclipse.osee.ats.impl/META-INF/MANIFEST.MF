@@ -29,6 +29,7 @@ Import-Package: com.google.common.cache;version="15.0.0",
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
  org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.mvc,
  org.eclipse.osee.jdbc,
@@ -43,5 +44,6 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats.impl,
  org.eclipse.osee.ats.impl.config,
+ org.eclipse.osee.ats.impl.util,
  org.eclipse.osee.ats.impl.workitem
 Require-Bundle: org.eclipse.osee.ats.api

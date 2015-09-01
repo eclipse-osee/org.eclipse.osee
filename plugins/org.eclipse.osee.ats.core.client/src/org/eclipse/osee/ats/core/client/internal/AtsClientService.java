@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -26,6 +27,7 @@ public class AtsClientService {
    private static JaxRsWebTarget target;
    private static AtsTaskEndpointApi taskEp;
    private static AtsNotifyEndpointApi notifyEp;
+   private static AtsRuleEndpointApi ruleEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -57,6 +59,13 @@ public class AtsClientService {
          notifyEp = getTarget().newProxy(AtsNotifyEndpointApi.class);
       }
       return notifyEp;
+   }
+   
+   public static AtsRuleEndpointApi getRuleEp() {
+      if (ruleEp == null) {
+         ruleEp = getTarget().newProxy(AtsRuleEndpointApi.class);
+      }
+      return ruleEp;
    }
 
 }

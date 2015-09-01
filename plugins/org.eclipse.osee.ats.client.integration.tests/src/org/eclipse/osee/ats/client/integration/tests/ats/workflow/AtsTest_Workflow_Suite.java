@@ -25,7 +25,8 @@ import org.junit.runners.Suite;
    AtsTaskEndpointImplTest.class,
    SMAPromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,
-   AtsRelationResolverServiceTest.class //
+   AtsRelationResolverServiceTest.class,
+   CreateTaskRuleTest.class //
 })
 public class AtsTest_Workflow_Suite {
 

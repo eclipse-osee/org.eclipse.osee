@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.impl.util.WorkflowRuleRunner;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -77,7 +79,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(user.getUuid()).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+         user.getUuid()).getResults().getExactlyOne();
    }
 
    @Override
@@ -111,6 +114,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          listener.changesStored(this);
       }
       notifier.sendNotifications(getNotifications());
+
+      if (!workItemsCreated.isEmpty()) {
+         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsServer);
+         runner.run();
+      }
    }
 
    @Override

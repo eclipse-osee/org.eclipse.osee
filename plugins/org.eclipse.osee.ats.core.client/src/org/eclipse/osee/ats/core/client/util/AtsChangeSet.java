@@ -13,16 +13,21 @@ package org.eclipse.osee.ats.core.client.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workdef.RuleEventType;
+import org.eclipse.osee.ats.api.workdef.RunRuleData;
+import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -36,8 +41,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -100,6 +107,24 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          listener.changesStored(this);
       }
       AtsClientService.get().sendNotifications(getNotifications());
+
+      if (!workItemsCreated.isEmpty()) {
+         RunRuleData runRuleData = new RunRuleData();
+         runRuleData.setRuleEventType(RuleEventType.CreateWorkflow);
+         runRuleData.getWorkItemUuids().addAll(AtsObjects.toUuids(workItemsCreated));
+         RunRuleResults results = AtsClientService.getRuleEp().runWorkflowRules(runRuleData);
+
+         List<Artifact> changedArts = new LinkedList<>();
+         for (Long changedUuid : results.getChangedWorkitemUuids()) {
+            Artifact artifact = ArtifactCache.getActive(changedUuid.intValue(), AtsUtilCore.getAtsBranch());
+            if (artifact != null) {
+               changedArts.add(artifact);
+            }
+         }
+         if (!changedArts.isEmpty()) {
+            ArtifactQuery.reloadArtifacts(changedArts);
+         }
+      }
    }
 
    private void execute(AtsRelationChange relChange, SkynetTransaction transaction) {

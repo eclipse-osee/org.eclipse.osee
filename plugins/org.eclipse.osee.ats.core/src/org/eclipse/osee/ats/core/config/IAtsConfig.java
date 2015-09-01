@@ -35,4 +35,5 @@ public interface IAtsConfig {
    void invalidate(IAtsConfigObject configObject) throws OseeCoreException;
 
    <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz);
+
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -119,6 +120,39 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    @Override
    public void setAllowUserActionCreation(boolean allowUserActionCreation) {
       throw new UnsupportedOperationException("Error ActionableItem.setAllowUserActionCreation not implemented");
+   }
+
+   @Override
+   public void addRule(String rule) {
+      throw new UnsupportedOperationException("ActionableItem.addRule not implemented");
+   }
+
+   @Override
+   public Collection<String> getRules() {
+      Collection<String> rules = new ArrayList<String>();
+      try {
+         rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
+      } catch (OseeCoreException ex) {
+         getLogger().error(ex, "Error getting rules");
+      }
+      return rules;
+   }
+
+   @Override
+   public boolean hasRule(String rule) {
+      boolean result = false;
+      for (String rule2 : getRules()) {
+         if (rule.equals(rule2)) {
+            result = true;
+            break;
+         }
+      }
+      return result;
+   }
+
+   @Override
+   public void removeRule(String rule) {
+      throw new UnsupportedOperationException("ActionableItem.setActionable not implemented");
    }
 
 }

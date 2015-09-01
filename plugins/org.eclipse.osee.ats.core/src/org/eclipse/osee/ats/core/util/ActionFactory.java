@@ -232,6 +232,8 @@ public class ActionFactory implements IAtsActionFactory {
       changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
          AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
 
+      changes.addWorkflowCreated(teamWf);
+
       return teamWf;
    }
 

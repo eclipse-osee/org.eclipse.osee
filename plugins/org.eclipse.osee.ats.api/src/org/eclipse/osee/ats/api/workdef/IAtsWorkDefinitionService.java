@@ -54,4 +54,6 @@ public interface IAtsWorkDefinitionService {
 
    Collection<String> getAllValidStateNames(XResultData resultData) throws Exception;
 
+   List<IAtsRuleDefinition> getRuleDefinitions();
+
 }

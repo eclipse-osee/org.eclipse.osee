@@ -35,9 +35,10 @@ import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
-import org.eclipse.osee.ats.rest.internal.workitem.ActionResource;
 import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsRuleEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -92,7 +93,8 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionResource(atsServer));
       singletons.add(new InsertionActivityResource(atsServer));
 
-      singletons.add(new ActionResource(atsServer, orcsApi));
+      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi));
+      singletons.add(new AtsRuleEndpointImpl(atsServer));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));

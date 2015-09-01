@@ -18,7 +18,10 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsDsl_Internal_Model_JT_Suite.class, ConvertWorkDefinitionToAtsDslTest.class})
+@Suite.SuiteClasses({
+   AtsDsl_Internal_Model_JT_Suite.class,
+   ConvertWorkDefinitionToAtsDslTest.class,
+   ConvertAtsDslToRuleDefinitionTest.class})
 public class AtsDsl_Internal_JT_Suite {
    // Test Suite
 }

@@ -66,7 +66,7 @@ public interface IAtsStateDefinition extends IStateToken {
    /**
     * Set how much (of 100%) this state's percent complete will contribute to the full percent complete of work
     * definitions.
-    * 
+    *
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
    public abstract int getStateWeight();

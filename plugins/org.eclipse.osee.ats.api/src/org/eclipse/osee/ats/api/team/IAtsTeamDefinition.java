@@ -157,19 +157,4 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    void setRelatedPeerWorkDefinition(String relatedPeerWorkDefinition);
 
-   /*****************************
-    * Rules
-    ******************************/
-   @Override
-   void addRule(String rule);
-
-   @Override
-   Collection<String> getRules();
-
-   @Override
-   boolean hasRule(String rule);
-
-   @Override
-   void removeRule(String rule);
-
 }

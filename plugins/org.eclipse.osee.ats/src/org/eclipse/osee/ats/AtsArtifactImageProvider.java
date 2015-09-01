@@ -43,6 +43,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamWorkflow, AtsImage.TEAM_WORKFLOW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
@@ -74,8 +75,8 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.RELEASED, Location.TOP_RIGHT);
          }
-         if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false) && !aArtifact.getSoleAttributeValue(
-            AtsAttributeTypes.Released, false)) {
+         if (aArtifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked,
+            false) && !aArtifact.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
             return ArtifactImageManager.setupImage(aArtifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
          }
       }

@@ -93,6 +93,8 @@ public class ConvertAIsAndTeamsToAtsDsl {
       if (teamDef != null) {
          dslAIDef.setTeamDef(teamDef.getName());
       }
+      dslAIDef.getRules().addAll(teamDef.getRules());
+
       // process children
       for (IAtsActionableItem childAiArt : aiArt.getChildrenActionableItems()) {
          convertAIDef(childAiArt, dslAIDef);
@@ -126,6 +128,8 @@ public class ConvertAIsAndTeamsToAtsDsl {
       for (IAtsVersion verArt : teamDef.getVersions()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);
       }
+      dslTeamDef.getRules().addAll(teamDef.getRules());
+
       // process children
       for (IAtsTeamDefinition childAiArt : teamDef.getChildrenTeamDefinitions()) {
          convertTeamDef(childAiArt, dslTeamDef);

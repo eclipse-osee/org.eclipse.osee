@@ -55,18 +55,21 @@ public class ActionManager {
       IArtifactType teamWorkflowArtifactType =
          TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
 
-      IAtsTeamWorkflow teamWf =
-         AtsClientService.get().getActionFactory().createTeamWorkflow((IAtsAction) actionArt, teamDef, actionableItems,
-            assignees, createdDate, createdBy, null, teamWorkflowArtifactType, newActionListener, changes,
-            createTeamOption);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getActionFactory().createTeamWorkflow((IAtsAction) actionArt,
+         teamDef, actionableItems, assignees, createdDate, createdBy, null, teamWorkflowArtifactType, newActionListener,
+         changes, createTeamOption);
+
+      changes.addWorkflowCreated(teamWf);
+
       return (TeamWorkFlowArtifact) teamWf.getStoreObject();
    }
 
    public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
-      IAtsTeamWorkflow teamWf =
-         AtsClientService.get().getActionFactory().createTeamWorkflow((IAtsAction) actionArt, teamDef, actionableItems,
-            assignees, changes, createdDate, createdBy, newActionListener, createTeamOption);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getActionFactory().createTeamWorkflow((IAtsAction) actionArt,
+         teamDef, actionableItems, assignees, changes, createdDate, createdBy, newActionListener, createTeamOption);
+
+      changes.addWorkflowCreated(teamWf);
 
       return (TeamWorkFlowArtifact) teamWf.getStoreObject();
    }
