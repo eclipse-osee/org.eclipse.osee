@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
@@ -27,9 +28,11 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
@@ -39,7 +42,9 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -47,6 +52,28 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class ConflictManagerInternal {
+   private static final String MULTIPLICITY_DETECTION =
+      "select attr_s.art_id, attr_s.attr_id as source_attr_id, attr_d.attr_id as dest_attr_id " + //
+      "from " + //
+      "osee_attribute attr_s, " + //
+      "osee_txs txs_s, " + //
+      "osee_txs txs_d, " + //
+      "osee_attribute attr_d, " + //
+      "osee_join_id jid " + //
+      "where " + //
+      "txs_s.tx_current = 1 AND " + //
+      "txs_s.branch_id = ? AND " + //
+      "txs_s.transaction_id > ? AND " + //
+      "txs_s.gamma_id = attr_s.gamma_id AND " + //
+      "attr_s.attr_type_id = jid.id AND " + //
+      "jid.query_id = ? AND " + //
+      "txs_d.tx_current = 1 AND " + //
+      "txs_d.branch_id = ? AND " + //
+      "txs_d.gamma_id = attr_d.gamma_id AND " + //
+      "attr_d.attr_type_id = attr_s.attr_type_id AND " + //
+      "attr_d.art_id = attr_s.art_id AND " + //
+      "attr_d.attr_id <> attr_s.attr_id";
+
    private static final String CONFLICT_CLEANUP =
       "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id and (t1.conflict_type = transaction_id or transaction_id is NULL))";
 
@@ -72,12 +99,11 @@ public class ConflictManagerInternal {
             if (sourceBranch.getArchiveState().isArchived()) {
                sourceBranch = null;
             }
-            AttributeConflict attributeConflict =
-               new AttributeConflict(chStmt.getInt("source_gamma_id"), chStmt.getInt("dest_gamma_id"),
-                  chStmt.getInt("art_id"), null, commitTransaction, chStmt.getString("source_value"),
-                  chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
-                  BranchManager.getBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
-                  BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
+            AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
+               chStmt.getInt("dest_gamma_id"), chStmt.getInt("art_id"), null, commitTransaction,
+               chStmt.getString("source_value"), chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
+               BranchManager.getBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
+               BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
          }
@@ -109,21 +135,29 @@ public class ConflictManagerInternal {
             sourceBranch == null ? "NULL" : sourceBranch.getUuid(),
             destinationBranch == null ? "NULL" : destinationBranch.getUuid());
       }
-      monitor.beginTask(
-         String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
-            destinationBranch.getUuid()), 100);
+      monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getUuid(),
+         destinationBranch.getUuid()), 100);
       monitor.subTask("Finding Database stored conflicts");
 
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
+      String disableChecks = OseeInfo.getValue("osee.disable.multiplicity.conflicts");
+      if (!Strings.isValid(disableChecks)) {
+         // check for multiplicity conflicts
+         Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
+         loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, baselineTransaction,
+            conflictBuilders, artIdSet);
+      }
+
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
-         destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd,
-         monitor, commonTransaction);
+         destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd, monitor,
+         commonTransaction);
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_SRC), sourceBranch,
-         destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd,
-         monitor, commonTransaction);
+         destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd, monitor,
+         commonTransaction);
       loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
          monitor, commonTransaction);
+
       artIdSet.removeAll(artIdSetDontAdd);
       if (artIdSet.isEmpty()) {
          return conflicts;
@@ -171,6 +205,42 @@ public class ConflictManagerInternal {
       return artifacts;
    }
 
+   private static void loadMultiplicityConflicts(Collection<IAttributeType> types, Branch source, Branch dest, TransactionRecord baselineTransaction, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
+      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      List<Object[]> batchParams = new LinkedList<Object[]>();
+      try {
+         for (IAttributeType type : types) {
+            joinQuery.add(type.getGuid());
+         }
+         joinQuery.store();
+
+         chStmt.runPreparedQuery(MULTIPLICITY_DETECTION, source.getUuid(), source.getBaseTransaction().getId(),
+            joinQuery.getQueryId(), dest.getUuid());
+
+         while (chStmt.next()) {
+            int artId = chStmt.getInt("art_id");
+            int sAttrId = chStmt.getInt("source_attr_id");
+            int dAttrId = chStmt.getInt("dest_attr_id");
+            artIdSet.add(artId);
+            batchParams.add(new Object[] {dAttrId, sAttrId, artId});
+         }
+
+      } finally {
+         joinQuery.delete();
+         chStmt.close();
+      }
+
+      if (!batchParams.isEmpty()) {
+         String updateSql = "update osee_attribute set attr_id = ? where attr_id = ? and art_id = ?";
+         ConnectionHandler.runBatchUpdate(updateSql, batchParams);
+         // update cached source artifacts
+         for (Object[] params : batchParams) {
+            ArtifactQuery.reloadArtifactFromId((int) params[2], source);
+         }
+      }
+   }
+
    private static void loadArtifactVersionConflicts(String sql, Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       boolean hadEntries = false;
 
@@ -201,9 +271,8 @@ public class ConflictManagerInternal {
                if (destModType == ModificationType.DELETED && sourceModType == ModificationType.MODIFIED || //
                destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
 
-                  artifactConflictBuilder =
-                     new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
-                        destinationBranch, sourceModType, destModType, artTypeId);
+                  artifactConflictBuilder = new ArtifactConflictBuilder(sourceGamma, destGamma, artId,
+                     baselineTransaction, sourceBranch, destinationBranch, sourceModType, destModType, artTypeId);
 
                   conflictBuilders.add(artifactConflictBuilder);
                   artIdSet.add(artId);
@@ -247,14 +316,13 @@ public class ConflictManagerInternal {
                int sourceGamma = chStmt.getInt("source_gamma");
                int destGamma = chStmt.getInt("dest_gamma");
                long attrTypeId = chStmt.getLong("attr_type_id");
-               String sourceValue =
-                  chStmt.getString("source_value") != null ? chStmt.getString("source_value") : chStmt.getString("dest_value");
+               String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
+                  "source_value") : chStmt.getString("dest_value");
 
                if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
                   attrId = nextAttrId;
-                  attributeConflictBuilder =
-                     new AttributeConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
-                        destinationBranch, sourceValue, attrId, attrTypeId);
+                  attributeConflictBuilder = new AttributeConflictBuilder(sourceGamma, destGamma, artId,
+                     baselineTransaction, sourceBranch, destinationBranch, sourceValue, attrId, attrTypeId);
 
                   conflictBuilders.add(attributeConflictBuilder);
                   artIdSet.add(artId);

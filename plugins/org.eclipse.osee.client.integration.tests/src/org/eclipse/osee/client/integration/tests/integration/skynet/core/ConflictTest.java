@@ -16,20 +16,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
@@ -39,10 +48,12 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.junit.runners.MethodSorters;
 
@@ -100,10 +111,9 @@ public class ConflictTest {
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Conflict> conflicts = null;
       try {
-         conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-               new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+            ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+            new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -147,10 +157,9 @@ public class ConflictTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         Collection<Conflict> conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-               new NullProgressMonitor());
+         Collection<Conflict> conflicts = ConflictManagerInternal.getConflictsPerBranch(
+            ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch(),
+            ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             if (conflict instanceof AttributeConflict) {
@@ -161,10 +170,9 @@ public class ConflictTest {
             }
          }
 
-         conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-               ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-               new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+            ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+            new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             ConflictStatus status = conflict.getStatus();
@@ -199,6 +207,53 @@ public class ConflictTest {
 
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
          monitorLog.getSevereLogs().isEmpty());
+   }
+
+   @Test
+   public void testMultiplicityCommit() {
+      Branch parent = BranchManager.getBranch(DemoBranches.SAW_Bld_1);
+      Artifact testArt =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parent, "Multiplicity Test");
+      testArt.persist("Save testArt on parent");
+      Branch child1 = BranchManager.createWorkingBranch(parent, "Child1");
+      Branch child2 = BranchManager.createWorkingBranch(parent, "Child2");
+
+      Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child1);
+      onChild1.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1");
+      onChild1.persist("Save paragraph number on child1");
+
+      List<Attribute<Object>> attributes = onChild1.getAttributes(CoreAttributeTypes.ParagraphNumber);
+      Assert.assertTrue(attributes.size() == 1);
+      Attribute<Object> attr = attributes.iterator().next();
+      int child1AttrId = attr.getId();
+
+      ConflictManagerExternal mgr = new ConflictManagerExternal(parent, child1);
+      BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
+      Assert.assertFalse(mgr.originalConflictsExist());
+
+      Artifact onChild2 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child2);
+      onChild2.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "2");
+      onChild2.persist("Save paragraph number on child2");
+
+      attributes = onChild2.getAttributes(CoreAttributeTypes.ParagraphNumber);
+      Assert.assertTrue(attributes.size() == 1);
+      attr = attributes.iterator().next();
+      int child2AttrId = attr.getId();
+
+      Assert.assertNotEquals(child1AttrId, child2AttrId);
+
+      mgr = new ConflictManagerExternal(parent, child2);
+      Assert.assertTrue(mgr.originalConflictsExist());
+      List<Conflict> conflicts = mgr.getOriginalConflicts();
+      Assert.assertTrue(conflicts.size() == 1);
+      Conflict conflict = conflicts.iterator().next();
+      int conflictObjId = conflict.getObjectId();
+      Assert.assertEquals(child1AttrId, conflictObjId);
+
+      BranchManager.purgeBranch(BranchManager.getMergeBranch(child2, parent));
+      BranchManager.purgeBranch(child2);
+      PurgeArtifacts p = new PurgeArtifacts(Arrays.asList(testArt));
+      Operations.executeWorkAndCheckStatus(p);
    }
 
    @Ignore

@@ -75,6 +75,16 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
+   public static Collection<IAttributeType> getSingleMultiplicityTypes() throws OseeCoreException {
+      Collection<IAttributeType> types = new ArrayList<IAttributeType>();
+      for (AttributeType type : getAllTypes()) {
+         if (type.getMaxOccurrences() == 1) {
+            types.add(type);
+         }
+      }
+      return types;
+   }
+
    public static boolean typeExists(String name) throws OseeCoreException {
       return !getCache().getByName(name).isEmpty();
    }

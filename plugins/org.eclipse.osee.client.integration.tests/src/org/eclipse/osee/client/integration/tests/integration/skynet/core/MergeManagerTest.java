@@ -75,12 +75,9 @@ public class MergeManagerTest {
          newArt.addAttribute(CoreAttributeTypes.WordTemplateContent, "Base Edit");
          newArt.persist("Base Edit");
          //wait for creation of artifact and persist to go through
-         Thread.sleep(5000);
       }
 
       workingBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, "Working Branch");
-      // wait for branch creation
-      Thread.sleep(3000);
       Artifact artOnWorking = ArtifactQuery.getArtifactFromToken(NewArtifactToken, workingBranch);
       artOnWorking.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "Working Edit");
       artOnWorking.persist("Working Edit");
@@ -88,8 +85,6 @@ public class MergeManagerTest {
       // Create conflict by editing on Parent as well
       newArt.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "Parent Edit");
       newArt.persist("Parent Edit");
-      // wait for persists
-      Thread.sleep(1000);
    }
 
    @After
@@ -98,7 +93,6 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnWorking)));
 
       BranchManager.purgeBranch(workingBranch);
-      Thread.sleep(1000);
    }
 
    @Test
@@ -124,10 +118,8 @@ public class MergeManagerTest {
       assertTrue("Branch Committed while in Rebaseline In Progress", !committed);
       assertTrue("An additional Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
 
-      // Abandon 
+      // Abandon
       RebaselineInProgressHandler.cancelCurrentUpdate(workingBranch, true);
-      // wait on operation
-      Thread.sleep(1000);
       BranchManager.persist(workingBranch);
 
       // Now we can commit
@@ -138,15 +130,12 @@ public class MergeManagerTest {
       // make sure we can't rebase now since we've done a commit
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
-      assertTrue(
-         "Branch should not be updating",
+      assertTrue("Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Purge art from SAW 2 since we did a commit
       Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnSaw2)));
-      // wait on operation
-      Thread.sleep(1000);
 
    }
 
@@ -228,8 +217,6 @@ public class MergeManagerTest {
       Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
       Artifact artOnUpdateBranch = ArtifactQuery.getArtifactFromToken(NewArtifactToken, branchForUpdate);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnSaw2, artOnUpdateBranch)));
-      // wait on operation
-      Thread.sleep(1000);
       BranchManager.purgeBranch(branchForUpdate);
    }
 
@@ -271,13 +258,12 @@ public class MergeManagerTest {
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
 
-      assertTrue(
-         "Branch should not be updating",
+      assertTrue("Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
-      // Abandon 
-      MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(DemoBranches.SAW_Bld_1,
-         workingBranch), DELETE_MERGE, true);
+      // Abandon
+      MergeInProgressHandler.handleCommitInProgressPostPrompt(
+         new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), DELETE_MERGE, true);
       assertTrue("Merge Branch still present", !BranchManager.hasMergeBranches(workingBranch));
 
       // Now we should be to do an update
@@ -299,8 +285,6 @@ public class MergeManagerTest {
       // Purge art from new Updated Branch
       Artifact artOnUpdateBranch = ArtifactQuery.getArtifactFromToken(NewArtifactToken, branchForUpdate);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnUpdateBranch)));
-      // wait on operation
-      Thread.sleep(1000);
       BranchManager.purgeBranch(branchForUpdate);
    }
 
@@ -324,8 +308,7 @@ public class MergeManagerTest {
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
 
-      assertTrue(
-         "Branch should not be updating",
+      assertTrue("Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Commit into another branch other than SAW_BLD_1 so there are no conflicts
@@ -334,20 +317,17 @@ public class MergeManagerTest {
       assertTrue("Branch was not committed", committed);
 
       // Even if I abandon first Merge, still shouldn't be able to rebase since I already completed on Commit
-      MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(DemoBranches.SAW_Bld_1,
-         workingBranch), DELETE_MERGE, true);
+      MergeInProgressHandler.handleCommitInProgressPostPrompt(
+         new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), DELETE_MERGE, true);
 
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
 
-      assertTrue(
-         "Branch should not be updating",
+      assertTrue("Branch should not be updating",
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Clean up this test
       Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnSaw2)));
-      // wait on operation
-      Thread.sleep(1000);
    }
 }
