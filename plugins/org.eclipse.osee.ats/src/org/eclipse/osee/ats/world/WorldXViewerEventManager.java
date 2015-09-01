@@ -198,7 +198,7 @@ public class WorldXViewerEventManager {
             try {
                if (!handler.isDisposed()) {
                   WorldXViewer worldViewer = handler.getWorldXViewer();
-                  if (worldViewer != null) {
+                  if (worldViewer != null && !worldViewer.isDisposed()) {
                      processPurged(worldViewer, handler);
                      for (Artifact artifact : modifiedArts) {
                         processArtifact(worldViewer, artifact, processed);

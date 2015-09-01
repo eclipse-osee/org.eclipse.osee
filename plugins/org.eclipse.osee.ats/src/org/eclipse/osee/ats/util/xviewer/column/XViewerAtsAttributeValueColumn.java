@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * Given ATS attribute, will return ; delimited values for AbstractWorkflowArtifact and unique rolled up values for
  * ActionArtifacts. This column will also provide default alt-left-click operation for any single value (max=1)
  * attribute.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn {
@@ -117,8 +117,11 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      return AtsAttributeColumnUtility.handleAltLeftClick(treeColumn.getData(), treeItem.getData(),
-         isMultiLineStringAttribute(), isPersistAltLeftClick());
+      if (treeColumn != null && !treeColumn.isDisposed() && treeItem != null && !treeItem.isDisposed()) {
+         return AtsAttributeColumnUtility.handleAltLeftClick(treeColumn.getData(), treeItem.getData(),
+            isMultiLineStringAttribute(), isPersistAltLeftClick());
+      }
+      return false;
    }
 
    @Override

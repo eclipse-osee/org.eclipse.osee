@@ -702,4 +702,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return parentSprintArtifact;
    }
 
+   public boolean isDisposed() {
+      return getTree() != null && !getTree().isDisposed();
+   }
+
 }
