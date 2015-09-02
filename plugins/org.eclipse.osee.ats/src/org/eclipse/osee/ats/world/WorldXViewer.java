@@ -599,17 +599,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return title;
    }
 
-   @Override
-   public void load(Collection<Object> objects) {
-      Set<Artifact> arts = new HashSet<Artifact>();
-      for (Object obj : objects) {
-         if (AtsUtil.isAtsArtifact(obj)) {
-            arts.add((Artifact) obj);
-         }
-      }
-      setInput(arts);
-   }
-
    public List<Artifact> getSelectedArtifactItems() {
       List<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
@@ -703,7 +692,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    public boolean isDisposed() {
-      return getTree() != null && !getTree().isDisposed();
+      return getTree() == null || getTree().isDisposed();
    }
 
 }

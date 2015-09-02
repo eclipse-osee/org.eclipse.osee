@@ -197,7 +197,7 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
                } else {
                   setTableTitle(name, false);
                }
-               worldXViewer.setInput(worldArts);
+               worldXViewer.setInputXViewer(worldArts);
                worldXViewer.updateStatusLabel();
                if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
                   "Open in Artifact Editor?",

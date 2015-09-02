@@ -86,6 +86,7 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    public void runGeneralTaskSearchTest(XNavigateItem item, int expectedNum) throws Exception {
       TaskEditor editor = getSingleEditorOrFail();
+      editor.getTaskActionPage().getTaskComposite().getTaskXViewer().setForcePend(true);
       editor.getTaskActionPage().reSearch();
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());

@@ -50,7 +50,16 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
-      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
+      boolean useForePend = forcePend;
+      if (!useForePend) {
+         for (TableLoadOption option : getTableLoadOptions()) {
+            if (option == TableLoadOption.ForcePend) {
+               useForePend = true;
+               break;
+            }
+         }
+      }
+      worldEditor.getWorldComposite().getXViewer().setForcePend(useForePend);
       worldEditor.getWorldComposite().load(name, artifacts, customizeData, expandToArtifact, getTableLoadOptions());
    }
 

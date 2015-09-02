@@ -135,7 +135,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       this.taskArts.addAll(newTasks);
       if (Widgets.isAccessible(getTaskXViewer().getControl())) {
          if (getTaskXViewer().getInput() != this.taskArts) {
-            getTaskXViewer().setInput(this.taskArts);
+            getTaskXViewer().setInputXViewer(this.taskArts);
          }
          Displays.ensureInDisplayThread(new Runnable() {
 
