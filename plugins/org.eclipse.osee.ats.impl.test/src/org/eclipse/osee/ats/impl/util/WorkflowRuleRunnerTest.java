@@ -73,7 +73,7 @@ public class WorkflowRuleRunnerTest {
       MockitoAnnotations.initMocks(this);
 
       when(atsServer.getStoreService()).thenReturn(atsStoreService);
-      when(atsStoreService.createAtsChangeSet("WorkflowRunner", AtsCoreUsers.SYSTEM_USER)).thenReturn(changes);
+      when(atsStoreService.createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER)).thenReturn(changes);
       when(workItem.isTeamWorkflow()).thenReturn(true);
       when(workItem.getParentTeamWorkflow()).thenReturn(teamWf);
       when(atsServer.getWorkDefAdmin()).thenReturn(atsWorkDefAdmin);

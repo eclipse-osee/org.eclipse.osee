@@ -185,6 +185,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Work Package Guid"
 	attribute "ats.Id"
 	attribute "ats.Unplanned Work"
+	attribute "ats.Peer Review Id"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -331,6 +332,15 @@ attributeType "ats.Applicable to Program" extends EnumeratedAttribute {
 	min 0
 	max 1
 	enumType "enum.ats.applicability.to.program"
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.Peer Review Id" extends StringAttribute {
+	uuid 0x3AB8042D5FD8DB2A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }

@@ -176,11 +176,7 @@ public class CreateTasksOperation {
       }
 
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), asUser);
-
-      createTasks(changes);
-      if (changes.isEmpty()) {
-         throw new OseeStateException(getClass().getSimpleName() + " Error - No Tasks to Create");
-      }
+      run(changes);
       changes.execute();
 
       for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
@@ -189,6 +185,13 @@ public class CreateTasksOperation {
             throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
          }
          this.tasks.add(newJaxTask);
+      }
+   }
+
+   public void run(IAtsChangeSet changes) {
+      createTasks(changes);
+      if (changes.isEmpty()) {
+         throw new OseeStateException(getClass().getSimpleName() + " Error - No Tasks to Create");
       }
    }
 

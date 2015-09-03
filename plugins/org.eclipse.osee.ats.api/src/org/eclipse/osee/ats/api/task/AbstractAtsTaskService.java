@@ -24,15 +24,15 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    @Override
    public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, String commitComment) {
-      NewTaskData newTaskData =
-         getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState, taskWorkDef, attributes);
+      NewTaskData newTaskData = getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState,
+         taskWorkDef, attributes, commitComment);
       return createTasks(newTaskData);
    }
 
    @Override
-   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes) {
+   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, String commitComment) {
       NewTaskData newTaskData = new NewTaskData();
-      newTaskData.setCommitComment("Import Tasks from Simple List");
+      newTaskData.setCommitComment(commitComment);
       newTaskData.setAsUserId(createdBy.getUserId());
       newTaskData.setTeamWfUuid(teamWf.getUuid());
       if (createdDate == null) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -18,8 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.rule.JaxRuleDefinitions;
 import org.eclipse.osee.ats.api.workdef.AddRuleData;
-import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.RunRuleData;
 import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 
@@ -31,7 +30,7 @@ public interface AtsRuleEndpointApi {
    @GET
    @Path("rule")
    @Produces({MediaType.APPLICATION_JSON})
-   public abstract List<IAtsRuleDefinition> get() throws Exception;
+   public abstract JaxRuleDefinitions get() throws Exception;
 
    @POST
    @Path("rule")

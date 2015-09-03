@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.workitem.CreateTasksOperation;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -40,13 +41,20 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    @Override
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData) {
+      IAtsChangeSet changes =
+         atsServer.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), AtsCoreUsers.SYSTEM_USER);
+      return createTasks(newTaskData, changes);
+   }
+
+   @Override
+   public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes) {
       CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsServer, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
          throw new OseeStateException("Error validating task creation - " + results.toString());
       }
-      operation.run();
+      operation.run(changes);
       if (results.isErrors()) {
          throw new OseeStateException("Error creating tasks - " + results.toString());
       }
@@ -58,10 +66,10 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, IAtsChangeSet changes, Map<String, List<String>> attributes) {
+   public Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, IAtsChangeSet changes) {
       NewTaskData tasks = atsServer.getTaskService().getNewTaskData(teamWf, titles, assignees, createdDate, createdBy,
-         relatedToState, taskWorkDef, attributes);
-      return createTasks(tasks);
+         relatedToState, taskWorkDef, attributes, changes.getComment());
+      return createTasks(tasks, changes);
    }
 
 }

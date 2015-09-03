@@ -28,8 +28,10 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> createTasks(NewTaskData newTaskData);
 
-   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, IAtsChangeSet changes, Map<String, List<String>> attributes);
+   Collection<IAtsTask> createTasks(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, IAtsChangeSet changes);
 
-   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes);
+   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, String commitComment);
+
+   Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes);
 
 }

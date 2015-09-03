@@ -106,6 +106,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
    }
 
+   @Override
    public String getComment() {
       return comment;
    }
@@ -124,7 +125,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void deleteArtifact(IAtsWorkItem task) {
       deleteArtifact(task.getStoreObject());
    }
-   
+
    @Override
    public void addWorkflowCreated(IAtsTeamWorkflow teamWf) {
       workItemsCreated.add(teamWf);

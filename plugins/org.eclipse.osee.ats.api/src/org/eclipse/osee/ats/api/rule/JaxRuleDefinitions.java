@@ -8,17 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workdef;
+package org.eclipse.osee.ats.api.rule;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 
 /**
- * @author Mark Joy
+ * @author Donald G. Dunne
  */
 @XmlRootElement
-public enum RuleLocations {
+public class JaxRuleDefinitions {
 
-   StateDefinition,
-   TeamDefinition,
-   ActionableItem;
+   private List<IAtsRuleDefinition> rules;
+
+   public List<IAtsRuleDefinition> getRules() {
+      if (rules == null) {
+         rules = new LinkedList<>();
+      }
+      return rules;
+   }
+
+   public void setRules(List<IAtsRuleDefinition> rules) {
+      this.rules = rules;
+   }
+
 }

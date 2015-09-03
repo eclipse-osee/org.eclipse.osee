@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 /**
  * @author Mark Joy
  */
+@XmlRootElement
 public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCreateTaskRuleDefinition {
 
    private String taskWorkDef;
@@ -73,7 +75,7 @@ public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCrea
 
             Collection<IAtsTask> createdTasks = atsServices.getTaskService().createTasks((IAtsTeamWorkflow) workItem,
                titles, this.assignees, new Date(), atsServices.getUserService().getCurrentUser(), this.relatedState,
-               this.taskWorkDef, attributes, "No Comment");
+               this.taskWorkDef, attributes, changes);
             ruleResults.addChange(workItem.getUuid(), RuleResultsEnum.CREATE_TASK);
             for (IAtsTask task : createdTasks) {
                ruleResults.addChange(task.getUuid(), RuleResultsEnum.NEW_TASK);

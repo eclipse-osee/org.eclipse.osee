@@ -21,8 +21,8 @@ public final class AtsArtifactToken {
 
    public static final IArtifactToken AtsConfig =
       TokenFactory.createArtifactToken(5367053, "Af7L9SYYgCcBCKZ8CCwA", "AtsConfig", CoreArtifactTypes.GeneralData);
-   public static final IArtifactToken RuleDefinitions = TokenFactory.createArtifactToken(523455053,
-      "Af7L9SxxyCcBCKZ8CCwA", "Rule Definitions", AtsArtifactTypes.RuleDefinition);
+   public static final IArtifactToken RuleDefinitions = TokenFactory.createArtifactToken(7880473,
+      "Ar1Z9KIRtUZgcxbnyFwA", "Rule Definitions", AtsArtifactTypes.RuleDefinition);
    public static final IArtifactToken Users =
       TokenFactory.createArtifactToken(95459, "AAABGTAGb+8BauB5Cw1QNA", "Users", CoreArtifactTypes.Folder);
    public static IArtifactToken HeadingFolder = TokenFactory.createArtifactToken(114713, "AAABER+3yR4A8O7WYQ+Xbw",

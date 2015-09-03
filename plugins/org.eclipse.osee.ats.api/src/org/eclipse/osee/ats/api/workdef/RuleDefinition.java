@@ -12,11 +12,13 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 
 /**
  * @author Mark Joy
  */
+@XmlRootElement
 public class RuleDefinition implements IAtsRuleDefinition {
    public String name = "";
    public String title = "";

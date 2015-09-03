@@ -15,10 +15,13 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.rule.JaxRuleDefinitions;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AddRuleData;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
@@ -43,9 +46,13 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
 
    @GET
    @Path("rule")
+   @Produces({MediaType.APPLICATION_JSON})
    @Override
-   public List<IAtsRuleDefinition> get() throws Exception {
-      List<IAtsRuleDefinition> rules = new LinkedList<>(atsServer.getWorkDefAdmin().getAllRuleDefinitions());
+   public JaxRuleDefinitions get() throws Exception {
+      JaxRuleDefinitions rules = new JaxRuleDefinitions();
+      for (IAtsRuleDefinition rule : atsServer.getWorkDefAdmin().getAllRuleDefinitions()) {
+         rules.getRules().add(rule);
+      }
       return rules;
    }
 

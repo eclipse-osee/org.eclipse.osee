@@ -91,4 +91,6 @@ public interface IAtsChangeSet {
 
    void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values);
 
+   String getComment();
+
 }

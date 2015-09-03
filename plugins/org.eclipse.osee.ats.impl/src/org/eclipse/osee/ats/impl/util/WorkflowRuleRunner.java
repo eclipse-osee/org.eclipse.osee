@@ -48,7 +48,7 @@ public class WorkflowRuleRunner {
 
    public RunRuleResults run() {
       IAtsChangeSet changes =
-         atsServer.getStoreService().createAtsChangeSet("WorkflowRunner", AtsCoreUsers.SYSTEM_USER);
+         atsServer.getStoreService().createAtsChangeSet("ATS Rule Runner", AtsCoreUsers.SYSTEM_USER);
       if (eventType == RuleEventType.CreateWorkflow) {
          for (IAtsWorkItem workItem : workflowsCreated) {
             if (workItem.isTeamWorkflow()) {

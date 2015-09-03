@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.user;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -20,6 +22,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Donald G. Dunne
  */
+@XmlRootElement
 public class AtsUser implements IAtsUser {
 
    private ArtifactReadable user;
@@ -138,6 +141,7 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
+   @JsonIgnore
    public ArtifactId getStoreObject() {
       return user;
    }
