@@ -65,7 +65,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 /**
  * Dynamically provides the open/open with CommandContributionItem for menu items based off of calling applicable
  * {@link IRenderer#getCommandIds(CommandGroup)}
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class OpenContributionItem extends ContributionItem {
@@ -213,7 +213,7 @@ public class OpenContributionItem extends ContributionItem {
    }
 
    private Collection<IContributionItem> getCommonContributionItems(CommandGroup commandGroup, Artifact testArtifact, Collection<IRenderer> commonRenders) throws OseeCoreException {
-      ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
       Map<String, IContributionItem> contributedItems = new LinkedHashMap<String, IContributionItem>(25);
       for (IRenderer renderer : commonRenders) {
          for (String commandId : renderer.getCommandIds(commandGroup)) {
@@ -325,11 +325,9 @@ public class OpenContributionItem extends ContributionItem {
 
             if (event.detail == 0) {
                try {
-                  IHandlerService handlerService =
-                     (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+                  IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
 
-                  ICommandService commandService =
-                     (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+                  ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 
                   Command command = commandService.getCommand(DEFAULT_OPEN_CMD_ID);
                   if (command.isEnabled()) {
