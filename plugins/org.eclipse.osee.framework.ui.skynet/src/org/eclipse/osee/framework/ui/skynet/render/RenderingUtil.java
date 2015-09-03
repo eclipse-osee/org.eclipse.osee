@@ -74,6 +74,8 @@ public final class RenderingUtil {
    private static String getName(TransactionDelta txDelta) throws OseeCoreException {
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(txDelta);
       String name = associatedArtifact == null ? "" : associatedArtifact.getName();
+      //remove quotes in title so to avoid conflict in vbs
+      name = name.replaceAll("[\"|']", "");
       return name.substring(0, Math.min(name.length(), 15));
    }
 
@@ -196,7 +198,7 @@ public final class RenderingUtil {
    }
 
    public static String toFileName(IOseeBranch branch) throws OseeCoreException {
-      // replace invalid filename characters \/:"*?<>| and . and ' with _ 
+      // replace invalid filename characters \/:"*?<>| and . and ' with _
       String shortName = Strings.saferReplace(Branch.getShortName(branch), "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
    }
