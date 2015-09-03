@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -63,8 +62,7 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
- * Dynamically provides the open/open with CommandContributionItem for menu items based off of calling applicable
- * {@link IRenderer#getCommandIds(CommandGroup)}
+ * Dynamically provides the open/open with CommandContributionItem for menu items
  *
  * @author Jeff C. Phillips
  */
@@ -73,6 +71,8 @@ public class OpenContributionItem extends ContributionItem {
    private static final String DEFAULT_OPEN_CMD_ID = "org.eclipse.osee.framework.ui.skynet.open.command";
 
    private final Collection<IContributionItem> openWithItems = new ArrayList<IContributionItem>();
+   private final ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
+
    private IContributionItem defaultOpenItem;
 
    public OpenContributionItem() {
@@ -213,25 +213,33 @@ public class OpenContributionItem extends ContributionItem {
    }
 
    private Collection<IContributionItem> getCommonContributionItems(CommandGroup commandGroup, Artifact testArtifact, Collection<IRenderer> commonRenders) throws OseeCoreException {
-      ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
-      Map<String, IContributionItem> contributedItems = new LinkedHashMap<String, IContributionItem>(25);
+      ArrayList<IContributionItem> items = new ArrayList<>();
+      ArrayList<MenuCmdDef> commands = new ArrayList<>();
       for (IRenderer renderer : commonRenders) {
-         for (String commandId : renderer.getCommandIds(commandGroup)) {
-            Command command = commandService.getCommand(commandId);
-            if (command != null && command.isEnabled()) {
-               ImageDescriptor imageDescriptor = renderer.getCommandImageDescriptor(command, testArtifact);
-               IContributionItem item = createContributionItem(commandId, imageDescriptor);
-               contributedItems.put(commandId, item);
-            }
+         renderer.addMenuCommandDefinitions(commands, testArtifact);
+      }
+
+      for (MenuCmdDef commandDefinition : commands) {
+         if (commandDefinition.getcommandGroup().equals(commandGroup)) {
+            items.add(createContributionItem(commandDefinition));
          }
       }
-      return contributedItems.values();
+      return items;
+   }
+
+   private IContributionItem createContributionItem(MenuCmdDef def) {
+      Map<String, String> commandParamMap = def.getCommandParamMap();
+      CommandContributionItemParameter param = new CommandContributionItemParameter(
+         PlatformUI.getWorkbench().getActiveWorkbenchWindow(), def.getCommandId(), def.getCommandId(), commandParamMap,
+         def.getIcon(), null, null, def.getLabel(), null, null, SWT.NONE, null, false);
+
+      return new CommandContributionItem(param);
    }
 
    private IContributionItem createContributionItem(String commandId, ImageDescriptor imageDescriptor) {
       CommandContributionItemParameter param =
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), commandId,
-            commandId, Collections.emptyMap(), imageDescriptor, null, null, null, null, null, SWT.NONE, null, false);
+            commandId, null, imageDescriptor, null, null, null, null, null, SWT.NONE, null, false);
 
       CommandContributionItem contributionItem = new CommandContributionItem(param);
       return contributionItem;
@@ -326,8 +334,6 @@ public class OpenContributionItem extends ContributionItem {
             if (event.detail == 0) {
                try {
                   IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
-
-                  ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 
                   Command command = commandService.getCommand(DEFAULT_OPEN_CMD_ID);
                   if (command.isEnabled()) {

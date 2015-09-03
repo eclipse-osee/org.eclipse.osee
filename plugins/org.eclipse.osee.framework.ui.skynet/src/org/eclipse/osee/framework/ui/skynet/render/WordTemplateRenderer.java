@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -23,6 +25,7 @@ import java.util.Set;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -38,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
@@ -48,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.w3c.dom.Element;
 
 /**
@@ -75,21 +80,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       this.comparator = new WordTemplateCompare(this);
       DataRightProvider provider = new DataRightProviderImpl();
       this.templateProcessor = new WordTemplateProcessor(this, provider);
-   }
-
-   @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(2);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreview.command");
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command");
-      }
-      if (commandGroup.isEdit()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordeditor.command");
-      }
-
-      return commandIds;
    }
 
    @Override
@@ -221,10 +211,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
                template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
-               template =
-                  template.replaceAll(
-                     STYLES_END,
-                     STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "") + OLE_END);
+               template = template.replaceAll(STYLES_END,
+                  STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData,
+                     "") + OLE_END);
             }
          }
       }
@@ -272,5 +261,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
       return new UpdateArtifactOperation(file, artifacts, branch, false);
+   }
+
+   @Override
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children",
+         imageDescriptor, TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE));
    }
 }

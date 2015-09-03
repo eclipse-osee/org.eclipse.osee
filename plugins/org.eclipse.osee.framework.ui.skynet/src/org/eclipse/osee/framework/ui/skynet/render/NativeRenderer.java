@@ -18,60 +18,42 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
 /**
  * Renders native content.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class NativeRenderer extends FileSystemRenderer {
-   public static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.render.NativeRenderer";
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command");
-      }
-
-      if (commandGroup.isEdit()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeeditor.command");
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.othereditor.command");
-      }
-
-      return commandIds;
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       ImageDescriptor imageDescriptor = null;
-      String fileExtension = null;
       try {
-         fileExtension = getAssociatedExtension(artifact, null);
+         imageDescriptor = ImageManager.getProgramImageDescriptor(getAssociatedExtension(artifact));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+         imageDescriptor = ArtifactImageManager.getImageDescriptor(artifact);
       }
-      if (Strings.isValid(fileExtension)) {
-         imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
-      } else {
-         imageDescriptor = super.getCommandImageDescriptor(command, artifact);
-      }
-      return imageDescriptor;
+
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Preview Native Editor", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Native Editor", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT,
+         "org.eclipse.osee.framework.ui.skynet.othereditor.command", imageDescriptor));
    }
 
    @Override

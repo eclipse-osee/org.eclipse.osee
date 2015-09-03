@@ -17,12 +17,14 @@ import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.BasicTemplateAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler;
@@ -30,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.template.SRSSpecialPubli
 import org.eclipse.osee.framework.ui.skynet.render.word.template.TISAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.WordAttributeTypeAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.WordTemplateManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -51,14 +54,9 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.tispreview.command");
-      }
-
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word TIS Preview", imageDescriptor));
    }
 
    @Override

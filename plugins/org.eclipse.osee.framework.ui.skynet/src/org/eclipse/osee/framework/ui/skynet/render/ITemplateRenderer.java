@@ -23,7 +23,6 @@ public interface ITemplateRenderer extends IRenderer {
    public static final String DIFF_VALUE = "DIFF";
    public static final String DIFF_NO_ATTRIBUTES_VALUE = "DIFF_NO_ATTRIBUTES";
    public static final String THREE_WAY_MERGE = "THREE_WAY_MERGE";
-   public static final Object[] PREVIEW_WITH_RECURSE_OPTION_PAIR = new String[] {
-      TEMPLATE_OPTION,
-      PREVIEW_WITH_RECURSE_VALUE};
+   public static final Object[] PREVIEW_WITH_RECURSE_OPTION_PAIR =
+      new String[] {TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE};
 }

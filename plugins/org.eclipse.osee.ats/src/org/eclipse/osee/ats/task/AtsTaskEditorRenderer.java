@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.task;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.commands.Command;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.editor.renderer.AbstractAtsRenderer;
@@ -23,19 +22,13 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Jeff C. Phillips
  */
 public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
-   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getImageDescriptor(AtsImage.TASK);
-   }
 
    @Override
    public String getName() {
@@ -53,14 +46,8 @@ public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isEdit()) {
-         commandIds.add(COMMAND_ID);
-      }
-
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Task Editor", AtsImage.TASK));
    }
 
    @Override

@@ -17,11 +17,9 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODU
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -57,16 +55,15 @@ public final class RendererManager {
     * @return Returns the intersection of renderers applicable for all of the artifacts
     */
    public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      Map<String, Long> elapsedTime = new HashMap<String, Long>();
       List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
 
       for (Artifact artifact : artifacts) {
          List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact);
 
-         Iterator<?> commIterator = commonRenders.iterator();
+         Iterator<IRenderer> commIterator = commonRenders.iterator();
 
          while (commIterator.hasNext()) {
-            IRenderer commRenderer = (IRenderer) commIterator.next();
+            IRenderer commRenderer = commIterator.next();
             boolean found = false;
             for (IRenderer appRenderer : applicableRenders) {
                if (appRenderer.getName().equals(commRenderer.getName())) {
@@ -108,7 +105,8 @@ public final class RendererManager {
    }
 
    private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
+      if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(
+         UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
          presentationType = GENERAL_REQUESTED;
       }
       IRenderer bestRendererPrototype = null;

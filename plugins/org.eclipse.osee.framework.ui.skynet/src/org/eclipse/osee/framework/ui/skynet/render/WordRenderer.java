@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -25,11 +22,6 @@ public abstract class WordRenderer extends FileSystemRenderer {
 
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getProgramImageDescriptor("doc");
-   }
 
    @Override
    public String getName() {

@@ -12,10 +12,9 @@ package org.eclipse.osee.ats.editor.renderer;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.commands.Command;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -23,29 +22,18 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AtsWERenderer extends AbstractAtsRenderer {
-   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isEdit()) {
-         commandIds.add(COMMAND_ID);
-      }
-
-      return commandIds;
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getImageDescriptor(AtsImage.ACTION);
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      commands.add(
+         new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Workflow Editor", AtsImage.ACTION));
    }
 
    @Override
@@ -61,7 +49,8 @@ public class AtsWERenderer extends AbstractAtsRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
-      if (!aArtifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+      if (!aArtifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
+         PRODUCE_ATTRIBUTE) && aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.commands.Command;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,8 +37,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -56,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
@@ -64,13 +61,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class DefaultArtifactRenderer implements IRenderer {
    private static final IComparator DEFAULT_COMPARATOR = new DefaultArtifactCompare();
-
-   private static final String OPEN_ART_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.artifacteditor.command";
-   private static final String OPEN_MASS_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand";
-   private static final String OPEN_SKY_WALKER_CMD_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.command";
-   private static final String OPEN_ART_HISTORY_CMD_ID = "org.eclipse.osee.framework.ui.skynet.resource.command";
-   private static final String OPEN_ART_EXPLORER_CMD_ID =
-      "org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command";
+   private static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
+   private static final String OPEN_IN_GRAPH = "open.with.sky.walker";
+   private static final String OPEN_IN_HISTORY = "open.with.resource.history";
+   private static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
 
    private final VariableMap options = new VariableMap();
 
@@ -181,50 +175,13 @@ public class DefaultArtifactRenderer implements IRenderer {
    private String renderRelationOrder(Artifact artifact) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-      RelationOrderRenderer renderer =
-         new RelationOrderRenderer(ServiceUtil.getOseeCacheService().getRelationTypeCache(), guidResolver,
-            RelationManager.getSorterProvider());
+      RelationOrderRenderer renderer = new RelationOrderRenderer(
+         ServiceUtil.getOseeCacheService().getRelationTypeCache(), guidResolver, RelationManager.getSorterProvider());
 
       WordMLProducer producer = new WordMLProducer(builder);
       RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
       renderer.toWordML(producer, artifact.getBranch(), relationOrderData);
       return builder.toString();
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      String id = command.getId();
-      ImageDescriptor descriptor;
-      if (OPEN_ART_EDITOR_CMD_ID.equals(id)) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
-      } else if (OPEN_MASS_EDITOR_CMD_ID.equals(id)) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_MASS_EDITOR);
-      } else if (OPEN_ART_EXPLORER_CMD_ID.equals(id)) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER);
-      } else if (OPEN_ART_HISTORY_CMD_ID.equals(id)) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE);
-      } else if (OPEN_SKY_WALKER_CMD_ID.equals(id)) {
-         descriptor = ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER);
-      } else {
-         descriptor = ArtifactImageManager.getImageDescriptor(artifact);
-      }
-      return descriptor;
-   }
-
-   @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isEdit()) {
-         commandIds.add(OPEN_ART_EDITOR_CMD_ID);
-         commandIds.add(OPEN_MASS_EDITOR_CMD_ID);
-      }
-      if (commandGroup.isShowIn()) {
-         commandIds.add(OPEN_ART_EXPLORER_CMD_ID);
-         commandIds.add(OPEN_ART_HISTORY_CMD_ID);
-         commandIds.add(OPEN_SKY_WALKER_CMD_ID);
-      }
-      return commandIds;
    }
 
    @Override
@@ -258,11 +215,12 @@ public class DefaultArtifactRenderer implements IRenderer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (isRenderOption(OPEN_IN_GRAPH)) {
+            String openOption = getStringOption(OPEN_OPTION);
+            if (OPEN_IN_GRAPH.equals(openOption)) {
                for (Artifact artifact : artifacts) {
                   SkyWalkerView.exploreArtifact(artifact);
                }
-            } else if (isRenderOption(OPEN_IN_HISTORY)) {
+            } else if (OPEN_IN_HISTORY.equals(openOption)) {
                for (Artifact artifact : artifacts) {
                   try {
                      HistoryView.open(artifact);
@@ -270,11 +228,11 @@ public class DefaultArtifactRenderer implements IRenderer {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
-            } else if (isRenderOption(OPEN_IN_EXPLORER)) {
+            } else if (OPEN_IN_EXPLORER.equals(openOption)) {
                for (Artifact artifact : artifacts) {
                   ArtifactExplorer.revealArtifact(artifact);
                }
-            } else if (isRenderOption(IRenderer.OPEN_IN_TABLE_EDITOR)) {
+            } else if (OPEN_IN_TABLE_EDITOR.equals(openOption)) {
                MassArtifactEditor.editArtifacts("", artifacts);
             } else {
                try {
@@ -324,4 +282,17 @@ public class DefaultArtifactRenderer implements IRenderer {
       return options.getArtifacts(key);
    }
 
+   @Override
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      commands.add(
+         new MenuCmdDef(CommandGroup.EDIT, GENERALIZED_EDIT, "Artifact Editor", FrameworkImage.ARTIFACT_EDITOR));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, GENERALIZED_EDIT, "Mass Editor",
+         FrameworkImage.ARTIFACT_MASS_EDITOR, OPEN_OPTION, OPEN_IN_TABLE_EDITOR));
+      commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Artifact Explorer",
+         FrameworkImage.ARTIFACT_EXPLORER, OPEN_OPTION, OPEN_IN_EXPLORER));
+      commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Resource History", FrameworkImage.DB_ICON_BLUE,
+         OPEN_OPTION, OPEN_IN_HISTORY));
+      commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Sky Walker", FrameworkImage.SKYWALKER,
+         OPEN_OPTION, OPEN_IN_GRAPH));
+   }
 }

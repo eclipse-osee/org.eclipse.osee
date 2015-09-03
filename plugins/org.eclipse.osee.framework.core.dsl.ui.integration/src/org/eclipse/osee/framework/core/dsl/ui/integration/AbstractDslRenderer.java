@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -42,13 +45,7 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Jonathan E. Jensen
  */
 public abstract class AbstractDslRenderer extends FileSystemRenderer {
-
    private static final String DEFAULT_EDITOR_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl";
-   protected static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command";
-
-   protected AbstractDslRenderer() {
-      super();
-   }
 
    /**
     * Simple String name of the renderer
@@ -64,22 +61,15 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
 
    /**
     * Provides a list of the artifact types that the renderer supports.
-    * 
+    *
     * @return a list of the artifact types that the renderer supports
     */
    protected abstract IArtifactType[] getArtifactTypeMatches();
 
-   /**
-    * Provides the command ID associated with this renderer and adds it to the commandGroup.
-    */
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-      if (commandGroup.isEdit()) {
-         commandIds.add(COMMAND_ID);
-      }
-
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor icon = ArtifactImageManager.getImageDescriptor(artifact);
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "DSL Editor", icon));
    }
 
    /**

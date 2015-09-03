@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +18,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.filesystem.IFileSystem;
@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -42,8 +41,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation;
 import org.eclipse.osee.framework.ui.skynet.FindInWorkspaceOperation.FindInWorkspaceCollector;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,8 +54,6 @@ import org.eclipse.ui.ide.IDE;
  * @author John R. Misinco
  */
 public class JavaRenderer extends FileSystemRenderer {
-
-   private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.javaeditor.command";
 
    @Override
    public String getName() {
@@ -78,15 +75,6 @@ public class JavaRenderer extends FileSystemRenderer {
          }
       }
       return toReturn;
-   }
-
-   @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-      if (commandGroup.isEdit()) {
-         commandIds.add(COMMAND_ID);
-      }
-      return commandIds;
    }
 
    @Override
@@ -201,13 +189,13 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getImageDescriptor(FrameworkImage.JAVA_COMPILATION_UNIT);
-   }
-
-   @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       throw new UnsupportedOperationException();
    }
 
+   @Override
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Java Editor",
+         FrameworkImage.JAVA_COMPILATION_UNIT));
+   }
 }

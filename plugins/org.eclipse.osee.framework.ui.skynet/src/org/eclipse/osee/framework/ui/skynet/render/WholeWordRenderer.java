@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WholeWordContent;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
@@ -42,11 +45,13 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordRendererUtil;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Jeff C. Phillips
@@ -69,24 +74,17 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholewordpreview.command");
-      }
-
-      if (commandGroup.isEdit()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
-      }
-
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
    }
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
-      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE) && aArtifact.isAttributeTypeValid(WholeWordContent)) {
+      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED,
+         PRODUCE_ATTRIBUTE) && aArtifact.isAttributeTypeValid(WholeWordContent)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

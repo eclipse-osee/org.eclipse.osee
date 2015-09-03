@@ -565,60 +565,6 @@
         </or>
      </activeWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenMassArtifactEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand">
-     <activeWhen>
-        <or>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.ats.world.WorldEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.ats.editor.TaskEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.ats.editor.SMAEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.search.ui.views.SearchView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
-              </equals>
-           </with>
-        </or>
-     </activeWhen>
-      </handler>
       		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenArtifactExplorerHandler" commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand">
            <activeWhen>
               <or>
@@ -648,48 +594,6 @@
                  </with>
               </or>
            </activeWhen>
-      </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.OpenSkywalkerEditorHandler" commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-     <activeWhen>
-        <or>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.search.ui.views.SearchView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
-              </equals>
-           </with>
-        </or>
-     </activeWhen>
       </handler>
 		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command">
      <enabledWhen>
@@ -721,48 +625,6 @@
         </with>
      </enabledWhen>
       </handler>
-		<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ShowArtifactInResourceHandler" commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-     <activeWhen>
-        <or>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.search.ui.views.SearchView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
-              </equals>
-           </with>
-        </or>
-     </activeWhen>
-      </handler>
 				<handler class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaselineHandler" commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertArtifact.command">
      <enabledWhen>
         <with
@@ -773,50 +635,6 @@
         </with>
      </enabledWhen>
       </handler>
-  <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevealInArtifactExplorer"
-        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-     <activeWhen>
-        <or>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.search.ui.views.SearchView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView">
-              </equals>
-           </with>
-           <with
-                 variable="activePartId">
-              <equals
-                    value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
-              </equals>
-           </with>
-        </or>
-     </activeWhen>
-  </handler>
   <handler
         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.DeleteArtifactHandler"
         commandId="org.eclipse.ui.edit.delete">
@@ -945,56 +763,8 @@
       name="Open With Handlers"
       point="org.eclipse.ui.handlers">
    <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.ArtifactEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WordEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.wordeditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PlainTextEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.plaintexteditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NativeEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.nativeeditor.command">
       <enabledWhen>
          <with
                variable="selection">
@@ -1016,126 +786,6 @@
          </with>
       </enabledWhen>
    </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.WholeDocumentEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWordHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.wordpreview.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewTisHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.tispreview.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWholeWordHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.HtmlPreviewEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.htmlprevieweditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PlainTextPreviewEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.NativePreviewEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.JavaEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.javaeditor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>
-   <handler
-         class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.DslEditorHandler"
-         commandId="org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
-   </handler>   
 </extension>
  <extension
        name="Branch View Handlers"
@@ -1226,18 +876,6 @@
      </handler>
   </extension>
 	<extension point="org.eclipse.ui.commandImages">
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-        icon="images/magnify.gif">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-        icon="images/DBiconBlueEdit.GIF">
-  </image>
-  <image
-        commandId="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
-        icon="images/artifact_editor.gif">
-  </image>
   <image
         commandId="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
         icon="images/artifact_editor.gif">
@@ -1351,69 +989,13 @@
          name="Open">
    </command>
    <command
-         id="org.eclipse.osee.framework.ui.skynet.artifacteditor.command"
-         name="Artifact Editor">
-   </command>
-   <command
          id="org.eclipse.osee.framework.ui.skynet.new.artifacteditor.command"
          name="New Artifact Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.wordeditor.command"
-         name="MS Word Edit">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command"
-         name="MS Word Edit">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.plaintexteditor.command"
-         name="Plain Text Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.nativeeditor.command"
-         name="Native Editor">
    </command>
    <command
          id="org.eclipse.osee.framework.ui.skynet.othereditor.command"
          name="Other Editor">
    </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.wordpreview.command"
-         name="MS Word Preview">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.wholewordpreview.command"
-         name="MS Word Preview">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command"
-         name="MS Word Preview with children">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.tispreview.command"
-         name="MS Word TIS Preview">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command"
-         name="Preview Plain Text Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.htmlprevieweditor.command"
-         name="HTML Preview">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command"
-         name="Preview Native Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.javaeditor.command"
-         name="Java Editor">
-   </command>
-   <command
-         id="org.eclipse.osee.framework.ui.skynet.render.dsl.editor.command"
-         name="DSL Editor">
-   </command>   
 </extension>
  <extension
        id="Osee Core commands"
@@ -1422,26 +1004,6 @@
        name="OSEE Artifact"
        id="org.eclipse.osee.artifact">
     </category>
-    <command
-          categoryId="org.eclipse.osee.artifact"
-          id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
-          name="Mass Editor">
-    </command>
-    <command
-          categoryId="org.eclipse.osee.artifact"
-          id="org.eclipse.osee.framework.ui.skynet.skywalker.command"
-          name="Sky Walker">
-    </command>
-    <command
-          categoryId="org.eclipse.osee.artifact"
-          id="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-          name="Artifact Explorer">
-    </command>
-    <command
-          categoryId="org.eclipse.osee.artifact"
-          id="org.eclipse.osee.framework.ui.skynet.resource.command"
-          name="Resource History">
-    </command>
     <command
           categoryId="org.eclipse.osee.artifact"
           id="org.eclipse.osee.framework.ui.skynet.publishArtifact.command"
@@ -1818,23 +1380,27 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetsExampleBlam">
       </Operation>
    </extension>
-   <extension
-         point="org.eclipse.ui.bindings">
-
+   <extension point="org.eclipse.ui.bindings">
       <key
-            commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
+            commandId="org.eclipse.osee.framework.ui.skynet.renderer.command"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+R">
+            <parameter id="open.option" value="open.with.artifact.explorer" />
+            <parameter id="PresentationType" value="GENERALIZED_EDIT" />
       </key>
       <key
-            commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+            commandId="org.eclipse.osee.framework.ui.skynet.renderer.command"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+T">
+            <parameter id="open.option" value="open.with.resource.history" />
+            <parameter id="PresentationType" value="GENERALIZED_EDIT" />
       </key>
       <key
-            commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command"
+            commandId="org.eclipse.osee.framework.ui.skynet.renderer.command"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+O">
+            <parameter id="open.option" value="open.with.sky.walker" />
+            <parameter id="PresentationType" value="GENERALIZED_EDIT" />
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
@@ -1991,5 +1557,28 @@
             id="org.eclipse.osee.framework.ui.skynet.osee.types.export"
             name="Osee Types Export">
       </wizard>
-   </extension> 
+   </extension>
+   
+  <extension point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.osee.framework.ui.skynet.renderer.command"
+            name="General Purpose Renderer Command"
+            defaultHandler="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.GeneralPurposeRendererHandler">
+            <commandParameter
+               id="PresentationType"
+               name="Presentation Type"
+               optional="false">
+            </commandParameter>
+            <commandParameter
+               id="template"
+               name="Template"
+               optional="true">
+            </commandParameter>
+            <commandParameter
+               id="open.option"
+               name="Open Option"
+               optional="true">
+            </commandParameter>
+      </command>
+   </extension>
 </plugin>

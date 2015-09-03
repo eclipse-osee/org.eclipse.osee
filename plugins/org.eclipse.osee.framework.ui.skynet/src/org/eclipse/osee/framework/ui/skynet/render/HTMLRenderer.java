@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -37,11 +37,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.NormalizeHtml;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
-/* 
+/*
  * @author Marc Potter
  */
 
@@ -54,28 +55,14 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.htmlprevieweditor.command");
-      }
-
-      if (commandGroup.isEdit()) {
-         // currently unsupported
-      }
-
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor icon = ImageManager.getProgramImageDescriptor("htm");
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "HTML Preview", icon));
    }
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       return getRenderInputStream(presentationType, null, artifacts);
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getProgramImageDescriptor("htm");
    }
 
    @Override
@@ -92,9 +79,8 @@ public class HTMLRenderer extends FileSystemRenderer {
                content.append("<br /><br /><br />");
             }
          }
-         stream =
-            Streams.convertStringToInputStream(
-               NormalizeHtml.wrapAndNormalizeHTML(content.toString(), true, true, true), "UTF-8");
+         stream = Streams.convertStringToInputStream(
+            NormalizeHtml.wrapAndNormalizeHTML(content.toString(), true, true, true), "UTF-8");
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }

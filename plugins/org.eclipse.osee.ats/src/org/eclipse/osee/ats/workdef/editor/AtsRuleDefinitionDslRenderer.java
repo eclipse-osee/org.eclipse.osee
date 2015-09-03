@@ -19,10 +19,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -42,11 +40,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -57,7 +55,6 @@ import org.eclipse.ui.ide.IDE;
  * @author Mark Joy
  */
 public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
-   private static final String COMMAND_ID = "org.eclipse.osee.ats.ruleDefDslEditor.command";
 
    @Override
    public String getName() {
@@ -79,12 +76,9 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-      if (commandGroup.isEdit()) {
-         commandIds.add(COMMAND_ID);
-      }
-      return commandIds;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Rule Definition DSL Editor",
+         AtsImage.RULE_DEFINITION));
    }
 
    @Override
@@ -119,11 +113,6 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
       return "ats";
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getImageDescriptor(AtsImage.RULE_DEFINITION);
    }
 
    @Override

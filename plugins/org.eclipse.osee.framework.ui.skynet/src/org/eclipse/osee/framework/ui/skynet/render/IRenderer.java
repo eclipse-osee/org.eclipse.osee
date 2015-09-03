@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.core.commands.Command;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
@@ -43,11 +43,7 @@ public interface IRenderer {
    public static final String NO_DISPLAY = "noDisplay";
    public static final String SKIP_ERRORS = "skipErrors";
    public static final String SKIP_DIALOGS = "skipDialogs";
-
-   public static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
-   public static final String OPEN_IN_GRAPH = "open.with.sky.walker";
-   public static final String OPEN_IN_HISTORY = "open.with.resource.history";
-   public static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
+   public static final String OPEN_OPTION = "open.option";
 
    public static final String EXECUTE_VB_SCRIPT = "execute.vb.script";
 
@@ -79,9 +75,7 @@ public interface IRenderer {
       }
    }
 
-   public List<String> getCommandIds(CommandGroup commandGroup);
-
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) throws OseeCoreException;
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException;
 

@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -34,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
@@ -41,7 +41,7 @@ import org.eclipse.swt.program.Program;
 /**
  * Renderer for artifact with ASCII plain text file as its content. This is compared to the more traditional
  * WordRenderer which renders artifacts (e.g.: Software Requirements) content which is Word Documents.
- * 
+ *
  * @author Shawn F. Cook
  */
 public class PlainTextRenderer extends FileSystemRenderer {
@@ -58,23 +58,10 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public List<String> getCommandIds(CommandGroup commandGroup) {
-      ArrayList<String> commandIds = new ArrayList<String>(1);
-
-      if (commandGroup.isPreview()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.previewplaintexteditor.command");
-      }
-
-      if (commandGroup.isEdit()) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.plaintexteditor.command");
-      }
-
-      return commandIds;
-   }
-
-   @Override
-   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ImageManager.getProgramImageDescriptor("txt");
+   public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
+      ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("txt");
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Plain Text Editor", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Preview Plain Text Editor", imageDescriptor));
    }
 
    @Override
