@@ -33,8 +33,15 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
    }
 
    private PercentCompleteTotalColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".totalPercentComplete", "Total Percent Complete", 40, SWT.CENTER,
-         false, SortDataType.Percent, false, "Percent Complete for the reviews related to the current state.");
+      super(
+         WorldXViewerFactory.COLUMN_NAMESPACE + ".totalPercentComplete",
+         "Total Percent Complete",
+         40,
+         SWT.CENTER,
+         false,
+         SortDataType.Percent,
+         false,
+         "Percent Complete rollup of workflow, reviews and tasks.  Calculation: Sum of percent for workflow, reviews and tasks / number of workflows, reviews and tasks.");
    }
 
    /**
