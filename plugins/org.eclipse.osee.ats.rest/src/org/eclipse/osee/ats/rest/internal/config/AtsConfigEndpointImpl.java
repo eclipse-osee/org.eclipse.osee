@@ -234,27 +234,15 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          "Store Work Definition " + jaxWorkDef.getName());
       ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
-      boolean changed = false;
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
-         changed = true;
       }
-
-      String currentDsl = workDefArt.getSoleAttributeAsString(AtsAttributeTypes.DslSheet, null);
-      String newDsl = jaxWorkDef.getWorkDefDsl();
-      if (!newDsl.equals(currentDsl)) {
-         tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
-         changed = true;
-      }
-
+      tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
       if (workDefArt.getParent() == null) {
          ArtifactReadable workDefFolder = atsServer.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
          tx.addChildren(workDefFolder, workDefArt);
-         changed = true;
       }
-      if (changed) {
-         tx.commit();
-      }
+      tx.commit();
       atsServer.getWorkDefAdmin().clearCaches();
       return Response.ok().build();
    }

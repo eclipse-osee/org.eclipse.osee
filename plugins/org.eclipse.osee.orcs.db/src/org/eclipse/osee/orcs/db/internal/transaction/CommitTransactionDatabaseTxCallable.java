@@ -64,9 +64,14 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       }
    }
 
+   /**
+    * Persist changes to database.
+    *
+    * @return TransactionResult or null if no data was modified
+    */
    @Override
    protected TransactionResult handleTxWork(JdbcConnection connection) throws OseeCoreException {
-      ///// 
+      /////
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
       String comment = transactionData.getComment();
@@ -77,18 +82,21 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "transaction author");
       Conditions.checkNotNullOrEmpty(comment, "transaction comment");
-      Conditions.checkExpressionFailOnTrue(changeSet.isEmpty(), "No data was modified");
+      TransactionResult result = null;
+      if (!changeSet.isEmpty()) {
 
-      process(TxWritePhaseEnum.BEFORE_TX_WRITE);
+         process(TxWritePhaseEnum.BEFORE_TX_WRITE);
 
-      TransactionReadable txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
-      writer.write(connection, txRecord, changeSet);
+         TransactionReadable txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
+         writer.write(connection, txRecord, changeSet);
 
-      Object[] params =
-         new Object[] {BranchState.MODIFIED.getValue(), branch.getUuid(), BranchState.CREATED.getValue()};
-      getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
+         Object[] params =
+            new Object[] {BranchState.MODIFIED.getValue(), branch.getUuid(), BranchState.CREATED.getValue()};
+         getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
 
-      return new TransactionResultImpl(txRecord, changeSet);
+         result = new TransactionResultImpl(txRecord, changeSet);
+      }
+      return result;
    }
 
    @Override

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
@@ -131,9 +132,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private BranchReadable getBranchById(long branchUuid) {
       ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
-         .includeArchived()//
-         .includeDeleted()//
-         .getResults();
+      .includeArchived()//
+      .includeDeleted()//
+      .getResults();
       return results.getExactlyOne();
    }
 
@@ -149,9 +150,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-         .includeArchived()//
-         .includeDeleted()//
-         .getResults();
+      .includeArchived()//
+      .includeDeleted()//
+      .getResults();
       return asBranches(results);
    }
 
@@ -212,20 +213,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBaselineBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-         .includeArchived(false) //
-         .includeDeleted(false) //
-         .andIsOfType(BranchType.BASELINE)//
-         .getResults();
+      .includeArchived(false) //
+      .includeDeleted(false) //
+      .andIsOfType(BranchType.BASELINE)//
+      .getResults();
       return asBranches(results);
    }
 
    @Override
    public List<Branch> getWorkingBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-         .includeArchived(false) //
-         .includeDeleted(false) //
-         .andIsOfType(BranchType.WORKING)//
-         .getResults();
+      .includeArchived(false) //
+      .includeDeleted(false) //
+      .andIsOfType(BranchType.WORKING)//
+      .getResults();
       return asBranches(results);
    }
 
@@ -371,9 +372,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
       //TODO: Integrate data with TxBuilder
 
       TransactionReadable tx = txBuilder.commit();
-
-      URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx.getGuid());
-      return Response.created(location).entity(asTransaction(tx)).build();
+      if (tx != null) {
+         URI location = uriInfo.getRequestUriBuilder().path("{tx-id}").build(tx.getGuid());
+         return Response.created(location).entity(asTransaction(tx)).build();
+      } else {
+         throw new OseeArgumentException("No Data Modified");
+      }
    }
 
    @Override
@@ -504,9 +508,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
       ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
-         .includeArchived()//
-         .includeDeleted()//
-         .getResultsAsId();
+      .includeArchived()//
+      .includeDeleted()//
+      .getResultsAsId();
       return Lists.newLinkedList(resultsAsId);
    }
 
@@ -641,8 +645,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          }
          SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
          if (!difference.isEmpty()) {
-            throw new OseeWebApplicationException(
-               Status.BAD_REQUEST,
+            throw new OseeWebApplicationException(Status.BAD_REQUEST,
                "%s Error - The following transactions from %s were not found on branch [%s] - txs %s - Please remove them from the request and try again.",
                opName, txIds, branchUuid, difference);
          }

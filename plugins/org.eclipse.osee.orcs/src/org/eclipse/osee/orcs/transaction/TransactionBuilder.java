@@ -39,6 +39,9 @@ public interface TransactionBuilder {
 
    void setComment(String comment) throws OseeCoreException;
 
+   /**
+    * @return TransactionRecord or null of no changes made
+    */
    TransactionReadable commit() throws OseeCoreException;
 
    boolean isCommitInProgress();

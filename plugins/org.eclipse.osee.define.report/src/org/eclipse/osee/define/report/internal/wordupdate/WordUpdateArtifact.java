@@ -180,7 +180,9 @@ public class WordUpdateArtifact {
             }
          }
          TransactionReadable tx = txBuilder.commit();
-         postProcessChange(tx, updateChange, userArtifact);
+         if (tx != null) {
+            postProcessChange(tx, updateChange, userArtifact);
+         }
 
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
