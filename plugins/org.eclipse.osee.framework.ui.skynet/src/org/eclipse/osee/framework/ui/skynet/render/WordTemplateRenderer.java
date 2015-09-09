@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -64,7 +63,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    private static final String STYLES_END = "</w:styles>";
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
-   private static final QName fo = new QName("ns0", "unused_localname", ARTIFACT_SCHEMA);
    public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
    public static final String FIRST_TIME = "FirstTime";
    public static final String SECOND_TIME = "SecondTime";
@@ -117,10 +115,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             }
          });
       }
-   }
-
-   public static QName getFoNamespace() {
-      return fo;
    }
 
    public static byte[] getFormattedContent(Element formattedItemElement) throws XMLStreamException {
