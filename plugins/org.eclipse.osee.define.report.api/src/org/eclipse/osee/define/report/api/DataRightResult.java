@@ -95,7 +95,7 @@ public class DataRightResult {
    private String normalize(String partialFooter) {
       String toReturn = partialFooter;
       if ("NO DATA RIGHTS ARTIFACT FOUND".equals(toReturn)) {
-         toReturn = String.format("<w:p><w:r><w:t>%s</w:t></w:r></w:p>", toReturn);
+         toReturn = String.format("<w:r><w:t>%s</w:t></w:r>", toReturn);
       }
       return toReturn;
    }
