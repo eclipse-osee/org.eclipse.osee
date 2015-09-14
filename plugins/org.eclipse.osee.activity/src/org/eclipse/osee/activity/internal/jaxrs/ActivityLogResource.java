@@ -120,9 +120,11 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
 
    @Override
    public DefaultActivityType createActivityType(Long typeId, Long logLevel, String module, String messageFormat) {
-      Conditions.checkExpressionFailOnTrue(activityLog.activityTypeExists(typeId),
-         "Activity Type Id [%s] already exists", typeId);
-      return newActivityHelper(typeId, logLevel, module, messageFormat);
+      if (!activityLog.activityTypeExists(typeId)) {
+         return newActivityHelper(typeId, logLevel, module, messageFormat);
+      } else {
+         return getActivityType(typeId);
+      }
    }
 
    @Override
