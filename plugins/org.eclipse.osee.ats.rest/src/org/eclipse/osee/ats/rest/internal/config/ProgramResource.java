@@ -10,16 +10,49 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.net.URI;
+import java.util.LinkedList;
+import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.config.AbstractConfigResource;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * Donald G. Dunne
  */
 @Path("program")
 public class ProgramResource extends AbstractConfigResource {
+
+   @Context
+   private UriInfo uriInfo;
+
+   public void setUriInfo(UriInfo uriInfo) {
+      this.uriInfo = uriInfo;
+   }
 
    public ProgramResource(IAtsServer atsServer) {
       super(AtsArtifactTypes.Program, atsServer);
@@ -44,7 +77,7 @@ public class ProgramResource extends AbstractConfigResource {
       }
       // http://aruld.info/handling-generified-collections-in-jersey-jax-rs/
       GenericEntity<List<IAtsConfigObject>> entity = new GenericEntity<List<IAtsConfigObject>>(insertions) { //
-         };
+      };
       return Response.ok(entity).build();
    }
 
@@ -52,7 +85,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertion(@PathParam("programUuid") long programUuid, JaxNewInsertion newInsertion) throws Exception {
+   public Response createInsertion(@PathParam("programUuid") long programUuid, JaxInsertion newInsertion) throws Exception {
       ArtifactReadable programArt = atsServer.getArtifactByUuid(programUuid);
       if (programArt == null) {
          throw new OseeCoreException("Given uuid not found");
@@ -72,7 +105,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateInsertion(@PathParam("programUuid") long programUuid, JaxNewInsertion insertion) {
+   public Response updateInsertion(@PathParam("programUuid") long programUuid, JaxInsertion insertion) {
       ArtifactReadable insertionArt = atsServer.getArtifactByUuid(insertion.getUuid());
       if (insertionArt == null) {
          throw new OseeCoreException("Given insertion uuid not found");
@@ -132,7 +165,7 @@ public class ProgramResource extends AbstractConfigResource {
       }
       // http://aruld.info/handling-generified-collections-in-jersey-jax-rs/
       GenericEntity<List<IAtsConfigObject>> entity = new GenericEntity<List<IAtsConfigObject>>(insertionActivitys) { //
-         };
+      };
       return Response.ok(entity).build();
    }
 
@@ -140,7 +173,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion/{insertionUuid}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxNewInsertionActivity newActivity) throws Exception {
+   public Response createInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
       ArtifactReadable insertion = atsServer.getArtifactByUuid(insertionUuid);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
@@ -160,7 +193,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion/{insertionUuid}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxNewInsertionActivity newActivity) throws Exception {
+   public Response updateInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
       ArtifactReadable insertionActivityArt = atsServer.getArtifactByUuid(newActivity.getUuid());
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity uuid not found");
