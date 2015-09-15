@@ -1404,7 +1404,6 @@
       </key>
       <key
             commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
-            contextId="org.eclipse.osee.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1++">
       </key>
