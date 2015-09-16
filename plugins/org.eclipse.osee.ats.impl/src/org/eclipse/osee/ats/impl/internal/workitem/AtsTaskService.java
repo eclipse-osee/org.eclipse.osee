@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -50,11 +51,26 @@ public class AtsTaskService extends AbstractAtsTaskService {
    public Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes) {
       CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsServer, new XResultData());
       XResultData results = operation.validate();
+      operation.run(changes);
+      if (results.isErrors()) {
+         throw new OseeStateException("Error creating tasks - " + results.toString());
+      }
+      List<IAtsTask> tasks = new LinkedList<>();
+      for (JaxAtsTask task : operation.getTasks()) {
+         tasks.add(atsServer.getWorkItemFactory().getTask(atsServer.getArtifactByUuid(task.getUuid())));
+      }
+      return tasks;
+   }
+
+   @Override
+   public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsServer, new XResultData());
+      XResultData results = operation.validate();
 
       if (results.isErrors()) {
          throw new OseeStateException("Error validating task creation - " + results.toString());
       }
-      operation.run(changes);
+      operation.run();
       if (results.isErrors()) {
          throw new OseeStateException("Error creating tasks - " + results.toString());
       }

@@ -159,7 +159,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            ArtifactQuery.reloadArtifacts(xViewer.getArtifacts(), false);
+            ArtifactQuery.reloadArtifacts(xViewer.getArtifacts());
             xViewer.refresh();
          }
       });

@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
-import org.eclipse.osee.ats.api.workdef.StateEventType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.MockTransitionHelper;
@@ -27,20 +27,22 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
-import org.eclipse.osee.ats.mocks.MockPeerReviewDefinition;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link PeerReviewDefinitionManager}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
+
+   public static String WORK_DEF_FILE_NAME = "support/WorkDef_Team_PeerReviewDefinitionManagerTest_Transition.ats";
 
    @BeforeClass
    @AfterClass
@@ -52,26 +54,26 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
    public void testCreatePeerReviewDuringTransition() throws OseeCoreException {
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
-      // configure WorkDefinition to create a new Review on transition to Implement
-      IAtsStateDefinition implement = AtsTestUtil.getImplementStateDef();
-
-      MockPeerReviewDefinition revDef = new MockPeerReviewDefinition("Create New on Implement");
-      revDef.setBlockingType(ReviewBlockType.Transition);
-      revDef.setDescription("the description");
-      revDef.setRelatedToState(implement.getName());
-      revDef.setStateEventType(StateEventType.TransitionTo);
-      revDef.setReviewTitle("This is my review title");
-      revDef.getAssignees().add(SystemUser.UnAssigned.getUserId());
-
-      implement.getPeerReviews().add(revDef);
+      try {
+         String atsDsl = AWorkspace.getOseeInfResource(WORK_DEF_FILE_NAME, AtsClientIntegrationTestSuite.class);
+         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
+         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setWorkDefDsl(atsDsl);
+         AtsTestUtil.importWorkDefinition(jaxWorkDef);
+         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
+      }
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      Assert.assertEquals("Implement State should have a single peer review definition", 1,
+         teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper =
-         new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt), implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes, TransitionOption.None);
+      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+         TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
+         changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
 
@@ -86,7 +88,8 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
          decArt.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
       Assert.assertEquals("This is my review title", decArt.getName());
       Assert.assertEquals("the description", decArt.getSoleAttributeValue(AtsAttributeTypes.Description));
-      Assert.assertEquals(implement.getName(), decArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
+      Assert.assertEquals(TeamState.Implement.getName(),
+         decArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
 
       AtsTestUtil.validateArtifactCache();
    }

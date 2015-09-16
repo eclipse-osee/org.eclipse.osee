@@ -48,12 +48,10 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test02GetDetailsStringForTask() throws OseeCoreException {
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes)).getDetailsString();
+      String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
       assertEquals(
-         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1(changes).getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
+         "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
          str);
-      changes.execute();
    }
 
    @Test
@@ -68,9 +66,8 @@ public class CopyActionDetailsTest {
 
    @Test
    public void test04GetDetailsStringForPeerReview() throws OseeCoreException {
-      PeerToPeerReviewArtifact review =
-         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None, AtsTestUtilState.Analyze, new AtsChangeSet(
-            "test04GetDetailsStringForPeerReview"));
+      PeerToPeerReviewArtifact review = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
+         AtsTestUtilState.Analyze, new AtsChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review).getDetailsString();
       assertEquals("\"PeerToPeer Review\" - " + review.getAtsId() + " - \"AtsTestUtil Test Peer Review\"", str);
       review.persist(getClass().getSimpleName());

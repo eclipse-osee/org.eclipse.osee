@@ -26,12 +26,16 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEd
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -42,6 +46,7 @@ import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -167,10 +172,16 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
          ed.setOptions(validStates);
          if (ed.open() == 0) {
-            AtsChangeSet changes = new AtsChangeSet("Create New Task");
-            taskArt = ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), ed.getSelection(), changes);
-            changes.execute();
+            NewTaskData newTaskData = NewTaskDataFactory.get("Create New Task",
+               AtsClientService.get().getUserService().getCurrentUser().getUserId(), iXTaskViewer.getAwa().getUuid());
+            JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
+               AtsClientService.get().getUserService().getCurrentUser(), new Date());
+            if (Strings.isValid(ed.getSelection())) {
+               task.setRelatedToState(ed.getSelection());
+            }
+            AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
+
+            taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getUuid());
             AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          }
       } catch (Exception ex) {

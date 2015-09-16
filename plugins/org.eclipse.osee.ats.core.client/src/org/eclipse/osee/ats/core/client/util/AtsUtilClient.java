@@ -27,14 +27,13 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
@@ -64,7 +63,7 @@ public class AtsUtilClient {
     * @return uuid for ATS Config Object creation
     */
    public static long createConfigObjectUuid() {
-      return ConnectionHandler.getNextSequence(ArtifactFactory.ART_ID_SEQ, true);
+      return Lib.generateArtifactIdAsInt();
    }
 
    public static void setEmailEnabled(boolean enabled) {

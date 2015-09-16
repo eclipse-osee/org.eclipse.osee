@@ -85,6 +85,17 @@ public final class Lib {
 
    public final static String lineSeparator = System.getProperty("line.separator");
 
+   public static String getFileAtsClass(String filename, Class<?> clazz) {
+      URL url = clazz.getResource(filename);
+      File file = new File(url.getPath());
+      try {
+         return fileToString(file);
+      } catch (IOException ex) {
+         // do nothing
+      }
+      return "";
+   }
+
    public static String toFirstCharUpperCase(String str) {
       if (str == null) {
          return null;
@@ -162,7 +173,7 @@ public final class Lib {
 
    /**
     * Move an object one before the previous object
-    * 
+    *
     * @return true if successful
     */
    public static boolean moveBack(ArrayList<Object> list, Object obj) {
@@ -179,7 +190,7 @@ public final class Lib {
 
    /**
     * Move an object one after the next object
-    * 
+    *
     * @return true if successful
     */
    public static boolean moveForward(ArrayList<Object> list, Object obj) {
@@ -297,7 +308,7 @@ public final class Lib {
    /**
     * Delete the current file and all empty parents. The method will stop deleting empty parents once it reaches the
     * stopAt parent.
-    * 
+    *
     * @param stopAt path of the parent file to stop deleting at
     * @param file to delete
     * @return status <b>true</b> if successful
@@ -567,7 +578,7 @@ public final class Lib {
 
    /**
     * Get file extension from the file path
-    * 
+    *
     * @return file extension
     */
    public static String getExtension(String filepath) {
@@ -625,7 +636,7 @@ public final class Lib {
     * Sets up an error, input, and output stream for the given process. The error stream gives all information coming
     * FROM the process through it's err stream. The "outThread" will be what come from the FROM the process through it's
     * normal output stream. The "inThread" is the stream for issuing commands TO the process.
-    * 
+    *
     * @param proc The process whose streams we are setting up
     * @param output Where all info coming FROM the minicom is sent
     * @param input Where all data going TO the minicom is sent
@@ -906,7 +917,7 @@ public final class Lib {
 
    /**
     * Remove the file extension from the file path
-    * 
+    *
     * @return modified file path
     */
    public static String removeExtension(String filepath) {
@@ -923,7 +934,7 @@ public final class Lib {
 
    /**
     * Determine if file is a compressed file
-    * 
+    *
     * @param file to check
     * @return <b>true</b> if the files is a compressed file
     */
@@ -1251,7 +1262,7 @@ public final class Lib {
 
    /**
     * Finds the index of the closing bracket for a function.
-    * 
+    *
     * @param start -the index of the character AFTER the opening bracket for the function
     * @param seq -sequence containing the local function
     * @return -the index of the matching bracket to the opening bracket of this function
@@ -1320,7 +1331,7 @@ public final class Lib {
 
    /**
     * This method takes in any name separated by underscores and converts it into a java standard variable name.
-    * 
+    *
     * @return java variable name
     */
    public static final String convertToJavaVariableName(String name) {
@@ -1403,7 +1414,7 @@ public final class Lib {
 
    /**
     * Determine is OS is windows
-    * 
+    *
     * @return <b>true</b> if OS is windows
     */
    public static boolean isWindows() {
@@ -1433,9 +1444,8 @@ public final class Lib {
 
          outputStream.flush();
       } catch (Exception ex) {
-         String information =
-            String.format("JarFile: %s\nEntry: %s\nDestination: %s\n", jarFile.getAbsolutePath(), entry,
-               destination.getAbsolutePath());
+         String information = String.format("JarFile: %s\nEntry: %s\nDestination: %s\n", jarFile.getAbsolutePath(),
+            entry, destination.getAbsolutePath());
          throw new IOException(information + ex.getMessage());
       } finally {
          Lib.close(outputStream);
@@ -1631,7 +1641,7 @@ public final class Lib {
 
    /**
     * Determine whether the input stream is word xml content.
-    * 
+    *
     * @return <b>true</b> is the input stream is word xml content.
     */
    public static boolean isWordML(InputStream inputStream) {
@@ -1703,7 +1713,7 @@ public final class Lib {
 
    /**
     * This will go away once database takes long for artId
-    * 
+    *
     * @return unique > 0 int
     */
    public static Long generateArtifactIdAsInt() {

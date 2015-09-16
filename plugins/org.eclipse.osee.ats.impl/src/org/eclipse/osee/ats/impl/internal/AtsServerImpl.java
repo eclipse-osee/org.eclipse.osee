@@ -145,6 +145,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private IAtsTaskService taskService;
 
    private volatile boolean emailEnabled = true;
+   private boolean loggedNotificationDisabled = false;
 
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
@@ -476,7 +477,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public void sendNotifications(AtsNotificationCollector notifications) {
       if (isEmailEnabled()) {
          if (notifiers.isEmpty() || !isProduction()) {
-            logger.info("Osee Notification Disabled");
+            if (!loggedNotificationDisabled) {
+               logger.info("Osee Notification Disabled");
+               loggedNotificationDisabled = true;
+            }
          } else {
             workItemNotificationProcessor =
                new WorkItemNotificationProcessor(logger, this, workItemFactory, userService, attributeResolverService);
@@ -599,7 +603,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifactByName(IArtifactType artifactType, String name) {
+   public ArtifactId getArtifactByName(IArtifactType artifactType, String name) {
       return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(artifactType).andNameEquals(
          name).getResults().getAtMostOneOrNull();
    }

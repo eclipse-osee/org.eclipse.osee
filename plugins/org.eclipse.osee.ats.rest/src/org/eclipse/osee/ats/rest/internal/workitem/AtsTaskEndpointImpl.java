@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.POST;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTasks;
-import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -35,9 +40,12 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       this.atsServer = atsServer;
    }
 
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public Response create(NewTaskData newTaskData) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskData, atsServer, new XResultData());
+   public Response create(NewTaskDatas newTaskDatas) {
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsServer, new XResultData());
       XResultData results = operation.validate();
 
       if (results.isErrors()) {
@@ -49,6 +57,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       return Response.ok().entity(tasks).build();
    }
 
+   @POST
    @Override
    public Response get(long taskUuid) {
       IAtsWorkItem task = atsServer.getQueryService().createQuery().isOfType(IAtsTask.class).andUuids(
@@ -60,6 +69,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       return Response.ok().entity(jaxAtsTask).build();
    }
 
+   @DELETE
    @Override
    public void delete(long taskUuid) {
       IAtsWorkItem task = atsServer.getQueryService().createQuery().isOfType(IAtsTask.class).andUuids(

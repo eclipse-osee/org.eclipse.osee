@@ -21,11 +21,14 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -128,12 +131,12 @@ public class AtsOseeCmService implements IOseeCmService {
    public Artifact createWorkTask(String name, String parentPcrGuid) {
       try {
          Artifact artifact = AtsArtifactQuery.getArtifactFromId(parentPcrGuid);
-         AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " - Create Work Task");
-         if (artifact instanceof AbstractTaskableArtifact) {
-            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(),
-               AtsClientService.get().getUserService().getCurrentUser(), changes);
-         }
-         changes.execute();
+         Date createdDate = new Date();
+         NewTaskData newTaskData = NewTaskDataFactory.get(getClass().getSimpleName() + " - Create Work Task",
+            AtsClientService.get().getUserService().getCurrentUser().getUserId(), artifact.getUuid());
+         JaxAtsTaskFactory.get(newTaskData, name, AtsClientService.get().getUserService().getCurrentUser(),
+            createdDate);
+         AtsClientService.getTaskEp().create(new NewTaskDatas(newTaskData));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -167,9 +170,8 @@ public class AtsOseeCmService implements IOseeCmService {
       boolean toReturn = false;
       if (art instanceof TeamWorkFlowArtifact) {
          try {
-            toReturn =
-               AtsClientService.get().getBranchService().isBranchesAllCommittedExcept((TeamWorkFlowArtifact) art,
-                  branch);
+            toReturn = AtsClientService.get().getBranchService().isBranchesAllCommittedExcept(
+               (TeamWorkFlowArtifact) art, branch);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
             toReturn = false;

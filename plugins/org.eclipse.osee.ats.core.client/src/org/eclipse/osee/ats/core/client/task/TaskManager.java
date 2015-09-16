@@ -18,7 +18,10 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -62,9 +65,8 @@ public class TaskManager {
          if (estimatedHours > 0.0) {
             taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimatedHours);
          }
-         TransitionHelper helper =
-            new TransitionHelper("Transition to Completed", Arrays.asList(taskArt), TaskStates.Completed.getName(),
-               null, null, changes, AtsClientService.get().getServices());
+         TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
+            TaskStates.Completed.getName(), null, null, changes, AtsClientService.get().getServices());
          IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
 
@@ -83,16 +85,16 @@ public class TaskManager {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }
-      TransitionHelper helper =
-         new TransitionHelper("Transition to InWork", Arrays.asList(taskArt), TaskStates.InWork.getName(),
-            Arrays.asList(toUser), null, changes, AtsClientService.get().getServices(),
-            TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("Transition to InWork", Arrays.asList(taskArt),
+         TaskStates.InWork.getName(), Arrays.asList(toUser), null, changes, AtsClientService.get().getServices(),
+         TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (!results.isEmpty()) {
          return new Result("Transition Error %s", results.toString());
       }
-      if (taskArt.getStateMgr().getPercentComplete(taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
+      if (taskArt.getStateMgr().getPercentComplete(
+         taskArt.getCurrentStateName()) != percentComplete || additionalHours > 0) {
          taskArt.getStateMgr().updateMetrics(taskArt.getStateDefinition(), additionalHours, percentComplete, true,
             AtsClientService.get().getUserService().getCurrentUser());
       }
@@ -103,21 +105,9 @@ public class TaskManager {
    }
 
    public static Result moveTasks(TeamWorkFlowArtifact newParent, List<TaskArtifact> taskArts) throws OseeCoreException {
-      for (TaskArtifact taskArt : taskArts) {
-         // task dropped on same awa as current parent; do nothing
-         if (taskArt.getParentAWA().equals(newParent)) {
-            return Result.FalseResult;
-         }
-
-         // Validate able to move tasks; WorkDefinitions must match
-         boolean taskOverridesItsWorkDefinition =
-            AtsClientService.get().getWorkDefinitionAdmin().isTaskOverridingItsWorkDefinition(taskArt);
-         IWorkDefinitionMatch match =
-            AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForTaskNotYetCreated(newParent);
-         if (!taskOverridesItsWorkDefinition && !taskArt.getWorkDefinition().equals(match.getWorkDefinition())) {
-            return new Result(
-               "Desitination Task WorkDefinition does not match current Task WorkDefintion; Move Aborted");
-         }
+      Result result = moveTasksIsValid(newParent, taskArts, AtsClientService.get().getWorkDefinitionAdmin());
+      if (result.isFalse()) {
+         return result;
       }
 
       // Move Tasks
@@ -136,6 +126,24 @@ public class TaskManager {
          }
       }
       transaction.execute();
+      return Result.TrueResult;
+   }
+
+   protected static Result moveTasksIsValid(IAtsTeamWorkflow newParent, List<? extends IAtsTask> tasks, IAtsWorkDefinitionAdmin workDefinitionAdmin) {
+      for (IAtsTask task : tasks) {
+         // task dropped on same awa as current parent; do nothing
+         if (task.getParentTeamWorkflow().getUuid() == newParent.getUuid()) {
+            return new Result("Source and Destination workflows are the same; Move Aborted");
+         }
+
+         // Validate able to move tasks; WorkDefinitions must match
+         boolean taskOverridesItsWorkDefinition = workDefinitionAdmin.isTaskOverridingItsWorkDefinition(task);
+         IWorkDefinitionMatch match = workDefinitionAdmin.getWorkDefinitionForTaskNotYetCreated(newParent);
+         if (!taskOverridesItsWorkDefinition && !task.getWorkDefinition().equals(match.getWorkDefinition())) {
+            return new Result(
+               "Desitination Task WorkDefinition does not match current Task WorkDefintion; Move Aborted");
+         }
+      }
       return Result.TrueResult;
    }
 

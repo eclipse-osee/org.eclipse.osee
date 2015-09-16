@@ -25,9 +25,6 @@ public class NewTaskData {
    String asUserId;
    String commitComment;
 
-   public NewTaskData() {
-   }
-
    public Long getTeamWfUuid() {
       return teamWfUuid;
    }
@@ -61,6 +58,11 @@ public class NewTaskData {
 
    public void setAsUserId(String asUserId) {
       this.asUserId = asUserId;
+   }
+
+   @Override
+   public String toString() {
+      return "NewTaskData [teamUuid=" + teamWfUuid + ", tasks=" + newTasks + ", asUserId=" + asUserId + ", commitComment=" + commitComment + "]";
    }
 
 }

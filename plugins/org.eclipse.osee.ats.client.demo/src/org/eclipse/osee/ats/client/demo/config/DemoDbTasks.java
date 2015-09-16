@@ -16,12 +16,16 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -35,26 +39,26 @@ public class DemoDbTasks {
       }
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
-      AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
+      NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
-         List<IAtsUser> demoUsers = new ArrayList<>();
+         NewTaskData newTaskData = NewTaskDataFactory.get("Populate Demo DB - Create Tasks", createdBy, codeArt);
+         List<String> assigneeUserIds = new ArrayList<>();
          if (firstTaskWorkflow) {
-            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-               DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
-            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-               DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
+            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith).getUserId());
+            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones).getUserId());
          } else {
-            demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
-               DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));
+            assigneeUserIds.add(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith).getUserId());
          }
          for (String title : getTaskTitles(firstTaskWorkflow)) {
-            codeArt.createNewTask(demoUsers, title, createdDate, createdBy, codeArt.getCurrentStateName(), changes);
+            JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, title, createdBy, createdDate);
+            task.setRelatedToState(codeArt.getCurrentStateName());
+            task.setAssigneeUserIds(assigneeUserIds);
          }
          firstTaskWorkflow = false;
-         changes.add(codeArt);
+         newTaskDatas.add(newTaskData);
       }
-      changes.execute();
+      AtsClientService.get().getTaskService().createTasks(newTaskDatas);
    }
 
    /**

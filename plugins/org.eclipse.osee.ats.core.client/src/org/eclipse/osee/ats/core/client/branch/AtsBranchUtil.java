@@ -57,6 +57,7 @@ public class AtsBranchUtil {
     * @return true if one or more reviews were created
     */
    public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+      Conditions.checkNotNull(teamArt, "Team Workflow");
       boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
@@ -64,9 +65,8 @@ public class AtsBranchUtil {
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
-            DecisionReviewArtifact decArt =
-               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt, createdDate,
-                  createdBy);
+            DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,
+               teamArt, createdDate, createdBy);
             if (decArt != null) {
                created = true;
                changes.add(decArt);
@@ -75,9 +75,8 @@ public class AtsBranchUtil {
       }
       for (IAtsPeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
-            PeerToPeerReviewArtifact peerArt =
-               PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef, changes, teamArt, createdDate,
-                  createdBy);
+            PeerToPeerReviewArtifact peerArt = PeerReviewDefinitionManager.createNewPeerToPeerReview(peerRevDef,
+               changes, teamArt, createdDate, createdBy);
             if (peerArt != null) {
                created = true;
                changes.add(peerArt);
@@ -89,7 +88,7 @@ public class AtsBranchUtil {
 
    /**
     * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    * 
+    *
     * @param popup if true, errors are popped up to user; otherwise sent silently in Results
     * @return Result return of status
     */
@@ -178,14 +177,13 @@ public class AtsBranchUtil {
    private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       // Create reviews as necessary
       AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Transition");
-      boolean created =
-         createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(), AtsCoreUsers.SYSTEM_USER,
-            changes);
+      boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
+         AtsCoreUsers.SYSTEM_USER, changes);
       if (created) {
          changes.execute();
       }
 
-      // Notify extensions of branch creation 
+      // Notify extensions of branch creation
       for (IAtsStateItemCore item : AtsStateItemCoreManager.getStateItems()) {
          item.workingBranchCreated(teamArt);
       }

@@ -298,4 +298,5 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       getTransaction().setSoleAttributeValue(art, attrType, value);
       add(art);
    }
+
 }

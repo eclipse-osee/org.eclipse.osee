@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.StringOutputStream;
@@ -113,7 +114,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition getWorkDef(String workDefId, XResultData resultData) throws Exception {
+      Conditions.checkNotNullOrEmpty(workDefId, "workDefId");
       String workDefStr = workDefStore.loadWorkDefinitionString(workDefId);
+      Conditions.checkNotNullOrEmpty(workDefStr, "workDefStr");
       AtsDsl atsDsl = ModelUtil.loadModel(workDefId + ".ats", workDefStr);
       ConvertAtsDslToWorkDefinition convert =
          new ConvertAtsDslToWorkDefinition(workDefId, atsDsl, resultData, attrResolver, userService);

@@ -34,4 +34,8 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> createTasks(NewTaskData newTaskData, IAtsChangeSet changes);
 
+   Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas);
+
+   NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes);
+
 }

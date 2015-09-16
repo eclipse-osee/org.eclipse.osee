@@ -155,11 +155,11 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
             }
          }
          if (match.isMatched()) {
-            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.INFO, "Loaded Work Definition [%s]", match);
+            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.FINE, "Loaded Work Definition [%s]", match);
             getCache().cache(id, match);
             toReturn = match;
          } else {
-            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.INFO, "Unable to load Work Definition [%s]", id);
+            OseeLog.logf(AtsWorkDefinitionAdminImpl.class, Level.SEVERE, "Unable to load Work Definition [%s]", id);
          }
       }
       if (toReturn == null) {
@@ -480,4 +480,5 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       Collection<IAtsRuleDefinition> ruleDefs = ruleDefinitionCache.asMap().values();
       return ruleDefs;
    }
+
 }

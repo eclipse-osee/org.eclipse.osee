@@ -213,8 +213,8 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         throw new IllegalArgumentException(String.format("Unknown ReviewBlockType [%s]; Defaulting to None",
-            dslBlockType));
+         throw new IllegalArgumentException(
+            String.format("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType));
       }
       revDef.setBlockingType(blockType);
 
@@ -223,8 +223,8 @@ public class ConvertAtsDslToWorkDefinition {
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         throw new IllegalArgumentException(String.format("Unknown StateEventType [%s]; Defaulting to None",
-            dslEventType));
+         throw new IllegalArgumentException(
+            String.format("Unknown StateEventType [%s]; Defaulting to None", dslEventType));
       }
       revDef.setStateEventType(eventType);
       revDef.setAutoTransitionToDecision(BooleanDefUtil.get(dslRevDef.getAutoTransitionToDecision(), false));
@@ -235,6 +235,7 @@ public class ConvertAtsDslToWorkDefinition {
          if (followupRef == null) {
             revOpt.setFollowupRequired(false);
          } else {
+            revOpt.setFollowupRequired(true);
             revOpt.getUserIds().addAll(UserRefUtil.getUserIds(followupRef.getAssigneeRefs()));
             revOpt.getUserNames().addAll(UserRefUtil.getUserNames(followupRef.getAssigneeRefs()));
          }
@@ -268,8 +269,8 @@ public class ConvertAtsDslToWorkDefinition {
             String attributeName = Strings.unquote(attrWidget.getAttributeName());
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (1)",
-                     attributeName, SHEET_NAME);
+                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (1)", attributeName,
+                     SHEET_NAME);
                } else {
                   WidgetDefinition widgetDef = new WidgetDefinition(attrResolver.getUnqualifiedName(attributeName));
                   widgetDef.setAttributeName(attributeName);
@@ -278,8 +279,7 @@ public class ConvertAtsDslToWorkDefinition {
                   stateItems.add(widgetDef);
                }
             } catch (Exception ex) {
-               resultData.errorf("Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName,
-                  SHEET_NAME);
+               resultData.errorf("Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName, SHEET_NAME);
             }
          } else if (layoutItem instanceof Composite) {
             Composite composite = (Composite) layoutItem;
@@ -382,7 +382,8 @@ public class ConvertAtsDslToWorkDefinition {
             widgetDef.setDescription(dslWidgetDef.getDescription());
          }
          // Else, set if AtsAttributeTypes defines it
-         else if (Strings.isValid(attributeName) && attrResolver.isAttributeNamed(attributeName) && Strings.isValid(attrResolver.getDescription(attributeName))) {
+         else if (Strings.isValid(attributeName) && attrResolver.isAttributeNamed(attributeName) && Strings.isValid(
+            attrResolver.getDescription(attributeName))) {
             widgetDef.setDescription(attrResolver.getDescription(attributeName));
          }
       } catch (Exception ex) {
@@ -396,18 +397,17 @@ public class ConvertAtsDslToWorkDefinition {
          if (Strings.isValid(attributeName)) {
             try {
                if (!attrResolver.isAttributeNamed(attributeName)) {
-                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (2)",
-                     attributeName, SHEET_NAME);
+                  resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (2)", attributeName,
+                     SHEET_NAME);
                } else {
                   attrResolver.setXWidgetNameBasedOnAttributeName(attributeName, widgetDef);
                }
             } catch (Exception ex) {
-               resultData.errorf("Error resolving attribute name [%s] in WorkDefinition [%s]",
-                  attributeName, SHEET_NAME);
+               resultData.errorf("Error resolving attribute name [%s] in WorkDefinition [%s]", attributeName,
+                  SHEET_NAME);
             }
          } else {
-            resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (3)", attributeName,
-               SHEET_NAME);
+            resultData.errorf("Invalid attribute name [%s] in WorkDefinition [%s] (3)", attributeName, SHEET_NAME);
          }
       }
       processMinMaxConstraints(widgetDef, dslWidgetDef.getMinConstraint(), dslWidgetDef.getMaxConstraint());

@@ -499,6 +499,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     */
    @Override
    public Artifact getArtifact(long uuid) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
          result = ArtifactQuery.getArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch());
@@ -816,7 +817,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifactByName(IArtifactType artType, String name) {
+   public ArtifactId getArtifactByName(IArtifactType artType, String name) {
       return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
    }
 

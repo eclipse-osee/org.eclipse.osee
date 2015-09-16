@@ -23,7 +23,7 @@ public class OpenParentActionTest extends AbstractAtsActionRunTest {
    @Override
    public OpenParentAction createAction() throws OseeCoreException {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      OpenParentAction action = new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes));
+      OpenParentAction action = new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {
          changes.execute();
       }

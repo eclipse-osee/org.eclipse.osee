@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -33,6 +35,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -55,15 +58,33 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> createTasks(NewTaskData newTaskData) {
+   public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
       AtsTaskEndpointApi taskEp = AtsClientService.getTaskEp();
-      Response response = taskEp.create(newTaskData);
+      Response response = taskEp.create(newTaskDatas);
+      if (response.getStatus() != Status.OK.getStatusCode()) {
+         throw new OseeCoreException("Error creating task [%s] [%s]", newTaskDatas, response.toString());
+      }
 
+      List<IAtsTask> tasks = new LinkedList<>();
+
+      ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());
+      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+         processForEvents(newTaskData, response, tasks, artifactEvent);
+      }
+
+      OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
+      return tasks;
+   }
+
+   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent2) {
       Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());
       List<Long> artUuids = new LinkedList<>();
+
+      teamWf.reloadAttributesAndRelations();
+
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsUtilCore.getAtsBranch());
          artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added,
@@ -71,23 +92,22 @@ public class AtsTaskService extends AbstractAtsTaskService {
          artUuids.add(task.getUuid());
 
          RelationLink relation = getRelation(teamWf, task);
-         Artifact taskArt = atsClient.getArtifact(task.getUuid());
+         relation = getRelation(teamWf, task);
+         if (relation != null) {
+            Artifact taskArt = atsClient.getArtifact(task.getUuid());
 
-         DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch().getUuid(),
-            AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
-            getBasicGuidArtifact(teamWf), getBasicGuidArtifact(taskArt));
+            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsUtilCore.getAtsBranch().getUuid(),
+               AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
+               getBasicGuidArtifact(teamWf), getBasicGuidArtifact(taskArt));
 
-         artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
-            newTaskData.getTeamWfUuid().intValue(), new Long(task.getUuid()).intValue(), guidRelation));
+            artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
+               newTaskData.getTeamWfUuid().intValue(), new Long(task.getUuid()).intValue(), guidRelation));
+         }
       }
 
-      OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
-
-      List<IAtsTask> tasks = new LinkedList<>();
       for (Long uuid : artUuids) {
          tasks.add(AtsClientService.get().getWorkItemFactory().getTask(AtsClientService.get().getArtifact(uuid)));
       }
-      return tasks;
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {

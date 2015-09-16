@@ -54,12 +54,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
-   public AtsChangeSet(String comment, IAtsUser user) {
-      super(comment, user);
-   }
-
    public AtsChangeSet(String comment) {
       this(comment, AtsClientService.get().getUserService().getCurrentUser());
+   }
+
+   public AtsChangeSet(String comment, IAtsUser atsUser) {
+      super(comment, atsUser);
    }
 
    @Override

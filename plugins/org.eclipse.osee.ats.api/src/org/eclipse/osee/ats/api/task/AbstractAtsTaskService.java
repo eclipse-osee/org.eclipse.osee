@@ -30,11 +30,19 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
+   public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes) {
+      return getNewTaskData(teamWf, titles, assignees, createdDate, createdBy, relatedToState, taskWorkDef, attributes,
+         null);
+   }
+
+   @Override
+   public Collection<IAtsTask> createTasks(NewTaskData newTaskData) {
+      return createTasks(new NewTaskDatas(newTaskData));
+   }
+
+   @Override
    public NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<String>> attributes, String commitComment) {
-      NewTaskData newTaskData = new NewTaskData();
-      newTaskData.setCommitComment(commitComment);
-      newTaskData.setAsUserId(createdBy.getUserId());
-      newTaskData.setTeamWfUuid(teamWf.getUuid());
+      NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Simple List", createdBy, teamWf);
       if (createdDate == null) {
          createdDate = new Date();
       }
@@ -63,6 +71,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
                task.addAttributes(entry.getKey(), entry.getValue());
             }
          }
+         newTaskData.setCommitComment(commitComment);
       }
       return newTaskData;
    }

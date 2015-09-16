@@ -35,7 +35,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test unit for {@link PeerToPeerReviewManager}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
@@ -44,9 +44,8 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    @AfterClass
    public static void cleanup() throws Exception {
       AtsTestUtil.cleanup();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            PeerToPeerReviewManagerTest.class.getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+         PeerToPeerReviewManagerTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.PeerToPeerReview,
          "PeerToPeerReviewManagerTest", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          if (art.getName().contains("StandAlone")) {
@@ -65,10 +64,9 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
-      PeerToPeerReviewArtifact peerArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
+         AtsTestUtil.getAnalyzeStateDef().getName(), new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -92,9 +90,8 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamArt.getName();
 
-      PeerToPeerReviewArtifact peerArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
-            AtsTestUtil.getAnalyzeStateDef().getName(), changes);
+      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, reviewTitle,
+         AtsTestUtil.getAnalyzeStateDef().getName(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -117,9 +114,8 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + testAi;
 
-      PeerToPeerReviewArtifact peerArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(testAi, reviewTitle, null, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(testAi, reviewTitle, null,
+         new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(peerArt);
@@ -128,6 +124,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItem), AtsUtilCore.getGuid(testAi));
+      Assert.assertEquals(((Artifact) AtsTestUtil.getTestAi().getStoreObject()).getGuid(),
+         peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItem));
    }
 }

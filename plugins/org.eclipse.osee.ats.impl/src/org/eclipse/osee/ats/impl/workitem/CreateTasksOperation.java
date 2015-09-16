@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.impl.workitem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -22,11 +24,13 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -45,16 +49,22 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 public class CreateTasksOperation {
 
    private XResultData resultData;
-   private final NewTaskData newTaskData;
+   private final NewTaskDatas newTaskDatas;
    private final IAtsServer atsServer;
-   private ArtifactReadable teamWfArt;
    private IAtsUser asUser;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
-   private IAtsTeamWorkflow teamWf;
    private Date createdByDate;
+   private Map<Long, IAtsTeamWorkflow> uuidToTeamWf;
 
    public CreateTasksOperation(NewTaskData newTaskData, IAtsServer atsServer, XResultData resultData) {
-      this.newTaskData = newTaskData;
+      newTaskDatas = new NewTaskDatas();
+      newTaskDatas.add(newTaskData);
+      this.atsServer = atsServer;
+      this.resultData = resultData;
+   }
+
+   public CreateTasksOperation(NewTaskDatas newTaskDatas, IAtsServer atsServer, XResultData resultData) {
+      this.newTaskDatas = newTaskDatas;
       this.atsServer = atsServer;
       this.resultData = resultData;
    }
@@ -63,93 +73,96 @@ public class CreateTasksOperation {
       if (resultData == null) {
          resultData = new XResultData(false);
       }
-      Long teamWfUuid = newTaskData.getTeamWfUuid();
-      if (teamWfUuid == null) {
-         resultData.error("Team Workflow uuid not specified");
-      }
-      teamWfArt = atsServer.getArtifactByUuid(teamWfUuid);
-      if (teamWfArt == null) {
-         resultData.errorf("Team Workflow uuid %d does not exist", teamWfUuid);
-      }
-      teamWf = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
-      String asUserId = newTaskData.getAsUserId();
-      if (asUserId == null) {
-         resultData.error("As User Id uuid not specified");
-      }
-      asUser = atsServer.getUserService().getUserById(asUserId);
-      if (asUser == null) {
-         resultData.errorf("As User Id uuid %d does not exist", asUserId);
-      }
-      if (!Strings.isValid(newTaskData.getCommitComment())) {
-         resultData.errorf("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
-      }
-
-      for (JaxAtsTask task : newTaskData.getNewTasks()) {
-         Long taskUuid = task.getUuid();
-         if (teamWfUuid != null && taskUuid > 0L) {
-            ArtifactReadable taskArt = atsServer.getArtifactByUuid(taskUuid);
-            if (taskArt != null) {
-               resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
-            }
+      uuidToTeamWf = new HashMap<>();
+      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+         Long teamWfUuid = newTaskData.getTeamWfUuid();
+         if (teamWfUuid == null) {
+            resultData.error("Team Workflow uuid not specified");
          }
-         if (!Strings.isValid(task.getName())) {
-            resultData.errorf("Task name [%s] is invalid for %s", task.getName(), task);
+         ArtifactReadable teamWfArt = atsServer.getArtifactByUuid(teamWfUuid);
+         if (teamWfArt == null) {
+            resultData.errorf("Team Workflow uuid %d does not exist", teamWfUuid);
          }
-         IAtsUser createdBy = atsServer.getUserService().getUserById(task.getCreatedByUserId());
-         if (createdBy == null) {
-            resultData.errorf("Task Created By user id %d does not exist in %s", createdBy, task);
+         IAtsTeamWorkflow teamWf = uuidToTeamWf.get(teamWfUuid);
+         if (teamWf == null) {
+            teamWf = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
+            uuidToTeamWf.put(teamWfUuid, teamWf);
          }
-         createdByDate = task.getCreatedDate();
-         if (createdByDate == null) {
-            resultData.errorf("Task Created By Date %s does not exist in %s", createdByDate, task);
+         String asUserId = newTaskData.getAsUserId();
+         if (asUserId == null) {
+            resultData.error("As User Id uuid not specified");
          }
-         IAtsTeamWorkflow teamWorkflow = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
-         String relatedToState = task.getRelatedToState();
-         if (Strings.isValid(relatedToState)) {
-            if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
-               resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState, teamWfUuid);
-            }
+         asUser = atsServer.getUserService().getUserById(asUserId);
+         if (asUser == null) {
+            resultData.errorf("As User Id uuid %d does not exist", asUserId);
          }
-         List<String> assigneeUserIds = task.getAssigneeUserIds();
-         if (assigneeUserIds == null || assigneeUserIds.isEmpty()) {
-            resultData.errorf("Task Assignees can not be empty in %s", createdByDate, task);
-         }
-         if (assigneeUserIds == null) {
-            resultData.errorf("Task Assignees must be specified in %s", createdByDate, task);
+         if (!Strings.isValid(newTaskData.getCommitComment())) {
+            resultData.errorf("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
          }
 
-         Collection<IAtsUser> assignees = atsServer.getUserService().getUsersByUserIds(assigneeUserIds);
-         if (assigneeUserIds.size() != assignees.size()) {
-            resultData.errorf("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds), task);
-         }
-
-         IAtsWorkDefinition workDefinition = null;
-         if (Strings.isValid(task.getTaskWorkDef())) {
-            try {
-               XResultData rd = new XResultData();
-               workDefinition = atsServer.getWorkDefService().getWorkDef(task.getTaskWorkDef(), rd);
-               if (rd.isErrors()) {
-                  resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
-                     rd.toString());
+         for (JaxAtsTask task : newTaskData.getNewTasks()) {
+            Long taskUuid = task.getUuid();
+            if (teamWfUuid != null && taskUuid > 0L) {
+               ArtifactReadable taskArt = atsServer.getArtifactByUuid(taskUuid);
+               if (taskArt != null) {
+                  resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
                }
-            } catch (Exception ex) {
-               resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
-                  ex.getMessage());
             }
-            if (workDefinition == null) {
-               resultData.errorf("Task Work Def [%s] does not exist", task.getTaskWorkDef());
+            if (!Strings.isValid(task.getName())) {
+               resultData.errorf("Task name [%s] is invalid for %s", task.getName(), task);
             }
-         }
+            IAtsUser createdBy = atsServer.getUserService().getUserById(task.getCreatedByUserId());
+            if (createdBy == null) {
+               resultData.errorf("Task Created By user id %d does not exist in %s", createdBy, task);
+            }
+            createdByDate = task.getCreatedDate();
+            if (createdByDate == null) {
+               resultData.errorf("Task Created By Date %s does not exist in %s", createdByDate, task);
+            }
+            IAtsTeamWorkflow teamWorkflow = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
+            String relatedToState = task.getRelatedToState();
+            if (Strings.isValid(relatedToState)) {
+               if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
+                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState,
+                     teamWfUuid);
+               }
+            }
 
-         for (JaxAttribute attribute : task.getAttributes()) {
-            IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
-            if (attrType == null) {
-               resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attribute.getAttrTypeName(),
-                  task);
+            List<String> assigneeUserIds = task.getAssigneeUserIds();
+            if (!assigneeUserIds.isEmpty()) {
+               Collection<IAtsUser> assignees = atsServer.getUserService().getUsersByUserIds(assigneeUserIds);
+               if (assigneeUserIds.size() != assignees.size()) {
+                  resultData.errorf("Task Assignees [%s] not all valid in %s", String.valueOf(assigneeUserIds), task);
+               }
+            }
+
+            IAtsWorkDefinition workDefinition = null;
+            if (Strings.isValid(task.getTaskWorkDef())) {
+               try {
+                  XResultData rd = new XResultData();
+                  workDefinition = atsServer.getWorkDefService().getWorkDef(task.getTaskWorkDef(), rd);
+                  if (rd.isErrors()) {
+                     resultData.errorf("Error finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
+                        rd.toString());
+                  }
+               } catch (Exception ex) {
+                  resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
+                     ex.getMessage());
+               }
+               if (workDefinition == null) {
+                  resultData.errorf("Task Work Def [%s] does not exist", task.getTaskWorkDef());
+               }
+            }
+
+            for (JaxAttribute attribute : task.getAttributes()) {
+               IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
+               if (attrType == null) {
+                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
+                     attribute.getAttrTypeName(), task);
+               }
             }
          }
       }
-
       return resultData;
    }
 
@@ -173,16 +186,19 @@ public class CreateTasksOperation {
          throw new OseeArgumentException(results.toString());
       }
 
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(newTaskData.getCommitComment(), asUser);
+      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(
+         newTaskDatas.getTaskDatas().iterator().next().getCommitComment(), asUser);
       run(changes);
       changes.execute();
 
-      for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
-         JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getUuid(), atsServer);
-         if (newJaxTask == null) {
-            throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
+      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+         for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+            JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getUuid(), atsServer);
+            if (newJaxTask == null) {
+               throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
+            }
+            this.tasks.add(newJaxTask);
          }
-         this.tasks.add(newJaxTask);
       }
    }
 
@@ -194,56 +210,61 @@ public class CreateTasksOperation {
    }
 
    private void createTasks(IAtsChangeSet changes) {
-      for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
+      for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
+         for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
 
-         Long uuid = jaxTask.getUuid();
-         if (uuid <= 0L) {
-            uuid = Lib.generateArtifactIdAsInt();
-            jaxTask.setUuid(uuid);
-         }
-         ArtifactId taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
-         IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
-
-         atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), task, teamWf.getTeamDefinition(),
-            changes);
-
-         changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
-
-         List<IAtsUser> assignees = new ArrayList<>();
-         if (jaxTask.getAssigneeUserIds() != null) {
-            assignees.addAll(atsServer.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
-         }
-
-         IAtsWorkDefinition workDefinition = null;
-         if (Strings.isValid(jaxTask.getTaskWorkDef())) {
-            try {
-               workDefinition = atsServer.getWorkDefService().getWorkDef(jaxTask.getTaskWorkDef(), new XResultData());
-            } catch (Exception ex) {
-               throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
+            Long uuid = jaxTask.getUuid();
+            if (uuid <= 0L) {
+               uuid = Lib.generateArtifactIdAsInt();
+               jaxTask.setUuid(uuid);
             }
-         }
-         if (Strings.isValid(jaxTask.getDescription())) {
-            changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
-         }
-         atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, asUser, workDefinition,
-            changes);
+            ArtifactId taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
+            IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
 
-         // Set parent state task is related to if set
-         if (Strings.isValid(jaxTask.getRelatedToState())) {
-            changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jaxTask.getRelatedToState());
-         }
+            IAtsTeamWorkflow teamWf = uuidToTeamWf.get(newTaskData.getTeamWfUuid());
+            atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), task, teamWf.getTeamDefinition(),
+               changes);
+            changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
-         for (JaxAttribute attribute : jaxTask.getAttributes()) {
-            IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
-            if (attrType == null) {
-               resultData.errorf("Attribute Type [%s] not valid for Task creation in %s", attribute.getAttrTypeName(),
-                  task);
+            List<IAtsUser> assignees = new ArrayList<>();
+            if (jaxTask.getAssigneeUserIds() != null) {
+               assignees.addAll(atsServer.getUserService().getUsersByUserIds(jaxTask.getAssigneeUserIds()));
             }
-            changes.setValues(task, attrType, attribute.getValues());
+            if (assignees.isEmpty()) {
+               assignees.add(AtsCoreUsers.UNASSIGNED_USER);
+            }
+
+            IAtsWorkDefinition workDefinition = null;
+            if (Strings.isValid(jaxTask.getTaskWorkDef())) {
+               try {
+                  workDefinition =
+                     atsServer.getWorkDefService().getWorkDef(jaxTask.getTaskWorkDef(), new XResultData());
+               } catch (Exception ex) {
+                  throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
+               }
+            }
+            if (Strings.isValid(jaxTask.getDescription())) {
+               changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
+            }
+            atsServer.getActionFactory().initializeNewStateMachine(task, assignees, createdByDate, asUser,
+               workDefinition, changes);
+
+            // Set parent state task is related to if set
+            if (Strings.isValid(jaxTask.getRelatedToState())) {
+               changes.setSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, jaxTask.getRelatedToState());
+            }
+
+            for (JaxAttribute attribute : jaxTask.getAttributes()) {
+               IAttributeType attrType = getAttributeType(atsServer, attribute.getAttrTypeName());
+               if (attrType == null) {
+                  resultData.errorf("Attribute Type [%s] not valid for Task creation in %s",
+                     attribute.getAttrTypeName(), task);
+               }
+               changes.setValues(task, attrType, attribute.getValues());
+            }
+
+            changes.add(taskArt);
          }
-
-         changes.add(taskArt);
-
       }
 
    }

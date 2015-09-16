@@ -10,24 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition;
 
+import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
+import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workdef.WidgetOption;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
+import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
@@ -35,8 +41,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -44,13 +48,16 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Test unit for {@link TransitionManager}
@@ -60,6 +67,25 @@ import org.junit.BeforeClass;
 public class TransitionManagerTest {
 
    private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
+   public static String WORK_DEF_TARGETED_VERSION_FILE_NAME =
+      "support/WorkDef_Team_TransitionManagerTest_TargetedVersion.ats";
+   public static String WORK_DEF_WIDGET_REQUIRED_TRANSITION_FILE_NAME =
+      "support/WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition.ats";
+   private static String WORK_DEF_WIDGET_REQUIRED_COMPLETION_FILE_NAME =
+      "support/WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion.ats";
+
+   // @formatter:off
+   @Mock private IAtsTeamWorkflow teamWf;
+   @Mock private IAtsTask task;
+   @Mock private IAtsStateDefinition toStateDef;
+   @Mock private IAtsWorkItemService workItemService;
+   @Mock private IAtsStateManager teamWfStateMgr, taskStateMgr;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+   }
 
    @BeforeClass
    @AfterClass
@@ -249,24 +275,13 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue("Test wasn't reset to allow transition", results.isEmpty());
 
-      IAtsWidgetDefinition estHoursWidget = AtsTestUtil.getEstHoursWidgetDef();
-      fromStateDef.getLayoutItems().add(estHoursWidget);
-      IAtsWidgetDefinition workPackageWidget = AtsTestUtil.getWorkPackageWidgetDef();
-      fromStateDef.getLayoutItems().add(workPackageWidget);
-
       // test that two widgets validate
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // test that estHours required fails validation
       results.clear();
-      estHoursWidget.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.contains("[Estimated Hours] is required for transition"));
-
-      // test that workPackage required fails both widgets
-      results.clear();
-      workPackageWidget.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
+      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_TRANSITION_FILE_NAME);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains("[Estimated Hours] is required for transition"));
       Assert.assertTrue(results.contains("[Work Package] is required for transition"));
@@ -289,26 +304,20 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue("Test wasn't reset to allow transition", results.isEmpty());
 
-      IAtsWidgetDefinition estHoursWidget = AtsTestUtil.getEstHoursWidgetDef();
-      fromStateDef.getLayoutItems().add(estHoursWidget);
-      IAtsWidgetDefinition workPackageWidget = AtsTestUtil.getWorkPackageWidgetDef();
-      fromStateDef.getLayoutItems().add(workPackageWidget);
-
       // test that two widgets validate
+      transMgr.handleTransitionValidation(results);
+      Assert.assertTrue(results.isEmpty());
+
+      // test that neither are required for transition to implement
+      results.clear();
+      helper.setToStateName(AtsTestUtil.getImplementStateDef().getName());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
 
       // test that Work Package only widget required for normal transition
       results.clear();
-      helper.setToStateName(AtsTestUtil.getImplementStateDef().getName());
-      estHoursWidget.getOptions().add(WidgetOption.REQUIRED_FOR_COMPLETION);
-      workPackageWidget.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.contains("[Work Package] is required for transition"));
-
-      // test that Estimated House and Work Package required for transition to completed
-      results.clear();
       helper.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
+      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_COMPLETION_FILE_NAME);
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains("[Estimated Hours] is required for transition to [Completed]"));
       Assert.assertTrue(results.contains("[Work Package] is required for transition"));
@@ -329,64 +338,40 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testIsStateTransitionable__ValidateTasks() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset("TransitionManagerTest-3");
-      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-         AtsTestUtil.getImplementStateDef().getName(),
-         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-         new AtsChangeSet(getClass().getSimpleName()), TransitionOption.None);
-      IAtsTransitionManager transMgr = TransitionFactory.getTransitionManager(helper);
-      TransitionResults results = new TransitionResults();
 
-      // validate that can transition
-      transMgr.handleTransitionValidation(results);
+      TransitionResults results = new TransitionResults();
+      when(teamWf.isTeamWorkflow()).thenReturn(true);
+
+      // validate that if rule exists and is working, then transition with tasks is ok
+      when(teamWf.getStateDefinition()).thenReturn(toStateDef);
+      when(toStateDef.getStateType()).thenReturn(StateType.Working);
+      when(toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name())).thenReturn(true);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
       Assert.assertTrue(results.isEmpty());
 
-      // validate that can't transition with InWork task
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      TaskArtifact taskArt = teamArt.createNewTask("New Tasks", new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), teamArt.getCurrentStateName(), changes);
-      changes.execute();
-      String relatedToState = taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
+      // test only check if Team Workflow
+      when(toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name())).thenReturn(false);
+      TransitionManager.validateTaskCompletion(results, task, toStateDef, workItemService);
+      Assert.assertTrue(results.isEmpty());
 
-      results.clear();
-      transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
+      // test not check if working state
+      when(teamWf.getStateMgr()).thenReturn(teamWfStateMgr);
+      when(teamWfStateMgr.getStateType()).thenReturn(StateType.Working);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      Assert.assertTrue(results.isEmpty());
 
-      MockStateDefinition teamCurrentState = (MockStateDefinition) teamArt.getStateDefinition();
+      // test transition to completed; all tasks are completed
+      when(toStateDef.getStateType()).thenReturn(StateType.Completed);
+      when(workItemService.getTaskArtifacts(teamWf)).thenReturn(Collections.singleton(task));
+      when(task.getStateMgr()).thenReturn(taskStateMgr);
+      when(taskStateMgr.getStateType()).thenReturn(StateType.Completed);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      Assert.assertTrue(results.isEmpty());
 
-      try {
-         // test that can transition with AllowTransitionWithoutTaskCompletion rule on state
-         teamCurrentState.addRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name());
-         // transition task to completed
-         results.clear();
-
-         // should not get transition validation error now
-         results.clear();
-         transMgr.handleTransitionValidation(results);
-         Assert.assertTrue(results.isEmpty());
-
-         // attempt to transition parent to cancelled, should not be able to transition with un-completed/cancelled tasks
-         helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-            AtsTestUtil.getCancelledStateDef().getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
-            new AtsChangeSet(getClass().getSimpleName()), TransitionOption.None);
-         transMgr = TransitionFactory.getTransitionManager(helper);
-         results.clear();
-         transMgr.handleTransitionValidation(results);
-         Assert.assertTrue(results.contains(teamArt, TransitionResult.TASKS_NOT_COMPLETED));
-
-         // Cleanup task by completing and validate can transition
-         changes = new AtsChangeSet(getClass().getSimpleName());
-         TaskManager.transitionToCompleted(taskArt, 0.0, 0.1, changes);
-         changes.execute();
-         results.clear();
-         transMgr.handleTransitionValidation(results);
-         Assert.assertTrue(results.isEmpty());
-      } finally {
-         // just in case test goes bad, make sure we remove this rule
-         teamCurrentState.removeRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name());
-      }
+      // test transtion to completed; task is not completed
+      when(taskStateMgr.getStateType()).thenReturn(StateType.Working);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      Assert.assertTrue(results.contains(TransitionResult.TASKS_NOT_COMPLETED.getDetails()));
 
    }
 
@@ -434,7 +419,8 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition without targeted version when team def rule is set
-      AtsTestUtil.getAnalyzeStateDef().addRule(RuleDefinitionOption.RequireTargetedVersion.name());
+      loadWorkDefForTest(WORK_DEF_TARGETED_VERSION_FILE_NAME);
+
       results.clear();
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.MUST_BE_TARGETED_FOR_VERSION));
@@ -444,6 +430,19 @@ public class TransitionManagerTest {
       AtsClientService.get().getVersionService().setTargetedVersion(teamArt, AtsTestUtil.getVerArt1());
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.isEmpty());
+   }
+
+   private void loadWorkDefForTest(String workDefFilename) {
+      try {
+         String atsDsl = AWorkspace.getOseeInfResource(workDefFilename, AtsClientIntegrationTestSuite.class);
+         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
+         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setWorkDefDsl(atsDsl);
+         AtsTestUtil.importWorkDefinition(jaxWorkDef);
+         AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "Error importing " + workDefFilename);
+      }
    }
 
    @org.junit.Test

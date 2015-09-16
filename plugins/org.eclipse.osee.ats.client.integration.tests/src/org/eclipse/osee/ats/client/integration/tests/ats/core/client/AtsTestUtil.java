@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -27,15 +28,20 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
+import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
+import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -59,16 +65,15 @@ import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.mocks.MockStateDefinition;
-import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
-import org.eclipse.osee.ats.mocks.MockWorkDefinition;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -80,6 +85,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -90,7 +96,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class AtsTestUtil {
 
-   private static TeamWorkFlowArtifact teamArt = null, teamArt2 = null, teamArt3 = null, teamArt4 = null;
+   private static TeamWorkFlowArtifact teamWf = null, teamArt2 = null, teamArt3 = null, teamArt4 = null;
    private static IAtsTeamDefinition teamDef = null;
    private static IAtsVersion verArt1 = null, verArt2 = null, verArt3 = null, verArt4 = null;
    private static DecisionReviewArtifact decRevArt = null;
@@ -98,10 +104,10 @@ public class AtsTestUtil {
    private static TaskArtifact taskArtWf1 = null, taskArtWf2 = null;
    private static IAtsActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
-   private static MockStateDefinition analyze, implement, completed, cancelled = null;
-   private static MockWorkDefinition workDef = null;
+   private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
+   private static IAtsWorkDefinition workDef = null;
    public static String WORK_DEF_NAME = "WorkDef_Team_AtsTestUtil";
-   private static MockWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
+   private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
 
    public static void validateArtifactCache() throws OseeStateException {
@@ -117,7 +123,7 @@ public class AtsTestUtil {
    }
 
    public static void validateObjectsNull() throws OseeStateException {
-      validateObjectsNull("teamArt", teamArt);
+      validateObjectsNull("teamArt", teamWf);
       validateObjectsNull("teamArt2", teamArt2);
       validateObjectsNull("teamArt3", teamArt3);
       validateObjectsNull("teamArt4", teamArt4);
@@ -158,33 +164,61 @@ public class AtsTestUtil {
       return workDef;
    }
 
-   public static MockStateDefinition getAnalyzeStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getAnalyzeStateDef() throws OseeCoreException {
       ensureLoaded();
+      if (analyze == null) {
+         analyze = workDef.getStateByName("Analyze");
+      }
       return analyze;
    }
 
    public static IAtsWidgetDefinition getEstHoursWidgetDef() throws OseeCoreException {
       ensureLoaded();
+      if (estHoursWidgetDef == null) {
+         for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
+            if (item.getName().equals("ats.Estimated Hours")) {
+               estHoursWidgetDef = (IAtsWidgetDefinition) item;
+               break;
+            }
+         }
+      }
       return estHoursWidgetDef;
    }
 
    public static IAtsWidgetDefinition getWorkPackageWidgetDef() throws OseeCoreException {
       ensureLoaded();
+      if (workPackageWidgetDef == null) {
+         for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
+            if (item.getName().equals("ats.Work Package")) {
+               workPackageWidgetDef = (IAtsWidgetDefinition) item;
+               break;
+            }
+         }
+      }
       return workPackageWidgetDef;
    }
 
-   public static MockStateDefinition getImplementStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getImplementStateDef() throws OseeCoreException {
       ensureLoaded();
+      if (implement == null) {
+         implement = workDef.getStateByName("Implement");
+      }
       return implement;
    }
 
-   public static MockStateDefinition getCompletedStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getCompletedStateDef() throws OseeCoreException {
       ensureLoaded();
+      if (completed == null) {
+         completed = workDef.getStateByName("Completed");
+      }
       return completed;
    }
 
-   public static MockStateDefinition getCancelledStateDef() throws OseeCoreException {
+   public static IAtsStateDefinition getCancelledStateDef() throws OseeCoreException {
       ensureLoaded();
+      if (cancelled == null) {
+         cancelled = workDef.getStateByName("Cancelled");
+      }
       return cancelled;
    }
 
@@ -205,7 +239,7 @@ public class AtsTestUtil {
       workDef = null;
       estHoursWidgetDef = null;
       workPackageWidgetDef = null;
-      teamArt = null;
+      teamWf = null;
       teamArt2 = null;
       teamArt3 = null;
       teamArt4 = null;
@@ -253,87 +287,34 @@ public class AtsTestUtil {
    private static void reset(String postFixName) throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
       AtsTestUtil.postFixName = postFixName;
+
+      importWorkDefinition();
+
       AtsChangeSet changes = new AtsChangeSet(AtsTestUtil.class.getSimpleName());
-      workDef = new MockWorkDefinition(WORK_DEF_NAME);
-
-      analyze = new MockStateDefinition("Analyze");
-      analyze.setWorkDefinition(workDef);
-      analyze.setStateType(StateType.Working);
-      analyze.setOrdinal(1);
-      workDef.addState(analyze);
-
-      workDef.setStartState(analyze);
-
-      implement = new MockStateDefinition("Implement");
-      implement.setWorkDefinition(workDef);
-      implement.setStateType(StateType.Working);
-      implement.setOrdinal(2);
-      workDef.addState(implement);
-
-      completed = new MockStateDefinition("Completed");
-      completed.setWorkDefinition(workDef);
-      completed.setStateType(StateType.Completed);
-      completed.setOrdinal(3);
-      workDef.addState(completed);
-
-      cancelled = new MockStateDefinition("Cancelled");
-      cancelled.setWorkDefinition(workDef);
-      cancelled.setStateType(StateType.Cancelled);
-      cancelled.setOrdinal(4);
-      workDef.addState(cancelled);
-
-      analyze.setDefaultToState(implement);
-      analyze.getToStates().addAll(Arrays.asList(implement, completed, cancelled));
-      analyze.getOverrideAttributeValidationStates().addAll(Arrays.asList(cancelled));
-
-      implement.setDefaultToState(completed);
-      implement.getToStates().addAll(Arrays.asList(analyze, completed, cancelled));
-      implement.getOverrideAttributeValidationStates().addAll(Arrays.asList(cancelled, analyze));
-
-      completed.setDefaultToState(completed);
-      completed.getToStates().addAll(Arrays.asList(implement));
-      completed.getOverrideAttributeValidationStates().addAll(Arrays.asList(implement));
-
-      cancelled.getToStates().addAll(Arrays.asList(analyze, implement));
-      cancelled.getOverrideAttributeValidationStates().addAll(Arrays.asList(analyze, implement));
-
-      estHoursWidgetDef = new MockWidgetDefinition(AtsAttributeTypes.EstimatedHours.getUnqualifiedName());
-      estHoursWidgetDef.setAttributeName(AtsAttributeTypes.EstimatedHours.getName());
-      estHoursWidgetDef.setXWidgetName("XFloatDam");
-
-      workPackageWidgetDef = new MockWidgetDefinition(AtsAttributeTypes.WorkPackage.getUnqualifiedName());
-      workPackageWidgetDef.setAttributeName(AtsAttributeTypes.WorkPackage.getName());
-      workPackageWidgetDef.setXWidgetName("XTextDam");
-
-      AtsClientService.get().getWorkDefinitionAdmin().addWorkDefinition(workDef);
 
       String guid = GUID.create();
       testAi = AtsClientService.get().createActionableItem(guid, getTitle("AI", postFixName),
          AtsUtilClient.createConfigObjectUuid());
       testAi.setActive(true);
       testAi.setActionable(true);
-      AtsUtilCore.putUuidToGuid(guid, testAi);
 
       guid = GUID.create();
       testAi2 = AtsClientService.get().createActionableItem(guid, getTitle("AI2", postFixName),
          AtsUtilClient.createConfigObjectUuid());
       testAi2.setActive(true);
       testAi2.setActionable(true);
-      AtsUtilCore.putUuidToGuid(guid, testAi2);
 
       guid = GUID.create();
       testAi3 = AtsClientService.get().createActionableItem(guid, getTitle("AI3", postFixName),
          AtsUtilClient.createConfigObjectUuid());
       testAi3.setActive(true);
       testAi3.setActionable(true);
-      AtsUtilCore.putUuidToGuid(guid, testAi3);
 
       guid = GUID.create();
       testAi4 = AtsClientService.get().createActionableItem(guid, getTitle("AI4", postFixName),
          AtsUtilClient.createConfigObjectUuid());
       testAi4.setActive(true);
       testAi4.setActionable(true);
-      AtsUtilCore.putUuidToGuid(guid, testAi4);
 
       guid = GUID.create();
       teamDef = AtsClientService.get().createTeamDefinition(guid, getTitle("Team Def", postFixName),
@@ -341,68 +322,87 @@ public class AtsTestUtil {
       teamDef.setWorkflowDefinition(WORK_DEF_NAME);
       teamDef.setActive(true);
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
-      AtsUtilCore.putUuidToGuid(guid, teamDef);
 
       testAi.setTeamDefinition(teamDef);
       testAi2.setTeamDefinition(teamDef);
       testAi3.setTeamDefinition(teamDef);
       testAi4.setTeamDefinition(teamDef);
+      AtsClientService.get().storeConfigObject(testAi, changes);
+      AtsClientService.get().storeConfigObject(testAi2, changes);
+      AtsClientService.get().storeConfigObject(testAi3, changes);
+      AtsClientService.get().storeConfigObject(testAi4, changes);
 
       guid = GUID.create();
-      verArt1 = AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 1.0", postFixName),
+      verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt1);
-      AtsUtilCore.putUuidToGuid(guid, verArt1);
+      AtsClientService.get().storeConfigObject(verArt1, changes);
 
       guid = GUID.create();
-      verArt2 = AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 2.0", postFixName),
+      verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt2);
-      AtsUtilCore.putUuidToGuid(guid, verArt2);
+      AtsClientService.get().storeConfigObject(verArt2, changes);
 
       guid = GUID.create();
-      verArt3 = AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 3.0", postFixName),
+      verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt3);
-      AtsUtilCore.putUuidToGuid(guid, verArt3);
+      AtsClientService.get().storeConfigObject(verArt3, changes);
 
       guid = GUID.create();
-      verArt4 = AtsClientService.get().getVersionService().createVersion(guid, getTitle("ver 4.0", postFixName),
+      verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName), guid,
          AtsUtilClient.createConfigObjectUuid());
       teamDef.getVersions().add(verArt4);
-      AtsUtilCore.putUuidToGuid(guid, verArt4);
+      AtsClientService.get().storeConfigObject(verArt4, changes);
+
+      AtsClientService.get().storeConfigObject(teamDef, changes);
 
       actionArt = ActionManager.createAction(null, getTitle("Team WF", postFixName), "description",
          ChangeType.Improvement, "1", false, null, Arrays.asList(testAi), new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), null, changes);
-      AtsUtilCore.putUuidToGuid(actionArt.getGuid(), actionArt);
 
-      teamArt = actionArt.getFirstTeam();
-      AtsUtilCore.putUuidToGuid(actionArt.getGuid(), teamArt);
+      teamWf = actionArt.getFirstTeam();
 
       changes.execute();
    }
 
-   public static TaskArtifact getOrCreateTaskOffTeamWf1(AtsChangeSet changes) throws OseeCoreException {
-      ensureLoaded();
-      if (taskArtWf1 == null) {
-         taskArtWf1 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
-         taskArtWf1.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
-         AtsUtilCore.putUuidToGuid(taskArtWf1.getGuid(), taskArtWf1);
+   public static void importWorkDefinition() {
+      try {
+         String atsDsl =
+            AWorkspace.getOseeInfResource("support/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
+         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
+         jaxWorkDef.setName(WORK_DEF_NAME);
+         jaxWorkDef.setWorkDefDsl(atsDsl);
+         importWorkDefinition(jaxWorkDef);
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_NAME);
       }
-      return taskArtWf1;
    }
 
-   public static TaskArtifact getOrCreateTaskOffTeamWf2(AtsChangeSet changes) throws OseeCoreException {
-      ensureLoaded();
-      if (taskArtWf2 == null) {
-         taskArtWf2 = teamArt.createNewTask(getTitle("Task", postFixName), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
-         taskArtWf2.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, teamArt.getCurrentStateName());
-         AtsUtilCore.putUuidToGuid(taskArtWf2.getGuid(), taskArtWf2);
+   public static void importWorkDefinition(JaxAtsWorkDef jaxWorkDef) throws Exception {
+      AtsClientService.getConfigEndpoint().storeWorkDef(jaxWorkDef);
+      Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, WORK_DEF_NAME,
+         AtsUtilCore.getAtsBranch());
+      workDefArt.reloadAttributesAndRelations();
+      AtsClientService.get().getWorkDefinitionAdmin().clearCaches();
+      XResultData results = new XResultData();
+      workDef = AtsClientService.get().getWorkDefService().getWorkDef(WORK_DEF_NAME, results);
+      if (results.isErrors()) {
+         throw new OseeCoreException("Error importing " + WORK_DEF_NAME + " - " + results.toString());
       }
-      return taskArtWf2;
+   }
+
+   public static TaskArtifact getOrCreateTaskOffTeamWf1() throws OseeCoreException {
+      ensureLoaded();
+      if (taskArtWf1 == null) {
+         Collection<IAtsTask> createTasks =
+            AtsClientService.get().getTaskService().createTasks(teamWf, Arrays.asList(getTitle("Task", postFixName)),
+               null, new Date(), AtsClientService.get().getUserService().getCurrentUser(), teamWf.getCurrentStateName(),
+               null, null, getName() + " Create Task");
+         taskArtWf1 = (TaskArtifact) createTasks.iterator().next().getStoreObject();
+      }
+      return taskArtWf1;
    }
 
    public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) throws OseeCoreException {
@@ -412,18 +412,17 @@ public class AtsTestUtil {
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
             Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
-         decRevArt = DecisionReviewManager.createNewDecisionReview(teamArt, reviewBlockType,
+         decRevArt = DecisionReviewManager.createNewDecisionReview(teamWf, reviewBlockType,
             AtsTestUtil.class.getSimpleName() + " Test Decision Review", relatedToState.getName(), "Decision Review",
             options, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
             AtsClientService.get().getUserService().getCurrentUser(), changes);
-         AtsUtilCore.putUuidToGuid(decRevArt.getGuid(), decRevArt);
       }
       return decRevArt;
    }
 
    public static TeamWorkFlowArtifact getTeamWf() throws OseeCoreException {
       ensureLoaded();
-      return teamArt;
+      return teamWf;
    }
 
    public static IAtsActionableItem getTestAi() throws OseeCoreException {
@@ -485,8 +484,8 @@ public class AtsTestUtil {
       SMAEditor.closeAll();
       TaskEditor.closeAll();
 
-      if (teamArt != null) {
-         Branch workingBranch = teamArt.getWorkingBranch();
+      if (teamWf != null) {
+         Branch workingBranch = teamWf.getWorkingBranch();
          if (workingBranch != null) {
             BranchManager.deleteBranchAndPend(workingBranch);
          }
@@ -501,11 +500,23 @@ public class AtsTestUtil {
       delete(changes, actionArt2);
       delete(changes, actionArt3);
       delete(changes, actionArt4);
+      if (verArt1 != null) {
+         delete(changes, ((Artifact) verArt1.getStoreObject()));
+      }
+      if (verArt2 != null) {
+         delete(changes, ((Artifact) verArt2.getStoreObject()));
+      }
+      if (verArt3 != null) {
+         delete(changes, ((Artifact) verArt3.getStoreObject()));
+      }
+      if (verArt4 != null) {
+         delete(changes, ((Artifact) verArt4.getStoreObject()));
+      }
       if (!changes.isEmpty()) {
          changes.execute();
       }
 
-      deleteTeamWf(teamArt);
+      deleteTeamWf(teamWf);
       deleteTeamWf(teamArt2);
       deleteTeamWf(teamArt3);
       deleteTeamWf(teamArt4);
@@ -518,6 +529,17 @@ public class AtsTestUtil {
             art.deleteAndPersist(transaction);
          }
       }
+
+      try {
+         Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, WORK_DEF_NAME,
+            AtsUtilCore.getAtsBranch());
+         if (workDefArt != null) {
+            workDefArt.deleteAndPersist(transaction);
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+
       transaction.execute();
 
       clearCaches();
@@ -563,19 +585,19 @@ public class AtsTestUtil {
    }
 
    public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
-      if (atsTestUtilState == AtsTestUtilState.Analyze && teamArt.isInState(AtsTestUtilState.Analyze)) {
+      if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
 
       if (atsTestUtilState == AtsTestUtilState.Cancelled) {
-         Result result = transitionToState(teamArt, AtsTestUtilState.Cancelled, user, changes, transitionOptions);
+         Result result = transitionToState(teamWf, AtsTestUtilState.Cancelled, user, changes, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
          return Result.TrueResult;
       }
 
-      Result result = transitionToState(teamArt, AtsTestUtilState.Implement, user, changes, transitionOptions);
+      Result result = transitionToState(teamWf, AtsTestUtilState.Implement, user, changes, transitionOptions);
       if (result.isFalse()) {
          return result;
       }
@@ -585,7 +607,7 @@ public class AtsTestUtil {
       }
 
       if (atsTestUtilState == AtsTestUtilState.Completed) {
-         result = transitionToState(teamArt, AtsTestUtilState.Completed, user, changes, transitionOptions);
+         result = transitionToState(teamWf, AtsTestUtilState.Completed, user, changes, transitionOptions);
          if (result.isFalse()) {
             return result;
          }
@@ -632,7 +654,7 @@ public class AtsTestUtil {
          if (peerRevArt == null) {
             peerRevArt = PeerToPeerReviewManager.createNewPeerToPeerReview(
                AtsClientService.get().getWorkDefinitionAdmin().getDefaultPeerToPeerWorkflowDefinitionMatch().getWorkDefinition(),
-               teamArt, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
+               teamWf, AtsTestUtil.class.getSimpleName() + " Test Peer Review", relatedToState.getName(), changes);
             peerRevArt.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
          }
       } catch (OseeCoreException ex) {
@@ -650,8 +672,6 @@ public class AtsTestUtil {
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt2 = actionArt2.getFirstTeam();
          changes.execute();
-         AtsUtilCore.putUuidToGuid(actionArt2.getGuid(), actionArt2);
-         AtsUtilCore.putUuidToGuid(teamArt2.getGuid(), teamArt2);
       }
       return teamArt2;
    }
@@ -670,8 +690,6 @@ public class AtsTestUtil {
             AtsClientService.get().getUserService().getCurrentUser(), null, changes);
          teamArt3 = actionArt3.getFirstTeam();
          changes.execute();
-         AtsUtilCore.putUuidToGuid(actionArt3.getGuid(), actionArt3);
-         AtsUtilCore.putUuidToGuid(teamArt3.getGuid(), teamArt3);
       }
       return teamArt3;
    }
@@ -692,8 +710,6 @@ public class AtsTestUtil {
          teamArt4 = actionArt4.getFirstTeam();
          AtsClientService.get().getVersionService().setTargetedVersion(teamArt4, verArt4);
          changes.execute();
-         AtsUtilCore.putUuidToGuid(actionArt4.getGuid(), actionArt4);
-         AtsUtilCore.putUuidToGuid(teamArt4.getGuid(), teamArt4);
       }
       return teamArt4;
    }
@@ -764,20 +780,22 @@ public class AtsTestUtil {
 
    public static Result createWorkingBranchFromTeamWf() throws OseeCoreException {
       configureVer1ForWorkingBranch();
-      Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
+      Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
          return result;
       }
-      AtsBranchUtil.createWorkingBranch_Create(teamArt, true);
-      teamArt.getWorkingBranchForceCacheUpdate();
+      AtsBranchUtil.createWorkingBranch_Create(teamWf, true);
+      teamWf.getWorkingBranchForceCacheUpdate();
       return Result.TrueResult;
    }
 
    public static void configureVer1ForWorkingBranch() throws OseeCoreException {
-      IAtsVersion verArt = getVerArt1();
-      verArt.setAllowCreateBranch(true);
-      verArt.setAllowCommitBranch(true);
-      verArt.setBaselineBranchUuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getUuid());
+      IAtsVersion version = getVerArt1();
+      version.setAllowCreateBranch(true);
+      version.setAllowCommitBranch(true);
+      version.setBaselineBranchUuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getUuid());
+      ((Artifact) version.getStoreObject()).persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
+      AtsClientService.get().getConfig().invalidate(version);
       if (!AtsClientService.get().getVersionService().hasTargetedVersion(getTeamWf())) {
          AtsClientService.get().getVersionService().setTargetedVersion(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");

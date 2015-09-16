@@ -23,7 +23,7 @@ public class OpenInAtsWorldActionTest2 extends AbstractAtsActionRunTest {
    @Override
    public OpenInAtsWorldAction createAction() throws OseeCoreException {
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      OpenInAtsWorldAction action = new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes));
+      OpenInAtsWorldAction action = new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {
          changes.execute();
       }

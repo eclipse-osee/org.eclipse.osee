@@ -24,7 +24,7 @@ import org.junit.Assert;
 
 /**
  * Test unit for {@link AtsTestUtil}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTestUtilTest extends AtsTestUtil {
@@ -51,6 +51,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
 
       Assert.assertNotNull(AtsTestUtil.getTeamWf());
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getStateDefinition());
+      Assert.assertNotNull(AtsTestUtil.getTeamWf().getTeamDefinition());
       String atsId = AtsTestUtil.getTeamWf().getAtsId();
       Assert.assertTrue(atsId.startsWith("ATS"));
 
@@ -79,6 +80,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
 
       Assert.assertNotNull(AtsTestUtil.getTeamWf2());
       Assert.assertNotNull(AtsTestUtil.getTeamWf2().getStateDefinition());
+      Assert.assertNotNull(AtsTestUtil.getTeamWf2().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf2());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt2());
       Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
@@ -97,6 +99,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
 
       Assert.assertNotNull(AtsTestUtil.getTeamWf4());
       Assert.assertNotNull(AtsTestUtil.getTeamWf4().getStateDefinition());
+      Assert.assertNotNull(AtsTestUtil.getTeamWf4().getTeamDefinition());
       Assert.assertNotSame(AtsTestUtil.getTeamWf(), AtsTestUtil.getTeamWf4());
       Assert.assertNotSame(AtsTestUtil.getActionArt(), AtsTestUtil.getActionArt4());
       Assert.assertNotSame(AtsTestUtil.getTeamWf().getActionableItemsDam().getActionableItems().iterator().next(),
@@ -110,14 +113,27 @@ public class AtsTestUtilTest extends AtsTestUtil {
    }
 
    @org.junit.Test
+   public void testGetTask1() throws OseeCoreException {
+
+      AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetTask1");
+      AtsTestUtil.validateArtifactCache();
+
+      Assert.assertNotNull(AtsTestUtil.getOrCreateTaskOffTeamWf1());
+
+      AtsTestUtil.cleanup();
+
+      AtsTestUtil.validateArtifactCache();
+   }
+
+   @org.junit.Test
    public void testGetDecisionReview() throws OseeCoreException {
 
       AtsTestUtil.cleanupAndReset("AtsTestUtilTest.testGetDecisionReview");
       AtsTestUtil.validateArtifactCache();
 
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      Assert.assertNotNull(AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze,
-         changes));
+      Assert.assertNotNull(
+         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
       changes.execute();
 
       AtsTestUtil.cleanup();
@@ -132,7 +148,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.validateArtifactCache();
 
       AtsChangeSet changes = new AtsChangeSet("testGetPeerReview");
-      Assert.assertNotNull(AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
+      Assert.assertNotNull(
+         AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes));
       changes.execute();
 
       AtsTestUtil.cleanup();

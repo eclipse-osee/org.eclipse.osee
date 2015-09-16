@@ -17,10 +17,14 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -66,7 +70,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />");
       buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + TASK_IMPORT_SPREADSHEET + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + EMAIL_POCS + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      buffer.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + EMAIL_POCS + "\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       buffer.append("</xWidgets>");
       return buffer.toString();
    }
@@ -119,15 +124,21 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  AtsChangeSet changes = new AtsChangeSet("Import Tasks from Spreadsheet");
-                  Job job =
-                     Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
-                        (TeamWorkFlowArtifact) artifact, emailPocs, changes)));
+
+                  AtsUtilClient.setEmailEnabled(emailPocs);
+                  NewTaskData newTaskData = NewTaskDataFactory.get("Import Tasks from Spreadsheet",
+                     AtsClientService.get().getUserService().getCurrentUser(), (TeamWorkFlowArtifact) artifact);
+
+                  Job job = Jobs.startJob(new TaskImportJob(file,
+                     new ExcelAtsTaskArtifactExtractor((TeamWorkFlowArtifact) artifact, newTaskData)));
                   job.join();
-                  changes.execute();
+
+                  AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
                } catch (Exception ex) {
                   log(ex);
                   return;
+               } finally {
+                  AtsUtilClient.setEmailEnabled(true);
                }
 
                SMAEditor.editArtifact(artifact);

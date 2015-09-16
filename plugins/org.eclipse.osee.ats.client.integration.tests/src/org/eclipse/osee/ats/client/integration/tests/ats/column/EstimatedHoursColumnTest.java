@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
@@ -51,19 +53,23 @@ public class EstimatedHoursColumnTest {
       Artifact actionArt = teamArt1.getParentActionArtifact();
       TeamWorkFlowArtifact teamArt2 =
          DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), changes);
-      TaskArtifact taskArt1 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
-      changes.add(taskArt1);
-      TaskArtifact taskArt2 =
-         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
-      changes.add(taskArt2);
-      PeerToPeerReviewArtifact peerArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),
-            teamArt1.getStateMgr().getCurrentStateName(), changes);
+      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt1,
+         getClass().getSimpleName(), teamArt1.getStateMgr().getCurrentStateName(), changes);
       changes.add(peerArt);
       changes.execute();
+
+      Collection<IAtsTask> createTasks = AtsClientService.get().getTaskService().createTasks(teamArt1,
+         Arrays.asList(getClass().getSimpleName(), getClass().getSimpleName() + " 2"), null, new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), null, null, null, getClass().getSimpleName());
+
+      Artifact taskArt1 = null, taskArt2 = null;
+      for (IAtsTask task : createTasks) {
+         if (task.getName().endsWith("2")) {
+            taskArt2 = AtsClientService.get().getArtifact(task);
+         } else {
+            taskArt1 = AtsClientService.get().getArtifact(task);
+         }
+      }
 
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(actionArt), 0);
       Assert.assertEquals(0.0, EstimatedHoursUtil.getEstimatedHours(teamArt1), 0);

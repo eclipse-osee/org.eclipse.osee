@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
@@ -164,10 +165,13 @@ public class ArtifactTypeManager {
    }
 
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid, long uuid) {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
    public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(artifactToken.getUuid() <= 0L, "Invalid Uuid %d. Must be > 0",
+         artifactToken.getUuid());
       return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
          artifactToken.getName(), artifactToken.getGuid(), artifactToken.getUuid());
    }

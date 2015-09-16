@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -70,6 +71,7 @@ public class AtsWorkDefinitionAdminImplTest {
    @Mock CacheProvider<AtsWorkDefinitionCache> cacheProvider;
    @Mock IAttributeResolver attributeResolver;
    @Mock IAtsTask task;
+   @Mock IAtsServices services;
 
    private AtsWorkDefinitionAdminImpl workDefAmin;
 

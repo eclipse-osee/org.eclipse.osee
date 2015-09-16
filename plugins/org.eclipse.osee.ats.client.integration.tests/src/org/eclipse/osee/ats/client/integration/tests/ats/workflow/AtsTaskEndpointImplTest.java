@@ -20,6 +20,8 @@ import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -61,12 +63,10 @@ public class AtsTaskEndpointImplTest {
    @Test
    public void testTaskCRD() {
       // Test Create
-      NewTaskData data = new NewTaskData();
       String createdByUserId = DemoUsers.Joe_Smith.getUserId();
-      data.setAsUserId(createdByUserId);
       Date createdDate = new Date();
-      data.setCommitComment("Create Tasks via - " + getClass().getSimpleName());
-      data.setTeamWfUuid(codeTeamWfUuid);
+      NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
+         DemoUsers.Joe_Smith.getUserId(), codeTeamWfUuid);
 
       JaxAtsTask task = createJaxAtsTask(taskUuid1, "Task 1", "description", createdByUserId, createdDate, null);
       task.setTaskWorkDef("WorkDef_Task_Default");
@@ -80,7 +80,7 @@ public class AtsTaskEndpointImplTest {
       task3.addAttribute(CoreAttributeTypes.StaticId.getName(), "my static id");
       data.getNewTasks().add(task3);
 
-      Response response = taskEp.create(data);
+      Response response = taskEp.create(new NewTaskDatas(data));
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
       // Test Get

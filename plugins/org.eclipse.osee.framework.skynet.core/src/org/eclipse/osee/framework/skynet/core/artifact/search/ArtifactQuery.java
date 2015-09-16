@@ -574,12 +574,8 @@ public class ArtifactQuery {
    }
 
    public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      return reloadArtifacts(artifacts, true);
-   }
-
-   public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts, boolean sendRemoteEvent) throws OseeCoreException {
-      Collection<Artifact> reloadedArts = new ArrayList<>(artifacts.size());
-      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<>();
+      Collection<Artifact> reloadedArts = new ArrayList<Artifact>(artifacts.size());
+      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
       if (artifacts.isEmpty()) {
          return artifacts;
       }
@@ -597,9 +593,7 @@ public class ArtifactQuery {
          ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, ALL);
 
          reloadedArts.addAll(query.reloadArtifacts(artIds.size()));
-         if (sendRemoteEvent) {
-            OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
-         }
+         OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
          artIds.clear();
       }
       return reloadedArts;

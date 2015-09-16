@@ -355,7 +355,7 @@ public class TransitionManager implements IAtsTransitionManager {
          helper.isOverrideTransitionValidityCheck() || workItem.getStateDefinition().getOverrideAttributeValidationStates().contains(
             toStateDef);
       if (toStateDef.getStateType().isCancelledState()) {
-         validateTaskCompletion(results, workItem, toStateDef);
+         validateTaskCompletion(results, workItem, toStateDef, workItemService);
          validateReviewsCancelled(results, workItem, toStateDef);
       } else if (!toStateDef.getStateType().isCancelledState() && !isOverrideAttributeValidationState) {
 
@@ -367,7 +367,7 @@ public class TransitionManager implements IAtsTransitionManager {
             }
          }
 
-         validateTaskCompletion(results, workItem, toStateDef);
+         validateTaskCompletion(results, workItem, toStateDef, workItemService);
 
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion =
@@ -407,7 +407,10 @@ public class TransitionManager implements IAtsTransitionManager {
       }
    }
 
-   private void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeCoreException {
+   public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef, IAtsWorkItemService workItemService) throws OseeCoreException {
+      if (!workItem.isTeamWorkflow()) {
+         return;
+      }
       // Loop through this state's tasks to confirm complete
       boolean checkTasksCompletedForState = true;
       // Don't check for task completion if transition to working state and AllowTransitionWithoutTaskCompletion rule is set
@@ -415,7 +418,7 @@ public class TransitionManager implements IAtsTransitionManager {
          RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
-      if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
+      if (checkTasksCompletedForState && workItem.getStateMgr().getStateType().isInWork()) {
          Set<IAtsTask> tasksToCheck = new HashSet<>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
@@ -425,8 +428,8 @@ public class TransitionManager implements IAtsTransitionManager {
          else {
             tasksToCheck.addAll(workItemService.getTasks(workItem, workItem.getStateDefinition()));
          }
-         for (IAtsTask taskArt : tasksToCheck) {
-            if (taskArt.getStateMgr().getStateType().isInWork()) {
+         for (IAtsTask task : tasksToCheck) {
+            if (task.getStateMgr().getStateType().isInWork()) {
                results.addResult(workItem, TransitionResult.TASKS_NOT_COMPLETED);
                break;
             }

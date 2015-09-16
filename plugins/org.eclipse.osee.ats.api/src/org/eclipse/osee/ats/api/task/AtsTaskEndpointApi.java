@@ -27,7 +27,7 @@ public interface AtsTaskEndpointApi {
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response create(NewTaskData newTaskData);
+   public Response create(NewTaskDatas newTaskDatas);
 
    @POST
    public Response get(long taskUuid);

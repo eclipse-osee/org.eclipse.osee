@@ -15,33 +15,25 @@ import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
-import org.eclipse.osee.ats.api.notify.AtsNotifyType;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -52,14 +44,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ExcelAtsTaskArtifactExtractor {
 
    private final AbstractWorkflowArtifact sma;
-   private final boolean emailPOCs;
-   private final IAtsChangeSet changes;
-
    private IProgressMonitor monitor;
+   private final NewTaskData newTaskData;
 
-   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, boolean emailPOCs, IAtsChangeSet changes) {
-      this.emailPOCs = emailPOCs;
-      this.changes = changes;
+   public ExcelAtsTaskArtifactExtractor(TeamWorkFlowArtifact artifact, NewTaskData newTaskData) {
+      this.newTaskData = newTaskData;
       this.sma = artifact;
    }
 
@@ -70,8 +59,7 @@ public class ExcelAtsTaskArtifactExtractor {
          if (monitor == null) {
             monitor = new NullProgressMonitor();
          }
-         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, changes, sma, emailPOCs),
-            true));
+         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(monitor, newTaskData, sma), true));
          xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -103,15 +91,13 @@ public class ExcelAtsTaskArtifactExtractor {
       private int rowNum;
       private final IProgressMonitor monitor;
       private final AbstractWorkflowArtifact sma;
-      private final IAtsChangeSet changes;
-      private final boolean emailPOCs;
       private final Date createdDate;
       private final IAtsUser createdBy;
+      private final NewTaskData newTaskData;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, IAtsChangeSet changes, AbstractWorkflowArtifact sma, boolean emailPOCs) throws OseeCoreException {
+      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma) throws OseeCoreException {
          this.monitor = monitor;
-         this.changes = changes;
-         this.emailPOCs = emailPOCs;
+         this.newTaskData = newTaskData;
          this.sma = sma;
          createdDate = new Date();
          createdBy = AtsClientService.get().getUserService().getCurrentUser();
@@ -151,58 +137,36 @@ public class ExcelAtsTaskArtifactExtractor {
       public void processRow(String[] row) throws OseeCoreException {
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
-         TaskArtifact taskArt =
-            ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy, null, changes);
+         JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, "", createdBy, createdDate);
 
          monitor.subTask("Validating...");
          boolean valid = validateRow(row);
          if (!valid) {
             return;
          }
-         AtsUtilClient.setEmailEnabled(false);
          for (int i = 0; i < row.length; i++) {
             if (headerRow[i] == null) {
                OseeLog.log(Activator.class, Level.SEVERE, "Null header column => " + i);
-            } else if (headerRow[i].equalsIgnoreCase("Originator")) {
-               processOriginator(row, taskArt, i);
             } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
-               processAssignees(row, taskArt, i);
+               processAssignees(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
-               processResolution(row, taskArt, i);
+               processResolution(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Description")) {
-               processDescription(row, taskArt, i);
+               processDescription(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
-               processRelatedToState(row, taskArt, i);
+               processRelatedToState(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Notes")) {
-               processNotes(row, taskArt, i);
+               processNotes(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Title")) {
-               processTitle(row, taskArt, i);
+               processTitle(row, task, i);
             } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
                processPercentComplete(row, i);
             } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
                processHoursSpent(row, i);
             } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
-               processEstimatedHours(row, taskArt, i);
+               processEstimatedHours(row, task, i);
             } else {
                OseeLog.log(Activator.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
-            }
-         }
-         AtsUtilClient.setEmailEnabled(true);
-         if (taskArt.isCompleted()) {
-            Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 0, changes);
-            if (result.isFalse()) {
-               AWorkbench.popup(result);
-            }
-         }
-         // always persist
-         changes.add(taskArt);
-         if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-            try {
-               changes.getNotifications().addWorkItemNotificationEvent(
-                  AtsNotificationEventFactory.getWorkItemNotificationEvent(
-                     AtsClientService.get().getUserService().getCurrentUser(), sma, AtsNotifyType.Assigned));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Error adding ATS Notification Event", ex);
             }
          }
       }
@@ -221,7 +185,7 @@ public class ExcelAtsTaskArtifactExtractor {
          return fullRow;
       }
 
-      private void processTitle(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+      private void processTitle(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
             monitor.subTask(String.format("Title \"%s\"", str));
@@ -229,35 +193,35 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processNotes(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+      private void processNotes(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
+            taskArt.addAttribute(AtsAttributeTypes.SmaNote, str);
          }
       }
 
-      private void processRelatedToState(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+      private void processRelatedToState(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, str);
+            taskArt.addAttribute(AtsAttributeTypes.RelatedToState, str);
          }
       }
 
-      private void processDescription(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+      private void processDescription(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.Description, str);
+            taskArt.addAttribute(AtsAttributeTypes.Description, str);
          }
       }
 
-      private void processResolution(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+      private void processResolution(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
+            taskArt.addAttribute(AtsAttributeTypes.Resolution, str);
          }
       }
 
-      private void processEstimatedHours(String[] row, TaskArtifact taskArt, int i) throws OseeArgumentException, OseeCoreException {
+      private void processEstimatedHours(String[] row, JaxAtsTask taskArt, int i) throws OseeArgumentException, OseeCoreException {
          String str = row[i];
          double hours = 0;
          if (Strings.isValid(str)) {
@@ -266,7 +230,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
             }
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
+            taskArt.addAttribute(AtsAttributeTypes.EstimatedHours, String.valueOf(hours));
          }
       }
 
@@ -303,8 +267,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processAssignees(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
-         Set<IAtsUser> assignees = new HashSet<>();
+      private void processAssignees(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");
@@ -323,24 +286,9 @@ public class ExcelAtsTaskArtifactExtractor {
                   userName, rowNum);
                user = AtsClientService.get().getUserService().getCurrentUser();
             }
-            assignees.add(user);
+            taskArt.getAssigneeUserIds().add(user.getUserId());
          }
-         taskArt.getStateMgr().setAssignees(assignees);
       }
 
-      private void processOriginator(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
-         String userName = row[i];
-         IAtsUser user = null;
-         if (!Strings.isValid(userName)) {
-            user = AtsClientService.get().getUserService().getCurrentUser();
-         } else {
-            user = AtsClientService.get().getUserService().getUserByName(userName);
-         }
-         if (user == null) {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum);
-         }
-         taskArt.internalSetCreatedBy(user, changes);
-      }
    }
 }

@@ -94,11 +94,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return txManager.createArtifact(txData, artifactType, name, guid, uuid);
    }
 
    @Override
    public ArtifactId createArtifact(IArtifactToken token) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(token.getUuid() <= 0L, "Invalid Uuid %d. Must be > 0", token.getUuid());
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(),
          token.getUuid());
    }

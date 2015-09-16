@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
@@ -37,7 +38,7 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public int getNextArtifactId() {
-      return (int) client.getNextSequence(ART_ID_SEQ, true);
+      return Lib.generateArtifactIdAsInt().intValue();
    }
 
    @Override

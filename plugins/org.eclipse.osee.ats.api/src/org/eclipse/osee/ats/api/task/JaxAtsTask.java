@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -29,6 +31,7 @@ public class JaxAtsTask extends JaxAtsObject {
    private String relatedToState;
    private String taskWorkDef;
    List<JaxAttribute> attributes;
+   List<JaxRelation> relations;
 
    public JaxAtsTask() {
       attributes = new ArrayList<>();
@@ -99,6 +102,31 @@ public class JaxAtsTask extends JaxAtsObject {
       attr.setAttrTypeName(attrTypeName);
       attr.getValues().add(value);
       attributes.add(attr);
+   }
+
+   public void addAttribute(IAttributeType attrType, String value) {
+      addAttribute(attrType.getName(), value);
+   }
+
+   public void addRelation(IRelationTypeSide relationSide, long... relatedUuid) {
+      JaxRelation relation = new JaxRelation();
+      relation.setRelationTypeName(relationSide.getName());
+      relation.setSideA(relationSide.getSide().isSideA());
+      for (long relationUuid : relatedUuid) {
+         relation.getRelatedUuids().add(relationUuid);
+      }
+      relations.add(relation);
+   }
+
+   public List<JaxRelation> getRelations() {
+      if (relations == null) {
+         relations = new LinkedList<>();
+      }
+      return relations;
+   }
+
+   public void setRelations(List<JaxRelation> relations) {
+      this.relations = relations;
    }
 
 }

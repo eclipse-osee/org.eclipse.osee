@@ -32,7 +32,7 @@ public interface IAtsClientVersionService extends IAtsVersionService {
 
    Branch getBranch(IAtsVersion version);
 
-   IAtsVersion createVersion(String title, String guid, long uuid);
+   IAtsVersion createVersion(String name, String guid, long uuid);
 
    IAtsVersion createVersion(String name);
 

@@ -12,14 +12,11 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,10 +48,7 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
 
                @Override
                public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-                  AtsChangeSet changes = new AtsChangeSet(OpenNewAtsTaskEditorActionTest.class.getName());
-                  Set<TaskArtifact> arts = Collections.singleton(AtsTestUtil.getOrCreateTaskOffTeamWf1(changes));
-                  changes.execute();
-                  return arts;
+                  return Collections.singleton(AtsTestUtil.getOrCreateTaskOffTeamWf1());
                }
 
                @Override
