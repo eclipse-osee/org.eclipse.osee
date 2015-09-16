@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.task;
 
-import org.eclipse.osee.ats.client.integration.tests.ats.core.client.task.createTasks.AtsCoreClient_CreateTasks_Suite;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsCoreClient_CreateTasks_Suite.class, TaskManagerTest.class})
+@Suite.SuiteClasses({TaskManagerTest.class})
 public class AtsCoreClient_Task_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
