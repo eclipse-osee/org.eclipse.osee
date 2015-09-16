@@ -254,8 +254,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public <T> void setAttribute(Object object, int attributeId, T value) {
-      ArtifactReadable artifact = getArtifact(object);
+   public <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value) {
+      ArtifactReadable artifact = getArtifact(workItem);
       boolean found = false;
       for (AttributeReadable<Object> attribute : artifact.getAttributes()) {
          if (attribute.getGammaId() == attributeId) {
@@ -265,12 +265,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       if (!found) {
-         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, object);
+         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, workItem);
       }
-      add(object);
+      add(workItem);
    }
-   
-    @Override
+
+   @Override
    public void deleteArtifact(ArtifactId artifact) {
       getTransaction().deleteArtifact(artifact);
       add(artifact);
@@ -283,4 +283,19 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(artifact);
    }
 
+   @Override
+   public <T> void setAttribute(ArtifactId artifact, int attrId, T value) {
+      for (AttributeReadable<?> attribute : getArtifact(artifact).getAttributes()) {
+         if (attribute.getLocalId() == attrId) {
+            getTransaction().setAttributeById(getArtifact(artifact), attribute, value);
+         }
+      }
+   }
+
+   @Override
+   public void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value) {
+      ArtifactReadable art = getArtifact(artifact);
+      getTransaction().setSoleAttributeValue(art, attrType, value);
+      add(art);
+   }
 }

@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsNotifyEndpointImplTest.class,
    AbstractAtsQueryImplTest.class,
+   AtsChangeSetTest.class,
    AtsDeleteManagerTest.class,
    AtsImageTest.class,
    AtsXWidgetsExampleBlamTest.class,

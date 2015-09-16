@@ -79,8 +79,8 @@ public interface IAtsChangeSet {
 
    public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects);
 
-   <T> void setAttribute(Object workItem, int attributeId, T value);
-   
+   <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value);
+
    ArtifactId createArtifact(IArtifactToken token);
 
    void deleteArtifact(ArtifactId artifact);
@@ -92,5 +92,9 @@ public interface IAtsChangeSet {
    void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values);
 
    String getComment();
+
+   <T> void setAttribute(ArtifactId object, int attrId, T value);
+
+   void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value);
 
 }

@@ -19,6 +19,8 @@ public interface IAtsStoreService {
 
    IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user);
 
+   IAtsChangeSet createAtsChangeSet(String comment);
+
    List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows);
 
    boolean isDeleted(IAtsObject atsObject);

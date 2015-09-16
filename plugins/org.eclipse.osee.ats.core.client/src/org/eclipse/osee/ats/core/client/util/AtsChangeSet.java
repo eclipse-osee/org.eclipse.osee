@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workdef.RunRuleData;
@@ -53,8 +54,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsChangeSet extends AbstractAtsChangeSet {
 
+   public AtsChangeSet(String comment, IAtsUser user) {
+      super(comment, user);
+   }
+
    public AtsChangeSet(String comment) {
-      super(comment, AtsClientService.get().getUserService().getCurrentUser());
+      this(comment, AtsClientService.get().getUserService().getCurrentUser());
    }
 
    @Override
@@ -305,8 +310,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> void setAttribute(Object object, int attributeId, T value) {
-      Artifact artifact = getArtifact(object);
+   public <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value) {
+      Artifact artifact = getArtifact(workItem);
       Conditions.checkNotNull(artifact, "artifact");
       boolean found = false;
       for (Attribute<?> attribute : artifact.getAttributes()) {
@@ -317,12 +322,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       if (!found) {
-         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, object);
+         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attributeId, workItem);
       }
       add(artifact);
    }
-   
-      @Override
+
+   @Override
    public void deleteArtifact(ArtifactId artifact) {
       getArtifact(artifact).delete();
       add(getArtifact(artifact));
@@ -332,6 +337,29 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void setValues(IAtsObject atsObject, IAttributeType attrType, List<String> values) {
       Artifact artifact = getArtifact(atsObject);
       artifact.setAttributeValues(attrType, values);
+      add(artifact);
+   }
+
+   @Override
+   public <T> void setAttribute(ArtifactId artifact, int attrId, T value) {
+      boolean found = false;
+      for (Attribute<?> attribute : getArtifact(artifact).getAttributes()) {
+         if (attribute.getId() == attrId) {
+            attribute.setFromString(String.valueOf(value));
+            found = true;
+            break;
+         }
+      }
+      if (!found) {
+         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attrId, artifact);
+      }
+      add(artifact);
+   }
+
+   @Override
+   public void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value) {
+      Artifact art = getArtifact(artifact);
+      art.setSoleAttributeValue(attrType, value);
       add(artifact);
    }
 

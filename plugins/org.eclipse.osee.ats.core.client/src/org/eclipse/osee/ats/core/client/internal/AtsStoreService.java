@@ -33,6 +33,11 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
+      return new AtsChangeSet(comment, user);
+   }
+
+   @Override
+   public IAtsChangeSet createAtsChangeSet(String comment) {
       return new AtsChangeSet(comment);
    }
 

@@ -56,11 +56,17 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
+   public IAtsChangeSet createAtsChangeSet(String comment) {
+      return createAtsChangeSet(comment, atsServer.getUserService().getCurrentUser());
+   }
+
+   @Override
    public List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows) {
       List<IAtsWorkItem> workItems = new ArrayList<>(inWorkWorkflows.size());
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
       Iterator<ArtifactReadable> arts =
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuids(guids).getResults().iterator();
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuids(
+            guids).getResults().iterator();
       while (arts.hasNext()) {
          workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));
       }
