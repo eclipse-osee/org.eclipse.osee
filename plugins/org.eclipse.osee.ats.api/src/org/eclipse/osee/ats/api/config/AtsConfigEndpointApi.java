@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
 /**
@@ -59,5 +61,10 @@ public interface AtsConfigEndpointApi {
 
    @POST
    public Response createUpdateConfig();
+
+   @PUT
+   @Path("workDef")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef);
 
 }

@@ -598,4 +598,10 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       return taskService;
    }
 
+   @Override
+   public ArtifactReadable getArtifactByName(IArtifactType artifactType, String name) {
+      return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(artifactType).andNameEquals(
+         name).getResults().getAtMostOneOrNull();
+   }
+
 }

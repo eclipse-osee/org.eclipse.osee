@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.ws;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.ui.IPackagesViewPart;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
@@ -34,10 +35,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.ISetSelectionTarget;
+import org.eclipse.ui.navigator.CommonNavigator;
 import org.eclipse.ui.views.navigator.IResourceNavigator;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
-import org.eclipse.ui.navigator.CommonNavigator;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Donald G. Dunne
@@ -142,9 +144,8 @@ public final class AWorkspace {
       if (file == null) {
          return false;
       }
-      IViewPart p =
-         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-            "org.eclipse.jdt.ui.PackageExplorer");
+      IViewPart p = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+         "org.eclipse.jdt.ui.PackageExplorer");
       if (p != null && p instanceof IPackagesViewPart) {
          StructuredSelection ss = new StructuredSelection(file);
          IPackagesViewPart rn = (IPackagesViewPart) p;
@@ -195,6 +196,12 @@ public final class AWorkspace {
       List<IResource> resources = new ArrayList<>();
       recursiveFileFind(fileName, ws, resources);
       return !resources.isEmpty() ? resources.iterator().next() : null;
+   }
+
+   public static String getOseeInfResource(String path, Class<?> clazz) throws Exception {
+      Bundle bundle = FrameworkUtil.getBundle(clazz);
+      URL url = bundle.getEntry("OSEE-INF/" + path);
+      return Lib.inputStreamToString(url.openStream());
    }
 
    public static void recursiveFileFind(String fileName, IResource resource, List<IResource> matches) {

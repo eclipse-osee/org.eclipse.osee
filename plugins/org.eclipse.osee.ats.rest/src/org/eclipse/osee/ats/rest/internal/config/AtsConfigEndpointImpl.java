@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 import java.util.concurrent.Callable;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -29,6 +30,9 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -219,6 +223,40 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          resultData.log("Nothing to update");
       }
       return Response.ok(resultData.toString()).build();
+   }
+
+   @PUT
+   @Path("workDef")
+   @Override
+   public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
+         atsServer.getArtifactByUuid(AtsCoreUsers.SYSTEM_USER.getUuid()),
+         "Store Work Definition " + jaxWorkDef.getName());
+      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
+         AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
+      boolean changed = false;
+      if (workDefArt == null) {
+         workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
+         changed = true;
+      }
+
+      String currentDsl = workDefArt.getSoleAttributeAsString(AtsAttributeTypes.DslSheet, null);
+      String newDsl = jaxWorkDef.getWorkDefDsl();
+      if (!newDsl.equals(currentDsl)) {
+         tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
+         changed = true;
+      }
+
+      if (workDefArt.getParent() == null) {
+         ArtifactReadable workDefFolder = atsServer.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+         tx.addChildren(workDefFolder, workDefArt);
+         changed = true;
+      }
+      if (changed) {
+         tx.commit();
+      }
+      atsServer.getWorkDefAdmin().clearCaches();
+      return Response.ok().build();
    }
 
 }

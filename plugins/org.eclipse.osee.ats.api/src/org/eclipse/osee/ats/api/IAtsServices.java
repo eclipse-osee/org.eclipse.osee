@@ -92,4 +92,6 @@ public interface IAtsServices {
 
    IAtsTaskService getTaskService();
 
+   ArtifactId getArtifactByName(IArtifactType artifactType, String name);
+
 }

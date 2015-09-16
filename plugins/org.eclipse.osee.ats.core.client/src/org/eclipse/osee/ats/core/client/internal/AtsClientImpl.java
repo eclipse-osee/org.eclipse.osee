@@ -815,4 +815,9 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       return taskService;
    }
 
+   @Override
+   public Artifact getArtifactByName(IArtifactType artType, String name) {
+      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
+   }
+
 }
