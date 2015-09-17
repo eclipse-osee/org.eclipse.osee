@@ -147,27 +147,22 @@ public class WorldXViewerEventManager {
 
       private void processArtifact(WorldXViewer worldViewer, Artifact artifact, Set<Long> processed) {
          try {
-            /**
-             * Only process artifacts once to reduce the amount of refresh. This is especially important for tasks and
-             * reviews where the parents of 2 or more can be the same.
-             */
-            if (!processed.contains(artifact.getUuid())) {
-               // Don't refresh deleted artifacts
-               if (!artifact.isDeleted() && AtsUtil.isAtsArtifact(artifact)) {
-                  worldViewer.refresh(artifact);
-                  // If parent is loaded and child changed, refresh parent
-                  if (artifact instanceof AbstractWorkflowArtifact) {
-                     AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
-                     Artifact smaParent = smaArt.getParentAtsArtifact();
-                     if (smaParent != null && !processed.contains(smaParent.getUuid())) {
-                        if (AtsUtil.isAtsArtifact(smaParent)) {
-                           worldViewer.refresh(smaParent);
-                        }
-                        processed.add(smaParent.getUuid());
-                     }
+            // Don't refresh deleted artifacts
+            if (!artifact.isDeleted() && AtsUtil.isAtsArtifact(artifact)) {
+               worldViewer.refresh(artifact);
+               // If parent is loaded and child changed, refresh parent
+               if (artifact instanceof AbstractWorkflowArtifact) {
+                  AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
+                  Artifact smaParent = smaArt.getParentAtsArtifact();
+                  /**
+                   * Only process parent artifacts once to reduce the amount of refresh. This is especially important
+                   * for tasks and reviews where the parents of 2 or more can be the same.
+                   */
+                  if (smaParent != null && !processed.contains(smaParent.getUuid())) {
+                     worldViewer.refresh(smaParent);
+                     processed.add(smaParent.getUuid());
                   }
                }
-               processed.add(artifact.getUuid());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
