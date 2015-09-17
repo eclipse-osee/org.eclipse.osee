@@ -25,12 +25,14 @@ public class ParentLogRecord extends LogRecord {
         return records;
     }
     
-    @JsonIgnore
+    @Override
+   @JsonIgnore
     public Level getLevel() {
         return super.getLevel();
     };
     
-    @JsonIgnore
+    @Override
+   @JsonIgnore
     public String getMessage() {
         return super.getMessage();
     };

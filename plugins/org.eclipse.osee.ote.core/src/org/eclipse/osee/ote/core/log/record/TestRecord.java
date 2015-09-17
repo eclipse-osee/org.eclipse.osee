@@ -292,7 +292,8 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 		}
 	}
 
-	@JsonProperty
+	@Override
+   @JsonProperty
 	public String getMessage() {
 		return nonEmptyString(super.getMessage());
 	}

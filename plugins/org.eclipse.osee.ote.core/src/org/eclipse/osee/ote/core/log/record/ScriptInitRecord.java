@@ -77,6 +77,7 @@ public class ScriptInitRecord extends TestRecord {
       writer.writeStartElement("ScriptInit");
    }
 
+   @Override
    @JsonProperty("Script")
    public String getMessage() {
 	   return super.getMessage();

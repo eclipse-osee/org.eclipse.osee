@@ -91,6 +91,7 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
     return returnFormatter;
 }
 
+@Override
 @JsonIgnore
    public List<String> getLocation() {
 	   return null;

@@ -5,4 +5,5 @@
       <provide interface="org.eclipse.osee.ote.endpoint.OteUdpEndpoint"/>
    </service>
    <reference bind="addDataProcessor" cardinality="0..n" interface="org.eclipse.osee.ote.endpoint.EndpointDataProcessor" name="EndpointDataProcessor" policy="dynamic" unbind="removeDataProcessor"/>
+   <reference cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
 </scr:component>

@@ -61,7 +61,8 @@ public class PropertyStoreRecord extends TestRecord {
 		}
 	}
 	
-	@JsonIgnore
+	@Override
+   @JsonIgnore
 	public String getMessage() {
 		return super.getMessage();
 	}

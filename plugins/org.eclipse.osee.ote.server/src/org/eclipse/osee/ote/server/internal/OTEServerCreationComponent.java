@@ -80,6 +80,7 @@ public class OTEServerCreationComponent {
                   new PropertyParamter(version, comment, station, type, useJiniLookup, isLocalConnector);
 
             Thread th = new Thread(new Runnable(){
+               @Override
                public void run(){
                   try {
                      oteServiceStart.start(new JiniServiceSideConnector(), config, propertyParameter, oteServerFactoryClass);

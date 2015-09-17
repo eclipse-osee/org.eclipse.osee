@@ -87,7 +87,8 @@ public class ScriptResultRecord extends TestRecord {
         return childStreamElements;
     }
 
-    @JsonProperty("ScriptName")
+    @Override
+   @JsonProperty("ScriptName")
     public String getMessage() {
         return super.getMessage();
     }

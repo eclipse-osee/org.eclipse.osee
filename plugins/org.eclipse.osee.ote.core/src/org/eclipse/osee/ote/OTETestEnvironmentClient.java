@@ -145,6 +145,7 @@ public class OTETestEnvironmentClient {
             WaitForCompletion completion = new WaitForCompletion(monitor);
             final OteEventMessageFuture<SerializedConfigurationAndResponse, SerializedOTEJobStatus> asynchSendAndResponse = sendit.asynchSendAndMultipleResponse(SerializedOTEJobStatus.class, ser, completion,  1000 * 60 * 10);
             Thread th = new Thread(new Runnable(){
+               @Override
                public void run() {
                   while(true){
                      if(monitor != null && monitor.isCanceled()){
@@ -220,6 +221,7 @@ public class OTETestEnvironmentClient {
             WaitForCompletion completion = new WaitForCompletion(monitor);
             final OteEventMessageFuture<SerializedConfigurationAndResponse, SerializedOTEJobStatus> asynchSendAndResponse = sendit.asynchSendAndMultipleResponse(SerializedOTEJobStatus.class, ser, completion,  1000 * 60 * 10);
             Thread th = new Thread(new Runnable(){
+               @Override
                public void run() {
                   while(true){
                      if(monitor.isCanceled()){

@@ -41,6 +41,7 @@ public class MethodFormatter implements Xmlizable, XmlizableStream {
             this.Value = Value;
         }
 
+        @Override
         public String toString() {
             return "<" + Class + ">" + Value;
         }

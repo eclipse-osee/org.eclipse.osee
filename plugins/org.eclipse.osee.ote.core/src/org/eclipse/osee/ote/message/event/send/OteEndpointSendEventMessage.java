@@ -30,30 +30,30 @@ public class OteEndpointSendEventMessage {
    private final Lock lock;
    private final Condition responseReceived;
    private final InetSocketAddress destination;
-   
+
    public OteEndpointSendEventMessage(OteUdpEndpoint eventAdmin, InetSocketAddress destination){
       this.endpoint = eventAdmin;
       this.destination = destination;
       lock = new ReentrantLock();
       responseReceived = lock.newCondition();
    }
-   
+
    /**
     * sends a message and returns immediately
     */
    public void asynchSend(OteEventMessage message) {
       updateHeaderInfo(message);
-      endpoint.getOteEndpointSender(destination).send(message);
+      endpoint.getOteEndpointThreadedSender(destination).send(message);
    }
-   
+
    /**
-    * Registers for a callback of the given message type as specified by the RESPONSE_TOPIC element in the sent message 
-    * and the class type passed in, then sends the given message and returns immediately.  The returned value can be used to 
-    * wait for the response using waitForCompletion().  The callback expects you to handle both the response and the timeout case. 
-    * 
+    * Registers for a callback of the given message type as specified by the RESPONSE_TOPIC element in the sent message
+    * and the class type passed in, then sends the given message and returns immediately.  The returned value can be used to
+    * wait for the response using waitForCompletion().  The callback expects you to handle both the response and the timeout case.
+    *
     * @param clazz - Type of OteEventMessage for the response
     * @param message - message to send
-    * @param callable - callback executed when the response is recieved or if a timeout occurs or called immediately after the send if 
+    * @param callable - callback executed when the response is recieved or if a timeout occurs or called immediately after the send if
     *                   no response is expected
     * @param timeout - amount of time in milliseconds to wait for response before calling timeout on the passed in OteEventMessageCallable
     * @return   <T extends OteEventMessage> Future<T> - a future that contains the response message
@@ -62,19 +62,19 @@ public class OteEndpointSendEventMessage {
       int responseId = updateHeaderInfo(message);
       String responseTopic = message.getHeader().RESPONSE_TOPIC.getValue();
       OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureImpl<T, R>(clazz, callable, message, responseTopic, responseId, timeout);
-      endpoint.getOteEndpointSender(destination).send(message);
+      endpoint.getOteEndpointThreadedSender(destination).send(message);
       return response;
    }
-   
+
    /**
-    * Registers for a callback of the given message type as specified by the RESPONSE_TOPIC element in the sent message 
-    * and the class type passed in, then sends the given message and returns immediately.  The returned value can be used to 
+    * Registers for a callback of the given message type as specified by the RESPONSE_TOPIC element in the sent message
+    * and the class type passed in, then sends the given message and returns immediately.  The returned value can be used to
     * wait for the response using waitForCompletion().  The callback expects you to handle both the response and the timeout case and to determine
-    * when the appropriate number of responses has been received, by specifying it is complete. 
-    * 
+    * when the appropriate number of responses has been received, by specifying it is complete.
+    *
     * @param clazz - Type of OteEventMessage for the response
     * @param message - message to send
-    * @param callable - callback executed when the response is recieved or if a timeout occurs or called immediately after the send if 
+    * @param callable - callback executed when the response is recieved or if a timeout occurs or called immediately after the send if
     *                   no response is expected
     * @param timeout - amount of time in milliseconds to wait for response before calling timeout on the passed in OteEventMessageCallable
     * @return   <T extends OteEventMessage> Future<T> - a future that contains the response message
@@ -83,13 +83,13 @@ public class OteEndpointSendEventMessage {
       int responseId = updateHeaderInfo(message);
       String responseTopic = message.getHeader().RESPONSE_TOPIC.getValue();
       OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureMultipleResponseImpl<T,R>(clazz, callable, message, responseTopic, responseId, timeout);
-      endpoint.getOteEndpointSender(destination).send(message);
+      endpoint.getOteEndpointThreadedSender(destination).send(message);
       return response;
    }
-   
+
    /**
-    * Registers for a callback of the given message type and topic. 
-    * 
+    * Registers for a callback of the given message type and topic.
+    *
     * @param clazz - Type of OteEventMessage for the response
     * @param callable - callback executed when the response is recieved
     * @return   a future that you should cancel when done listening so resources can be cleaned up.
@@ -98,16 +98,16 @@ public class OteEndpointSendEventMessage {
       OteEventMessageResponseFutureImpl<R> response = new OteEventMessageResponseFutureImpl<R>(clazz, callable, topic);
       return response;
    }
-   
+
    /**
     * Sends a message and waits for a response.
-    * 
+    *
     * @param class - return type
-    * @param message - message to send 
+    * @param message - message to send
     * @param timeout - timeout in milliseconds
-    * @return <T extends OteEventMessage> T - NULL if the timeout occurs before a response, otherwise returns the 
+    * @return <T extends OteEventMessage> T - NULL if the timeout occurs before a response, otherwise returns the
     *          message specified by the RESPONSE_TOPIC field in the passed in message header.
-    * @throws Exception 
+    * @throws Exception
     */
    public <T extends OteEventMessage> T synchSendAndResponse(Class<T> clazz, String responseTopic, OteEventMessage message, long timeout) throws OTEException {
       lock.lock();
@@ -116,42 +116,7 @@ public class OteEndpointSendEventMessage {
          message.getHeader().RESPONSE_TOPIC.setValue(responseTopic);
          NotifyOnResponse<T> response = new NotifyOnResponse<T>(clazz, responseTopic, responseId, lock, responseReceived);
          try{
-            endpoint.getOteEndpointSender(destination).send(message);
-            long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
-            while(nanos > 0 && !response.hasResponse()) {
-               try {
-                  nanos = responseReceived.awaitNanos(nanos);
-               } catch (InterruptedException e) {
-                  e.printStackTrace();
-               }
-            }
-         } finally {
-            response.dispose();
-         }
-         return response.getMessage();
-      } finally {
-         lock.unlock();
-      }
-   }
-   
-   /**
-    * Sends a message and waits for a response.
-    * 
-    * @param T - response Message to populate type
-    * @param message - message to send 
-    * @param timeout - timeout in milliseconds
-    * @return <T extends OteEventMessage> T - NULL if the timeout occurs before a response, otherwise returns the 
-    *          message specified by the RESPONSE_TOPIC field in the passed in message header.
-    * @throws Exception 
-    */
-   public <T extends OteEventMessage> T synchSendAndResponse(T responseMessage, OteEventMessage sendMessage, long timeout) throws OTEException {
-      lock.lock();
-      try{
-         int responseId = updateHeaderInfo(sendMessage);
-         sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
-         try{
-            endpoint.getOteEndpointSender(destination).send(sendMessage);
+            endpoint.getOteEndpointThreadedSender(destination).send(message);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
             while(nanos > 0 && !response.hasResponse()) {
                try {
@@ -169,10 +134,45 @@ public class OteEndpointSendEventMessage {
       }
    }
 
-   
+   /**
+    * Sends a message and waits for a response.
+    *
+    * @param T - response Message to populate type
+    * @param message - message to send
+    * @param timeout - timeout in milliseconds
+    * @return <T extends OteEventMessage> T - NULL if the timeout occurs before a response, otherwise returns the
+    *          message specified by the RESPONSE_TOPIC field in the passed in message header.
+    * @throws Exception
+    */
+   public <T extends OteEventMessage> T synchSendAndResponse(T responseMessage, OteEventMessage sendMessage, long timeout) throws OTEException {
+      lock.lock();
+      try{
+         int responseId = updateHeaderInfo(sendMessage);
+         sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
+         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
+         try{
+            endpoint.getOteEndpointThreadedSender(destination).send(sendMessage);
+            long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
+            while(nanos > 0 && !response.hasResponse()) {
+               try {
+                  nanos = responseReceived.awaitNanos(nanos);
+               } catch (InterruptedException e) {
+                  e.printStackTrace();
+               }
+            }
+         } finally {
+            response.dispose();
+         }
+         return response.getMessage();
+      } finally {
+         lock.unlock();
+      }
+   }
+
+
    /**
     * Increment the sequence number and set the source InetSocketAddress
-    * 
+    *
     * @param message
     * @return returns the sequence number that was set
     */
@@ -184,10 +184,45 @@ public class OteEndpointSendEventMessage {
          responseId++;
       }
       message.getHeader().MESSAGE_SEQUENCE_NUMBER.setValue(responseId);
-      
+
       message.getHeader().ADDRESS.setAddress(endpoint.getLocalEndpoint().getAddress());
       message.getHeader().ADDRESS.setPort(endpoint.getLocalEndpoint().getPort());
       return responseId;
    }
-   
+
+   /**
+    * Sends a message and waits for a response without creating a sender thread
+    *
+    * @param T - response Message to populate type
+    * @param message - message to send
+    * @param timeout - timeout in milliseconds
+    * @return <T extends OteEventMessage> T - NULL if the timeout occurs before a response, otherwise returns the
+    *          message specified by the RESPONSE_TOPIC field in the passed in message header.
+    * @throws Exception
+    */
+   public <T extends OteEventMessage> T synchSendAndResponseInline(T responseMessage, OteEventMessage sendMessage, long timeout) {
+      lock.lock();
+      try{
+         int responseId = updateHeaderInfo(sendMessage);
+         sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
+         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
+         try{
+            endpoint.getOteEndpointInlineSender(destination).send(sendMessage);
+            long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
+            while(nanos > 0 && !response.hasResponse()) {
+               try {
+                  nanos = responseReceived.awaitNanos(nanos);
+               } catch (InterruptedException e) {
+                  e.printStackTrace();
+               }
+            }
+         } finally {
+            response.dispose();
+         }
+         return response.getMessage();
+      } finally {
+         lock.unlock();
+      }
+   }
+
 }

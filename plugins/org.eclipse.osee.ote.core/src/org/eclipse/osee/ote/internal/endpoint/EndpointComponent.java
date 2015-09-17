@@ -8,6 +8,7 @@ import java.util.HashMap;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.ote.core.CopyOnWriteNoIteratorList;
 import org.eclipse.osee.ote.endpoint.EndpointDataProcessor;
+import org.eclipse.osee.ote.endpoint.OteEndpointSender;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointInlineSender;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpointReceiverImpl;
@@ -18,14 +19,10 @@ public class EndpointComponent implements OteUdpEndpoint {
    
    private OteUdpEndpointReceiverImpl receiver;
    private HashMap<InetSocketAddress, OteUdpEndpointSender> senders = new HashMap<InetSocketAddress, OteUdpEndpointSender>();
-   private CopyOnWriteNoIteratorList<OteUdpEndpointSender> broadcast = new CopyOnWriteNoIteratorList<OteUdpEndpointSender>(OteUdpEndpointSender.class);
+   private CopyOnWriteNoIteratorList<OteUdpEndpointSender> broadcastThreaded = new CopyOnWriteNoIteratorList<OteUdpEndpointSender>(OteUdpEndpointSender.class);//for backwards compatibility
    private boolean debug = false;
    
    public EndpointComponent(){
-     
-   }
-   
-   public void start(){
       int port;
       try {
          String strPort = OtePropertiesCore.endpointPort.getValue(Integer.toString(PortUtil.getInstance().getValidPort()));
@@ -35,16 +32,19 @@ public class EndpointComponent implements OteUdpEndpoint {
             port = PortUtil.getInstance().getValidPort();
          }
          receiver = new OteUdpEndpointReceiverImpl(new InetSocketAddress(InetAddress.getLocalHost(), port));
-         receiver.start();
-         setDebugOutput(false);
-      } catch (Throwable e) {
+      } catch (IOException e) {
          e.printStackTrace();
       }
    }
    
+   public void start(){
+      receiver.start();
+      setDebugOutput(false);
+   }
+   
    public synchronized void stop(){
       receiver.stop();
-      for(OteUdpEndpointSender sender: senders.values()){
+      for(OteEndpointSender sender: senders.values()){
          try {
             sender.stop();
          } catch (Throwable e) {
@@ -76,7 +76,7 @@ public class EndpointComponent implements OteUdpEndpoint {
    }
 
    @Override
-   public synchronized OteUdpEndpointSender getOteEndpointSender(InetSocketAddress address) {
+   public synchronized OteUdpEndpointSender getOteEndpointThreadedSender(InetSocketAddress address) {
       OteUdpEndpointSender sender = senders.get(address);
       if(sender == null || (sender != null && sender.isClosed())){
          sender = new OteUdpEndpointSender(address);
@@ -93,14 +93,19 @@ public class EndpointComponent implements OteUdpEndpoint {
    }
    
    @Override
+   public synchronized OteUdpEndpointSender getOteEndpointSender(InetSocketAddress address) {
+      return getOteEndpointThreadedSender(address);
+   }
+   
+   @Override
    public void addBroadcast(OteUdpEndpointSender sender) {
-      if(!isAlreadyInBroadcastList(sender)){
-         broadcast.add(sender);
+      if(!isAlreadyInBroadcastThreadedList(sender) && sender instanceof OteUdpEndpointSender){
+         broadcastThreaded.add((OteUdpEndpointSender)sender);
       }
    }
 
-   private boolean isAlreadyInBroadcastList(OteUdpEndpointSender sender) {
-      OteUdpEndpointSender[] oteUdpEndpointSenders = broadcast.get();
+   private boolean isAlreadyInBroadcastThreadedList(OteEndpointSender sender) {
+      OteEndpointSender[] oteUdpEndpointSenders = broadcastThreaded.get();
       for(int i = 0; i < oteUdpEndpointSenders.length; i++) {
          if(oteUdpEndpointSenders[i].getAddress().getPort() == sender.getAddress().getPort()){
             if(oteUdpEndpointSenders[i].getAddress().getAddress().equals(sender.getAddress().getAddress())){
@@ -112,13 +117,8 @@ public class EndpointComponent implements OteUdpEndpoint {
    }
 
    @Override
-   public void removeBroadcast(OteUdpEndpointSender sender) {
-      broadcast.remove(sender);
-   }
-
-   @Override
    public CopyOnWriteNoIteratorList<OteUdpEndpointSender> getBroadcastSenders() {
-      return broadcast;
+      return broadcastThreaded;
    }
 
    @Override
@@ -129,6 +129,11 @@ public class EndpointComponent implements OteUdpEndpoint {
    @Override
    public void removeDataProcessor(EndpointDataProcessor processor) {
       receiver.removeDataProcessor(processor);      
+   }
+
+   @Override
+   public void removeBroadcast(OteUdpEndpointSender sender) {
+      broadcastThreaded.remove(sender);
    }
 
 }

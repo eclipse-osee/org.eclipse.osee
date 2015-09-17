@@ -20,8 +20,10 @@ import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
  */
 public interface ITestEnvironmentMessageSystem extends ITestEnvironment {
 
+   @Override
    void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
 
+   @Override
    void removeInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
 
 }
