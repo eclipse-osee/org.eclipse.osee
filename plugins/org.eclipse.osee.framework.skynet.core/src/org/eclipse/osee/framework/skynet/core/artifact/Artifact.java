@@ -294,9 +294,9 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
       return ancestors;
    }
 
-   public final Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
+   public final Attribute<?> getAttributeById(long attrUuid, boolean includeDeleted) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes(includeDeleted)) {
-         if (attribute.getId() == attrId) {
+         if (attribute.getId() == attrUuid) {
             return attribute;
          }
       }
