@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.dsl.integration.internal;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.StringOutputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.logger.Log;
 
@@ -93,20 +93,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       ModelUtil.saveModel(atsDsl, "ats:/mock" + Lib.getDateTimeString() + ".ats", writer);
       return writer.toString();
    }
-
-   private static class StringOutputStream extends OutputStream {
-      private final StringBuilder string = new StringBuilder();
-
-      @Override
-      public void write(int b) {
-         this.string.append((char) b);
-      }
-
-      @Override
-      public String toString() {
-         return this.string.toString();
-      }
-   };
 
    @Override
    public List<IAtsRuleDefinition> getRuleDefinitions() {
