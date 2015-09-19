@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * {@link OseeExceptionsTest}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class OseeExceptions {
@@ -28,5 +28,12 @@ public final class OseeExceptions {
          throw (RuntimeException) throwable;
       }
       throw new OseeCoreException(throwable);
+   }
+
+   public static RuntimeException wrap(Throwable throwable) throws OseeCoreException {
+      if (throwable instanceof RuntimeException) {
+         return (RuntimeException) throwable;
+      }
+      return new OseeCoreException(throwable);
    }
 }
