@@ -54,6 +54,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType FunctionalCategory = TokenFactory.createAttributeType(0x100000000000037FL, "Functional Category");
    public static final IAttributeType GeneralStringData = TokenFactory.createAttributeType(0x1000000000000078L, "General String Data");
    public static final IAttributeType GfeCfe = TokenFactory.createAttributeType(0x10000000000000A8L, "GFE / CFE");
+   public static final IAttributeType GraphitiDiagram = TokenFactory.createAttributeType(0x1000000000000157L, "Graphiti Diagram");
    public static final IAttributeType Hazard = TokenFactory.createAttributeType(0x10000000000000A2L, "Hazard");
    public static final IAttributeType HazardSeverity = TokenFactory.createAttributeType(0x10000000000000A5L, "Hazard Severity");
    public static final IAttributeType HTMLContent = TokenFactory.createAttributeType(0x100000000000037DL, "HTML Content");

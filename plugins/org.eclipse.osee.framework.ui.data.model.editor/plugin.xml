@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
+	<extension point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+		<Renderer classname="org.eclipse.osee.framework.ui.data.model.editor.GraphitiRenderer"></Renderer>
+	</extension>
+	<extension point="org.eclipse.ui.editors">
+		<editor class="org.eclipse.osee.framework.ui.data.model.editor.GraphitiDiagramArtifactEditor"
+		default="false" icon="images/diagram.gif" name="Graphiti Diagram Artifact Editor"
+		id="org.eclipse.osee.framework.ui.data.model.editor.graphiti.GraphitiDiagramArtifactEditor" />
+	</extension>
 </plugin>

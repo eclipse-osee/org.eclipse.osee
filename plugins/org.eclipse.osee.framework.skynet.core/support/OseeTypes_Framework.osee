@@ -477,7 +477,7 @@ attributeType "Image Content" extends CompressedContentAttribute {
 	fileExtension "bin"
 	mediaType "image"
 }
-
+   
 attributeType "Plain Text Content" extends StringAttribute {
 	uuid 0x100000000000037A
 	dataProvider UriAttributeDataProvider
@@ -1779,4 +1779,20 @@ attributeType "Require Confirmation" extends BooleanAttribute {
 	max 1
 	defaultValue "false"
 	mediaType "text/plain"
+}
+
+artifactType "Model Diagram" extends "Artifact" {
+   uuid 0x0000000000000062
+   attribute "Graphiti Diagram"
+}
+
+attributeType "Graphiti Diagram" extends StringAttribute {
+	uuid 0x1000000000000157
+	dataProvider UriAttributeDataProvider
+	min 1
+	max 1
+	description "xml definition of an Eclipse Graphiti Diagram"
+	fileExtension "diagram"
+	mediaType "text/xml"
+	defaultValue "<?xml version=\"1.0\" encoding=\"ASCII\"?><pi:Diagram xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:al=\"http://eclipse.org/graphiti/mm/algorithms\" xmlns:pi=\"http://eclipse.org/graphiti/mm/pictograms\" visible=\"true\" gridUnit=\"10\" diagramTypeId=\"mbse\" name=\"mbse basic\" snapToGrid=\"true\" version=\"0.11.0\"><graphicsAlgorithm xsi:type=\"al:Rectangle\" background=\"//@colors.1\" foreground=\"//@colors.0\" lineWidth=\"1\" transparency=\"0.0\" width=\"1000\" height=\"1000\"/><colors red=\"227\" green=\"238\" blue=\"249\"/><colors red=\"255\" green=\"255\" blue=\"255\"/></pi:Diagram>"
 }
