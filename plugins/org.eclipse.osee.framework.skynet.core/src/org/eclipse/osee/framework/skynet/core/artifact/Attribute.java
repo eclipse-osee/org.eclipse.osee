@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  */
 public abstract class Attribute<T> implements Comparable<Attribute<T>> {
-   private AttributeType attributeType;
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;
@@ -45,15 +44,16 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    private boolean dirty;
    private ModificationType modificationType;
    private boolean useBackingData;
+   private IAttributeType attributeTypeToken;
 
    void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
-      this.attributeType = AttributeTypeManager.getType(attributeType);
+      this.attributeTypeToken = attributeType;
       this.artifactRef = new WeakReference<Artifact>(artifact);
       internalSetModType(modificationType, false, markDirty);
 
       try {
          Class<? extends IAttributeDataProvider> providerClass =
-            AttributeTypeManager.getAttributeProviderClass(this.attributeType);
+            AttributeTypeManager.getAttributeProviderClass(AttributeTypeManager.getType(attributeTypeToken));
          Constructor<? extends IAttributeDataProvider> providerConstructor =
             providerClass.getConstructor(Attribute.class);
          attributeDataProvider = providerConstructor.newInstance(this);
@@ -77,7 +77,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    public AttributeChange createAttributeChangeFromSelf() throws OseeDataStoreException {
       AttributeChange attributeChange = new AttributeChange();
 
-      attributeChange.setAttrTypeGuid(attributeType.getGuid());
+      attributeChange.setAttrTypeGuid(getAttributeType().getGuid());
       attributeChange.setGammaId(gammaId);
       attributeChange.setAttributeId(attrId);
       attributeChange.setModTypeGuid(AttributeEventModificationType.getType(modificationType).getGuid());
@@ -126,7 +126,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    }
 
    private void checkIsRenameable(T value) throws OseeCoreException {
-      if (attributeType.equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
+      if (getAttributeType().equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
             IStatus result = check.isRenamable(Arrays.asList(getArtifact()));
@@ -220,23 +220,27 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
     * @return the attribute name/value description
     */
    public String getNameValueDescription() {
-      return attributeType.getName() + ": " + toString();
+      return getAttributeType().getName() + ": " + toString();
    }
 
    /**
     * @return attributeType Attribute Type Information
     */
    public AttributeType getAttributeType() {
-      return attributeType;
+      return AttributeTypeManager.getType(getAttributeTypeToken());
+   }
+
+   public IAttributeType getAttributeTypeToken() {
+      return attributeTypeToken;
    }
 
    /**
     * Currently this method provides support for quasi attribute type inheritance
-    * 
+    *
     * @return whether this attribute's type or any of its super-types are the specified type
     */
    public boolean isOfType(IAttributeType otherAttributeType) {
-      return attributeType.equals(otherAttributeType);
+      return getAttributeType().equals(otherAttributeType);
    }
 
    public void resetModType() {
@@ -267,6 +271,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
 
    public boolean canDelete() {
       try {
+         AttributeType attributeType = getAttributeType();
          return getArtifact().getAttributeCount(attributeType) > attributeType.getMinOccurrences();
       } catch (OseeCoreException ex) {
          return false;

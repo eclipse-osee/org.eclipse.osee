@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.OrcsTypeChangeListener;
 import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IPartListener;
@@ -36,6 +38,10 @@ public class OseeUiEarlyStartup implements IStartup {
       if (PlatformUI.isWorkbenchRunning()) {
 
          OseeLog.registerLoggerListener(new DialogPopupLoggerListener());
+
+         // Start listening for ORCS types changes
+         OrcsTypeChangeListener listener = new OrcsTypeChangeListener();
+         OseeEventManager.addListener(listener);
 
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -71,44 +77,44 @@ public class OseeUiEarlyStartup implements IStartup {
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(
                   new IPartListener() {
 
-                     @Override
-                     public void partActivated(IWorkbenchPart part) {
-                        //                           WorkspaceContributionItem.addToAllViews();
-                        if (part instanceof ViewPart) {
-                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
-                        }
-
+                  @Override
+                  public void partActivated(IWorkbenchPart part) {
+                     //                           WorkspaceContributionItem.addToAllViews();
+                     if (part instanceof ViewPart) {
+                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
                      }
 
-                     @Override
-                     public void partBroughtToTop(IWorkbenchPart part) {
-                        //                           WorkspaceContributionItem.addToAllViews();
-                        if (part instanceof ViewPart) {
-                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
-                        }
+                  }
 
+                  @Override
+                  public void partBroughtToTop(IWorkbenchPart part) {
+                     //                           WorkspaceContributionItem.addToAllViews();
+                     if (part instanceof ViewPart) {
+                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
                      }
 
-                     @Override
-                     public void partClosed(IWorkbenchPart part) {
-                        // do nothing
+                  }
+
+                  @Override
+                  public void partClosed(IWorkbenchPart part) {
+                     // do nothing
+                  }
+
+                  @Override
+                  public void partDeactivated(IWorkbenchPart part) {
+                     // do nothing
+                  }
+
+                  @Override
+                  public void partOpened(IWorkbenchPart part) {
+                     //                           WorkspaceContributionItem.addToAllViews();
+                     if (part instanceof ViewPart) {
+                        WorkspaceContributionItem.addToViewpart((ViewPart) part);
                      }
 
-                     @Override
-                     public void partDeactivated(IWorkbenchPart part) {
-                        // do nothing
-                     }
+                  }
 
-                     @Override
-                     public void partOpened(IWorkbenchPart part) {
-                        //                           WorkspaceContributionItem.addToAllViews();
-                        if (part instanceof ViewPart) {
-                           WorkspaceContributionItem.addToViewpart((ViewPart) part);
-                        }
-
-                     }
-
-                  });
+               });
 
                PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new IPerspectiveListener() {
 

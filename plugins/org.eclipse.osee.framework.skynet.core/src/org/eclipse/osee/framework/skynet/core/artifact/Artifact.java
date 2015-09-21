@@ -102,7 +102,6 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final IOseeBranch branch;
-   private ArtifactType artifactType;
    private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
    private int gammaId;
@@ -112,14 +111,15 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    private ModificationType lastValidModType;
    private EditState objectEditState;
    private boolean useBackingData;
+   private IArtifactType artifactTypeToken;
 
    public Artifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
+      this.artifactTypeToken = artifactType;
       objectEditState = EditState.NO_CHANGE;
       internalSetModType(ModificationType.NEW, false);
 
       this.branch = branch;
-      this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
 
    public final boolean isInDb() {
@@ -229,7 +229,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final long getArtTypeId() {
-      return artifactType.getId();
+      return getArtifactType().getId();
    }
 
    @Override
@@ -242,14 +242,14 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final String getArtifactTypeName() {
-      return artifactType.getName();
+      return getArtifactType().getName();
    }
 
    /**
     * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types.
     */
    public final boolean isOfType(IArtifactType... artifactTypes) {
-      return artifactType.inheritsFrom(artifactTypes);
+      return getArtifactType().inheritsFrom(artifactTypes);
    }
 
    @Override
@@ -1354,11 +1354,11 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     */
    @Override
    public final ArtifactType getArtifactType() {
-      return artifactType;
+      return ArtifactTypeManager.getType(getArtifactTypeToken());
    }
 
    public final IArtifactType getArtifactTypeToken() {
-      return artifactType;
+      return artifactTypeToken;
    }
 
    public final String getVersionedName() {
@@ -1415,7 +1415,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
-      return duplicate(branch, artifactType, excludeAttributeTypes);
+      return duplicate(branch, getArtifactType(), excludeAttributeTypes);
    }
 
    public final Artifact duplicate(IOseeBranch branch, IArtifactType newType, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
@@ -1455,8 +1455,8 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
-      Artifact shallowArt = ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, getGuid(),
-         artifactType, gammaId, destinationBranch, modType);
+      Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactType()).reflectExisitingArtifact(artId, getGuid(),
+         getArtifactType(), gammaId, destinationBranch, modType);
       return shallowArt;
    }
 
@@ -1504,9 +1504,9 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    /**
     * Changes the artifact type.
     */
-   public final void setArtifactType(IArtifactType artifactType) throws OseeCoreException {
-      if (!this.artifactType.equals(artifactType)) {
-         this.artifactType = ArtifactTypeManager.getType(artifactType);
+   public final void setArtifactType(IArtifactType artifactTypeToken) throws OseeCoreException {
+      if (!this.artifactTypeToken.equals(artifactTypeToken)) {
+         this.artifactTypeToken = artifactTypeToken;
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {
             internalSetModType(ModificationType.MODIFIED, false);
