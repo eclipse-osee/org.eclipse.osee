@@ -66,6 +66,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    private DebugInfo debugInfo;
    private boolean isDebugModeEnabled;
    private boolean isScriptOutputEnabled;
+   JsonOutputMath mathOut;
 
    public JsonOutputHandler(ScriptContext context) {
       super();
@@ -74,7 +75,8 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
 
    private void initalizeData() {
       isScriptOutputEnabled = true;
-
+      mathOut = new JsonOutputMath();
+      mathOut.initialize(context);
       Object debug = context.getAttribute(OUTPUT_DEBUG);
       isDebugModeEnabled = Boolean.parseBoolean(String.valueOf(debug));
 
@@ -190,6 +192,9 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
             writer.writeStartObject();
             writer.writeArrayFieldStart(first.getName());
          }
+         if (mathOut.isUsed()) {
+            mathOut.add(data);
+         }
          writer.writeObject(data);
       } catch (IOException ex) {
          throw new OseeCoreException(ex);
@@ -203,6 +208,9 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
          if (wasStarted) {
             writer.writeEndArray();
             writer.writeEndObject();
+         }
+         if (mathOut.isUsed()) {
+            mathOut.write(writer);
          }
          writer.writeEndArray();
       } catch (IOException ex) {
