@@ -49,10 +49,28 @@
    </head>
    <body ng-app="dispoApp">
       <div ng-controller="indexController">
-         <osee 
+         <!osee 
             redirect-uri="../coverage/ui/index.html"
             links="links">
          </osee>
+          <nav ng-controller="mainController" class="navbar navbar-default" role="navigation">
+		        <div class="container-fluid">
+		            <div class="navbar-header">
+		                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                    <span class="icon-bar"></span>
+		                </button>
+		                <a class="navbar-brand" href="#/user">Coverage</a>
+		            </div>
+		            <p ng-dblclick="resetUserName()" class="navbar-text">Signed in as {{ cachedName }}</p>
+		            <div class="collapse navbar-collapse">
+		                <ul class="nav navbar-nav navbar-right">
+		                	  <button id="helpButton" class="btn btn-info" ng-click="showHelpModal()">Help</button>
+		                </ul>
+		            </div>
+		        </div>
+    		</nav>
       </div>
       <div ng-view></div>
    </body>

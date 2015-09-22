@@ -7,8 +7,8 @@ app.config(['$routeProvider',
 function($routeProvider) {
 	
   $routeProvider.when('/', {
-	  templateUrl: '/dispo/views/main.html',
-      controller: 'mainController'
+	  templateUrl: '/dispo/views/user.html',
+      controller: 'userController'
   }).when('/user', {
 	  templateUrl: '/dispo/views/user.html',
       controller: 'userController'

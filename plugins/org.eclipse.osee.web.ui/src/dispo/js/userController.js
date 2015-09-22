@@ -21,7 +21,7 @@ app.controller('userController', [
         $scope.isMulitEditRequest = false;
         $scope.loading = false;
 		  $scope.isSearchView = false;
-		  $rootScope.cachedName = $cookieStore.get("name");
+//		  $rootScope.cachedName = $cookieStore.get("name");
 		
         $scope.getDispoType = function() {
         	if($rootScope.type == 'codeCoverage') {
