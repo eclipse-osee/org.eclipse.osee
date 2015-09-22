@@ -28,6 +28,7 @@
       <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
       <script src="/libs/js/oseeAuth/oseeAuth.js"></script>
       <script src="/libs/js/support/linkRewrite.js"></script>
+      <script src="/dispo/js/ColumnFactory.js"></script>
       <script src="/dispo/js/resizer.js"></script>
       <script src="/dispo/js/dispoApp.js"></script>
       <script src="/dispo/js/userController.js"></script>
@@ -35,10 +36,10 @@
       <script src="/dispo/js/mainController.js"></script>
       <script>
          app.controller("indexController", [
-                           				"$scope",
-                           				function($scope) {
+                           				"$scope", "$rootScope",
+                           				function($scope, $rootScope) {
                            					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'user', name: 'User'}, { ref: 'admin', name: 'Admin'}];
-                           					$rootScope.type = "testScripts";
+                           					$rootScope.type = "testScript";
                            				}]);
                            				
       </script>
