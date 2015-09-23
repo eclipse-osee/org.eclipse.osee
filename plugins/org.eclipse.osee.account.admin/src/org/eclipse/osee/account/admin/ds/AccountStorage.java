@@ -15,6 +15,7 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -28,6 +29,8 @@ public interface AccountStorage {
 
    ResultSet<Account> getAccountByUserName(String username);
 
+   ResultSet<Account> getAccountByGuid(String guid);
+
    ResultSet<Account> getAccountByUuid(String accountUuid);
 
    ResultSet<Account> getAccountByLocalId(long accountId);
@@ -38,7 +41,7 @@ public interface AccountStorage {
 
    ResultSet<AccountPreferences> getAccountPreferencesById(long accountId);
 
-   ResultSet<AccountPreferences> getAccountPreferencesByUuid(String uuid);
+   ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid);
 
    Identifiable<String> createAccount(CreateAccountRequest request);
 
@@ -63,4 +66,11 @@ public interface AccountStorage {
    void deleteAccountSessionBySessionToken(String sessionToken);
 
    ResultSet<Account> getAnonymousAccount();
+
+   AccountWebPreferences getAccountWebPreferencesByGuid(String accountGuid);
+
+   AccountWebPreferences getAccountWebPreferencesById(int accountId);
+
+   void setAccountWebPreferences(String accountGuid, String newPreferences);
+
 }

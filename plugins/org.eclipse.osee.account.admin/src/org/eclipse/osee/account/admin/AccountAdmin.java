@@ -27,7 +27,7 @@ public interface AccountAdmin {
 
    ResultSet<Account> getAccountById(Identifiable<String> id);
 
-   ResultSet<Account> getAccountByUuid(String id);
+   ResultSet<Account> getAccountByGuid(String guid);
 
    ResultSet<Account> getAccountByUserName(String username);
 
@@ -41,7 +41,7 @@ public interface AccountAdmin {
 
    ResultSet<AccountPreferences> getAccountPreferencesById(Identifiable<String> id);
 
-   ResultSet<AccountPreferences> getAccountPreferencesByUuid(String id);
+   ResultSet<AccountPreferences> getAccountPreferencesByGuid(String id);
 
    Identifiable<String> createAccount(CreateAccountRequest request);
 
@@ -74,5 +74,7 @@ public interface AccountAdmin {
    ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField);
 
    ResultSet<Account> getAnonymousAccount();
+
+   boolean setAccountWebPreference(String accountGuid, String key, String itemId, String newValue);
 
 }

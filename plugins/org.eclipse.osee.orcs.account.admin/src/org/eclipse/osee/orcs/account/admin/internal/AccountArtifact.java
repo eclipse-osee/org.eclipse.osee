@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -25,11 +26,13 @@ public class AccountArtifact extends BaseIdentity<String> implements Account {
 
    private final ArtifactReadable artifact;
    private final AccountPreferences preferences;
+   private final AccountWebPreferences webPreferences;
 
-   public AccountArtifact(String uuid, ArtifactReadable artifact, AccountPreferences preferences) {
+   public AccountArtifact(String uuid, ArtifactReadable artifact, AccountPreferences preferences, AccountWebPreferences webPreferences) {
       super(artifact.getGuid());
       this.artifact = artifact;
       this.preferences = preferences;
+      this.webPreferences = webPreferences;
    }
 
    @Override
@@ -55,6 +58,11 @@ public class AccountArtifact extends BaseIdentity<String> implements Account {
    @Override
    public String getEmail() {
       return artifact.getSoleAttributeValue(CoreAttributeTypes.Email, NOT_AVAILABLE);
+   }
+
+   @Override
+   public AccountWebPreferences getWebPreferences() {
+      return webPreferences;
    }
 
    @Override

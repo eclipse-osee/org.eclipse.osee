@@ -17,7 +17,7 @@ package org.eclipse.osee.account.admin;
  */
 public enum AccountField {
    LOCAL_ID,
-   UUID,
+   GUID,
    EMAIL,
    DISPLAY_NAME,
    USERNAME,

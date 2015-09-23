@@ -26,6 +26,10 @@ public final class OrcsUtil {
       return new ArtifactToken(uuid, guid, name);
    }
 
+   public static ArtifactId newArtifactId(long uuid) {
+      return new ArtifactToken(uuid, null, null);
+   }
+
    private static class ArtifactToken extends NamedIdentity<String>implements ArtifactId {
       private final long uuid;
 

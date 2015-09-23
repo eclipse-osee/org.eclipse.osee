@@ -37,7 +37,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link OrcsSubscriptionStorage}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsSubscriptionStorageTest {
@@ -99,7 +99,7 @@ public class OrcsSubscriptionStorageTest {
 
    @Test
    public void testSubscriptionAPI() {
-      Account account = accountStorage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      Account account = accountStorage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
 
       long accountId = account.getId();
       ResultSet<Subscription> results = storage.getSubscriptionsByAccountLocalId(accountId);

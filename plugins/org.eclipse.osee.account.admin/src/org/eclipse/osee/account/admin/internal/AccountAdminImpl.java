@@ -26,6 +26,8 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.account.admin.internal.validator.Validators;
+import org.eclipse.osee.account.rest.model.AccountUtil;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
@@ -103,13 +105,13 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public ResultSet<Account> getAccountById(Identifiable<String> id) {
       Conditions.checkNotNull(id, "id");
-      return getAccountByUuid(id.getGuid());
+      return getAccountByGuid(id.getGuid());
    }
 
    @Override
-   public ResultSet<Account> getAccountByUuid(String uuid) {
-      Conditions.checkNotNull(uuid, "uuid");
-      return getStorage().getAccountByUuid(uuid);
+   public ResultSet<Account> getAccountByGuid(String guid) {
+      Conditions.checkNotNull(guid, "guid");
+      return getStorage().getAccountByGuid(guid);
    }
 
    @Override
@@ -136,15 +138,15 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesByUuid(String uuid) {
-      Conditions.checkNotNull(uuid, "uuid");
-      return getStorage().getAccountPreferencesByUuid(uuid);
+   public ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid) {
+      Conditions.checkNotNull(guid, "guid");
+      return getStorage().getAccountPreferencesByGuid(guid);
    }
 
    @Override
    public ResultSet<AccountPreferences> getAccountPreferencesById(Identifiable<String> id) {
       Conditions.checkNotNull(id, "id");
-      return getAccountPreferencesByUuid(id.getGuid());
+      return getAccountPreferencesByGuid(id.getGuid());
    }
 
    @Override
@@ -247,6 +249,22 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean setAccountPreference(String uniqueField, String key, String value) {
       ResultSet<AccountPreferences> result = getAccountPreferencesByUniqueField(uniqueField);
       return setAccountPreference(result, key, value);
+   }
+
+   @Override
+   public boolean setAccountWebPreference(String accountGuid, String key, String itemId, String newValue) {
+      Conditions.checkNotNull(key, "account preference key");
+      Conditions.checkNotNull(newValue, "account preference value", "Use delete account preference instead");
+
+      AccountWebPreferences allPreferences = getStorage().getAccountWebPreferencesByGuid(accountGuid);
+      String newPreferences = AccountUtil.updateSinglePreference(allPreferences, key, itemId, newValue);
+
+      boolean modified = false;
+      if (Strings.isValid(newPreferences) && !newPreferences.equalsIgnoreCase(allPreferences.toString())) {
+         getStorage().setAccountWebPreferences(accountGuid, newPreferences);
+         modified = true;
+      }
+      return modified;
    }
 
    private boolean setAccountPreference(ResultSet<AccountPreferences> result, String key, String value) {

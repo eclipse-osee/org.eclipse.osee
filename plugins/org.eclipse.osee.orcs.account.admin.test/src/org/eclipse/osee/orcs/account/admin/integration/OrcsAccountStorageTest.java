@@ -39,7 +39,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link OrcsAccountStorage}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsAccountStorageTest {
@@ -102,14 +102,14 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testGetById() {
-      ResultSet<Account> result = storage.getAccountByUuid(newAccount.getGuid());
+      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
       Account account1 = result.getExactlyOne();
       assertAccount(account1, newAccount.getGuid(), name, email, username, active, prefs);
    }
 
    @Test
    public void testGetByUuiId() {
-      ResultSet<Account> result = storage.getAccountByUuid(newAccount.getGuid());
+      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
       Account account1 = result.getExactlyOne();
       assertAccount(account1, newAccount.getGuid(), name, email, username, active, prefs);
 
@@ -142,7 +142,7 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testGetAccountPrefsByUuid() {
-      AccountPreferences actual = storage.getAccountPreferencesByUuid(newAccount.getGuid()).getExactlyOne();
+      AccountPreferences actual = storage.getAccountPreferencesByGuid(newAccount.getGuid()).getExactlyOne();
       assertPrefs(actual, newAccount.getGuid(), prefs);
 
       AccountPreferences actual2 = storage.getAccountPreferencesById(actual.getId()).getExactlyOne();
@@ -151,7 +151,7 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testGetAccountPrefsByLocalId() {
-      Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
 
       AccountPreferences actual = storage.getAccountPreferencesById(account.getId()).getExactlyOne();
       assertPrefs(actual, account.getGuid(), account.getId(), prefs);
@@ -159,28 +159,28 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testSetActive() {
-      Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
       assertAccount(account, newAccount.getGuid(), name, email, username, active, prefs);
 
       storage.setActive(newAccount, false);
 
-      account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
       assertFalse(account.isActive());
 
       storage.setActive(newAccount, true);
 
-      account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
       assertTrue(account.isActive());
    }
 
    @Test
    public void testDeleteAccount() {
-      ResultSet<Account> result = storage.getAccountByUuid(newAccount.getGuid());
+      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
       assertEquals(1, result.size());
 
       storage.deleteAccount(newAccount);
 
-      result = storage.getAccountByUuid(newAccount.getGuid());
+      result = storage.getAccountByGuid(newAccount.getGuid());
       assertTrue(result.isEmpty());
    }
 
@@ -194,7 +194,7 @@ public class OrcsAccountStorageTest {
 
       storage.setAccountPreferences(newAccount, expected);
 
-      Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
       AccountPreferences actual = account.getPreferences();
       assertPrefs(actual, newAccount.getGuid(), account.getId(), expected);
    }
@@ -205,7 +205,7 @@ public class OrcsAccountStorageTest {
       String address = "myAddress";
       String details = "myDetails";
 
-      Account account = storage.getAccountByUuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
 
       AccountSession actual = storage.createAccountSession(token, account, address, details);
       assertEquals(details, actual.getAccessDetails());

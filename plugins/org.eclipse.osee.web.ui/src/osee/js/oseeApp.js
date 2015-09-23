@@ -1,6 +1,6 @@
-var app = angular.module('oseeApp', ['oauth', 'oseeProvider', 'ngRoute', 'aLinkRewrite']);
+var app = angular.module('oseeApp', ['oauth', 'ngResource', 'ui.bootstrap', 'oseeProvider', 'ngRoute', 'aLinkRewrite', 'ui.grid', 'ui.grid.edit']);
 
-+app.config(['$routeProvider',
+app.config(['$routeProvider',
                          function($routeProvider) {
                          	
                            $routeProvider.when('/', {
@@ -15,6 +15,9 @@ var app = angular.module('oseeApp', ['oauth', 'oseeProvider', 'ngRoute', 'aLinkR
                            }).when('/contactUs', {
                          	  templateUrl: '../views/contactUs.html',
                                controller: 'indexController'
+                           }).when('/me', {
+                         	  templateUrl: '../views/me.html',
+                               controller: 'meController'
                            }).when('/redirect', {
                          	  templateUrl: '../views/home.html',
                                controller: 'indexController'
@@ -24,3 +27,19 @@ var app = angular.module('oseeApp', ['oauth', 'oseeProvider', 'ngRoute', 'aLinkR
                              });
                            }
                          ]);
+                         
+app.provider('Preferences', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var Preferences = $resource('/accounts/preferences/:id', {}, {
+            	update: {
+                    method: 'PUT',
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            });
+            return Preferences;
+        }
+    ];
+});

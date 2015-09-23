@@ -81,6 +81,7 @@ artifactType "User" extends "Artifact" {
 	attribute "XViewer Customization"
 	attribute "XViewer Defaults"
 	attribute "Zip"
+	attribute "Web Preferences"
 }
 
 attributeType "Active" extends BooleanAttribute {
@@ -204,6 +205,16 @@ attributeType "User Settings" extends StringAttribute {
 	fileExtension "xml"
 	mediaType "text/plain"
 }
+
+attributeType "Web Preferences" extends StringAttribute {
+	uuid 0x100000000000019A
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	fileExtension "xml"
+	mediaType "text/plain"
+}
+
 
 attributeType "XViewer Customization" extends StringAttribute {
 	uuid 0x1000000000000065

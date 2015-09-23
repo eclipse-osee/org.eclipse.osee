@@ -15,6 +15,8 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -40,12 +42,18 @@ public class AccountFactory {
 
    public Account newAccount(ArtifactReadable artifact) {
       AccountPreferences preferences = newAccountPreferences(artifact);
-      return new AccountArtifact(artifact.getGuid(), artifact, preferences);
+      AccountWebPreferences webPreferences = newAccountWebPreferences(artifact);
+      return new AccountArtifact(artifact.getGuid(), artifact, preferences, webPreferences);
    }
 
    public AccountPreferences newAccountPreferences(ArtifactReadable artifact) {
       String id = artifact.getGuid();
       return new AccountPreferencesArtifact(id, artifact);
+   }
+
+   public AccountWebPreferences newAccountWebPreferences(ArtifactReadable artifact) {
+      String webPreferencesJson = artifact.getSoleAttributeAsString(CoreAttributeTypes.WebPreferences, "{}");
+      return new AccountWebPreferences(webPreferencesJson, artifact.getName());
    }
 
    private class ArtifactToAccount implements Function<String, ArtifactReadable, Account> {

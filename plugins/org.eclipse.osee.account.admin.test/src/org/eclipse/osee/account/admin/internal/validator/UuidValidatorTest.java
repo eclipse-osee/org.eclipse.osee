@@ -20,11 +20,11 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 public class UuidValidatorTest extends AbstractValidatorTest<UuidValidator> {
 
-   private static final String VALID_UUID = GUID.create();
-   private static final String INVALID_UUID = "12 31 asd";
+   private static final String VALID_GUID = GUID.create();
+   private static final String INVALID_GUID = "12 31 asd";
 
    public UuidValidatorTest() {
-      super(AccountField.UUID, VALID_UUID, INVALID_UUID);
+      super(AccountField.GUID, VALID_GUID, INVALID_GUID);
    }
 
    @Override

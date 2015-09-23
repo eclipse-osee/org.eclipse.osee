@@ -19,6 +19,8 @@ public interface SubscriptionAdmin {
 
    ResultSet<Subscription> getSubscriptionsByAccountUniqueField(String accountUniqueField);
 
+   ResultSet<Subscription> getSubscriptionsByGuid(String guid);
+
    Subscription getSubscription(String subscriptionUuid);
 
    boolean setSubscriptionActive(Subscription subscription, boolean active);
@@ -33,7 +35,7 @@ public interface SubscriptionAdmin {
 
    ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String groupName);
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByUuid(String groupUuid);
+   ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String groupUuid);
 
    SubscriptionGroup createSubscriptionGroup(String groupName);
 
@@ -45,6 +47,6 @@ public interface SubscriptionAdmin {
 
    ResultSet<Account> getSubscriptionGroupMembersByName(String groupName);
 
-   ResultSet<Account> getSubscriptionGroupMembersByUuid(String groupUuid);
+   ResultSet<Account> getSubscriptionGroupMembersByGuid(String groupUuid);
 
 }

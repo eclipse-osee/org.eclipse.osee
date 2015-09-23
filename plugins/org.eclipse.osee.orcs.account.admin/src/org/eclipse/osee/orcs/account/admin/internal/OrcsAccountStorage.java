@@ -19,6 +19,7 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -98,9 +99,15 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
+   public ResultSet<Account> getAccountByGuid(String guid) {
+      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
+      return getFactory().newAccountResultSet(results);
+   }
+
+   @Override
    public ResultSet<Account> getAccountByUuid(String accountUuid) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(accountUuid).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(Long.parseLong(accountUuid)).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
@@ -133,8 +140,8 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesByUuid(String uuid) {
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(uuid).getResults();
+   public ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid) {
+      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
       return getFactory().newAccountPreferencesResultSet(results);
    }
 
@@ -257,6 +264,27 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
             return getFactory().newAccountResultSet(results);
          }
       };
+   }
+
+   @Override
+   public void setAccountWebPreferences(String guid, String preferences) {
+      ArtifactId artId = OrcsUtil.newArtifactId(1, guid, "name");
+      TransactionBuilder tx = newTransaction("User - Save Web Preferences");
+      tx.setSoleAttributeFromString(artId, CoreAttributeTypes.WebPreferences, preferences);
+      tx.commit();
+   }
+
+   @Override
+   public AccountWebPreferences getAccountWebPreferencesByGuid(String guid) {
+      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
+      return getFactory().newAccountWebPreferences(results.getExactlyOne());
+   }
+
+   @Override
+   public AccountWebPreferences getAccountWebPreferencesById(int accountId) {
+      ResultSet<ArtifactReadable> results =
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId).getResults();
+      return getFactory().newAccountWebPreferences(results.getExactlyOne());
    }
 
 }

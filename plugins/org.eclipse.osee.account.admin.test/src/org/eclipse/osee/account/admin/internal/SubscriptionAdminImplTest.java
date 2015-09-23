@@ -42,13 +42,13 @@ import org.mockito.Mockito;
 
 /**
  * Test Case for {@link SubscriptionAdminImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class SubscriptionAdminImplTest {
 
    private static final long ID = 123121412L;
-   private static final String UUID = GUID.create();
+   private static final String GUID_STRING = GUID.create();
    private static final String GROUP_NAME = "group-name";
    private static final String EMAIL = "atest@email.com";
    private static final long ACCOUNT_ID = 21231L;
@@ -61,7 +61,7 @@ public class SubscriptionAdminImplTest {
    @Mock private Log logger;
    @Mock private SubscriptionStorage storage;
    @Mock private AccountAdmin accountManager;
-   
+
    @Mock private SubscriptionGroup group;
    @Mock private Account account;
    @Mock private Subscription subscription;
@@ -98,9 +98,9 @@ public class SubscriptionAdminImplTest {
 
    @Test
    public void testGetSubscription() {
-      manager.getSubscription(UUID);
+      manager.getSubscription(GUID_STRING);
 
-      verify(storage).getSubscription(UUID);
+      verify(storage).getSubscription(GUID_STRING);
    }
 
    @Test
@@ -123,14 +123,14 @@ public class SubscriptionAdminImplTest {
    public void testGetSubscriptionGroupByUuidWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("group uuid cannot be null");
-      manager.getSubscriptionGroupByUuid(null);
+      manager.getSubscriptionGroupByGuid(null);
    }
 
    @Test
    public void testGetSubscriptionGroupByUuiId() {
-      manager.getSubscriptionGroupByUuid(UUID);
+      manager.getSubscriptionGroupByGuid(GUID_STRING);
 
-      verify(storage).getSubscriptionGroupByUuid(UUID);
+      verify(storage).getSubscriptionGroupByGuid(GUID_STRING);
    }
 
    @Test
@@ -208,17 +208,17 @@ public class SubscriptionAdminImplTest {
    }
 
    @Test
-   public void testGetMembersByUuidWithNull() {
+   public void testGetMembersByGuidWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("uuid cannot be null");
-      manager.getSubscriptionGroupMembersByUuid(null);
+      manager.getSubscriptionGroupMembersByGuid(null);
    }
 
    @Test
-   public void testGetMembersByUuiId() {
-      manager.getSubscriptionGroupMembersByUuid(UUID);
+   public void testGetMembersByGuiId() {
+      manager.getSubscriptionGroupMembersByGuid(GUID_STRING);
 
-      verify(storage).getSubscriptionGroupMembersByUuid(UUID);
+      verify(storage).getSubscriptionGroupMembersByGuid(GUID_STRING);
    }
 
    @Test
@@ -256,25 +256,25 @@ public class SubscriptionAdminImplTest {
 
    @Test
    public void testSetSubscriptionActiveModified() {
-      when(storage.getSubscription(UUID)).thenReturn(subscription);
+      when(storage.getSubscription(GUID_STRING)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(true);
 
-      boolean modified = manager.setSubscriptionActive(UUID, false);
+      boolean modified = manager.setSubscriptionActive(GUID_STRING, false);
       assertTrue(modified);
 
-      verify(storage).getSubscription(UUID);
+      verify(storage).getSubscription(GUID_STRING);
       verify(storage).updateSubscription(ACCOUNT_ID, GROUP_ID, false);
    }
 
    @Test
    public void testSetSubscriptionActiveNotModified() {
-      when(storage.getSubscription(UUID)).thenReturn(subscription);
+      when(storage.getSubscription(GUID_STRING)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(true);
 
-      boolean modified = manager.setSubscriptionActive(UUID, true);
+      boolean modified = manager.setSubscriptionActive(GUID_STRING, true);
       assertFalse(modified);
 
-      verify(storage).getSubscription(UUID);
+      verify(storage).getSubscription(GUID_STRING);
       verify(storage, times(0)).updateSubscription(ACCOUNT_ID, GROUP_ID, true);
    }
 

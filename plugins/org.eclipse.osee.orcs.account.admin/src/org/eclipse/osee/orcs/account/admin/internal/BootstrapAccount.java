@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 
@@ -75,6 +76,11 @@ public class BootstrapAccount extends BaseIdentity<String> implements Account, A
    @Override
    public boolean getBoolean(String key) {
       return false;
+   }
+
+   @Override
+   public AccountWebPreferences getWebPreferences() {
+      return null;
    }
 
 }

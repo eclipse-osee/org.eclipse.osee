@@ -10,6 +10,8 @@
       </meta>
       <link rel="stylesheet" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css">
       </link>
+      <link rel="stylesheet" href="/ajax/libs/ui-grid/3.0.1/ui-grid.css">
+      </link>
       <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
@@ -20,7 +22,9 @@
       <script src="/ajax/libs/oauth-ng/0.3.8/oauth-ng.js"></script>
       <script src="/libs/js/oseeAuth/oseeAuth.js"></script>
       <script src="/libs/js/support/linkRewrite.js"></script>
+      <script src="/ajax/libs/ui-grid/3.0.1/ui-grid.js"></script>
       <script src="../js/oseeApp.js"></script>
+      <script src="../js/meController.js"></script>
       <link rel="icon" type="image/x-icon" href="images/osee.ico" />
       <link rel="shortcut icon" type="image/x-icon" href="/libs/images/osee.ico" />
       <title>OSEE</title>
@@ -38,7 +42,7 @@
    	 app.controller("indexController", [
  				"$scope", '$location', '$window',
  				function($scope, $location, $window) {
- 					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'about', name: 'About'}, { ref: 'wiki', name: 'Wiki'}, { ref: 'contactUs', name: 'Contact Us'}];
+ 					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'me', name: 'Me'},{ ref: 'about', name: 'About'}, { ref: 'wiki', name: 'Wiki'}, { ref: 'contactUs', name: 'Contact Us'}];
  				}]);
  	</script>
 </html>

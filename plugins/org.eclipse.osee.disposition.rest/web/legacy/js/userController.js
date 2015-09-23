@@ -35,7 +35,7 @@ app.controller('userController', [
         };
         
         // if this is a search result view, populate program, set and items from parent scope
-        if(window.opener != null) {
+        if(window.opener != null &&  window.opener.$windowScope != undefined) {
         	$scope.programs = window.opener.$windowScope.programs;
         	$scope.sets = window.opener.$windowScope.sets;
         	$scope.programSelection = window.opener.$windowScope.programSelection;

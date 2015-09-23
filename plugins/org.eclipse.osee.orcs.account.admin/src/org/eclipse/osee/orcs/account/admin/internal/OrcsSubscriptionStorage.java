@@ -117,9 +117,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    }
 
    @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByUuid(String uuid) {
+   public ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String guid) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andGuid(uuid).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
+         newQuery().andGuid(guid).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
       return getFactory().newAccountSubscriptionGroupResultSet(results);
    }
 
@@ -164,9 +164,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    }
 
    @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByUuid(String uuid) {
+   public ResultSet<Account> getSubscriptionGroupMembersByGuid(String guid) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andGuid(uuid).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andGuid(guid).getResults();
       ArtifactReadable group = results.getOneOrNull();
       return getMembers(group);
    }

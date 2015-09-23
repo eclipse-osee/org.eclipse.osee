@@ -6,7 +6,8 @@ Bundle-Version: 0.23.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.osee.authentication.admin,
+Import-Package: org.eclipse.osee.account.rest.model,
+ org.eclipse.osee.authentication.admin,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger

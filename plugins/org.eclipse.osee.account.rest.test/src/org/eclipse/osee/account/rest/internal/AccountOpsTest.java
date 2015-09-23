@@ -53,7 +53,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AccountOps}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountOpsTest {
@@ -104,7 +104,7 @@ public class AccountOpsTest {
       long accountId = 1982671L;
       Account account = mockAccount(accountId, guid, name, email, username, active);
       ResultSet<Account> result = ResultSets.singleton(account);
-      when(accountAdmin.getAccountByUuid(guid)).thenReturn(result);
+      when(accountAdmin.getAccountByGuid(guid)).thenReturn(result);
 
       AccountInfoData actual = ops.createAccount(username, input);
 

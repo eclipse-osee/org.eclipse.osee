@@ -12,11 +12,14 @@ package org.eclipse.osee.account.rest.internal;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
@@ -47,9 +50,25 @@ public class AccountsResource {
       return toReturn;
    }
 
+   @GET
+   @Path("preferences/{id}")
+   @PermitAll
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   public Response getPreferences(@PathParam("id") String id) {
+      return Response.ok().entity(accountOps.getAccountWebPreferencesData(id)).build();
+   }
+
+   @PUT
+   @Path("preferences/{id}")
+   @PermitAll
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   public Response editPreferences(@PathParam("id") String userGuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
+      return Response.ok().entity(accountOps.editAccountWebPreferencesData(userGuid, key, itemId, newValue)).build();
+   }
+
    /**
     * Get all Accounts
-    * 
+    *
     * @return All accounts
     */
    @GET

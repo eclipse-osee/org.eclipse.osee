@@ -156,9 +156,9 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
    }
 
    @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByUuid(String groupUuid) {
+   public ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String groupUuid) {
       Conditions.checkNotNull(groupUuid, "group uuid");
-      return getStorage().getSubscriptionGroupByUuid(groupUuid);
+      return getStorage().getSubscriptionGroupByGuid(groupUuid);
    }
 
    @Override
@@ -173,9 +173,16 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
    }
 
    @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByUuid(String groupUuid) {
+   public ResultSet<Account> getSubscriptionGroupMembersByGuid(String groupUuid) {
       Conditions.checkNotNull(groupUuid, "group uuid");
-      return getStorage().getSubscriptionGroupMembersByUuid(groupUuid);
+      return getStorage().getSubscriptionGroupMembersByGuid(groupUuid);
+   }
+
+   @Override
+   public ResultSet<Subscription> getSubscriptionsByGuid(String guid) {
+      ResultSet<Account> result = accountAdmin.getAccountByGuid(guid);
+      Account account = result.getExactlyOne();
+      return getStorage().getSubscriptionsByAccountLocalId(account.getId());
    }
 
 }

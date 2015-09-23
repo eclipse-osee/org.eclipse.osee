@@ -20,7 +20,7 @@ public class UuidValidator extends AbstractValidator {
 
    @Override
    public AccountField getFieldType() {
-      return AccountField.UUID;
+      return AccountField.GUID;
    }
 
    @Override

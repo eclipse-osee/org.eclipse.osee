@@ -12,8 +12,8 @@ package org.eclipse.osee.account.admin.internal;
 
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountField;
-import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
+import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -46,8 +46,8 @@ public class SubscriptionResolver {
             long id = parseLocalId(uniqueFieldValue);
             toReturn = subscriptionsAdmin.getSubscriptionGroupByLocalId(id);
             break;
-         case UUID:
-            toReturn = subscriptionsAdmin.getSubscriptionGroupByUuid(uniqueFieldValue);
+         case GUID:
+            toReturn = subscriptionsAdmin.getSubscriptionGroupByGuid(uniqueFieldValue);
             break;
          case SUBSCRIPTION_GROUP_NAME:
             toReturn = subscriptionsAdmin.getSubscriptionGroupByName(uniqueFieldValue);
@@ -68,8 +68,8 @@ public class SubscriptionResolver {
             long id = parseLocalId(uniqueFieldValue);
             toReturn = subscriptionsAdmin.getSubscriptionGroupMembersByLocalId(id);
             break;
-         case UUID:
-            toReturn = subscriptionsAdmin.getSubscriptionGroupMembersByUuid(uniqueFieldValue);
+         case GUID:
+            toReturn = subscriptionsAdmin.getSubscriptionGroupMembersByGuid(uniqueFieldValue);
             break;
          case SUBSCRIPTION_GROUP_NAME:
             toReturn = subscriptionsAdmin.getSubscriptionGroupMembersByName(uniqueFieldValue);

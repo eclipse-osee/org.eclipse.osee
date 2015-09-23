@@ -50,8 +50,8 @@ public class AccountResolver {
             long id = parseLocalId(uniqueFieldValue);
             toReturn = accountAdmin.getAccountById(id);
             break;
-         case UUID:
-            toReturn = accountAdmin.getAccountByUuid(uniqueFieldValue);
+         case GUID:
+            toReturn = accountAdmin.getAccountByGuid(uniqueFieldValue);
             break;
          case DISPLAY_NAME:
             toReturn = accountAdmin.getAccountByName(uniqueFieldValue);

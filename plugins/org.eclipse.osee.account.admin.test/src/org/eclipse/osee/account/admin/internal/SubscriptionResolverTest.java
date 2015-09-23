@@ -34,7 +34,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link SubscriptionResolver}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class SubscriptionResolverTest {
@@ -49,10 +49,10 @@ public class SubscriptionResolverTest {
    // @formatter:off
    @Mock private Validator validator;
    @Mock private SubscriptionAdmin manager;
-   
+
    @Mock private SubscriptionGroup group;
    @Mock private ResultSet<SubscriptionGroup> groups;
-   
+
    @Mock private Account account;
    @Mock private ResultSet<Account> members;
    // @formatter:on
@@ -98,7 +98,7 @@ public class SubscriptionResolverTest {
       verify(validator).guessFormatType(TEST_VALUE);
 
       verify(manager, times(0)).getSubscriptionGroupByLocalId(anyLong());
-      verify(manager, times(0)).getSubscriptionGroupByUuid(anyString());
+      verify(manager, times(0)).getSubscriptionGroupByGuid(anyString());
       verify(manager, times(0)).getSubscriptionGroupByName(anyString());
    }
 
@@ -116,14 +116,14 @@ public class SubscriptionResolverTest {
 
    @Test
    public void testResolveSubscriptionGroupAsUuid() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UUID);
-      when(manager.getSubscriptionGroupByUuid(TEST_VALUE)).thenReturn(groups);
+      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.GUID);
+      when(manager.getSubscriptionGroupByGuid(TEST_VALUE)).thenReturn(groups);
 
       ResultSet<SubscriptionGroup> actual = resolver.resolveSubscriptionGroup(TEST_VALUE);
       assertEquals(groups, actual);
 
       verify(validator).guessFormatType(TEST_VALUE);
-      verify(manager).getSubscriptionGroupByUuid(TEST_VALUE);
+      verify(manager).getSubscriptionGroupByGuid(TEST_VALUE);
    }
 
    @Test
@@ -163,7 +163,7 @@ public class SubscriptionResolverTest {
       verify(validator).guessFormatType(TEST_VALUE);
 
       verify(manager, times(0)).getSubscriptionGroupMembersByLocalId(anyLong());
-      verify(manager, times(0)).getSubscriptionGroupMembersByUuid(anyString());
+      verify(manager, times(0)).getSubscriptionGroupMembersByGuid(anyString());
       verify(manager, times(0)).getSubscriptionGroupMembersByName(anyString());
    }
 
@@ -180,15 +180,15 @@ public class SubscriptionResolverTest {
    }
 
    @Test
-   public void testResolveMembersAsUuid() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UUID);
-      when(manager.getSubscriptionGroupMembersByUuid(TEST_VALUE)).thenReturn(members);
+   public void testResolveMembersAsGuid() {
+      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.GUID);
+      when(manager.getSubscriptionGroupMembersByGuid(TEST_VALUE)).thenReturn(members);
 
       ResultSet<Account> actual = resolver.resolveSubscriptionGroupMembersByGroupUniqueField(TEST_VALUE);
       assertEquals(members, actual);
 
       verify(validator).guessFormatType(TEST_VALUE);
-      verify(manager).getSubscriptionGroupMembersByUuid(TEST_VALUE);
+      verify(manager).getSubscriptionGroupMembersByGuid(TEST_VALUE);
    }
 
    @Test

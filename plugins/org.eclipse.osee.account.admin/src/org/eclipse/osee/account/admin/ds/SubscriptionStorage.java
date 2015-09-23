@@ -32,7 +32,7 @@ public interface SubscriptionStorage {
 
    ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String name);
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByUuid(String uuid);
+   ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String guid);
 
    boolean subscriptionGroupNameExists(String groupName);
 
@@ -44,6 +44,6 @@ public interface SubscriptionStorage {
 
    ResultSet<Account> getSubscriptionGroupMembersByName(String name);
 
-   ResultSet<Account> getSubscriptionGroupMembersByUuid(String uuid);
+   ResultSet<Account> getSubscriptionGroupMembersByGuid(String guid);
 
 }

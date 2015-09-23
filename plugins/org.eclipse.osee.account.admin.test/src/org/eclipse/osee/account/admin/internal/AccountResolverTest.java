@@ -34,7 +34,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link AccountResolver}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountResolverTest {
@@ -145,7 +145,7 @@ public class AccountResolverTest {
 
       verify(accountAdmin, times(0)).getAccountByEmail(anyString());
       verify(accountAdmin, times(0)).getAccountById(anyLong());
-      verify(accountAdmin, times(0)).getAccountByUuid(anyString());
+      verify(accountAdmin, times(0)).getAccountByGuid(anyString());
       verify(accountAdmin, times(0)).getAccountByName(anyString());
       verify(accountAdmin, times(0)).getAccountByUserName(anyString());
    }
@@ -163,15 +163,15 @@ public class AccountResolverTest {
    }
 
    @Test
-   public void testResolveAccountAsUuid() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UUID);
-      when(accountAdmin.getAccountByUuid(TEST_VALUE)).thenReturn(accountResult);
+   public void testResolveAccountAsGuid() {
+      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.GUID);
+      when(accountAdmin.getAccountByGuid(TEST_VALUE)).thenReturn(accountResult);
 
       ResultSet<Account> actual = resolver.resolveAccount(TEST_VALUE);
       assertEquals(accountResult, actual);
 
       verify(validator).guessFormatType(TEST_VALUE);
-      verify(accountAdmin).getAccountByUuid(TEST_VALUE);
+      verify(accountAdmin).getAccountByGuid(TEST_VALUE);
    }
 
    @Test
@@ -183,7 +183,7 @@ public class AccountResolverTest {
 
       verify(accountAdmin, times(0)).getAccountByEmail(anyString());
       verify(accountAdmin, times(0)).getAccountById(anyLong());
-      verify(accountAdmin, times(0)).getAccountByUuid(anyString());
+      verify(accountAdmin, times(0)).getAccountByGuid(anyString());
       verify(accountAdmin, times(0)).getAccountByName(anyString());
       verify(accountAdmin, times(0)).getAccountByUserName(anyString());
    }

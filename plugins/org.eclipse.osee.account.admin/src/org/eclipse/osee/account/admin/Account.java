@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin;
 
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
@@ -27,4 +28,5 @@ public interface Account extends Identifiable<String> {
 
    AccountPreferences getPreferences();
 
+   AccountWebPreferences getWebPreferences();
 }

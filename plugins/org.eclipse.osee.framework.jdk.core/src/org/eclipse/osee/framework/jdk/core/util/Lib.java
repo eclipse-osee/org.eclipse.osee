@@ -579,14 +579,16 @@ public final class Lib {
          toProcess = toProcess.replaceAll("\\\\", "/");
          String[] pathsArray = toProcess.split("/");
 
-         String fileName = pathsArray[0];
          if (pathsArray.length > 0) {
-            fileName = pathsArray[pathsArray.length - 1];
-         }
+            String fileName = pathsArray[0];
+            if (pathsArray.length > 0) {
+               fileName = pathsArray[pathsArray.length - 1];
+            }
 
-         int index = fileName.lastIndexOf('.');
-         if (index >= 0 && index + 1 < fileName.length()) {
-            toReturn = fileName.substring(index + 1);
+            int index = fileName.lastIndexOf('.');
+            if (index >= 0 && index + 1 < fileName.length()) {
+               toReturn = fileName.substring(index + 1);
+            }
          }
       }
       return toReturn;
