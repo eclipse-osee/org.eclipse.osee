@@ -20,9 +20,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -52,7 +50,6 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
@@ -61,7 +58,7 @@ import org.osgi.service.prefs.Preferences;
 
 /**
  * Displays persisted changes made to an artifact.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
@@ -74,6 +71,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    private XBranchWidget xBranchWidget;
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
+   private XViewerCustomMenu customMenu;
 
    public BranchView() {
       super();
@@ -119,6 +117,8 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
          final BranchView fBranchView = this;
 
          final XViewer branchWidget = xBranchWidget.getXViewer();
+         customMenu = new XViewerCustomMenu(xBranchWidget.getXViewer());
+         customMenu.init(xBranchWidget.getXViewer());
 
          MenuManager menuManager = new MenuManager();
          menuManager.setRemoveAllWhenShown(true);
@@ -130,24 +130,11 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
                menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                menuManager.add(new EditTransactionComment(fBranchView));
                menuManager.add(new Separator());
-               Menu menu = menuManager.getMenu();
-               XViewerCustomMenu customMenu = new XViewerCustomMenu(xBranchWidget.getXViewer());
-               customMenu.createTableCustomizationMenuItem(menu);
-               customMenu.createViewTableReportMenuItem(menu);
-               try {
-                  if (AccessControlManager.isOseeAdmin()) {
-                     menuManager.add(new ColumnMultiEditAction(branchWidget));
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               if (customMenu.isHeaderMouseClick()) {
+                  customMenu.setupMenuForHeader(menuManager);
+               } else {
+                  customMenu.setupMenuForTable(menuManager);
                }
-               customMenu.createViewSelectedCellMenuItem(menu);
-               menuManager.add(new Separator());
-               customMenu.createFilterByValueMenuItem(menu);
-               customMenu.createFilterByColumnMenuItem(menu);
-               customMenu.createClearAllFiltersMenuItem(menu);
-               customMenu.createClearAllSortingMenuItem(menu);
-               menuManager.add(new Separator());
             }
          });
 
