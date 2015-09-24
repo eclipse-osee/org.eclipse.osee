@@ -946,13 +946,13 @@ public final class Lib {
          System.out.println(fileToModify.getPath() + " does not contain the pattern: " + pattern.pattern());
          return false;
       }
-      CharBuffer topSection = (CharBuffer) modifyBuf.subSequence(0, matcher.start(1)); // everything
+      CharBuffer topSection = modifyBuf.subSequence(0, matcher.start(1)); // everything
       // before the
       // pattern
       CharBuffer bottomSection = null;
       int bottomLen = 0;
       if (matcher.end(1) != modifyBuf.length()) {
-         bottomSection = (CharBuffer) modifyBuf.subSequence(matcher.end(1), modifyBuf.length());
+         bottomSection = modifyBuf.subSequence(matcher.end(1), modifyBuf.length());
          bottomLen = bottomSection.length();
       }
 
@@ -1411,12 +1411,8 @@ public final class Lib {
    }
 
    public static void writeBytesToFile(byte[] data, File file) throws IOException {
-      OutputStream os = null;
-      try {
-         os = new FileOutputStream(file);
+      try (OutputStream os = new FileOutputStream(file)) {
          os.write(data);
-      } finally {
-         Lib.close(os);
       }
    }
 
