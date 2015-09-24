@@ -82,7 +82,9 @@ public class OptionsProcessor {
       }
       File parent = storageFile.getParentFile();
       if (parent != null && !parent.exists()) {
-         parent.mkdirs();
+         if (!parent.mkdirs()) {
+            throw new OseeCoreException("The path [%s] could not be created.  Check permissions.", parent);
+         }
       }
       return storageFile;
    }
