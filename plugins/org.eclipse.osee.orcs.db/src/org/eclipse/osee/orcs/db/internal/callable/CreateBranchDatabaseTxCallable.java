@@ -66,7 +66,6 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private static final String INSERT_ADDRESSING =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
-   private static final String USER_ID_QUERY = "SELECT art_id FROM osee_artifact WHERE guid = ?";
 
    private static final String MERGE_BRANCH_INSERT =
       "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES (?,?,?,?)";
@@ -94,7 +93,6 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       "SELECT inherit_access_control from osee_branch where branch_id = ?";
 
    private final IdentityManager idManager;
-   private int systemUserId;
 
    private final CreateBranchData newBranchData;
 
@@ -102,22 +100,9 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       super(logger, session, jdbcClient);
       this.idManager = idManager;
       this.newBranchData = branchData;
-      this.systemUserId = -1;
    }
 
-   private int getSystemUserId() {
-      if (systemUserId == -1) {
-         try {
-            systemUserId =
-               getJdbcClient().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getGuid());
-         } catch (OseeCoreException ex) {
-            getLogger().warn(ex, "Unable to retrieve the system user");
-         }
-      }
-      return systemUserId;
-   }
-
-   public void checkPreconditions(Long parentBranch, Long destinationBranch) throws OseeCoreException {
+   private void checkPreconditions(Long parentBranch, Long destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (getJdbcClient().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch,
             destinationBranch) > 0) {
@@ -126,10 +111,9 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
          }
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
          int associatedArtifactId = newBranchData.getAssociatedArtifactId();
-         int systemUserId = getSystemUserId();
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
-         if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
+         if (associatedArtifactId > -1 && associatedArtifactId != SystemUser.OseeSystem.getUuid()) {
             int count = getJdbcClient().runPreparedQueryFetchObject(0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
                newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
