@@ -31,9 +31,9 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface BranchDataStore {
 
-   Callable<Void> createBranch(OrcsSession session, CreateBranchData branchData);
+   void createBranch(CreateBranchData branchData);
 
-   Callable<Void> createBranchCopyTx(OrcsSession session, CreateBranchData branchData);
+   void createBranchCopyTx(CreateBranchData branchData);
 
    Callable<Void> purgeBranch(OrcsSession session, BranchReadable branch);
 

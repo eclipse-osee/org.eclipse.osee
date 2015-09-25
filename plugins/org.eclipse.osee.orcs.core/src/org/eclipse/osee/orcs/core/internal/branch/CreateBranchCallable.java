@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -44,7 +43,6 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
       ITransaction txData = branchData.getFromTransaction();
       Conditions.checkNotNull(txData, "sourceTransaction");
 
-      Callable<?> callable;
       if (branchData.isTxCopyBranchType()) {
          TransactionQuery txQuery = queryFactory.transactionQuery();
          ITransaction givenTx = branchData.getFromTransaction();
@@ -52,11 +50,11 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
          branchData.setSavedTransaction(givenTx);
          TransactionReadable priorTx = txQuery.andIsPriorTx(givenTx.getGuid()).getResults().getExactlyOne();
          branchData.setFromTransaction(priorTx);
-         callable = getBranchStore().createBranchCopyTx(getSession(), branchData);
+         getBranchStore().createBranchCopyTx(branchData);
       } else {
-         callable = getBranchStore().createBranch(getSession(), branchData);
+         getBranchStore().createBranch(branchData);
       }
-      callAndCheckForCancel(callable);
+
       return queryFactory.branchQuery().andUuids(branchData.getUuid()).getResults().getExactlyOne();
    }
 }

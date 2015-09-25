@@ -78,13 +78,13 @@ public class BranchModule {
       final MissingChangeItemFactory missingChangeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
       return new BranchDataStore() {
          @Override
-         public Callable<Void> createBranch(OrcsSession session, CreateBranchData branchData) {
-            return new CreateBranchDatabaseTxCallable(logger, session, jdbcClient, idManager, branchData);
+         public void createBranch(CreateBranchData branchData) {
+            jdbcClient.runTransaction(new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData));
          }
 
          @Override
-         public Callable<Void> createBranchCopyTx(OrcsSession session, CreateBranchData branchData) {
-            return new BranchCopyTxCallable(logger, session, jdbcClient, joinFactory, idManager, branchData);
+         public void createBranchCopyTx(CreateBranchData branchData) {
+            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, joinFactory, idManager, branchData));
          }
 
          @Override
@@ -108,15 +108,14 @@ public class BranchModule {
          public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
             ExportItemFactory factory =
                new ExportItemFactory(logger, preferences, jdbcClient, resourceManager, orcsTypes);
-            return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin,
-               branches, options, exportName);
+            return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin, branches,
+               options, exportName);
          }
 
          @Override
          public Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
-            ImportBranchDatabaseCallable callable =
-               new ImportBranchDatabaseCallable(logger, session, jdbcClient, preferences, resourceManager, idManager,
-                  orcsTypes, fileToImport, branches, options);
+            ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
+               preferences, resourceManager, idManager, orcsTypes, fileToImport, branches, options);
             return callable;
          }
 
