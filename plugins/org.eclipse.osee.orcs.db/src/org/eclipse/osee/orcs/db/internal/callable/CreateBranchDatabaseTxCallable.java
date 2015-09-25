@@ -32,6 +32,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -129,23 +130,20 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
          if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
-            int count =
-               getJdbcClient().runPreparedQueryFetchObject(0,
-                  "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
-                  newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
-                  BranchState.REBASELINED.getValue());
+            int count = getJdbcClient().runPreparedQueryFetchObject(0,
+               "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
+               newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
+               BranchState.REBASELINED.getValue());
             if (count > 0) {
                // the PORT branch type is a special case, a PORT branch can have the same associated artifact
-               // as its related RPCR branch. We need to check to see if there is already a 
+               // as its related RPCR branch. We need to check to see if there is already a
                // port branch with the same artifact ID - if the type is port type, then we need an additional check
                if (newBranchData.getBranchType().equals(BranchType.PORT)) {
 
-                  int portcount =
-                     getJdbcClient().runPreparedQueryFetchObject(
-                        0,
-                        "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
-                        newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
-                        BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
+                  int portcount = getJdbcClient().runPreparedQueryFetchObject(0,
+                     "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
+                     newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
+                     BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
                   if (portcount > 0) {
                      throw new OseeStateException("Existing port branch creation detected for [%s]",
                         newBranchData.getName());
@@ -194,32 +192,30 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       long parentBranchId = parentBranchUuid != null ? parentBranchUuid : NULL_PARENT_BRANCH_ID;
       Object[] toInsert;
       if (insertBranchGuid) {
-         toInsert =
-            new Object[] {
-               uuid,
-               GUID.create(),
-               truncatedName,
-               parentBranchId,
-               sourceTx,
-               BranchArchivedState.UNARCHIVED.getValue(),
-               newBranchData.getAssociatedArtifactId(),
-               newBranchData.getBranchType().getValue(),
-               BranchState.CREATED.getValue(),
-               nextTransactionId,
-               inheritAccessControl};
+         toInsert = new Object[] {
+            uuid,
+            GUID.create(),
+            truncatedName,
+            parentBranchId,
+            sourceTx,
+            BranchArchivedState.UNARCHIVED.getValue(),
+            newBranchData.getAssociatedArtifactId(),
+            newBranchData.getBranchType().getValue(),
+            BranchState.CREATED.getValue(),
+            nextTransactionId,
+            inheritAccessControl};
       } else {
-         toInsert =
-            new Object[] {
-               uuid,
-               truncatedName,
-               parentBranchId,
-               sourceTx,
-               BranchArchivedState.UNARCHIVED.getValue(),
-               newBranchData.getAssociatedArtifactId(),
-               newBranchData.getBranchType().getValue(),
-               BranchState.CREATED.getValue(),
-               nextTransactionId,
-               inheritAccessControl};
+         toInsert = new Object[] {
+            uuid,
+            truncatedName,
+            parentBranchId,
+            sourceTx,
+            BranchArchivedState.UNARCHIVED.getValue(),
+            newBranchData.getAssociatedArtifactId(),
+            newBranchData.getBranchType().getValue(),
+            BranchState.CREATED.getValue(),
+            nextTransactionId,
+            inheritAccessControl};
       }
 
       String insertBranch = insertBranchGuid ? INSERT_BRANCH_WITH_GUID : INSERT_BRANCH;
@@ -255,28 +251,29 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private void populateBaseTransaction(double workAmount, JdbcConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
-         List<Object[]> data = new ArrayList<Object[]>();
          HashSet<Integer> gammas = new HashSet<Integer>(100000);
          long parentBranchId = -1;
+
+         OseePreparedStatement addressing = getJdbcClient().getBatchStatement(connection, INSERT_ADDRESSING);
          if (newBranchData.getParentBranchUuid() != null) {
             parentBranchId = newBranchData.getParentBranchUuid();
          }
          if (newBranchData.getBranchType().isMergeBranch()) {
-            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
+            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
                parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
-            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
+            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
                parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
          } else {
-            populateAddressingToCopy(connection, data, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId, sourceTxId);
+            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId,
+               sourceTxId);
          }
-         if (!data.isEmpty()) {
-            getJdbcClient().runBatchUpdate(connection, INSERT_ADDRESSING, data);
-         }
+
+         addressing.execute();
       }
       checkForCancelled();
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, int baseTxId, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);
@@ -286,12 +283,8 @@ public class CreateBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {
-                  baseTxId,
-                  gamma,
-                  modType.getValue(),
-                  txCurrent.getValue(),
-                  newBranchData.getUuid()});
+               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(),
+                  newBranchData.getUuid());
                gammas.add(gamma);
             }
          }

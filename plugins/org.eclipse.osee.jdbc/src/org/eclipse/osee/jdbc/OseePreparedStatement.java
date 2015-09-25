@@ -18,7 +18,7 @@ import org.eclipse.osee.jdbc.internal.JdbcUtil;
  * This API is used in cases that involve large numbers of rows and thus many calls to addToBatch. The non-variable
  * argument list methods are provided for better performance so that the parameters are not wrapped in an array each
  * time.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class OseePreparedStatement {
@@ -54,6 +54,23 @@ public class OseePreparedStatement {
       JdbcUtil.setInputParameterForStatement(preparedStatement, param1, 1);
       JdbcUtil.setInputParameterForStatement(preparedStatement, param2, 2);
       JdbcUtil.setInputParameterForStatement(preparedStatement, param3, 3);
+      finishAddToBatch();
+   }
+
+   public void addToBatch(Object param1, Object param2, Object param3, Object param4) {
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param1, 1);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param2, 2);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param3, 3);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param4, 4);
+      finishAddToBatch();
+   }
+
+   public void addToBatch(Object param1, Object param2, Object param3, Object param4, Object param5) {
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param1, 1);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param2, 2);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param3, 3);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param4, 4);
+      JdbcUtil.setInputParameterForStatement(preparedStatement, param5, 5);
       finishAddToBatch();
    }
 
