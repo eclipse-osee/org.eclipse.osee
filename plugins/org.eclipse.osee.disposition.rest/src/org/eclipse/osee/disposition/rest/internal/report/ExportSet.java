@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -107,20 +107,19 @@ public class ExportSet {
          sheetWriter.writeRow((Object[]) headers);
 
          for (DispoItem item : items) {
-            Map<String, DispoAnnotationData> idToAnnotations = getDiscrepancyIdToCoveringAnnotation(item);
-            JSONObject discrepanciesList = item.getDiscrepanciesList();
+            JSONArray annotations = item.getAnnotationsList();
+            for (int i = 0; i < annotations.length(); i++) {
+               DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotations.getJSONObject(i));
+               writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName());
+            }
+
+            JSONObject discrepancies = item.getDiscrepanciesList();
             @SuppressWarnings("rawtypes")
-            Iterator keys = discrepanciesList.keys();
+            Iterator keys = discrepancies.keys();
             while (keys.hasNext()) {
                String key = (String) keys.next();
-               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
-               DispoAnnotationData coveringAnnotation = idToAnnotations.get(discrepancy.getId());
-               if (coveringAnnotation == null) {
-                  coveringAnnotation = createUncoveredAnnotation();
-               }
-
-               writeRow(sheetWriter, columns, item, discrepancy, coveringAnnotation);
-
+               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancies.getJSONObject(key));
+               writeRowDiscrepancy(sheetWriter, columns, item, discrepancy, setPrimary.getName());
             }
          }
 
@@ -132,40 +131,57 @@ public class ExportSet {
 
    }
 
-   private void writeRow(ExcelXmlWriter sheetWriter, int columns, DispoItem item, Discrepancy discrepancy, DispoAnnotationData annoation) throws IOException {
-
+   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName) throws IOException {
       String[] row = new String[columns];
       int index = 0;
-      row[index++] = "Empty";
-      row[index++] = item.getName();
-      //      row[index++] = item.getName();
-      row[index++] = discrepancy.getText();
+      row[index++] = getNameSpace(item, setName);
+      row[index++] = getNormalizedName(item.getName());
+      row[index++] = item.getName().replaceAll(".*\\.", "");
       row[index++] = String.valueOf(item.getMethodNumber());
-      row[index++] = String.valueOf(discrepancy.getLocation());
-      row[index++] = annoation.getResolutionType();
-      row[index++] = annoation.getResolution();
+      row[index++] = String.valueOf(annotation.getLocationRefs());
+      row[index++] = annotation.getResolutionType();
+      row[index++] = annotation.getResolution();
+      row[index++] = annotation.getCustomerNotes();
       sheetWriter.writeRow((Object[]) row);
    }
 
-   private Map<String, DispoAnnotationData> getDiscrepancyIdToCoveringAnnotation(DispoItem item) throws JSONException {
-      Map<String, DispoAnnotationData> toReturn = new HashMap<>();
-      JSONArray annotationsList = item.getAnnotationsList();
-      for (int i = 0; i < annotationsList.length(); i++) {
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationsList.getJSONObject(i));
-         JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
-
-         if (idsOfCoveredDiscrepancies.length() > 0) {
-            toReturn.put(idsOfCoveredDiscrepancies.getString(0), annotation);
-         }
-      }
-      return toReturn;
+   private void writeRowDiscrepancy(ExcelXmlWriter sheetWriter, int columns, DispoItem item, Discrepancy discrepancy, String setName) throws IOException {
+      String[] row = new String[columns];
+      int index = 0;
+      row[index++] = getNameSpace(item, setName);
+      row[index++] = getNormalizedName(item.getName());
+      row[index++] = item.getName().replaceAll(".*\\.", "");
+      row[index++] = String.valueOf(item.getMethodNumber());
+      row[index++] = String.valueOf(discrepancy.getLocation());
+      row[index++] = "Uncovered";
+      row[index++] = "N/A";
+      row[index++] = discrepancy.getText();
+      sheetWriter.writeRow((Object[]) row);
    }
 
-   private static DispoAnnotationData createUncoveredAnnotation() {
-      DispoAnnotationData annotation = new DispoAnnotationData();
-      annotation.setResolutionType("Uncovered");
-      annotation.setResolution("N/A");
-      return annotation;
+   private String getNormalizedName(String fullName) {
+      if (fullName.contains(".2.ada")) {
+         return fullName.replaceAll("\\.2\\.ada.*", ".2.ada");
+      } else {
+         return fullName.replaceAll("\\.c.*", ".c");
+      }
+   }
+
+   private String getNameSpace(DispoItem item, String setName) {
+      Pattern pattern = Pattern.compile(".*?(\\..*?){1,}\\.2\\.ada");
+      Matcher matcher = pattern.matcher(item.getName());
+      StringBuilder nameSpace = new StringBuilder(setName);
+      if (matcher.find()) {
+         String str = matcher.group();
+         Pattern pattern2 = Pattern.compile(".*\\.");
+         Matcher matcher2 = pattern2.matcher(str.replaceAll("\\.2.*", ""));
+         if (matcher2.find()) {
+            nameSpace.append(".");
+            String toAdd = matcher2.group();
+            nameSpace.append(toAdd.substring(0, toAdd.length() - 1));
+         }
+      }
+      return nameSpace.toString();
    }
 
    private static String prettifyAnnotations(JSONArray annotations) throws JSONException {
@@ -186,24 +202,24 @@ public class ExportSet {
    private static String[] getHeadersDetailed() {
       String[] toReturn = {//
          "Script Name",//
-         "Category",//
-         "Status",//
-         "Total Test Points",//
-         "Failures",//
-         "Failed Points",//
-         "Remaining Count",//
-         "Remaining Points",//
-         "Assignee",//
-         "Item Notes",//
-         "Needs Rerun",//
-         "Aborted",//
-         "Station",//
-         "Elapsed Time",//
-         "Creation Date",//
-         "Last Updated",//
-         "Version",//
-         "Dispositions"//
-      };
+            "Category",//
+            "Status",//
+            "Total Test Points",//
+            "Failures",//
+            "Failed Points",//
+            "Remaining Count",//
+            "Remaining Points",//
+            "Assignee",//
+            "Item Notes",//
+            "Needs Rerun",//
+            "Aborted",//
+            "Station",//
+            "Elapsed Time",//
+            "Creation Date",//
+            "Last Updated",//
+            "Version",//
+            "Dispositions"//
+         };
       return toReturn;
    }
 
@@ -215,7 +231,8 @@ public class ExportSet {
          "Method Number",//
          "Execution Line Number",//
          "Coverage Method",//
-      "Coverage Rationale"};
+         "Coverage Rationale",//
+      "Text"};
       return toReturn;
    }
 }

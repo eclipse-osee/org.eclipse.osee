@@ -81,13 +81,18 @@ public class DispoAdminResource {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
-      final String fileName = String.format("STRS_Report_%s", System.currentTimeMillis());
+      final String fileName = String.format("Export_%s", System.currentTimeMillis());
 
       StreamingOutput streamingOutput = new StreamingOutput() {
 
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
-            writer.runReport(program, dispoSet, options, outputStream);
+            String dispoType = dispoSet.getDispoType();
+            if (dispoType.equals("testScript")) {
+               writer.runReport(program, dispoSet, options, outputStream);
+            } else {
+               writer.runCoverageReport(program, dispoSet, options, outputStream);
+            }
             outputStream.flush();
          }
       };
