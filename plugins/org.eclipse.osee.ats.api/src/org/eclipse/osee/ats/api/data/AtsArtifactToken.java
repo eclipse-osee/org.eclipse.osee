@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public final class AtsArtifactToken {
 
    public static final IArtifactToken AtsConfig =
-      TokenFactory.createArtifactToken(5367053, "Af7L9SYYgCcBCKZ8CCwA", "AtsConfig", CoreArtifactTypes.GeneralData);
+      TokenFactory.createArtifactToken(5367053, "Af7L9SYYgCcBCKZ8CCwA", "ATS Config", CoreArtifactTypes.GeneralData);
    public static final IArtifactToken RuleDefinitions = TokenFactory.createArtifactToken(7880473,
       "Ar1Z9KIRtUZgcxbnyFwA", "Rule Definitions", AtsArtifactTypes.RuleDefinition);
    public static final IArtifactToken Users =
